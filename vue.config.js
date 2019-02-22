@@ -2,7 +2,7 @@
 let baseUrl = './'
 let url = 'http://localhost:8800'
 module.exports = {
-    baseUrl: baseUrl, // 根据你的实际情况更改这里
+    publicPath: baseUrl, // 根据你的实际情况更改这里
     lintOnSave: true,
     productionSourceMap: false,
     chainWebpack: (config) => {
