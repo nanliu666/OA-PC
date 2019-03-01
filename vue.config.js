@@ -1,5 +1,5 @@
 // 基础路径 注意发布之前要先修改这里
-let url = 'http://118.24.148.246:8800'
+let url = 'http://localhost:8800'
 module.exports = {
   lintOnSave: true,
   productionSourceMap: false,
