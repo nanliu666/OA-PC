@@ -25,10 +25,11 @@ export default {
     },
     //配置菜单的属性
     menu: {
+        iconDefault: 'iconfont icon-caidan',
         props: {
             label: 'name',
             path: 'path',
-            icon: 'icon',
+            icon: 'source',
             children: 'children'
         }
     }

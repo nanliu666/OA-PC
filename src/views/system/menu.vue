@@ -27,6 +27,13 @@
         <el-tag>{{row.roleName}}</el-tag>
       </template>
       <template slot-scope="{row}"
+                slot="source">
+        <div style="text-align:center">
+          <i :class="row.source"></i>
+        </div>
+      </template>
+
+      <template slot-scope="{row}"
                 slot="deptId">
         <el-tag>{{row.deptName}}</el-tag>
       </template>
@@ -35,256 +42,286 @@
 </template>
 
 <script>
-  import {getList, remove, update, add, getMenu} from "@/api/system/menu";
-  import {mapGetters} from "vuex";
-
-  export default {
-    data() {
-      return {
-        form: {},
-        selectionList: [],
-        page: {
-          pageSize: 10,
-          currentPage: 1,
-          total: 0
-        },
-        option: {
-          tip: false,
-          dialogWidth: "70%",
-          tree: true,
-          border: true,
-          index: true,
-          selection: true,
-          viewBtn: true,
-          column: [
-            {
-              label: "菜单名称",
-              prop: "name",
-              search: true,
-              rules: [{
+import { getList, remove, update, add, getMenu } from "@/api/system/menu";
+import { mapGetters } from "vuex";
+import iconList from "@/config/iconList";
+export default {
+  data() {
+    return {
+      form: {},
+      selectionList: [],
+      page: {
+        pageSize: 10,
+        currentPage: 1,
+        total: 0
+      },
+      option: {
+        tip: false,
+        dialogWidth: "70%",
+        tree: true,
+        border: true,
+        index: true,
+        selection: true,
+        viewBtn: true,
+        column: [
+          {
+            label: "菜单名称",
+            prop: "name",
+            search: true,
+            rules: [
+              {
                 required: true,
                 message: "请输入菜单名称",
                 trigger: "blur"
-              }]
-            },
-            {
-              label: "菜单编号",
-              prop: "code",
-              search: true,
-              rules: [{
+              }
+            ]
+          },
+          {
+            label: "菜单编号",
+            prop: "code",
+            search: true,
+            rules: [
+              {
                 required: true,
                 message: "请输入菜单编号",
                 trigger: "blur"
-              }]
-            },
-            {
-              label: "菜单别名",
-              prop: "alias",
-              rules: [{
+              }
+            ]
+          },
+          {
+            label: "菜单别名",
+            prop: "alias",
+            rules: [
+              {
                 required: true,
                 message: "请输入菜单别名",
                 trigger: "blur"
-              }]
-            },
-            {
-              label: "路由地址",
-              prop: "path",
-              rules: [{
+              }
+            ]
+          },
+          {
+            label: "菜单图标",
+            prop: "source",
+            type: "icon-select",
+            slot: true,
+            iconList: iconList,
+            rules: [
+              {
+                required: true,
+                message: "请输入菜单图标",
+                trigger: "blur"
+              }
+            ]
+          },
+          {
+            label: "路由地址",
+            prop: "path",
+            rules: [
+              {
                 required: true,
                 message: "请输入路由地址",
                 trigger: "blur"
-              }]
-            },
+              }
+            ]
+          },
 
-            {
-              label: "上级菜单",
-              prop: "parentId",
-              type: "tree",
-              dicUrl: "/api/blade-system/menu/tree",
-              hide: true,
-              props: {
-                label: "title"
-              },
-              rules: [{
+          {
+            label: "上级菜单",
+            prop: "parentId",
+            type: "tree",
+            dicUrl: "/api/blade-system/menu/tree",
+            hide: true,
+            props: {
+              label: "title"
+            },
+            rules: [
+              {
                 required: false,
                 message: "请选择上级菜单",
                 trigger: "blur"
-              }]
-            },
+              }
+            ]
+          },
 
-            {
-              label: "菜单类型",
-              prop: "category",
-              type: "radio",
-              dicData: [
-                {
-                  label: "菜单",
-                  value: 1
-                },
-                {
-                  label: "按钮",
-                  value: 2
-                }
-              ],
-              hide: true,
-              rules: [{
+          {
+            label: "菜单类型",
+            prop: "category",
+            type: "radio",
+            dicData: [
+              {
+                label: "菜单",
+                value: 1
+              },
+              {
+                label: "按钮",
+                value: 2
+              }
+            ],
+            hide: true,
+            rules: [
+              {
                 required: true,
                 message: "请选择菜单类型",
                 trigger: "blur"
-              }]
-            },
-            {
-              label: "菜单排序",
-              prop: "sort",
-              type: "number",
-              rules: [{
+              }
+            ]
+          },
+          {
+            label: "菜单排序",
+            prop: "sort",
+            type: "number",
+            rules: [
+              {
                 required: true,
                 message: "请输入菜单排序",
                 trigger: "blur"
-              }]
-            },
-            {
-              label: "按钮功能",
-              prop: "action",
-              type: "radio",
-              dicData: [
-                {
-                  label: "工具栏",
-                  value: 0
-                },
-                {
-                  label: "操作栏",
-                  value: 1
-                },
-                {
-                  label: "工具操作栏",
-                  value: 2
-                }
-              ],
-              hide: true,
-              rules: [{
+              }
+            ]
+          },
+          {
+            label: "按钮功能",
+            prop: "action",
+            type: "radio",
+            dicData: [
+              {
+                label: "工具栏",
+                value: 0
+              },
+              {
+                label: "操作栏",
+                value: 1
+              },
+              {
+                label: "工具操作栏",
+                value: 2
+              }
+            ],
+            hide: true,
+            rules: [
+              {
                 required: true,
                 message: "请选择按钮功能",
                 trigger: "blur"
-              }]
-            },
-            {
-              label: "菜单备注",
-              prop: "remark",
-              type: "textarea",
-              span: 24,
-              minRows: 6,
-              hide: true
-            }
-          ]
-        },
-        data: []
+              }
+            ]
+          },
+          {
+            label: "菜单备注",
+            prop: "remark",
+            type: "textarea",
+            span: 24,
+            minRows: 6,
+            hide: true
+          }
+        ]
+      },
+      data: []
+    };
+  },
+
+  computed: {
+    ...mapGetters(["permission"]),
+    permissionList() {
+      return {
+        addBtn: this.permission.menu_add,
+        viewBtn: this.permission.menu_view,
+        delBtn: this.permission.menu_delete,
+        editBtn: this.permission.menu_edit
       };
     },
-
-    computed: {
-      ...mapGetters(["permission"]),
-      permissionList() {
-        return {
-          addBtn: this.permission.menu_add,
-          viewBtn: this.permission.menu_view,
-          delBtn: this.permission.menu_delete,
-          editBtn: this.permission.menu_edit
-        };
-      },
-      ids() {
-        let ids = [];
-        this.selectionList.forEach(ele => {
-          ids.push(ele.id);
-        });
-        return ids.join(",");
-      }
-    },
-    methods: {
-      rowSave(row, loading) {
-        add(row).then(() => {
-          loading();
-          this.onLoad(this.page);
-          this.$message({
-            type: "success",
-            message: "操作成功!"
-          });
-        });
-      },
-      rowUpdate(row, index, loading) {
-        update(row).then(() => {
-          loading();
-          this.onLoad(this.page);
-          this.$message({
-            type: "success",
-            message: "操作成功!"
-          });
-        });
-      },
-      rowDel(row) {
-        this.$confirm("确定将选择数据删除?", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            return remove(row.id);
-          })
-          .then(() => {
-            this.onLoad(this.page);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          });
-      },
-      searchReset() {
-        this.onLoad(this.page);
-      },
-      searchChange(params) {
-        this.onLoad(this.page, params);
-      },
-      selectionChange(list) {
-        this.selectionList = list;
-      },
-      handleDelete() {
-        if (this.selectionList.length === 0) {
-          this.$message.warning("请选择至少一条数据");
-          return;
-        }
-        this.$confirm("确定将选择数据删除?", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            return remove(this.ids);
-          })
-          .then(() => {
-            this.onLoad(this.page);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-            this.$refs.crud.toggleSelection();
-          });
-      },
-      beforeOpen(done, type) {
-        if (["edit", "view"].includes(type)) {
-          getMenu(this.form.id).then(res => {
-            this.form = res.data.data;
-          });
-        }
-        done();
-      },
-      onLoad(page, params = {}) {
-        getList(page.currentPage, page.pageSize, params).then(res => {
-          const data = res.data.data;
-          this.data = data;
-        });
-      }
+    ids() {
+      let ids = [];
+      this.selectionList.forEach(ele => {
+        ids.push(ele.id);
+      });
+      return ids.join(",");
     }
-  };
+  },
+  methods: {
+    rowSave(row, loading) {
+      add(row).then(() => {
+        loading();
+        this.onLoad(this.page);
+        this.$message({
+          type: "success",
+          message: "操作成功!"
+        });
+      });
+    },
+    rowUpdate(row, index, loading) {
+      update(row).then(() => {
+        loading();
+        this.onLoad(this.page);
+        this.$message({
+          type: "success",
+          message: "操作成功!"
+        });
+      });
+    },
+    rowDel(row) {
+      this.$confirm("确定将选择数据删除?", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          return remove(row.id);
+        })
+        .then(() => {
+          this.onLoad(this.page);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+        });
+    },
+    searchReset() {
+      this.onLoad(this.page);
+    },
+    searchChange(params) {
+      this.onLoad(this.page, params);
+    },
+    selectionChange(list) {
+      this.selectionList = list;
+    },
+    handleDelete() {
+      if (this.selectionList.length === 0) {
+        this.$message.warning("请选择至少一条数据");
+        return;
+      }
+      this.$confirm("确定将选择数据删除?", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          return remove(this.ids);
+        })
+        .then(() => {
+          this.onLoad(this.page);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          this.$refs.crud.toggleSelection();
+        });
+    },
+    beforeOpen(done, type) {
+      if (["edit", "view"].includes(type)) {
+        getMenu(this.form.id).then(res => {
+          this.form = res.data.data;
+        });
+      }
+      done();
+    },
+    onLoad(page, params = {}) {
+      getList(page.currentPage, page.pageSize, params).then(res => {
+        const data = res.data.data;
+        this.data = data;
+      });
+    }
+  }
+};
 </script>
 
 <style>

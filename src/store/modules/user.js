@@ -1,20 +1,22 @@
 import { setToken, removeToken } from '@/util/auth'
 import { setStore, getStore } from '@/util/store'
-import { isURL } from '@/util/validate'
+import { isURL, validatenull } from '@/util/validate'
 import { deepClone } from '@/util/util'
 import webiste from '@/config/website'
 import { loginByUsername, getUserInfo, getMenu, getTopMenu, logout, refeshToken, getButtons } from '@/api/user'
 
 
 function addPath(ele, first) {
-    const propsConfig = webiste.menu.props;
+    const menu = webiste.menu;
+    const propsConfig = menu.props;
     const propsDefault = {
         label: propsConfig.label || 'name',
         path: propsConfig.path || 'path',
         icon: propsConfig.icon || 'icon',
         children: propsConfig.children || 'children'
     }
-    ele.icon = 'icon-caidan';
+    const icon = ele[propsDefault.icon];
+    ele[propsDefault.icon] = validatenull(icon) ? menu.iconDefault : icon;
     const isChild = ele[propsDefault.children] && ele[propsDefault.children].length !== 0;
     if (!isChild) ele[propsDefault.children] = [];
     if (!isChild && first && !isURL(ele[propsDefault.path])) {
