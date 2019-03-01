@@ -129,7 +129,7 @@ export default {
               {
                 required: false,
                 message: "请选择上级角色",
-                trigger: "blur"
+                trigger: "click"
               }
             ]
           },

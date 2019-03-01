@@ -147,7 +147,7 @@
               rules: [{
                 required: true,
                 message: "请选择所属角色",
-                trigger: "blur"
+                trigger: "click"
               }]
             },
             {
@@ -163,7 +163,7 @@
               rules: [{
                 required: true,
                 message: "请选择所属部门",
-                trigger: "blur"
+                trigger: "click"
               }]
             },
             {
