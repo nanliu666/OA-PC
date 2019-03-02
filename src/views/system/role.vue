@@ -154,10 +154,10 @@ export default {
     ...mapGetters(["permission"]),
     permissionList() {
       return {
-        addBtn: this.permission.role_add,
-        viewBtn: this.permission.role_view,
-        delBtn: this.permission.role_delete,
-        editBtn: this.permission.role_edit
+        addBtn: this.vaildData(this.permission.role_add, false),
+        viewBtn: this.vaildData(this.permission.role_view, false),
+        delBtn: this.vaildData(this.permission.role_delete, false),
+        editBtn: this.vaildData(this.permission.role_edit, false)
       };
     },
     ids() {
