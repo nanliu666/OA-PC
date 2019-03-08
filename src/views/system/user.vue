@@ -105,6 +105,13 @@
               }]
             },
             {
+              label: "租户编号",
+              prop: "tenantCode",
+              addDisplay: false,
+              editDisplay: false,
+              viewDisplay: false,
+            },
+            {
               label: "所属租户",
               prop: "tenantCode",
               type: "tree",
