@@ -106,6 +106,18 @@ export default {
             ]
           },
           {
+            label: "租户编号",
+            prop: "tenantCode",
+            search: true,
+            addDisplay: false,
+            editDisplay: false,
+            rules: [{
+              required: true,
+              message: "请输入租户编号",
+              trigger: "blur"
+            }]
+          },
+          {
             label: "角色别名",
             prop: "roleAlias",
             search: true,
