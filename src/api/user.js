@@ -8,6 +8,7 @@ export const loginByUsername = (tenantCode, username, password, type) => request
     'Tenant-Code': tenantCode
   },
   params: {
+    tenantCode,
     username,
     password,
     grant_type: "password",
