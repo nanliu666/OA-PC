@@ -5,7 +5,7 @@
            ref="loginForm"
            :model="loginForm"
            label-width="0">
-    <el-form-item prop="tenantCode">
+    <el-form-item v-if="tenantMode" prop="tenantCode">
       <el-input size="small"
                 @keyup.enter.native="handleLogin"
                 v-model="loginForm.tenantCode"
@@ -50,10 +50,13 @@
 
 <script>
 import { mapGetters } from "vuex";
+import website from '@/config/website';
+
 export default {
   name: "userlogin",
   data() {
     return {
+      tenantMode: website.tenantMode,
       loginForm: {
         tenantCode: "000000",
         username: "admin",
@@ -62,7 +65,7 @@ export default {
       },
       loginRules: {
         tenantCode: [
-          { required: true, message: "请输入租户编号", trigger: "blur" }
+          { required: false, message: "请输入租户编号", trigger: "blur" }
         ],
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" }

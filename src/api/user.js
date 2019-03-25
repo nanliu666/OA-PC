@@ -1,14 +1,28 @@
 import request from '@/router/axios';
 import {baseUrl} from '@/config/env';
 
-export const loginByUsername = (tenantCode, account, password, type) => request({
-  url: '/api/blade-auth/token',
+export const loginByUsername = (tenantCode, username, password, type) => request({
+  url: '/api/blade-auth/oauth/token',
+  method: 'post',
+  headers: {
+    'Tenant-Code': tenantCode
+  },
+  params: {
+    username,
+    password,
+    grant_type: "password",
+    scope: "all",
+    type
+  }
+})
+
+export const refeshToken = (refresh_token) => request({
+  url: '/api/blade-auth/oauth/token',
   method: 'post',
   params: {
-    tenantCode,
-    account,
-    password,
-    type
+    refresh_token,
+    grant_type: "refresh_token",
+    scope: "all",
   }
 })
 
@@ -21,11 +35,6 @@ export const getUserInfo = () => request({
   url: baseUrl + '/user/getUserInfo',
   method: 'get'
 });
-
-export const refeshToken = () => request({
-  url: baseUrl + '/user/refesh',
-  method: 'post'
-})
 
 export const getMenu = () => request({
   url: '/api/blade-system/menu/routes',
