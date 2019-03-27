@@ -45,18 +45,18 @@ const user = {
     LoginByUsername({commit}, userInfo) {
       return new Promise((resolve) => {
         loginByUsername(userInfo.tenantCode, userInfo.username, userInfo.password, userInfo.type).then(res => {
-          if(res.status === 200) {
-            const data = res.data;
+          const data = res.data;
+          if(data.error_description) {
+            Message({
+              message: data.error_description,
+              type: 'error'
+            })
+          } else {
             commit('SET_TOKEN', data.access_token);
             commit('SET_REFRESH_TOKEN', data.refresh_token);
             commit('SET_USERIFNO', data);
             commit('DEL_ALL_TAG');
             commit('CLEAR_LOCK');
-          } else {
-            Message({
-              message: res.data.error_description,
-              type: 'error'
-            })
           }
           resolve();
         })
