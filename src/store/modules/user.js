@@ -1,4 +1,5 @@
 import {setToken, setRefreshToken, removeToken} from '@/util/auth'
+import {Message} from 'element-ui'
 import {setStore, getStore} from '@/util/store'
 import {isURL, validatenull} from '@/util/validate'
 import {deepClone} from '@/util/util'
@@ -44,12 +45,19 @@ const user = {
     LoginByUsername({commit}, userInfo) {
       return new Promise((resolve) => {
         loginByUsername(userInfo.tenantCode, userInfo.username, userInfo.password, userInfo.type).then(res => {
-          const data = res.data;
-          commit('SET_TOKEN', data.access_token);
-          commit('SET_REFRESH_TOKEN', data.refresh_token);
-          commit('SET_USERIFNO', data);
-          commit('DEL_ALL_TAG');
-          commit('CLEAR_LOCK');
+          if(res.status === 200) {
+            const data = res.data;
+            commit('SET_TOKEN', data.access_token);
+            commit('SET_REFRESH_TOKEN', data.refresh_token);
+            commit('SET_USERIFNO', data);
+            commit('DEL_ALL_TAG');
+            commit('CLEAR_LOCK');
+          } else {
+            Message({
+              message: res.data.error_description,
+              type: 'error'
+            })
+          }
           resolve();
         })
       })
