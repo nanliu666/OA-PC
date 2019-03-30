@@ -67,6 +67,7 @@ import {
   getRoleTree
 } from "@/api/system/role";
 import { mapGetters } from "vuex";
+import website from '@/config/website';
 
 export default {
   data() {
@@ -113,6 +114,8 @@ export default {
             prop: "tenantCode",
             addDisplay: false,
             editDisplay: false,
+            viewDisplay: website.tenantMode,
+            hide: !website.tenantMode,
             span: 24,
             rules: [{
               required: true,
@@ -127,12 +130,14 @@ export default {
             dicUrl: "/api/blade-system/tenant/select",
             addDisplay: false,
             editDisplay: false,
+            viewDisplay: website.tenantMode,
             span: 24,
             props: {
               label: "tenantName",
               value: "tenantCode"
             },
-            search: true,
+            hide: !website.tenantMode,
+            search: website.tenantMode,
             rules: [{
               required: true,
               message: "请输入所属租户",
