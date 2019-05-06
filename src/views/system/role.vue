@@ -37,7 +37,7 @@
     </avue-crud>
     <el-dialog title="提示"
                :visible.sync="box"
-               width="40%">
+               width="20%">
       <el-tree :data="list"
                show-checkbox
                node-key="id"
@@ -214,7 +214,7 @@ export default {
   methods: {
     submit() {
       const menuLIst = this.$refs.tree.getCheckedKeys().join(",");
-      grant(this.ids[0], menuLIst).then(() => {
+      grant(this.ids, menuLIst).then(() => {
         this.box = false;
         this.$message({
           type: "success",
@@ -272,14 +272,14 @@ export default {
     },
     handleRole() {
       if (this.selectionList.length !== 1) {
-        this.$message.warning("请选择至少一条数据");
+        this.$message.warning("只能选择一条数据");
         return;
       }
       this.defaultObj = [];
       grantTree()
         .then(res => {
           this.list = res.data.data;
-          return getRole(this.ids[0]);
+          return getRole(this.ids);
         })
         .then(res => {
           this.defaultObj = res.data.data;
