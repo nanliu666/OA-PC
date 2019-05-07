@@ -380,7 +380,7 @@
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
           getUser(this.form.id).then(res => {
-            this.form = res.data.data;
+            this.form = res.data;
             this.form.deptId = this.form.deptId.split(",");
             this.form.deptId.forEach((ele, index) => {
               this.form.deptId[index] = Number(ele);
