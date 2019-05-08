@@ -1,6 +1,6 @@
 <template>
   <basic-container>
-    <avue-form :option="option" v-model="form" :upload-before="uploadBefore" :upload-after="uploadAfter"></avue-form>
+    <avue-form :option="option" v-model="form" @submit="handleSubmit"></avue-form>
   </basic-container>
 </template>
 
@@ -9,55 +9,78 @@
     data() {
       return {
         form: {
-          imgUrl: [],
+
         },
         option: {
-          labelWidth: 120,
-          column: [
+          group:[
             {
-              label: '流程类型',
-              prop: 'flowCategory',
-              type: 'select',
-              dicUrl: `/api/blade-system/dict/dictionary?code=flow`,
-              props: {
-                label: "dictValue",
-                value: "dictKey"
-              },
-              rules: [
+              icon:'el-icon-info',
+              label: '请假基础信息',
+              prop: 'group1',
+              column: [
                 {
-                  required: true,
-                  message: '请选择流程类型',
-                  trigger: 'blur'
-                }
+                  label: '审批人员',
+                  prop: 'taskUser',
+                  type: 'select',
+                  dicUrl: `/api/blade-user/user-list`,
+                  props: {
+                    label: "account",
+                    value: "id"
+                  },
+                  span:24,
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择审批人员',
+                      trigger: 'blur'
+                    }
+                  ]
+                },
+                {
+                  label: '开始时间',
+                  prop: 'startTime',
+                  type: 'datetime',
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择开始时间',
+                      trigger: 'blur'
+                    }
+                  ]
+                },
+                {
+                  label: '结束时间',
+                  prop: 'endTime',
+                  type: 'datetime',
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择结束时间',
+                      trigger: 'blur'
+                    }
+                  ]
+                },
+                {
+                  label: '请假理由',
+                  prop: 'reason',
+                  type: 'textarea',
+                  span:24,
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入请假理由',
+                      trigger: 'blur'
+                    }
+                  ]
+                },
               ]
             },
-            {
-              label: '附件上传',
-              prop: 'imgUrl',
-              type: 'upload',
-              loadText: '附件上传中，请稍等',
-              span: 24,
-              propsHttp: {
-                res: 'data.0'
-              },
-              tip: '请上传 bpmn20.xml 标准格式文件',
-            },
-          ]
+          ],
         }
       }
     },
     methods: {
-      uploadBefore(file, done, loading) {
-        console.log(file)
-        done()
-        this.$message.success('上传前的方法')
-      },
-      uploadAfter(res, done, loading) {
-        console.log(res)
-        done()
-        this.$message.success('上传后的方法')
-      },
-      submit() {
+      handleSubmit() {
         this.$message.success('当前数据' + JSON.stringify(this.form))
       }
     }
