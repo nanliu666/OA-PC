@@ -6,9 +6,6 @@
                v-model="form"
                :page="page"
                :permission="permissionList"
-               @row-del="rowDel"
-               @row-update="rowUpdate"
-               @row-save="rowSave"
                @search-change="searchChange"
                @search-reset="searchReset"
                @selection-change="selectionChange"
@@ -27,18 +24,21 @@
                    size="small"
                    v-if="permission.flow_manager_state"
                    plain
+                   class="none-border"
                    @click.stop="handleState(scope.row,scope.index)">变更状态
         </el-button>
         <el-button type="text"
                    size="small"
                    v-if="permission.flow_manager_image"
                    plain
+                   class="none-border"
                    @click.stop="handleImage(scope.row,scope.index)">流程图
         </el-button>
         <el-button type="text"
                    size="small"
                    v-if="permission.flow_manager_remove"
                    plain
+                   class="none-border"
                    @click.stop="handleSlotDelete(scope.row,scope.index)">删除
         </el-button>
       </template>
@@ -290,7 +290,11 @@
         this.flowBox = true;
       },
       onLoad(page, params = {}) {
-        managerList(page.currentPage, page.pageSize, params).then(res => {
+        const values = {
+          ...params,
+          category: (params.category) ? `flow_${params.category}` : null
+        }
+        managerList(page.currentPage, page.pageSize, values).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;
@@ -301,4 +305,8 @@
 </script>
 
 <style>
+  .none-border {
+    border: 0;
+    background-color: transparent!important;
+  }
 </style>

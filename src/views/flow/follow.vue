@@ -154,4 +154,8 @@
 </script>
 
 <style>
+  .none-border {
+    border: 0;
+    background-color: transparent!important;
+  }
 </style>

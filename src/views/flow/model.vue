@@ -30,24 +30,28 @@
                    size="small"
                    v-if="permission.flow_model_update"
                    plain
+                   class="none-border"
                    @click.stop="handleUpdate(scope.row,scope.index)">配置
         </el-button>
         <el-button type="text"
                    size="small"
                    v-if="permission.flow_model_deploy"
                    plain
+                   class="none-border"
                    @click.stop="handleDeploy(scope.row,scope.index)">部署
         </el-button>
         <el-button type="text"
                    size="small"
                    v-if="permission.flow_model_download"
                    plain
+                   class="none-border"
                    @click.stop="handleDownload(scope.row,scope.index)">下载
         </el-button>
         <el-button type="text"
                    size="small"
                    v-if="permission.flow_model_delete"
                    plain
+                   class="none-border"
                    @click.stop="handleSlotDelete(scope.row,scope.index)">删除
         </el-button>
       </template>
@@ -289,4 +293,8 @@
 </script>
 
 <style>
+  .none-border {
+    border: 0;
+    background-color: transparent!important;
+  }
 </style>
