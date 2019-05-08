@@ -22,14 +22,6 @@
                    @click="handleDelete">删 除
         </el-button>
       </template>
-      <template slot-scope="{row}"
-                slot="roleId">
-        <el-tag>{{row.roleName}}</el-tag>
-      </template>
-      <template slot-scope="{row}"
-                slot="deptId">
-        <el-tag>{{row.deptName}}</el-tag>
-      </template>
     </avue-crud>
   </basic-container>
 </template>
@@ -188,6 +180,7 @@
             return remove(this.ids);
           })
           .then(() => {
+            this.onLoad(this.page);
             this.$message({
               type: "success",
               message: "操作成功!"

@@ -10,14 +10,6 @@
                @search-change="searchChange"
                @search-reset="searchReset"
                @on-load="onLoad">
-      <template slot-scope="{row}"
-                slot="roleId">
-        <el-tag>{{row.roleName}}</el-tag>
-      </template>
-      <template slot-scope="{row}"
-                slot="deptId">
-        <el-tag>{{row.deptName}}</el-tag>
-      </template>
     </avue-crud>
   </basic-container>
 </template>

@@ -45,7 +45,7 @@ export default {
             prop: "type",
             width: 80,
             align: "center",
-            solt: true,
+            slot: true,
             dicData: [
               {
                 label: "bug",

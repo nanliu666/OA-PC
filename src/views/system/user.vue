@@ -25,7 +25,7 @@
         <el-button type="primary"
                    size="small"
                    plain
-                   v-if="permission. user_reset"
+                   v-if="permission.user_reset"
                    icon="el-icon-refresh"
                    @click="handleReset">密码重置
         </el-button>
@@ -105,14 +105,6 @@
                 trigger: "blur"
               }],
               span: website.tenantMode ? 12 : 24,
-            },
-            {
-              label: "租户编号",
-              prop: "tenantCode",
-              hide: !website.tenantMode,
-              addDisplay: false,
-              editDisplay: false,
-              viewDisplay: false,
             },
             {
               label: "所属租户",

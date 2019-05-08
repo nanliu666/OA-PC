@@ -23,19 +23,10 @@
         </el-button>
       </template>
       <template slot-scope="{row}"
-                slot="roleId">
-        <el-tag>{{row.roleName}}</el-tag>
-      </template>
-      <template slot-scope="{row}"
                 slot="source">
         <div style="text-align:center">
           <i :class="row.source"></i>
         </div>
-      </template>
-
-      <template slot-scope="{row}"
-                slot="deptId">
-        <el-tag>{{row.deptName}}</el-tag>
       </template>
     </avue-crud>
   </basic-container>

@@ -35,5 +35,7 @@ export default {
       icon: 'source',
       children: 'children'
     }
-  }
+  },
+  // 流程设计器地址
+  flowDesignUrl: 'http://localhost:9999',
 }

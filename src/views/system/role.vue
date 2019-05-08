@@ -26,16 +26,8 @@
                    plain>权限设置
         </el-button>
       </template>
-      <template slot-scope="{row}"
-                slot="roleId">
-        <el-tag>{{row.roleName}}</el-tag>
-      </template>
-      <template slot-scope="{row}"
-                slot="deptId">
-        <el-tag>{{row.deptName}}</el-tag>
-      </template>
     </avue-crud>
-    <el-dialog title="提示"
+    <el-dialog title="角色配置"
                :visible.sync="box"
                width="20%">
       <el-tree :data="list"
@@ -76,7 +68,7 @@ export default {
       box: false,
       props: {
         label: "title",
-        valie: "key"
+        value: "key"
       },
       list: [],
       defaultObj: [],
@@ -108,20 +100,6 @@ export default {
                 trigger: "blur"
               }
             ]
-          },
-          {
-            label: "租户编号",
-            prop: "tenantCode",
-            addDisplay: false,
-            editDisplay: false,
-            viewDisplay: website.tenantMode,
-            hide: !website.tenantMode,
-            span: 24,
-            rules: [{
-              required: true,
-              message: "请输入租户编号",
-              trigger: "blur"
-            }]
           },
           {
             label: "所属租户",

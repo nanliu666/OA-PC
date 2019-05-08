@@ -29,14 +29,6 @@
                    @click="handleBuild">代码生成
         </el-button>
       </template>
-      <template slot-scope="{row}"
-                slot="roleId">
-        <el-tag>{{row.roleName}}</el-tag>
-      </template>
-      <template slot-scope="{row}"
-                slot="deptId">
-        <el-tag>{{row.deptName}}</el-tag>
-      </template>
     </avue-crud>
   </basic-container>
 </template>
