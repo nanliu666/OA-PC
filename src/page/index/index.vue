@@ -74,7 +74,7 @@
       showCollapse() {
         this.$store.commit("SET_COLLAPSE");
       },
-      // 屏幕检测
+      // 初始化
       init() {
         this.$store.commit("SET_SCREEN", admin.getScreen());
         window.onresize = () => {
@@ -82,6 +82,8 @@
             this.$store.commit("SET_SCREEN", admin.getScreen());
           }, 0);
         };
+        this.$store.dispatch("FlowRoutes").then(() => {
+        });
       },
       // 刷新token
       refreshToken() {

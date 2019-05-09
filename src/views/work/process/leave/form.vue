@@ -5,16 +5,16 @@
 </template>
 
 <script>
+  import {leaveProcess} from "@/api/work/process";
+
   export default {
     data() {
       return {
-        form: {
-
-        },
+        form: {},
         option: {
-          group:[
+          group: [
             {
-              icon:'el-icon-info',
+              icon: 'el-icon-info',
               label: '请假基础信息',
               prop: 'group1',
               column: [
@@ -27,7 +27,7 @@
                     label: "account",
                     value: "id"
                   },
-                  span:24,
+                  span: 24,
                   rules: [
                     {
                       required: true,
@@ -40,6 +40,7 @@
                   label: '开始时间',
                   prop: 'startTime',
                   type: 'datetime',
+                  valueFormat: 'yyyy-MM-dd HH:mm:ss',
                   rules: [
                     {
                       required: true,
@@ -52,6 +53,7 @@
                   label: '结束时间',
                   prop: 'endTime',
                   type: 'datetime',
+                  valueFormat: 'yyyy-MM-dd HH:mm:ss',
                   rules: [
                     {
                       required: true,
@@ -64,7 +66,7 @@
                   label: '请假理由',
                   prop: 'reason',
                   type: 'textarea',
-                  span:24,
+                  span: 24,
                   rules: [
                     {
                       required: true,
@@ -81,7 +83,20 @@
     },
     methods: {
       handleSubmit() {
-        this.$message.success('当前数据' + JSON.stringify(this.form))
+        const params = {
+          processDefinitionId: this.$route.params.processDefinitionId,
+          ...this.form,
+        };
+        leaveProcess(params).then(resp => {
+          const data = resp.data;
+          if (data.success) {
+            this.$message.success(data.msg);
+            this.$router.$avueRouter.closeTag();
+            this.$router.push({path: `/work/start`});
+          } else {
+            this.$message.error(data.msg || '提交失败');
+          }
+        });
       }
     }
   }

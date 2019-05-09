@@ -44,7 +44,7 @@ export default [{
   component: Layout,
   redirect: '/work/process/leave/form',
   children: [{
-    path: 'form',
+    path: 'form/:processDefinitionId',
     name: '请假流程',
     meta: {
       i18n: 'work'
@@ -52,7 +52,7 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/work/process/leave/form')
   }, {
-    path: 'handle',
+    path: 'handle/:taskId/:processInstanceId/:businessId',
     name: '处理请假流程',
     meta: {
       i18n: 'work'
@@ -60,7 +60,7 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/work/process/leave/handle')
   }, {
-    path: 'detail',
+    path: 'detail/:processInstanceId/:businessId',
     name: '请假流程详情',
     meta: {
       i18n: 'work'

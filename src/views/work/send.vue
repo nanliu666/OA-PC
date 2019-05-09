@@ -58,8 +58,9 @@
 </template>
 
 <script>
-  import {sendList} from "@/api/work/work";
   import {mapGetters} from "vuex";
+  import {sendList} from "@/api/work/work";
+  import {getFlowRoute} from "@/util/func";
 
   export default {
     data() {
@@ -129,7 +130,7 @@
       };
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["permission", "flowRoutes"]),
       ids() {
         let ids = [];
         this.selectionList.forEach(ele => {
@@ -149,7 +150,7 @@
         this.selectionList = list;
       },
       handleDetail(row) {
-        this.$router.push({path: `/work/process/${this.routes[row.category]}/detail?processInstanceId=${row.processInstanceId}&businessId=${row.businessId}`});
+        this.$router.push({ path: `/work/process/${getFlowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${row.businessId}` });
       },
       handleImage(row) {
         this.flowUrl = `/api/blade-flow/process/diagram-view?processInstanceId=${row.processInstanceId}`;

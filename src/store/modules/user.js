@@ -46,7 +46,7 @@ const user = {
       return new Promise((resolve) => {
         loginByUsername(userInfo.tenantCode, userInfo.username, userInfo.password, userInfo.type).then(res => {
           const data = res.data;
-          if(data.error_description) {
+          if (data.error_description) {
             Message({
               message: data.error_description,
               type: 'error'

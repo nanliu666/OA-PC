@@ -62,16 +62,13 @@
 </template>
 
 <script>
-  import {startList} from "@/api/work/work";
   import {mapGetters} from "vuex";
+  import {startList} from "@/api/work/work";
+  import {getFlowRoute} from "@/util/func";
 
   export default {
     data() {
       return {
-        routes: {
-          flow_1: 'leave',
-          flow_2: 'expense',
-        },
         form: {},
         selectionId: '',
         selectionList: [],
@@ -136,7 +133,7 @@
       };
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["permission", "flowRoutes"]),
       ids() {
         let ids = [];
         this.selectionList.forEach(ele => {
@@ -156,7 +153,8 @@
         this.selectionList = list;
       },
       handleStart(row) {
-        this.$router.push({ path: `/work/process/${this.routes[row.category]}/form?id=${row.id}` });
+        console.log(this.flowRoutes)
+        this.$router.push({path: `/work/process/${getFlowRoute(this.flowRoutes, row.category)}/form/${row.id}`});
       },
       handleImage(row) {
         this.flowUrl = `/api/blade-flow/process/resource-view?processDefinitionId=${row.id}`;
