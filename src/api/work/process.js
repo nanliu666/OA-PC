@@ -2,14 +2,12 @@ import request from '@/router/axios';
 
 // =====================参数===========================
 
-export const historyFlowList = (current, size, params) => {
+export const historyFlowList = (processInstanceId) => {
   return request({
     url: '/api/blade-flow/process/history-flow-list',
     method: 'get',
     params: {
-      ...params,
-      current,
-      size,
+      processInstanceId
     }
   })
 }
@@ -25,10 +23,12 @@ export const leaveProcess = (data) => {
   })
 }
 
-export const leaveDetail = (params) => {
+export const leaveDetail = (businessId) => {
   return request({
     url: '/api/blade-desk/process/leave/detail',
     method: 'get',
-    params
+    params: {
+      businessId
+    }
   })
 }

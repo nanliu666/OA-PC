@@ -61,11 +61,13 @@ export const doneList = (current, size, params) => {
   })
 }
 
-export const claimTask = (params) => {
+export const claimTask = (taskId) => {
   return request({
     url: '/api/blade-flow/work/claim-task',
     method: 'post',
-    params
+    params: {
+      taskId
+    }
   })
 }
 

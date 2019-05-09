@@ -17,7 +17,7 @@
                width="20%">
       <el-form :model="form"
                ref="form"
-               label-width="20px">
+               label-width="80px">
         <el-form-item label="删除理由">
           <el-input v-model="deleteReason"
                     placeholder="请输入删除理由"></el-input>

@@ -148,7 +148,7 @@
         this.selectionList = list;
       },
       handleWork(row) {
-
+        this.$router.push({ path: `/work/process/${getFlowRoute(this.flowRoutes, row.category)}/handle/${row.taskId}/${row.processInstanceId}/${row.businessId}` });
       },
       handleDetail(row) {
         this.$router.push({ path: `/work/process/${getFlowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${row.businessId}` });

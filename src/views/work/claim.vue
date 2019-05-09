@@ -62,7 +62,7 @@
 
 <script>
   import {mapGetters} from "vuex";
-  import {claimList} from "@/api/work/work";
+  import {claimList, claimTask} from "@/api/work/work";
   import {getFlowRoute} from "@/util/func";
 
   export default {
@@ -148,10 +148,24 @@
         this.selectionList = list;
       },
       handleClaim(row) {
-
+        this.$confirm("确定签收此任务?", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            return claimTask(row.taskId);
+          })
+          .then(() => {
+            this.onLoad(this.page);
+            this.$message({
+              type: "success",
+              message: "操作成功!"
+            });
+          });
       },
       handleDetail(row) {
-        this.$router.push({ path: `/work/process/${getFlowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${row.businessId}` });
+        this.$router.push({path: `/work/process/${getFlowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${row.businessId}`});
       },
       handleImage(row) {
         this.flowUrl = `/api/blade-flow/process/diagram-view?processInstanceId=${row.processInstanceId}`;
