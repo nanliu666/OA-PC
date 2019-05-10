@@ -11,6 +11,10 @@
                @search-reset="searchReset"
                @selection-change="selectionChange"
                @on-load="onLoad">
+      <template slot-scope="{row}"
+                slot="suspensionState">
+        <el-tag>{{row.suspensionState===1?'激活':'挂起'}}</el-tag>
+      </template>
     </avue-crud>
     <el-dialog title="流程删除"
                :visible.sync="followBox"
@@ -80,6 +84,7 @@
             {
               label: "状态",
               prop: "suspensionState",
+              slot: true,
             },
             {
               label: "发起人",
