@@ -153,7 +153,6 @@
         this.selectionList = list;
       },
       handleStart(row) {
-        console.log(this.flowRoutes)
         this.$router.push({path: `/work/process/${flowRoute(this.flowRoutes, row.category)}/form/${row.id}`});
       },
       handleImage(row) {

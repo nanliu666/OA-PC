@@ -40,7 +40,7 @@
         </div>
         <el-row type="flex" class="row-bg">
           <avue-timeline pending time :time-width="200">
-            <avue-timeline-item v-for="flow in flowList">
+            <avue-timeline-item v-bind:key="flow.id" v-for="flow in flowList">
               <div slot="time">
                 <p>{{flow.createTime}}</p>
               </div>
