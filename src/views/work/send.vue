@@ -60,7 +60,7 @@
 <script>
   import {mapGetters} from "vuex";
   import {sendList} from "@/api/work/work";
-  import {getFlowRoute} from "@/util/func";
+  import {flowCategory,flowRoute} from "@/util/flow";
 
   export default {
     data() {
@@ -150,7 +150,7 @@
         this.selectionList = list;
       },
       handleDetail(row) {
-        this.$router.push({ path: `/work/process/${getFlowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${row.businessId}` });
+        this.$router.push({ path: `/work/process/${flowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${row.businessId}` });
       },
       handleImage(row) {
         this.flowUrl = `/api/blade-flow/process/diagram-view?processInstanceId=${row.processInstanceId}`;
@@ -159,7 +159,7 @@
       onLoad(page, params = {}) {
         const values = {
           ...params,
-          category: (params.category) ? `flow_${params.category}` : null
+          category: (params.category) ? flowCategory(params.category) : null
         }
         sendList(page.currentPage, page.pageSize, values).then(res => {
           const data = res.data.data;

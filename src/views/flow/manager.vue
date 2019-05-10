@@ -103,8 +103,9 @@
 </template>
 
 <script>
-  import {managerList, changeState, deleteDeployment} from "@/api/flow/flow";
   import {mapGetters} from "vuex";
+  import {managerList, changeState, deleteDeployment} from "@/api/flow/flow";
+  import {flowCategory} from "@/util/flow";
 
   export default {
     data() {
@@ -292,7 +293,7 @@
       onLoad(page, params = {}) {
         const values = {
           ...params,
-          category: (params.category) ? `flow_${params.category}` : null
+          category: (params.category) ? flowCategory(params.category) : null
         }
         managerList(page.currentPage, page.pageSize, values).then(res => {
           const data = res.data.data;

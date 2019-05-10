@@ -110,10 +110,11 @@
 </template>
 
 <script>
-  import {getDictionary} from "@/api/system/dict";
-  import {modelList, removeModel, deployModel} from "@/api/flow/flow";
   import {mapGetters} from "vuex";
   import website from '@/config/website';
+  import {getDictionary} from "@/api/system/dict";
+  import {modelList, removeModel, deployModel} from "@/api/flow/flow";
+  import {flowCategory} from "@/util/flow";
 
   export default {
     data() {
@@ -237,7 +238,7 @@
           });
           return;
         }
-        deployModel({ modelId: this.selectionId, category: `flow_${this.categoryValue}` }).then(res =>{
+        deployModel({ modelId: this.selectionId, category: flowCategory(this.categoryValue) }).then(res =>{
           const data = res.data;
           if (data.success) {
             this.$message({

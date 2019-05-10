@@ -63,6 +63,22 @@ export const changeState = (params) => {
   })
 }
 
+export const deployUpload = (category, files) => {
+  const formData = new FormData();
+  formData.append('category', category);
+  files.forEach(file => {
+    formData.append('files', file);
+  });
+  return request({
+    headers: {
+      "Content-Type": "multipart/form-data"
+    },
+    url: '/api/blade-flow/manager/deploy-upload',
+    method: 'post',
+    data: formData
+  })
+}
+
 export const deleteDeployment = (deploymentIds) => {
   return request({
     url: '/api/blade-flow/manager/delete-deployment',

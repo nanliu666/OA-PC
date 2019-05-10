@@ -34,8 +34,8 @@
 </template>
 
 <script>
-  import {followList, deleteProcessInstance} from "@/api/flow/flow";
   import {mapGetters} from "vuex";
+  import {followList, deleteProcessInstance} from "@/api/flow/flow";
 
   export default {
     data() {
