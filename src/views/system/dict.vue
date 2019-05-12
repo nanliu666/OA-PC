@@ -56,22 +56,23 @@
           viewBtn: true,
           column: [
             {
+              label: "字典编号",
+              prop: "code",
+              search: true,
+              span:24,
+              rules: [{
+                required: true,
+                message: "请输入字典编号",
+                trigger: "blur"
+              }]
+            },
+            {
               label: "字典名称",
               prop: "dictValue",
               search: true,
               rules: [{
                 required: true,
                 message: "请输入字典名称",
-                trigger: "blur"
-              }]
-            },
-            {
-              label: "字典编号",
-              prop: "code",
-              search: true,
-              rules: [{
-                required: true,
-                message: "请输入字典编号",
                 trigger: "blur"
               }]
             },
@@ -109,7 +110,14 @@
                 message: "请输入字典排序",
                 trigger: "blur"
               }]
-            }
+            },
+            {
+              label: "字典备注",
+              prop: "remark",
+              search: true,
+              span:24,
+              hide: true,
+            },
           ]
         },
         data: []
