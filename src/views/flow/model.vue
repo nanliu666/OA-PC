@@ -62,7 +62,7 @@
     </avue-crud>
     <el-dialog title="流程配置"
                :visible.sync="flowBox"
-               fullscreen=true>
+               :fullscreen="true">
       <iframe
         :src=flowUrl
         width="100%"
