@@ -1,5 +1,6 @@
 import user from './user';
 import menu from './menu';
+import oauth from './oauth';
 
 /**
  * 模拟数据mock
@@ -7,6 +8,10 @@ import menu from './menu';
  * mock是否开启模拟数据拦截
  */
 
-user({mock: true});
+const options = {mock: true};
 
-menu({mock: true});
+user(options);
+
+menu(options);
+
+oauth(options);
