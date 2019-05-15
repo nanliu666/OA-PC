@@ -89,6 +89,7 @@
           addBtn: false,
           viewBtn: false,
           delBtn: false,
+          menuWidth: 150,
           dialogWidth: 300,
           dialogHeight: 400,
           column: [
@@ -104,6 +105,7 @@
               slot: true,
               prop: "category",
               search: true,
+              width: 100,
             },
             {
               label: '流程标识',
@@ -117,15 +119,18 @@
               label: '流程版本',
               prop: 'version',
               slot: true,
+              width: 80,
             },
             {
               label: '状态',
               prop: 'suspensionState',
               slot: true,
+              width: 80,
             },
             {
               label: '部署时间',
               prop: 'deploymentTime',
+              width: 165,
             },
           ]
         },

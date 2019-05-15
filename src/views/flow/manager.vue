@@ -140,6 +140,7 @@
           delBtn: false,
           dialogWidth: 300,
           dialogHeight: 400,
+          menuWidth: 150,
           column: [
             {
               label: '流程主键',
@@ -148,10 +149,12 @@
             {
               label: '流程标识',
               prop: 'key',
+              width: 150,
             },
             {
               label: '流程名称',
               prop: 'name',
+              width: 150,
             },
             {
               label: "流程分类",
@@ -165,20 +168,24 @@
               slot: true,
               prop: "category",
               search: true,
+              width: 100,
             },
             {
               label: '流程版本',
               prop: 'version',
               slot: true,
+              width: 80,
             },
             {
               label: '状态',
               prop: 'suspensionState',
               slot: true,
+              width: 80,
             },
             {
               label: '部署时间',
               prop: 'deploymentTime',
+              width: 165,
             },
           ]
         },

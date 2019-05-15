@@ -143,6 +143,7 @@
           delBtn: false,
           dialogWidth: 300,
           dialogHeight: 400,
+          menuWidth: 150,
           column: [
             {
               label: '模型主键',
@@ -152,24 +153,29 @@
               label: '模型标识',
               prop: 'modelKey',
               search: true,
+              width: 150,
             },
             {
               label: '模型名称',
               prop: 'name',
               search: true,
+              width: 150,
             },
             {
               label: '流程版本',
               prop: 'version',
               slot: true,
+              width: 80,
             },
             {
               label: '创建时间',
               prop: 'created',
+              width: 165,
             },
             {
               label: '更新时间',
               prop: 'lastUpdated',
+              width: 165,
             },
           ]
         },
@@ -238,7 +244,7 @@
           });
           return;
         }
-        deployModel({ modelId: this.selectionId, category: flowCategory(this.categoryValue) }).then(res =>{
+        deployModel({modelId: this.selectionId, category: flowCategory(this.categoryValue)}).then(res => {
           const data = res.data;
           if (data.success) {
             this.$message({
@@ -296,6 +302,6 @@
 <style>
   .none-border {
     border: 0;
-    background-color: transparent!important;
+    background-color: transparent !important;
   }
 </style>

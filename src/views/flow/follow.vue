@@ -65,6 +65,7 @@
           viewBtn: false,
           dialogWidth: 300,
           dialogHeight: 400,
+          menuWidth: 100,
           column: [
             {
               label: "执行id",
@@ -75,6 +76,7 @@
               label: "流程key",
               prop: "processDefinitionKey",
               search: true,
+              width: 80,
             },
             {
               label: "流程实例id",
@@ -85,14 +87,17 @@
               label: "状态",
               prop: "suspensionState",
               slot: true,
+              width: 80,
             },
             {
               label: "发起人",
               prop: "startUser",
+              width: 100,
             },
             {
               label: '开始时间',
               prop: 'startTime',
+              width: 165,
             },
           ]
         },

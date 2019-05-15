@@ -90,6 +90,7 @@
           delBtn: false,
           dialogWidth: 300,
           dialogHeight: 400,
+          menuWidth: 150,
           column: [
             {
               label: "流程分类",
@@ -104,6 +105,7 @@
               prop: "category",
               search: true,
               hide: true,
+              width: 100,
             },
             {
               label: '流程名称',
@@ -117,10 +119,12 @@
               label: '流程版本',
               prop: 'processDefinitionVersion',
               slot: true,
+              width: 80,
             },
             {
               label: '申请时间',
               prop: 'createTime',
+              width: 165,
             },
           ]
         },
