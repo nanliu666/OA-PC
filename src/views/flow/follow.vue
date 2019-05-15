@@ -71,17 +71,18 @@
               label: "执行id",
               prop: "executionId",
               search: true,
+              width: 320,
             },
             {
               label: "流程key",
               prop: "processDefinitionKey",
               search: true,
-              width: 80,
             },
             {
               label: "流程实例id",
               prop: "processInstanceId",
               search: true,
+              width: 320,
             },
             {
               label: "状态",
