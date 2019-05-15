@@ -81,6 +81,23 @@
               }]
             },
             {
+              label: "通知时间",
+              prop: "releaseTimeRange",
+              type: "datetimerange",
+              format: "yyyy-MM-dd hh:mm:ss",
+              valueFormat: "yyyy-MM-dd hh:mm:ss",
+              hide: true,
+              addDisplay: false,
+              editDisplay: false,
+              viewDisplay: false,
+              search: true,
+              rules: [{
+                required: true,
+                message: "请输入通知时间",
+                trigger: "blur"
+              }]
+            },
+            {
               label: "通知日期",
               prop: "releaseTime",
               type: "date",
@@ -201,7 +218,19 @@
         done();
       },
       onLoad(page, params = {}) {
-        getList(page.currentPage, page.pageSize, params).then(res => {
+        const {releaseTimeRange} = params;
+        let values = {
+          ...params,
+        }
+        if (releaseTimeRange) {
+          values = {
+            ...params,
+            releaseTime_gt: releaseTimeRange[0],
+            releaseTime_lt: releaseTimeRange[1],
+          }
+          values.releaseTimeRange = null;
+        }
+        getList(page.currentPage, page.pageSize, values).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;
