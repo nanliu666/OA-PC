@@ -10,6 +10,8 @@
                @search-change="searchChange"
                @search-reset="searchReset"
                @selection-change="selectionChange"
+               @current-change="currentChange"
+               @size-change="sizeChange"
                @on-load="onLoad">
       <template slot-scope="{row}"
                 slot="suspensionState">
@@ -152,6 +154,12 @@
       },
       selectionChange(list) {
         this.selectionList = list;
+      },
+      currentChange(currentPage){
+        this.page.currentPage = currentPage;
+      },
+      sizeChange(pageSize){
+        this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
         followList(page.currentPage, page.pageSize, params).then(res => {

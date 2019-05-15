@@ -9,6 +9,8 @@
                @search-change="searchChange"
                @search-reset="searchReset"
                @selection-change="selectionChange"
+               @current-change="currentChange"
+               @size-change="sizeChange"
                @on-load="onLoad">
       <template slot="menuLeft">
         <el-button type="danger"
@@ -296,6 +298,12 @@
       handleImage(row) {
         this.flowUrl = `/api/blade-flow/process/resource-view?processDefinitionId=${row.id}`;
         this.flowBox = true;
+      },
+      currentChange(currentPage){
+        this.page.currentPage = currentPage;
+      },
+      sizeChange(pageSize){
+        this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
         const values = {

@@ -9,6 +9,8 @@
                :page="page"
                @search-change="searchChange"
                @search-reset="searchReset"
+               @current-change="currentChange"
+               @size-change="sizeChange"
                @on-load="onLoad">
     </avue-crud>
   </basic-container>
@@ -121,6 +123,12 @@
           });
         }
         done();
+      },
+      currentChange(currentPage){
+        this.page.currentPage = currentPage;
+      },
+      sizeChange(pageSize){
+        this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
         getErrorList(page.currentPage, page.pageSize, params).then(res => {

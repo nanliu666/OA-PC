@@ -12,6 +12,8 @@
                @search-change="searchChange"
                @search-reset="searchReset"
                @selection-change="selectionChange"
+               @current-change="currentChange"
+               @size-change="sizeChange"
                @on-load="onLoad">
       <template slot="menuLeft">
         <el-button type="danger"
@@ -255,7 +257,6 @@
             this.$refs.crud.toggleSelection();
           });
       },
-
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
           getDetail(this.form.id).then(res => {
@@ -263,6 +264,12 @@
           });
         }
         done();
+      },
+      currentChange(currentPage){
+        this.page.currentPage = currentPage;
+      },
+      sizeChange(pageSize){
+        this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
         getList(page.currentPage, page.pageSize, params).then(res => {

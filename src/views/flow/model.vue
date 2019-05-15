@@ -8,6 +8,8 @@
                @search-change="searchChange"
                @search-reset="searchReset"
                @selection-change="selectionChange"
+               @current-change="currentChange"
+               @size-change="sizeChange"
                @on-load="onLoad">
       <template slot="menuLeft">
         <el-button type="primary"
@@ -284,6 +286,12 @@
       handleRefresh() {
         this.flowBox = false;
         this.onLoad(this.page);
+      },
+      currentChange(currentPage){
+        this.page.currentPage = currentPage;
+      },
+      sizeChange(pageSize){
+        this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
         modelList(page.currentPage, page.pageSize, params).then(res => {

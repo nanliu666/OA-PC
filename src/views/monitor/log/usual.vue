@@ -9,6 +9,8 @@
                :before-open="beforeOpen"
                @search-change="searchChange"
                @search-reset="searchReset"
+               @current-change="currentChange"
+               @size-change="sizeChange"
                @on-load="onLoad">
     </avue-crud>
   </basic-container>
@@ -113,6 +115,12 @@
           });
         }
         done();
+      },
+      currentChange(currentPage){
+        this.page.currentPage = currentPage;
+      },
+      sizeChange(pageSize){
+        this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
         getUsualList(page.currentPage, page.pageSize, params).then(res => {
