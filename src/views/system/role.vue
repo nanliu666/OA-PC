@@ -201,7 +201,7 @@ export default {
         this.onLoad(this.page);
       });
     },
-    rowSave(row, loading) {
+    rowSave(row, loading, done) {
       add(row).then(() => {
         loading();
         this.onLoad(this.page);
@@ -209,9 +209,12 @@ export default {
           type: "success",
           message: "操作成功!"
         });
+      }, error => {
+        done();
+        console.log(error);
       });
     },
-    rowUpdate(row, index, loading) {
+    rowUpdate(row, index, loading, done) {
       update(row).then(() => {
         this.onLoad(this.page);
         loading();
@@ -219,6 +222,9 @@ export default {
           type: "success",
           message: "操作成功!"
         });
+      }, error => {
+        done();
+        console.log(error);
       });
     },
     rowDel(row) {

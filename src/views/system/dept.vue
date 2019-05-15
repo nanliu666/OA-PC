@@ -67,17 +67,24 @@
               }]
             },
             {
-              label: "租户编号",
+              label: "所属租户",
               prop: "tenantCode",
-              search: website.tenantMode,
-              hide: !website.tenantMode,
+              type: "tree",
+              dicUrl: "/api/blade-system/tenant/select",
               addDisplay: false,
               editDisplay: false,
               viewDisplay: website.tenantMode,
+              span: 24,
+              props: {
+                label: "tenantName",
+                value: "tenantCode"
+              },
+              hide: !website.tenantMode,
+              search: website.tenantMode,
               rules: [{
                 required: true,
-                message: "请输入租户编号",
-                trigger: "blur"
+                message: "请输入所属租户",
+                trigger: "click"
               }]
             },
             {
@@ -151,7 +158,7 @@
       }
     },
     methods: {
-      rowSave(row, loading) {
+      rowSave(row, loading, done) {
         add(row).then(() => {
           loading();
           this.onLoad(this.page);
@@ -159,9 +166,12 @@
             type: "success",
             message: "操作成功!"
           });
+        }, error => {
+          done();
+          console.log(error);
         });
       },
-      rowUpdate(row, index, loading) {
+      rowUpdate(row, index, loading, done) {
         update(row).then(() => {
           loading();
           this.onLoad(this.page);
@@ -169,6 +179,9 @@
             type: "success",
             message: "操作成功!"
           });
+        }, error => {
+          done();
+          console.log(error);
         });
       },
       rowDel(row) {

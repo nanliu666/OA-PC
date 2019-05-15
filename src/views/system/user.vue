@@ -275,7 +275,7 @@
       },
     },
     methods: {
-      rowSave(row, loading) {
+      rowSave(row, loading, done) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
         add(row).then(() => {
@@ -285,9 +285,12 @@
             type: "success",
             message: "操作成功!"
           });
+        }, error => {
+          done();
+          console.log(error);
         });
       },
-      rowUpdate(row, index, loading) {
+      rowUpdate(row, index, loading, done) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
         update(row).then(() => {
@@ -297,6 +300,9 @@
             type: "success",
             message: "操作成功!"
           });
+        }, error => {
+          done();
+          console.log(error);
         });
       },
       rowDel(row) {
@@ -371,15 +377,7 @@
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
           getUser(this.form.id).then(res => {
-            this.form = res.data;
-            this.form.deptId = this.form.deptId.split(",");
-            this.form.deptId.forEach((ele, index) => {
-              this.form.deptId[index] = Number(ele);
-            });
-            this.form.roleId = this.form.roleId.split(",");
-            this.form.roleId.forEach((ele, index) => {
-              this.form.roleId[index] = Number(ele);
-            });
+            this.form = res.data.data;
           });
         }
         done();

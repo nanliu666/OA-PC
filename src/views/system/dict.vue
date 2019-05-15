@@ -59,7 +59,7 @@
               label: "字典编号",
               prop: "code",
               search: true,
-              span:24,
+              span: 24,
               rules: [{
                 required: true,
                 message: "请输入字典编号",
@@ -115,7 +115,7 @@
               label: "字典备注",
               prop: "remark",
               search: true,
-              span:24,
+              span: 24,
               hide: true,
             },
           ]
@@ -142,7 +142,7 @@
       }
     },
     methods: {
-      rowSave(row, loading) {
+      rowSave(row, loading, done) {
         add(row).then(() => {
           loading();
           this.onLoad(this.page);
@@ -150,9 +150,12 @@
             type: "success",
             message: "操作成功!"
           });
+        }, error => {
+          done();
+          console.log(error);
         });
       },
-      rowUpdate(row, index, loading) {
+      rowUpdate(row, index, loading, done) {
         update(row).then(() => {
           loading();
           this.onLoad(this.page);
@@ -160,6 +163,9 @@
             type: "success",
             message: "操作成功!"
           });
+        }, error => {
+          done();
+          console.log(error);
         });
       },
       rowDel(row) {
