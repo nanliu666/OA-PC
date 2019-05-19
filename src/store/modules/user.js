@@ -96,8 +96,9 @@ const user = {
     },
     //刷新token
     RefeshToken({ state, commit }) {
+      console.log('start refresh token')
       return new Promise((resolve, reject) => {
-        refeshToken(state.refreshToken, state.userInfo).then(res => {
+        refeshToken(state.refreshToken).then(res => {
           const data = res.data;
           commit('SET_TOKEN', data.access_token);
           commit('SET_REFRESH_TOKEN', data.refresh_token);
