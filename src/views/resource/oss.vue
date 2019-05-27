@@ -141,6 +141,12 @@
               editDisplay: false,
               viewDisplay: false,
             },
+            {
+              label: "备注",
+              prop: "remark",
+              span: 24,
+              hide: true,
+            },
           ]
         },
         data: []
