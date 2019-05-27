@@ -38,6 +38,10 @@
                 slot="status">
         <el-tag>{{row.statusName}}</el-tag>
       </template>
+      <template slot-scope="{row}"
+                slot="category">
+        <el-tag>{{row.categoryName}}</el-tag>
+      </template>
     </avue-crud>
   </basic-container>
 </template>
@@ -65,9 +69,30 @@
           labelWidth: 100,
           column: [
             {
+              label: "分类",
+              type: "select",
+              span: 24,
+              width: 100,
+              row: true,
+              dicUrl: "/api/blade-system/dict/dictionary?code=oss",
+              props: {
+                label: "dictValue",
+                value: "dictKey"
+              },
+              slot: true,
+              prop: "category",
+              search: true,
+              rules: [{
+                required: true,
+                message: "请选择分类",
+                trigger: "blur"
+              }]
+            },
+            {
               label: "资源地址",
               prop: "endpoint",
               span: 24,
+              search: true,
               rules: [{
                 required: true,
                 message: "请输入资源地址",
@@ -78,6 +103,7 @@
               label: "空间名",
               prop: "bucketName",
               span: 24,
+              width: 120,
               rules: [{
                 required: true,
                 message: "请输入空间名",
@@ -88,6 +114,7 @@
               label: "accessKey",
               prop: "accessKey",
               span: 24,
+              search: true,
               rules: [{
                 required: true,
                 message: "请输入accessKey",
