@@ -1,10 +1,10 @@
-import { setToken, setRefreshToken, removeToken } from '@/util/auth'
+import { setToken, setRefreshToken, removeToken, removeRefreshToken } from '@/util/auth'
 import { Message } from 'element-ui'
 import { setStore, getStore } from '@/util/store'
 import { isURL, validatenull } from '@/util/validate'
 import { deepClone } from '@/util/util'
 import webiste from '@/config/website'
-import { loginByUsername, getUserInfo, getMenu, getTopMenu, logout, refeshToken, getButtons } from '@/api/user'
+import { loginByUsername, getUserInfo, getMenu, getTopMenu, logout, refreshToken, getButtons } from '@/api/user'
 
 
 function addPath(ele, first) {
@@ -95,10 +95,10 @@ const user = {
       })
     },
     //刷新token
-    RefeshToken({ state, commit }) {
+    refreshToken({ state, commit }) {
       console.log('handle refresh token')
       return new Promise((resolve, reject) => {
-        refeshToken(state.refreshToken).then(res => {
+        refreshToken(state.refreshToken).then(res => {
           const data = res.data;
           commit('SET_TOKEN', data.access_token);
           commit('SET_REFRESH_TOKEN', data.refresh_token);
@@ -118,6 +118,7 @@ const user = {
           commit('DEL_ALL_TAG');
           commit('CLEAR_LOCK');
           removeToken()
+          removeRefreshToken()
           resolve()
         }).catch(error => {
           reject(error)
@@ -133,6 +134,7 @@ const user = {
         commit('DEL_ALL_TAG');
         commit('CLEAR_LOCK');
         removeToken()
+        removeRefreshToken()
         resolve()
       })
     },

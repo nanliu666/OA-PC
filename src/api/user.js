@@ -17,7 +17,7 @@ export const loginByUsername = (tenantCode, username, password, type) => request
   }
 })
 
-export const refeshToken = (refresh_token) => request({
+export const refreshToken = (refresh_token) => request({
   url: '/api/blade-auth/oauth/token',
   method: 'post',
   params: {
