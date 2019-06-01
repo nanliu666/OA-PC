@@ -1,14 +1,14 @@
 import request from '@/router/axios';
 import { baseUrl } from '@/config/env';
 
-export const loginByUsername = (tenantCode, username, password, type) => request({
+export const loginByUsername = (tenantId, username, password, type) => request({
   url: '/api/blade-auth/oauth/token',
   method: 'post',
   headers: {
-    'Tenant-Code': tenantCode
+    'Tenant-Code': tenantId
   },
   params: {
-    tenantCode,
+    tenantId,
     username,
     password,
     grant_type: "password",

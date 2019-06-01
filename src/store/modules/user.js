@@ -44,7 +44,7 @@ const user = {
     //根据用户名登录
     LoginByUsername({ commit }, userInfo) {
       return new Promise((resolve) => {
-        loginByUsername(userInfo.tenantCode, userInfo.username, userInfo.password, userInfo.type).then(res => {
+        loginByUsername(userInfo.tenantId, userInfo.username, userInfo.password, userInfo.type).then(res => {
           const data = res.data;
           if (data.error_description) {
             Message({

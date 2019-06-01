@@ -70,7 +70,7 @@
             },
             {
               label: "所属租户",
-              prop: "tenantCode",
+              prop: "tenantId",
               type: "tree",
               dicUrl: "/api/blade-system/tenant/select",
               addDisplay: false,
@@ -79,7 +79,7 @@
               span: 24,
               props: {
                 label: "tenantName",
-                value: "tenantCode"
+                value: "tenantId"
               },
               hide: !website.tenantMode,
               search: website.tenantMode,
