@@ -5,7 +5,7 @@ export const loginByUsername = (tenantId, username, password, type) => request({
   url: '/api/blade-auth/oauth/token',
   method: 'post',
   headers: {
-    'Tenant-Code': tenantId
+    'Tenant-Id': tenantId
   },
   params: {
     tenantId,
