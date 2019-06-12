@@ -101,6 +101,8 @@ export default {
           this.$store.dispatch("LoginByUsername", this.loginForm).then(() => {
             this.$router.push({ path: this.tagWel.value });
             loading.close();
+          }).catch(() => {
+            loading.close()
           });
         }
       });
