@@ -24,6 +24,10 @@
                    @click="handleDelete">删 除
         </el-button>
       </template>
+      <template slot-scope="{row}"
+                slot="deptCategory">
+        <el-tag>{{row.deptCategoryName}}</el-tag>
+      </template>
     </avue-crud>
   </basic-container>
 </template>
@@ -59,12 +63,12 @@
           viewBtn: true,
           column: [
             {
-              label: "部门名称",
+              label: "机构名称",
               prop: "deptName",
               search: true,
               rules: [{
                 required: true,
-                message: "请输入部门名称",
+                message: "请输入机构名称",
                 trigger: "blur"
               }]
             },
@@ -90,17 +94,17 @@
               }]
             },
             {
-              label: "部门全称",
+              label: "机构全称",
               prop: "fullName",
               search: true,
               rules: [{
                 required: true,
-                message: "请输入部门全称",
+                message: "请输入机构全称",
                 trigger: "blur"
               }]
             },
             {
-              label: "上级部门",
+              label: "上级机构",
               prop: "parentId",
               dicData: [],
               type: "tree",
@@ -110,11 +114,27 @@
               },
               rules: [{
                 required: false,
-                message: "请选择上级部门",
+                message: "请选择上级机构",
                 trigger: "click"
               }]
             },
-
+            {
+              label: "机构类型",
+              type: "select",
+              dicUrl: "/api/blade-system/dict/dictionary?code=org_category",
+              props: {
+                label: "dictValue",
+                value: "dictKey"
+              },
+              width: 180,
+              prop: "deptCategory",
+              slot: true,
+              rules: [{
+                required: true,
+                message: "请输入机构类型",
+                trigger: "blur"
+              }]
+            },
             {
               label: "排序",
               prop: "sort",
@@ -129,12 +149,12 @@
             {
               label: "备注",
               prop: "remark",
-              span: 24,
               rules: [{
                 required: false,
                 message: "请输入备注",
                 trigger: "blur"
-              }]
+              }],
+              hide: true
             }
           ]
         },
@@ -242,10 +262,10 @@
         }
         done();
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {

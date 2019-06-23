@@ -24,18 +24,54 @@
                    @click="handleDelete">删 除
         </el-button>
       </template>
-      <template slot-scope="{row}"
-                slot="source">
+      <template slot-scope="{row}" slot="menu">
+        <el-button type="text"
+                   icon="el-icon-setting"
+                   size="small"
+                   v-if="permission.menu_data_scope"
+                   plain
+                   class="none-border"
+                   @click.stop="handleDataScope(row)">数据权限
+        </el-button>
+      </template>
+      <template slot-scope="{row}" slot="source">
         <div style="text-align:center">
           <i :class="row.source"></i>
         </div>
       </template>
     </avue-crud>
+    <avue-drawer :title="`[${scopeMenuName}] 数据权限配置`" show-close :width="1000" v-model="drawerVisible"
+                 :before-close="handleDrawerClose">
+      <avue-crud :option="optionScope"
+                 :data="dataScope"
+                 :page="pageScope"
+                 v-model="formScope"
+                 ref="crudScope"
+                 @row-del="rowDelScope"
+                 @row-update="rowUpdateScope"
+                 @row-save="rowSaveScope"
+                 :before-open="beforeOpenScope"
+                 @search-change="searchChangeScope"
+                 @search-reset="searchResetScope"
+                 @selection-change="selectionChangeScope"
+                 @current-change="currentChangeScope"
+                 @size-change="sizeChangeScope"
+                 @on-load="onLoadScope">
+        <template slot="menuLeft">
+          <el-button type="danger"
+                     size="small"
+                     icon="el-icon-delete"
+                     plain
+                     @click="handleDeleteScope">删 除
+          </el-button>
+        </template>
+      </avue-crud>
+    </avue-drawer>
   </basic-container>
 </template>
 
 <script>
-  import {getList, remove, update, add, getMenu} from "@/api/system/menu";
+  import {add, remove, update, getList, getMenu, addScope, removeScope, updateScope, getListScope, getMenuScope} from "@/api/system/menu";
   import {mapGetters} from "vuex";
   import iconList from "@/config/iconList";
 
@@ -49,6 +85,10 @@
           currentPage: 1,
           total: 0
         },
+        drawerVisible: false,
+        scopeMenuId: 0,
+        scopeMenuName: "菜单",
+        menu: true,
         option: {
           tip: false,
           dialogWidth: "60%",
@@ -57,6 +97,7 @@
           index: true,
           selection: true,
           viewBtn: true,
+          menuWidth: 250,
           column: [
             {
               label: "菜单名称",
@@ -103,6 +144,7 @@
               prop: "source",
               type: "icon-select",
               slot: true,
+              width: 80,
               iconList: iconList,
               rules: [
                 {
@@ -189,6 +231,7 @@
               label: "菜单排序",
               prop: "sort",
               type: "number",
+              width: 80,
               rules: [
                 {
                   required: true,
@@ -223,7 +266,97 @@
             }
           ]
         },
-        data: []
+        data: [],
+        formScope: {},
+        selectionListScope: [],
+        pageScope: {
+          pageSize: 10,
+          currentPage: 1,
+          total: 0
+        },
+        optionScope: {
+          tip: false,
+          border: true,
+          index: true,
+          viewBtn: true,
+          selection: true,
+          menuWidth: 175,
+          column: [
+            {
+              label: "权限名",
+              prop: "scopeName",
+              search: true,
+              rules: [{
+                required: true,
+                message: "请输入数据权限名",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "权限编号",
+              prop: "resourceCode",
+              search: true,
+              width:100,
+              rules: [{
+                required: true,
+                message: "请输入数据权限编号",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "权限字段",
+              prop: "scopeColumn",
+              width:130,
+              rules: [{
+                required: true,
+                message: "请输入数据权限编号",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "规则类型",
+              type: "select",
+              dicUrl: "/api/blade-system/dict/dictionary?code=scope_type",
+              props: {
+                label: "dictValue",
+                value: "dictKey"
+              },
+              width:140,
+              prop: "scopeType",
+              rules: [{
+                required: true,
+                message: "请输入通知类型",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "权限类名",
+              prop: "scopeClass",
+              span: 24,
+              hide: true,
+              rules: [{
+                required: true,
+                message: "请输入权限类名",
+                trigger: "blur"
+              }],
+            },
+            {
+              label: "规则值",
+              prop: "scopeValue",
+              span: 24,
+              minRows: 5,
+              type: "textarea",
+              hide: true,
+            },
+            {
+              label: "备注",
+              prop: "remark",
+              span: 24,
+              hide: true,
+            },
+          ]
+        },
+        dataScope: []
       };
     },
 
@@ -243,9 +376,17 @@
           ids.push(ele.id);
         });
         return ids.join(",");
+      },
+      scopeIds() {
+        let ids = [];
+        this.selectionListScope.forEach(ele => {
+          ids.push(ele.id);
+        });
+        return ids.join(",");
       }
     },
     methods: {
+      // 菜单管理模块
       rowSave(row, loading, done) {
         add(row).then(() => {
           loading();
@@ -328,21 +469,140 @@
         }
         done();
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
         getList(page.currentPage, page.pageSize, params).then(res => {
-          const data = res.data.data;
-          this.data = data;
+          this.data = res.data.data;
         });
-      }
+      },
+      // 数据权限模块
+      handleDataScope(row) {
+        this.drawerVisible = true;
+        this.scopeMenuId = row.id;
+        this.scopeMenuName = row.name;
+      },
+      handleDrawerClose(hide) {
+        hide();
+      },
+      rowSaveScope(row, loading, done) {
+        row = {
+          ...row,
+          menuId: this.scopeMenuId,
+        }
+        addScope(row).then(() => {
+          loading();
+          this.onLoadScope(this.pageScope);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+        }, error => {
+          done();
+          console.log(error);
+        });
+      },
+      rowUpdateScope(row, index, loading, done) {
+        row = {
+          ...row,
+          menuId: this.scopeMenuId,
+        }
+        updateScope(row).then(() => {
+          loading();
+          this.onLoadScope(this.pageScope);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+        }, error => {
+          done();
+          console.log(error);
+        });
+      },
+      rowDelScope(row) {
+        this.$confirm("确定将选择数据删除?", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            return removeScope(row.id);
+          })
+          .then(() => {
+            this.onLoadScope(this.pageScope);
+            this.$message({
+              type: "success",
+              message: "操作成功!"
+            });
+          });
+      },
+      handleDeleteScope() {
+        if (this.selectionListScope.length === 0) {
+          this.$message.warning("请选择至少一条数据");
+          return;
+        }
+        this.$confirm("确定将选择数据删除?", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            return removeScope(this.scopeIds);
+          })
+          .then(() => {
+            this.onLoadScope(this.pageScope);
+            this.$message({
+              type: "success",
+              message: "操作成功!"
+            });
+            this.$refs.crudScope.toggleSelection();
+          });
+      },
+      beforeOpenScope(done, type) {
+        if (["edit", "view"].includes(type)) {
+          getMenuScope(this.formScope.id).then(res => {
+            this.formScope = res.data.data;
+          });
+        }
+        done();
+      },
+      searchResetScope() {
+        this.onLoadScope(this.pageScope);
+      },
+      searchChangeScope(params) {
+        this.onLoadScope(this.pageScope, params);
+      },
+      selectionChangeScope(list) {
+        this.selectionListScope = list;
+      },
+      currentChangeScope(currentPage) {
+        this.pageScope.currentPage = currentPage;
+      },
+      sizeChangeScope(pageSize) {
+        this.pageScope.pageSize = pageSize;
+      },
+      onLoadScope(page, params = {}) {
+        const values = {
+          ...params,
+          menuId: this.scopeMenuId,
+        }
+        getListScope(page.currentPage, page.pageSize, values).then(res => {
+          const data = res.data.data;
+          this.pageScope.total = data.total;
+          this.dataScope = data.records;
+        });
+      },
     }
   };
 </script>
 
 <style>
+  .none-border {
+    border: 0;
+    background-color: transparent !important;
+  }
 </style>
