@@ -336,7 +336,7 @@
               hide: true,
               rules: [{
                 required: true,
-                message: "请输入权限类名",
+                message: "请输入MybatisMapper对应方法的完整类名路径",
                 trigger: "blur"
               }],
             },
