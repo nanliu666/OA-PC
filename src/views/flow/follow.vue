@@ -148,6 +148,7 @@
           });
       },
       searchReset() {
+        this.query = {};
         this.onLoad(this.page);
       },
       searchChange(params) {
