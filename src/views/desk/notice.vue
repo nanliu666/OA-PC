@@ -40,6 +40,7 @@
     data() {
       return {
         form: {},
+        query: {},
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -189,6 +190,7 @@
         this.onLoad(this.page);
       },
       searchChange(params) {
+        this.query = params;
         this.onLoad(this.page, params);
       },
       selectionChange(list) {
@@ -224,10 +226,10 @@
         }
         done();
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
@@ -243,7 +245,7 @@
           }
           values.releaseTimeRange = null;
         }
-        getList(page.currentPage, page.pageSize, values).then(res => {
+        getList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;

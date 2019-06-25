@@ -80,6 +80,7 @@
       return {
         form: {},
         selectionList: [],
+        query: {},
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -434,6 +435,7 @@
         this.onLoad(this.page);
       },
       searchChange(params) {
+        this.query = params;
         this.onLoad(this.page, params);
       },
       selectionChange(list) {
@@ -590,7 +592,7 @@
           ...params,
           menuId: this.scopeMenuId,
         }
-        getListScope(page.currentPage, page.pageSize, values).then(res => {
+        getListScope(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(res => {
           const data = res.data.data;
           this.pageScope.total = data.total;
           this.dataScope = data.records;

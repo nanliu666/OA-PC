@@ -73,6 +73,7 @@
         form: {},
         selectionId: '',
         selectionList: [],
+        query: {},
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -148,6 +149,7 @@
         this.onLoad(this.page);
       },
       searchChange(params) {
+        this.query = params;
         this.onLoad(this.page, params);
       },
       selectionChange(list) {
@@ -174,7 +176,7 @@
           ...params,
           category: (params.category) ? flowCategory(params.category) : null
         }
-        todoList(page.currentPage, page.pageSize, values).then(res => {
+        todoList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;

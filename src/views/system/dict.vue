@@ -44,6 +44,7 @@
       return {
         form: {},
         selectionList: [],
+        query: {},
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -191,6 +192,7 @@
         this.onLoad(this.page);
       },
       searchChange(params) {
+        this.query = params;
         this.onLoad(this.page, params);
       },
       selectionChange(list) {
@@ -226,16 +228,15 @@
         }
         done();
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
-        getList(page.currentPage, page.pageSize, params).then(res => {
-          const data = res.data.data;
-          this.data = data;
+        getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
+          this.data = res.data.data;
           getDictTree().then(res => {
             const data = res.data.data;
             const index = this.$refs.crud.findColumnIndex("parentId");
