@@ -71,7 +71,18 @@
 </template>
 
 <script>
-  import {add, remove, update, getList, getMenu, addScope, removeScope, updateScope, getListScope, getMenuScope} from "@/api/system/menu";
+  import {
+    add,
+    remove,
+    update,
+    getList,
+    getMenu,
+    addScope,
+    removeScope,
+    updateScope,
+    getListScope,
+    getMenuScope
+  } from "@/api/system/menu";
   import {mapGetters} from "vuex";
   import iconList from "@/config/iconList";
 
@@ -284,12 +295,12 @@
           menuWidth: 175,
           column: [
             {
-              label: "权限名",
+              label: "权限名称",
               prop: "scopeName",
               search: true,
               rules: [{
                 required: true,
-                message: "请输入数据权限名",
+                message: "请输入数据权限名称",
                 trigger: "blur"
               }]
             },
@@ -297,7 +308,7 @@
               label: "权限编号",
               prop: "resourceCode",
               search: true,
-              width:100,
+              width: 100,
               rules: [{
                 required: true,
                 message: "请输入数据权限编号",
@@ -307,7 +318,7 @@
             {
               label: "权限字段",
               prop: "scopeColumn",
-              width:130,
+              width: 130,
               rules: [{
                 required: true,
                 message: "请输入数据权限编号",
@@ -322,7 +333,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
-              width:140,
+              width: 140,
               prop: "scopeType",
               rules: [{
                 required: true,
