@@ -65,6 +65,10 @@
                      @click="handleDeleteScope">删 除
           </el-button>
         </template>
+        <template slot-scope="{row}"
+                  slot="scopeType">
+          <el-tag>{{row.scopeTypeName}}</el-tag>
+        </template>
       </avue-crud>
     </avue-drawer>
   </basic-container>
@@ -333,6 +337,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              slot: true,
               width: 140,
               prop: "scopeType",
               rules: [{
