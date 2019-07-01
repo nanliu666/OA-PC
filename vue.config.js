@@ -22,6 +22,7 @@ module.exports = {
       .end()
   },
   devServer: {
+    port: 1888,
     proxy: {
       '/api': {
         target: 'http://localhost',
