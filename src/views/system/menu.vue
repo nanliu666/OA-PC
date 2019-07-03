@@ -297,6 +297,7 @@
           viewBtn: true,
           selection: true,
           menuWidth: 175,
+          dialogHeight: 510,
           column: [
             {
               label: "权限名称",
@@ -345,6 +346,17 @@
                 message: "请输入通知类型",
                 trigger: "blur"
               }]
+            },
+            {
+              label: "可见字段",
+              prop: "scopeField",
+              span: 24,
+              hide: true,
+              rules: [{
+                required: true,
+                message: "请输入数据权限可见的字段",
+                trigger: "blur"
+              }],
             },
             {
               label: "权限类名",
