@@ -43,15 +43,23 @@
           </el-tree>
         </el-tab-pane>
         <el-tab-pane label="数据权限">
-          <el-tree :data="scopeGrantList"
+          <el-tree :data="dataScopeGrantList"
                    show-checkbox
                    node-key="id"
-                   ref="treeScope"
-                   :default-checked-keys="scopeTreeObj"
+                   ref="treeDataScope"
+                   :default-checked-keys="dataScopeTreeObj"
                    :props="props">
           </el-tree>
         </el-tab-pane>
-        <el-tab-pane label="接口权限">敬请期待</el-tab-pane>
+        <el-tab-pane label="接口权限">
+          <el-tree :data="apiScopeGrantList"
+                   show-checkbox
+                   node-key="id"
+                   ref="treeApiScope"
+                   :default-checked-keys="apiScopeTreeObj"
+                   :props="props">
+          </el-tree>
+        </el-tab-pane>
       </el-tabs>
 
       <span slot="footer"
@@ -79,10 +87,12 @@
           value: "key"
         },
         menuGrantList: [],
-        scopeGrantList: [],
+        dataScopeGrantList: [],
+        apiScopeGrantList: [],
         apiGrantList: [],
         menuTreeObj: [],
-        scopeTreeObj: [],
+        dataScopeTreeObj: [],
+        apiScopeTreeObj: [],
         selectionList: [],
         query: {},
         page: {
@@ -204,8 +214,9 @@
     methods: {
       submit() {
         const menuList = this.$refs.treeMenu.getCheckedKeys().join(",");
-        const scopeList = this.$refs.treeScope.getCheckedKeys().join(",");
-        grant(this.ids, menuList, scopeList).then(() => {
+        const dataScopeList = this.$refs.treeDataScope.getCheckedKeys().join(",");
+        const apiScopeList = this.$refs.treeApiScope.getCheckedKeys().join(",");
+        grant(this.ids, menuList, dataScopeList, apiScopeList).then(() => {
           this.box = false;
           this.$message({
             type: "success",
@@ -275,14 +286,16 @@
           return;
         }
         this.menuTreeObj = [];
-        this.scopeTreeObj = [];
+        this.dataScopeTreeObj = [];
         grantTree()
           .then(res => {
             this.menuGrantList = res.data.data.menu;
-            this.scopeGrantList = res.data.data.scope;
+            this.dataScopeGrantList = res.data.data.dataScope;
+            this.apiScopeGrantList = res.data.data.apiScope;
             getRole(this.ids).then(res => {
               this.menuTreeObj = res.data.data.menu;
-              this.scopeTreeObj = res.data.data.scope;
+              this.dataScopeTreeObj = res.data.data.dataScope;
+              this.apiScopeTreeObj = res.data.data.apiScope;
               this.box = true;
             });
           });
