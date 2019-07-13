@@ -160,33 +160,6 @@
               ]
             },
             {
-              label: "按钮功能",
-              prop: "action",
-              type: "radio",
-              dicData: [
-                {
-                  label: "工具栏",
-                  value: 0
-                },
-                {
-                  label: "操作栏",
-                  value: 1
-                },
-                {
-                  label: "工具操作栏",
-                  value: 2
-                }
-              ],
-              hide: true,
-              rules: [
-                {
-                  required: true,
-                  message: "请选择按钮功能",
-                  trigger: "blur"
-                }
-              ]
-            },
-            {
               label: "菜单排序",
               prop: "sort",
               type: "number",
@@ -199,27 +172,11 @@
               ]
             },
             {
-              label: "新窗口",
-              prop: "isOpen",
-              type: "radio",
-              dicData: [
-                {
-                  label: "否",
-                  value: 0
-                },
-                {
-                  label: "是",
-                  value: 1
-                },
-              ],
-              hide: true
-            },
-            {
               label: "菜单备注",
               prop: "remark",
               type: "textarea",
               span: 24,
-              minRows: 6,
+              minRows: 2,
               hide: true
             }
           ]
