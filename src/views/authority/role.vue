@@ -287,6 +287,7 @@
         }
         this.menuTreeObj = [];
         this.dataScopeTreeObj = [];
+        this.apiScopeTreeObj = [];
         grantTree()
           .then(res => {
             this.menuGrantList = res.data.data.menu;
