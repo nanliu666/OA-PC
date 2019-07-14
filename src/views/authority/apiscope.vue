@@ -300,6 +300,7 @@
               label: "权限名称",
               prop: "scopeName",
               search: true,
+              width: 100,
               rules: [{
                 required: true,
                 message: "请输入数据权限名称",
@@ -310,7 +311,6 @@
               label: "权限编号",
               prop: "resourceCode",
               search: true,
-              width: 100,
               rules: [{
                 required: true,
                 message: "请输入数据权限编号",
@@ -320,7 +320,7 @@
             {
               label: "权限路径",
               prop: "scopePath",
-              width: 130,
+              width: 180,
               rules: [{
                 required: true,
                 message: "请输入数据权限编号",
@@ -336,7 +336,7 @@
                 value: "dictKey"
               },
               slot: true,
-              width: 140,
+              width: 100,
               prop: "scopeType",
               rules: [{
                 required: true,
