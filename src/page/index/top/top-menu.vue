@@ -3,12 +3,20 @@
     <el-menu :default-active="activeIndex"
              mode="horizontal"
              text-color="#333">
+      <el-menu-item index="0"
+                    @click.native="openMenu(itemHome)"
+                    key="0">
+        <template slot="title">
+          <i :class="itemHome.source"></i>
+          <span>{{generateTitle(itemHome)}}</span>
+        </template>
+      </el-menu-item>
       <template v-for="(item,index) in items">
-        <el-menu-item :index="item.parentId+''"
+        <el-menu-item :index="item.id+''"
                       @click.native="openMenu(item)"
                       :key="index">
           <template slot="title">
-            <i :class="item.icon"></i>
+            <i :class="item.source" style="padding-right: 5px;"></i>
             <span>{{generateTitle(item)}}</span>
           </template>
         </el-menu-item>
@@ -23,8 +31,12 @@ export default {
   name: "top-menu",
   data() {
     return {
+      itemHome: {
+        name: '首页',
+        source: 'el-icon-menu',
+      },
       activeIndex: "0",
-      items: []
+      items: [],
     };
   },
   created() {
@@ -41,12 +53,12 @@ export default {
     },
     generateTitle(item) {
       return this.$router.$avueRouter.generateTitle(
-        item.label,
+        item.name,
         (item.meta || {}).i18n
       );
     },
     openMenu(item) {
-      this.$store.dispatch("GetMenu", item.parentId).then(data => {
+      this.$store.dispatch("GetMenu", item.id).then(data => {
         if (data.length !== 0) {
           this.$router.$avueRouter.formatRoutes(data, true);
         }

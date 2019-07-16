@@ -37,16 +37,6 @@ export const getUserInfo = () => request({
   method: 'get'
 });
 
-export const getMenu = () => request({
-  url: '/api/blade-system/menu/routes',
-  method: 'get'
-});
-
-export const getTopMenu = () => request({
-  url: baseUrl + '/user/getTopMenu',
-  method: 'get'
-});
-
 export const sendLogs = (list) => request({
   url: baseUrl + '/user/logout',
   method: 'post',
