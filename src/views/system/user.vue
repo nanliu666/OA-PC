@@ -161,6 +161,10 @@
                 required: true,
                 message: "请输入用户姓名",
                 trigger: "blur"
+              },{
+                min: 2,
+                max: 5,
+                message: '姓名长度在2到5个字符'
               }]
             },
             {
