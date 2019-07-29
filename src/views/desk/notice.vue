@@ -53,6 +53,7 @@
           index: true,
           viewBtn: true,
           selection: true,
+          excelBtn: true,
           column: [
             {
               label: "通知标题",
