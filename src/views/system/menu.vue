@@ -1,6 +1,7 @@
 <template>
   <basic-container>
     <avue-crud :option="option"
+               :table-loading="loading"
                :data="data"
                ref="crud"
                v-model="form"
@@ -44,6 +45,7 @@
       return {
         form: {},
         query: {},
+        loading: true,
         selectionList: [],
         page: {
           pageSize: 10,
@@ -295,8 +297,10 @@
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
+        this.loading = true;
         getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
           this.data = res.data.data;
+          this.loading = false;
         });
       }
     }

@@ -25,7 +25,7 @@ module.exports = {
     port: 1888,
     proxy: {
       '/api': {
-        target: 'http://localhost',
+        target: 'https://saber.bladex.vip/api',
         ws: true,
         pathRewrite: {
           '^/api': '/'

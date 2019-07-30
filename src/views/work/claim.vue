@@ -1,6 +1,7 @@
 <template>
   <basic-container>
     <avue-crud :option="option"
+               :table-loading="loading"
                :data="data"
                ref="crud"
                v-model="form"
@@ -74,6 +75,7 @@
         selectionId: '',
         selectionList: [],
         query: {},
+        loading: true,
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -191,10 +193,12 @@
           ...params,
           category: (params.category) ? flowCategory(params.category) : null
         }
+        this.loading = true;
         claimList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;
+          this.loading = false;
         });
       }
     }

@@ -1,6 +1,7 @@
 <template>
   <basic-container>
     <avue-crud :option="option"
+               :table-loading="loading"
                :data="data"
                :page="page"
                :permission="permissionList"
@@ -70,6 +71,7 @@
         form: {},
         box: false,
         query: {},
+        loading: true,
         props: {
           label: "title",
           value: "key"
@@ -276,10 +278,12 @@
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
+        this.loading = true;
         getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;
+          this.loading = false;
         });
       }
     }

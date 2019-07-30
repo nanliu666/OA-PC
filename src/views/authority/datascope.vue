@@ -1,6 +1,7 @@
 <template>
   <basic-container>
     <avue-crud :option="option"
+               :table-loading="loading"
                :data="data"
                ref="crud"
                v-model="form"
@@ -89,6 +90,7 @@
         form: {},
         selectionList: [],
         query: {},
+        loading: true,
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -504,8 +506,10 @@
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
+        this.loading = true;
         getMenuList(page.currentPage, page.pageSize, params).then(res => {
           this.data = res.data.data;
+          this.loading = false;
         });
       },
       // 数据权限模块
