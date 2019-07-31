@@ -34,6 +34,8 @@
           total: 0
         },
         option: {
+          height:'auto',
+          calcHeight:'350',
           tip: false,
           border: true,
           index: true,
@@ -46,28 +48,29 @@
             {
               label: "服务id",
               prop: "serviceId",
-              search: true
+              search: true,
+              width:'120'
             },
             {
               label: "服务host",
               prop: "serverHost",
-              search: true
+              search: true,
+              width:'120'
             },
             {
               label: "服务ip",
-              prop: "serverIp"
+              prop: "serverIp",
+              width:'160'
             },
             {
               label: "软件环境",
-              prop: "env"
-            },
-            {
-              label: "日志名",
-              prop: "title"
+              prop: "env",
+              width:'80'
             },
             {
               label: "请求方法",
-              prop: "method"
+              prop: "method",
+              width:'80'
             },
             {
               label: "请求接口",
@@ -75,7 +78,8 @@
             },
             {
               label: "日志时间",
-              prop: "createTime"
+              prop: "createTime",
+              width:'160'
             },
             {
               label: "用户代理",

@@ -34,6 +34,8 @@
           total: 0
         },
         option: {
+          height:'auto',
+          calcHeight:'350',
           tip: false,
           border: true,
           index: true,
@@ -59,7 +61,8 @@
             },
             {
               label: "软件环境",
-              prop: "env"
+              prop: "env",
+              width:'80'
             },
             {
               label: "日志级别",
@@ -75,7 +78,8 @@
             },
             {
               label: "日志时间",
-              prop: "logData"
+              prop: "logData",
+              width:'160'
             },
             {
               label: "用户代理",

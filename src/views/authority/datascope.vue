@@ -101,6 +101,8 @@
         scopeMenuName: "菜单",
         menu: true,
         option: {
+          height:'auto',
+          calcHeight:'350',
           tip: false,
           dialogWidth: "60%",
           tree: true,

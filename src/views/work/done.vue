@@ -78,6 +78,8 @@
         flowUrl: '',
         workBox: false,
         option: {
+          height:'auto',
+          calcHeight:'350',
           tip: false,
           border: true,
           index: true,
