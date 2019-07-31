@@ -24,7 +24,6 @@ Vue.use(Element, {
   i18n: (key, value) => i18n.t(key, value)
 })
 Vue.use(window.AVUE, {
-  size: 'small',
   i18n: (key, value) => i18n.t(key, value)
 })
 //注册全局容器
