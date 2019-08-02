@@ -209,16 +209,24 @@
         let ids = [];
         this.selectionList.forEach(ele => {
           ids.push(ele.id);
+
         });
         return ids.join(",");
+      },
+      idsArray() {
+        let ids = [];
+        this.selectionList.forEach(ele => {
+          ids.push(ele.id);
+        });
+        return ids;
       }
     },
     methods: {
       submit() {
-        const menuList = this.$refs.treeMenu.getCheckedKeys().join(",");
-        const dataScopeList = this.$refs.treeDataScope.getCheckedKeys().join(",");
-        const apiScopeList = this.$refs.treeApiScope.getCheckedKeys().join(",");
-        grant(this.ids, menuList, dataScopeList, apiScopeList).then(() => {
+        const menuList = this.$refs.treeMenu.getCheckedKeys();
+        const dataScopeList = this.$refs.treeDataScope.getCheckedKeys();
+        const apiScopeList = this.$refs.treeApiScope.getCheckedKeys();
+        grant(this.idsArray, menuList, dataScopeList, apiScopeList).then(() => {
           this.box = false;
           this.$message({
             type: "success",
