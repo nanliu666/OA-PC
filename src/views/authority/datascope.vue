@@ -469,6 +469,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       handleDelete() {
         if (this.selectionList.length === 0) {
           this.$message.warning("请选择至少一条数据");
@@ -510,6 +514,7 @@
         getMenuList(page.currentPage, page.pageSize, params).then(res => {
           this.data = res.data.data;
           this.loading = false;
+          this.selectionClear();
         });
       },
       // 数据权限模块
@@ -626,6 +631,7 @@
           const data = res.data.data;
           this.pageScope.total = data.total;
           this.dataScope = data.records;
+          this.selectionListScope = [];
         });
       },
     }

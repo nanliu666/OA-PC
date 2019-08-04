@@ -260,6 +260,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       handleDelete() {
         if (this.selectionList.length === 0) {
           this.$message.warning("请选择至少一条数据");
@@ -301,6 +305,7 @@
         getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
           this.data = res.data.data;
           this.loading = false;
+          this.selectionClear();
         });
       }
     }

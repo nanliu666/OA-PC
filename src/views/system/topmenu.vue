@@ -273,6 +273,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
@@ -286,6 +290,7 @@
           this.page.total = data.total;
           this.data = data.records;
           this.loading = false;
+          this.selectionClear();
         });
       }
     }

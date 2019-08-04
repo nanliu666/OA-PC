@@ -160,6 +160,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       handleClaim(row) {
         this.$confirm("确定签收此任务?", {
           confirmButtonText: "确定",
@@ -201,6 +205,7 @@
           this.page.total = data.total;
           this.data = data.records;
           this.loading = false;
+          this.selectionClear();
         });
       }
     }

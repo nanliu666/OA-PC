@@ -259,6 +259,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
           getDept(this.form.id).then(res => {
@@ -283,6 +287,7 @@
             this.option.column[index].dicData = data;
           });
           this.loading = false;
+          this.selectionClear();
         });
       }
     }

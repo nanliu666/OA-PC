@@ -153,6 +153,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       handleDetail(row) {
         this.$router.push({path: `/work/process/${flowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${row.businessId}`});
       },
@@ -177,6 +181,7 @@
           this.page.total = data.total;
           this.data = data.records;
           this.loading = false;
+          this.selectionClear();
         });
       }
     }

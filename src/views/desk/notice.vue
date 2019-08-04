@@ -4,6 +4,7 @@
                :table-loading="loading"
                :data="data"
                :page="page"
+               ref="crud"
                @row-del="rowDel"
                v-model="form"
                :permission="permissionList"
@@ -218,6 +219,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       handleDelete() {
         if (this.selectionList.length === 0) {
           this.$message.warning("请选择至少一条数据");
@@ -273,6 +278,7 @@
           this.page.total = data.total;
           this.data = data.records;
           this.loading = false;
+          this.selectionClear();
         });
       }
     }

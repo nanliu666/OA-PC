@@ -230,6 +230,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       handleEnable(row) {
         this.$confirm("是否确定启用这条配置?", {
           confirmButtonText: "确定",
@@ -291,6 +295,7 @@
           this.page.total = data.total;
           this.data = data.records;
           this.loading = false;
+          this.selectionClear();
         });
       }
     }
