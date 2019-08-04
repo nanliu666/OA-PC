@@ -1388,10 +1388,10 @@ autoprefixer@^9.4.7:
     postcss "^7.0.14"
     postcss-value-parser "^3.3.1"
 
-avue-plugin-ueditor@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.npm.taobao.org/avue-plugin-ueditor/download/avue-plugin-ueditor-0.0.4.tgz#e55775a1383370e537ef7e838d1a8ccad13674db"
-  integrity sha1-5Vd1oTgzcOU3736DjRqMytE2dNs=
+avue-plugin-ueditor@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npm.taobao.org/avue-plugin-ueditor/download/avue-plugin-ueditor-0.0.5.tgz?cache=0&sync_timestamp=1564922511413&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Favue-plugin-ueditor%2Fdownload%2Favue-plugin-ueditor-0.0.5.tgz#0e5a7fb6f97bde973561f04b2e13da4304d707e8"
+  integrity sha1-Dlp/tvl73pc1YfBLLhPaQwTXB+g=
   dependencies:
     axios "^0.18.0"
     vue "^2.5.17"
