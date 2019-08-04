@@ -29,15 +29,22 @@
                 slot="category">
         <el-tag>{{row.categoryName}}</el-tag>
       </template>
+      <template slot-scope="scope" slot="contentForm">
+        <avue-ueditor v-model="form.content" :upload="upload"></avue-ueditor>
+      </template>
     </avue-crud>
   </basic-container>
 </template>
 
 <script>
+  import AvueUeditor from 'avue-plugin-ueditor';
   import {getList, remove, update, add, getNotice} from "@/api/dept/notice";
   import {mapGetters} from "vuex";
 
   export default {
+    comments: {
+      AvueUeditor
+    },
     data() {
       return {
         form: {},
@@ -49,9 +56,18 @@
           total: 0
         },
         selectionList: [],
+        upload: {
+          action: '/api/blade-resource/oss/endpoint/put-file',
+          props: {
+            res: "data",
+            url: "link",
+          }
+        },
         option: {
-          height:'auto',
-          calcHeight:'350',
+          height: 'auto',
+          calcHeight: 350,
+          dialogWidth: 300,
+          dialogHeight: 530,
           tip: false,
           border: true,
           index: true,
@@ -62,6 +78,7 @@
             {
               label: "通知标题",
               prop: "title",
+              span: 24,
               row: true,
               search: true,
               rules: [{
@@ -73,7 +90,6 @@
             {
               label: "通知类型",
               type: "select",
-              row: true,
               dicUrl: "/api/blade-system/dict/dictionary?code=notice",
               props: {
                 label: "dictValue",
@@ -120,9 +136,9 @@
             {
               label: "通知内容",
               prop: "content",
+              formslot: true,
+              hide: true,
               span: 24,
-              minRows: 6,
-              type: "textarea"
             }
           ]
         },

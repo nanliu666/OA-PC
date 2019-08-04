@@ -61,8 +61,8 @@
         followBox: false,
         deleteReason: '',
         option: {
-          height:'auto',
-          calcHeight:'350',
+          height: 'auto',
+          calcHeight: 350,
           tip: false,
           border: true,
           index: true,
@@ -162,10 +162,10 @@
       selectionChange(list) {
         this.selectionList = list;
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
@@ -184,6 +184,6 @@
 <style>
   .none-border {
     border: 0;
-    background-color: transparent!important;
+    background-color: transparent !important;
   }
 </style>
