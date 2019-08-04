@@ -7,6 +7,7 @@
                :permission="permissionList"
                :before-open="beforeOpen"
                v-model="form"
+               ref="crud"
                @row-update="rowUpdate"
                @row-save="rowSave"
                @row-del="rowDel"
