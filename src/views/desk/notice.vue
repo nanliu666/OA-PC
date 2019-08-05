@@ -31,7 +31,7 @@
         <el-tag>{{row.categoryName}}</el-tag>
       </template>
       <template slot-scope="scope" slot="contentForm">
-        <avue-ueditor min-rows="6" v-model="form.content" :upload="upload"></avue-ueditor>
+        <avue-ueditor :min-rows=6 v-model="form.content" :upload="upload"></avue-ueditor>
       </template>
     </avue-crud>
   </basic-container>
