@@ -80,7 +80,7 @@
             {
               label: "日志时间",
               prop: "createTime",
-              width:'160'
+              width:'180'
             },
             {
               label: "用户代理",

@@ -92,14 +92,15 @@
           deptTree: [],
         },
         option: {
-          height:'auto',
-          calcHeight:350,
+          height: 'auto',
+          calcHeight: 350,
           tip: false,
           border: true,
           index: true,
           selection: true,
           viewBtn: true,
           dialogHeight: 450,
+          dialogType: 'drawer',
           column: [
             {
               label: "登录账号",
@@ -165,7 +166,7 @@
                 required: true,
                 message: "请输入用户姓名",
                 trigger: "blur"
-              },{
+              }, {
                 min: 2,
                 max: 5,
                 message: '姓名长度在2到5个字符'
@@ -407,10 +408,10 @@
         }
         done();
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
