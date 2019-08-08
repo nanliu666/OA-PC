@@ -6,14 +6,14 @@ function getFakeList() {
   list.push(
     {
       id: '1',
-      paramName: '是否开启注册功能',
+      paramName: '是否开启注册功能--mock测试',
       paramKey: 'account.registerUser',
       paramValue: 'true',
       remark: '描述',
     },
     {
       id: '2',
-      paramName: '账号初始密码',
+      paramName: '账号初始密码--mock测试',
       paramKey: 'account.initPassword',
       paramValue: '123456',
       remark: '描述',
