@@ -111,7 +111,7 @@
           editBtn: false,
           addBtn: false,
           delBtn: false,
-          menuWidth: 250,
+          menuWidth: 150,
           column: [
             {
               label: "菜单名称",
@@ -294,7 +294,7 @@
           index: true,
           viewBtn: true,
           selection: true,
-          menuWidth: 175,
+          menuWidth: 200,
           dialogWidth: 450,
           dialogHeight: 230,
           column: [
@@ -302,7 +302,6 @@
               label: "权限名称",
               prop: "scopeName",
               search: true,
-              width: 100,
               rules: [{
                 required: true,
                 message: "请输入数据权限名称",
@@ -313,6 +312,7 @@
               label: "权限编号",
               prop: "resourceCode",
               search: true,
+              width: 180,
               rules: [{
                 required: true,
                 message: "请输入数据权限编号",

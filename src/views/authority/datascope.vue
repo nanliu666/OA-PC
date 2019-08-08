@@ -111,7 +111,7 @@
           editBtn: false,
           addBtn: false,
           delBtn: false,
-          menuWidth: 250,
+          menuWidth: 150,
           column: [
             {
               label: "菜单名称",
@@ -294,7 +294,7 @@
           index: true,
           viewBtn: true,
           selection: true,
-          menuWidth: 175,
+          menuWidth: 200,
           dialogWidth: 450,
           dialogHeight: 510,
           column: [
