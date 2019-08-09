@@ -271,6 +271,7 @@
             releaseTime_lt: releaseTimeRange[1],
           }
           values.releaseTimeRange = null;
+          this.query.releaseTimeRange = null;
         }
         this.loading = true;
         getList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(res => {
