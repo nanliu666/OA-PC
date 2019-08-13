@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import {getList, getDetail, add, update, remove} from "@/api/develop/datasource";
+  import {getList, getDetail, add, update, remove} from "@/api/tool/datasource";
   import {mapGetters} from "vuex";
 
   export default {
