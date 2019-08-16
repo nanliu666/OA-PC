@@ -32,12 +32,22 @@
                    @click="handleBuild">代码生成
         </el-button>
       </template>
+      <template slot-scope="scope" slot="menu">
+        <el-button type="text"
+                   size="small"
+                   icon="el-icon-document-copy"
+                   v-if="permission.code_edit"
+                   plain
+                   class="none-border"
+                   @click.stop="handleCopy(scope.row)">复制
+        </el-button>
+      </template>
     </avue-crud>
   </basic-container>
 </template>
 
 <script>
-  import {getList, getCode, build, remove, add, update} from "@/api/tool/code";
+  import {getList, getCode, build, remove, add, update, copy} from "@/api/tool/code";
   import {mapGetters} from "vuex";
 
   export default {
@@ -53,8 +63,10 @@
           total: 0
         },
         option: {
-          height:'auto',
-          calcHeight:350,
+          height: 'auto',
+          calcHeight: 350,
+          dialogWidth: 400,
+          dialogHeight: 500,
           tip: false,
           border: true,
           index: true,
@@ -62,6 +74,23 @@
           labelWidth: 120,
           viewBtn: true,
           column: [
+            {
+              label: "数据源",
+              prop: "datasourceId",
+              search: true,
+              span: 24,
+              type: "select",
+              dicUrl: "/api/blade-develop/datasource/select",
+              props: {
+                label: "name",
+                value: "id"
+              },
+              rules: [{
+                required: true,
+                message: "请选择数据源",
+                trigger: "blur"
+              }]
+            },
             {
               label: "模块名",
               prop: "codeName",
@@ -94,6 +123,7 @@
             {
               label: "表前缀",
               prop: "tablePrefix",
+              hide: true,
               rules: [{
                 required: true,
                 message: "请输入表前缀",
@@ -103,6 +133,7 @@
             {
               label: "主键名",
               prop: "pkName",
+              hide: true,
               rules: [{
                 required: true,
                 message: "请输入主键名",
@@ -116,6 +147,38 @@
               rules: [{
                 required: true,
                 message: "请输入包名",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "基础业务",
+              prop: "baseMode",
+              type: 'radio',
+              dicUrl: "/api/blade-system/dict/dictionary?code=yes_no",
+              props: {
+                label: "dictValue",
+                value: "dictKey"
+              },
+              hide: true,
+              rules: [{
+                required: true,
+                message: "请选择基础业务",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "包装器",
+              prop: "wrapMode",
+              type: 'radio',
+              dicUrl: "/api/blade-system/dict/dictionary?code=yes_no",
+              props: {
+                label: "dictValue",
+                value: "dictKey"
+              },
+              hide: true,
+              rules: [{
+                required: true,
+                message: "请选择包装器",
                 trigger: "blur"
               }]
             },
@@ -269,6 +332,15 @@
             this.$refs.crud.toggleSelection();
           });
       },
+      handleCopy(row) {
+        copy(row.id).then(() => {
+          this.onLoad(this.page);
+          this.$message({
+            type: "success",
+            message: "复制成功!"
+          });
+        });
+      },
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
           getCode(this.form.id).then(res => {
@@ -277,10 +349,10 @@
         }
         done();
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       onLoad(page, params = {}) {
@@ -298,4 +370,8 @@
 </script>
 
 <style>
+  .none-border {
+    border: 0;
+    background-color: transparent !important;
+  }
 </style>

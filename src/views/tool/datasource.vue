@@ -58,9 +58,32 @@
           selection: true,
           column: [
             {
+              label: "名称",
+              prop: "name",
+              width: 120,
+              rules: [{
+                required: true,
+                message: "请输入数据源名称",
+                trigger: "blur"
+              }]
+            },
+            {
               label: "驱动类",
               prop: "driverClass",
-              span: 24,
+              type: 'select',
+              dicData: [
+                {
+                  label: 'com.mysql.cj.jdbc.Driver',
+                  value: 'com.mysql.cj.jdbc.Driver',
+                }, {
+                  label: 'org.postgresql.Driver',
+                  value: 'org.postgresql.Driver',
+                }, {
+                  label: 'oracle.jdbc.OracleDriver',
+                  value: 'oracle.jdbc.OracleDriver',
+                }
+              ],
+              width: 200,
               rules: [{
                 required: true,
                 message: "请输入驱动类",
@@ -68,18 +91,9 @@
               }]
             },
             {
-              label: "连接地址",
-              prop: "jdbcUrl",
-              span: 24,
-              rules: [{
-                required: true,
-                message: "请输入连接地址",
-                trigger: "blur"
-              }]
-            },
-            {
               label: "用户名",
               prop: "username",
+              width: 120,
               rules: [{
                 required: true,
                 message: "请输入用户名",
@@ -89,9 +103,20 @@
             {
               label: "密码",
               prop: "password",
+              hide: true,
               rules: [{
                 required: true,
                 message: "请输入密码",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "连接地址",
+              prop: "url",
+              span: 24,
+              rules: [{
+                required: true,
+                message: "请输入连接地址",
                 trigger: "blur"
               }]
             },
@@ -100,6 +125,7 @@
               prop: "remark",
               span: 24,
               minRows: 3,
+              hide: true,
               type: "textarea"
             },
           ]
