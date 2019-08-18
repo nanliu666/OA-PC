@@ -17,10 +17,14 @@ export const loginByUsername = (tenantId, username, password, type) => request({
   }
 })
 
-export const refreshToken = (refresh_token) => request({
+export const refreshToken = (refresh_token, tenantId) => request({
   url: '/api/blade-auth/oauth/token',
   method: 'post',
+  headers: {
+    'Tenant-Id': tenantId
+  },
   params: {
+    tenantId,
     refresh_token,
     grant_type: "refresh_token",
     scope: "all",

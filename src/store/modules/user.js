@@ -33,6 +33,7 @@ function addPath(ele, first) {
 
 const user = {
   state: {
+    tenantId: getStore({name: 'tenantId'}) || '',
     userInfo: getStore({name: 'userInfo'}) || [],
     permission: getStore({name: 'permission'}) || {},
     roles: [],
@@ -55,6 +56,7 @@ const user = {
           } else {
             commit('SET_TOKEN', data.access_token);
             commit('SET_REFRESH_TOKEN', data.refresh_token);
+            commit('SET_TENANT_ID', data.tenant_id);
             commit('SET_USER_INFO', data);
             commit('DEL_ALL_TAG');
             commit('CLEAR_LOCK');
@@ -101,7 +103,7 @@ const user = {
     refreshToken({state, commit}) {
       console.log('handle refresh token')
       return new Promise((resolve, reject) => {
-        refreshToken(state.refreshToken).then(res => {
+        refreshToken(state.refreshToken, state.tenantId).then(res => {
           const data = res.data;
           commit('SET_TOKEN', data.access_token);
           commit('SET_REFRESH_TOKEN', data.refresh_token);
@@ -176,6 +178,10 @@ const user = {
       setRefreshToken(refreshToken)
       state.refreshToken = refreshToken;
       setStore({name: 'refreshToken', content: state.refreshToken, type: 'session'})
+    },
+    SET_TENANT_ID: (state, tenantId) => {
+      state.tenantId = tenantId;
+      setStore({name: 'tenantId', content: state.tenantId, type: 'session'})
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo;
