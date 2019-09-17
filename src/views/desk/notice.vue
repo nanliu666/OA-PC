@@ -39,7 +39,7 @@
 
 <script>
   import AvueUeditor from 'avue-plugin-ueditor';
-  import {getList, remove, update, add, getNotice} from "@/api/dept/notice";
+  import {getList, remove, update, add, getNotice} from "@/api/desk/notice";
   import {mapGetters} from "vuex";
 
   export default {
