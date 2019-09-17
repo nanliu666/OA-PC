@@ -157,6 +157,7 @@
       },
       searchChange(params) {
         this.query = params;
+        this.page.currentPage = 1;
         this.onLoad(this.page, params);
       },
       selectionChange(list) {
