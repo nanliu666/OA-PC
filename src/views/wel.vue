@@ -26,6 +26,7 @@
         <div>3.基于稳定生产的商业项目升级优化而来，更加贴近企业级的需求</div>
         <div>4.追求企业开发更加高效，部署更加方便，生产更加稳定</div>
         <div>5.GVP-码云最有价值开源项目</div>
+        <div>6.BladeX授权地址:<a target="_blank" href="https://bladex.vip/#/vip">点击授权</a></div>
       </el-collapse-item>
       <el-collapse-item title="为何需要BladeX" name="3">
         <div>1.经历过较长的线上生产，积累了很多企业痛点的解决方案。</div>
