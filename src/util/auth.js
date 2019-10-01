@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
-const TokenKey = 'x-access-token'
-const RefreshTokenKey = 'x-refresh-token'
+const TokenKey = 'saber-access-token'
+const RefreshTokenKey = 'saber-refresh-token'
 export function getToken() {
     return Cookies.get(TokenKey)
 }
