@@ -8,8 +8,8 @@
           <el-button @click="handleCancel">关闭</el-button>
         </el-form-item>
       </el-row>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
+      <el-card shadow="hover">
+        <div slot="header">
           <span>审批信息</span>
         </div>
         <el-form-item label="申请人">
@@ -34,28 +34,25 @@
           <el-input type="textarea" v-model="form.comment"></el-input>
         </el-form-item>
       </el-card>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
+      <el-card shadow="hover">
+        <div slot="header">
           <span>流程信息</span>
         </div>
         <el-row type="flex" class="row-bg">
-          <avue-timeline pending time :time-width="200">
-            <avue-timeline-item v-bind:key="flow.id" v-for="flow in flowList">
-              <div slot="time">
-                <p>{{flow.createTime}}</p>
-              </div>
-              <div slot="content">
+          <el-timeline>
+            <el-timeline-item :key="flow.id" :timestamp="flow.createTime" v-for="flow in flowList" placement="top">
+              <el-card shadow="hover">
                 <p>{{flow.assigneeName}} 在 [{{flow.createTime}}] 开始处理 [{{flow.historyActivityName}}] 环节</p>
                 <p v-if="flow.historyActivityDurationTime!==''">任务历时 [{{flow.historyActivityDurationTime}}]</p>
                 <p v-if="flow.comment!==''">批复意见: [{{flow.comment}}]</p>
                 <p v-if="flow.endTime!==''">结束时间: [{{flow.endTime}}]</p>
-              </div>
-            </avue-timeline-item>
-          </avue-timeline>
+              </el-card>
+            </el-timeline-item>
+          </el-timeline>
         </el-row>
       </el-card>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
+      <el-card shadow="hover">
+        <div slot="header">
           <span>流程跟踪</span>
         </div>
         <el-row type="flex" class="row-bg">
