@@ -22,7 +22,7 @@
                    size="small"
                    v-if="permission.api_scope_setting"
                    plain
-                   class="none-border"
+                   style="border: 0;background-color: transparent !important;"
                    @click.stop="handleDataScope(row)">权限配置
         </el-button>
       </template>
@@ -32,37 +32,40 @@
         </div>
       </template>
     </avue-crud>
-    <avue-drawer :title="`[${scopeMenuName}] 接口权限配置`" show-close :width="1000" v-model="drawerVisible"
-                 :before-close="handleDrawerClose">
-      <avue-crud :option="optionScope"
-                 :data="dataScope"
-                 :page="pageScope"
-                 v-model="formScope"
-                 ref="crudScope"
-                 @row-del="rowDelScope"
-                 @row-update="rowUpdateScope"
-                 @row-save="rowSaveScope"
-                 :before-open="beforeOpenScope"
-                 @search-change="searchChangeScope"
-                 @search-reset="searchResetScope"
-                 @selection-change="selectionChangeScope"
-                 @current-change="currentChangeScope"
-                 @size-change="sizeChangeScope"
-                 @on-load="onLoadScope">
-        <template slot="menuLeft">
-          <el-button type="danger"
-                     size="small"
-                     icon="el-icon-delete"
-                     plain
-                     @click="handleDeleteScope">删 除
-          </el-button>
-        </template>
-        <template slot-scope="{row}"
-                  slot="scopeType">
-          <el-tag>{{row.scopeTypeName}}</el-tag>
-        </template>
-      </avue-crud>
-    </avue-drawer>
+    <el-drawer :title="`[${scopeMenuName}] 接口权限配置`" :visible.sync="drawerVisible" :direction="direction"
+               :before-close="handleDrawerClose" size="1000px">
+      <basic-container>
+        <avue-crud :option="optionScope"
+                   :data="dataScope"
+                   :page="pageScope"
+                   v-model="formScope"
+                   :table-loading="scopeLoading"
+                   ref="crudScope"
+                   @row-del="rowDelScope"
+                   @row-update="rowUpdateScope"
+                   @row-save="rowSaveScope"
+                   :before-open="beforeOpenScope"
+                   @search-change="searchChangeScope"
+                   @search-reset="searchResetScope"
+                   @selection-change="selectionChangeScope"
+                   @current-change="currentChangeScope"
+                   @size-change="sizeChangeScope"
+                   @on-load="onLoadScope">
+          <template slot="menuLeft">
+            <el-button type="danger"
+                       size="small"
+                       icon="el-icon-delete"
+                       plain
+                       @click="handleDeleteScope">删 除
+            </el-button>
+          </template>
+          <template slot-scope="{row}"
+                    slot="scopeType">
+            <el-tag>{{row.scopeTypeName}}</el-tag>
+          </template>
+        </avue-crud>
+      </basic-container>
+    </el-drawer>
   </basic-container>
 </template>
 
@@ -97,6 +100,8 @@
           total: 0
         },
         drawerVisible: false,
+        direction: 'rtl',
+        scopeLoading: false,
         scopeMenuId: 0,
         scopeMenuName: "菜单",
         menu: true,
@@ -295,7 +300,7 @@
           viewBtn: true,
           selection: true,
           menuWidth: 200,
-          dialogWidth: 450,
+          dialogWidth: 900,
           dialogHeight: 230,
           column: [
             {
@@ -493,6 +498,7 @@
         this.drawerVisible = true;
         this.scopeMenuId = row.id;
         this.scopeMenuName = row.name;
+        this.onLoadScope(this.pageScope)
       },
       handleDrawerClose(hide) {
         hide();
@@ -594,6 +600,7 @@
         this.pageScope.pageSize = pageSize;
       },
       onLoadScope(page, params = {}) {
+        this.scopeLoading = true;
         const values = {
           ...params,
           menuId: this.scopeMenuId,
@@ -603,15 +610,9 @@
           this.pageScope.total = data.total;
           this.dataScope = data.records;
           this.selectionListScope = [];
+          this.scopeLoading = false;
         });
       },
     }
   };
 </script>
-
-<style>
-  .none-border {
-    border: 0;
-    background-color: transparent !important;
-  }
-</style>

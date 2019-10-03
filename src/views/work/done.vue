@@ -88,7 +88,7 @@
           addBtn: false,
           viewBtn: false,
           delBtn: false,
-          dialogWidth: 300,
+          dialogWidth: 900,
           dialogHeight: 400,
           menuWidth: 150,
           column: [

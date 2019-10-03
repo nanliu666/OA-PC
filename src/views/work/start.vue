@@ -97,7 +97,7 @@
           viewBtn: false,
           delBtn: false,
           menuWidth: 150,
-          dialogWidth: 300,
+          dialogWidth: 900,
           dialogHeight: 400,
           column: [
             {

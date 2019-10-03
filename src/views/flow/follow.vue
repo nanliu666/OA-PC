@@ -70,7 +70,7 @@
           editBtn: false,
           addBtn: false,
           viewBtn: false,
-          dialogWidth: 300,
+          dialogWidth: 900,
           dialogHeight: 400,
           menuWidth: 100,
           column: [

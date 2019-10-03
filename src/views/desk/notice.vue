@@ -67,7 +67,7 @@
         option: {
           height: 'auto',
           calcHeight: 350,
-          dialogWidth: 300,
+          dialogWidth: 900,
           dialogHeight: 530,
           tip: false,
           border: true,

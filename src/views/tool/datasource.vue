@@ -49,7 +49,7 @@
         option: {
           height: 'auto',
           calcHeight: 350,
-          dialogWidth: 400,
+          dialogWidth: 900,
           dialogHeight: 330,
           tip: false,
           border: true,

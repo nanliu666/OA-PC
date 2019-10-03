@@ -53,7 +53,7 @@
           index: true,
           selection: true,
           viewBtn: true,
-          dialogWidth: 300,
+          dialogWidth: 900,
           dialogHeight: 400,
           column: [
             {
