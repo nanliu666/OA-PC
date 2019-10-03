@@ -17,10 +17,10 @@
         <el-collapse v-model="activeNames" @change="handleChange">
           <el-collapse-item title="欢迎使用Saber" name="1">
             <div>1.Saber是BladeX前端UI系统</div>
-            <div>2.对现有的avue2.0、element-ui库进行二次封装。</div>
+            <div>2.对现有的avue2.0、element-ui库进行二次封装</div>
             <div>3.100%兼容原生element-ui库</div>
-            <div>4.基于json驱动的模块配置，打造最好用的vuejs中后台脚手架。</div>
-            <div>5.使用Saber可以大幅度提升开发效率，不再为重复工作发愁。</div>
+            <div>4.基于json驱动的模块配置，打造最好用的vuejs中后台脚手架</div>
+            <div>5.使用Saber可以大幅度提升开发效率，不再为重复工作发愁</div>
           </el-collapse-item>
           <el-collapse-item title="什么是BladeX" name="2">
             <div>1.BladeX是一款精心设计的微服务架构，提供 SpringCloud 全套解决方案</div>
@@ -31,13 +31,13 @@
             <div>6.BladeX授权地址:<a target="_blank" href="https://bladex.vip/#/vip">点击授权</a></div>
           </el-collapse-item>
           <el-collapse-item title="为何需要BladeX" name="3">
-            <div>1.经历过较长的线上生产，积累了很多企业痛点的解决方案。</div>
-            <div>2.一套代码兼容MySql、Oracle、PostgreSQL，适应企业各种不同场景的需求。</div>
-            <div>3.集成了很多企业急切所需的例如多租户、Oauth2授权认证、工作流、分布式事务等等功能。</div>
-            <div>4.深度定制了Flowable工作流，完美支持SpringCloud分布式服务的场景，以远程调用的方式进行操作。</div>
-            <div>5.升级了核心驱动，新功能完全可以开箱即用，而开源版需要自己再花时间进行集成，需要花掉更多的时间成本。</div>
-            <div>6.拥抱微服务时代，很多企业由于项目转型或升级，传统的技术已然不能满足，反而会花更多成本，而BladeX就是为此而生。</div>
-            <div>7.同时提供SpringCloud版本和SpringBoot版本，两个版本的api可以与Sword和Saber无缝对接，为小型项目至大型项目保驾护航。</div>
+            <div>1.经历过较长的线上生产，积累了很多企业痛点的解决方案</div>
+            <div>2.一套代码兼容MySql、Oracle、PostgreSQL，适应企业各种不同场景的需求</div>
+            <div>3.集成了很多企业急切所需的例如多租户、Oauth2授权认证、工作流、分布式事务等等功能</div>
+            <div>4.深度定制了Flowable工作流，完美支持SpringCloud分布式服务的场景，以远程调用的方式进行操作</div>
+            <div>5.升级了核心驱动，新功能完全可以开箱即用，而开源版需要自己再花时间进行集成，需要花掉更多的时间成本</div>
+            <div>6.拥抱微服务时代，很多企业由于项目转型或升级，传统的技术已然不能满足，反而会花更多成本，而BladeX就是为此而生</div>
+            <div>7.同时提供SpringCloud版本和SpringBoot版本，两个版本的api可以与Sword和Saber无缝对接，为小型项目至大型项目保驾护航</div>
             <div>8.授权购买即永久，源码没有混淆，完全开放，后续升级完全免费。企业只需花很少的钱即可获得一整套成熟的解决方案，你还在等什么？</div>
           </el-collapse-item>
           <el-collapse-item title="拥有的核心功能" name="4">
