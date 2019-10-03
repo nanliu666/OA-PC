@@ -52,13 +52,18 @@
     padding: 0;
     padding-bottom: 20px;
     width: calc(100% - 240px);
-    height: calc(100% - 70px);
+    height: calc(100% - 64px);
     box-sizing: border-box;
     overflow: hidden;
+    background: #f0f2f5;
+    z-index:1026;
+    &--fullscreen{
+      width: 100%;
+      left:0;
+    }
 }
 
 .avue-view {
-    padding-bottom: 22px;
     width: 100%;
     box-sizing: border-box;
 }
