@@ -1,15 +1,15 @@
 <template>
   <basic-container>
-    <p align="center">
-      <img src="https://img.shields.io/badge/Release-V2.0.7-green.svg" alt="Downloads">
-      <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="Build Status">
-      <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR3-blue.svg" alt="Coverage Status">
-      <img src="https://img.shields.io/badge/Spring%20Boot-2.1.8.RELEASE-blue.svg" alt="Downloads">
+    <p style="text-align: center">
+      <img src="https://img.shields.io/badge/Release-V2.0.7-green.svg" alt="Downloads"/>
+      <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="Build Status"/>
+      <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR3-blue.svg" alt="Coverage Status"/>
+      <img src="https://img.shields.io/badge/Spring%20Boot-2.1.8.RELEASE-blue.svg" alt="Downloads"/>
       <a target="_blank" href="https://bladex.vip">
-        <img src="https://img.shields.io/badge/Saber%20Author-Small%20Chill-ff69b4.svg" alt="Downloads">
+        <img src="https://img.shields.io/badge/Saber%20Author-Small%20Chill-ff69b4.svg" alt="Downloads"/>
       </a>
       <a target="_blank" href="https://bladex.vip">
-        <img src="https://img.shields.io/badge/Copyright%20-@BladeX-%23ff3f59.svg" alt="Downloads">
+        <img src="https://img.shields.io/badge/Copyright%20-@BladeX-%23ff3f59.svg" alt="Downloads"/>
       </a>
     </p>
     <el-row>
@@ -128,7 +128,7 @@
             <div>4.LauncherService增加排序功能</div>
             <div>5.优化hystrixfeign加载</div>
             <div>6.优化多租户oss系统逻辑，使之更加易用</div>
-            <div>7.tenant_code字段统一为tenant_id </div>
+            <div>7.tenant_code字段统一为tenant_id</div>
           </el-collapse-item>
           <el-collapse-item title="2.0.2.RELEASE发布，增加多租户oss管理系统" name="2">
             <div>1.增加minio封装</div>
