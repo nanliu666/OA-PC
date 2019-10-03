@@ -70,8 +70,8 @@ export default {
           value: "theme-hey"
         },
         {
-          name: "lite主题",
-          value: "theme-lite"
+          name: "lte主题",
+          value: "theme-lte"
         }
       ]
     };
