@@ -59,6 +59,7 @@ export default {
     logs: 'logs',
     table: 'table',
     form: 'form',
+    top: 'backtop',
     data: 'data',
     error: 'error',
     test: 'test'

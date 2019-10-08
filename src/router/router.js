@@ -14,20 +14,27 @@ import Vue from 'vue';
 import i18n from '@/lang' // Internationalization
 import Store from '../store/';
 let Router = new VueRouter({
-    scrollBehavior(to, from, savedPosition) {
-        if (savedPosition) {
-            return savedPosition
-        } else {
-            if (from.meta.keepAlive) {
-                from.meta.savedPosition = document.body.scrollTop;
-            }
-            return {
-                x: 0,
-                y: to.meta.savedPosition || 0
-            }
-        }
-    },
-    routes: []
+  scrollBehavior(to, from, savedPosition) {
+    const avueView = document.getElementById('avue-view');
+    if (!avueView) {
+      return {
+        x: 0,
+        y: 0
+      }
+    }
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      if (from.meta.keepAlive) {
+        from.meta.savedPosition = avueView.scrollTop
+      } else {
+        from.meta.savedPosition = 0;
+      }
+      avueView.scrollTop = to.meta.savedPosition
+
+    }
+  },
+  routes: []
 });
 AvueRouter.install(Vue, Router, Store, i18n);
 Router.$avueRouter.formatRoutes(Store.state.user.menu, true);
