@@ -20,6 +20,7 @@
       </template>
     </avue-crud>
     <el-dialog title="流程删除"
+               append-to-body
                :visible.sync="followBox"
                width="20%">
       <el-form :model="form"

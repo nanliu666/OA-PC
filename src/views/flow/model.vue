@@ -64,6 +64,7 @@
       </template>
     </avue-crud>
     <el-dialog title="流程配置"
+               append-to-body
                :visible.sync="flowBox"
                :fullscreen="true">
       <iframe
@@ -86,6 +87,7 @@
       </span>
     </el-dialog>
     <el-dialog title="流程部署"
+               append-to-body
                :visible.sync="deployBox"
                width="20%">
       <el-form :model="form"

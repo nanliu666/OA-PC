@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog title="选择"
+               append-to-body
                :visible.sync="box"
                width="50%">
       <el-radio-group v-model="text"

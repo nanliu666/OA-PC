@@ -40,6 +40,7 @@
       </template>
     </avue-crud>
     <el-dialog title="下级菜单配置"
+               append-to-body
                :visible.sync="box"
                width="345px">
 

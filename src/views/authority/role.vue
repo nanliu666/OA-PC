@@ -31,6 +31,7 @@
       </template>
     </avue-crud>
     <el-dialog title="角色权限配置"
+               append-to-body
                :visible.sync="box"
                width="345px">
       <el-tabs type="border-card">
