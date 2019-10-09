@@ -76,6 +76,23 @@
       </el-col>
       <el-col :span="8">
         <el-collapse v-model="logActiveNames" @change="handleChange">
+          <el-collapse-item title="2.1.0.RELEASE发布，全面增强底层驱动" name="8">
+            <div>1.升级springboot 2.1.8、springcloud greenwich sr3</div>
+            <div>2.集成seata，提供最简集成方案</div>
+            <div>3.blade-admin增加nacos动态监听</div>
+            <div>4.增加alioss集成，强化oss返回信息</div>
+            <div>5.获取令牌操作增加空判断</div>
+            <div>6.拆分数据库依赖、增强mybatis、增加yml自定义配置读取</div>
+            <div>7.各模块增加默认的yml配置，不占用application.yml</div>
+            <div>8.增加ribbon组件，可自定义lb优先选择的ip段，解决团队网关调试需求</div>
+            <div>9.优化feign的bean加载逻辑</div>
+            <div>10.增强condition条件</div>
+            <div>11.优化日志打印效果</div>
+            <div>12.重构redis模块，增加redis限流功能</div>
+            <div>13.优化beanutil性能</div>
+            <div>14.去掉调试用的RouteEndpoint，增强安全性</div>
+            <div>15.优化部门新增逻辑</div>
+          </el-collapse-item>
           <el-collapse-item title="2.0.7.RELEASE发布，增加网关鉴权，强化代码生成" name="7">
             <div>1.增加基于Nacos的动态网关鉴权</div>
             <div>2.代码生成增加多数据源选择，强化单表代码生成</div>
@@ -183,7 +200,7 @@
     data() {
       return {
         activeNames: ['1', '2', '3'],
-        logActiveNames: ['7']
+        logActiveNames: ['8']
       };
     },
     computed: {
