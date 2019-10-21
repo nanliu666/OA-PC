@@ -30,9 +30,6 @@
                 slot="category">
         <el-tag>{{row.categoryName}}</el-tag>
       </template>
-      <template slot-scope="scope" slot="contentForm">
-        <avue-ueditor :min-rows=6 v-model="form.content" :upload="upload"></avue-ueditor>
-      </template>
     </avue-crud>
   </basic-container>
 </template>
@@ -57,13 +54,6 @@
           total: 0
         },
         selectionList: [],
-        upload: {
-          action: '/api/blade-resource/oss/endpoint/put-file',
-          props: {
-            res: "data",
-            url: "link",
-          }
-        },
         option: {
           height: 'auto',
           calcHeight: 350,
@@ -137,8 +127,16 @@
             {
               label: "通知内容",
               prop: "content",
-              formslot: true,
+              component: 'ueditor',
+              options: {
+                action: '/api/blade-resource/oss/endpoint/put-file',
+                props: {
+                  res: "data",
+                  url: "link",
+                }
+              },
               hide: true,
+              minRows: 6,
               span: 24,
             }
           ]
