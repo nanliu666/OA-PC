@@ -12,6 +12,7 @@
                @search-reset="searchReset"
                @current-change="currentChange"
                @size-change="sizeChange"
+               @refresh-change="refreshChange"
                @on-load="onLoad">
     </avue-crud>
   </basic-container>
@@ -133,6 +134,9 @@
       },
       sizeChange(pageSize){
         this.page.pageSize = pageSize;
+      },
+      refreshChange() {
+        this.onLoad(this.page, this.query);
       },
       onLoad(page, params = {}) {
         this.loading = true;

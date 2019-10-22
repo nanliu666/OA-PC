@@ -11,13 +11,16 @@
       </div>
       <div class="avue-main">
         <!-- 顶部标签卡 -->
-        <tags/>
+        <tags />
+        <transition name="fade-scale">
+          <search class="avue-view" v-show="isSearch"></search>
+        </transition>
         <!-- 主体视图层 -->
-        <div style="height:100%;overflow-y:auto;overflow-x:hidden;" id="avue-view">
+        <div style="height:100%;overflow-y:auto;overflow-x:hidden;" id="avue-view" v-show="!isSearch">
           <keep-alive>
-            <router-view class="avue-view" v-if="$route.meta.$keepAlive"/>
+            <router-view class="avue-view" v-if="$route.meta.$keepAlive" />
           </keep-alive>
-          <router-view class="avue-view" v-if="!$route.meta.$keepAlive"/>
+          <router-view class="avue-view" v-if="!$route.meta.$keepAlive" />
         </div>
       </div>
     </div>
@@ -28,6 +31,7 @@
 <script>
   import {mapGetters} from "vuex";
   import tags from "./tags";
+  import search from "./search";
   import top from "./top/";
   import sidebar from "./sidebar/";
   import admin from "@/util/admin";
@@ -44,6 +48,8 @@
     name: "index",
     data() {
       return {
+        //搜索控制
+        isSearch: false,
         //刷新token锁
         refreshLock: false,
         //刷新token的时间

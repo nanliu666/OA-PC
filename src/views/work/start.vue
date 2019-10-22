@@ -11,6 +11,7 @@
                @selection-change="selectionChange"
                @current-change="currentChange"
                @size-change="sizeChange"
+               @refresh-change="refreshChange"
                @on-load="onLoad">
       <template slot-scope="scope" slot="menu">
         <el-button type="text"
@@ -184,6 +185,9 @@
       },
       sizeChange(pageSize){
         this.page.pageSize = pageSize;
+      },
+      refreshChange() {
+        this.onLoad(this.page, this.query);
       },
       onLoad(page, params = {}) {
         const values = {

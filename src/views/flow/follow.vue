@@ -13,6 +13,7 @@
                @selection-change="selectionChange"
                @current-change="currentChange"
                @size-change="sizeChange"
+               @refresh-change="refreshChange"
                @on-load="onLoad">
       <template slot-scope="{row}"
                 slot="suspensionState">
@@ -173,6 +174,9 @@
       },
       sizeChange(pageSize) {
         this.page.pageSize = pageSize;
+      },
+      refreshChange() {
+        this.onLoad(this.page, this.query);
       },
       onLoad(page, params = {}) {
         this.loading = true;

@@ -81,87 +81,93 @@
           <el-dropdown-item>
             <router-link to="/info/index">{{$t('navbar.userinfo')}}</router-link>
           </el-dropdown-item>
+          <el-dropdown-item>
+            <router-link to="/info/setting">{{$t('navbar.setting')}}</router-link>
+          </el-dropdown-item>
           <el-dropdown-item @click.native="logout"
-                            divided>{{$t('navbar.logOut')}}</el-dropdown-item>
+                            divided>{{$t('navbar.logOut')}}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapState } from "vuex";
-import { fullscreenToggel, listenfullscreen } from "@/util/util";
-import topLock from "./top-lock";
-import topMenu from "./top-menu";
-import topSearch from "./top-search";
-import topTheme from "./top-theme";
-import topLogs from "./top-logs";
-import topColor from "./top-color";
-import topLang from "./top-lang";
-export default {
-  components: {
-    topLock,
-    topMenu,
-    topSearch,
-    topTheme,
-    topLogs,
-    topColor,
-    topLang
-  },
-  name: "top",
-  data() {
-    return {};
-  },
-  filters: {},
-  created() {},
-  mounted() {
-    listenfullscreen(this.setScreen);
-  },
-  computed: {
-    ...mapState({
-      showDebug: state => state.common.showDebug,
-      showTheme: state => state.common.showTheme,
-      showLock: state => state.common.showLock,
-      showFullScren: state => state.common.showFullScren,
-      showCollapse: state => state.common.showCollapse,
-      showSearch: state => state.common.showSearch,
-      showMenu: state => state.common.showMenu,
-      showColor: state => state.common.showColor
-    }),
-    ...mapGetters([
-      "userInfo",
-      "isFullScren",
-      "tagWel",
-      "tagList",
-      "isCollapse",
-      "tag",
-      "logsLen",
-      "logsFlag"
-    ])
-  },
-  methods: {
-    handleScreen() {
-      fullscreenToggel();
+  import {mapGetters, mapState} from "vuex";
+  import {fullscreenToggel, listenfullscreen} from "@/util/util";
+  import topLock from "./top-lock";
+  import topMenu from "./top-menu";
+  import topSearch from "./top-search";
+  import topTheme from "./top-theme";
+  import topLogs from "./top-logs";
+  import topColor from "./top-color";
+  import topLang from "./top-lang";
+
+  export default {
+    components: {
+      topLock,
+      topMenu,
+      topSearch,
+      topTheme,
+      topLogs,
+      topColor,
+      topLang
     },
-    setCollapse() {
-      this.$store.commit("SET_COLLAPSE");
+    name: "top",
+    data() {
+      return {};
     },
-    setScreen() {
-      this.$store.commit("SET_FULLSCREN");
+    filters: {},
+    created() {
     },
-    logout() {
-      this.$confirm(this.$t("logoutTip"), this.$t("tip"), {
-        confirmButtonText: this.$t("submitText"),
-        cancelButtonText: this.$t("cancelText"),
-        type: "warning"
-      }).then(() => {
-        this.$store.dispatch("LogOut").then(() => {
-          this.$router.push({ path: "/login" });
+    mounted() {
+      listenfullscreen(this.setScreen);
+    },
+    computed: {
+      ...mapState({
+        showDebug: state => state.common.showDebug,
+        showTheme: state => state.common.showTheme,
+        showLock: state => state.common.showLock,
+        showFullScren: state => state.common.showFullScren,
+        showCollapse: state => state.common.showCollapse,
+        showSearch: state => state.common.showSearch,
+        showMenu: state => state.common.showMenu,
+        showColor: state => state.common.showColor
+      }),
+      ...mapGetters([
+        "userInfo",
+        "isFullScren",
+        "tagWel",
+        "tagList",
+        "isCollapse",
+        "tag",
+        "logsLen",
+        "logsFlag"
+      ])
+    },
+    methods: {
+      handleScreen() {
+        fullscreenToggel();
+      },
+      setCollapse() {
+        this.$store.commit("SET_COLLAPSE");
+      },
+      setScreen() {
+        this.$store.commit("SET_FULLSCREN");
+      },
+      logout() {
+        this.$confirm(this.$t("logoutTip"), this.$t("tip"), {
+          confirmButtonText: this.$t("submitText"),
+          cancelButtonText: this.$t("cancelText"),
+          type: "warning"
+        }).then(() => {
+          this.$store.dispatch("LogOut").then(() => {
+            this.$router.push({path: "/login"});
+          });
         });
-      });
+      }
     }
-  }
-};
+  };
 </script>
 
 <style lang="scss" scoped>
