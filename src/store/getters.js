@@ -11,6 +11,7 @@ const getters = {
   screen: state => state.common.screen,
   isLock: state => state.common.isLock,
   isFullScren: state => state.common.isFullScren,
+  isMenu: state => state.common.isMenu,
   lockPasswd: state => state.common.lockPasswd,
   tagList: state => state.tags.tagList,
   tagWel: state => state.tags.tagWel,

@@ -96,6 +96,7 @@ export default {
     color: 'color'
   },
   tagsView: {
+    search: 'Search',
     menu: 'menu',
     closeOthers: 'Close Others',
     closeAll: 'Close All'

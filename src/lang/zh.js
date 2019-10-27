@@ -95,6 +95,7 @@ export default {
     color: '换色'
   },
   tagsView: {
+    search: '搜索',
     menu: '更多',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'

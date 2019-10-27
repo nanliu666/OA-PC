@@ -88,9 +88,8 @@
         this.$router.push({
           path: this.$router.$avueRouter.getPath({
             name: item[this.labelKey],
-            src: item[this.pathKey],
-            i18n: (item.meta || {}).i18n
-          }),
+            src: item[this.pathKey]
+          }, item.meta),
           query: item.query
         });
       }

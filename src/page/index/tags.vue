@@ -133,9 +133,8 @@
         this.$router.push({
           path: this.$router.$avueRouter.getPath({
             name: tag.label,
-            src: tag.value,
-            i18n: tag.meta.i18n
-          }),
+            src: tag.value
+          }, tag.meta),
           query: tag.query
         });
       },

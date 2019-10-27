@@ -1,5 +1,6 @@
 <template>
-  <div class="basic-container">
+  <div class="basic-container"
+       :class="{'basic-container--block':block}">
     <el-card>
       <slot></slot>
     </el-card>
@@ -7,9 +8,15 @@
 </template>
 
 <script>
-export default {
-  name: "basicContainer"
-};
+  export default {
+    name: "basicContainer",
+    props: {
+      block: {
+        type: Boolean,
+        default: false
+      }
+    }
+  };
 </script>
 
 <style lang="scss">
@@ -17,6 +24,12 @@ export default {
   padding: 10px 6px;
   border-radius: 10px;
   box-sizing: border-box;
+  &--block {
+    height: 100%;
+    .el-card {
+      height: 100%;
+    }
+  }
   .el-card {
     width: 100%;
   }

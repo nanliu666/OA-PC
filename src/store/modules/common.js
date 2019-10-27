@@ -11,6 +11,7 @@ const common = {
     language: getStore({name: 'language'}) || 'zh',
     isCollapse: false,
     isFullScren: false,
+    isMenu: true,
     isShade: false,
     screen: -1,
     isLock: getStore({name: 'isLock'}) || false,
@@ -44,6 +45,9 @@ const common = {
     },
     SET_FULLSCREN: (state) => {
       state.isFullScren = !state.isFullScren;
+    },
+    SET_IS_MENU: (state, menu) => {
+      state.isMenu = menu;
     },
     SET_LOCK: (state) => {
       state.isLock = true;

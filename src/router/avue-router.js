@@ -9,6 +9,7 @@ RouterPlugin.install = function (vue, router, store, i18n) {
   this.$vue = new vue({i18n});
 
   function isURL(s) {
+    if (s.includes('html')) return true;
     return /^http[s]?:\/\/.*/.test(s)
   }
 
@@ -55,7 +56,7 @@ RouterPlugin.install = function (vue, router, store, i18n) {
     getPath: function (params) {
       let {src} = params;
       let result = src || '/';
-      if (src.includes("http") || src.includes("https")) {
+      if (isURL(src)) {
         result = `/myiframe/urlPath?${objToform(params)}`;
       }
       return result;
