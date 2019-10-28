@@ -3,18 +3,14 @@
     <el-menu :default-active="activeIndex"
              mode="horizontal"
              text-color="#333">
-      <el-menu-item index="0"
-                    @click.native="openMenu(itemHome)"
-                    key="0">
+      <el-menu-item index="0" @click.native="openHome(itemHome)" key="0">
         <template slot="title">
           <i :class="itemHome.source"></i>
           <span>{{generateTitle(itemHome)}}</span>
         </template>
       </el-menu-item>
       <template v-for="(item,index) in items">
-        <el-menu-item :index="item.id+''"
-                      @click.native="openMenu(item)"
-                      :key="index">
+        <el-menu-item :index="item.id+''" @click.native="openMenu(item)" :key="index">
           <template slot="title">
             <i :class="item.source" style="padding-right: 5px;"></i>
             <span>{{generateTitle(item)}}</span>
@@ -48,7 +44,13 @@
       ...mapGetters(["tagCurrent", "menu"])
     },
     methods: {
-      openMenu (item) {
+      openHome(itemHome) {
+        this.index.openMenu(itemHome);
+        this.$router.push({
+          path: this.$router.$avueRouter.getPath({name: itemHome.name, src: ''}, {})
+        });
+      },
+      openMenu(item) {
         this.index.openMenu(item)
       },
       getMenu() {
