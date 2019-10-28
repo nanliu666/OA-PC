@@ -40,6 +40,7 @@
         items: [],
       };
     },
+    inject: ["index"],
     created() {
       this.getMenu();
     },
@@ -47,6 +48,9 @@
       ...mapGetters(["tagCurrent", "menu"])
     },
     methods: {
+      openMenu (item) {
+        this.index.openMenu(item)
+      },
       getMenu() {
         this.$store.dispatch("GetTopMenu").then(res => {
           this.items = res;
@@ -58,30 +62,6 @@
           (item.meta || {}).i18n
         );
       },
-      openMenu(item) {
-        this.$store.dispatch("GetMenu", item.id).then(data => {
-          if (data.length !== 0) {
-            this.$router.$avueRouter.formatRoutes(data, true);
-          }
-          let itemActive,
-            childItemActive = 0;
-          if (item.path) {
-            itemActive = item;
-          } else {
-            if (this.menu[childItemActive].length == 0) {
-              itemActive = this.menu[childItemActive];
-            } else {
-              itemActive = this.menu[childItemActive].children[childItemActive];
-            }
-          }
-          this.$router.push({
-            path: this.$router.$avueRouter.getPath({
-              name: itemActive.label,
-              src: itemActive.path
-            }, itemActive.meta)
-          });
-        });
-      }
     }
   };
 </script>

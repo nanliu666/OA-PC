@@ -52,6 +52,7 @@ export default {
     website: 'bladex官网',
     avuexwebsite: 'avuex官网',
     dashboard: '首页',
+    more: '更多',
     tags: '标签',
     store: '本地存储',
     api: '全局函数',
@@ -91,6 +92,7 @@ export default {
     screenfullF: '退出全屏',
     screenfull: '全屏',
     language: '中英文',
+    notice: '消息通知',
     theme: '主题',
     color: '换色'
   },

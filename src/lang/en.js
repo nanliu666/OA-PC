@@ -52,6 +52,7 @@ export default {
     website: 'website',
     avuexwebsite: 'avuex',
     dashboard: 'dashboard',
+    more: 'more',
     tags: 'tags',
     store: 'store',
     permission: 'permission',
@@ -92,6 +93,7 @@ export default {
     screenfullF: 'exit screenfull',
     screenfull: 'screenfull',
     language: 'language',
+    notice: 'notice',
     theme: 'theme',
     color: 'color'
   },

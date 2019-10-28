@@ -38,7 +38,8 @@ const user = {
     permission: getStore({name: 'permission'}) || {},
     roles: [],
     menu: getStore({name: 'menu'}) || [],
-    menuAll: [],
+    menuId: getStore({name: 'menuId'}) || [],
+    menuAll: getStore({name: 'menuAll'}) || [],
     token: getStore({name: 'token'}) || '',
     refreshToken: getStore({name: 'refreshToken'}) || '',
   },
@@ -119,6 +120,8 @@ const user = {
         logout().then(() => {
           commit('SET_TOKEN', '')
           commit('SET_MENU', [])
+          commit('SET_MENU_ID', {})
+          commit('SET_MENU_ALL', []);
           commit('SET_ROLES', [])
           commit('DEL_ALL_TAG');
           commit('CLEAR_LOCK');
@@ -134,6 +137,8 @@ const user = {
     FedLogOut({commit}) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
+        commit('SET_MENU_ID', {})
+        commit('SET_MENU_ALL', []);
         commit('SET_MENU', [])
         commit('SET_ROLES', [])
         commit('DEL_ALL_TAG');
@@ -174,6 +179,14 @@ const user = {
       state.token = token;
       setStore({name: 'token', content: state.token, type: 'session'})
     },
+    SET_MENU_ID(state, menuId) {
+      state.menuId = menuId;
+      setStore({name: 'menuId', content: state.menuId, type: 'session'})
+    },
+    SET_MENU_ALL: (state, menuAll) => {
+      state.menuAll = menuAll
+      setStore({name: 'menuAll', content: state.menuAll, type: 'session'})
+    },
     SET_REFRESH_TOKEN: (state, refreshToken) => {
       setRefreshToken(refreshToken)
       state.refreshToken = refreshToken;
@@ -188,11 +201,17 @@ const user = {
       setStore({name: 'userInfo', content: state.userInfo})
     },
     SET_MENU: (state, menu) => {
-      state.menu = menu
+      state.menu = menu;
+      let menuAll = state.menuAll;
+      if (!validatenull(menu)) {
+        const obj = menuAll.filter(ele => ele.path === menu[0].path)[0];
+        if (!obj) {
+          menuAll = menuAll.concat(menu);
+          state.menuAll = menuAll
+        }
+        setStore({name: 'menuAll', content: menuAll, type: 'session'})
+      }
       setStore({name: 'menu', content: state.menu, type: 'session'})
-    },
-    SET_MENU_ALL: (state, menuAll) => {
-      state.menuAll = menuAll;
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles;

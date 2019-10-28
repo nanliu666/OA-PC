@@ -16,7 +16,7 @@ import {
 } from '@/config/env';
 import i18n from './lang' // Internationalization
 import './styles/common.scss';
-
+import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
 
 Vue.use(router)
@@ -29,6 +29,7 @@ Vue.use(window.AVUE, {
 })
 //注册全局容器
 Vue.component('basicContainer', basicContainer)
+Vue.component('basicBlock', basicBlock)
 // 加载相关url地址
 Object.keys(urls).forEach(key => {
   Vue.prototype[key] = urls[key];

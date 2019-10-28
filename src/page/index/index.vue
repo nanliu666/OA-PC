@@ -2,7 +2,7 @@
   <div class="avue-contail" :class="{'avue--collapse':isCollapse}">
     <div class="avue-header">
       <!-- 顶部导航栏 -->
-      <top/>
+      <top ref="top" />
     </div>
     <div class="avue-layout">
       <div class="avue-left">
@@ -43,9 +43,15 @@
     components: {
       top,
       tags,
+      search,
       sidebar
     },
     name: "index",
+    provide () {
+      return {
+        index: this
+      };
+    },
     data() {
       return {
         //搜索控制
@@ -63,7 +69,7 @@
     mounted() {
       this.init();
     },
-    computed: mapGetters(["isLock", "isCollapse", "website"]),
+    computed: mapGetters(["isMenu", "isLock", "isCollapse", "website", "menu"]),
     props: [],
     methods: {
       showCollapse() {
@@ -80,12 +86,44 @@
         this.$store.dispatch("FlowRoutes").then(() => {
         });
       },
+      //打开菜单
+      openMenu (item = {}) {
+        this.$store.dispatch("GetMenu", item.id).then(data => {
+          if (data.length !== 0) {
+            this.$router.$avueRouter.formatRoutes(data, true);
+          }
+          //当点击顶部菜单做的事件
+          if (!this.validatenull(item)) {
+            let itemActive = {},
+              childItemActive = 0;
+            //vue-router路由
+            if (item.path) {
+              itemActive = item;
+            } else {
+              if (this.menu[childItemActive].length === 0) {
+                itemActive = this.menu[childItemActive];
+              } else {
+                itemActive = this.menu[childItemActive].children[childItemActive];
+              }
+            }
+            this.$store.commit('SET_MENU_ID', item);
+            this.$router.push({
+              path: this.$router.$avueRouter.getPath({
+                name: itemActive.label,
+                src: itemActive.path
+              }, itemActive.meta)
+            });
+          }
+
+        });
+      },
+      // 定时检测token
       refreshToken() {
         this.refreshTime = setInterval(() => {
           const token = getStore({
             name: "token",
             debug: true
-          });
+          }) || {};
           const date = calcDate(token.datetime, new Date().getTime());
           if (validatenull(date)) return;
           if (date.seconds >= this.website.tokenTime && !this.refreshLock) {

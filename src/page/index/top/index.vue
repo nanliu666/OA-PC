@@ -11,7 +11,7 @@
     <div class="top-bar__title">
       <div class="top-bar__item top-bar__item--show"
            v-if="showMenu">
-        <top-menu></top-menu>
+        <top-menu ref="topMenu"></top-menu>
       </div>
       <span class="top-bar__item"
             v-if="showSearch">
@@ -52,6 +52,13 @@
         </div>
       </el-tooltip>
       <el-tooltip effect="dark"
+                  :content="$t('navbar.notice')"
+                  placement="bottom">
+        <div class="top-bar__item top-bar__item--show">
+          <top-notice></top-notice>
+        </div>
+      </el-tooltip>
+      <el-tooltip effect="dark"
                   :content="$t('navbar.language')"
                   placement="bottom">
         <div class="top-bar__item top-bar__item--show">
@@ -81,9 +88,6 @@
           <el-dropdown-item>
             <router-link to="/info/index">{{$t('navbar.userinfo')}}</router-link>
           </el-dropdown-item>
-          <el-dropdown-item>
-            <router-link to="/info/setting">{{$t('navbar.setting')}}</router-link>
-          </el-dropdown-item>
           <el-dropdown-item @click.native="logout"
                             divided>{{$t('navbar.logOut')}}
           </el-dropdown-item>
@@ -93,6 +97,7 @@
   </div>
 </template>
 <script>
+  import {resetRouter} from '@/router/router'
   import {mapGetters, mapState} from "vuex";
   import {fullscreenToggel, listenfullscreen} from "@/util/util";
   import topLock from "./top-lock";
@@ -101,6 +106,7 @@
   import topTheme from "./top-theme";
   import topLogs from "./top-logs";
   import topColor from "./top-color";
+  import topNotice from './top-notice'
   import topLang from "./top-lang";
 
   export default {
@@ -111,6 +117,7 @@
       topTheme,
       topLogs,
       topColor,
+      topNotice,
       topLang
     },
     name: "top",
@@ -162,6 +169,7 @@
           type: "warning"
         }).then(() => {
           this.$store.dispatch("LogOut").then(() => {
+            resetRouter();
             this.$router.push({path: "/login"});
           });
         });
