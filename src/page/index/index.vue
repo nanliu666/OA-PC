@@ -2,7 +2,7 @@
   <div class="avue-contail" :class="{'avue--collapse':isCollapse}">
     <div class="avue-header">
       <!-- 顶部导航栏 -->
-      <top ref="top" />
+      <top ref="top"/>
     </div>
     <div class="avue-layout">
       <div class="avue-left">
@@ -11,7 +11,7 @@
       </div>
       <div class="avue-main">
         <!-- 顶部标签卡 -->
-        <tags />
+        <tags/>
         <transition name="fade-scale">
           <search class="avue-view" v-show="isSearch"></search>
         </transition>
@@ -47,7 +47,7 @@
       sidebar
     },
     name: "index",
-    provide () {
+    provide() {
       return {
         index: this
       };
@@ -87,16 +87,15 @@
         });
       },
       //打开菜单
-      openMenu (item = {}) {
+      openMenu(item = {}) {
         this.$store.dispatch("GetMenu", item.id).then(data => {
           if (data.length !== 0) {
             this.$router.$avueRouter.formatRoutes(data, true);
           }
-          //当点击顶部菜单做的事件
-          if (!this.validatenull(item)) {
+          //当点击顶部菜单后默认打开第一个菜单
+          /*if (!this.validatenull(item)) {
             let itemActive = {},
               childItemActive = 0;
-            //vue-router路由
             if (item.path) {
               itemActive = item;
             } else {
@@ -109,11 +108,11 @@
             this.$store.commit('SET_MENU_ID', item);
             this.$router.push({
               path: this.$router.$avueRouter.getPath({
-                name: itemActive.label,
+                name: (itemActive.label || itemActive.name),
                 src: itemActive.path
               }, itemActive.meta)
             });
-          }
+          }*/
 
         });
       },

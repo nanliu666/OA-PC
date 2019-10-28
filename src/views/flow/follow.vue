@@ -88,7 +88,7 @@
               search: true,
             },
             {
-              label: "流程实例id",
+              label: "实例id",
               prop: "processInstanceId",
               search: true,
               width: 320,

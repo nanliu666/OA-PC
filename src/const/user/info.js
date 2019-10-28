@@ -13,7 +13,7 @@ export default {
           url: 'link',
         },
         canvasOption: {
-          text: 'bladex',
+          text: '',
           ratio: 0.1
         },
         action: '/api/blade-resource/oss/endpoint/put-file',

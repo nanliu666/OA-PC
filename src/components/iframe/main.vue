@@ -61,12 +61,12 @@
       load() {
         this.show();
         var flag = true; //URL是否包含问号
-        if (this.$route.query.src.indexOf("?") == -1) {
+        if (this.$route.query.src !== undefined && this.$route.query.src.indexOf("?") === -1) {
           flag = false;
         }
         var list = [];
         for (var key in this.$route.query) {
-          if (key != "src" && key != "name" && key != "i18n") {
+          if (key !== "src" && key !== "name" && key !== "i18n") {
             list.push(`${key}= this.$route.query[key]`);
           }
         }
@@ -84,7 +84,7 @@
         let time = 3;
         const timeFunc = setInterval(() => {
           time--;
-          if (time == 0) {
+          if (time === 0) {
             this.hide();
             clearInterval(timeFunc);
           }
