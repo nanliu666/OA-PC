@@ -76,6 +76,23 @@
       </el-col>
       <el-col :span="8">
         <el-collapse v-model="logActiveNames" @change="handleChange">
+          <el-collapse-item title="2.2.0.RELEASE发布，增加集群监控，链路追踪" name="9">
+            <div>1.增加turbine集群监控服务</div>
+            <div>2.增加zipkin分布式链路追踪</div>
+            <div>3.升级seata版本至0.9.0，解决分布式事务遇到的bug</div>
+            <div>4.Launcher的nacos配置改为sharedIds，提升子工程配置优先级</div>
+            <div>5.增加changeStatus方法，方便修改业务状态字段</div>
+            <div>6.saber代码模板增加刷新事件</div>
+            <div>7.saber底层架构升级</div>
+            <div>8.saber支持tab切换保存页面状态</div>
+            <div>9.添加bom统一版本配置</div>
+            <div>10.添加trace starter</div>
+            <div>11.blade-admin排除seata服务</div>
+            <div>12.oss敏感操作增加权限校验</div>
+            <div>13.修复dict、role不选择父节点报错</div>
+            <div>14.动态网关设置启动加载</div>
+            <div>15.字典增加封存功能</div>
+          </el-collapse-item>
           <el-collapse-item title="2.1.0.RELEASE发布，全面增强底层驱动" name="8">
             <div>1.升级springboot 2.1.8、springcloud greenwich sr3</div>
             <div>2.集成seata，提供最简集成方案</div>
@@ -200,7 +217,7 @@
     data() {
       return {
         activeNames: ['1', '2', '3'],
-        logActiveNames: ['8']
+        logActiveNames: ['9']
       };
     },
     computed: {
