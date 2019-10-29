@@ -149,7 +149,6 @@
                 trigger: "blur"
               }]
             },
-
             {
               label: "备注",
               prop: "remark",

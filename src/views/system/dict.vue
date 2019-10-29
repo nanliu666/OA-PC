@@ -26,6 +26,10 @@
                    @click="handleDelete">删 除
         </el-button>
       </template>
+      <template slot-scope="{row}"
+                slot="isSealed">
+        <el-tag>{{row.isSealed===0?'否':'是'}}</el-tag>
+      </template>
     </avue-crud>
   </basic-container>
 </template>
@@ -60,6 +64,8 @@
           index: true,
           selection: true,
           viewBtn: true,
+          dialogWidth: 880,
+          dialogHeight: 320,
           column: [
             {
               label: "字典编号",
@@ -118,10 +124,30 @@
               }]
             },
             {
+              label: "是否封存",
+              prop: "isSealed",
+              type: 'select',
+              dicData: [
+                {
+                  label: "否",
+                  value: 0
+                },
+                {
+                  label: "是",
+                  value: 1
+                }
+              ],
+              slot: true,
+              rules: [{
+                required: true,
+                message: "请选择是否封存",
+                trigger: "blur"
+              }]
+            },
+            {
               label: "字典备注",
               prop: "remark",
               search: true,
-              span: 24,
               hide: true,
             },
           ]
