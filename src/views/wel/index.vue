@@ -1,7 +1,7 @@
 <template>
   <basic-container>
     <p style="text-align: center">
-      <img src="https://img.shields.io/badge/Release-V2.2.0-green.svg" alt="Downloads"/>
+      <img src="https://img.shields.io/badge/Release-V2.2.1-green.svg" alt="Downloads"/>
       <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="Build Status"/>
       <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR3-blue.svg" alt="Coverage Status"/>
       <img src="https://img.shields.io/badge/Spring%20Boot-2.1.9.RELEASE-blue.svg" alt="Downloads"/>
@@ -76,6 +76,18 @@
       </el-col>
       <el-col :span="8">
         <el-collapse v-model="logActiveNames" @change="handleChange">
+          <el-collapse-item title="2.2.1.RELEASE发布，集成ELK，增加分布式日志追踪" name="10">
+            <div>1.集成最新版ELK，增加分布式日志追踪功能</div>
+            <div>2.增加ELK一键部署docker脚本</div>
+            <div>3.抽象封装日志管理逻辑</div>
+            <div>4.BladeX-Biz增加easypoi的demo工程</div>
+            <div>5.BladeX-Biz增加websocket的demo工程</div>
+            <div>6.优化minio文件策略</div>
+            <div>7.Sql条件构建类去除分页字段</div>
+            <div>8.优化sql打印功能</div>
+            <div>9.优化wrapper逻辑</div>
+            <div>10.CommonConstant拆分出LauncherConstant</div>
+          </el-collapse-item>
           <el-collapse-item title="2.2.0.RELEASE发布，增加集群监控，链路追踪" name="9">
             <div>1.增加turbine集群监控服务</div>
             <div>2.增加zipkin分布式链路追踪</div>
@@ -216,8 +228,8 @@
     name: "wel",
     data() {
       return {
-        activeNames: ['1', '2', '3'],
-        logActiveNames: ['9']
+        activeNames: ['1', '2', '3', '5'],
+        logActiveNames: ['10']
       };
     },
     computed: {
