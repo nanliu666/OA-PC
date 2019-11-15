@@ -1,34 +1,47 @@
 <template>
   <basic-container>
-    <avue-crud :option="option"
-               :table-loading="loading"
-               :data="data"
-               ref="crud"
-               v-model="form"
-               :permission="permissionList"
-               :before-open="beforeOpen"
-               @row-del="rowDel"
-               @row-update="rowUpdate"
-               @row-save="rowSave"
-               @search-change="searchChange"
-               @search-reset="searchReset"
-               @selection-change="selectionChange"
-               @current-change="currentChange"
-               @size-change="sizeChange"
-               @refresh-change="refreshChange"
-               @on-load="onLoad">
+    <avue-crud
+      :option="option"
+      :table-loading="loading"
+      :data="data"
+      ref="crud"
+      v-model="form"
+      :permission="permissionList"
+      :before-open="beforeOpen"
+      :before-close="beforeClose"
+      @row-del="rowDel"
+      @row-update="rowUpdate"
+      @row-save="rowSave"
+      @search-change="searchChange"
+      @search-reset="searchReset"
+      @selection-change="selectionChange"
+      @current-change="currentChange"
+      @size-change="sizeChange"
+      @refresh-change="refreshChange"
+      @on-load="onLoad"
+    >
       <template slot="menuLeft">
-        <el-button type="danger"
-                   size="small"
-                   icon="el-icon-delete"
-                   v-if="permission.dict_delete"
-                   plain
-                   @click="handleDelete">删 除
+        <el-button
+          type="danger"
+          size="small"
+          icon="el-icon-delete"
+          v-if="permission.dict_delete"
+          plain
+          @click="handleDelete"
+        >删 除
         </el-button>
       </template>
-      <template slot-scope="{row}"
-                slot="isSealed">
+      <template slot-scope="{row}" slot="isSealed">
         <el-tag>{{row.isSealed===0?'否':'是'}}</el-tag>
+      </template>
+      <template slot-scope="scope" slot="menu">
+        <el-button
+          type="text"
+          icon="el-icon-check"
+          size="small"
+          @click.stop="handleAdd(scope.row,scope.index)"
+        >新增子项
+        </el-button>
       </template>
     </avue-crud>
   </basic-container>
@@ -64,6 +77,7 @@
           index: true,
           selection: true,
           viewBtn: true,
+          menuWidth: 300,
           dialogWidth: 880,
           dialogHeight: 320,
           column: [
@@ -72,21 +86,26 @@
               prop: "code",
               search: true,
               span: 24,
-              rules: [{
-                required: true,
-                message: "请输入字典编号",
-                trigger: "blur"
-              }]
+              rules: [
+                {
+                  required: true,
+                  message: "请输入字典编号",
+                  trigger: "blur"
+                }
+              ]
             },
             {
               label: "字典名称",
               prop: "dictValue",
               search: true,
-              rules: [{
-                required: true,
-                message: "请输入字典名称",
-                trigger: "blur"
-              }]
+              align: "center",
+              rules: [
+                {
+                  required: true,
+                  message: "请输入字典名称",
+                  trigger: "blur"
+                }
+              ]
             },
             {
               label: "上级字典",
@@ -97,36 +116,42 @@
               props: {
                 label: "title"
               },
-              rules: [{
-                required: false,
-                message: "请选择上级字典",
-                trigger: "click"
-              }]
+              rules: [
+                {
+                  required: false,
+                  message: "请选择上级字典",
+                  trigger: "click"
+                }
+              ]
             },
             {
               label: "字典键值",
               prop: "dictKey",
               type: "number",
-              rules: [{
-                required: true,
-                message: "请输入字典键值",
-                trigger: "blur"
-              }]
+              rules: [
+                {
+                  required: true,
+                  message: "请输入字典键值",
+                  trigger: "blur"
+                }
+              ]
             },
             {
               label: "字典排序",
               prop: "sort",
               type: "number",
-              rules: [{
-                required: true,
-                message: "请输入字典排序",
-                trigger: "blur"
-              }]
+              rules: [
+                {
+                  required: true,
+                  message: "请输入字典排序",
+                  trigger: "blur"
+                }
+              ]
             },
             {
               label: "是否封存",
               prop: "isSealed",
-              type: 'select',
+              type: "select",
               dicData: [
                 {
                   label: "否",
@@ -138,18 +163,20 @@
                 }
               ],
               slot: true,
-              rules: [{
-                required: true,
-                message: "请选择是否封存",
-                trigger: "blur"
-              }]
+              rules: [
+                {
+                  required: true,
+                  message: "请选择是否封存",
+                  trigger: "blur"
+                }
+              ]
             },
             {
               label: "字典备注",
               prop: "remark",
               search: true,
-              hide: true,
-            },
+              hide: true
+            }
           ]
         },
         data: []
@@ -174,31 +201,52 @@
       }
     },
     methods: {
-      rowSave(row, loading, done) {
-        add(row).then(() => {
-          loading();
-          this.onLoad(this.page);
-          this.$message({
-            type: "success",
-            message: "操作成功!"
-          });
-        }, error => {
-          done();
-          console.log(error);
+      handleAdd(row) {
+        this.$refs.crud.value.code = row.code;
+        this.$refs.crud.value.parentId = row.id;
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "code") {
+            item.valueDefault = row.code;
+            item.addDisabled = true;
+          }
+          if (item.prop === "parentId") {
+            item.valueDefault = row.id;
+            item.addDisabled = true;
+          }
         });
+        this.$refs.crud.rowAdd();
+      },
+      rowSave(row, loading, done) {
+        add(row).then(
+          () => {
+            loading();
+            this.onLoad(this.page);
+            this.$message({
+              type: "success",
+              message: "操作成功!"
+            });
+          },
+          error => {
+            done();
+            console.log(error);
+          }
+        );
       },
       rowUpdate(row, index, loading, done) {
-        update(row).then(() => {
-          loading();
-          this.onLoad(this.page);
-          this.$message({
-            type: "success",
-            message: "操作成功!"
-          });
-        }, error => {
-          done();
-          console.log(error);
-        });
+        update(row).then(
+          () => {
+            loading();
+            this.onLoad(this.page);
+            this.$message({
+              type: "success",
+              message: "操作成功!"
+            });
+          },
+          error => {
+            done();
+            console.log(error);
+          }
+        );
       },
       rowDel(row) {
         this.$confirm("确定将选择数据删除?", {
@@ -263,6 +311,22 @@
         }
         done();
       },
+      beforeClose(done) {
+        this.$refs.crud.value.code = "";
+        this.$refs.crud.value.parentId = "";
+        this.$refs.crud.value.addDisabled = false;
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "code") {
+            item.valueDefault = "";
+            item.addDisabled = false;
+          }
+          if (item.prop === "parentId") {
+            item.valueDefault = "";
+            item.addDisabled = false;
+          }
+        });
+        done();
+      },
       currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
@@ -274,7 +338,11 @@
       },
       onLoad(page, params = {}) {
         this.loading = true;
-        getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
+        getList(
+          page.currentPage,
+          page.pageSize,
+          Object.assign(params, this.query)
+        ).then(res => {
           this.data = res.data.data;
           getDictTree().then(res => {
             const data = res.data.data;
