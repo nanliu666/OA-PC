@@ -80,6 +80,7 @@
               type: "select",
               span: 24,
               width: 100,
+              searchLabelWidth: 50,
               row: true,
               dicUrl: "/api/blade-system/dict/dictionary?code=oss",
               props: {
