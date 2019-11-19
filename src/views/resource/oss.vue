@@ -66,8 +66,8 @@
         },
         selectionList: [],
         option: {
-          height:'auto',
-          calcHeight:350,
+          height: 'auto',
+          calcHeight: 350,
           tip: false,
           border: true,
           index: true,
@@ -122,6 +122,8 @@
               prop: "accessKey",
               span: 24,
               search: true,
+              width: 200,
+              overHidden: true,
               rules: [{
                 required: true,
                 message: "请输入accessKey",
@@ -132,6 +134,8 @@
               label: "secretKey",
               prop: "secretKey",
               span: 24,
+              width: 200,
+              overHidden: true,
               rules: [{
                 required: true,
                 message: "请输入secretKey",
