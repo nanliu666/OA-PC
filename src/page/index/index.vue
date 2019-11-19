@@ -18,9 +18,9 @@
         <!-- 主体视图层 -->
         <div style="height:100%;overflow-y:auto;overflow-x:hidden;" id="avue-view" v-show="!isSearch">
           <keep-alive>
-            <router-view class="avue-view" v-if="$route.meta.$keepAlive || $route.meta.$keepAlive === undefined"/>
+            <router-view class="avue-view" v-if="$route.meta.$keepAlive"/>
           </keep-alive>
-          <router-view class="avue-view" v-if="!$route.meta.$keepAlive  && $route.meta.$keepAlive !== undefined"/>
+          <router-view class="avue-view" v-if="!$route.meta.$keepAlive"/>
         </div>
       </div>
     </div>
