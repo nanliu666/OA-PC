@@ -36,6 +36,32 @@ export default [{
       import( /* webpackChunkName: "views" */ '@/views/util/test')
   }]
 }, {
+  path: '/dict-horizontal',
+  component: Layout,
+  redirect: '/dict-horizontal/index',
+  children: [{
+    path: 'index',
+    name: '字典管理',
+    meta: {
+      i18n: 'dict'
+    },
+    component: () =>
+      import( /* webpackChunkName: "views" */ '@/views/util/demo/dict-horizontal')
+  }]
+}, {
+  path: '/dict-vertical',
+  component: Layout,
+  redirect: '/dict-vertical/index',
+  children: [{
+    path: 'index',
+    name: '字典管理',
+    meta: {
+      i18n: 'dict'
+    },
+    component: () =>
+      import( /* webpackChunkName: "views" */ '@/views/util/demo/dict-vertical')
+  }]
+}, {
   path: '/info',
   component: Layout,
   redirect: '/info/index',
