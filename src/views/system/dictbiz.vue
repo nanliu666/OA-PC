@@ -52,7 +52,7 @@
         <basic-container>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <span>业务字典详情</span>
+              <span>[{{dictValue}}] 业务字典详情</span>
             </div>
             <div class="clearfix">
               <avue-crud
@@ -114,6 +114,7 @@
   export default {
     data() {
       return {
+        dictValue: '暂无',
         parentId: -1,
         formParent: {},
         formChild: {},
@@ -212,6 +213,7 @@
       },
       handleRowClick(row) {
         this.parentId = row.id;
+        this.dictValue = row.dictValue;
         this.$refs.crudChild.value.code = row.code;
         this.$refs.crudChild.value.parentId = row.id;
         this.$refs.crudChild.option.column.filter(item => {
