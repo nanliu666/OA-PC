@@ -123,7 +123,7 @@
       },
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
-          getApiLogs(this.form.strId).then(res => {
+          getApiLogs(this.form.id).then(res => {
             this.form = res.data.data;
           });
         }

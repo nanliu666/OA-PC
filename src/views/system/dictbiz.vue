@@ -5,7 +5,7 @@
         <basic-container>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <span>字典列表</span>
+              <span>业务字典列表</span>
             </div>
             <div class="clearfix">
               <avue-crud
@@ -52,7 +52,7 @@
         <basic-container>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <span>[{{dictValue}}] 字典详情</span>
+              <span>业务字典详情</span>
             </div>
             <div class="clearfix">
               <avue-crud
@@ -107,14 +107,13 @@
     add,
     getDict,
     getDictTree
-  } from "@/api/system/dict";
-  import {optionParent, optionChild} from "@/const/system/dict";
+  } from "@/api/system/dictbiz";
+  import {optionParent, optionChild} from "@/const/system/dictbiz";
   import {mapGetters} from "vuex";
 
   export default {
     data() {
       return {
-        dictValue: '暂无',
         parentId: -1,
         formParent: {},
         formChild: {},
@@ -213,7 +212,6 @@
       },
       handleRowClick(row) {
         this.parentId = row.id;
-        this.dictValue = row.dictValue;
         this.$refs.crudChild.value.code = row.code;
         this.$refs.crudChild.value.parentId = row.id;
         this.$refs.crudChild.option.column.filter(item => {

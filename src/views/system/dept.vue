@@ -7,6 +7,7 @@
                v-model="form"
                :permission="permissionList"
                :before-open="beforeOpen"
+               :before-close="beforeClose"
                @row-del="rowDel"
                @row-update="rowUpdate"
                @row-save="rowSave"
@@ -24,6 +25,15 @@
                    v-if="permission.dept_delete"
                    plain
                    @click="handleDelete">删 除
+        </el-button>
+      </template>
+      <template slot-scope="scope" slot="menu">
+        <el-button
+          type="text"
+          icon="el-icon-circle-plus-outline"
+          size="small"
+          @click.stop="handleAdd(scope.row,scope.index)"
+        >新增子项
         </el-button>
       </template>
       <template slot-scope="{row}"
@@ -65,6 +75,7 @@
           index: true,
           selection: true,
           viewBtn: true,
+          menuWidth: 300,
           column: [
             {
               label: "机构名称",
@@ -130,7 +141,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
-              width: 180,
+              width: 120,
               prop: "deptCategory",
               slot: true,
               rules: [{
@@ -143,6 +154,8 @@
               label: "排序",
               prop: "sort",
               type: "number",
+              align: "right",
+              width: 80,
               rules: [{
                 required: true,
                 message: "请输入排序",
@@ -183,6 +196,16 @@
       }
     },
     methods: {
+      handleAdd(row) {
+        this.$refs.crud.value.parentId = row.id;
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "parentId") {
+            item.valueDefault = row.id;
+            item.addDisabled = true;
+          }
+        });
+        this.$refs.crud.rowAdd();
+      },
       rowSave(row, loading, done) {
         add(row).then(() => {
           loading();
@@ -270,6 +293,17 @@
             this.form = res.data.data;
           });
         }
+        done();
+      },
+      beforeClose(done) {
+        this.$refs.crud.value.parentId = "";
+        this.$refs.crud.value.addDisabled = false;
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "parentId") {
+            item.valueDefault = "";
+            item.addDisabled = false;
+          }
+        });
         done();
       },
       currentChange(currentPage) {

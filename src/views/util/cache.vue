@@ -5,7 +5,7 @@
     <br /> <br />
     <el-tag>同时滚动下拉，返回时还会保持滚动条所在的位置</el-tag>
     <br /> <br />
-    <el-input v-model="value" placeholder="input here"></el-input>
+    <el-input v-model="value" placeholder="input here" />
 
     <div style="height:1000px;"></div>
   </basic-container>

@@ -13,25 +13,25 @@
           <span>审批信息</span>
         </div>
         <el-form-item label="申请人">
-          <el-input :disabled="true" v-model="form.flow.assigneeName"></el-input>
+          <el-input :disabled="true" v-model="form.flow.assigneeName" />
         </el-form-item>
         <el-row>
           <el-col :span="12">
             <el-form-item label="开始时间">
-              <el-input :disabled="true" v-model="form.startTime"></el-input>
+              <el-input :disabled="true" v-model="form.startTime" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="结束时间">
-              <el-input :disabled="true" v-model="form.endTime"></el-input>
+              <el-input :disabled="true" v-model="form.endTime" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="请假理由">
-          <el-input :disabled="true" type="textarea" v-model="form.reason"></el-input>
+          <el-input :disabled="true" type="textarea" v-model="form.reason" />
         </el-form-item>
         <el-form-item label="批复意见">
-          <el-input type="textarea" v-model="form.comment"></el-input>
+          <el-input type="textarea" v-model="form.comment" />
         </el-form-item>
       </el-card>
       <el-card shadow="hover">

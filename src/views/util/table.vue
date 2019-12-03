@@ -3,7 +3,7 @@
     <h3>表格例子</h3>
     <avue-crud :option="option"
                :page="page"
-               :data="data"></avue-crud>
+               :data="data" />
   </basic-container>
 </template>
 

@@ -29,7 +29,7 @@
                label-width="80px">
         <el-form-item label="删除理由">
           <el-input v-model="deleteReason"
-                    placeholder="请输入删除理由"></el-input>
+                    placeholder="请输入删除理由" />
         </el-form-item>
       </el-form>
       <span slot="footer"

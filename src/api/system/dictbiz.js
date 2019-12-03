@@ -2,7 +2,7 @@ import request from '@/router/axios';
 
 export const getList = (current, size, params) => {
   return request({
-    url: '/api/blade-system/dict/list',
+    url: '/api/blade-system/dict-biz/list',
     method: 'get',
     params: {
       ...params,
@@ -14,7 +14,7 @@ export const getList = (current, size, params) => {
 
 export const getParentList = (current, size, params) => {
   return request({
-    url: '/api/blade-system/dict/parent-list',
+    url: '/api/blade-system/dict-biz/parent-list',
     method: 'get',
     params: {
       ...params,
@@ -26,7 +26,7 @@ export const getParentList = (current, size, params) => {
 
 export const getChildList = (current, size, parentId, params) => {
   return request({
-    url: '/api/blade-system/dict/child-list',
+    url: '/api/blade-system/dict-biz/child-list',
     method: 'get',
     params: {
       ...params,
@@ -39,7 +39,7 @@ export const getChildList = (current, size, parentId, params) => {
 
 export const remove = (ids) => {
   return request({
-    url: '/api/blade-system/dict/remove',
+    url: '/api/blade-system/dict-biz/remove',
     method: 'post',
     params: {
       ids,
@@ -49,7 +49,7 @@ export const remove = (ids) => {
 
 export const add = (row) => {
   return request({
-    url: '/api/blade-system/dict/submit',
+    url: '/api/blade-system/dict-biz/submit',
     method: 'post',
     data: row
   })
@@ -57,7 +57,7 @@ export const add = (row) => {
 
 export const update = (row) => {
   return request({
-    url: '/api/blade-system/dict/submit',
+    url: '/api/blade-system/dict-biz/submit',
     method: 'post',
     data: row
   })
@@ -66,7 +66,7 @@ export const update = (row) => {
 
 export const getDict = (id) => {
   return request({
-    url: '/api/blade-system/dict/detail',
+    url: '/api/blade-system/dict-biz/detail',
     method: 'get',
     params: {
       id,
@@ -75,14 +75,14 @@ export const getDict = (id) => {
 }
 export const getDictTree = () => {
   return request({
-    url: '/api/blade-system/dict/tree?code=DICT',
+    url: '/api/blade-system/dict-biz/tree?code=DICT',
     method: 'get'
   })
 }
 
 export const getDictionary = (params) => {
   return request({
-    url: '/api/blade-system/dict/dictionary',
+    url: '/api/blade-system/dict-biz/dictionary',
     method: 'get',
     params,
   })

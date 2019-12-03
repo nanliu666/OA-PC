@@ -56,7 +56,7 @@
               label: "服务host",
               prop: "serverHost",
               search: true,
-              width:'120'
+              width:'150'
             },
             {
               label: "服务ip",
@@ -129,7 +129,7 @@
       },
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
-          getErrorLogs(this.form.strId).then(res => {
+          getErrorLogs(this.form.id).then(res => {
             this.form = res.data.data;
           });
         }

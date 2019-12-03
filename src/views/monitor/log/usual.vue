@@ -121,7 +121,7 @@
       },
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
-          getUsualLogs(this.form.strId).then(res => {
+          getUsualLogs(this.form.id).then(res => {
             this.form = res.data.data;
           });
         }
