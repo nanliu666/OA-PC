@@ -103,6 +103,7 @@
         drawerVisible: false,
         direction: 'rtl',
         scopeMenuId: 0,
+        scopeMenuCode: '',
         scopeMenuName: "菜单",
         scopeLoading: false,
         menu: true,
@@ -308,6 +309,7 @@
               label: "权限名称",
               prop: "scopeName",
               search: true,
+              valueDefault: "",
               rules: [{
                 required: true,
                 message: "请输入数据权限名称",
@@ -357,6 +359,7 @@
               prop: "scopeField",
               span: 24,
               hide: true,
+              valueDefault: "*",
               rules: [{
                 required: true,
                 message: "请输入数据权限可见的字段",
@@ -380,6 +383,7 @@
               span: 24,
               minRows: 5,
               type: "textarea",
+              display: true,
               hide: true,
             },
             {
@@ -393,7 +397,42 @@
         dataScope: []
       };
     },
-
+    watch: {
+      'formScope.scopeType'() {
+        const scopeType = this.formScope.scopeType;
+        let column = "-", name = "暂无";
+        if (scopeType === "1") {
+          column = "-";
+          name = "全部可见";
+        } else if (scopeType === "2") {
+          column = "create_user";
+          name = "本人可见";
+        } else if (scopeType === "3") {
+          column = "create_dept";
+          name = "所在机构可见";
+        } else if (scopeType === "4") {
+          column = "create_dept";
+          name = "所在机构可见及子级可见";
+        } else if (scopeType === "5") {
+          column = "";
+          name = "自定义";
+        }
+        this.$refs.crudScope.option.column.filter(item => {
+          if (item.prop === "scopeName") {
+            this.formScope.scopeName = `${this.scopeMenuName} [${name}]`;
+          }
+          if (item.prop === "resourceCode") {
+            this.formScope.resourceCode = this.scopeMenuCode;
+          }
+          if (item.prop === "scopeColumn") {
+            this.formScope.scopeColumn = column;
+          }
+          if (item.prop === "scopeValue") {
+            item.display = scopeType === '5';
+          }
+        });
+      }
+    },
     computed: {
       ...mapGetters(["permission"]),
       permissionList() {
@@ -531,6 +570,7 @@
       handleDataScope(row) {
         this.drawerVisible = true;
         this.scopeMenuId = row.id;
+        this.scopeMenuCode = row.code;
         this.scopeMenuName = row.name;
         this.onLoadScope(this.pageScope)
       },
