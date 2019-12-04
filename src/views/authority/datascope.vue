@@ -107,6 +107,7 @@
         scopeMenuName: "菜单",
         scopeLoading: false,
         menu: true,
+        watchMode: true,
         option: {
           tip: false,
           dialogWidth: "60%",
@@ -429,38 +430,40 @@
     },
     methods: {
       initScope() {
-        const scopeType = this.formScope.scopeType;
-        let column = "-", name = "暂无";
-        if (scopeType === "1") {
-          column = "-";
-          name = "全部可见";
-        } else if (scopeType === "2") {
-          column = "create_user";
-          name = "本人可见";
-        } else if (scopeType === "3") {
-          column = "create_dept";
-          name = "所在机构可见";
-        } else if (scopeType === "4") {
-          column = "create_dept";
-          name = "所在机构可见及子级可见";
-        } else if (scopeType === "5") {
-          column = "";
-          name = "自定义";
+        if (this.watchMode) {
+          const scopeType = this.formScope.scopeType;
+          let column = "-", name = "暂无";
+          if (scopeType === "1") {
+            column = "-";
+            name = "全部可见";
+          } else if (scopeType === "2") {
+            column = "create_user";
+            name = "本人可见";
+          } else if (scopeType === "3") {
+            column = "create_dept";
+            name = "所在机构可见";
+          } else if (scopeType === "4") {
+            column = "create_dept";
+            name = "所在机构可见及子级可见";
+          } else if (scopeType === "5") {
+            column = "";
+            name = "自定义";
+          }
+          this.$refs.crudScope.option.column.filter(item => {
+            if (item.prop === "scopeName") {
+              this.formScope.scopeName = `${this.scopeMenuName} [${name}]`;
+            }
+            if (item.prop === "resourceCode") {
+              this.formScope.resourceCode = this.scopeMenuCode;
+            }
+            if (item.prop === "scopeColumn") {
+              this.formScope.scopeColumn = column;
+            }
+            if (item.prop === "scopeValue") {
+              item.display = scopeType === '5';
+            }
+          });
         }
-        this.$refs.crudScope.option.column.filter(item => {
-          if (item.prop === "scopeName") {
-            this.formScope.scopeName = `${this.scopeMenuName} [${name}]`;
-          }
-          if (item.prop === "resourceCode") {
-            this.formScope.resourceCode = this.scopeMenuCode;
-          }
-          if (item.prop === "scopeColumn") {
-            this.formScope.scopeColumn = column;
-          }
-          if (item.prop === "scopeValue") {
-            item.display = scopeType === '5';
-          }
-        });
       },
       // 菜单管理模块
       rowSave(row, loading, done) {
@@ -655,9 +658,11 @@
       },
       beforeOpenScope(done, type) {
         if (["add"].includes(type)) {
+          this.watchMode = true;
           this.initScope();
         }
         if (["edit", "view"].includes(type)) {
+          this.watchMode = false;
           getMenuDataScope(this.formScope.id).then(res => {
             this.formScope = res.data.data;
           });
