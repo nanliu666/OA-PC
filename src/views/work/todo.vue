@@ -187,12 +187,12 @@
         this.onLoad(this.page, this.query);
       },
       onLoad(page, params = {}) {
-        const values = {
-          ...params,
+        const query = {
+          ...this.query,
           category: (params.category) ? flowCategory(params.category) : null
-        }
+        };
         this.loading = true;
-        todoList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(res => {
+        todoList(page.currentPage, page.pageSize, Object.assign(params, query)).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;
