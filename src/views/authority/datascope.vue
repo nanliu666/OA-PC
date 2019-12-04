@@ -399,6 +399,36 @@
     },
     watch: {
       'formScope.scopeType'() {
+        this.initScope();
+      }
+    },
+    computed: {
+      ...mapGetters(["permission"]),
+      permissionList() {
+        return {
+          addBtn: this.vaildData(this.permission.menu_add, false),
+          viewBtn: this.vaildData(this.permission.menu_view, false),
+          delBtn: this.vaildData(this.permission.menu_delete, false),
+          editBtn: this.vaildData(this.permission.menu_edit, false)
+        };
+      },
+      ids() {
+        let ids = [];
+        this.selectionList.forEach(ele => {
+          ids.push(ele.id);
+        });
+        return ids.join(",");
+      },
+      scopeIds() {
+        let ids = [];
+        this.selectionListScope.forEach(ele => {
+          ids.push(ele.id);
+        });
+        return ids.join(",");
+      }
+    },
+    methods: {
+      initScope() {
         const scopeType = this.formScope.scopeType;
         let column = "-", name = "暂无";
         if (scopeType === "1") {
@@ -431,34 +461,7 @@
             item.display = scopeType === '5';
           }
         });
-      }
-    },
-    computed: {
-      ...mapGetters(["permission"]),
-      permissionList() {
-        return {
-          addBtn: this.vaildData(this.permission.menu_add, false),
-          viewBtn: this.vaildData(this.permission.menu_view, false),
-          delBtn: this.vaildData(this.permission.menu_delete, false),
-          editBtn: this.vaildData(this.permission.menu_edit, false)
-        };
       },
-      ids() {
-        let ids = [];
-        this.selectionList.forEach(ele => {
-          ids.push(ele.id);
-        });
-        return ids.join(",");
-      },
-      scopeIds() {
-        let ids = [];
-        this.selectionListScope.forEach(ele => {
-          ids.push(ele.id);
-        });
-        return ids.join(",");
-      }
-    },
-    methods: {
       // 菜单管理模块
       rowSave(row, loading, done) {
         add(row).then(() => {
@@ -651,6 +654,9 @@
           });
       },
       beforeOpenScope(done, type) {
+        if (["add"].includes(type)) {
+          this.initScope();
+        }
         if (["edit", "view"].includes(type)) {
           getMenuDataScope(this.formScope.id).then(res => {
             this.formScope = res.data.data;
