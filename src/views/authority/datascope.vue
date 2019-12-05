@@ -87,6 +87,7 @@
   } from "@/api/system/scope";
   import {mapGetters} from "vuex";
   import iconList from "@/config/iconList";
+  import func from "@/util/func";
 
   export default {
     data() {
@@ -431,26 +432,27 @@
     },
     methods: {
       initScope() {
-        if (this.watchMode) {
-          const scopeType = this.formScope.scopeType;
-          let column = "-", name = "暂无";
-          if (scopeType === "1") {
-            column = "-";
-            name = "全部可见";
-          } else if (scopeType === "2") {
-            column = "create_user";
-            name = "本人可见";
-          } else if (scopeType === "3") {
-            column = "create_dept";
-            name = "所在机构可见";
-          } else if (scopeType === "4") {
-            column = "create_dept";
-            name = "所在机构可见及子级可见";
-          } else if (scopeType === "5") {
-            column = "";
-            name = "自定义";
-          }
-          this.$refs.crudScope.option.column.filter(item => {
+        const scopeType = func.toInt(this.formScope.scopeType);
+        const watchMode = this.watchMode;
+        let column = "-", name = "暂无";
+        if (scopeType === 1) {
+          column = "-";
+          name = "全部可见";
+        } else if (scopeType === 2) {
+          column = "create_user";
+          name = "本人可见";
+        } else if (scopeType === 3) {
+          column = "create_dept";
+          name = "所在机构可见";
+        } else if (scopeType === 4) {
+          column = "create_dept";
+          name = "所在机构可见及子级可见";
+        } else if (scopeType === 5) {
+          column = "";
+          name = "自定义";
+        }
+        this.$refs.crudScope.option.column.filter(item => {
+          if (watchMode) {
             if (item.prop === "scopeName") {
               this.formScope.scopeName = `${this.scopeMenuName} [${name}]`;
             }
@@ -460,11 +462,11 @@
             if (item.prop === "scopeColumn") {
               this.formScope.scopeColumn = column;
             }
-            if (item.prop === "scopeValue") {
-              item.display = scopeType === '5';
-            }
-          });
-        }
+          }
+          if (item.prop === "scopeValue") {
+            item.display = scopeType === 5;
+          }
+        });
       },
       // 菜单管理模块
       rowSave(row, loading, done) {
