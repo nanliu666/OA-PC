@@ -346,6 +346,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              dataType: "number",
               slot: true,
               width: 140,
               prop: "scopeType",

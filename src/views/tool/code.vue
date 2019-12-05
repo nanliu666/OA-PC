@@ -160,6 +160,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              dataType: "number",
               hide: true,
               rules: [{
                 required: true,
@@ -176,6 +177,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              dataType: "number",
               hide: true,
               rules: [{
                 required: true,

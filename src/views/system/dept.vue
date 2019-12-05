@@ -141,6 +141,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              dataType: "number",
               width: 120,
               prop: "deptCategory",
               slot: true,

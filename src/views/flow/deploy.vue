@@ -29,6 +29,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              dataType: "number",
               rules: [
                 {
                   required: true,

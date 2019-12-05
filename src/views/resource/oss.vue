@@ -87,6 +87,7 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              dataType: "number",
               slot: true,
               prop: "category",
               search: true,
