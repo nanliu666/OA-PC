@@ -1,49 +1,58 @@
 <template>
-  <basic-container>
-    <avue-crud :option="option"
-               :table-loading="loading"
-               :data="data"
-               ref="crud"
-               v-model="form"
-               :permission="permissionList"
-               @row-del="rowDel"
-               @row-update="rowUpdate"
-               @row-save="rowSave"
-               :before-open="beforeOpen"
-               :page="page"
-               @search-change="searchChange"
-               @search-reset="searchReset"
-               @selection-change="selectionChange"
-               @current-change="currentChange"
-               @size-change="sizeChange"
-               @refresh-change="refreshChange"
-               @on-load="onLoad">
-      <template slot="menuLeft">
-        <el-button type="danger"
-                   size="small"
-                   icon="el-icon-delete"
-                   plain
-                   v-if="permission.user_delete"
-                   @click="handleDelete">删 除
-        </el-button>
-        <el-button type="primary"
-                   size="small"
-                   plain
-                   v-if="permission.user_reset"
-                   icon="el-icon-refresh"
-                   @click="handleReset">密码重置
-        </el-button>
-      </template>
-      <template slot-scope="{row}"
-                slot="roleId">
-        <el-tag>{{row.roleName}}</el-tag>
-      </template>
-      <template slot-scope="{row}"
-                slot="deptId">
-        <el-tag>{{row.deptName}}</el-tag>
-      </template>
-    </avue-crud>
-  </basic-container>
+  <el-row>
+    <el-col :span="5">
+      <basic-container>
+        <avue-tree :option="treeOption" :data="treeData" @node-click="nodeClick"/>
+      </basic-container>
+    </el-col>
+    <el-col :span="19">
+      <basic-container>
+        <avue-crud :option="option"
+                   :table-loading="loading"
+                   :data="data"
+                   ref="crud"
+                   v-model="form"
+                   :permission="permissionList"
+                   @row-del="rowDel"
+                   @row-update="rowUpdate"
+                   @row-save="rowSave"
+                   :before-open="beforeOpen"
+                   :page="page"
+                   @search-change="searchChange"
+                   @search-reset="searchReset"
+                   @selection-change="selectionChange"
+                   @current-change="currentChange"
+                   @size-change="sizeChange"
+                   @refresh-change="refreshChange"
+                   @on-load="onLoad">
+          <template slot="menuLeft">
+            <el-button type="danger"
+                       size="small"
+                       icon="el-icon-delete"
+                       plain
+                       v-if="permission.user_delete"
+                       @click="handleDelete">删 除
+            </el-button>
+            <el-button type="primary"
+                       size="small"
+                       plain
+                       v-if="permission.user_reset"
+                       icon="el-icon-refresh"
+                       @click="handleReset">密码重置
+            </el-button>
+          </template>
+          <template slot-scope="{row}"
+                    slot="roleId">
+            <el-tag>{{row.roleName}}</el-tag>
+          </template>
+          <template slot-scope="{row}"
+                    slot="deptId">
+            <el-tag>{{row.deptName}}</el-tag>
+          </template>
+        </avue-crud>
+      </basic-container>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -91,6 +100,27 @@
         init: {
           roleTree: [],
           deptTree: [],
+        },
+        treeDeptId: '',
+        treeData: [],
+        treeOption: {
+          nodeKey: 'id',
+          addBtn: false,
+          menu: false,
+          size: 'small',
+          formOption: {
+            labelWidth: 100,
+            column: [{
+              label: '自定义项',
+              prop: 'test'
+            }],
+          },
+          props: {
+            labelText: '标题',
+            label: 'title',
+            value: 'value',
+            children: 'children'
+          }
         },
         option: {
           height: 'auto',
@@ -153,7 +183,7 @@
             {
               label: "用户昵称",
               prop: "name",
-              search: true,
+              hide: true,
               rules: [{
                 required: true,
                 message: "请输入用户昵称",
@@ -163,6 +193,7 @@
             {
               label: "用户姓名",
               prop: "realName",
+              search: true,
               rules: [{
                 required: true,
                 message: "请输入用户姓名",
@@ -287,7 +318,28 @@
         return ids.join(",");
       },
     },
+    created() {
+      this.initData();
+    },
     methods: {
+      nodeClick(data) {
+        this.treeDeptId = data.id;
+        this.page.currentPage = 1;
+        this.onLoad(this.page);
+      },
+      initData() {
+        getDeptTree().then(res => {
+          this.treeData = res.data.data;
+        });
+        getDeptTree(this.form.tenantId).then(res => {
+          const index = this.$refs.crud.findColumnIndex("deptId");
+          this.option.column[index].dicData = res.data.data;
+        });
+        getRoleTree(this.form.tenantId).then(res => {
+          const index = this.$refs.crud.findColumnIndex("roleId");
+          this.option.column[index].dicData = res.data.data;
+        });
+      },
       rowSave(row, loading, done) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
@@ -337,6 +389,7 @@
       },
       searchReset() {
         this.query = {};
+        this.treeDeptId = '';
         this.onLoad(this.page);
       },
       searchChange(params) {
@@ -421,20 +474,12 @@
       },
       onLoad(page, params = {}) {
         this.loading = true;
-        getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
+        getList(page.currentPage, page.pageSize, Object.assign(params, this.query), this.treeDeptId).then(res => {
           const data = res.data.data;
           this.page.total = data.total;
           this.data = data.records;
           this.loading = false;
           this.selectionClear();
-        });
-        getDeptTree(this.form.tenantId).then(res => {
-          const index = this.$refs.crud.findColumnIndex("deptId");
-          this.option.column[index].dicData = res.data.data;
-        });
-        getRoleTree(this.form.tenantId).then(res => {
-          const index = this.$refs.crud.findColumnIndex("roleId");
-          this.option.column[index].dicData = res.data.data;
         });
       }
     }

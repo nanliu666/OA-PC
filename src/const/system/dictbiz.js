@@ -44,6 +44,7 @@ export const optionParent = {
       type: "number",
       align: "right",
       width: 80,
+      hide: true,
       rules: [
         {
           required: true,

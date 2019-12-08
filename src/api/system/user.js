@@ -1,16 +1,18 @@
 import request from '@/router/axios';
 
-export const getList = (current, size, params) => {
+export const getList = (current, size, params, deptId) => {
   return request({
-    url: '/api/blade-user/list',
+    url: '/api/blade-user/page',
     method: 'get',
     params: {
       ...params,
       current,
       size,
+      deptId,
     }
   })
 }
+
 export const remove = (ids) => {
   return request({
     url: '/api/blade-user/remove',

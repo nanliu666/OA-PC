@@ -1,101 +1,99 @@
 <template>
-  <div>
-    <el-row>
-      <el-col :span="11">
-        <basic-container>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>业务字典列表</span>
-            </div>
-            <div class="clearfix">
-              <avue-crud
-                :option="optionParent"
-                :table-loading="loading"
-                :data="dataParent"
-                :page="pageParent"
-                ref="crud"
-                v-model="formParent"
-                :permission="permissionList"
-                :before-open="beforeOpen"
-                @row-del="rowDel"
-                @row-update="rowUpdate"
-                @row-save="rowSave"
-                @row-click="handleRowClick"
-                @search-change="searchChange"
-                @search-reset="searchReset"
-                @selection-change="selectionChange"
-                @current-change="currentChange"
-                @size-change="sizeChange"
-                @refresh-change="refreshChange"
-                @on-load="onLoadParent"
-              >
-                <template slot="menuLeft">
-                  <el-button
-                    type="danger"
-                    size="small"
-                    icon="el-icon-delete"
-                    v-if="permission.dict_delete"
-                    plain
-                    @click="handleDelete"
-                  >删 除
-                  </el-button>
-                </template>
-                <template slot-scope="{row}" slot="isSealed">
-                  <el-tag>{{row.isSealed===0?'否':'是'}}</el-tag>
-                </template>
-              </avue-crud>
-            </div>
-          </el-card>
-        </basic-container>
-      </el-col>
-      <el-col :span="13">
-        <basic-container>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>[{{dictValue}}] 业务字典详情</span>
-            </div>
-            <div class="clearfix">
-              <avue-crud
-                :option="optionChild"
-                :table-loading="loading"
-                :data="dataChild"
-                :page="pageChild"
-                ref="crudChild"
-                v-model="formChild"
-                :permission="permissionList"
-                :before-open="beforeOpenChild"
-                @row-del="rowDelChild"
-                @row-update="rowUpdateChild"
-                @row-save="rowSaveChild"
-                @search-change="searchChangeChild"
-                @search-reset="searchResetChild"
-                @selection-change="selectionChangeChild"
-                @current-change="currentChangeChild"
-                @size-change="sizeChangeChild"
-                @refresh-change="refreshChangeChild"
-                @on-load="onLoadChild"
-              >
-                <template slot="menuLeft">
-                  <el-button
-                    type="danger"
-                    size="small"
-                    icon="el-icon-delete"
-                    v-if="permission.dict_delete"
-                    plain
-                    @click="handleDelete"
-                  >删 除
-                  </el-button>
-                </template>
-                <template slot-scope="{row}" slot="isSealed">
-                  <el-tag>{{row.isSealed===0?'否':'是'}}</el-tag>
-                </template>
-              </avue-crud>
-            </div>
-          </el-card>
-        </basic-container>
-      </el-col>
-    </el-row>
-  </div>
+  <el-row>
+    <el-col :span="11">
+      <basic-container>
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>业务字典列表</span>
+          </div>
+          <div class="clearfix">
+            <avue-crud
+              :option="optionParent"
+              :table-loading="loading"
+              :data="dataParent"
+              :page="pageParent"
+              ref="crud"
+              v-model="formParent"
+              :permission="permissionList"
+              :before-open="beforeOpen"
+              @row-del="rowDel"
+              @row-update="rowUpdate"
+              @row-save="rowSave"
+              @row-click="handleRowClick"
+              @search-change="searchChange"
+              @search-reset="searchReset"
+              @selection-change="selectionChange"
+              @current-change="currentChange"
+              @size-change="sizeChange"
+              @refresh-change="refreshChange"
+              @on-load="onLoadParent"
+            >
+              <template slot="menuLeft">
+                <el-button
+                  type="danger"
+                  size="small"
+                  icon="el-icon-delete"
+                  v-if="permission.dict_delete"
+                  plain
+                  @click="handleDelete"
+                >删 除
+                </el-button>
+              </template>
+              <template slot-scope="{row}" slot="isSealed">
+                <el-tag>{{row.isSealed===0?'否':'是'}}</el-tag>
+              </template>
+            </avue-crud>
+          </div>
+        </el-card>
+      </basic-container>
+    </el-col>
+    <el-col :span="13">
+      <basic-container>
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>[{{dictValue}}] 业务字典详情</span>
+          </div>
+          <div class="clearfix">
+            <avue-crud
+              :option="optionChild"
+              :table-loading="loading"
+              :data="dataChild"
+              :page="pageChild"
+              ref="crudChild"
+              v-model="formChild"
+              :permission="permissionList"
+              :before-open="beforeOpenChild"
+              @row-del="rowDelChild"
+              @row-update="rowUpdateChild"
+              @row-save="rowSaveChild"
+              @search-change="searchChangeChild"
+              @search-reset="searchResetChild"
+              @selection-change="selectionChangeChild"
+              @current-change="currentChangeChild"
+              @size-change="sizeChangeChild"
+              @refresh-change="refreshChangeChild"
+              @on-load="onLoadChild"
+            >
+              <template slot="menuLeft">
+                <el-button
+                  type="danger"
+                  size="small"
+                  icon="el-icon-delete"
+                  v-if="permission.dict_delete"
+                  plain
+                  @click="handleDelete"
+                >删 除
+                </el-button>
+              </template>
+              <template slot-scope="{row}" slot="isSealed">
+                <el-tag>{{row.isSealed===0?'否':'是'}}</el-tag>
+              </template>
+            </avue-crud>
+          </div>
+        </el-card>
+      </basic-container>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
