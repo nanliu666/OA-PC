@@ -80,15 +80,15 @@
             <div>1.拆分出系统字典表与业务字典表，字典键值改为string类型</div>
             <div>2.用户管理增加左树右表功能</div>
             <div>3.租户新增增加租户默认类型</div>
-            <div>4.优化菜单新增逻辑</div>
-            <div>5.优化mybatis-plus默认配置的处理</div>
-            <div>6.优化租户过滤判断逻辑，删除多余的类</div>
-            <div>7.优化alioss生成地址的逻辑</div>
-            <div>8.优化redisTemplate加载逻辑</div>
-            <div>9.优化租户处理，简化配置，自动失败需要过滤的租户表</div>
-            <div>10.优化数据权限表单用户体验</div>
-            <div>11.多租户表对应实体继承TenantEntity</div>
-            <div>12.用于本地上传的BladeFile类更名为LocalFile防止冲突</div>
+            <div>4.多租户表对应实体继承TenantEntity</div>
+            <div>5.用于本地上传的BladeFile类更名为LocalFile防止冲突</div>
+            <div>6.优化菜单新增逻辑</div>
+            <div>7.优化mybatis-plus默认配置的处理</div>
+            <div>8.优化租户过滤判断逻辑，删除多余的类</div>
+            <div>9.优化alioss生成地址的逻辑</div>
+            <div>10.优化redisTemplate加载逻辑</div>
+            <div>11.优化租户处理，简化配置，自动识别需要过滤的租户表</div>
+            <div>12.优化数据权限表单用户体验</div>
             <div>13.修复数据权限插件不兼容的问题</div>
             <div>14.修复数据权限树勾选显示问题</div>
             <div>15.修复windows平台elk开关失效的问题</div>
