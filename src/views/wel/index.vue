@@ -1,10 +1,10 @@
 <template>
   <basic-container>
     <p style="text-align: center">
-      <img src="https://img.shields.io/badge/Release-V2.2.1-green.svg" alt="Downloads"/>
+      <img src="https://img.shields.io/badge/Release-V2.2.2-green.svg" alt="Downloads"/>
       <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="Build Status"/>
-      <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR3-blue.svg" alt="Coverage Status"/>
-      <img src="https://img.shields.io/badge/Spring%20Boot-2.1.9.RELEASE-blue.svg" alt="Downloads"/>
+      <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR4-blue.svg" alt="Coverage Status"/>
+      <img src="https://img.shields.io/badge/Spring%20Boot-2.1.11.RELEASE-blue.svg" alt="Downloads"/>
       <a target="_blank" href="https://bladex.vip">
         <img src="https://img.shields.io/badge/Saber%20Author-Small%20Chill-ff69b4.svg" alt="Downloads"/>
       </a>
@@ -76,6 +76,29 @@
       </el-col>
       <el-col :span="8">
         <el-collapse v-model="logActiveNames" @change="handleChange">
+          <el-collapse-item title="2.2.2.RELEASE发布，增强字典管理，用户管理增加左树右表" name="11">
+            <div>1.拆分出系统字典表与业务字典表，字典键值改为string类型</div>
+            <div>2.用户管理增加左树右表功能</div>
+            <div>3.租户新增增加租户默认类型</div>
+            <div>4.优化菜单新增逻辑</div>
+            <div>5.优化mybatis-plus默认配置的处理</div>
+            <div>6.优化租户过滤判断逻辑，删除多余的类</div>
+            <div>7.优化alioss生成地址的逻辑</div>
+            <div>8.优化redisTemplate加载逻辑</div>
+            <div>9.优化租户处理，简化配置，自动失败需要过滤的租户表</div>
+            <div>10.优化数据权限表单用户体验</div>
+            <div>11.多租户表对应实体继承TenantEntity</div>
+            <div>12.用于本地上传的BladeFile类更名为LocalFile防止冲突</div>
+            <div>13.修复数据权限插件不兼容的问题</div>
+            <div>14.修复数据权限树勾选显示问题</div>
+            <div>15.修复windows平台elk开关失效的问题</div>
+            <div>16.修复租户bean加载逻辑</div>
+            <div>17.修复saber代码生成驼峰路径导致的问题</div>
+            <div>18.修复docker脚本nginx端口匹配问题</div>
+            <div>19.修复机构模块提交未删除缓存的问题</div>
+            <div>20.修复oss缓存获取未加租户判断的问题</div>
+            <div>21.修复blade-auth在java11下无法运行的问题</div>
+          </el-collapse-item>
           <el-collapse-item title="2.2.1.RELEASE发布，集成ELK，增加分布式日志追踪" name="10">
             <div>1.集成最新版ELK，增加分布式日志追踪功能</div>
             <div>2.增加ELK一键部署docker脚本</div>
@@ -229,7 +252,7 @@
     data() {
       return {
         activeNames: ['1', '2', '3', '5'],
-        logActiveNames: ['10']
+        logActiveNames: ['11']
       };
     },
     computed: {

@@ -108,13 +108,6 @@
           addBtn: false,
           menu: false,
           size: 'small',
-          formOption: {
-            labelWidth: 100,
-            column: [{
-              label: '自定义项',
-              prop: 'test'
-            }],
-          },
           props: {
             labelText: '标题',
             label: 'title',
