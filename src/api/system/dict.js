@@ -32,7 +32,7 @@ export const getChildList = (current, size, parentId, params) => {
       ...params,
       current,
       size,
-      parentId_equal: parentId,
+      parentId: parentId,
     }
   })
 }
