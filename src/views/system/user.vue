@@ -206,6 +206,7 @@
               props: {
                 label: "title"
               },
+              checkStrictly: true,
               slot: true,
               rules: [{
                 required: true,
@@ -222,6 +223,7 @@
               props: {
                 label: "title"
               },
+              checkStrictly: true,
               slot: true,
               rules: [{
                 required: true,
