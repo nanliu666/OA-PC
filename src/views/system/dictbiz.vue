@@ -141,9 +141,9 @@
       ...mapGetters(["permission"]),
       permissionList() {
         return {
-          addBtn: this.vaildData(this.permission.dict_add, false),
-          delBtn: this.vaildData(this.permission.dict_delete, false),
-          editBtn: this.vaildData(this.permission.dict_edit, false),
+          addBtn: this.vaildData(this.permission.dictbiz_add, false),
+          delBtn: this.vaildData(this.permission.dictbiz_delete, false),
+          editBtn: this.vaildData(this.permission.dictbiz_edit, false),
           viewBtn: false,
         };
       },
