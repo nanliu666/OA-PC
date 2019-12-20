@@ -123,7 +123,7 @@
               rules: [{
                 required: true,
                 message: "请输入通知日期",
-                trigger: "blur"
+                trigger: "click"
               }]
             },
             {

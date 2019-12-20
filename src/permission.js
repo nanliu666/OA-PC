@@ -15,7 +15,7 @@ router.beforeEach((to, from, next) => {
   const isMenu = meta.menu === undefined ? to.query.menu : meta.menu;
   store.commit('SET_IS_MENU', isMenu === undefined);
   if (getToken()) {
-    if (store.getters.isLock && to.path != lockPage) { //如果系统激活锁屏，全部跳转到锁屏页
+    if (store.getters.isLock && to.path !== lockPage) { //如果系统激活锁屏，全部跳转到锁屏页
       next({path: lockPage})
     } else if (to.path === '/login') { //如果登录成功访问登录页跳转到主页
       next({path: '/'})
