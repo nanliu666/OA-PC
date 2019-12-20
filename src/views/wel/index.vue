@@ -85,7 +85,7 @@
       <el-col :span="8">
         <el-row>
           <basic-container>
-            <div>
+            <div class="el-font-size">
               <span>产品名称</span>
               <el-divider direction="vertical"/>
               <span><el-tag>BladeX企业级微服务开发平台</el-tag></span>
@@ -330,6 +330,11 @@
 <style>
   .el-divider--horizontal {
     margin: 12px 0 !important;
+  }
+
+  .el-font-size {
+    font-size: 14px;
+    font-weight: bold;
   }
 </style>
 
