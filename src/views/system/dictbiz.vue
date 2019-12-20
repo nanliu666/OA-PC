@@ -420,13 +420,3 @@
     }
   };
 </script>
-
-<style>
-  .el-card__header {
-    padding: 2px 18px !important;
-  }
-
-  .el-card__body {
-    padding: 10px !important;
-  }
-</style>
