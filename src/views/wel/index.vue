@@ -334,7 +334,6 @@
 
   .el-font-size {
     font-size: 14px;
-    font-weight: bold;
   }
 </style>
 
