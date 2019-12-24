@@ -184,7 +184,7 @@
               ]
             },
             {
-              label: "是否封存",
+              label: "封存",
               prop: "isSealed",
               type: "select",
               dicData: [
@@ -201,7 +201,7 @@
               rules: [
                 {
                   required: true,
-                  message: "请选择是否封存",
+                  message: "请选择封存",
                   trigger: "blur"
                 }
               ]

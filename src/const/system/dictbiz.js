@@ -54,7 +54,7 @@ export const optionParent = {
       ]
     },
     {
-      label: "是否封存",
+      label: "封存",
       prop: "isSealed",
       type: "select",
       align: "center",
@@ -74,7 +74,7 @@ export const optionParent = {
       rules: [
         {
           required: true,
-          message: "请选择是否封存",
+          message: "请选择封存",
           trigger: "blur"
         }
       ]
@@ -175,7 +175,7 @@ export const optionChild = {
       ]
     },
     {
-      label: "是否封存",
+      label: "封存",
       prop: "isSealed",
       type: "select",
       align: "center",
@@ -195,7 +195,7 @@ export const optionChild = {
       rules: [
         {
           required: true,
-          message: "请选择是否封存",
+          message: "请选择封存",
           trigger: "blur"
         }
       ]

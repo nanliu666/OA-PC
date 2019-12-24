@@ -328,10 +328,6 @@
 </script>
 
 <style>
-  .el-divider--horizontal {
-    margin: 12px 0 !important;
-  }
-
   .el-font-size {
     font-size: 14px;
   }
