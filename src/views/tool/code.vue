@@ -66,7 +66,6 @@
         option: {
           height: 'auto',
           dialogWidth: 900,
-          dialogHeight: 500,
           tip: false,
           searchShow: false,
           border: true,

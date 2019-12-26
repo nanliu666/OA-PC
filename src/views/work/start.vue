@@ -101,7 +101,6 @@
           delBtn: false,
           menuWidth: 150,
           dialogWidth: 900,
-          dialogHeight: 400,
           column: [
             {
               label: "流程分类",

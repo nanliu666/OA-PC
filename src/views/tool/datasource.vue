@@ -50,7 +50,6 @@
         option: {
           height: 'auto',
           dialogWidth: 900,
-          dialogHeight: 330,
           tip: false,
           searchShow: false,
           border: true,

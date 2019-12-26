@@ -97,7 +97,6 @@
           viewBtn: true,
           selection: true,
           dialogWidth: 900,
-          dialogHeight: 200,
           column: [
             {
               label: "菜单名",

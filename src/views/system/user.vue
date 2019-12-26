@@ -123,7 +123,6 @@
           index: true,
           selection: true,
           viewBtn: true,
-          dialogHeight: 450,
           dialogType: 'drawer',
           column: [
             {

@@ -113,7 +113,6 @@
           selection: true,
           viewBtn: true,
           dialogWidth: 900,
-          dialogHeight: 400,
           column: [
             {
               label: "角色名称",

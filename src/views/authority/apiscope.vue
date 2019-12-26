@@ -304,7 +304,6 @@
           selection: true,
           menuWidth: 200,
           dialogWidth: 900,
-          dialogHeight: 230,
           column: [
             {
               label: "权限名称",

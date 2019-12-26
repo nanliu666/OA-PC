@@ -126,7 +126,6 @@
           viewBtn: true,
           menuWidth: 300,
           dialogWidth: 880,
-          dialogHeight: 320,
           column: [
             {
               label: "字典编号",
