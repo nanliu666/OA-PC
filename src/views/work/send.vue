@@ -87,6 +87,7 @@
           height:'auto',
           calcHeight:350,
           tip: false,
+          searchShow: false,
           border: true,
           index: true,
           selection: true,
@@ -159,10 +160,11 @@
         this.query = {};
         this.onLoad(this.page);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.page.currentPage = 1;
         this.onLoad(this.page, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;

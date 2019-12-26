@@ -56,7 +56,7 @@
           <div class="clearfix">
             <avue-crud
               :option="optionChild"
-              :table-loading="loading"
+              :table-loading="loadingChild"
               :data="dataChild"
               :page="pageChild"
               ref="crudChild"
@@ -119,6 +119,7 @@
         selectionList: [],
         query: {},
         loading: true,
+        loadingChild: true,
         pageParent: {
           pageSize: 10,
           pageSizes: [10, 30, 50, 100, 200],
@@ -216,10 +217,10 @@
         this.$refs.crudChild.value.parentId = row.id;
         this.$refs.crudChild.option.column.filter(item => {
           if (item.prop === "code") {
-            item.valueDefault = row.code;
+            item.value = row.code;
           }
           if (item.prop === "parentId") {
-            item.valueDefault = row.id;
+            item.value = row.id;
           }
         });
         this.onLoadChild(this.pageChild);
@@ -228,10 +229,11 @@
         this.query = {};
         this.onLoadParent(this.pageParent);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.pageParent.currentPage = 1;
         this.onLoadParent(this.pageParent, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;
@@ -398,7 +400,7 @@
         });
       },
       onLoadChild(page, params = {}) {
-        this.loading = true;
+        this.loadingChild = true;
         getChildList(
           page.currentPage,
           page.pageSize,
@@ -408,7 +410,7 @@
           const data = res.data.data;
           this.pageChild.total = data.total;
           this.dataChild = data.records;
-          this.loading = false;
+          this.loadingChild = false;
           getDictTree().then(res => {
             const data = res.data.data;
             const index = this.$refs.crudChild.findColumnIndex("parentId");

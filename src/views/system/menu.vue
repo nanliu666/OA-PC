@@ -16,7 +16,8 @@
                @current-change="currentChange"
                @size-change="sizeChange"
                @refresh-change="refreshChange"
-               @on-load="onLoad">
+               @on-load="onLoad"
+               @tree-load="treeLoad">
       <template slot="menuLeft">
         <el-button type="danger"
                    size="small"
@@ -29,7 +30,7 @@
       <template slot-scope="{row}"
                 slot="source">
         <div style="text-align:center">
-          <i :class="row.source"></i>
+          <i :class="row.source"/>
         </div>
       </template>
     </avue-crud>
@@ -37,7 +38,7 @@
 </template>
 
 <script>
-  import {getList, remove, update, add, getMenu} from "@/api/system/menu";
+  import {getLazyList, remove, update, add, getMenu} from "@/api/system/menu";
   import {mapGetters} from "vuex";
   import iconList from "@/config/iconList";
 
@@ -48,13 +49,16 @@
         query: {},
         loading: true,
         selectionList: [],
+        parentId: 0,
         page: {
           pageSize: 10,
           currentPage: 1,
-          total: 0
+          total: 0,
         },
         option: {
+          lazy: true,
           tip: false,
+          searchShow: false,
           dialogWidth: "60%",
           tree: true,
           border: true,
@@ -154,6 +158,7 @@
             {
               label: "菜单别名",
               prop: "alias",
+              search: true,
               rules: [
                 {
                   required: true,
@@ -252,12 +257,15 @@
       },
       searchReset() {
         this.query = {};
+        this.parentId = 0;
         this.onLoad(this.page);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.page.currentPage = 1;
+        this.parentId = '';
         this.onLoad(this.page, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;
@@ -307,10 +315,16 @@
       },
       onLoad(page, params = {}) {
         this.loading = true;
-        getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
+        getLazyList(this.parentId, Object.assign(params, this.query)).then(res => {
           this.data = res.data.data;
           this.loading = false;
           this.selectionClear();
+        });
+      },
+      treeLoad(tree, treeNode, resolve) {
+        const parentId = tree.id;
+        getLazyList(parentId).then(res => {
+          resolve(res.data.data);
         });
       }
     }

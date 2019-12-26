@@ -122,12 +122,12 @@
         dataChild: [],
         option: {
           tip: false,
+          searchShow: false,
           tree: true,
           border: true,
           index: true,
           selection: true,
           viewBtn: true,
-          searchShow: false,
           height: 300,
           menuWidth: 300,
           dialogWidth: 880,
@@ -292,10 +292,11 @@
         this.query = {};
         this.onLoadParent(this.pageParent);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.pageParent.currentPage = 1;
         this.onLoadParent(this.pageParent, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;

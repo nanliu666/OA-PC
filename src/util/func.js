@@ -1,4 +1,3 @@
-
 /**
  * 通用工具类
  */
@@ -10,6 +9,15 @@ export default class func {
    */
   static notEmpty(val) {
     return !this.isEmpty(val);
+  }
+
+  /**
+   * 是否为定义
+   * @param val
+   * @returns {boolean}
+   */
+  static isUndefined(val) {
+    return val === null || typeof val === 'undefined';
   }
 
   /**

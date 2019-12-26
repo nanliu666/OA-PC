@@ -111,6 +111,7 @@
         watchMode: true,
         option: {
           tip: false,
+          searchShow: false,
           dialogWidth: "60%",
           tree: true,
           border: true,
@@ -299,6 +300,7 @@
         },
         optionScope: {
           tip: false,
+          searchShow: false,
           border: true,
           index: true,
           viewBtn: true,
@@ -311,7 +313,7 @@
               label: "权限名称",
               prop: "scopeName",
               search: true,
-              valueDefault: "",
+              value: "",
               rules: [{
                 required: true,
                 message: "请输入数据权限名称",
@@ -362,7 +364,7 @@
               prop: "scopeField",
               span: 24,
               hide: true,
-              valueDefault: "*",
+              value: "*",
               rules: [{
                 required: true,
                 message: "请输入数据权限可见的字段",
@@ -516,10 +518,11 @@
         this.query = {};
         this.onLoad(this.page);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.page.currentPage = 1;
         this.onLoad(this.page, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;

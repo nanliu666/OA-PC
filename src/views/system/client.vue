@@ -49,8 +49,8 @@
         selectionList: [],
         option: {
           height: 'auto',
-          calcHeight: 350,
           tip: false,
+          searchShow: false,
           border: true,
           index: true,
           viewBtn: true,
@@ -79,7 +79,7 @@
             {
               label: "授权类型",
               prop: "authorizedGrantTypes",
-              valueDefault: "refresh_token,password,authorization_code",
+              value: "refresh_token,password,authorization_code",
               rules: [{
                 required: true,
                 message: "请输入授权类型",
@@ -89,7 +89,7 @@
             {
               label: "授权范围",
               prop: "scope",
-              valueDefault: "all",
+              value: "all",
               rules: [{
                 required: true,
                 message: "请输入授权范围",
@@ -100,7 +100,7 @@
               label: "令牌秒数",
               prop: "accessTokenValidity",
               type: "number",
-              valueDefault: 3600,
+              value: 3600,
               rules: [{
                 required: true,
                 message: "请输入令牌过期秒数",
@@ -111,7 +111,7 @@
               label: "刷新秒数",
               prop: "refreshTokenValidity",
               type: "number",
-              valueDefault: 604800,
+              value: 604800,
               hide: true,
               rules: [{
                 required: true,
@@ -237,10 +237,11 @@
         this.query = {};
         this.onLoad(this.page);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.page.currentPage = 1;
         this.onLoad(this.page, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;

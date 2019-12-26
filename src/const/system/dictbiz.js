@@ -1,13 +1,12 @@
 export const optionParent = {
   height: 'auto',
-  calcHeight: 365,
   tip: false,
+          searchShow: false,
   tree: true,
   border: true,
   index: true,
   selection: true,
   viewBtn: true,
-  searchShow: false,
   menuWidth: 150,
   dialogWidth: 880,
   dialogHeight: 320,
@@ -56,7 +55,7 @@ export const optionParent = {
     {
       label: "封存",
       prop: "isSealed",
-      type: "select",
+      type: "switch",
       align: "center",
       width: 80,
       dicData: [
@@ -69,7 +68,7 @@ export const optionParent = {
           value: 1
         }
       ],
-      valueDefault: 0,
+      value: 0,
       slot: true,
       rules: [
         {
@@ -89,14 +88,13 @@ export const optionParent = {
 
 export const optionChild = {
   height: 'auto',
-  calcHeight: 365,
   tip: false,
+          searchShow: false,
   tree: true,
   border: true,
   index: true,
   selection: true,
   viewBtn: true,
-  searchShow: false,
   menuWidth: 150,
   dialogWidth: 880,
   dialogHeight: 320,
@@ -177,7 +175,7 @@ export const optionChild = {
     {
       label: "封存",
       prop: "isSealed",
-      type: "select",
+      type: "switch",
       align: "center",
       width: 80,
       dicData: [
@@ -190,7 +188,7 @@ export const optionChild = {
           value: 1
         }
       ],
-      valueDefault: 0,
+      value: 0,
       slot: true,
       rules: [
         {

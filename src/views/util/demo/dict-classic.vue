@@ -72,6 +72,7 @@
         },
         option: {
           tip: false,
+          searchShow: false,
           tree: true,
           border: true,
           index: true,
@@ -206,11 +207,11 @@
         this.$refs.crud.value.parentId = row.id;
         this.$refs.crud.option.column.filter(item => {
           if (item.prop === "code") {
-            item.valueDefault = row.code;
+            item.value = row.code;
             item.addDisabled = true;
           }
           if (item.prop === "parentId") {
-            item.valueDefault = row.id;
+            item.value = row.id;
             item.addDisabled = true;
           }
         });
@@ -269,10 +270,11 @@
         this.query = {};
         this.onLoad(this.page);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.page.currentPage = 1;
         this.onLoad(this.page, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;
@@ -317,11 +319,11 @@
         this.$refs.crud.value.addDisabled = false;
         this.$refs.crud.option.column.filter(item => {
           if (item.prop === "code") {
-            item.valueDefault = "";
+            item.value = "";
             item.addDisabled = false;
           }
           if (item.prop === "parentId") {
-            item.valueDefault = "";
+            item.value = "";
             item.addDisabled = false;
           }
         });

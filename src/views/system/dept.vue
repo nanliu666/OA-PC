@@ -17,7 +17,8 @@
                @current-change="currentChange"
                @size-change="sizeChange"
                @refresh-change="refreshChange"
-               @on-load="onLoad">
+               @on-load="onLoad"
+               @tree-load="treeLoad">
       <template slot="menuLeft">
         <el-button type="danger"
                    size="small"
@@ -46,7 +47,7 @@
 
 <script>
   import {
-    getList,
+    getLazyList,
     remove,
     update,
     add,
@@ -63,13 +64,16 @@
         selectionList: [],
         query: {},
         loading: true,
+        parentId: 0,
         page: {
           pageSize: 10,
           currentPage: 1,
-          total: 0
+          total: 0,
         },
         option: {
+          lazy: true,
           tip: false,
+          searchShow: false,
           tree: true,
           border: true,
           index: true,
@@ -196,12 +200,22 @@
         return ids.join(",");
       }
     },
+    created() {
+      this.initData();
+    },
     methods: {
+      initData() {
+        getDeptTree().then(res => {
+          const data = res.data.data;
+          const index = this.$refs.crud.findColumnIndex("parentId");
+          this.option.column[index].dicData = data;
+        });
+      },
       handleAdd(row) {
         this.$refs.crud.value.parentId = row.id;
         this.$refs.crud.option.column.filter(item => {
           if (item.prop === "parentId") {
-            item.valueDefault = row.id;
+            item.value = row.id;
             item.addDisabled = true;
           }
         });
@@ -274,12 +288,15 @@
       },
       searchReset() {
         this.query = {};
+        this.parentId = 0;
         this.onLoad(this.page);
       },
-      searchChange(params) {
+      searchChange(params, done) {
         this.query = params;
         this.page.currentPage = 1;
+        this.parentId = '';
         this.onLoad(this.page, params);
+        done();
       },
       selectionChange(list) {
         this.selectionList = list;
@@ -301,7 +318,7 @@
         this.$refs.crud.value.addDisabled = false;
         this.$refs.crud.option.column.filter(item => {
           if (item.prop === "parentId") {
-            item.valueDefault = "";
+            item.value = "";
             item.addDisabled = false;
           }
         });
@@ -318,15 +335,16 @@
       },
       onLoad(page, params = {}) {
         this.loading = true;
-        getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
+        getLazyList(this.parentId, Object.assign(params, this.query)).then(res => {
           this.data = res.data.data;
-          getDeptTree().then(res => {
-            const data = res.data.data;
-            const index = this.$refs.crud.findColumnIndex("parentId");
-            this.option.column[index].dicData = data;
-          });
           this.loading = false;
           this.selectionClear();
+        });
+      },
+      treeLoad(tree, treeNode, resolve) {
+        const parentId = tree.id;
+        getLazyList(parentId).then(res => {
+          resolve(res.data.data);
         });
       }
     }
