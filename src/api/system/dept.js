@@ -58,12 +58,23 @@ export const getDept = (id) => {
     }
   })
 }
+
 export const getDeptTree = (tenantId) => {
   return request({
     url: '/api/blade-system/dept/tree',
     method: 'get',
     params: {
       tenantId,
+    }
+  })
+}
+
+export const getDeptLazyTree = (parentId) => {
+  return request({
+    url: '/api/blade-system/dept/lazy-tree',
+    method: 'get',
+    params: {
+      parentId
     }
   })
 }

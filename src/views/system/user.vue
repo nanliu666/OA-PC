@@ -64,7 +64,7 @@
     add,
     resetPassword
   } from "@/api/system/user";
-  import {getDeptTree} from "@/api/system/dept";
+  import {getDeptTree, getDeptLazyTree} from "@/api/system/dept";
   import {getRoleTree} from "@/api/system/role";
   import {mapGetters} from "vuex";
   import website from '@/config/website';
@@ -105,6 +105,18 @@
         treeData: [],
         treeOption: {
           nodeKey: 'id',
+          lazy: true,
+          treeLoad: function (node, resolve) {
+            const parentId = (node.level === 0) ? 0 : node.data.id;
+            getDeptLazyTree(parentId).then(res => {
+              resolve(res.data.data.map(item => {
+                return {
+                  ...item,
+                  leaf: !item.hasChildren
+                }
+              }))
+            });
+          },
           addBtn: false,
           menu: false,
           size: 'small',
@@ -322,9 +334,6 @@
         this.onLoad(this.page);
       },
       initData() {
-        getDeptTree().then(res => {
-          this.treeData = res.data.data;
-        });
         getDeptTree(this.form.tenantId).then(res => {
           const index = this.$refs.crud.findColumnIndex("deptId");
           this.option.column[index].dicData = res.data.data;

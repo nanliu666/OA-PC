@@ -50,6 +50,7 @@
             {
               label: "服务id",
               prop: "serviceId",
+              width:'120',
               search: true
             },
             {
@@ -59,7 +60,8 @@
             },
             {
               label: "服务ip",
-              prop: "serverIp"
+              prop: "serverIp",
+              width:'160'
             },
             {
               label: "软件环境",
