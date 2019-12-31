@@ -1,7 +1,8 @@
 export const optionParent = {
   height: 'auto',
+  calcHeight: 70,
   tip: false,
-          searchShow: false,
+  searchShow: false,
   tree: true,
   border: true,
   index: true,
@@ -87,8 +88,9 @@ export const optionParent = {
 
 export const optionChild = {
   height: 'auto',
+  calcHeight: 70,
   tip: false,
-          searchShow: false,
+  searchShow: false,
   tree: true,
   border: true,
   index: true,
