@@ -129,6 +129,7 @@
         },
         option: {
           height: 'auto',
+          calcHeight: 80,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,

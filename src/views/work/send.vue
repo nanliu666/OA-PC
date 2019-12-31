@@ -84,8 +84,8 @@
         flowUrl: '',
         workBox: false,
         option: {
-          height:'auto',
-          calcHeight:350,
+          height: 'auto',
+          calcHeight: 90,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,

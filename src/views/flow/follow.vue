@@ -64,6 +64,7 @@
         deleteReason: '',
         option: {
           height: 'auto',
+          calcHeight: 30,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,

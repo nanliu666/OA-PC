@@ -141,8 +141,8 @@
         category: [],
         categoryValue: '',
         option: {
-          height:'auto',
-          calcHeight:350,
+          height: 'auto',
+          calcHeight: 30,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,

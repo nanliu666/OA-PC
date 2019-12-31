@@ -89,7 +89,7 @@
         menuTreeObj: [],
         option: {
           height:'auto',
-          calcHeight:350,
+          calcHeight: 30,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,
