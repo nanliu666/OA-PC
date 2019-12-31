@@ -108,7 +108,8 @@
         menu: true,
         option: {
           tip: false,
-          searchShow: false,
+          searchShow: true,
+          searchMenuSpan: 6,
           dialogWidth: "60%",
           tree: true,
           border: true,
@@ -297,7 +298,8 @@
         },
         optionScope: {
           tip: false,
-          searchShow: false,
+          searchShow: true,
+          searchMenuSpan: 6,
           border: true,
           index: true,
           viewBtn: true,

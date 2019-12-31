@@ -72,7 +72,8 @@
         },
         option: {
           tip: false,
-          searchShow: false,
+          searchShow: true,
+          searchMenuSpan: 6,
           tree: true,
           border: true,
           index: true,

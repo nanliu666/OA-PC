@@ -65,7 +65,8 @@
         option: {
           height: 'auto',
           tip: false,
-          searchShow: false,
+          searchShow: true,
+          searchMenuSpan: 6,
           border: true,
           index: true,
           selection: true,

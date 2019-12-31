@@ -58,7 +58,8 @@
         option: {
           lazy: true,
           tip: false,
-          searchShow: false,
+          searchShow: true,
+          searchMenuSpan: 6,
           dialogWidth: "60%",
           tree: true,
           border: true,
