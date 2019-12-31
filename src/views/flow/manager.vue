@@ -139,7 +139,7 @@
         }],
         option: {
           height: 'auto',
-          calcHeight: 90,
+          calcHeight: 30,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,
@@ -160,6 +160,7 @@
             {
               label: '流程标识',
               prop: 'key',
+              search: true,
               width: 150,
             },
             {

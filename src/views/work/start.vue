@@ -89,7 +89,7 @@
         workBox: false,
         option: {
           height: 'auto',
-          calcHeight: 90,
+          calcHeight: 30,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,
@@ -125,6 +125,7 @@
             {
               label: '流程名称',
               prop: 'name',
+              search: true,
             },
             {
               label: '流程版本',
