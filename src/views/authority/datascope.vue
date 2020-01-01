@@ -16,7 +16,8 @@
                @current-change="currentChange"
                @size-change="sizeChange"
                @refresh-change="refreshChange"
-               @on-load="onLoad">
+               @on-load="onLoad"
+               @tree-load="treeLoad">
       <template slot-scope="{row}" slot="menu">
         <el-button type="text"
                    icon="el-icon-setting"
@@ -29,7 +30,7 @@
       </template>
       <template slot-scope="{row}" slot="source">
         <div style="text-align:center">
-          <i :class="row.source"></i>
+          <i :class="row.source"/>
         </div>
       </template>
     </avue-crud>
@@ -75,7 +76,7 @@
     add,
     remove,
     update,
-    getMenuList,
+    getLazyMenuList,
     getMenu
   } from "@/api/system/menu";
   import {
@@ -96,6 +97,7 @@
         selectionList: [],
         query: {},
         loading: true,
+        parentId: 0,
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -110,6 +112,7 @@
         menu: true,
         watchMode: true,
         option: {
+          lazy: true,
           tip: false,
           searchShow: true,
           searchMenuSpan: 6,
@@ -517,10 +520,12 @@
       },
       searchReset() {
         this.query = {};
+        this.parentId = 0;
         this.onLoad(this.page);
       },
       searchChange(params, done) {
         this.query = params;
+        this.parentId = '';
         this.page.currentPage = 1;
         this.onLoad(this.page, params);
         done();
@@ -573,10 +578,16 @@
       },
       onLoad(page, params = {}) {
         this.loading = true;
-        getMenuList(page.currentPage, page.pageSize, params).then(res => {
+        getLazyMenuList(this.parentId, Object.assign(params, this.query)).then(res => {
           this.data = res.data.data;
           this.loading = false;
           this.selectionClear();
+        });
+      },
+      treeLoad(tree, treeNode, resolve) {
+        const parentId = tree.id;
+        getLazyMenuList(parentId).then(res => {
+          resolve(res.data.data);
         });
       },
       // 数据权限模块

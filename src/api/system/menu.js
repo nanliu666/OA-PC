@@ -23,6 +23,16 @@ export const getLazyList = (parentId, params) => {
   })
 }
 
+export const getLazyMenuList = (parentId, params) => {
+  return request({
+    url: '/api/blade-system/menu/lazy-menu-list',
+    method: 'get',
+    params: {
+      ...params,
+      parentId
+    }
+  })
+}
 
 export const getMenuList = (current, size, params) => {
   return request({
