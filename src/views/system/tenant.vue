@@ -309,6 +309,16 @@
           this.$message.warning("请选择至少一条数据");
           return;
         }
+        if (this.selectionList.length === 1) {
+          getDetail(this.selectionList[0].id).then(res => {
+            const data = res.data.data;
+            this.settingForm.accountNumber = data.accountNumber;
+            this.settingForm.expireTime = data.expireTime;
+          });
+        } else {
+          this.settingForm.accountNumber = -1;
+          this.settingForm.expireTime = '';
+        }
         this.box = true;
       },
       handleSubmit(form, done) {
