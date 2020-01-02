@@ -25,7 +25,7 @@
                    @click="handleDelete">删 除
         </el-button>
         <el-button size="small"
-                   icon="el-icon-delete"
+                   icon="el-icon-setting"
                    @click="handleRole"
                    plain>权限设置
         </el-button>

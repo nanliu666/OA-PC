@@ -11,6 +11,17 @@ export const getList = (current, size, params) => {
     }
   })
 }
+
+export const getDetail = (id) => {
+  return request({
+    url: '/api/blade-system/tenant/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
 export const remove = (ids) => {
   return request({
     url: '/api/blade-system/tenant/remove',
@@ -34,5 +45,16 @@ export const update = (row) => {
     url: '/api/blade-system/tenant/submit',
     method: 'post',
     data: row
+  })
+}
+
+export const setting = (ids, form) => {
+  return request({
+    url: '/api/blade-system/tenant/setting',
+    method: 'post',
+    params: {
+      ...form,
+      ids
+    }
   })
 }

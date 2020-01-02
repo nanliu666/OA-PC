@@ -7,6 +7,7 @@
                v-model="form"
                :page="page"
                :permission="permissionList"
+               :before-open="beforeOpen"
                @row-del="rowDel"
                @row-update="rowUpdate"
                @row-save="rowSave"
@@ -25,13 +26,33 @@
                    plain
                    @click="handleDelete">删 除
         </el-button>
+        <el-button size="small"
+                   plain
+                   v-if="userInfo.role_name.includes('administrator')"
+                   icon="el-icon-setting"
+                   @click="handleSetting">授权配置
+        </el-button>
+      </template>
+      <template slot-scope="{row}"
+                slot="accountNumber">
+        <el-tag>{{row.accountNumber>0?row.accountNumber:'不限制'}}</el-tag>
+      </template>
+      <template slot-scope="{row}"
+                slot="expireTime">
+        <el-tag>{{row.expireTime?row.expireTime:'不限制'}}</el-tag>
       </template>
     </avue-crud>
+    <el-dialog title="租户授权配置"
+               append-to-body
+               :visible.sync="box"
+               width="450px">
+      <avue-form :option="settingOption" v-model="settingForm" @submit="handleSubmit"/>
+    </el-dialog>
   </basic-container>
 </template>
 
 <script>
-  import {getList, remove, update, add} from "@/api/system/tenant";
+  import {getList, getDetail, remove, update, add, setting} from "@/api/system/tenant";
   import {mapGetters} from "vuex";
 
   export default {
@@ -41,13 +62,14 @@
         selectionList: [],
         query: {},
         loading: true,
+        box: false,
         page: {
           pageSize: 10,
           currentPage: 1,
           total: 0
         },
         option: {
-          height:'auto',
+          height: 'auto',
           calcHeight: 30,
           tip: false,
           searchShow: true,
@@ -61,6 +83,7 @@
             {
               label: "租户ID",
               prop: "tenantId",
+              width: 100,
               search: true,
               addDisplay: false,
               editDisplay: false,
@@ -75,6 +98,7 @@
               label: "租户名称",
               prop: "tenantName",
               search: true,
+              width: 180,
               span: 24,
               rules: [{
                 required: true,
@@ -85,8 +109,8 @@
             {
               label: "联系人",
               prop: "linkman",
+              width: 100,
               search: true,
-              span: 24,
               rules: [{
                 required: true,
                 message: "请输入联系人",
@@ -96,22 +120,76 @@
             {
               label: "联系电话",
               prop: "contactNumber",
-              span: 24,
+              width: 150,
             },
             {
               label: "联系地址",
               prop: "address",
               span: 24,
-              minRows: 6,
+              minRows: 2,
               type: "textarea",
-            }
+              hide: true,
+            },
+            {
+              label: "账号额度",
+              prop: "accountNumber",
+              width: 90,
+              slot: true,
+              addDisplay: false,
+              editDisplay: false,
+            },
+            {
+              label: "过期时间",
+              prop: "expireTime",
+              width: 160,
+              slot: true,
+              addDisplay: false,
+              editDisplay: false,
+            },
+            {
+              label: "绑定域名",
+              prop: "domain",
+              span: 24,
+            },
+            {
+              label: "系统背景",
+              prop: "backgroundUrl",
+              type: 'upload',
+              listType: 'picture-img',
+              action: '/api/blade-resource/oss/endpoint/put-file',
+              propsHttp: {
+                res: 'data',
+                url: 'link',
+              },
+              hide: true,
+              span: 24,
+            },
           ]
         },
-        data: []
+        data: [],
+        settingForm: {},
+        settingOption: {
+          column: [
+            {
+              label: "账号额度",
+              prop: "accountNumber",
+              type: "number",
+              span: 24,
+            },
+            {
+              label: "过期时间",
+              prop: "expireTime",
+              type: "date",
+              format: "yyyy-MM-dd hh:mm:ss",
+              valueFormat: "yyyy-MM-dd hh:mm:ss",
+              span: 24,
+            },
+          ]
+        }
       };
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["userInfo", "permission"]),
       permissionList() {
         return {
           addBtn: this.vaildData(this.permission.tenant_add, false),
@@ -172,6 +250,21 @@
             });
           });
       },
+      beforeOpen(done, type) {
+        if (["view"].includes(type)) {
+          getDetail(this.form.id).then(res => {
+            const data = res.data.data;
+            if (!(data.accountNumber > 0)) {
+              data.accountNumber = "不限制";
+            }
+            if (!data.expireTime) {
+              data.expireTime = "不限制";
+            }
+            this.form = data;
+          });
+        }
+        done();
+      },
       searchReset() {
         this.query = {};
         this.onLoad(this.page);
@@ -211,10 +304,30 @@
             this.$refs.crud.toggleSelection();
           });
       },
-      currentChange(currentPage){
+      handleSetting() {
+        if (this.selectionList.length === 0) {
+          this.$message.warning("请选择至少一条数据");
+          return;
+        }
+        this.box = true;
+      },
+      handleSubmit(form, done) {
+        setting(this.ids, form).then(() => {
+          this.onLoad(this.page);
+          this.$message({
+            type: "success",
+            message: "配置成功!"
+          });
+          done();
+          this.box = false;
+        }, error => {
+          console.log(error);
+        });
+      },
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       refreshChange() {
