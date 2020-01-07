@@ -12,7 +12,7 @@
                 auto-complete="off"
                 :placeholder="$t('login.phone')">
         <i slot="prefix"
-           class="icon-shouji"></i>
+           class="icon-shouji"/>
       </el-input>
     </el-form-item>
     <el-form-item prop="code">
@@ -23,7 +23,7 @@
                 :placeholder="$t('login.code')">
         <i slot="prefix"
            class="icon-yanzhengma"
-           style="margin-top:6px;"></i>
+           style="margin-top:6px;"/>
         <template slot="append">
           <span @click="handleSend"
                 class="msg-text"
@@ -54,7 +54,7 @@ export default {
       }
     };
     const validateCode = (rule, value, callback) => {
-      if (value.length != 4) {
+      if (value.length !== 4) {
         callback(new Error("请输入4位数的验证码"));
       } else {
         callback();
@@ -98,7 +98,7 @@ export default {
       const time = setInterval(() => {
         this.msgTime--;
         this.msgText = this.msgTime + this.config.MSGSCUCCESS;
-        if (this.msgTime == 0) {
+        if (this.msgTime === 0) {
           this.msgTime = this.config.MSGTIME;
           this.msgText = this.config.MSGINIT;
           this.msgKey = false;

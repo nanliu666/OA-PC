@@ -11,8 +11,7 @@
                 v-model="loginForm.tenantId"
                 auto-complete="off"
                 :placeholder="$t('login.tenantId')">
-        <i slot="prefix"
-           class="icon-quanxian"></i>
+        <i slot="prefix" class="icon-quanxian"/>
       </el-input>
     </el-form-item>
     <el-form-item prop="username">
@@ -21,8 +20,7 @@
                 v-model="loginForm.username"
                 auto-complete="off"
                 :placeholder="$t('login.username')">
-        <i slot="prefix"
-           class="icon-yonghu"></i>
+        <i slot="prefix" class="icon-yonghu"/>
       </el-input>
     </el-form-item>
     <el-form-item prop="password">
@@ -32,11 +30,8 @@
                 v-model="loginForm.password"
                 auto-complete="off"
                 :placeholder="$t('login.password')">
-        <i class="el-icon-view el-input__icon"
-           slot="suffix"
-           @click="showPassword"></i>
-        <i slot="prefix"
-           class="icon-mima"></i>
+        <i class="el-icon-view el-input__icon" slot="suffix" @click="showPassword"/>
+        <i slot="prefix" class="icon-mima"/>
       </el-input>
     </el-form-item>
     <el-form-item>
@@ -51,6 +46,7 @@
 <script>
 import { mapGetters } from "vuex";
 import website from '@/config/website';
+import {info} from "@/api/system/tenant";
 
 export default {
   name: "userlogin",
@@ -78,7 +74,9 @@ export default {
       passwordType: "password"
     };
   },
-  created() {},
+  created() {
+    this.getTenant();
+  },
   mounted() {},
   computed: {
     ...mapGetters(["tagWel"])
@@ -86,7 +84,7 @@ export default {
   props: [],
   methods: {
     showPassword() {
-      this.passwordType == ""
+      this.passwordType === ""
         ? (this.passwordType = "password")
         : (this.passwordType = "");
     },
@@ -106,6 +104,17 @@ export default {
           });
         }
       });
+    },
+    getTenant() {
+      let domain = window.location.href.replace("/#/login", "");
+      info(domain).then(res => {
+        const data = res.data;
+        if (data.success && data.data.tenantId) {
+          this.tenantMode = false;
+          this.loginForm.tenantId = data.data.tenantId;
+          this.$parent.$refs.login.style.backgroundImage = `url(${data.data.backgroundUrl})`;
+        }
+      })
     }
   }
 };

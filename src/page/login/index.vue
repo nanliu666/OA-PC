@@ -1,7 +1,8 @@
 <template>
   <div class="login-container"
+       ref="login"
        @keyup.enter.native="handleLogin">
-    <top-color v-show="false"></top-color>
+    <top-color v-show="false"/>
     <div class="login-weaper animated bounceInDown">
       <div class="login-left">
         <div class="login-time">
@@ -16,11 +17,11 @@
         <div class="login-main">
           <h4 class="login-title">
             {{ $t('login.title') }}{{website.title}}
-            <top-lang></top-lang>
+            <top-lang/>
           </h4>
-          <userLogin v-if="activeName==='user'"></userLogin>
-          <codeLogin v-else-if="activeName==='code'"></codeLogin>
-          <thirdLogin v-else-if="activeName==='third'"></thirdLogin>
+          <userLogin v-if="activeName==='user'"/>
+          <codeLogin v-else-if="activeName==='code'"/>
+          <thirdLogin v-else-if="activeName==='third'"/>
           <div class="login-menu">
             <a href="#"
                @click.stop="activeName='user'">{{ $t('login.userLogin') }}</a>
@@ -36,67 +37,70 @@
   </div>
 </template>
 <script>
-import userLogin from "./userlogin";
-import codeLogin from "./codelogin";
-import thirdLogin from "./thirdlogin";
-import { mapGetters } from "vuex";
-import { dateFormat } from "@/util/date";
-import { validatenull } from "@/util/validate";
-import topLang from "@/page/index/top/top-lang";
-import topColor from "@/page/index/top/top-color";
-export default {
-  name: "login",
-  components: {
-    userLogin,
-    codeLogin,
-    thirdLogin,
-    topLang,
-    topColor
-  },
-  data() {
-    return {
-      time: "",
-      activeName: "user"
-    };
-  },
-  watch: {
-    $route() {
-      const params = this.$route.query;
-      this.socialForm.state = params.state;
-      this.socialForm.code = params.code;
-      if (!validatenull(this.socialForm.state)) {
-        const loading = this.$loading({
-          lock: true,
-          text: `${
-            this.socialForm.state === "WX" ? "微信" : "QQ"
-          }登录中,请稍后。。。`,
-          spinner: "el-icon-loading"
-        });
-        setTimeout(() => {
-          loading.close();
-        }, 2000);
+  import userLogin from "./userlogin";
+  import codeLogin from "./codelogin";
+  import thirdLogin from "./thirdlogin";
+  import {mapGetters} from "vuex";
+  import {dateFormat} from "@/util/date";
+  import {validatenull} from "@/util/validate";
+  import topLang from "@/page/index/top/top-lang";
+  import topColor from "@/page/index/top/top-color";
+  import {info} from "@/api/system/tenant";
+
+  export default {
+    name: "login",
+    components: {
+      userLogin,
+      codeLogin,
+      thirdLogin,
+      topLang,
+      topColor
+    },
+    data() {
+      return {
+        time: "",
+        activeName: "user"
+      };
+    },
+    watch: {
+      $route() {
+        const params = this.$route.query;
+        this.socialForm.state = params.state;
+        this.socialForm.code = params.code;
+        if (!validatenull(this.socialForm.state)) {
+          const loading = this.$loading({
+            lock: true,
+            text: `${
+              this.socialForm.state === "WX" ? "微信" : "QQ"
+            }登录中,请稍后。。。`,
+            spinner: "el-icon-loading"
+          });
+          setTimeout(() => {
+            loading.close();
+          }, 2000);
+        }
+      }
+    },
+    created() {
+      this.getTime();
+      setInterval(() => {
+        this.getTime();
+      }, 1000);
+    },
+    mounted() {
+    },
+    computed: {
+      ...mapGetters(["website"])
+    },
+    props: [],
+    methods: {
+      getTime() {
+        this.time = dateFormat(new Date());
       }
     }
-  },
-  created() {
-    this.getTime();
-    setInterval(() => {
-      this.getTime();
-    }, 1000);
-  },
-  mounted() {},
-  computed: {
-    ...mapGetters(["website"])
-  },
-  props: [],
-  methods: {
-    getTime() {
-      this.time = dateFormat(new Date());
-    }
-  }
-};
+  };
 </script>
 
 <style lang="scss">
-@import "@/styles/login.scss";
+  @import "@/styles/login.scss";
 </style>

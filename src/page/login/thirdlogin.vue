@@ -5,7 +5,7 @@
       <span class="container"
             :style="{backgroundColor:'#6ba2d6'}">
         <i icon-class="wechat"
-           class="iconfont icon-weixin"></i>
+           class="iconfont icon-weixin"/>
       </span>
       <p class="title">{{$t('login.wechat')}}</p>
     </div>
@@ -14,7 +14,7 @@
       <span class="container"
             :style="{backgroundColor:'#8dc349'}">
         <i icon-class="qq"
-           class="iconfont icon-qq"></i>
+           class="iconfont icon-qq"/>
       </span>
       <p class="title">{{$t('login.qq')}}</p>
     </div>
