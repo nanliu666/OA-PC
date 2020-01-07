@@ -133,6 +133,30 @@
         <el-row>
           <basic-container>
             <el-collapse v-model="logActiveNames" @change="handleChange">
+              <el-collapse-item title="2.3.0.RELEASE发布，租户增强，底层架构插件全面增强" name="12">
+                <div>1.swagger-bootstrap-ui全新升级为knife4j</div>
+                <div>2.blade-develop代码生成模板适配最新版</div>
+                <div>3.saber升级至avue2.3.5版本</div>
+                <div>4.新增saber树表懒加载模式</div>
+                <div>5.新增xxl-job集成，支持分布式任务调度</div>
+                <div>6.新增kafka、rabbitmq、cloudstream集成</div>
+                <div>7.新增redis分布式锁插件</div>
+                <div>8.新增高性能http调用模块</div>
+                <div>9.新增PropertySource注册逻辑，提高安全性</div>
+                <div>10.新增Param参数缓存工具类</div>
+                <div>11.新增租户操作，增加创建对应的租户管理员账号、菜单权限</div>
+                <div>12.新增租户插件，超管可查看所有租户数据的逻辑</div>
+                <div>13.新增租户功能，绑定域名、系统背景、账号额度、过期时间</div>
+                <div>14.新增登录、创建用户操作绑定租户配置</div>
+                <div>15.优化租户插件判断逻辑，增加flowable相关表的租户过滤排除</div>
+                <div>16.优化xss过滤逻辑，提高性能</div>
+                <div>17.优化本地文件上传逻辑</div>
+                <div>18.优化oss配置，修改后及时生效无需点击启用</div>
+                <div>19.优化请求日志展示功能</div>
+                <div>20.修复前端关闭租户模式导致的新增用户失效问题</div>
+                <div>21.修复OSS相关bucket命名的问题</div>
+                <div>22.修复ribbon组件由降级引起的问题</div>
+              </el-collapse-item>
               <el-collapse-item title="2.2.2.RELEASE发布，增强字典管理，用户管理增加左树右表" name="11">
                 <div>1.拆分出系统字典表与业务字典表，字典键值改为string类型</div>
                 <div>2.用户管理增加左树右表功能</div>
@@ -311,7 +335,7 @@
     data() {
       return {
         activeNames: ['1', '2', '3', '5'],
-        logActiveNames: ['11']
+        logActiveNames: ['12']
       };
     },
     computed: {
