@@ -135,9 +135,9 @@
             <el-collapse v-model="logActiveNames" @change="handleChange">
               <el-collapse-item title="2.3.0.RELEASE发布，租户增强，底层架构插件全面增强" name="12">
                 <div>1.swagger-bootstrap-ui全新升级为knife4j</div>
-                <div>2.blade-develop代码生成模板适配最新版</div>
-                <div>3.saber升级至avue2.3.5版本</div>
-                <div>4.新增saber树表懒加载模式</div>
+                <div>2.saber升级至avue2.3.5版本</div>
+                <div>3.新增saber树表懒加载模式</div>
+                <div>4.新增腾讯云存储封装</div>
                 <div>5.新增xxl-job集成，支持分布式任务调度</div>
                 <div>6.新增kafka、rabbitmq、cloudstream集成</div>
                 <div>7.新增redis分布式锁插件</div>
