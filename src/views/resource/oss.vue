@@ -52,6 +52,7 @@
 <script>
   import {getList, getDetail, add, update, remove, enable} from "@/api/resource/oss";
   import {mapGetters} from "vuex";
+  import func from "@/util/func";
 
   export default {
     data() {
@@ -76,6 +77,7 @@
           viewBtn: true,
           selection: true,
           labelWidth: 100,
+          dialogWidth: 880,
           column: [
             {
               label: "分类",
@@ -147,6 +149,20 @@
               }]
             },
             {
+              label: "appId",
+              prop: "appId",
+              span: 24,
+              hide: true,
+              display: false,
+            },
+            {
+              label: "region",
+              prop: "region",
+              span: 24,
+              hide: true,
+              display: false,
+            },
+            {
               label: "是否启用",
               prop: "status",
               span: 24,
@@ -166,6 +182,19 @@
         },
         data: []
       };
+    },
+    watch: {
+      'form.category'() {
+        const category = func.toInt(this.form.category);
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "appId") {
+            item.display = category === 4;
+          }
+          if (item.prop === "region") {
+            item.display = category === 4;
+          }
+        });
+      }
     },
     computed: {
       ...mapGetters(["permission"]),
