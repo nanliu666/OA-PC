@@ -45,7 +45,6 @@
   import {validatenull} from "@/util/validate";
   import topLang from "@/page/index/top/top-lang";
   import topColor from "@/page/index/top/top-color";
-  import {info} from "@/api/system/tenant";
 
   export default {
     name: "login",
