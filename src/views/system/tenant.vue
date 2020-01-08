@@ -141,7 +141,7 @@
             {
               label: "过期时间",
               prop: "expireTime",
-              width: 160,
+              width: 180,
               slot: true,
               addDisplay: false,
               editDisplay: false,
