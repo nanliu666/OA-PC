@@ -9,7 +9,7 @@ import param from './param';
  * mock是否开启模拟数据拦截
  */
 
-const options = {mock: true};
+const options = {mock: false};
 
 user(options);
 
