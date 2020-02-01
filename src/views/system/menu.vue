@@ -41,6 +41,7 @@
   import {getLazyList, remove, update, add, getMenu} from "@/api/system/menu";
   import {mapGetters} from "vuex";
   import iconList from "@/config/iconList";
+  import func from "@/util/func";
 
   export default {
     data() {
@@ -193,7 +194,16 @@
         data: []
       };
     },
-
+    watch: {
+      'form.category'() {
+        const category = func.toInt(this.form.category);
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "path") {
+            item.rules[0].required = category === 1;
+          }
+        });
+      }
+    },
     computed: {
       ...mapGetters(["permission"]),
       permissionList() {
