@@ -83,33 +83,18 @@
       <span slot="footer"
             class="dialog-footer">
         <el-button @click="flowBox = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="handleRefresh">确 定</el-button>
+        <el-button type="primary" @click="handleRefresh">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="流程部署"
                append-to-body
                :visible.sync="deployBox"
                width="20%">
-      <el-form :model="form"
-               ref="form"
-               label-width="80px">
-        <el-form-item label="流程类型">
-          <el-select v-model="categoryValue" placeholder="请选择" value="">
-            <el-option
-              v-for="item in category"
-              :key="item.dictKey"
-              :label="item.dictValue"
-              :value="item.dictKey">
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+      <avue-form ref="form" :option="optionDeploy" v-model="form" @submit="handleSubmit"/>
       <span slot="footer"
             class="dialog-footer">
         <el-button @click="deployBox = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="handleDoDeploy">确 定</el-button>
+        <el-button type="primary" @click="handleDoDeploy" :loading="deployLoading">确 定</el-button>
       </span>
     </el-dialog>
   </basic-container>
@@ -121,15 +106,85 @@
   import {getDictionary} from "@/api/system/dict";
   import {modelList, removeModel, deployModel} from "@/api/flow/flow";
   import {flowCategory} from "@/util/flow";
+  import {leaveProcess} from "@/api/work/process";
 
   export default {
     data() {
       return {
         form: {},
+        optionDeploy: {
+          menuBtn: false,
+          column: [
+            {
+              label: "流程类型",
+              type: "select",
+              dicUrl: "/api/blade-system/dict/dictionary?code=flow",
+              props: {
+                label: "dictValue",
+                value: "dictKey"
+              },
+              dataType: "number",
+              slot: true,
+              prop: "categoryValue",
+              search: true,
+              span: 24,
+              rules: [{
+                required: true,
+                message: "请选择流程类型",
+                trigger: "blur"
+              }]
+            },
+            {
+              label: "流程模式",
+              prop: "flowType",
+              type: "radio",
+              dicData: [
+                {
+                  label: "通用流程",
+                  value: 1
+                },
+                {
+                  label: "定制流程",
+                  value: 2
+                }
+              ],
+              value: 1,
+              span: 24,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择流程模式',
+                  trigger: 'blur'
+                }
+              ],
+            },
+            {
+              label: "所属租户",
+              prop: "tenantId",
+              type: "tree",
+              multiple: true,
+              dicUrl: "/api/blade-system/tenant/select",
+              props: {
+                label: "tenantName",
+                value: "tenantId"
+              },
+              display: false,
+              span: 24,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择所属租户',
+                  trigger: 'blur'
+                }
+              ],
+            },
+          ],
+        },
         selectionId: '',
         selectionList: [],
         query: {},
         loading: true,
+        deployLoading: false,
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -138,8 +193,6 @@
         deployBox: false,
         flowBox: false,
         flowUrl: '',
-        category: [],
-        categoryValue: '',
         option: {
           height: 'auto',
           calcHeight: 30,
@@ -193,6 +246,15 @@
         data: []
       };
     },
+    watch: {
+      'form.flowType'() {
+        this.$refs.form.option.column.filter(item => {
+          if (item.prop === "tenantId") {
+            item.display = this.form.flowType === 2;
+          }
+        });
+      }
+    },
     computed: {
       ...mapGetters(["permission"]),
       ids() {
@@ -204,6 +266,33 @@
       }
     },
     methods: {
+      handleSubmit(form, done) {
+        this.deployLoading = true;
+        deployModel({
+          modelId: this.selectionId,
+          category: flowCategory(form.categoryValue),
+          tenantIds: form.tenantId.join(",")
+        }).then(res => {
+          const data = res.data;
+          if (data.success) {
+            this.$message({
+              type: "success",
+              message: data.msg
+            });
+            done();
+            this.$refs.form.resetForm();
+            this.deployBox = false;
+            this.deployLoading = false;
+          } else {
+            done();
+            this.deployLoading = false;
+            this.$message({
+              type: "warn",
+              message: data.msg
+            });
+          }
+        })
+      },
       searchReset() {
         this.query = {};
         this.onLoad(this.page);
@@ -256,28 +345,7 @@
         this.selectionId = row.id;
       },
       handleDoDeploy() {
-        if (!this.categoryValue) {
-          this.$message({
-            type: "warn",
-            message: "请先选择流程类型!"
-          });
-          return;
-        }
-        deployModel({modelId: this.selectionId, category: flowCategory(this.categoryValue)}).then(res => {
-          const data = res.data;
-          if (data.success) {
-            this.$message({
-              type: "success",
-              message: data.msg
-            });
-            this.deployBox = false;
-          } else {
-            this.$message({
-              type: "warn",
-              message: data.msg
-            });
-          }
-        })
+        this.$refs.form.submit();
       },
       handleDownload(row) {
         window.open(`${website.flowDesignUrl}/app/rest/models/${row.id}/bpmn20`);
@@ -304,10 +372,10 @@
         this.flowBox = false;
         this.onLoad(this.page);
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       refreshChange() {
@@ -322,9 +390,6 @@
           this.loading = false;
           this.selectionClear();
         });
-        getDictionary({code: 'flow'}).then(res => {
-          this.category = res.data.data;
-        })
       }
     }
   };

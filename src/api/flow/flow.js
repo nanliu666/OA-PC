@@ -63,9 +63,10 @@ export const changeState = (params) => {
   })
 }
 
-export const deployUpload = (category, files) => {
+export const deployUpload = (category, tenantIds, files) => {
   const formData = new FormData();
   formData.append('category', category);
+  formData.append('tenantIds', tenantIds);
   files.forEach(file => {
     formData.append('files', file);
   });

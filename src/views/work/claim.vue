@@ -5,7 +5,6 @@
                :data="data"
                ref="crud"
                v-model="form"
-               :page="page"
                @search-change="searchChange"
                @search-reset="searchReset"
                @selection-change="selectionChange"

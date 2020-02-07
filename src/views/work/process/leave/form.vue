@@ -1,6 +1,6 @@
 <template>
   <basic-container>
-    <avue-form :option="option" v-model="form" @submit="handleSubmit"></avue-form>
+    <avue-form :option="option" v-model="form" @submit="handleSubmit"/>
   </basic-container>
 </template>
 

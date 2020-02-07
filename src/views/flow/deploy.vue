@@ -1,6 +1,6 @@
 <template>
   <basic-container>
-    <avue-form :option="option" v-model="form" :upload-before="uploadBefore" :upload-after="uploadAfter"></avue-form>
+    <avue-form ref="form" :option="option" v-model="form" :upload-before="uploadBefore" :upload-after="uploadAfter"/>
   </basic-container>
 </template>
 
@@ -13,7 +13,8 @@
       return {
         form: {
           flowCategory: '',
-          imgUrl: [],
+          tenantId: '',
+          flowFile: [],
           file: {},
         },
         option: {
@@ -29,6 +30,8 @@
                 label: "dictValue",
                 value: "dictKey"
               },
+              row: true,
+              span: 12,
               dataType: "number",
               rules: [
                 {
@@ -39,8 +42,54 @@
               ]
             },
             {
+              label: "流程模式",
+              prop: "flowType",
+              type: "radio",
+              dicData: [
+                {
+                  label: "通用流程",
+                  value: 1
+                },
+                {
+                  label: "定制流程",
+                  value: 2
+                }
+              ],
+              value: 1,
+              row: true,
+              span: 12,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择流程模式',
+                  trigger: 'blur'
+                }
+              ],
+            },
+            {
+              label: "所属租户",
+              prop: "tenantId",
+              type: "tree",
+              multiple: true,
+              dicUrl: "/api/blade-system/tenant/select",
+              props: {
+                label: "tenantName",
+                value: "tenantId"
+              },
+              display: false,
+              row: true,
+              span: 12,
+              rules: [
+                {
+                  required: true,
+                  message: '请选择所属租户',
+                  trigger: 'blur'
+                }
+              ],
+            },
+            {
               label: '附件上传',
-              prop: 'imgUrl',
+              prop: 'flowFile',
               type: 'upload',
               loadText: '附件上传中，请稍等',
               span: 24,
@@ -54,9 +103,18 @@
         }
       }
     },
+    watch: {
+      'form.flowType'() {
+        this.$refs.form.option.column.filter(item => {
+          if (item.prop === "tenantId") {
+            item.display = this.form.flowType === 2;
+          }
+        });
+      }
+    },
     methods: {
       uploadBefore(file, done) {
-        this.$message.success('部署开始')
+        this.$message.success('部署开始');
         this.file = file;
         done()
       },
@@ -66,11 +124,19 @@
           loading()
           return false;
         }
+        if (this.form.flowType === 1 && !this.form.tenantId) {
+          this.$message.warning('清先选择对应租户');
+          loading();
+          return false;
+        }
         if (res.success) {
-          deployUpload(flowCategory(this.form.flowCategory), [this.file]).then(res => {
+          deployUpload(
+            flowCategory(this.form.flowCategory),
+            (this.form.tenantId) ? this.form.tenantId.join(",") : "",
+            [this.file]
+          ).then(res => {
             const data = res.data;
             if (data.success) {
-              this.$message.success('部署结束')
               done()
             } else {
               this.$message.error(data.msg);

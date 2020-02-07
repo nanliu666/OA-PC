@@ -13,6 +13,12 @@
                @size-change="sizeChange"
                @refresh-change="refreshChange"
                @on-load="onLoad">
+      <template slot="menuLeft">
+        <el-radio-group v-model="mode" size="small">
+          <el-radio-button label="1">通用流程</el-radio-button>
+          <el-radio-button label="2">定制流程</el-radio-button>
+        </el-radio-group>
+      </template>
       <template slot-scope="scope" slot="menu">
         <el-button type="text"
                    size="small"
@@ -28,6 +34,10 @@
                    class="none-border"
                    @click.stop="handleImage(scope.row,scope.index)">流程图
         </el-button>
+      </template>
+      <template slot-scope="{row}"
+                slot="tenantId">
+        <el-tag>{{row.tenantId===''?'通用':row.tenantId}}</el-tag>
       </template>
       <template slot-scope="{row}"
                 slot="version">
@@ -69,12 +79,14 @@
 <script>
   import {mapGetters} from "vuex";
   import {startList} from "@/api/work/work";
-  import {flowCategory,flowRoute} from "@/util/flow";
+  import {flowCategory, flowRoute} from "@/util/flow";
+  import func from "@/util/func";
 
   export default {
     data() {
       return {
         form: {},
+        mode: '1',
         selectionId: '',
         selectionList: [],
         query: {},
@@ -103,6 +115,12 @@
           menuWidth: 150,
           dialogWidth: 900,
           column: [
+            {
+              label: '租户编号',
+              prop: 'tenantId',
+              slot: true,
+              width: 150,
+            },
             {
               label: "流程分类",
               type: "select",
@@ -149,6 +167,11 @@
         data: []
       };
     },
+    watch: {
+      'mode'() {
+        this.onLoad(this.page);
+      }
+    },
     computed: {
       ...mapGetters(["permission", "flowRoutes"]),
       ids() {
@@ -184,10 +207,10 @@
         this.flowUrl = `/api/blade-flow/process/resource-view?processDefinitionId=${row.id}`;
         this.flowBox = true;
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       refreshChange() {
@@ -196,7 +219,8 @@
       onLoad(page, params = {}) {
         const query = {
           ...this.query,
-          category: (params.category) ? flowCategory(params.category) : null
+          category: (params.category) ? flowCategory(params.category) : null,
+          mode: this.mode
         };
         this.loading = true;
         startList(page.currentPage, page.pageSize, Object.assign(params, query)).then(res => {
