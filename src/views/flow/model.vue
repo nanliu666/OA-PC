@@ -136,7 +136,7 @@
             },
             {
               label: "流程模式",
-              prop: "flowType",
+              prop: "flowMode",
               type: "radio",
               dicData: [
                 {
@@ -247,10 +247,10 @@
       };
     },
     watch: {
-      'form.flowType'() {
+      'form.flowMode'() {
         this.$refs.form.option.column.filter(item => {
           if (item.prop === "tenantId") {
-            item.display = this.form.flowType === 2;
+            item.display = this.form.flowMode === 2;
           }
         });
       }

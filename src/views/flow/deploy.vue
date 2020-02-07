@@ -43,7 +43,7 @@
             },
             {
               label: "流程模式",
-              prop: "flowType",
+              prop: "flowMode",
               type: "radio",
               dicData: [
                 {
@@ -104,10 +104,10 @@
       }
     },
     watch: {
-      'form.flowType'() {
+      'form.flowMode'() {
         this.$refs.form.option.column.filter(item => {
           if (item.prop === "tenantId") {
-            item.display = this.form.flowType === 2;
+            item.display = this.form.flowMode === 2;
           }
         });
       }
@@ -124,7 +124,7 @@
           loading()
           return false;
         }
-        if (this.form.flowType === 1 && !this.form.tenantId) {
+        if (this.form.flowMode === 2 && !this.form.tenantId) {
           this.$message.warning('清先选择对应租户');
           loading();
           return false;
