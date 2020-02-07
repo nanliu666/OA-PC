@@ -103,10 +103,8 @@
 <script>
   import {mapGetters} from "vuex";
   import website from '@/config/website';
-  import {getDictionary} from "@/api/system/dict";
   import {modelList, removeModel, deployModel} from "@/api/flow/flow";
   import {flowCategory} from "@/util/flow";
-  import {leaveProcess} from "@/api/work/process";
 
   export default {
     data() {
