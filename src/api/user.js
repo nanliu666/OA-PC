@@ -1,21 +1,23 @@
 import request from '@/router/axios';
 import { baseUrl } from '@/config/env';
 
-export const loginByUsername = (tenantId, username, password, type) => request({
+export const loginByUsername = (tenantId, username, password, type, key, code) => request({
   url: '/api/blade-auth/oauth/token',
   method: 'post',
   headers: {
-    'Tenant-Id': tenantId
+    'Tenant-Id': tenantId,
+    'Captcha-Key': key,
+    'Captcha-Code': code,
   },
   params: {
     tenantId,
     username,
     password,
-    grant_type: "password",
+    grant_type: "captcha",
     scope: "all",
     type
   }
-})
+});
 
 export const refreshToken = (refresh_token, tenantId) => request({
   url: '/api/blade-auth/oauth/token',
@@ -29,10 +31,15 @@ export const refreshToken = (refresh_token, tenantId) => request({
     grant_type: "refresh_token",
     scope: "all",
   }
-})
+});
 
 export const getButtons = () => request({
   url: '/api/blade-system/menu/buttons',
+  method: 'get'
+});
+
+export const getCaptcha = () => request({
+  url: '/api/blade-auth/oauth/captcha',
   method: 'get'
 });
 
