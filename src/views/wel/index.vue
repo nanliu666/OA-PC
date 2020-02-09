@@ -4,7 +4,7 @@
       <el-col :span="24">
         <basic-container>
           <p style="text-align: center">
-            <img src="https://img.shields.io/badge/Release-V2.3.0-green.svg" alt="Downloads"/>
+            <img src="https://img.shields.io/badge/Release-V2.3.1-green.svg" alt="Downloads"/>
             <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="Build Status"/>
             <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR4-blue.svg" alt="Coverage Status"/>
             <img src="https://img.shields.io/badge/Spring%20Boot-2.1.11.RELEASE-blue.svg" alt="Downloads"/>
@@ -133,6 +133,23 @@
         <el-row>
           <basic-container>
             <el-collapse v-model="logActiveNames" @change="handleChange">
+              <el-collapse-item title="2.3.1.RELEASE发布，流程增加租户定制，登陆增加验证码" name="13">
+                <div>1.新增登陆验证码功能</div>
+                <div>2.新增Oauth2自定义TokenGranter</div>
+                <div>3.新增工作流绑定租户功能，支持通用流程和定制流程</div>
+                <div>4.新增Condition类的自定义参数排除入口</div>
+                <div>5.增强租户插件功能，新增操作可根据自定义的tenantId值进行覆盖</div>
+                <div>6.增强超管权限，不受数据权限插件影响</div>
+                <div>7.升级mybatis-plus至3.3.1</div>
+                <div>8.优化mybatis-plus封装，提升分页可拓展性</div>
+                <div>9.优化lib分离打包逻辑</div>
+                <div>10.优化CacheUtil初始化逻辑</div>
+                <div>11.优化HttpUtil，采用最新封装逻辑</div>
+                <div>12.优化角色信息获取逻辑为实时，不受开源版、单体版缓存影响</div>
+                <div>13.优化日志打印工具判断空逻辑</div>
+                <div>14.修复BeanUtil的class类型判断逻辑</div>
+                <div>15.删除基于zookeeper体验不佳的分布式锁</div>
+              </el-collapse-item>
               <el-collapse-item title="2.3.0.RELEASE发布，租户增强，底层架构插件全面增强" name="12">
                 <div>1.swagger-bootstrap-ui全新升级为knife4j</div>
                 <div>2.saber升级至avue2.3.7版本</div>
@@ -335,7 +352,7 @@
     data() {
       return {
         activeNames: ['1', '2', '3', '5'],
-        logActiveNames: ['12']
+        logActiveNames: ['13']
       };
     },
     computed: {
