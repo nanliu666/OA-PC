@@ -80,7 +80,6 @@
   import {mapGetters} from "vuex";
   import {startList} from "@/api/work/work";
   import {flowCategory, flowRoute} from "@/util/flow";
-  import func from "@/util/func";
 
   export default {
     data() {
