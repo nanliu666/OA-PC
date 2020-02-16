@@ -457,14 +457,18 @@
         if (["edit", "view"].includes(type)) {
           getUser(this.form.id).then(res => {
             this.form = res.data;
-            this.form.deptId = this.form.deptId.split(",");
-            this.form.deptId.forEach((ele, index) => {
-              this.form.deptId[index] = Number(ele);
-            });
-            this.form.roleId = this.form.roleId.split(",");
-            this.form.roleId.forEach((ele, index) => {
-              this.form.roleId[index] = Number(ele);
-            });
+            if(this.form.hasOwnProperty("deptId")){
+              this.form.deptId = this.form.deptId.split(",");
+              this.form.deptId.forEach((ele, index) => {
+                this.form.deptId[index] = Number(ele);
+              });
+            }
+            if(this.form.hasOwnProperty("roleId")){
+              this.form.roleId = this.form.roleId.split(",");
+              this.form.roleId.forEach((ele, index) => {
+                this.form.roleId[index] = Number(ele);
+              });
+            }
           });
         }
         done();
