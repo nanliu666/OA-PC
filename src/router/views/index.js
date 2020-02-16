@@ -72,7 +72,7 @@ export default [{
       i18n: 'info'
     },
     component: () =>
-      import( /* webpackChunkName: "views" */ '@/views/user/info')
+      import( /* webpackChunkName: "views" */ '@/views/system/userinfo')
   }]
 }, {
   path: '/work/process/leave',
