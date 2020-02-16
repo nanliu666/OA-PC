@@ -118,7 +118,7 @@
               label: '租户编号',
               prop: 'tenantId',
               slot: true,
-              width: 150,
+              width: 120,
             },
             {
               label: "流程分类",

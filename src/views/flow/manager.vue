@@ -15,13 +15,10 @@
                @refresh-change="refreshChange"
                @on-load="onLoad">
       <template slot="menuLeft">
-        <el-button type="danger"
-                   size="small"
-                   icon="el-icon-delete"
-                   v-if="permission.flow_manager_remove"
-                   plain
-                   @click="handleDelete">删 除
-        </el-button>
+        <el-radio-group v-model="mode" size="small">
+          <el-radio-button label="1">通用流程</el-radio-button>
+          <el-radio-button label="2">定制流程</el-radio-button>
+        </el-radio-group>
       </template>
       <template slot-scope="scope" slot="menu">
         <el-button type="text"
@@ -45,6 +42,10 @@
                    class="none-border"
                    @click.stop="handleSlotDelete(scope.row,scope.index)">删除
         </el-button>
+      </template>
+      <template slot-scope="{row}"
+                slot="tenantId">
+        <el-tag>{{row.tenantId===''?'通用':row.tenantId}}</el-tag>
       </template>
       <template slot-scope="{row}"
                 slot="version">
@@ -117,6 +118,7 @@
     data() {
       return {
         form: {},
+        mode: '1',
         selectionId: '',
         selectionList: [],
         query: {},
@@ -153,6 +155,12 @@
           dialogWidth: 900,
           menuWidth: 150,
           column: [
+            {
+              label: '租户编号',
+              prop: 'tenantId',
+              slot: true,
+              width: 120,
+            },
             {
               label: '流程主键',
               prop: 'id',
@@ -204,6 +212,11 @@
         },
         data: []
       };
+    },
+    watch: {
+      'mode'() {
+        this.onLoad(this.page);
+      }
     },
     computed: {
       ...mapGetters(["permission"]),
@@ -318,10 +331,10 @@
         this.flowUrl = `/api/blade-flow/process/resource-view?processDefinitionId=${row.id}`;
         this.flowBox = true;
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       refreshChange() {
@@ -330,8 +343,9 @@
       onLoad(page, params = {}) {
         const values = {
           ...params,
-          category: (params.category) ? flowCategory(params.category) : null
-        }
+          category: (params.category) ? flowCategory(params.category) : null,
+          mode: this.mode
+        };
         this.loading = true;
         managerList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(res => {
           const data = res.data.data;
@@ -348,6 +362,6 @@
 <style>
   .none-border {
     border: 0;
-    background-color: transparent!important;
+    background-color: transparent !important;
   }
 </style>
