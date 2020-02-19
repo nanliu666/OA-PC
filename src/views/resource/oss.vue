@@ -102,10 +102,21 @@
               }]
             },
             {
+              label: "资源编号",
+              prop: "ossCode",
+              span: 24,
+              width: 120,
+              search: true,
+              rules: [{
+                required: true,
+                message: "请输入资源编号",
+                trigger: "blur"
+              }]
+            },
+            {
               label: "资源地址",
               prop: "endpoint",
               span: 24,
-              search: true,
               rules: [{
                 required: true,
                 message: "请输入资源地址",
