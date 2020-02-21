@@ -77,7 +77,7 @@
             <el-collapse-item title="软件定制开发合作" name="5">
               <div>1.接BladeX系列架构的定制服务</div>
               <div>2.接3个月以内工期的react、vue、springboot、springcloud、app、小程序等软件定制服务</div>
-              <div>3.有意向请联系唯一指定QQ:85088620</div>
+              <div>3.有意向请联系唯一指定QQ:1272154962</div>
             </el-collapse-item>
           </el-collapse>
         </basic-container>

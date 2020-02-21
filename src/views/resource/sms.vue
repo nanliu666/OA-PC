@@ -5,12 +5,12 @@
                :data="data"
                :page="page"
                :permission="permissionList"
+               :before-open="beforeOpen"
                v-model="form"
                ref="crud"
                @row-update="rowUpdate"
                @row-save="rowSave"
                @row-del="rowDel"
-               :before-open="beforeOpen"
                @search-change="searchChange"
                @search-reset="searchReset"
                @selection-change="selectionChange"
@@ -23,7 +23,7 @@
                    size="small"
                    icon="el-icon-delete"
                    plain
-                   v-if="permission.oss_delete"
+                   v-if="permission.sms_delete"
                    @click="handleDelete">删 除
         </el-button>
       </template>
@@ -31,7 +31,7 @@
         <el-button type="text"
                    icon="el-icon-check"
                    size="small"
-                   v-if="permission.oss_enable"
+                   v-if="permission.sms_enable"
                    @click.stop="handleEnable(scope.row)">启用
         </el-button>
       </template>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-  import {getList, getDetail, add, update, remove, enable} from "@/api/resource/oss";
+  import {getList, getDetail, add, update, remove, enable} from "@/api/resource/sms";
   import {mapGetters} from "vuex";
   import func from "@/util/func";
 
@@ -85,7 +85,7 @@
               width: 100,
               searchLabelWidth: 50,
               row: true,
-              dicUrl: "/api/blade-system/dict/dictionary?code=oss",
+              dicUrl: "/api/blade-system/dict/dictionary?code=sms",
               props: {
                 label: "dictValue",
                 value: "dictKey"
@@ -102,9 +102,9 @@
             },
             {
               label: "资源编号",
-              prop: "ossCode",
+              prop: "smsCode",
               span: 24,
-              width: 120,
+              width: 200,
               search: true,
               rules: [{
                 required: true,
@@ -113,23 +113,14 @@
               }]
             },
             {
-              label: "资源地址",
-              prop: "endpoint",
+              label: "模版ID",
+              prop: "templateId",
               span: 24,
+              width: 200,
+              search: true,
               rules: [{
                 required: true,
-                message: "请输入资源地址",
-                trigger: "blur"
-              }]
-            },
-            {
-              label: "空间名",
-              prop: "bucketName",
-              span: 24,
-              width: 120,
-              rules: [{
-                required: true,
-                message: "请输入空间名",
+                message: "请输入模版ID",
                 trigger: "blur"
               }]
             },
@@ -137,40 +128,41 @@
               label: "accessKey",
               prop: "accessKey",
               span: 24,
-              search: true,
-              width: 200,
               overHidden: true,
               rules: [{
                 required: true,
                 message: "请输入accessKey",
                 trigger: "blur"
-              }]
+              }],
             },
             {
               label: "secretKey",
               prop: "secretKey",
               span: 24,
-              width: 200,
               overHidden: true,
+              display: true,
               rules: [{
                 required: true,
                 message: "请输入secretKey",
                 trigger: "blur"
-              }]
+              }],
             },
             {
-              label: "appId",
-              prop: "appId",
+              label: "regionId",
+              prop: "regionId",
               span: 24,
               hide: true,
-              display: false,
+              display: false
             },
             {
-              label: "region",
-              prop: "region",
+              label: "短信签名",
+              prop: "signName",
               span: 24,
-              hide: true,
-              display: false,
+              rules: [{
+                required: true,
+                message: "请输入短信签名",
+                trigger: "blur"
+              }],
             },
             {
               label: "是否启用",
@@ -186,7 +178,7 @@
               label: "备注",
               prop: "remark",
               span: 24,
-              hide: true,
+              hide: true
             },
           ]
         },
@@ -197,11 +189,32 @@
       'form.category'() {
         const category = func.toInt(this.form.category);
         this.$refs.crud.option.column.filter(item => {
-          if (item.prop === "appId") {
-            item.display = category === 4;
+          if (item.prop === "templateId") {
+            if (category === 1) {
+              item.label = "模版内容";
+            } else {
+              item.label = "模版ID";
+            }
           }
-          if (item.prop === "region") {
-            item.display = category === 4;
+          if (item.prop === "accessKey") {
+            if (category === 1) {
+              item.label = "apiKey";
+            } else if (category === 4) {
+              item.label = "appId";
+            } else {
+              item.label = "accessKey";
+            }
+          }
+          if (item.prop === "secretKey") {
+            item.display = category !== 1;
+            if (category === 4) {
+              item.label = "appKey";
+            } else {
+              item.label = "secretKey";
+            }
+          }
+          if (item.prop === "regionId") {
+            item.display = category === 3;
           }
         });
       }
@@ -210,10 +223,10 @@
       ...mapGetters(["permission"]),
       permissionList() {
         return {
-          addBtn: this.vaildData(this.permission.oss_add),
-          viewBtn: this.vaildData(this.permission.oss_view),
-          delBtn: this.vaildData(this.permission.oss_delete),
-          editBtn: this.vaildData(this.permission.oss_edit)
+          addBtn: this.vaildData(this.permission.sms_add, false),
+          viewBtn: this.vaildData(this.permission.sms_view, false),
+          delBtn: this.vaildData(this.permission.sms_delete, false),
+          editBtn: this.vaildData(this.permission.sms_edit, false)
         };
       },
       ids() {
@@ -268,23 +281,6 @@
             });
           });
       },
-      searchReset() {
-        this.query = {};
-        this.onLoad(this.page);
-      },
-      searchChange(params, done) {
-        this.query = params;
-        this.page.currentPage = 1;
-        this.onLoad(this.page, params);
-        done();
-      },
-      selectionChange(list) {
-        this.selectionList = list;
-      },
-      selectionClear() {
-        this.selectionList = [];
-        this.$refs.crud.toggleSelection();
-      },
       handleEnable(row) {
         this.$confirm("是否确定启用这条配置?", {
           confirmButtonText: "确定",
@@ -333,6 +329,23 @@
         }
         done();
       },
+      searchReset() {
+        this.query = {};
+        this.onLoad(this.page);
+      },
+      searchChange(params, done) {
+        this.query = params;
+        this.page.currentPage = 1;
+        this.onLoad(this.page, params);
+        done();
+      },
+      selectionChange(list) {
+        this.selectionList = list;
+      },
+      selectionClear() {
+        this.selectionList = [];
+        this.$refs.crud.toggleSelection();
+      },
       currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
@@ -355,3 +368,4 @@
     }
   };
 </script>
+
