@@ -191,6 +191,7 @@
               prop: "status",
               span: 24,
               width: 80,
+              align: "center",
               slot: true,
               addDisplay: false,
               editDisplay: false,
