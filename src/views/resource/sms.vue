@@ -29,6 +29,12 @@
       </template>
       <template slot-scope="scope" slot="menu">
         <el-button type="text"
+                   icon="el-icon-video-play"
+                   size="small"
+                   v-if="userInfo.role_name.includes('admin')"
+                   @click="handleDebug(scope.row)">调试
+        </el-button>
+        <el-button type="text"
                    icon="el-icon-check"
                    size="small"
                    v-if="permission.sms_enable"
@@ -44,11 +50,17 @@
         <el-tag>{{row.categoryName}}</el-tag>
       </template>
     </avue-crud>
+    <el-dialog title="手机短信发送调试"
+               append-to-body
+               :visible.sync="box"
+               width="550px">
+      <avue-form :option="debugOption" v-model="debugForm" @submit="handleSend"/>
+    </el-dialog>
   </basic-container>
 </template>
 
 <script>
-  import {getList, getDetail, add, update, remove, enable} from "@/api/resource/sms";
+  import {getList, getDetail, add, update, remove, enable, send} from "@/api/resource/sms";
   import {mapGetters} from "vuex";
   import func from "@/util/func";
 
@@ -58,6 +70,8 @@
         form: {},
         query: {},
         loading: true,
+        box: false,
+        code: '',
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -74,6 +88,7 @@
           index: true,
           viewBtn: true,
           selection: true,
+          menuWidth: 300,
           labelWidth: 100,
           dialogWidth: 880,
           column: [
@@ -141,6 +156,7 @@
               span: 24,
               overHidden: true,
               display: true,
+              hide: true,
               rules: [{
                 required: true,
                 message: "请输入secretKey",
@@ -151,6 +167,7 @@
               label: "regionId",
               prop: "regionId",
               span: 24,
+              value: "cn-hangzhou",
               hide: true,
               display: false
             },
@@ -158,6 +175,7 @@
               label: "短信签名",
               prop: "signName",
               span: 24,
+              width: 200,
               rules: [{
                 required: true,
                 message: "请输入短信签名",
@@ -182,7 +200,32 @@
             },
           ]
         },
-        data: []
+        data: [],
+        debugForm: {
+          code: '',
+        },
+        debugOption: {
+          submitText: "发送",
+          column: [
+            {
+              label: "资源编号",
+              prop: "code",
+              disabled: true,
+              span: 24,
+            },
+            {
+              label: "发送手机",
+              prop: "phones",
+              span: 24,
+            },
+            {
+              label: "发送参数",
+              prop: "params",
+              span: 24,
+              placeholder: "例: {'code':2333,'title':'通知标题'}",
+            },
+          ]
+        }
       };
     },
     watch: {
@@ -214,13 +257,18 @@
             }
           }
           if (item.prop === "regionId") {
-            item.display = category === 3;
+            if (category === 3) {
+              item.display = true;
+              item.value = "cn-hangzhou";
+            } else {
+              item.display = false;
+            }
           }
         });
       }
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["userInfo", "permission"]),
       permissionList() {
         return {
           addBtn: this.vaildData(this.permission.sms_add, false),
@@ -298,6 +346,23 @@
             });
             this.$refs.crud.toggleSelection();
           });
+      },
+      handleDebug(row) {
+        this.box = true;
+        this.debugForm.code = row.smsCode;
+      },
+      handleSend(form, done) {
+        send(form.code, form.phones, form.params).then((res) => {
+          this.$message({
+            type: "success",
+            message: "发送成功!"
+          });
+          done();
+          this.box = false;
+        }, error => {
+          done();
+          console.log(error);
+        });
       },
       handleDelete() {
         if (this.selectionList.length === 0) {

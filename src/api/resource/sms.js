@@ -58,3 +58,15 @@ export const enable = (id) => {
   })
 }
 
+export const send = (code, phones, params) => {
+  return request({
+    url: '/api/blade-resource/sms/endpoint/send-message',
+    method: 'post',
+    params: {
+      code,
+      phones,
+      params,
+    }
+  })
+}
+

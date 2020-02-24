@@ -331,6 +331,7 @@
           done();
           this.box = false;
         }, error => {
+          done();
           console.log(error);
         });
       },

@@ -27,6 +27,7 @@
         <el-button size="small"
                    icon="el-icon-setting"
                    @click="handleRole"
+                   v-if="userInfo.role_name.includes('admin')"
                    plain>权限设置
         </el-button>
       </template>
@@ -199,7 +200,7 @@
       };
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["userInfo", "permission"]),
       permissionList() {
         return {
           addBtn: this.vaildData(this.permission.role_add, false),
