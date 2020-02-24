@@ -27,7 +27,7 @@ axios.defaults.withCredentials = true;
 NProgress.configure({
   showSpinner: false
 });
-//HTTPrequest拦截
+//http request拦截
 axios.interceptors.request.use(config => {
   NProgress.start() // start progress bar
   const meta = (config.meta || {});
@@ -44,10 +44,11 @@ axios.interceptors.request.use(config => {
 }, error => {
   return Promise.reject(error)
 });
-//HTTPresponse拦截
+//http response 拦截
 axios.interceptors.response.use(res => {
   NProgress.done();
-  const status = res.data.code || 200
+  // 获取状态码
+  const status = res.data.code || res.status;
   const statusWhiteList = website.statusWhiteList || [];
   const message = res.data.msg || '未知错误';
   //如果在白名单里则自行catch逻辑处理
@@ -59,13 +60,13 @@ axios.interceptors.response.use(res => {
     Message({
       message: message,
       type: 'error'
-    })
+    });
     return Promise.reject(new Error(message))
   }
   return res;
 }, error => {
   NProgress.done();
   return Promise.reject(new Error(error));
-})
+});
 
 export default axios;
