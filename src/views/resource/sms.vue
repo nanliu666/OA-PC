@@ -35,7 +35,7 @@
                    @click="handleDebug(scope.row)">调试
         </el-button>
         <el-button type="text"
-                   icon="el-icon-check"
+                   icon="el-icon-circle-check"
                    size="small"
                    v-if="permission.sms_enable"
                    @click.stop="handleEnable(scope.row)">启用
@@ -71,7 +71,6 @@
         query: {},
         loading: true,
         box: false,
-        code: '',
         page: {
           pageSize: 10,
           currentPage: 1,

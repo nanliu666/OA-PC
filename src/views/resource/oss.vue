@@ -29,7 +29,13 @@
       </template>
       <template slot-scope="scope" slot="menu">
         <el-button type="text"
-                   icon="el-icon-check"
+                   icon="el-icon-video-play"
+                   size="small"
+                   v-if="userInfo.role_name.includes('admin')"
+                   @click="handleDebug(scope.row)">调试
+        </el-button>
+        <el-button type="text"
+                   icon="el-icon-circle-check"
                    size="small"
                    v-if="permission.oss_enable"
                    @click.stop="handleEnable(scope.row)">启用
@@ -44,6 +50,12 @@
         <el-tag>{{row.categoryName}}</el-tag>
       </template>
     </avue-crud>
+    <el-dialog title="对象存储上传调试"
+               append-to-body
+               :visible.sync="box"
+               width="550px">
+      <avue-form ref="form" :option="debugOption" v-model="debugForm" @submit="handleSubmit"/>
+    </el-dialog>
   </basic-container>
 </template>
 
@@ -51,6 +63,7 @@
   import {getList, getDetail, add, update, remove, enable} from "@/api/resource/oss";
   import {mapGetters} from "vuex";
   import func from "@/util/func";
+  import {send} from "@/api/resource/sms";
 
   export default {
     data() {
@@ -58,6 +71,7 @@
         form: {},
         query: {},
         loading: true,
+        box: false,
         page: {
           pageSize: 10,
           currentPage: 1,
@@ -74,6 +88,7 @@
           index: true,
           viewBtn: true,
           selection: true,
+          menuWidth: 300,
           labelWidth: 100,
           dialogWidth: 880,
           column: [
@@ -190,7 +205,33 @@
             },
           ]
         },
-        data: []
+        data: [],
+        debugForm: {
+          code: '',
+        },
+        debugOption: {
+          submitText: "提交",
+          column: [
+            {
+              label: "资源编号",
+              prop: "code",
+              disabled: true,
+              span: 24,
+            },
+            {
+              label: "上传背景",
+              prop: "backgroundUrl",
+              type: 'upload',
+              listType: 'picture-img',
+              action: '/api/blade-resource/oss/endpoint/put-file',
+              propsHttp: {
+                res: 'data',
+                url: 'link',
+              },
+              span: 24,
+            },
+          ]
+        }
       };
     },
     watch: {
@@ -204,10 +245,13 @@
             item.display = category === 4;
           }
         });
+      },
+      'debugForm.code'() {
+        this.debugOption.column[1].action = `/api/blade-resource/oss/endpoint/put-file?code=${this.debugForm.code}`;
       }
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["userInfo", "permission"]),
       permissionList() {
         return {
           addBtn: this.vaildData(this.permission.oss_add),
@@ -302,6 +346,18 @@
             });
             this.$refs.crud.toggleSelection();
           });
+      },
+      handleDebug(row) {
+        this.box = true;
+        this.debugForm.code = row.ossCode;
+        this.debugForm.backgroundUrl = '';
+      },
+      handleSubmit(form, done) {
+        this.$message({
+          type: "success",
+          message: `获取到图片地址:[${form.backgroundUrl}]`
+        });
+        done();
       },
       handleDelete() {
         if (this.selectionList.length === 0) {
