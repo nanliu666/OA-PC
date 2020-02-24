@@ -63,7 +63,6 @@
   import {getList, getDetail, add, update, remove, enable} from "@/api/resource/oss";
   import {mapGetters} from "vuex";
   import func from "@/util/func";
-  import {send} from "@/api/resource/sms";
 
   export default {
     data() {
