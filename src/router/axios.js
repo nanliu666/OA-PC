@@ -54,7 +54,7 @@ axios.interceptors.response.use(res => {
   //获取状态码
   const status = res.data.code || res.status;
   const statusWhiteList = website.statusWhiteList || [];
-  const message = res.data.msg || '未知错误';
+  const message = res.data.msg || res.data.error_description || '未知错误';
   //如果在白名单里则自行catch逻辑处理
   if (statusWhiteList.includes(status)) return Promise.reject(res);
   //如果是401则跳转到登录页面

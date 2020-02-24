@@ -43,18 +43,18 @@ export const getCaptcha = () => request({
   method: 'get'
 });
 
+export const logout = () => request({
+  url: '/api/blade-auth/oauth/logout',
+  method: 'get'
+});
+
 export const getUserInfo = () => request({
-  url: baseUrl + '/user/getUserInfo',
+  url: '/api/blade-auth/oauth/user-info',
   method: 'get'
 });
 
 export const sendLogs = (list) => request({
-  url: baseUrl + '/user/logout',
+  url: '/api/blade-auth/oauth/logout',
   method: 'post',
   data: list
-})
-
-export const logout = () => request({
-  url: baseUrl + '/user/logout',
-  method: 'get'
-})
+});

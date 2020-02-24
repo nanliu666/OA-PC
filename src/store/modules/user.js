@@ -3,13 +3,13 @@ import {Message} from 'element-ui'
 import {setStore, getStore} from '@/util/store'
 import {isURL, validatenull} from '@/util/validate'
 import {deepClone} from '@/util/util'
-import webiste from '@/config/website'
+import website from '@/config/website'
 import {loginByUsername, getUserInfo, logout, refreshToken, getButtons} from '@/api/user'
 import {getTopMenu, getRoutes} from '@/api/system/menu'
 
 
 function addPath(ele, first) {
-  const menu = webiste.menu;
+  const menu = website.menu;
   const propsConfig = menu.props;
   const propsDefault = {
     label: propsConfig.label || 'name',
@@ -118,16 +118,16 @@ const user = {
     LogOut({commit}) {
       return new Promise((resolve, reject) => {
         logout().then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_MENU', [])
-          commit('SET_MENU_ID', {})
+          commit('SET_TOKEN', '');
+          commit('SET_MENU', []);
+          commit('SET_MENU_ID', {});
           commit('SET_MENU_ALL', []);
-          commit('SET_ROLES', [])
+          commit('SET_ROLES', []);
           commit('DEL_ALL_TAG');
           commit('CLEAR_LOCK');
-          removeToken()
-          removeRefreshToken()
-          resolve()
+          removeToken();
+          removeRefreshToken();
+          resolve();
         }).catch(error => {
           reject(error)
         })
@@ -136,23 +136,23 @@ const user = {
     //注销session
     FedLogOut({commit}) {
       return new Promise(resolve => {
-        commit('SET_TOKEN', '')
-        commit('SET_MENU_ID', {})
+        commit('SET_TOKEN', '');
+        commit('SET_MENU_ID', {});
         commit('SET_MENU_ALL', []);
-        commit('SET_MENU', [])
-        commit('SET_ROLES', [])
+        commit('SET_MENU', []);
+        commit('SET_ROLES', []);
         commit('DEL_ALL_TAG');
         commit('CLEAR_LOCK');
-        removeToken()
-        removeRefreshToken()
-        resolve()
+        removeToken();
+        removeRefreshToken();
+        resolve();
       })
     },
     //获取顶部菜单
     GetTopMenu() {
       return new Promise(resolve => {
         getTopMenu().then((res) => {
-          const data = res.data.data || []
+          const data = res.data.data || [];
           resolve(data)
         })
       })
@@ -165,7 +165,7 @@ const user = {
           let menu = deepClone(data);
           menu.forEach(ele => {
             addPath(ele, true);
-          })
+          });
           commit('SET_MENU', menu)
           dispatch('GetButtons');
           resolve(menu)
@@ -175,7 +175,7 @@ const user = {
   },
   mutations: {
     SET_TOKEN: (state, token) => {
-      setToken(token)
+      setToken(token);
       state.token = token;
       setStore({name: 'token', content: state.token, type: 'session'})
     },
@@ -230,7 +230,6 @@ const user = {
               result.push(code);
             }
           }
-
         })
       }
 
