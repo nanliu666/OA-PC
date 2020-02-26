@@ -4,7 +4,7 @@
       <el-col :span="24">
         <basic-container>
           <p style="text-align: center">
-            <img src="https://img.shields.io/badge/Release-V2.3.1-green.svg" alt="Downloads"/>
+            <img src="https://img.shields.io/badge/Release-V2.4.0-green.svg" alt="Downloads"/>
             <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="Build Status"/>
             <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR5-blue.svg" alt="Coverage Status"/>
             <img src="https://img.shields.io/badge/Spring%20Boot-2.1.12.RELEASE-blue.svg" alt="Downloads"/>
@@ -133,6 +133,25 @@
         <el-row>
           <basic-container>
             <el-collapse v-model="logActiveNames" @change="handleChange">
+              <el-collapse-item title="2.4.0.RELEASE发布，增加多租户短信服务，升级Seata1.0" name="14">
+                <div>1.新增集成七牛、阿里云、腾讯云、云片等短信服务，支持多租户配置</div>
+                <div>2.新增对象存储模块的资源编号字段，可根据编号指定oss配置的服务</div>
+                <div>3.新增对象存储、短信配置模块的调试功能，可在线调试配置是否可用</div>
+                <div>4.新增超管启用租户过滤的配置</div>
+                <div>5.升级 SpringBoot 2.1.12，SpringCloud SR5</div>
+                <div>6.升级兼容 Seata 1.0</div>
+                <div>7.优化对象存储的模块使用体验</div>
+                <div>8.优化兼容Oracle模糊查询的写法</div>
+                <div>9.优化超管权限，不受租户过期时间影响</div>
+                <div>10.优化mybatis-plus相关过期注解</div>
+                <div>11.优化xxl-job模块的配置文件</div>
+                <div>12.优化INode支持序列化接口</div>
+                <div>13.优化统一Oss模块命名</div>
+                <div>14.优化部署脚本，升级相关版本</div>
+                <div>15.修复数据权限部门过滤已删除对象</div>
+                <div>16.修复业务字典缓存bug，增加租户过滤</div>
+                <div>17.修复占位符解析器的bug</div>
+              </el-collapse-item>
               <el-collapse-item title="2.3.1.RELEASE发布，流程增加租户定制，登陆增加验证码" name="13">
                 <div>1.新增登陆验证码功能</div>
                 <div>2.新增Oauth2自定义TokenGranter</div>
@@ -352,7 +371,7 @@
     data() {
       return {
         activeNames: ['1', '2', '3', '5'],
-        logActiveNames: ['13']
+        logActiveNames: ['14']
       };
     },
     computed: {
