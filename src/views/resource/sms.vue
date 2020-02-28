@@ -358,6 +358,7 @@
             message: "发送成功!"
           });
           done();
+          console.log(res);
           this.box = false;
         }, error => {
           done();
