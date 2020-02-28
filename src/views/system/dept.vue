@@ -81,6 +81,7 @@
           selection: true,
           viewBtn: true,
           menuWidth: 300,
+          dialogClickModal: false,
           column: [
             {
               label: "机构名称",

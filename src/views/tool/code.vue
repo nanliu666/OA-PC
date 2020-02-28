@@ -75,6 +75,7 @@
           selection: true,
           labelWidth: 120,
           viewBtn: true,
+          dialogClickModal: false,
           column: [
             {
               label: "数据源",

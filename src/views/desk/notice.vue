@@ -67,6 +67,7 @@
           viewBtn: true,
           selection: true,
           excelBtn: true,
+          dialogClickModal: false,
           column: [
             {
               label: "通知标题",

@@ -76,6 +76,7 @@
           viewBtn: false,
           dialogWidth: 900,
           menuWidth: 100,
+          dialogClickModal: false,
           column: [
             {
               label: "执行id",

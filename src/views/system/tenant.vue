@@ -79,6 +79,7 @@
           selection: true,
           viewBtn: true,
           dialogWidth: 900,
+          dialogClickModal: false,
           column: [
             {
               label: "租户ID",

@@ -67,6 +67,7 @@
           index: true,
           selection: true,
           viewBtn: true,
+          dialogClickModal: false,
           column: [
             {
               label: "菜单名称",

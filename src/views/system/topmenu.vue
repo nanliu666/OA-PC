@@ -98,6 +98,7 @@
           viewBtn: true,
           selection: true,
           dialogWidth: 900,
+          dialogClickModal: false,
           column: [
             {
               label: "菜单名",

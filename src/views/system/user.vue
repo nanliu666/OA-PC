@@ -138,6 +138,7 @@
           selection: true,
           viewBtn: true,
           dialogType: 'drawer',
+          dialogClickModal: false,
           column: [
             {
               label: "登录账号",

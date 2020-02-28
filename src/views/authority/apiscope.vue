@@ -123,6 +123,7 @@
           addBtn: false,
           delBtn: false,
           menuWidth: 150,
+          dialogClickModal: false,
           column: [
             {
               label: "菜单名称",
@@ -309,6 +310,7 @@
           selection: true,
           menuWidth: 200,
           dialogWidth: 900,
+          dialogClickModal: false,
           column: [
             {
               label: "权限名称",

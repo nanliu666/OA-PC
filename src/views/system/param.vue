@@ -56,6 +56,7 @@
           index: true,
           selection: true,
           viewBtn: true,
+          dialogClickModal: false,
           column: [
             {
               label: "参数名称",

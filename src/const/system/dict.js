@@ -11,6 +11,7 @@ export const optionParent = {
   viewBtn: true,
   menuWidth: 150,
   dialogWidth: 880,
+  dialogClickModal: false,
   column: [
     {
       label: "字典编号",
@@ -100,6 +101,7 @@ export const optionChild = {
   viewBtn: true,
   menuWidth: 150,
   dialogWidth: 880,
+  dialogClickModal: false,
   column: [
     {
       label: "字典编号",

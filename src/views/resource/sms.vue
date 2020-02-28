@@ -90,6 +90,7 @@
           menuWidth: 300,
           labelWidth: 100,
           dialogWidth: 880,
+          dialogClickModal: false,
           column: [
             {
               label: "分类",

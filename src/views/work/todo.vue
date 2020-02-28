@@ -100,6 +100,7 @@
           delBtn: false,
           dialogWidth: 900,
           menuWidth: 150,
+          dialogClickModal: false,
           column: [
             {
               label: "流程分类",

@@ -206,6 +206,7 @@
           delBtn: false,
           dialogWidth: 900,
           menuWidth: 150,
+          dialogClickModal: false,
           column: [
             {
               label: '模型主键',

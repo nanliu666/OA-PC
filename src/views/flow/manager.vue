@@ -154,6 +154,7 @@
           delBtn: false,
           dialogWidth: 900,
           menuWidth: 150,
+          dialogClickModal: false,
           column: [
             {
               label: '租户编号',

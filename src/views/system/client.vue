@@ -57,6 +57,7 @@
           index: true,
           viewBtn: true,
           selection: true,
+          dialogClickModal: false,
           column: [
             {
               label: "应用id",
