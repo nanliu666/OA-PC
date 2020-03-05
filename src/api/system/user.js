@@ -77,3 +77,11 @@ export const updatePassword = (oldPassword, newPassword, newPassword1) => {
     }
   })
 }
+
+export const updateInfo = (row) => {
+  return request({
+    url: '/api/blade-user/update-info',
+    method: 'post',
+    data: row
+  })
+}

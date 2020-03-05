@@ -11,7 +11,7 @@
 
 <script>
   import option from "@/const/user/info";
-  import {getUserInfo, update, updatePassword} from "@/api/system/user";
+  import {getUserInfo, updateInfo, updatePassword} from "@/api/system/user";
 
 
   export default {
@@ -28,7 +28,7 @@
     methods: {
       handleSubmit() {
         if (this.type === "info") {
-          update(this.form).then(res => {
+          updateInfo(this.form).then(res => {
             if (res.data.success) {
               this.$message({
                 type: "success",
