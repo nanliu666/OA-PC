@@ -397,10 +397,11 @@
         this.query = {};
         this.onLoadChild(this.pageChild);
       },
-      searchChangeChild(params) {
+      searchChangeChild(params, done) {
         this.query = params;
         this.pageChild.currentPage = 1;
         this.onLoadChild(this.pageChild, params);
+        done();
       },
       selectionChangeChild(list) {
         this.selectionList = list;
