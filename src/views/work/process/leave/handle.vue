@@ -13,25 +13,25 @@
           <span>审批信息</span>
         </div>
         <el-form-item label="申请人">
-          <el-input :disabled="true" v-model="form.flow.assigneeName" />
+          <el-input :disabled="true" v-model="form.flow.assigneeName"/>
         </el-form-item>
         <el-row>
           <el-col :span="12">
             <el-form-item label="开始时间">
-              <el-input :disabled="true" v-model="form.startTime" />
+              <el-input :disabled="true" v-model="form.startTime"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="结束时间">
-              <el-input :disabled="true" v-model="form.endTime" />
+              <el-input :disabled="true" v-model="form.endTime"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="请假理由">
-          <el-input :disabled="true" type="textarea" v-model="form.reason" />
+          <el-input :disabled="true" type="textarea" v-model="form.reason"/>
         </el-form-item>
         <el-form-item label="批复意见">
-          <el-input type="textarea" v-model="form.comment" />
+          <el-input type="textarea" v-model="form.comment"/>
         </el-form-item>
       </el-card>
       <el-card shadow="hover">
@@ -88,6 +88,16 @@
     },
     created() {
       this.init();
+    },
+    beforeRouteUpdate(to, from, next) {
+      // 在当前路由改变，但是该组件被复用时调用
+      // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候
+      // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用
+      // 可以访问组件实例 `this`
+      if (to.fullPath !== from.fullPath) {
+        next();
+        this.init();
+      }
     },
     methods: {
       init() {
