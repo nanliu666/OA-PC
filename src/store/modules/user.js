@@ -6,6 +6,7 @@ import {deepClone} from '@/util/util'
 import website from '@/config/website'
 import {loginByUsername, getUserInfo, logout, refreshToken, getButtons} from '@/api/user'
 import {getTopMenu, getRoutes} from '@/api/system/menu'
+import md5 from 'js-md5'
 
 
 function addPath(ele, first) {
@@ -47,7 +48,7 @@ const user = {
     //根据用户名登录
     LoginByUsername({commit}, userInfo) {
       return new Promise((resolve, reject) => {
-        loginByUsername(userInfo.tenantId, userInfo.username, userInfo.password, userInfo.type, userInfo.key, userInfo.code).then(res => {
+        loginByUsername(userInfo.tenantId, userInfo.username, md5(userInfo.password), userInfo.type, userInfo.key, userInfo.code).then(res => {
           const data = res.data;
           if (data.error_description) {
             Message({
