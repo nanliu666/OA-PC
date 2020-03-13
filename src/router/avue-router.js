@@ -14,7 +14,7 @@ RouterPlugin.install = function (vue, router, store, i18n) {
     return /^http[s]?:\/\/.*/.test(s)
   }
 
-  // 将参数处理为参数的形式拼接 
+  // 将参数处理为参数的形式拼接
   function objToform(obj) {
     let result = [];
     Object.keys(obj).forEach(ele => {
@@ -91,8 +91,8 @@ RouterPlugin.install = function (vue, router, store, i18n) {
        * first: 为了区分外界 调用formatRoutes 和 当前文件调用 formatRoutes
       */
     formatRoutes: function (aMenu = [], first) {
-      // console.log('aMenu')
-      // console.log(aMenu)
+      // window.console.log('aMenu')
+      // window.console.log(aMenu)
       const aRouter = []
       // 获取到全局配置中的 props
       const propsConfig = this.$website.menu.props;
@@ -191,7 +191,7 @@ RouterPlugin.install = function (vue, router, store, i18n) {
       // for循环结束
       // 这个first 卡的其实就是首路由
       if (first) {
-        console.log(aRouter)
+        window.console.log(aRouter)
         if (!this.routerList.includes(aRouter[0][propsDefault.path])) {
           this.safe.$router.addRoutes(aRouter)
           this.routerList.push(aRouter[0][propsDefault.path])

@@ -233,7 +233,7 @@
           });
         }, error => {
           done();
-          console.log(error);
+          window.console.log(error);
         });
       },
       rowUpdate(row, index, loading, done) {
@@ -246,7 +246,7 @@
           });
         }, error => {
           done();
-          console.log(error);
+          window.console.log(error);
         });
       },
       rowDel(row) {

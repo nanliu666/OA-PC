@@ -173,7 +173,7 @@
           },
           error => {
             done();
-            console.log(error);
+            window.console.log(error);
           }
         );
       },
@@ -189,7 +189,7 @@
           },
           error => {
             done();
-            console.log(error);
+            window.console.log(error);
           }
         );
       },
@@ -293,7 +293,7 @@
           },
           error => {
             done();
-            console.log(error);
+            window.console.log(error);
           }
         );
       },
@@ -309,7 +309,7 @@
           },
           error => {
             done();
-            console.log(error);
+            window.console.log(error);
           }
         );
       },

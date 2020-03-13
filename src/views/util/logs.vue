@@ -12,7 +12,7 @@
   export default {
     methods: {
       handleNewError() {
-        console.log(a); // eslint-disable-line
+        window.console.log(a); // eslint-disable-line
       }
     }
   };

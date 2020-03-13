@@ -297,7 +297,7 @@
           });
         }, error => {
           done();
-          console.log(error);
+          window.console.log(error);
         });
       },
       rowUpdate(row, index, loading, done) {
@@ -310,7 +310,7 @@
           });
         }, error => {
           done();
-          console.log(error);
+          window.console.log(error);
         });
       },
       rowDel(row) {
@@ -359,11 +359,11 @@
             message: "发送成功!"
           });
           done();
-          console.log(res);
+          window.console.log(res);
           this.box = false;
         }, error => {
           done();
-          console.log(error);
+          window.console.log(error);
         });
       },
       handleDelete() {

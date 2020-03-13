@@ -103,7 +103,7 @@ const user = {
     },
     //刷新token
     refreshToken({state, commit}) {
-      console.log('handle refresh token')
+      window.console.log('handle refresh token')
       return new Promise((resolve, reject) => {
         refreshToken(state.refreshToken, state.tenantId).then(res => {
           const data = res.data;
