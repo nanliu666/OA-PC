@@ -692,8 +692,9 @@
       searchResetScope() {
         this.onLoadScope(this.pageScope);
       },
-      searchChangeScope(params) {
+      searchChangeScope(params, done) {
         this.onLoadScope(this.pageScope, params);
+        done();
       },
       selectionChangeScope(list) {
         this.selectionListScope = list;
