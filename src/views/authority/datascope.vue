@@ -114,6 +114,7 @@
         option: {
           lazy: true,
           tip: false,
+          simplePage: true,
           searchShow: true,
           searchMenuSpan: 6,
           dialogWidth: "60%",

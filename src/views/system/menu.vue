@@ -59,6 +59,7 @@
         option: {
           lazy: true,
           tip: false,
+          simplePage: true,
           searchShow: true,
           searchMenuSpan: 6,
           dialogWidth: "60%",
@@ -316,10 +317,10 @@
         }
         done();
       },
-      currentChange(currentPage){
+      currentChange(currentPage) {
         this.page.currentPage = currentPage;
       },
-      sizeChange(pageSize){
+      sizeChange(pageSize) {
         this.page.pageSize = pageSize;
       },
       refreshChange() {
