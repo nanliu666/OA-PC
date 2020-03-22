@@ -89,6 +89,7 @@
           height: 'auto',
           calcHeight: 30,
           tip: false,
+          simplePage: true,
           searchShow: true,
           searchMenuSpan: 6,
           border: true,
