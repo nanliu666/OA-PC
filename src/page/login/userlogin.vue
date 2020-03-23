@@ -34,7 +34,7 @@
         <i slot="prefix" class="icon-mima"/>
       </el-input>
     </el-form-item>
-    <el-form-item prop="code">
+    <el-form-item v-if="this.website.captchaMode" prop="code">
       <el-row :span="24">
         <el-col :span="16">
           <el-input size="small"
@@ -65,7 +65,6 @@
 
 <script>
   import {mapGetters} from "vuex";
-  import website from '@/config/website';
   import {info} from "@/api/system/tenant";
   import {getCaptcha} from "@/api/user";
 
@@ -73,7 +72,7 @@
     name: "userlogin",
     data() {
       return {
-        tenantMode: website.tenantMode,
+        tenantMode: this.website.tenantMode,
         loginForm: {
           //租户ID
           tenantId: "000000",

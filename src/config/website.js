@@ -9,6 +9,7 @@ export default {
   clientId: 'saber', // 客户端id
   clientSecret: 'saber_secret', // 客户端密钥
   tenantMode: true, // 是否开启租户模式
+  captchaMode: true, // 是否开启验证码模式
   lockPage: '/lock',
   tokenTime: 3000,
   //http的status默认放行不才用统一处理的,
