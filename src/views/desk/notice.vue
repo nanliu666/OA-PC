@@ -275,8 +275,8 @@
         if (releaseTimeRange) {
           values = {
             ...params,
-            releaseTime_gt: releaseTimeRange[0],
-            releaseTime_lt: releaseTimeRange[1],
+            releaseTime_datege: releaseTimeRange[0],
+            releaseTime_datelt: releaseTimeRange[1],
           }
           values.releaseTimeRange = null;
           this.query.releaseTimeRange = null;
