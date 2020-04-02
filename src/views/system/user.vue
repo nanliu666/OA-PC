@@ -28,25 +28,49 @@
           <template slot="menuLeft">
             <el-button type="danger"
                        size="small"
-                       icon="el-icon-delete"
                        plain
+                       icon="el-icon-delete"
                        v-if="permission.user_delete"
                        @click="handleDelete">删 除
             </el-button>
-            <el-button type="primary"
+            <el-button type="info"
                        size="small"
+                       plain
+                       v-if="userInfo.role_name.includes('admin')"
+                       icon="el-icon-user"
+                       @click="handleGrant">角色分配
+            </el-button>
+            <el-button size="small"
                        plain
                        v-if="permission.user_reset"
                        icon="el-icon-refresh"
                        @click="handleReset">密码重置
             </el-button>
+            <el-button type="success"
+                       size="small"
+                       plain
+                       v-if="userInfo.role_name.includes('admin')"
+                       icon="el-icon-upload2"
+                       @click="handleImport">导入
+            </el-button>
+            <el-button type="warning"
+                       size="small"
+                       plain
+                       v-if="userInfo.role_name.includes('admin')"
+                       icon="el-icon-download"
+                       @click="handleExport">导出
+            </el-button>
           </template>
           <template slot-scope="{row}"
-                    slot="roleId">
+                    slot="tenantName">
+            <el-tag>{{row.tenantName}}</el-tag>
+          </template>
+          <template slot-scope="{row}"
+                    slot="roleName">
             <el-tag>{{row.roleName}}</el-tag>
           </template>
           <template slot-scope="{row}"
-                    slot="deptId">
+                    slot="deptName">
             <el-tag>{{row.deptName}}</el-tag>
           </template>
         </avue-crud>
@@ -58,7 +82,6 @@
 <script>
   import {
     getList,
-    getUser,
     remove,
     update,
     add,
@@ -66,6 +89,7 @@
   } from "@/api/system/user";
   import {getDeptTree, getDeptLazyTree} from "@/api/system/dept";
   import {getRoleTree} from "@/api/system/role";
+  import {getPostList} from "@/api/system/post";
   import {mapGetters} from "vuex";
   import website from '@/config/website';
 
@@ -144,152 +168,225 @@
               label: "登录账号",
               prop: "account",
               search: true,
-              rules: [{
-                required: true,
-                message: "请输入登录账号",
-                trigger: "blur"
-              }],
-              span: website.tenantMode ? 12 : 24,
+              display: false
             },
             {
               label: "所属租户",
-              prop: "tenantId",
-              type: "tree",
-              dicUrl: "/api/blade-system/tenant/select",
-              props: {
-                label: "tenantName",
-                value: "tenantId"
-              },
-              hide: !website.tenantMode,
-              addDisplay: website.tenantMode,
-              editDisplay: website.tenantMode,
-              viewDisplay: website.tenantMode,
-              search: website.tenantMode,
-              rules: [{
-                required: true,
-                message: "请输入所属租户",
-                trigger: "click"
-              }]
-            },
-            {
-              label: '密码',
-              prop: 'password',
-              hide: true,
-              editDisplay: false,
-              viewDisplay: false,
-              rules: [{required: true, validator: validatePass, trigger: 'blur'}]
-            },
-            {
-              label: '确认密码',
-              prop: 'password2',
-              hide: true,
-              editDisplay: false,
-              viewDisplay: false,
-              rules: [{required: true, validator: validatePass2, trigger: 'blur'}]
-            },
-            {
-              label: "用户昵称",
-              prop: "name",
-              hide: true,
-              rules: [{
-                required: true,
-                message: "请输入用户昵称",
-                trigger: "blur"
-              }]
+              prop: "tenantName",
+              slot: true,
+              display: false
             },
             {
               label: "用户姓名",
               prop: "realName",
               search: true,
-              rules: [{
-                required: true,
-                message: "请输入用户姓名",
-                trigger: "blur"
-              }, {
-                min: 2,
-                max: 5,
-                message: '姓名长度在2到5个字符'
-              }]
+              display: false
             },
             {
               label: "所属角色",
-              prop: "roleId",
-              multiple: true,
-              type: "tree",
-              dicData: [],
-              props: {
-                label: "title"
-              },
-              checkStrictly: true,
+              prop: "roleName",
               slot: true,
-              rules: [{
-                required: true,
-                message: "请选择所属角色",
-                trigger: "click"
-              }]
+              display: false
             },
             {
               label: "所属部门",
-              prop: "deptId",
-              type: "tree",
-              multiple: true,
-              dicData: [],
-              props: {
-                label: "title"
-              },
-              checkStrictly: true,
+              prop: "deptName",
               slot: true,
-              rules: [{
-                required: true,
-                message: "请选择所属部门",
-                trigger: "click"
-              }]
-            },
-            {
-              label: "手机号码",
-              prop: "phone",
-              overHidden: true
-            },
-            {
-              label: "电子邮箱",
-              prop: "email",
-              hide: true,
-              overHidden: true
-            },
-            {
-              label: "用户性别",
-              prop: "sex",
-              type: "select",
-              dicData: [
-                {
-                  label: "男",
-                  value: 1
-                },
-                {
-                  label: "女",
-                  value: 2
-                },
-                {
-                  label: "未知",
-                  value: 3
-                }
-              ],
-              hide: true
-            },
-            {
-              label: "用户生日",
-              type: "date",
-              prop: "birthday",
-              format: "yyyy-MM-dd hh:mm:ss",
-              valueFormat: "yyyy-MM-dd hh:mm:ss",
-              hide: true
-            },
-            {
-              label: "账号状态",
-              prop: "statusName",
-              hide: true,
               display: false
-            }
+            },
+          ],
+          group: [
+            {
+              label: '基础信息',
+              prop: 'baseInfo',
+              icon: 'el-icon-user-solid',
+              column: [
+                {
+                  label: "登录账号",
+                  prop: "account",
+                  search: true,
+                  rules: [{
+                    required: true,
+                    message: "请输入登录账号",
+                    trigger: "blur"
+                  }],
+                  span: website.tenantMode ? 12 : 24,
+                },
+                {
+                  label: "所属租户",
+                  prop: "tenantId",
+                  type: "tree",
+                  dicUrl: "/api/blade-system/tenant/select",
+                  props: {
+                    label: "tenantName",
+                    value: "tenantId"
+                  },
+                  hide: !website.tenantMode,
+                  addDisplay: website.tenantMode,
+                  editDisplay: website.tenantMode,
+                  viewDisplay: website.tenantMode,
+                  search: website.tenantMode,
+                  rules: [{
+                    required: true,
+                    message: "请输入所属租户",
+                    trigger: "click"
+                  }]
+                },
+                {
+                  label: '密码',
+                  prop: 'password',
+                  hide: true,
+                  editDisplay: false,
+                  viewDisplay: false,
+                  rules: [{required: true, validator: validatePass, trigger: 'blur'}]
+                },
+                {
+                  label: '确认密码',
+                  prop: 'password2',
+                  hide: true,
+                  editDisplay: false,
+                  viewDisplay: false,
+                  rules: [{required: true, validator: validatePass2, trigger: 'blur'}]
+                },
+              ]
+            },
+            {
+              label: '详细信息',
+              prop: 'detailInfo',
+              icon: 'el-icon-s-order',
+              column: [
+                {
+                  label: "用户昵称",
+                  prop: "name",
+                  hide: true,
+                  rules: [{
+                    required: true,
+                    message: "请输入用户昵称",
+                    trigger: "blur"
+                  }]
+                },
+                {
+                  label: "用户姓名",
+                  prop: "realName",
+                  search: true,
+                  rules: [{
+                    required: true,
+                    message: "请输入用户姓名",
+                    trigger: "blur"
+                  }, {
+                    min: 2,
+                    max: 5,
+                    message: '姓名长度在2到5个字符'
+                  }]
+                },
+                {
+                  label: "手机号码",
+                  prop: "phone",
+                  overHidden: true
+                },
+                {
+                  label: "电子邮箱",
+                  prop: "email",
+                  hide: true,
+                  overHidden: true
+                },
+                {
+                  label: "用户性别",
+                  prop: "sex",
+                  type: "select",
+                  dicData: [
+                    {
+                      label: "男",
+                      value: 1
+                    },
+                    {
+                      label: "女",
+                      value: 2
+                    },
+                    {
+                      label: "未知",
+                      value: 3
+                    }
+                  ],
+                  hide: true
+                },
+                {
+                  label: "用户生日",
+                  type: "date",
+                  prop: "birthday",
+                  format: "yyyy-MM-dd hh:mm:ss",
+                  valueFormat: "yyyy-MM-dd hh:mm:ss",
+                  hide: true
+                },
+                {
+                  label: "账号状态",
+                  prop: "statusName",
+                  hide: true,
+                  display: false
+                }
+              ]
+            },
+            {
+              label: '职责信息',
+              prop: 'dutyInfo',
+              icon: 'el-icon-s-custom',
+              column: [
+                {
+                  label: "用户编号",
+                  prop: "code",
+                },
+                {
+                  label: "所属角色",
+                  prop: "roleId",
+                  multiple: true,
+                  type: "tree",
+                  dicData: [],
+                  props: {
+                    label: "title"
+                  },
+                  checkStrictly: true,
+                  slot: true,
+                  rules: [{
+                    required: true,
+                    message: "请选择所属角色",
+                    trigger: "click"
+                  }]
+                },
+                {
+                  label: "所属部门",
+                  prop: "deptId",
+                  type: "tree",
+                  multiple: true,
+                  dicData: [],
+                  props: {
+                    label: "title"
+                  },
+                  checkStrictly: true,
+                  slot: true,
+                  rules: [{
+                    required: true,
+                    message: "请选择所属部门",
+                    trigger: "click"
+                  }]
+                },
+                {
+                  label: "所属岗位",
+                  prop: "postId",
+                  type: "tree",
+                  multiple: true,
+                  dicData: [],
+                  props: {
+                    label: "postName",
+                    value: "id"
+                  },
+                  rules: [{
+                    required: true,
+                    message: "请选择所属岗位",
+                    trigger: "click"
+                  }],
+                },
+              ]
+            },
           ]
         },
         data: []
@@ -298,19 +395,12 @@
     watch: {
       'form.tenantId'() {
         if (this.form.tenantId !== '') {
-          getDeptTree(this.form.tenantId).then(res => {
-            const index = this.$refs.crud.findColumnIndex("deptId");
-            this.option.column[index].dicData = res.data.data;
-          });
-          getRoleTree(this.form.tenantId).then(res => {
-            const index = this.$refs.crud.findColumnIndex("roleId");
-            this.option.column[index].dicData = res.data.data;
-          });
+          this.initData(this.form.tenantId);
         }
       }
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["userInfo", "permission"]),
       permissionList() {
         return {
           addBtn: this.vaildData(this.permission.user_add, false),
@@ -327,28 +417,27 @@
         return ids.join(",");
       },
     },
-    created() {
-      this.initData();
-    },
     methods: {
       nodeClick(data) {
         this.treeDeptId = data.id;
         this.page.currentPage = 1;
         this.onLoad(this.page);
       },
-      initData() {
-        getDeptTree(this.form.tenantId).then(res => {
-          const index = this.$refs.crud.findColumnIndex("deptId");
-          this.option.column[index].dicData = res.data.data;
+      initData(tenantId) {
+        getRoleTree(tenantId).then(res => {
+          this.option.group[2].column[1].dicData = res.data.data;
         });
-        getRoleTree(this.form.tenantId).then(res => {
-          const index = this.$refs.crud.findColumnIndex("roleId");
-          this.option.column[index].dicData = res.data.data;
+        getDeptTree(tenantId).then(res => {
+          this.option.group[2].column[2].dicData = res.data.data;
+        });
+        getPostList(tenantId).then(res => {
+          this.option.group[2].column[3].dicData = res.data.data;
         });
       },
       rowSave(row, loading, done) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
+        row.postId = row.postId.join(",");
         add(row).then(() => {
           loading();
           this.onLoad(this.page);
@@ -364,6 +453,7 @@
       rowUpdate(row, index, loading, done) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
+        row.postId = row.postId.join(",");
         update(row).then(() => {
           loading();
           this.onLoad(this.page);
@@ -454,23 +544,18 @@
             this.$refs.crud.toggleSelection();
           });
       },
+      handleGrant() {
+
+      },
+      handleImport() {
+
+      },
+      handleExport() {
+
+      },
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
-          getUser(this.form.id).then(res => {
-            this.form = res.data;
-            if(this.form.hasOwnProperty("deptId")){
-              this.form.deptId = this.form.deptId.split(",");
-              this.form.deptId.forEach((ele, index) => {
-                this.form.deptId[index] = Number(ele);
-              });
-            }
-            if(this.form.hasOwnProperty("roleId")){
-              this.form.roleId = this.form.roleId.split(",");
-              this.form.roleId.forEach((ele, index) => {
-                this.form.roleId[index] = Number(ele);
-              });
-            }
-          });
+          //预留
         }
         done();
       },
