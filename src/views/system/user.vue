@@ -38,7 +38,7 @@
                        plain
                        v-if="userInfo.role_name.includes('admin')"
                        icon="el-icon-user"
-                       @click="handleGrant">角色分配
+                       @click="handleGrant">角色配置
             </el-button>
             <el-button size="small"
                        plain
@@ -74,6 +74,27 @@
             <el-tag>{{row.deptName}}</el-tag>
           </template>
         </avue-crud>
+        <el-dialog title="用户角色配置"
+                   append-to-body
+                   :visible.sync="box"
+                   width="345px">
+
+          <el-tree :data="roleGrantList"
+                   show-checkbox
+                   default-expand-all
+                   node-key="id"
+                   ref="treeRole"
+                   :default-checked-keys="roleTreeObj"
+                   :props="props">
+          </el-tree>
+
+          <span slot="footer"
+                class="dialog-footer">
+        <el-button @click="box = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="submit">确 定</el-button>
+      </span>
+        </el-dialog>
       </basic-container>
     </el-col>
   </el-row>
@@ -85,6 +106,7 @@
     remove,
     update,
     add,
+    grant,
     resetPassword
   } from "@/api/system/user";
   import {getDeptTree, getDeptLazyTree} from "@/api/system/dept";
@@ -113,6 +135,7 @@
       };
       return {
         form: {},
+        box: false,
         selectionList: [],
         query: {},
         loading: true,
@@ -125,6 +148,12 @@
           roleTree: [],
           deptTree: [],
         },
+        props: {
+          label: "title",
+          value: "key"
+        },
+        roleGrantList: [],
+        roleTreeObj: [],
         treeDeptId: '',
         treeData: [],
         treeOption: {
@@ -434,6 +463,17 @@
           this.option.group[2].column[3].dicData = res.data.data;
         });
       },
+      submit() {
+        const roleList = this.$refs.treeRole.getCheckedKeys().join(",");
+        grant(this.ids, roleList).then(() => {
+          this.box = false;
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          this.onLoad(this.page);
+        });
+      },
       rowSave(row, loading, done) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
@@ -545,7 +585,18 @@
           });
       },
       handleGrant() {
-
+        if (this.selectionList.length === 0) {
+          this.$message.warning("请选择至少一条数据");
+          return;
+        }
+        this.roleTreeObj = [];
+        if (this.selectionList.length === 1) {
+          this.roleTreeObj = this.selectionList[0].roleId.split(",");
+        }
+        getRoleTree().then(res => {
+          this.roleGrantList = res.data.data;
+          this.box = true;
+        });
       },
       handleImport() {
 

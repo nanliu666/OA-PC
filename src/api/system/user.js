@@ -85,3 +85,14 @@ export const updateInfo = (row) => {
     data: row
   })
 }
+
+export const grant = (userIds, roleIds) => {
+  return request({
+    url: '/api/blade-user/grant',
+    method: 'post',
+    params: {
+      userIds,
+      roleIds,
+    }
+  })
+}
