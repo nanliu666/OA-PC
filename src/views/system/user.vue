@@ -76,7 +76,7 @@
         </avue-crud>
         <el-dialog title="用户角色配置"
                    append-to-body
-                   :visible.sync="box"
+                   :visible.sync="roleBox"
                    width="345px">
 
           <el-tree :data="roleGrantList"
@@ -88,12 +88,23 @@
                    :props="props">
           </el-tree>
 
-          <span slot="footer"
-                class="dialog-footer">
-        <el-button @click="box = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="submit">确 定</el-button>
-      </span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="roleBox = false">取 消</el-button>
+            <el-button type="primary"
+                       @click="submitRole">确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="用户数据导入"
+                   append-to-body
+                   :visible.sync="excelBox"
+                   width="555px">
+          <avue-form :option="excelOption" v-model="excelForm" :upload-after="uploadAfter">
+            <template slot="excelTemplate">
+              <el-button type="primary" @click="handleTemplate()">
+                点击下载<i class="el-icon-download el-icon--right"></i>
+              </el-button>
+            </template>
+          </avue-form>
         </el-dialog>
       </basic-container>
     </el-col>
@@ -114,6 +125,7 @@
   import {getPostList} from "@/api/system/post";
   import {mapGetters} from "vuex";
   import website from '@/config/website';
+  import {getToken} from '@/util/auth';
 
   export default {
     data() {
@@ -135,7 +147,8 @@
       };
       return {
         form: {},
-        box: false,
+        roleBox: false,
+        excelBox: false,
         selectionList: [],
         query: {},
         loading: true,
@@ -418,13 +431,70 @@
             },
           ]
         },
-        data: []
+        data: [],
+        excelForm: {},
+        excelOption: {
+          submitBtn: false,
+          emptyBtn: false,
+          column: [
+            {
+              label: '模板上传',
+              prop: 'excelFile',
+              type: 'upload',
+              drag: true,
+              loadText: '模板上传中，请稍等',
+              span: 24,
+              propsHttp: {
+                res: 'data'
+              },
+              tip: '请上传 .xls,.xlsx 标准格式文件',
+              action: "/api/blade-user/import-user"
+            },
+            {
+              label: "数据覆盖",
+              prop: "isCovered",
+              type: "switch",
+              align: "center",
+              width: 80,
+              dicData: [
+                {
+                  label: "否",
+                  value: 0
+                },
+                {
+                  label: "是",
+                  value: 1
+                }
+              ],
+              value: 0,
+              slot: true,
+              rules: [
+                {
+                  required: true,
+                  message: "请选择是否覆盖",
+                  trigger: "blur"
+                }
+              ]
+            },
+            {
+              label: '模板下载',
+              prop: 'excelTemplate',
+              formslot: true,
+              span: 24,
+            }
+          ]
+        }
       };
     },
     watch: {
       'form.tenantId'() {
         if (this.form.tenantId !== '') {
           this.initData(this.form.tenantId);
+        }
+      },
+      'excelForm.isCovered'() {
+        if (this.excelForm.isCovered !== '') {
+          this.excelOption.column[0].action = `/api/blade-user/import-user?isCovered=${this.excelForm.isCovered}`;
         }
       }
     },
@@ -463,10 +533,10 @@
           this.option.group[2].column[3].dicData = res.data.data;
         });
       },
-      submit() {
+      submitRole() {
         const roleList = this.$refs.treeRole.getCheckedKeys().join(",");
         grant(this.ids, roleList).then(() => {
-          this.box = false;
+          this.roleBox = false;
           this.$message({
             type: "success",
             message: "操作成功!"
@@ -595,14 +665,30 @@
         }
         getRoleTree().then(res => {
           this.roleGrantList = res.data.data;
-          this.box = true;
+          this.roleBox = true;
         });
       },
       handleImport() {
-
+        this.excelBox = true;
+      },
+      uploadAfter(res, done, loading, column) {
+        window.console.log(column);
+        done();
+        this.excelBox = false;
+        this.refreshChange();
       },
       handleExport() {
-
+        this.$confirm("是否导出用户数据?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          const searchForm = this.$refs.crud.searchForm;
+          window.open(`/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${searchForm.account}&realName=${searchForm.realName}`);
+        });
+      },
+      handleTemplate() {
+        window.open(`/api/blade-user/export-template?Blade-Auth=${getToken()}`);
       },
       beforeOpen(done, type) {
         if (["edit", "view"].includes(type)) {
