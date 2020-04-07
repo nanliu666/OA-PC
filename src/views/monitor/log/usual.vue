@@ -82,7 +82,7 @@
             },
             {
               label: "日志时间",
-              prop: "logData",
+              prop: "createTime",
               width:'180'
             },
             {
