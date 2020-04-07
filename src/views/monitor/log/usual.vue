@@ -92,6 +92,14 @@
               hide: true
             },
             {
+              label: "日志数据",
+              prop: "logData",
+              type: "textarea",
+              span: 24,
+              minRows: 2,
+              hide: true
+            },
+            {
               label: "请求数据",
               prop: "params",
               type: "textarea",
