@@ -28,10 +28,6 @@
         </el-button>
       </template>
       <template slot-scope="{row}"
-                slot="tenantName">
-        <el-tag>{{row.tenantName}}</el-tag>
-      </template>
-      <template slot-scope="{row}"
                 slot="category">
         <el-tag>{{row.categoryName}}</el-tag>
       </template>
@@ -42,6 +38,7 @@
 <script>
   import {getList, getDetail, add, update, remove} from "@/api/system/post";
   import {mapGetters} from "vuex";
+  import website from "@/config/website";
 
   export default {
     data() {
@@ -69,9 +66,23 @@
           column: [
             {
               label: "所属租户",
-              prop: "tenantName",
-              slot: true,
-              display: false
+              prop: "tenantId",
+              type: "tree",
+              dicUrl: "/api/blade-system/tenant/select",
+              addDisplay: false,
+              editDisplay: false,
+              viewDisplay: website.tenantMode,
+              span: 24,
+              props: {
+                label: "tenantName",
+                value: "tenantId"
+              },
+              hide: !website.tenantMode,
+              rules: [{
+                required: true,
+                message: "请输入所属租户",
+                trigger: "click"
+              }]
             },
             {
               label: "岗位类型",
