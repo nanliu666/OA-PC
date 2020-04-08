@@ -58,3 +58,8 @@ export const sendLogs = (list) => request({
   method: 'post',
   data: list
 });
+
+export const clearCache = () => request({
+  url: '/api/blade-auth/oauth/clear-cache',
+  method: 'get'
+});

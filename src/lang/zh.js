@@ -99,6 +99,7 @@ export default {
   tagsView: {
     search: '搜索',
     menu: '更多',
+    clearCache: '清除缓存',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'
   }

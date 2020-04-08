@@ -100,6 +100,7 @@ export default {
   tagsView: {
     search: 'Search',
     menu: 'menu',
+    clearCache: 'Clear Cache',
     closeOthers: 'Close Others',
     closeAll: 'Close All'
   }

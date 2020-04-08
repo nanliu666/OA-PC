@@ -6,6 +6,9 @@
          class="avue-tags__contentmenu"
          :style="{left:contentmenuX+'px',top:contentmenuY+'px'}">
       <div class="item"
+           @click="clearCacheTags">{{$t('tagsView.clearCache')}}
+      </div>
+      <div class="item"
            @click="closeOthersTags">{{$t('tagsView.closeOthers')}}
       </div>
       <div class="item"
@@ -37,6 +40,7 @@
           <el-dropdown-item @click.native="$parent.isSearch=true">{{$t('tagsView.search')}}</el-dropdown-item>
           <el-dropdown-item @click.native="closeOthersTags">{{$t('tagsView.closeOthers')}}</el-dropdown-item>
           <el-dropdown-item @click.native="closeAllTags">{{$t('tagsView.closeAll')}}</el-dropdown-item>
+          <el-dropdown-item @click.native="clearCacheTags">{{$t('tagsView.clearCache')}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -45,6 +49,7 @@
 </template>
 <script>
   import {mapGetters, mapState} from "vuex";
+  import {clearCache} from "@/api/user";
 
   export default {
     name: "tags",
@@ -160,6 +165,17 @@
             src: this.tagWel.value
           }),
           query: this.tagWel.query
+        });
+      },
+      clearCacheTags() {
+        this.$confirm("是否需要清除缓存?", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          clearCache().then(() => {
+            this.$message.success('清除完毕');
+          })
         });
       }
     }
