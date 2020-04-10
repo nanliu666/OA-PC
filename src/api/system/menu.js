@@ -46,6 +46,16 @@ export const getMenuList = (current, size, params) => {
   })
 }
 
+export const getMenuTree = (tenantId) => {
+  return request({
+    url: '/api/blade-system/menu/tree',
+    method: 'get',
+    params: {
+      tenantId,
+    }
+  })
+}
+
 export const remove = (ids) => {
   return request({
     url: '/api/blade-system/menu/remove',

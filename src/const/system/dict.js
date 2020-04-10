@@ -3,7 +3,7 @@ export const optionParent = {
   calcHeight: 95,
   tip: false,
   searchShow: true,
-  searchMenuSpan: 6,
+  searchMenuSpan: 8,
   tree: true,
   border: true,
   index: true,

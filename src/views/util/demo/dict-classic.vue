@@ -201,6 +201,11 @@
         return ids.join(",");
       }
     },
+    mounted() {
+      getDictTree().then(res => {
+        this.optionChild.column[2].dicData = res.data.data;
+      });
+    },
     methods: {
       handleAdd(row) {
         this.$refs.crud.value.code = row.code;
@@ -346,11 +351,6 @@
           Object.assign(params, this.query)
         ).then(res => {
           this.data = res.data.data;
-          getDictTree().then(res => {
-            const data = res.data.data;
-            const index = this.$refs.crud.findColumnIndex("parentId");
-            this.option.column[index].dicData = data;
-          });
           this.loading = false;
           this.selectionClear();
         });

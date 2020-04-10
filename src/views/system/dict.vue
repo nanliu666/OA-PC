@@ -156,12 +156,17 @@
         return ids.join(",");
       }
     },
+    mounted() {
+      getDictTree().then(res => {
+        this.optionChild.column[2].dicData = res.data.data;
+      });
+    },
     methods: {
       rowSave(row, loading, done) {
         const form = {
           ...row,
           dictKey: -1,
-        }
+        };
         add(form).then(
           () => {
             loading();
@@ -412,11 +417,6 @@
           this.pageChild.total = data.total;
           this.dataChild = data.records;
           this.loadingChild = false;
-          getDictTree().then(res => {
-            const data = res.data.data;
-            const index = this.$refs.crudChild.findColumnIndex("parentId");
-            this.optionChild.column[index].dicData = data;
-          });
           this.selectionClear();
         });
       }

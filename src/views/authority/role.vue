@@ -227,6 +227,11 @@
         return ids;
       }
     },
+    mounted() {
+      getRoleTree().then(res => {
+        this.option.column[3].dicData = res.data.data;
+      });
+    },
     methods: {
       submit() {
         const menuList = this.$refs.treeMenu.getCheckedKeys();
@@ -358,11 +363,6 @@
         this.loading = true;
         getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then(res => {
           this.data = res.data.data;
-          getRoleTree().then(res => {
-            const data = res.data.data;
-            const index = this.$refs.crud.findColumnIndex("parentId");
-            this.option.column[index].dicData = data;
-          });
           this.loading = false;
           this.selectionClear();
         });

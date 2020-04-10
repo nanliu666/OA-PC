@@ -34,6 +34,7 @@
           icon="el-icon-circle-plus-outline"
           size="small"
           @click.stop="handleAdd(scope.row,scope.index)"
+          v-if="userInfo.role_name.includes('admin')"
         >新增子项
         </el-button>
       </template>
@@ -186,7 +187,7 @@
       };
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["userInfo", "permission"]),
       permissionList() {
         return {
           addBtn: this.vaildData(this.permission.dept_add, false),
@@ -203,15 +204,13 @@
         return ids.join(",");
       }
     },
-    created() {
+    mounted() {
       this.initData();
     },
     methods: {
       initData() {
         getDeptTree().then(res => {
-          const data = res.data.data;
-          const index = this.$refs.crud.findColumnIndex("parentId");
-          this.option.column[index].dicData = data;
+          this.option.column[3].dicData = res.data.data;
         });
       },
       handleAdd(row) {
@@ -225,9 +224,16 @@
         this.$refs.crud.rowAdd();
       },
       rowSave(row, loading, done) {
-        add(row).then(() => {
-          loading();
-          this.onLoad(this.page);
+        add(row).then((res) => {
+          // 下拉框数据重载
+          this.initData();
+          // 获取新增数据的相关字段
+          const data = res.data.data;
+          row.id = data.id;
+          row.deptCategoryName = data.deptCategoryName;
+          row.tenantId = data.tenantId;
+          // 数据回调进行刷新
+          loading(row);
           this.$message({
             type: "success",
             message: "操作成功!"
@@ -239,8 +245,10 @@
       },
       rowUpdate(row, index, loading, done) {
         update(row).then(() => {
-          loading();
-          this.onLoad(this.page);
+          // 下拉框数据重载
+          this.initData();
+          // 数据回调进行刷新
+          loading(row);
           this.$message({
             type: "success",
             message: "操作成功!"
@@ -250,7 +258,7 @@
           window.console.log(error);
         });
       },
-      rowDel(row) {
+      rowDel(row, index, loading) {
         this.$confirm("确定将选择数据删除?", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -260,7 +268,10 @@
             return remove(row.id);
           })
           .then(() => {
-            this.onLoad(this.page);
+            // 下拉框数据重载
+            this.initData();
+            // 数据回调进行刷新
+            loading(row);
             this.$message({
               type: "success",
               message: "操作成功!"
@@ -281,12 +292,19 @@
             return remove(this.ids);
           })
           .then(() => {
+            // 刷新表格数据并重载
+            this.data = [];
+            this.parentId = 0;
+            this.$refs.crud.refreshTable();
+            this.$refs.crud.toggleSelection();
+            // 表格数据重载
             this.onLoad(this.page);
+            // 下拉框数据重载
+            this.initData();
             this.$message({
               type: "success",
               message: "操作成功!"
             });
-            this.$refs.crud.toggleSelection();
           });
       },
       searchReset() {

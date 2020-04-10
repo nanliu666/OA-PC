@@ -7,6 +7,7 @@
                v-model="form"
                :permission="permissionList"
                :before-open="beforeOpen"
+               :before-close="beforeClose"
                @row-del="rowDel"
                @row-update="rowUpdate"
                @row-save="rowSave"
@@ -27,6 +28,16 @@
                    @click="handleDelete">删 除
         </el-button>
       </template>
+      <template slot-scope="scope" slot="menu">
+        <el-button
+          type="text"
+          icon="el-icon-circle-plus-outline"
+          size="small"
+          @click.stop="handleAdd(scope.row,scope.index)"
+          v-if="userInfo.role_name.includes('admin')"
+        >新增子项
+        </el-button>
+      </template>
       <template slot-scope="{row}"
                 slot="source">
         <div style="text-align:center">
@@ -42,6 +53,7 @@
   import {mapGetters} from "vuex";
   import iconList from "@/config/iconList";
   import func from "@/util/func";
+  import {getMenuTree} from "@/api/system/menu";
 
   export default {
     data() {
@@ -68,6 +80,7 @@
           index: true,
           selection: true,
           viewBtn: true,
+          menuWidth: 300,
           dialogClickModal: false,
           column: [
             {
@@ -97,7 +110,7 @@
               label: "上级菜单",
               prop: "parentId",
               type: "tree",
-              dicUrl: "/api/blade-system/menu/tree",
+              dicData: [],
               hide: true,
               props: {
                 label: "title"
@@ -207,7 +220,7 @@
       }
     },
     computed: {
-      ...mapGetters(["permission"]),
+      ...mapGetters(["userInfo", "permission"]),
       permissionList() {
         return {
           addBtn: this.vaildData(this.permission.menu_add, false),
@@ -224,11 +237,34 @@
         return ids.join(",");
       }
     },
+    mounted() {
+      this.initData();
+    },
     methods: {
+      initData() {
+        getMenuTree().then(res => {
+          this.option.column[2].dicData = res.data.data;
+        });
+      },
+      handleAdd(row) {
+        this.$refs.crud.value.parentId = row.id;
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "parentId") {
+            item.value = row.id;
+            item.addDisabled = true;
+          }
+        });
+        this.$refs.crud.rowAdd();
+      },
       rowSave(row, loading, done) {
-        add(row).then(() => {
-          loading();
-          this.onLoad(this.page);
+        add(row).then((res) => {
+          // 下拉框数据重载
+          this.initData();
+          // 获取新增数据的相关字段
+          const data = res.data.data;
+          row.id = data.id;
+          // 数据回调进行刷新
+          loading(row);
           this.$message({
             type: "success",
             message: "操作成功!"
@@ -240,8 +276,10 @@
       },
       rowUpdate(row, index, loading, done) {
         update(row).then(() => {
-          loading();
-          this.onLoad(this.page);
+          // 下拉框数据重载
+          this.initData();
+          // 数据回调进行刷新
+          loading(row);
           this.$message({
             type: "success",
             message: "操作成功!"
@@ -251,7 +289,7 @@
           window.console.log(error);
         });
       },
-      rowDel(row) {
+      rowDel(row, index, loading) {
         this.$confirm("确定将选择数据删除?", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -261,7 +299,10 @@
             return remove(row.id);
           })
           .then(() => {
-            this.onLoad(this.page);
+            // 下拉框数据重载
+            this.initData();
+            // 数据回调进行刷新
+            loading(row);
             this.$message({
               type: "success",
               message: "操作成功!"
@@ -301,12 +342,19 @@
             return remove(this.ids);
           })
           .then(() => {
+            // 刷新表格数据并重载
+            this.data = [];
+            this.parentId = 0;
+            this.$refs.crud.refreshTable();
+            this.$refs.crud.toggleSelection();
+            // 表格数据重载
             this.onLoad(this.page);
+            // 下拉框数据重载
+            this.initData();
             this.$message({
               type: "success",
               message: "操作成功!"
             });
-            this.$refs.crud.toggleSelection();
           });
       },
       beforeOpen(done, type) {
@@ -315,6 +363,17 @@
             this.form = res.data.data;
           });
         }
+        done();
+      },
+      beforeClose(done) {
+        this.$refs.crud.value.parentId = "";
+        this.$refs.crud.value.addDisabled = false;
+        this.$refs.crud.option.column.filter(item => {
+          if (item.prop === "parentId") {
+            item.value = "";
+            item.addDisabled = false;
+          }
+        });
         done();
       },
       currentChange(currentPage) {
