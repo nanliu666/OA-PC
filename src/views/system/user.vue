@@ -36,7 +36,7 @@
             <el-button type="info"
                        size="small"
                        plain
-                       v-if="userInfo.role_name.includes('admin')"
+                       v-if="permission.user_role"
                        icon="el-icon-user"
                        @click="handleGrant">角色配置
             </el-button>
