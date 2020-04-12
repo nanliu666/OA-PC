@@ -243,7 +243,8 @@
     methods: {
       initData() {
         getMenuTree().then(res => {
-          this.option.column[2].dicData = res.data.data;
+          const column = this.findObject(this.option.column, "parentId");
+          column.dicData = res.data.data;
         });
       },
       handleAdd(row) {

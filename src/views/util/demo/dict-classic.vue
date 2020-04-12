@@ -203,7 +203,8 @@
     },
     mounted() {
       getDictTree().then(res => {
-        this.optionChild.column[2].dicData = res.data.data;
+        const column = this.findObject(this.optionChild.column, "parentId");
+        column.dicData = res.data.data;
       });
     },
     methods: {

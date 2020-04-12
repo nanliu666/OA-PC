@@ -248,7 +248,8 @@
         });
       },
       'debugForm.code'() {
-        this.debugOption.column[1].action = `/api/blade-resource/oss/endpoint/put-file?code=${this.debugForm.code}`;
+        const column = this.findObject(this.debugOption.column, "backgroundUrl");
+        column.action = `/api/blade-resource/oss/endpoint/put-file?code=${this.debugForm.code}`;
       }
     },
     computed: {

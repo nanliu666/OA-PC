@@ -494,7 +494,8 @@
       },
       'excelForm.isCovered'() {
         if (this.excelForm.isCovered !== '') {
-          this.excelOption.column[0].action = `/api/blade-user/import-user?isCovered=${this.excelForm.isCovered}`;
+          const column = this.findObject(this.excelOption.column, "excelFile");
+          column.action = `/api/blade-user/import-user?isCovered=${this.excelForm.isCovered}`;
         }
       }
     },
@@ -524,13 +525,16 @@
       },
       initData(tenantId) {
         getRoleTree(tenantId).then(res => {
-          this.option.group[2].column[1].dicData = res.data.data;
+          const column = this.findObject(this.option.group, "roleId");
+          column.dicData = res.data.data;
         });
         getDeptTree(tenantId).then(res => {
-          this.option.group[2].column[2].dicData = res.data.data;
+          const column = this.findObject(this.option.group, "deptId");
+          column.dicData = res.data.data;
         });
         getPostList(tenantId).then(res => {
-          this.option.group[2].column[3].dicData = res.data.data;
+          const column = this.findObject(this.option.group, "postId");
+          column.dicData = res.data.data;
         });
       },
       submitRole() {
