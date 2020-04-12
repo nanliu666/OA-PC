@@ -48,6 +48,7 @@
           delBtn: false,
           menuWidth: 120,
           dialogClickModal: false,
+          dialogType: 'drawer',
           column: [
             {
               label: "服务id",
@@ -104,7 +105,7 @@
               prop: "stackTrace",
               type: "textarea",
               span: 24,
-              minRows: 6,
+              minRows: 16,
               hide: true
             }
           ]

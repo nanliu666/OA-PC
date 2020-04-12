@@ -48,6 +48,7 @@
           delBtn: false,
           menuWidth: 120,
           dialogClickModal: false,
+          dialogType: 'drawer',
           column: [
             {
               label: "服务id",
