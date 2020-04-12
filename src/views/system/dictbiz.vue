@@ -163,41 +163,35 @@
       });
     },
     methods: {
-      rowSave(row, loading, done) {
+      rowSave(row, done, loading) {
         const form = {
           ...row,
           dictKey: -1,
         };
-        add(form).then(
-          () => {
-            loading();
-            this.onLoadParent(this.pageParent);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          },
-          error => {
-            done();
-            window.console.log(error);
-          }
-        );
+        add(form).then(() => {
+          this.onLoadParent(this.pageParent);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          done();
+        }, error => {
+          window.console.log(error);
+          loading();
+        });
       },
-      rowUpdate(row, index, loading, done) {
-        update(row).then(
-          () => {
-            loading();
-            this.onLoadParent(this.pageParent);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          },
-          error => {
-            done();
-            window.console.log(error);
-          }
-        );
+      rowUpdate(row, index, done, loading) {
+        update(row).then(() => {
+          this.onLoadParent(this.pageParent);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          done();
+        }, error => {
+          window.console.log(error);
+          loading();
+        });
       },
       rowDel(row) {
         this.$confirm("确定将选择数据删除?", {
@@ -287,37 +281,31 @@
       refreshChange() {
         this.onLoadParent(this.pageParent, this.query);
       },
-      rowSaveChild(row, loading, done) {
-        add(row).then(
-          () => {
-            loading();
-            this.onLoadChild(this.pageChild);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          },
-          error => {
-            done();
-            window.console.log(error);
-          }
-        );
+      rowSaveChild(row, done, loading) {
+        add(row).then(() => {
+          this.onLoadChild(this.pageChild);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          done();
+        }, error => {
+          window.console.log(error);
+          loading();
+        });
       },
-      rowUpdateChild(row, index, loading, done) {
-        update(row).then(
-          () => {
-            loading();
-            this.onLoadChild(this.pageChild);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          },
-          error => {
-            done();
-            window.console.log(error);
-          }
-        );
+      rowUpdateChild(row, index, done, loading) {
+        update(row).then(() => {
+          this.onLoadChild(this.pageChild);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          done();
+        }, error => {
+          window.console.log(error);
+          loading();
+        });
       },
       rowDelChild(row) {
         this.$confirm("确定将选择数据删除?", {

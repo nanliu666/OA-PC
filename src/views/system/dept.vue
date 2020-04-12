@@ -221,38 +221,38 @@
         });
         this.$refs.crud.rowAdd();
       },
-      rowSave(row, loading, done) {
+      rowSave(row, done, loading) {
         add(row).then((res) => {
           // 获取新增数据的相关字段
           const data = res.data.data;
           row.id = data.id;
           row.deptCategoryName = data.deptCategoryName;
           row.tenantId = data.tenantId;
-          // 数据回调进行刷新
-          loading(row);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
+          // 数据回调进行刷新
+          done(row);
         }, error => {
-          done();
           window.console.log(error);
+          loading();
         });
       },
-      rowUpdate(row, index, loading, done) {
+      rowUpdate(row, index, done, loading) {
         update(row).then(() => {
-          // 数据回调进行刷新
-          loading(row);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
+          // 数据回调进行刷新
+          done(row);
         }, error => {
-          done();
           window.console.log(error);
+          loading();
         });
       },
-      rowDel(row, index, loading) {
+      rowDel(row, index, done) {
         this.$confirm("确定将选择数据删除?", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -262,12 +262,12 @@
             return remove(row.id);
           })
           .then(() => {
-            // 数据回调进行刷新
-            loading(row);
             this.$message({
               type: "success",
               message: "操作成功!"
             });
+            // 数据回调进行刷新
+            done(row);
           });
       },
       handleDelete() {

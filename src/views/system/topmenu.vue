@@ -179,30 +179,30 @@
           this.onLoad(this.page);
         });
       },
-      rowSave(row, loading, done) {
+      rowSave(row, done, loading) {
         add(row).then(() => {
-          loading();
           this.onLoad(this.page);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
-      rowUpdate(row, index, loading, done) {
+      rowUpdate(row, index, done, loading) {
         update(row).then(() => {
-          loading();
           this.onLoad(this.page);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
       rowDel(row) {

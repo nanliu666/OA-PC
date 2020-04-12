@@ -401,30 +401,30 @@
     },
     methods: {
       // 菜单管理模块
-      rowSave(row, loading, done) {
+      rowSave(row, done, loading) {
         add(row).then(() => {
-          loading();
           this.onLoad(this.page);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
-      rowUpdate(row, index, loading, done) {
+      rowUpdate(row, index, done, loading) {
         update(row).then(() => {
-          loading();
           this.onLoad(this.page);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
       rowDel(row) {
@@ -526,38 +526,38 @@
       handleDrawerClose(hide) {
         hide();
       },
-      rowSaveScope(row, loading, done) {
+      rowSaveScope(row, done, loading) {
         row = {
           ...row,
           menuId: this.scopeMenuId,
-        }
+        };
         addApiScope(row).then(() => {
-          loading();
           this.onLoadScope(this.pageScope);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
-      rowUpdateScope(row, index, loading, done) {
+      rowUpdateScope(row, index, done, loading) {
         row = {
           ...row,
           menuId: this.scopeMenuId,
-        }
+        };
         updateApiScope(row).then(() => {
-          loading();
           this.onLoadScope(this.pageScope);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
       rowDelScope(row) {

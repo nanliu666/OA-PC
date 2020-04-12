@@ -548,36 +548,36 @@
           this.onLoad(this.page);
         });
       },
-      rowSave(row, loading, done) {
+      rowSave(row, done, loading) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
         row.postId = row.postId.join(",");
         add(row).then(() => {
-          loading();
           this.onLoad(this.page);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
-      rowUpdate(row, index, loading, done) {
+      rowUpdate(row, index, done, loading) {
         row.deptId = row.deptId.join(",");
         row.roleId = row.roleId.join(",");
         row.postId = row.postId.join(",");
         update(row).then(() => {
-          loading();
           this.onLoad(this.page);
           this.$message({
             type: "success",
             message: "操作成功!"
           });
-        }, error => {
           done();
+        }, error => {
           window.console.log(error);
+          loading();
         });
       },
       rowDel(row) {
@@ -677,9 +677,9 @@
       },
       uploadAfter(res, done, loading, column) {
         window.console.log(column);
-        done();
         this.excelBox = false;
         this.refreshChange();
+        done();
       },
       handleExport() {
         this.$confirm("是否导出用户数据?", "提示", {

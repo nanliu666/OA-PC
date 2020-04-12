@@ -223,37 +223,31 @@
         });
         this.$refs.crud.rowAdd();
       },
-      rowSave(row, loading, done) {
-        add(row).then(
-          () => {
-            loading();
-            this.onLoad(this.page);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          },
-          error => {
-            done();
-            window.console.log(error);
-          }
-        );
+      rowSave(row, done, loading) {
+        add(row).then(() => {
+          this.onLoad(this.page);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          done();
+        }, error => {
+          window.console.log(error);
+          loading();
+        });
       },
-      rowUpdate(row, index, loading, done) {
-        update(row).then(
-          () => {
-            loading();
-            this.onLoad(this.page);
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          },
-          error => {
-            done();
-            window.console.log(error);
-          }
-        );
+      rowUpdate(row, index, done, loading) {
+        update(row).then(() => {
+          this.onLoad(this.page);
+          this.$message({
+            type: "success",
+            message: "操作成功!"
+          });
+          done();
+        }, error => {
+          window.console.log(error);
+          loading();
+        });
       },
       rowDel(row) {
         this.$confirm("确定将选择数据删除?", {
