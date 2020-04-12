@@ -237,9 +237,6 @@
         return ids.join(",");
       }
     },
-    mounted() {
-      this.initData();
-    },
     methods: {
       initData() {
         getMenuTree().then(res => {
@@ -259,8 +256,6 @@
       },
       rowSave(row, loading, done) {
         add(row).then((res) => {
-          // 下拉框数据重载
-          this.initData();
           // 获取新增数据的相关字段
           const data = res.data.data;
           row.id = data.id;
@@ -277,8 +272,6 @@
       },
       rowUpdate(row, index, loading, done) {
         update(row).then(() => {
-          // 下拉框数据重载
-          this.initData();
           // 数据回调进行刷新
           loading(row);
           this.$message({
@@ -300,10 +293,35 @@
             return remove(row.id);
           })
           .then(() => {
-            // 下拉框数据重载
-            this.initData();
             // 数据回调进行刷新
             loading(row);
+            this.$message({
+              type: "success",
+              message: "操作成功!"
+            });
+          });
+      },
+      handleDelete() {
+        if (this.selectionList.length === 0) {
+          this.$message.warning("请选择至少一条数据");
+          return;
+        }
+        this.$confirm("确定将选择数据删除?", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            return remove(this.ids);
+          })
+          .then(() => {
+            // 刷新表格数据并重载
+            this.data = [];
+            this.parentId = 0;
+            this.$refs.crud.refreshTable();
+            this.$refs.crud.toggleSelection();
+            // 表格数据重载
+            this.onLoad(this.page);
             this.$message({
               type: "success",
               message: "操作成功!"
@@ -329,36 +347,10 @@
         this.selectionList = [];
         this.$refs.crud.toggleSelection();
       },
-      handleDelete() {
-        if (this.selectionList.length === 0) {
-          this.$message.warning("请选择至少一条数据");
-          return;
-        }
-        this.$confirm("确定将选择数据删除?", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            return remove(this.ids);
-          })
-          .then(() => {
-            // 刷新表格数据并重载
-            this.data = [];
-            this.parentId = 0;
-            this.$refs.crud.refreshTable();
-            this.$refs.crud.toggleSelection();
-            // 表格数据重载
-            this.onLoad(this.page);
-            // 下拉框数据重载
-            this.initData();
-            this.$message({
-              type: "success",
-              message: "操作成功!"
-            });
-          });
-      },
       beforeOpen(done, type) {
+        if (["add", "edit"].includes(type)) {
+          this.initData();
+        }
         if (["edit", "view"].includes(type)) {
           getMenu(this.form.id).then(res => {
             this.form = res.data.data;

@@ -204,9 +204,6 @@
         return ids.join(",");
       }
     },
-    mounted() {
-      this.initData();
-    },
     methods: {
       initData() {
         getDeptTree().then(res => {
@@ -226,8 +223,6 @@
       },
       rowSave(row, loading, done) {
         add(row).then((res) => {
-          // 下拉框数据重载
-          this.initData();
           // 获取新增数据的相关字段
           const data = res.data.data;
           row.id = data.id;
@@ -246,8 +241,6 @@
       },
       rowUpdate(row, index, loading, done) {
         update(row).then(() => {
-          // 下拉框数据重载
-          this.initData();
           // 数据回调进行刷新
           loading(row);
           this.$message({
@@ -269,8 +262,6 @@
             return remove(row.id);
           })
           .then(() => {
-            // 下拉框数据重载
-            this.initData();
             // 数据回调进行刷新
             loading(row);
             this.$message({
@@ -300,8 +291,6 @@
             this.$refs.crud.toggleSelection();
             // 表格数据重载
             this.onLoad(this.page);
-            // 下拉框数据重载
-            this.initData();
             this.$message({
               type: "success",
               message: "操作成功!"
@@ -328,6 +317,9 @@
         this.$refs.crud.toggleSelection();
       },
       beforeOpen(done, type) {
+        if (["add", "edit"].includes(type)) {
+          this.initData();
+        }
         if (["edit", "view"].includes(type)) {
           getDept(this.form.id).then(res => {
             this.form = res.data.data;

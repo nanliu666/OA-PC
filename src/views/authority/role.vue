@@ -6,6 +6,7 @@
                ref="crud"
                v-model="form"
                :permission="permissionList"
+               :before-open="beforeOpen"
                @row-del="rowDel"
                @row-update="rowUpdate"
                @row-save="rowSave"
@@ -227,13 +228,13 @@
         return ids;
       }
     },
-    mounted() {
-      getRoleTree().then(res => {
-        const column = this.findObject(this.option.column, "parentId");
-        column.dicData = res.data.data;
-      });
-    },
     methods: {
+      initData(){
+        getRoleTree().then(res => {
+          const column = this.findObject(this.option.column, "parentId");
+          column.dicData = res.data.data;
+        });
+      },
       submit() {
         const menuList = this.$refs.treeMenu.getCheckedKeys();
         const dataScopeList = this.$refs.treeDataScope.getCheckedKeys();
@@ -307,6 +308,12 @@
       selectionClear() {
         this.selectionList = [];
         this.$refs.crud.toggleSelection();
+      },
+      beforeOpen(done, type) {
+        if (["add", "edit"].includes(type)) {
+          this.initData();
+        }
+        done();
       },
       handleRole() {
         if (this.selectionList.length !== 1) {
