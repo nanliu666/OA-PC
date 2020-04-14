@@ -136,7 +136,7 @@
               <el-collapse-item title="2.5.0.RELEASE发布，增加岗位管理，增加用户导入导出" name="15">
                 <div>1.升级Avue 至 2.5.0</div>
                 <div>2.升级SpringBoot 至 2.1.13</div>
-                <div>3.升级FastJson 至 1.2.67</div>
+                <div>3.升级FastJson 至 1.2.68</div>
                 <div>4.升级Druid 至 1.1.22</div>
                 <div>5.升级Knife4j 至 2.0.2</div>
                 <div>6.升级Taobao-Sdk 至 20200415</div>
