@@ -4,10 +4,10 @@
       <el-col :span="24">
         <basic-container>
           <p style="text-align: center">
-            <img src="https://img.shields.io/badge/Release-V2.4.1-green.svg" alt="Downloads"/>
+            <img src="https://img.shields.io/badge/Release-V2.5.0-green.svg" alt="Downloads"/>
             <img src="https://img.shields.io/badge/JDK-1.8+-green.svg" alt="Build Status"/>
             <img src="https://img.shields.io/badge/Spring%20Cloud-Greenwich.SR5-blue.svg" alt="Coverage Status"/>
-            <img src="https://img.shields.io/badge/Spring%20Boot-2.1.12.RELEASE-blue.svg" alt="Downloads"/>
+            <img src="https://img.shields.io/badge/Spring%20Boot-2.1.13.RELEASE-blue.svg" alt="Downloads"/>
             <a target="_blank" href="https://bladex.vip">
               <img src="https://img.shields.io/badge/Saber%20Author-Small%20Chill-ff69b4.svg" alt="Downloads"/>
             </a>
@@ -133,6 +133,58 @@
         <el-row>
           <basic-container>
             <el-collapse v-model="logActiveNames" @change="handleChange">
+              <el-collapse-item title="2.5.0.RELEASE发布，增加岗位管理，增加用户导入导出" name="15">
+                <div>1.升级Avue 至 2.5.0</div>
+                <div>2.升级SpringBoot 至 2.1.13</div>
+                <div>3.升级FastJson 至 1.2.67</div>
+                <div>4.升级Druid 至 1.1.22</div>
+                <div>5.升级Knife4j 至 2.0.2</div>
+                <div>6.升级Taobao-Sdk 至 20200415</div>
+                <div>7.升级docker-maven-plugin 至 dockerfile-maven-plugin</div>
+                <div>8.新增验证码开关</div>
+                <div>9.新增数据权限全局开关</div>
+                <div>10.新增岗位管理模块</div>
+                <div>11.新增用户Excel导入导出功能</div>
+                <div>12.新增用户绑定岗位功能</div>
+                <div>13.新增EasyExcel封装工具ExcelUtil</div>
+                <div>14.新增Feign内部线程传递</div>
+                <div>15.新增Mybatis-Plus配置，支持配置最大分页数</div>
+                <div>16.新增Gateway在多团队协作模式灵活指向本地服务的配置</div>
+                <div>17.新增Sms模块的sendMessage接口及SmsResponse响应类</div>
+                <div>18.新增CacheUtil租户缓存隔离功能</div>
+                <div>19.优化CacheUtil缓存重载逻辑，返回bean不为null但数据全为空将不入缓存</div>
+                <div>20.优化缓存清除逻辑，@CacheEvict统一修改为CacheUtil.clear</div>
+                <div>21.优化登陆逻辑，前端对密码加密后再传递至鉴权接口</div>
+                <div>22.优化Oss上传接口，返回domain字段</div>
+                <div>23.优化BladeRedisCache命名为BladeRedis</div>
+                <div>24.优化控制台日志打印功能，规避MultipartFile读取报错</div>
+                <div>25.优化配置关键字enable统一为enabled</div>
+                <div>26.优化keyword日期处理</div>
+                <div>27.优化代码生成sql脚本默认在工作台菜单下</div>
+                <div>28.优化Jwt获取Token逻辑</div>
+                <div>29.优化Token返回，增加岗位ID</div>
+                <div>30.优化TokenGranter，采用更简洁的拓展方式</div>
+                <div>31.优化日志管理展现方式</div>
+                <div>32.优化新建租户逻辑，增加参数读取来设置新建租户的配置</div>
+                <div>33.优化流程签收接口，支持多角色操作</div>
+                <div>34.优化动态网关，支持读取自定义namespace配置</div>
+                <div>35.优化删除租户逻辑，同时删除对应的用户</div>
+                <div>36.优化树形懒加载，支持局部实时刷新功能</div>
+                <div>37.优化多租户插件新增修改逻辑，若指定tenantId为空则不进行操作</div>
+                <div>38.优化SmsBuilder、OssBuilder</div>
+                <div>39.优化Sentinel配置</div>
+                <div>40.优化XssFilter为全局的BladeRequestFilte</div>
+                <div>41.优化BladeX开发手册Linux部署章节讲解</div>
+                <div>42.优化Saber相关配置，以适配Avue最新版API</div>
+                <div>43.优化Saber相关配置内done与loading的顺序</div>
+                <div>44.修复用户基本信息修改的bug</div>
+                <div>45.修复QiniuTemplate的putFile循环调用的bug</div>
+                <div>46.修复日志框架获取RequestBody为空的bug</div>
+                <div>47.修复Saber组件被复用导致没有刷新的bug</div>
+                <div>48.删除过时的BladeSecureUrlProperties</div>
+                <div>49.删除过时的XssUrlProperties</div>
+                <div>50.删除过时的RedisUtil</div>
+              </el-collapse-item>
               <el-collapse-item title="2.4.0.RELEASE发布，增加多租户短信服务，升级Seata1.1" name="14">
                 <div>1.新增集成七牛、阿里云、腾讯云、云片等短信服务，支持多租户配置</div>
                 <div>2.新增对象存储模块的资源编号字段，可根据编号指定oss配置的服务</div>
@@ -371,7 +423,7 @@
     data() {
       return {
         activeNames: ['1', '2', '3', '5'],
-        logActiveNames: ['14']
+        logActiveNames: ['15']
       };
     },
     computed: {

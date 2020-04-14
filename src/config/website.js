@@ -9,7 +9,7 @@ export default {
   clientId: 'saber', // 客户端id
   clientSecret: 'saber_secret', // 客户端密钥
   tenantMode: true, // 是否开启租户模式
-  tenantId: "000000", //默认租户编号
+  tenantId: "000000", // 管理组租户编号
   captchaMode: true, // 是否开启验证码模式
   lockPage: '/lock',
   tokenTime: 3000,
