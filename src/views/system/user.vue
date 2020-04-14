@@ -517,6 +517,9 @@
         return ids.join(",");
       },
     },
+    mounted() {
+      this.initData(website.tenantId);
+    },
     methods: {
       nodeClick(data) {
         this.treeDeptId = data.id;

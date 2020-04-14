@@ -38,7 +38,7 @@ export default function () {
             );
 
             let styleTag = document.getElementById(id);
-            if (!styleTag) {
+            if (styleTag!=null) {
               styleTag = document.createElement("style");
               styleTag.setAttribute("id", id);
               head.appendChild(styleTag);
@@ -72,7 +72,7 @@ export default function () {
                 themeCluster
               );
               let styleTag = document.getElementById(i);
-              if (!styleTag) {
+              if (styleTag!=null) {
                 styleTag = document.createElement("style");
                 styleTag.id = i;
                 styleTag.innerText = newStyle;
