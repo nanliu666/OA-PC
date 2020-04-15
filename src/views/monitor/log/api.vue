@@ -47,7 +47,6 @@
           addBtn: false,
           delBtn: false,
           menuWidth: 120,
-          dialogClickModal: false,
           dialogType: 'drawer',
           column: [
             {
