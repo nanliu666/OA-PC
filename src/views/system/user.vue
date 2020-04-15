@@ -518,7 +518,10 @@
       },
     },
     mounted() {
-      this.initData(website.tenantId);
+      // 非租户模式默认加载管理组数据
+      if (!website.tenantMode) {
+        this.initData(website.tenantId);
+      }
     },
     methods: {
       nodeClick(data) {
