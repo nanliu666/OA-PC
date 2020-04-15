@@ -322,7 +322,7 @@
         }
         this.box = true;
       },
-      handleSubmit(form, done) {
+      handleSubmit(form, done, loading) {
         setting(this.ids, form).then(() => {
           this.onLoad(this.page);
           this.$message({

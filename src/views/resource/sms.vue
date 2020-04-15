@@ -352,7 +352,7 @@
         this.box = true;
         this.debugForm.code = row.smsCode;
       },
-      handleSend(form, done) {
+      handleSend(form, done, loading) {
         send(form.code, form.phones, form.params).then((res) => {
           this.$message({
             type: "success",
