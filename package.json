@@ -17,6 +17,7 @@
     "babel-polyfill": "^6.26.0",
     "classlist-polyfill": "^1.2.0",
     "element-ui": "^2.12.0",
+    "gojs": "^2.1.13",
     "js-base64": "^2.5.1",
     "js-cookie": "^2.2.0",
     "js-md5": "^0.7.3",
@@ -60,10 +61,11 @@
   },
   "lint-staged": {
     "*.{js,vue}": [
+      "prettier --write",
       "eslint --fix",
       "git add"
     ],
-    "*.scss":[
+    "*.scss": [
       "prettier --write",
       "git add"
     ]
