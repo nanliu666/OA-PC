@@ -1,11 +1,11 @@
 <template>
-  <div></div>
+  <div />
 </template>
 
 <script>
 export default {
-  name: 'authredirect',
-  created () {
+  name: 'Authredirect',
+  created() {
     window.close()
     const params = this.$route.query
     const state = params.state
@@ -15,6 +15,4 @@ export default {
 }
 </script>
 
-
-<style>
-</style>
+<style></style>

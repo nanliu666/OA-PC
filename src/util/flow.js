@@ -4,7 +4,7 @@
  * @returns {string}
  */
 export function flowCategory(category) {
-  return `flow_${category}`;
+  return `flow_${category}`
 }
 
 /**
@@ -13,8 +13,8 @@ export function flowCategory(category) {
  * @param key
  */
 export function flowRoute(routes, key) {
-  const data = routes.filter(d => {
-    return d.routeKey === key;
-  });
-  return data.length === 0 ? [] : data[0].routeValue;
+  const data = routes.filter((d) => {
+    return d.routeKey === key
+  })
+  return data.length === 0 ? [] : data[0].routeValue
 }

@@ -1,37 +1,40 @@
 <template>
-  <div class="basic-container"
-       :class="{'basic-container--block':block}">
+  <div
+    class="basic-container"
+    :class="{ 'basic-container--block': block }"
+  >
     <el-card>
-      <slot></slot>
+      <slot />
     </el-card>
   </div>
 </template>
 
 <script>
-  export default {
-    name: "basicContainer",
-    props: {
-      radius: {
-        type: [String, Number],
-        default: 10
-      },
-      background: {
-        type: String
-      },
-      block: {
-        type: Boolean,
-        default: false
-      }
+export default {
+  name: 'BasicContainer',
+  props: {
+    radius: {
+      type: [String, Number],
+      default: 10
     },
-    computed: {
-      styleName () {
-        return {
-          borderRadius: this.setPx(this.radius),
-          background: this.background,
-        }
+    background: {
+      type: String,
+      default: ''
+    },
+    block: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    styleName() {
+      return {
+        borderRadius: this.setPx(this.radius),
+        background: this.background
       }
     }
-  };
+  }
+}
 </script>
 
 <style lang="scss">

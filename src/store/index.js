@@ -16,7 +16,7 @@ const store = new Vuex.Store({
     tags,
     dict
   },
-  getters,
+  getters
 })
 
 export default store

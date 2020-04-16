@@ -1,34 +1,36 @@
 <template>
   <div class="avue-logo">
     <transition name="fade">
-      <span v-if="keyCollapse"
-            class="avue-logo_subtitle"
-            key="0">
-        {{website.logo}}
-      </span>
+      <span
+        v-if="keyCollapse"
+        key="0"
+        class="avue-logo_subtitle"
+      >{{ website.logo }}</span>
     </transition>
     <transition-group name="fade">
       <template v-if="!keyCollapse">
-        <span class="avue-logo_title"
-              key="1">{{website.indexTitle}} </span>
+        <span
+          key="1"
+          class="avue-logo_title"
+        >{{ website.indexTitle }}</span>
       </template>
     </transition-group>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 export default {
-  name: "logo",
+  name: 'Logo',
   data() {
-    return {};
+    return {}
+  },
+  computed: {
+    ...mapGetters(['website', 'keyCollapse'])
   },
   created() {},
-  computed: {
-    ...mapGetters(["website", "keyCollapse"])
-  },
   methods: {}
-};
+}
 </script>
 
 <style lang="scss">
@@ -47,20 +49,26 @@ export default {
   top: 0;
   left: 0;
   width: 240px;
-  height: 64px;
-  line-height: 64px;
-  background-color: #20222a;
+  height: 56px;
+  // line-height: 56px;
+  // background-color: #20222a;
   font-size: 20px;
   overflow: hidden;
   box-sizing: border-box;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
-  color: rgba(255, 255, 255, 0.8);
+  // box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+  // color: rgba(255, 255, 255, 0.8);
+  color: #20222a;
   z-index: 1024;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &_title {
     display: block;
     text-align: center;
     font-weight: 300;
     font-size: 20px;
+    width: 239px;
+    border-right: 1px solid #e3e7e9;
   }
   &_subtitle {
     display: block;

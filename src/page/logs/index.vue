@@ -1,34 +1,53 @@
 <template>
-  <avue-crud :data="logsList"
-             :option="option">
+  <avue-crud
+    :data="logsList"
+    :option="option"
+  >
     <template slot="menuLeft">
-      <el-button type="primary"
-                 size="small"
-                 icon="el-icon-upload"
-                 @click="send">上传服务器</el-button>
-      <el-button type="danger"
-                 size="small"
-                 icon="el-icon-delete"
-                 @click="clear">清空本地日志</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        icon="el-icon-upload"
+        @click="send"
+      >
+        上传服务器
+      </el-button>
+      <el-button
+        type="danger"
+        size="small"
+        icon="el-icon-delete"
+        @click="clear"
+      >
+        清空本地日志
+      </el-button>
     </template>
-    <template slot-scope="scope"
-              slot="type">
-      <el-tag type="danger"
-              size="small">{{scope.label}}</el-tag>
+    <template
+      slot="type"
+      slot-scope="scope"
+    >
+      <el-tag
+        type="danger"
+        size="small"
+      >
+        {{ scope.label }}
+      </el-tag>
     </template>
-    <template slot-scope="props"
-              slot="expand">
+    <template
+      slot="expand"
+      slot-scope="props"
+    >
       <pre class="code">
-        {{props.row.stack}}
+        {{ props.row.stack }}
       </pre>
     </template>
   </avue-crud>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 export default {
-  name: "errLogs",
+  name: 'ErrLogs',
+  props: [],
   data() {
     return {
       option: {
@@ -38,90 +57,89 @@ export default {
         border: true,
         expand: true,
         refreshBtn: false,
-        headerAlign: "center",
+        headerAlign: 'center',
         column: [
           {
-            label: "类型",
-            prop: "type",
+            label: '类型',
+            prop: 'type',
             width: 80,
-            align: "center",
+            align: 'center',
             slot: true,
             dicData: [
               {
-                label: "bug",
-                value: "error"
+                label: 'bug',
+                value: 'error'
               }
             ]
           },
           {
-            label: "地址",
+            label: '地址',
             width: 200,
-            prop: "url",
+            prop: 'url',
             overHidden: true
           },
           {
-            label: "内容",
-            prop: "message",
+            label: '内容',
+            prop: 'message',
             overHidden: true
           },
           {
-            label: "错误堆栈",
-            prop: "stack",
+            label: '错误堆栈',
+            prop: 'stack',
             hide: true
           },
           {
-            label: "时间",
-            align: "center",
-            prop: "time",
+            label: '时间',
+            align: 'center',
+            prop: 'time',
             width: 200
           }
         ]
       }
-    };
+    }
+  },
+  computed: {
+    ...mapGetters(['logsList'])
   },
   created() {},
   mounted() {},
-  computed: {
-    ...mapGetters(["logsList"])
-  },
-  props: [],
   methods: {
     send() {
-      this.$confirm("确定上传本地日志到服务器?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确定上传本地日志到服务器?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.$store.dispatch("SendLogs").then(() => {
-            this.$parent.$parent.box = false;
+          this.$store.dispatch('SendLogs').then(() => {
+            this.$parent.$parent.box = false
             this.$message({
-              type: "success",
-              message: "发送成功!"
-            });
-          });
+              type: 'success',
+              message: '发送成功!'
+            })
+          })
         })
-        .catch(() => {});
+        .catch(() => {})
     },
     clear() {
-      this.$confirm("确定清空本地日志记录?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确定清空本地日志记录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.$store.commit("CLEAR_LOGS");
-          window.console.log(this);
-          this.$parent.$parent.box = false;
+          this.$store.commit('CLEAR_LOGS')
+          window.console.log(this)
+          this.$parent.$parent.box = false
           this.$message({
-            type: "success",
-            message: "清空成功!"
-          });
+            type: 'success',
+            message: '清空成功!'
+          })
         })
-        .catch(() => {});
+        .catch(() => {})
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

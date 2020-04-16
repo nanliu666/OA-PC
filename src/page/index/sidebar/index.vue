@@ -1,7 +1,7 @@
 <template>
   <div class="avue-sidebar">
-    <logo></logo>
-    <el-scrollbar style="height:100%">
+    <!-- <logo /> -->
+     <el-scrollbar style="height:100%">
       <div v-if="validatenull(menu)"
            class="avue-sidebar--tip">{{$t('menuTip')}}
       </div>
@@ -21,31 +21,35 @@
 </template>
 
 <script>
-  import {mapGetters} from "vuex";
-  import logo from "../logo";
-  import sidebarItem from "./sidebarItem";
+import { mapGetters } from 'vuex'
+// import logo from '../logo'
+import sidebarItem from './sidebarItem'
 
-  export default {
-    name: "sidebar",
-    components: {sidebarItem, logo},
-    inject: ["index"],
-    data() {
-      return {};
-    },
-    created() {
-      this.index.openMenu(this.menuId);
-    },
-    computed: {
-      ...mapGetters(["website", "menu", "tag", "keyCollapse", "screen", "menuId"]),
-      nowTagValue: function () {
-        return this.$router.$avueRouter.getValue(this.$route);
-      }
-    },
-    mounted() {
-    },
-    methods: {}
-  };
+export default {
+  name: 'Sidebar',
+  components: { sidebarItem },
+  inject: ['index'],
+  data() {
+    return {}
+  },
+  computed: {
+    ...mapGetters([
+      'website',
+      'menu',
+      'tag',
+      'keyCollapse',
+      'screen',
+      'menuId'
+    ]),
+    nowTagValue: function() {
+      return this.$router.$avueRouter.getValue(this.$route)
+    }
+  },
+  created() {
+    this.index.openMenu(this.menuId)
+  },
+  mounted() {},
+  methods: {}
+}
 </script>
-<style lang="scss" scoped>
-</style>
-
+<style lang="scss" scoped></style>

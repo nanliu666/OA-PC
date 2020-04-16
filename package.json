@@ -1,11 +1,12 @@
 {
-  "name": "saber-admin",
+  "name": "oa-admin",
   "version": "2.5.0",
   "private": true,
   "scripts": {
+    "pre": "cnpm install || yarn --registry https://registry.npm.taobao.org || npm install --registry https://registry.npm.taobao.org ",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "lint": "eslint --fix --ext .vue,.js src/ &&　prettier src/**/*.scss --write",
     "analyz": "npm_config_report=true npm run build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e"
@@ -31,22 +32,39 @@
     "vuex": "^3.1.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@vue/cli-plugin-babel": "^3.1.1",
     "@vue/cli-plugin-eslint": "^3.1.5",
     "@vue/cli-service": "^3.1.4",
+    "babel-eslint": "^10.1.0",
     "chai": "^4.1.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "husky": "^4.2.3",
+    "lint-staged": "^9.5.0",
     "node-sass": "^4.12.0",
+    "prettier": "1.19.1",
     "sass-loader": "^7.0.1",
     "vue-template-compiler": "^2.5.17",
     "webpack-bundle-analyzer": "^3.0.3"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "lint-staged": {
-    "*.js": [
-      "vue-cli-service lint",
+    "*.{js,vue}": [
+      "eslint --fix",
       "git add"
     ],
-    "*.vue": [
-      "vue-cli-service lint",
+    "*.scss":[
+      "prettier --write",
       "git add"
     ]
   }

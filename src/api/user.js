@@ -63,3 +63,10 @@ export const clearCache = () => request({
   url: '/api/blade-auth/oauth/clear-cache',
   method: 'get'
 });
+
+export const getTenantInfo = (domain) =>
+  request({
+    url: '/sys/v1/tenant/info',
+    method: 'get',
+    data: domain
+  })

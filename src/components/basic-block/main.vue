@@ -1,12 +1,16 @@
 <template>
-  <div class="basic-block"
-       :style="styleName">
-    <div class="box"
-         :style="boxStyleName">
+  <div
+    class="basic-block"
+    :style="styleName"
+  >
+    <div
+      class="box"
+      :style="boxStyleName"
+    >
       <router-link :to="to">
-        <span v-text="text"></span>
-        <p v-text="dept"></p>
-        <i :class="icon"></i>
+        <span v-text="text" />
+        <p v-text="dept" />
+        <i :class="icon" />
       </router-link>
     </div>
   </div>
@@ -14,13 +18,15 @@
 
 <script>
 export default {
-  name: 'basicBlock',
+  name: 'BasicBlock',
   props: {
     icon: {
       type: String,
+      default: ""
     },
     background: {
       type: String,
+      default: ""
     },
     to: {
       type: Object,
@@ -30,29 +36,35 @@ export default {
     },
     text: {
       type: String,
+      default: ""
     },
     dept: {
       type: String,
+      default: ""
     },
     time: {
-      type: [Number, String]
+      type: [Number, String],
+      default: 1
     },
     gutter: {
       type: [Number, String],
-      default: 5,
+      default: 5
     },
     color: {
       type: String,
+      default: 'white'
     },
     width: {
-      type: [Number, String]
+      type: [Number, String],
+      default: 600
     },
     height: {
-      type: [Number, String]
+      type: [Number, String],
+      default: 400
     }
   },
   computed: {
-    styleName () {
+    styleName() {
       return {
         animationDelay: `${this.time / 25}s`,
         width: this.setPx(this.width),
@@ -60,13 +72,11 @@ export default {
         margin: this.setPx(this.gutter)
       }
     },
-    boxStyleName () {
+    boxStyleName() {
       return {
         backgroundColor: this.color,
-        backgroundImage: `url('${this.background}')`,
-
+        backgroundImage: `url('${this.background}')`
       }
-
     }
   }
 }
