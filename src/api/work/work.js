@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const startList = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const startList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -19,7 +19,7 @@ export const claimList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -31,7 +31,7 @@ export const todoList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -43,11 +43,10 @@ export const sendList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
-
 
 export const doneList = (current, size, params) => {
   return request({
@@ -56,7 +55,7 @@ export const doneList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -70,7 +69,6 @@ export const claimTask = (taskId) => {
     }
   })
 }
-
 
 export const completeTask = (data) => {
   return request({

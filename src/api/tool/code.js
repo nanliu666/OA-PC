@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params) => {
   return request({
@@ -27,7 +27,7 @@ export const remove = (ids) => {
     url: '/api/blade-develop/code/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -53,7 +53,7 @@ export const copy = (id) => {
     url: '/api/blade-develop/code/copy',
     method: 'post',
     params: {
-      id,
+      id
     }
   })
 }
@@ -63,7 +63,7 @@ export const getCode = (id) => {
     url: '/api/blade-develop/code/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }

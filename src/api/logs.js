@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getUsualList = (current, size) => {
   return request({
@@ -33,13 +33,12 @@ export const getErrorList = (current, size) => {
   })
 }
 
-
 export const getUsualLogs = (id) => {
   return request({
     url: '/api/blade-log/usual/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
@@ -48,7 +47,7 @@ export const getApiLogs = (id) => {
     url: '/api/blade-log/api/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
@@ -57,8 +56,7 @@ export const getErrorLogs = (id) => {
     url: '/api/blade-log/error/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
-

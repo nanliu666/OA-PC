@@ -35,7 +35,8 @@
             />
           </keep-alive>
           <router-view
-            v-if="!$route.meta.$keepAlive" class="avue-view"
+            v-if="!$route.meta.$keepAlive"
+            class="avue-view"
           />
         </div>
       </div>

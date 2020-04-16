@@ -1,22 +1,22 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import elementEnLocale from 'element-ui/lib/locale/lang/en' // element-ui lang
-import elementZhLocale from 'element-ui/lib/locale/lang/zh-CN'// element-ui lang
+import elementZhLocale from 'element-ui/lib/locale/lang/zh-CN' // element-ui lang
 import enLocale from './en'
 import zhLocale from './zh'
 import { getStore } from '@/util/store'
 Vue.use(VueI18n)
-const Avue = window.AVUE;
+const Avue = window.AVUE
 const messages = {
   en: {
     ...enLocale,
     ...elementEnLocale,
-    ...Avue.locale.en,
+    ...Avue.locale.en
   },
   zh: {
     ...zhLocale,
     ...elementZhLocale,
-    ...Avue.locale.zh,
+    ...Avue.locale.zh
   }
 }
 

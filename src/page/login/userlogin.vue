@@ -53,7 +53,10 @@
         />-->
       </el-input>
     </el-form-item>
-    <el-form-item v-if="this.website.captchaMode" prop="code">
+    <el-form-item
+      v-if="website.captchaMode"
+      prop="code"
+    >
       <el-row :span="24">
         <el-col :span="16">
           <el-input
@@ -120,16 +123,13 @@ export default {
         //验证码的索引
         key: '',
         //预加载白色背景
-        image:
-          'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+        image: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
       },
       loginRules: {
         // tenantId: [
         //   { required: false, message: '请输入租户ID', trigger: 'blur' }
         // ],
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
-        ],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 1, message: '密码长度最少为6位', trigger: 'blur' }
@@ -156,9 +156,7 @@ export default {
       })
     },
     showPassword() {
-      this.passwordType === ''
-        ? (this.passwordType = 'password')
-        : (this.passwordType = '')
+      this.passwordType === '' ? (this.passwordType = 'password') : (this.passwordType = '')
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
