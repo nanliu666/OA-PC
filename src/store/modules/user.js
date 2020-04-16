@@ -55,17 +55,16 @@ const user = {
           userInfo.code
         )
           .then((res) => {
-            const data = res.data
-            if (data.error_description) {
+            if (res.error_description) {
               Message({
-                message: data.error_description,
+                message: res.error_description,
                 type: 'error'
               })
             } else {
-              commit('SET_TOKEN', data.access_token)
-              commit('SET_REFRESH_TOKEN', data.refresh_token)
-              commit('SET_TENANT_ID', data.tenant_id)
-              commit('SET_USER_INFO', data)
+              commit('SET_TOKEN', res.access_token)
+              commit('SET_REFRESH_TOKEN', res.refresh_token)
+              commit('SET_TENANT_ID', res.tenant_id)
+              commit('SET_USER_INFO', res)
               commit('DEL_ALL_TAG')
               commit('CLEAR_LOCK')
             }
@@ -79,7 +78,7 @@ const user = {
     GetButtons({ commit }) {
       return new Promise((resolve) => {
         getButtons().then((res) => {
-          const data = res.data.data
+          const data = res.data
           commit('SET_PERMISSION', data)
           resolve()
         })
@@ -89,7 +88,7 @@ const user = {
     LoginByPhone({ commit }, userInfo) {
       return new Promise((resolve) => {
         loginByUsername(userInfo.phone, userInfo.code).then((res) => {
-          const data = res.data.data
+          const data = res.data
           commit('SET_TOKEN', data)
           commit('DEL_ALL_TAG')
           commit('CLEAR_LOCK')
@@ -101,7 +100,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getUserInfo()
           .then((res) => {
-            const data = res.data.data
+            const data = res.data
             commit('SET_ROLES', data.roles)
             resolve(data)
           })
@@ -116,9 +115,8 @@ const user = {
       return new Promise((resolve, reject) => {
         refreshToken(state.refreshToken, state.tenantId)
           .then((res) => {
-            const data = res.data
-            commit('SET_TOKEN', data.access_token)
-            commit('SET_REFRESH_TOKEN', data.refresh_token)
+            commit('SET_TOKEN', res.access_token)
+            commit('SET_REFRESH_TOKEN', res.refresh_token)
             resolve()
           })
           .catch((error) => {
@@ -166,7 +164,7 @@ const user = {
     GetTopMenu() {
       return new Promise((resolve) => {
         getTopMenu().then((res) => {
-          const data = res.data.data || []
+          const data = res.data || []
           resolve(data)
         })
       })
@@ -175,7 +173,7 @@ const user = {
     GetMenu({ commit, dispatch }, topMenuId) {
       return new Promise((resolve) => {
         getRoutes(topMenuId).then((res) => {
-          const data = res.data.data
+          const data = res.data
           let menu = deepClone(data)
           menu.forEach((ele) => {
             addPath(ele, true)
