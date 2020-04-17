@@ -1,0 +1,127 @@
+<template>
+  <div class="numInterval">
+    <el-form
+      ref="form"
+      :model="value"
+      :rules="rules"
+      :inline="true"
+      class="numInterval-form"
+    >
+      <el-form-item prop="min">
+        <el-input
+          v-model="value.min"
+          @input="handleMinChange"
+        />
+      </el-form-item>至
+      <el-form-item prop="max">
+        <el-input
+          v-model="value.max"
+          @input="handleMaxChange"
+        />
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+const MIN_NUMBER = 1
+const MAX_NUMBER = 10000000000
+
+export default {
+  name: 'NumInterval',
+  props: {
+    value: {
+      type: Object,
+      default: () => {
+        return { min: '', max: '' }
+      }
+    }
+  },
+  data() {
+    return {
+      rules: {
+        min: [
+          // { required: true, message: '必填项，请填写', trigger: 'blur' },
+          { validator: this.validateCom, trigger: 'blur' },
+          { validator: this.validateMin, trigger: 'blur' }
+        ],
+        max: [
+          // { required: true, message: '必填项，请填写', trigger: 'blur' },
+          { validator: this.validateCom, trigger: 'blur' },
+          { validator: this.validateMax, trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    getFormData() {
+      const ret = {}
+      this.$refs.form.validate((valid) => {
+        ret.valid = valid
+        ret.form = this.form
+      })
+      return ret
+    },
+    resetForm() {
+      this.$refs.form.resetFields()
+    },
+    handleMinChange(value) {
+      this.value.min = value.replace(/[^\d.]/g, '')
+      this.value.min = value.replace('.', '')
+      this.$refs.form.validateField('max')
+      this.$emit('update:value', this.value)
+    },
+    handleMaxChange(value) {
+      this.value.max = value.replace(/[^\d.]/g, '')
+      this.value.max = value.replace('.', '')
+      this.$refs.form.validateField('min')
+      this.$emit('update:value', this.value)
+    },
+    validateCom(rule, value, callback) {
+      const one = Number(value)
+      if (Number.isInteger(one)) {
+        if (one < MIN_NUMBER) {
+          return callback(new Error('必须大于0'))
+        } else if (one > MAX_NUMBER) {
+          return callback(new Error('必须小于100000'))
+        }
+        return callback()
+      }
+      return callback(new Error('必须为正整数'))
+    },
+    validateMin(rule, value, callback) {
+      const one = Number(value)
+      const max = Number(this.value.max)
+      if (!max || one < max) {
+        return callback()
+      }
+      return callback(new Error('不得大于最大值'))
+    },
+    validateMax(rule, value, callback) {
+      const one = Number(value)
+      const min = Number(this.value.min)
+      if (!min || one > min) {
+        return callback()
+      }
+      return callback(new Error('不得小于最小值'))
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.numInterval {
+  display: inline-block;
+  .numInterval-form {
+    .el-form-item {
+      margin-right: 0;
+      padding-right: 0;
+    }
+  }
+}
+/deep/ {
+  .el-input__inner {
+    width: 95px;
+  }
+}
+</style>
