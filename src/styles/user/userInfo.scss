@@ -1,0 +1,124 @@
+p {
+  margin: 0 !important;
+}
+li {
+  list-style: none;
+}
+.show {
+  display: block;
+}
+.hidden {
+  display: none;
+}
+.setting-info {
+  font-family: 'PingFangSC-Semibold';
+  height: 100%;
+  padding: 10px 32px 32px 32px !important;
+}
+.personal-info {
+  font-size: 18px;
+  color: #202940;
+  line-height: 28px;
+}
+.info-survey {
+  position: relative;
+  height: 112px;
+  margin-top: 20px;
+  background: #ffffff;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  border-radius: 4px;
+  padding-left: 24px;
+}
+.info-survey > div {
+  position: relative;
+  float: left;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+.info-image {
+  width: 64px;
+  height: 64px;
+  border: 1px solid #ccc;
+  border-radius: 32px;
+}
+.info-text {
+  padding-left: 20px;
+}
+.info-name {
+  font-size: 24px;
+  color: #333333;
+  line-height: 30px;
+  padding-bottom: 6px;
+}
+.info-other {
+  font-size: 14px;
+  color: #757c85;
+}
+.info-other .line-middle {
+  display: inline-block;
+  height: 12px;
+  width: 2px;
+  background: #ccc;
+  margin: 0 4px 0 8px;
+  vertical-align: middle;
+}
+.info-detail {
+  padding-left: 24px;
+  height: calc(100% - 195px);
+  margin-top: 20px;
+  background: #ffffff;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  border-radius: 4px;
+}
+.info-detail .el-tabs__nav-wrap {
+  height: 50px;
+  line-height: 50px;
+}
+.info-detail .el-tabs__nav .el-tabs__item {
+  font-size: 16px !important;
+  color: #545b66;
+  line-height: 36px;
+}
+.info-detail .info-edit-button {
+  padding-right: 30px;
+  text-align: right;
+  cursor: pointer;
+  height: 30px;
+}
+.info-detail .info-edit-button .el-icon-edit {
+  color: #207efa;
+}
+.info-detail .info-content {
+  padding: 0 60px;
+}
+.info-detail .info-content input {
+  height: 34px !important;
+  color: #202940;
+  font-size: 14px;
+}
+.info-detail .el-tabs__content .info-form .el-form-item__label {
+  color: #718199;
+}
+.detail-position {
+  margin-top: -20px;
+}
+.detail-position .el-input--small .el-input__inner {
+  height: 46px !important;
+}
+.info-detail .info-content .readonly-style input {
+  border: none;
+}
+.info-detail .info-content .edit-style input {
+  border: 1px solid #dcdfe6;
+}
+.info-button-group {
+  width: 67%;
+  text-align: center;
+  margin-top: 40px;
+}
+.info-button-group .el-button {
+  width: 80px;
+  height: 42px;
+}
