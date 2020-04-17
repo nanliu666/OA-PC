@@ -1,6 +1,6 @@
 import Layout from '@/page/index/'
 // import LayoutNoSidebar from '@/page/index/layoutNoSidebar';
-import gradeTree from "@/router/views/gradeTree"
+import gradeTree from '@/router/views/gradeTree'
 export default [
   {
     path: '/wel',
@@ -13,8 +13,7 @@ export default [
         meta: {
           i18n: 'dashboard'
         },
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/wel/index')
+        component: () => import(/* webpackChunkName: "views" */ '@/views/wel/index')
       },
       {
         path: 'dashboard',
@@ -23,8 +22,7 @@ export default [
           i18n: 'dashboard',
           menu: false
         },
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/wel/dashboard')
+        component: () => import(/* webpackChunkName: "views" */ '@/views/wel/dashboard')
       }
     ]
   },
@@ -39,8 +37,7 @@ export default [
         meta: {
           i18n: 'test'
         },
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/util/test')
+        component: () => import(/* webpackChunkName: "views" */ '@/views/util/test')
       }
     ]
   },
@@ -55,10 +52,7 @@ export default [
         meta: {
           i18n: 'dict'
         },
-        component: () =>
-          import(
-            /* webpackChunkName: "views" */ '@/views/util/demo/dict-horizontal'
-          )
+        component: () => import(/* webpackChunkName: "views" */ '@/views/util/demo/dict-horizontal')
       }
     ]
   },
@@ -73,10 +67,7 @@ export default [
         meta: {
           i18n: 'dict'
         },
-        component: () =>
-          import(
-            /* webpackChunkName: "views" */ '@/views/util/demo/dict-vertical'
-          )
+        component: () => import(/* webpackChunkName: "views" */ '@/views/util/demo/dict-vertical')
       }
     ]
   },
@@ -91,8 +82,7 @@ export default [
         meta: {
           i18n: 'info'
         },
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/system/userinfo')
+        component: () => import(/* webpackChunkName: "views" */ '@/views/system/userinfo')
       },
       {
         path: 'securitySetting',
@@ -100,9 +90,8 @@ export default [
         meta: {
           i18n: 'info'
         },
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/system/securitySetting')
-      },
+        component: () => import(/* webpackChunkName: "views" */ '@/views/system/securitySetting')
+      }
     ]
   },
   {
@@ -116,10 +105,7 @@ export default [
         meta: {
           i18n: 'work'
         },
-        component: () =>
-          import(
-            /* webpackChunkName: "views" */ '@/views/work/process/leave/form'
-          )
+        component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/form')
       },
       {
         path: 'handle/:taskId/:processInstanceId/:businessId',
@@ -127,10 +113,7 @@ export default [
         meta: {
           i18n: 'work'
         },
-        component: () =>
-          import(
-            /* webpackChunkName: "views" */ '@/views/work/process/leave/handle'
-          )
+        component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/handle')
       },
       {
         path: 'detail/:processInstanceId/:businessId',
@@ -138,10 +121,22 @@ export default [
         meta: {
           i18n: 'work'
         },
-        component: () =>
-          import(
-            /* webpackChunkName: "views" */ '@/views/work/process/leave/detail'
-          )
+        component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
+      }
+    ]
+  },
+  {
+    path: '/system/role',
+    component: Layout,
+    redirect: '/system/menu',
+    children: [
+      {
+        path: '/system/role',
+        name: '角色管理',
+        meta: {
+          i18n: 'work'
+        },
+        component: () => import(/* webpackChunkName: "views" */ '@/views/system/role')
       }
     ]
   },
