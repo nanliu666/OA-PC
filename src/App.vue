@@ -8,12 +8,15 @@
 export default {
   name: 'App',
   data() {
-    return {}
+    return {
+      test:99
+    }
   },
   computed: {},
   watch: {},
   created() {},
-  methods: {}
+  methods: {
+  }
 }
 </script>
 <style lang="scss">
