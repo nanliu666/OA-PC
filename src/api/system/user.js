@@ -96,3 +96,53 @@ export const grant = (userIds, roleIds) => {
     }
   })
 }
+/**
+ * 类目列表
+ * @param {Object} params - 参数
+ * @param {String} params.pageNo - 请求页码
+ * @param {String} params.pageSize - 每页条数
+ * @param {String} params.name - 类目名称
+ * */
+export const getTagList = (params) => {
+  return request({
+    url: '/api/org/v1/user/tag/define',
+    method: 'get',
+    params
+  })
+}
+/**
+ * 类目创建
+ * @param {Object} params - 参数
+ * @param {String} params.name - 类目名称
+ * */
+export const createTag = (params) => {
+  return request({
+    url: '/api/org/v1/user/tag/define',
+    method: 'post',
+    params
+  })
+}
+/**
+ * 类目修改
+ * @param {Object} params - 参数
+ * @param {String} params.name - 类目名称
+ * */
+export const modifyTag = (params) => {
+  return request({
+    url: '/api/org/v1/user/tag/define',
+    method: 'put',
+    params
+  })
+}
+/**
+ * 类目删除
+ * @param {Object} params - 参数
+ * @param {String} params.id - 类目id
+ * */
+export const deleteTag = (params) => {
+  return request({
+    url: '/api/org/v1/user/tag/define',
+    method: 'delete',
+    params
+  })
+}

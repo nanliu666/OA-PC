@@ -3,5 +3,9 @@ export const tableOptions = {
   addBtn: false,
   delBtn: false,
   refreshBtn: false,
-  columnBtn: false
+  columnBtn: false,
+  saveBtn: false,
+  updateBtn: false,
+  cancelBtn: false,
+  tip: false
 }
