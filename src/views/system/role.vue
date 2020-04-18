@@ -7,11 +7,7 @@
     </div>
     <basic-container>
       <el-container>
-        <el-aside class="aside-wrap">
-          <div class="cate-wrap">
-            角色分类
-          </div>
-        </el-aside>
+        <roleAside />
         <el-main class="main-wrap">
           <div class="main-wrap">
             <div class="search-bar">
@@ -69,35 +65,54 @@
                 >
                   查看用户
                 </el-button>
-                <moreBtn
-                  :btn-list="btnList"
-                  :row="scope.row"
-                  @handleBtn="onClickBtn"
-                />
+                <el-dropdown
+                  trigger="hover"
+                  @command="handleCommand($event, scope.row)"
+                >
+                  <span class="el-dropdown-link">
+                    <i class="el-icon-more" />
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item command="del">
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
               </template>
             </avue-crud>
           </div>
         </el-main>
         <roleEdit :visible.sync="visible" />
+        <roleLimits :visible.sync="configVisible" />
+        <userList :visible.sync="userVisible" />
       </el-container>
     </basic-container>
   </div>
 </template>
 
 <script>
-import moreBtn from './component/moreBtn'
-import roleEdit from './component/roleEdit'
+import roleEdit from './roleComponent/roleEdit'
+import roleAside from './roleComponent/roleAside'
+import roleLimits from './roleComponent/roleLimits'
+import userList from './roleComponent/userList'
 import { tableOptions } from '../../util/constant'
 
 export default {
   name: 'Role',
   components: {
-    moreBtn,
-    roleEdit
+    roleEdit,
+    roleAside,
+    roleLimits,
+    userList
   },
   data() {
     return {
       visible: false,
+      configVisible: false,
+      userVisible: true,
       btnList: [
         {
           name: '编辑',
@@ -113,16 +128,25 @@ export default {
       },
       page: {
         pageSize: 20,
-        pagerCount: 5
+        pagerCount: 5,
+        total: 100
       },
       data: [
         {
-          name: '张三',
-          sex: '男'
+          roleCode: 'GZ789',
+          roleName: '小明',
+          type: '职位',
+          message: '视觉设计',
+          userNum: 10,
+          num: 20
         },
         {
-          name: '李四',
-          sex: '女'
+          roleCode: 'GZ789',
+          roleName: '小王',
+          type: '职位',
+          message: '视觉设计',
+          userNum: 10,
+          num: 20
         }
       ],
       option: {
@@ -131,48 +155,42 @@ export default {
         menuAlign: 'center',
         column: [
           {
-            label: '姓名',
-            prop: 'name'
+            label: '角色编码',
+            prop: 'roleCode'
           },
           {
-            label: '性别',
-            prop: 'sex'
+            label: '角色名称',
+            prop: 'roleName'
+          },
+          {
+            label: '关联类型',
+            prop: 'type'
+          },
+          {
+            label: '关联信息',
+            prop: 'message'
+          },
+          {
+            label: '用户人数',
+            prop: 'userNum'
+          },
+          {
+            label: '在职人数',
+            prop: 'num'
           }
         ]
       }
     }
   },
   methods: {
-    onLoad() {
-      this.page.total = 200
-      //模拟分页
-      if (this.page.currentPage === 1) {
-        this.data = [
-          {
-            name: '张三',
-            sex: '男'
-          }
-        ]
-      } else if (this.page.currentPage == 2) {
-        this.data = [
-          {
-            name: '李四',
-            sex: '女'
-          }
-        ]
-      }
+    onLoad() {},
+    handleConfig() {
+      this.configVisible = !this.configVisible
     },
-    handleConfig() {},
-    handleCheck() {},
-    onClickBtn(row, key) {
-      console.log(row, key)
-      if (key === 'edit') {
-        this.visible = true
-      } else {
-        this.delFunc()
-      }
+    handleCheck() {
+      this.userVisible = !this.userVisible
     },
-    delFunc() {}
+    handleCommand() {}
   }
 }
 </script>
@@ -180,22 +198,37 @@ export default {
 <style lang="scss" scoped>
 .oa-title_bar {
   padding: 14px 6px;
+
   .title-name {
     color: #202940;
     font-size: 18px;
   }
 }
+
 .aside-wrap {
   border-right: 1px solid #e3e7e9;
 }
+
 .main-wrap {
   padding: 0 20px;
+
   .search-bar {
+    padding: 0;
     display: flex;
     justify-content: space-between;
   }
 }
+/deep/ .el-card__body {
+  padding-bottom: 0 !important;
+}
+
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+  margin-left: 10px;
 }
 </style>
