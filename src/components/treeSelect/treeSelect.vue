@@ -98,7 +98,6 @@ export default {
     showLabelList() {
       return (
         (this.value || []).map((data) => {
-          console.log('data', this.getSelectItem(this.filterList, data, this.keyID))
           return this.getSelectItem(this.filterList, data, this.keyID) || {}
         }) || []
       )
