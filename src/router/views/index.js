@@ -1,5 +1,5 @@
 import Layout from '@/page/index/'
-
+import gradeTree from "@/router/views/gradeTree"
 export default [{
   path: '/wel',
   component: Layout,
@@ -22,7 +22,8 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/wel/dashboard')
   }]
-}, {
+},
+  {
   path: '/test',
   component: Layout,
   redirect: '/test/index',
@@ -35,7 +36,8 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/util/test')
   }]
-}, {
+},
+  {
   path: '/dict-horizontal',
   component: Layout,
   redirect: '/dict-horizontal/index',
@@ -48,7 +50,8 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/util/demo/dict-horizontal')
   }]
-}, {
+},
+  {
   path: '/dict-vertical',
   component: Layout,
   redirect: '/dict-vertical/index',
@@ -61,7 +64,8 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/util/demo/dict-vertical')
   }]
-}, {
+},
+  {
   path: '/info',
   component: Layout,
   redirect: '/info/index',
@@ -74,7 +78,8 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/system/userinfo')
   }]
-}, {
+},
+  {
   path: '/work/process/leave',
   component: Layout,
   redirect: '/work/process/leave/form',
@@ -103,4 +108,6 @@ export default [{
     component: () =>
       import( /* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
   }]
-}]
+},
+  gradeTree
+]
