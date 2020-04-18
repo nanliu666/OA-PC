@@ -81,8 +81,8 @@
 </template>
 
 <script>
-import checkLimits from './checkLimits'
-import treeLimits from './treeLimits'
+import checkLimits from './checkPermission'
+import treeLimits from './treePermission'
 const orgs = [
   {
     orgName: '百利宏集团',
@@ -180,7 +180,7 @@ const trees = [
   }
 ]
 export default {
-  name: 'RoleEdit',
+  name: 'RolePermission',
   components: {
     checkLimits,
     treeLimits

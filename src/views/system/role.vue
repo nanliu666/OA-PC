@@ -96,7 +96,7 @@
 <script>
 import roleEdit from './roleComponent/roleEdit'
 import roleAside from './roleComponent/roleAside'
-import roleLimits from './roleComponent/roleLimits'
+import roleLimits from './roleComponent/rolePermission'
 import userList from './roleComponent/userList'
 import { tableOptions } from '../../util/constant'
 
@@ -112,7 +112,7 @@ export default {
     return {
       visible: false,
       configVisible: false,
-      userVisible: true,
+      userVisible: false,
       btnList: [
         {
           name: '编辑',

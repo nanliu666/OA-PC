@@ -29,7 +29,7 @@
 </template>
 <script>
 export default {
-  name: 'CheckLimits',
+  name: 'CheckPermission',
   props: {
     title: {
       type: String,

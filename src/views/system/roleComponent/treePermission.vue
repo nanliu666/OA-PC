@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: 'TreeLimits',
+  name: 'TreePermission',
   props: {
     value: {
       type: Array,
