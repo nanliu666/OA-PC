@@ -45,11 +45,11 @@ export default {
   name: 'User',
   components: {
     // 用户标签
-    userTag: () => import('./component/userTag'),
+    userTag: () => import('./components/userTag'),
     // 用户列表组件
-    userList: () => import('./component/userList'),
+    userList: () => import('./components/userList'),
     // 用户列表组件
-    userTagedList: () => import('./component/userTagedList')
+    userTagedList: () => import('./components/userTagedList')
   },
   data() {
     return {
