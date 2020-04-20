@@ -1,8 +1,22 @@
 <template>
   <basic-container>
-    <div>
-      <h5>员工花名册</h5>
+    <div class="roster-header">
+      <h4>员工花名册</h4>
+      <el-dropdown>
+        <el-button
+          type="primary"
+          size="medium"
+        >
+          添加员工
+          <i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>单个添加员工</el-dropdown-item>
+          <el-dropdown-item>Excel导入员工</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
+    <div />
     <search-component
       @seacrh="handleSearch"
       @export="handleExport"
@@ -39,7 +53,7 @@
 </template>
 
 <script>
-import SearchComponent from '@/components/searchComponent/screenComponent'
+import SearchComponent from '@/components/searchComponent/searchComponent'
 import { tableOptions } from '@/util/constant'
 
 export default {
@@ -141,4 +155,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.roster-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

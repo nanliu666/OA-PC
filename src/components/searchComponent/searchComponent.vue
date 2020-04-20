@@ -61,7 +61,9 @@
                 type="info"
                 @close="closeTag(tag)"
               >
-                {{ jointTagName(tag) }}
+                {{
+                  jointTagName(tag)
+                }}
               </el-tag>
             </el-form-item>
             <el-form-item
@@ -148,11 +150,12 @@
                         v-if="item.type === 'numInterval'"
                         v-model="item.data"
                       />
-                      <div>
+                      <div style="max-width:200px">
                         <tree-select
                           v-if="item.type === 'treeSelect'"
                           v-model="item.data"
                           :option="item.options"
+                          :is-search="false"
                         />
                       </div>
                     </el-form-item>
@@ -192,8 +195,8 @@
 </template>
 
 <script>
-import NumInterval from './numInterval'
-import TreeSelect from './treeSelect'
+import NumInterval from '../numInterval/numInterval'
+import TreeSelect from '../treeSelect/treeSelect'
 import searchArray from './searchArray'
 
 export default {
@@ -202,7 +205,7 @@ export default {
   data() {
     return {
       tags: [],
-      showCollapse: true,
+      showCollapse: false,
       // 模糊搜索
       fuzzySearch: '',
       searchArray: searchArray
