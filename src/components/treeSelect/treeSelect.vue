@@ -5,7 +5,10 @@
     :width="treeMinWidth"
   >
     <div :class="{ limitCheck: limitCheck || false }">
-      <div class="search-bar">
+      <div
+        v-if="isSearch"
+        class="search-bar"
+      >
         <div class="search-input">
           <el-input
             v-model="searchInput"
@@ -83,6 +86,10 @@ export default {
     value: {
       type: [Array, String],
       default: () => []
+    },
+    isSearch: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -126,7 +133,6 @@ export default {
     treeList: {
       handler(val) {
         this.$emit('input', val)
-        console.log(val)
       },
       deep: true
     }
