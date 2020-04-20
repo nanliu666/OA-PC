@@ -1,11 +1,19 @@
 <template>
   <basic-container>
-    <search-component />
+    <div>
+      <h5>员工花名册</h5>
+    </div>
+    <search-component
+      @seacrh="handleSearch"
+      @export="handleExport"
+    />
     <avue-crud
       v-model="obj"
       :data="data"
       :option="option"
       :page.sync="page"
+      @size-change="sizeChange"
+      @current-change="currentChange"
     >
       <template
         slot="menu"
@@ -45,31 +53,22 @@ export default {
       state: 'onJob',
       obj: {},
       page: {
-        pageSize: 20,
+        pageSize: 10,
         pagerCount: 5,
         total: 200,
         currentPage: 1
       },
+      params: {},
       data: [
         {
           name: '张三',
-          sex: '男',
-          date: '1994-02-23 00:00:00'
-        },
-        {
-          name: '李四',
-          sex: '女',
-          date: '1994-02-23 00:00:00'
-        },
-        {
-          name: '王五',
-          sex: '女',
-          date: '1994-02-23 00:00:00'
-        },
-        {
-          name: '赵六',
-          sex: '男',
-          date: '1994-02-23 00:00:00'
+          userId: 'GZ002035',
+          org: '产品部',
+          job: '产品经理',
+          position: '设计岗',
+          state: '正式',
+          date: '1994-02-23',
+          phonenum: '15915988588'
         }
       ],
       option: {
@@ -79,25 +78,65 @@ export default {
         selection: true,
         tip: false,
         height: 'auto',
+        index: true,
+        indexLabel: '序号',
         column: [
           {
             label: '姓名',
             prop: 'name'
           },
           {
-            label: '性别',
-            prop: 'sex'
+            label: '工号',
+            prop: 'userId'
           },
           {
-            label: '日期',
+            label: '部门',
+            prop: 'org'
+          },
+          {
+            label: '职位',
+            prop: 'job'
+          },
+          {
+            label: '岗位',
+            prop: 'position'
+          },
+          {
+            label: '员工状态',
+            prop: 'state'
+          },
+          {
+            label: '入职日期',
             prop: 'date',
             type: 'date',
-            format: 'yyyy-MM-dd hh:mm:ss',
-            valueFormat: 'yyyy-MM-dd hh:mm:ss'
+            format: 'yyyy-MM-dd',
+            valueFormat: 'yyyy-MM-dd'
+          },
+          {
+            label: '手机号码',
+            prop: 'phonenum'
           }
         ]
       }
     }
+  },
+  methods: {
+    getTableData(pageNo) {
+      const params = {
+        ...this.page,
+        ...this.params
+      }
+      if (pageNo) {
+        params.pageNo = pageNo
+        this.page.currentPage = pageNo
+      } else {
+        params.pageNo = this.page.currentPage
+      }
+    },
+    handleSearch(params) {
+      this.params = params
+    },
+    sizeChange() {}
   }
 }
 </script>

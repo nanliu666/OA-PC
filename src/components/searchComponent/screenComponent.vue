@@ -32,7 +32,7 @@
           type="primary"
           icon="el-icon-refresh-right"
           size="medium"
-          @click="handleFresh"
+          @click="handleRefresh"
         />
       </el-form-item>
       <el-form-item style="float: right">
@@ -61,7 +61,9 @@
                 type="info"
                 @close="closeTag(tag)"
               >
-                {{ jointTagName(tag) }}
+                {{
+                  jointTagName(tag)
+                }}
               </el-tag>
             </el-form-item>
             <el-form-item
@@ -97,12 +99,28 @@
                         :placeholder="'请输入' + item.label"
                         :multiple="item.config && item.config.multiple"
                       >
-                        <el-option
-                          v-for="it in item.options"
-                          :key="it.value"
-                          :label="it.label"
-                          :value="it.value"
-                        />
+                        <template v-if="item.config && item.config.group">
+                          <el-option-group
+                            v-for="group in item.options"
+                            :key="group.label"
+                            :label="group.label"
+                          >
+                            <el-option
+                              v-for="it in group.options"
+                              :key="it.value"
+                              :label="it.label"
+                              :value="it.value"
+                            />
+                          </el-option-group>
+                        </template>
+                        <template v-else>
+                          <el-option
+                            v-for="it in item.options"
+                            :key="it.value"
+                            :label="it.label"
+                            :value="it.value"
+                          />
+                        </template>
                       </el-select>
                       <el-time-select
                         v-if="item.type === 'timeSelect'"
@@ -132,11 +150,13 @@
                         v-if="item.type === 'numInterval'"
                         v-model="item.data"
                       />
-                      <tree-select
-                        v-if="item.type === 'treeSelect'"
-                        v-model="item.data"
-                        :option="item.options"
-                      />
+                      <div>
+                        <tree-select
+                          v-if="item.type === 'treeSelect'"
+                          v-model="item.data"
+                          :option="item.options"
+                        />
+                      </div>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -215,8 +235,8 @@ export default {
     }
   },
   methods: {
-    handleFresh() {
-      this.$emit('fresh', this.searchParams())
+    handleRefresh() {
+      this.$emit('seacrh', this.searchParams())
     },
     handleSearch() {
       this.$emit('seacrh', this.searchParams())

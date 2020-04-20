@@ -3,7 +3,70 @@ export default [
     label: '在职信息',
     showMore: true,
     questions: [
-      { type: 'select', data: '', label: '部门', field: '', config: { multiple: true } },
+      {
+        type: 'treeSelect',
+        data: '',
+        label: '部门',
+        field: '',
+        config: { multiple: true },
+        options: {
+          props: {
+            label: 'label',
+            value: 'id'
+          },
+          placeholder: '请选择关联部门',
+          dicData: [
+            {
+              id: 1,
+              label: '一级 1',
+              children: [
+                {
+                  id: 4,
+                  label: '二级 1-1',
+                  children: [
+                    {
+                      id: 9,
+                      label: '三级 1-1-1'
+                    },
+                    {
+                      id: 10,
+                      label: '三级 1-1-2'
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: 2,
+              label: '一级 2',
+              children: [
+                {
+                  id: 5,
+                  label: '二级 2-1'
+                },
+                {
+                  id: 6,
+                  label: '二级 2-2'
+                }
+              ]
+            },
+            {
+              id: 3,
+              label: '一级 3',
+              children: [
+                {
+                  id: 7,
+                  label: '二级 3-1'
+                },
+                {
+                  id: 8,
+                  label: '二级 3-2'
+                }
+              ]
+            }
+          ]
+        }
+      },
       { type: 'select', data: '', label: '职位', field: '', config: { multiple: true } },
       { type: 'select', data: '', label: '岗位', field: '', config: { multiple: true } },
       { type: 'select', data: '', label: '上级领导', field: '' },
@@ -260,13 +323,95 @@ export default [
         config: { type: 'daterange', 'range-separator': '至' }
       },
       {
-        type: 'treeSelect',
+        type: 'select',
         data: '',
         label: '离职原因',
         field: '',
-        config: {}
+        config: { multiple: true, group: true },
+        options: [
+          {
+            label: '主动离职',
+            options: [
+              {
+                value: '',
+                label: '家庭原因'
+              },
+              {
+                value: '',
+                label: '身体原因'
+              },
+              {
+                value: '',
+                label: '薪资原因'
+              },
+              {
+                value: '',
+                label: '交通不便'
+              },
+              {
+                value: '',
+                label: '工作压力'
+              },
+              {
+                value: '',
+                label: '管理问题'
+              },
+              {
+                value: '',
+                label: '无晋升机会'
+              },
+              {
+                value: '',
+                label: '职业规划'
+              },
+              {
+                value: '',
+                label: '合同到期放弃续签'
+              },
+              {
+                value: '',
+                label: '其他个人原因'
+              }
+            ]
+          },
+          {
+            label: '被动离职',
+            options: [
+              {
+                value: '',
+                label: '试用期内辞退'
+              },
+              {
+                value: '',
+                label: '违反公司条例'
+              },
+              {
+                value: '',
+                label: '组织调整/裁员'
+              },
+              {
+                value: '',
+                label: '绩效不达标辞退'
+              },
+              {
+                value: '',
+                label: '合同到期不续签'
+              },
+              {
+                value: '',
+                label: '其他原因被动离职'
+              }
+            ]
+          }
+        ]
       },
-      { type: 'input', data: '', label: '离职原因说明', field: '', config: {} }
+      {
+        type: 'input',
+        data: '',
+        label: '离职原因说明',
+        field: '',
+        config: {}
+      }
     ]
   }
 ]

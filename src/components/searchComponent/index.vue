@@ -13,40 +13,70 @@
         <el-input
           v-if="item.type === 'input'"
           v-model="requireForm[item.field]"
+          :type="item.config && item.config.type ? item.config.type : 'text'"
           :placeholder="'请输入' + item.label"
-          @change="submitSearch"
         />
         <el-select
           v-if="item.type === 'select'"
           v-model="requireForm[item.field]"
           :placeholder="'请输入' + item.label"
-          @change="submitSearch"
+          :multiple="item.config && item.config.multiple"
         >
-          <el-option
-            v-for="it in item.options"
-            :key="it.value"
-            :label="it.label"
-            :value="it.value"
-          />
+          <template v-if="item.config && item.config.group">
+            <el-option-group
+              v-for="group in item.options"
+              :key="group.label"
+              :label="group.label"
+            >
+              <el-option
+                v-for="it in group.options"
+                :key="it.value"
+                :label="it.label"
+                :value="it.value"
+              />
+            </el-option-group>
+          </template>
+          <template v-else>
+            <el-option
+              v-for="it in item.options"
+              :key="it.value"
+              :label="it.label"
+              :value="it.value"
+            />
+          </template>
         </el-select>
         <el-time-select
-          v-if="item.type === 'timePicker'"
+          v-if="item.type === 'timeSelect'"
           v-model="requireForm[item.field]"
           placeholder="选择时间"
-          @change="submitSearch"
+        />
+        <el-time-picker
+          v-if="item.type === 'timePicker'"
+          v-model="requireForm[item.field]"
+          placeholder="任意时间点"
         />
         <el-cascader
           v-if="item.type === 'cascader'"
           v-model="requireForm[item.field]"
           :options="item.options"
-          @change="submitSearch"
         />
         <el-date-picker
           v-if="item.type === 'dataPicker'"
           v-model="requireForm[item.field]"
-          type="date"
-          placeholder="选择日期"
-          @change="submitSearch"
+          :type="item.config && item.config.type ? item.config.type : 'data'"
+          placeholder="结束时间"
+          value-format="yyyy-MM-dd"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+        />
+        <num-interval
+          v-if="item.type === 'numInterval'"
+          v-model="requireForm[item.field]"
+        />
+        <tree-select
+          v-if="item.type === 'treeSelect'"
+          v-model="requireForm[item.field]"
+          :option="item.options"
         />
       </el-form-item>
       <el-form-item v-if="popoverOptions.length === 0">
@@ -78,24 +108,47 @@
                 <el-input
                   v-if="item.type === 'input'"
                   v-model="popoverForm[item.field]"
+                  :type="item.config && item.config.type ? item.config.type : 'text'"
                   :placeholder="'请输入' + item.label"
                 />
                 <el-select
                   v-if="item.type === 'select'"
                   v-model="popoverForm[item.field]"
                   :placeholder="'请输入' + item.label"
+                  :multiple="item.config && item.config.multiple"
                 >
-                  <el-option
-                    v-for="it in item.options"
-                    :key="it.value"
-                    :label="it.label"
-                    :value="it.value"
-                  />
+                  <template v-if="item.config && item.config.group">
+                    <el-option-group
+                      v-for="group in item.options"
+                      :key="group.label"
+                      :label="group.label"
+                    >
+                      <el-option
+                        v-for="it in group.options"
+                        :key="it.value"
+                        :label="it.label"
+                        :value="it.value"
+                      />
+                    </el-option-group>
+                  </template>
+                  <template v-else>
+                    <el-option
+                      v-for="it in item.options"
+                      :key="it.value"
+                      :label="it.label"
+                      :value="it.value"
+                    />
+                  </template>
                 </el-select>
                 <el-time-select
-                  v-if="item.type === 'timePicker'"
+                  v-if="item.type === 'timeSelect'"
                   v-model="popoverForm[item.field]"
                   placeholder="选择时间"
+                />
+                <el-time-picker
+                  v-if="item.type === 'timePicker'"
+                  v-model="popoverForm[item.field]"
+                  placeholder="任意时间点"
                 />
                 <el-cascader
                   v-if="item.type === 'cascader'"
@@ -105,8 +158,20 @@
                 <el-date-picker
                   v-if="item.type === 'dataPicker'"
                   v-model="popoverForm[item.field]"
-                  type="date"
-                  placeholder="选择日期"
+                  :type="item.config && item.config.type ? item.config.type : 'data'"
+                  placeholder="结束时间"
+                  value-format="yyyy-MM-dd"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                />
+                <num-interval
+                  v-if="item.type === 'numInterval'"
+                  v-model="popoverForm[item.field]"
+                />
+                <tree-select
+                  v-if="item.type === 'treeSelect'"
+                  v-model="popoverForm[item.field]"
+                  :option="item.options"
                 />
               </el-form-item>
             </el-form>
@@ -140,8 +205,12 @@
 </template>
 
 <script>
+import NumInterval from './numInterval'
+import TreeSelect from './treeSelect'
+
 export default {
   name: 'SearchPopOver',
+  components: { NumInterval, TreeSelect },
   props: {
     // 筛选弹窗外部
     requireOptions: {
