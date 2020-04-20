@@ -2,6 +2,7 @@ import user from './user'
 import menu from './menu'
 import oauth from './oauth'
 import param from './param'
+import system from './system'
 
 /**
  * 模拟数据mock
@@ -11,10 +12,11 @@ import param from './param'
 
 const options = { mock: false }
 
-user(options)
+// user(options)
 
 menu(options)
+system(options)
 
-oauth(options)
+// oauth(options)
 
-param(options)
+// param(options)

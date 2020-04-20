@@ -8,9 +8,7 @@
 export default {
   name: 'App',
   data() {
-    return {
-      yyy:55
-    }
+    return {}
   },
   computed: {},
   watch: {},

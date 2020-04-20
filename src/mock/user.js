@@ -21,8 +21,8 @@ export default ({ mock }) => {
       list.push(
         Mock.mock({
           id: '@increment',
-          name: Mock.mock('@cname'),
-          username: Mock.mock('@last'),
+          name: '@cname',
+          username: '@last',
           type: [0, 2],
           checkbox: [0, 1],
           'number|0-100': 0,
@@ -30,7 +30,7 @@ export default ({ mock }) => {
           'sex|0-1': 0,
           moreselect: [0, 1],
           grade: 0,
-          address: Mock.mock('@cparagraph(1, 3)'),
+          address: '@cparagraph(1, 3)',
           check: [1, 3, 4]
         })
       )
