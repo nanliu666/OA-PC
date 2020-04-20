@@ -24,7 +24,10 @@
             </template>
           </el-input>
         </div>
-        <div class="rela-wrap">
+        <div
+          v-if="!isSingle"
+          class="rela-wrap"
+        >
           <el-checkbox v-model="checked">
             仅显示未关联
           </el-checkbox>
@@ -77,6 +80,13 @@
 export default {
   name: 'TreeSelect',
   props: {
+    isSingle: {
+      // 是否单项选择
+      type: Boolean,
+      default: () => {
+        return false
+      }
+    },
     option: {
       type: Object,
       default: () => {
@@ -94,6 +104,7 @@ export default {
   },
   data() {
     return {
+      node: {},
       searchInput: '',
       checked: false,
       treeMinWidth: '300',
@@ -101,6 +112,7 @@ export default {
       filterList: []
     }
   },
+
   computed: {
     showLabelList() {
       return (
@@ -178,7 +190,25 @@ export default {
       this.value.splice(index, 1)
     },
     handleCheckChange(data, checked) {
-      this.$emit('input', checked.checkedKeys)
+      // this.$emit('input', checked.checkedKeys)
+      if (this.isSingle) {
+        if (checked) {
+          this.node = this.node === data ? {} : data
+          this.$refs.tree.setCheckedNodes([data])
+          if (this.node.id) {
+            let id = this.node.id || null
+            this.$emit('input', [id])
+          }
+        } else {
+          if (this.node === data) {
+            this.node = {}
+            this.$refs.tree.setCheckedNodes([this.node])
+            this.$emit('input', [])
+          }
+        }
+      } else {
+        this.$emit('input', checked.checkedKeys)
+      }
     }
   }
 }
