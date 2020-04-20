@@ -11,11 +11,9 @@ import 'nprogress/nprogress.css' // progress bar style
 NProgress.configure({ showSpinner: false })
 const lockPage = store.getters.website.lockPage //锁屏页
 router.beforeEach((to, from, next) => {
-  next()
-  return
-  const meta = to.meta || {};
-  const isMenu = meta.menu === undefined ? to.query.menu : meta.menu;
-  store.commit('SET_IS_MENU', isMenu === undefined);
+  const meta = to.meta || {}
+  const isMenu = meta.menu === undefined ? to.query.menu : meta.menu
+  store.commit('SET_IS_MENU', isMenu === undefined)
   if (getToken()) {
     if (store.getters.isLock && to.path !== lockPage) {
       //如果系统激活锁屏，全部跳转到锁屏页
