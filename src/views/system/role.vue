@@ -10,7 +10,10 @@
         <roleAside />
         <el-main class="main-wrap">
           <div class="main-wrap">
-            <div class="search-bar">
+            <div
+              v-if="selectArr.length === 0"
+              class="search-bar"
+            >
               <el-form
                 ref="form"
                 :model="form"
@@ -19,7 +22,10 @@
                 :inline="true"
               >
                 <el-form-item>
-                  <el-input v-model="form.roleName">
+                  <el-input
+                    v-model="form.roleName"
+                    placeholder="角色名称"
+                  >
                     <el-button
                       slot="append"
                       icon="el-icon-search"
@@ -41,10 +47,31 @@
                 />
               </div>
             </div>
+            <div
+              v-else
+              class="selected-bar"
+            >
+              <div class="left-part">
+                <span style="color: #999">已选中&nbsp;</span>
+                <span class="selected-num"> {{ selectArr.length }} </span> <span style="color: #999">&nbsp;项</span>
+                <div class="divider" />
+                <span
+                  class="del-all"
+                  @click="delAll"
+                ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+              </div>
+              <i
+                class="el-icon-close"
+                style="cursor: pointer"
+                @click="onCloseSelect"
+              />
+            </div>
             <avue-crud
+              ref="table"
               :data="data"
               :option="option"
               :page.sync="page"
+              @selection-change="selectionChange"
               @on-load="onLoad"
             >
               <template
@@ -151,6 +178,7 @@ export default {
       ],
       option: {
         ...tableOptions,
+        selection: true,
         align: 'center',
         menuAlign: 'center',
         column: [
@@ -179,7 +207,8 @@ export default {
             prop: 'num'
           }
         ]
-      }
+      },
+      selectArr: []
     }
   },
   methods: {
@@ -190,7 +219,18 @@ export default {
     handleCheck() {
       this.userVisible = !this.userVisible
     },
-    handleCommand() {}
+    handleCommand() {},
+    selectionChange(rows) {
+      this.selectArr = rows
+    },
+    toggleSelection(rows = []) {
+      this.$refs.table.toggleSelection(rows)
+    },
+    delAll() {},
+    onCloseSelect() {
+      this.$refs.table.toggleSelection()
+      this.selectArr = []
+    }
   }
 }
 </script>
@@ -217,7 +257,32 @@ export default {
     display: flex;
     justify-content: space-between;
   }
+  .selected-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    height: 58px;
+    line-height: 58px;
+    .del-all {
+      cursor: pointer;
+    }
+    .selected-num {
+      color: #409eff;
+    }
+    .divider {
+      width: 2px;
+      height: 38px;
+      margin: 0 10px;
+      background-color: #f2f2f2;
+    }
+    .left-part {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
+
 /deep/ .el-card__body {
   padding-bottom: 0 !important;
 }

@@ -2,10 +2,12 @@
   <el-dialog
     title="新建/编辑角色"
     :visible.sync="roleVisible"
+    width="500px"
+    top="30px"
     :close-on-click-modal="false"
     :modal-append-to-body="false"
   >
-    <div style="padding: 0 40px">
+    <div>
       <avue-form
         ref="form"
         v-model="form"

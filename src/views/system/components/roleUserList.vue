@@ -7,7 +7,7 @@
       :close-on-click-modal="false"
       :modal-append-to-body="false"
     >
-      <div style="padding: 0 40px">
+      <div>
         <div style="text-align: right;margin-bottom: 10px;">
           <el-button
             type="primary"
