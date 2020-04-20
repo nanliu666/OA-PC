@@ -53,7 +53,7 @@
         <el-time-picker
           v-if="item.type === 'timePicker'"
           v-model="requireForm[item.field]"
-          placeholder="任意时间点"
+          placeholder="选择时间"
         />
         <el-cascader
           v-if="item.type === 'cascader'"
@@ -148,7 +148,7 @@
                 <el-time-picker
                   v-if="item.type === 'timePicker'"
                   v-model="popoverForm[item.field]"
-                  placeholder="任意时间点"
+                  placeholder="选择时间"
                 />
                 <el-cascader
                   v-if="item.type === 'cascader'"

@@ -61,9 +61,7 @@
                 type="info"
                 @close="closeTag(tag)"
               >
-                {{
-                  jointTagName(tag)
-                }}
+                {{ jointTagName(tag) }}
               </el-tag>
             </el-form-item>
             <el-form-item
@@ -130,7 +128,7 @@
                       <el-time-picker
                         v-if="item.type === 'timePicker'"
                         v-model="item.data"
-                        placeholder="任意时间点"
+                        placeholder="选择时间"
                       />
                       <el-cascader
                         v-if="item.type === 'cascader'"
