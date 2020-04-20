@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params, deptId) => {
   return request({
@@ -8,7 +8,7 @@ export const getList = (current, size, params, deptId) => {
       ...params,
       current,
       size,
-      deptId,
+      deptId
     }
   })
 }
@@ -18,7 +18,7 @@ export const remove = (ids) => {
     url: '/api/blade-user/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -44,7 +44,7 @@ export const getUser = (id) => {
     url: '/api/blade-user/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
@@ -52,7 +52,7 @@ export const getUser = (id) => {
 export const getUserInfo = () => {
   return request({
     url: '/api/blade-user/info',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -61,7 +61,7 @@ export const resetPassword = (userIds) => {
     url: '/api/blade-user/reset-password',
     method: 'post',
     params: {
-      userIds,
+      userIds
     }
   })
 }
@@ -73,7 +73,26 @@ export const updatePassword = (oldPassword, newPassword, newPassword1) => {
     params: {
       oldPassword,
       newPassword,
-      newPassword1,
+      newPassword1
+    }
+  })
+}
+
+export const updateInfo = (row) => {
+  return request({
+    url: '/api/blade-user/update-info',
+    method: 'post',
+    data: row
+  })
+}
+
+export const grant = (userIds, roleIds) => {
+  return request({
+    url: '/api/blade-user/grant',
+    method: 'post',
+    params: {
+      userIds,
+      roleIds
     }
   })
 }

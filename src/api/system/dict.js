@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const getList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -19,7 +19,7 @@ export const getParentList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -32,7 +32,7 @@ export const getChildList = (current, size, parentId, params) => {
       ...params,
       current,
       size,
-      parentId: parentId,
+      parentId: parentId
     }
   })
 }
@@ -42,7 +42,7 @@ export const remove = (ids) => {
     url: '/api/blade-system/dict/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -63,13 +63,12 @@ export const update = (row) => {
   })
 }
 
-
 export const getDict = (id) => {
   return request({
     url: '/api/blade-system/dict/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
@@ -84,6 +83,6 @@ export const getDictionary = (params) => {
   return request({
     url: '/api/blade-system/dict/dictionary',
     method: 'get',
-    params,
+    params
   })
 }

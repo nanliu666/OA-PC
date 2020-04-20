@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const getList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -41,7 +41,17 @@ export const getMenuList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
+    }
+  })
+}
+
+export const getMenuTree = (tenantId) => {
+  return request({
+    url: '/api/blade-system/menu/tree',
+    method: 'get',
+    params: {
+      tenantId
     }
   })
 }
@@ -51,7 +61,7 @@ export const remove = (ids) => {
     url: '/api/blade-system/menu/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -77,20 +87,22 @@ export const getMenu = (id) => {
     url: '/api/blade-system/menu/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
 
-export const getTopMenu = () => request({
-  url: '/api/blade-system/menu/top-menu',
-  method: 'get'
-});
+export const getTopMenu = () =>
+  request({
+    url: '/api/blade-system/menu/top-menu',
+    method: 'get'
+  })
 
-export const getRoutes = (topMenuId) => request({
-  url: '/api/blade-system/menu/routes',
-  method: 'get',
-  params: {
-    topMenuId,
-  }
-});
+export const getRoutes = (topMenuId) =>
+  request({
+    url: '/api/blade-system/menu/routes',
+    method: 'get',
+    params: {
+      topMenuId
+    }
+  })

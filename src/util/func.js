@@ -8,7 +8,7 @@ export default class func {
    * @returns {boolean}
    */
   static notEmpty(val) {
-    return !this.isEmpty(val);
+    return !this.isEmpty(val)
   }
 
   /**
@@ -17,7 +17,7 @@ export default class func {
    * @returns {boolean}
    */
   static isUndefined(val) {
-    return val === null || typeof val === 'undefined';
+    return val === null || typeof val === 'undefined'
   }
 
   /**
@@ -31,9 +31,9 @@ export default class func {
       typeof val === 'undefined' ||
       (typeof val === 'string' && val === '' && val !== 'undefined')
     ) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
 
   /**
@@ -44,10 +44,14 @@ export default class func {
    */
   static toInt(val, defaultValue) {
     if (this.isEmpty(val)) {
-      return defaultValue === undefined ? -1 : defaultValue;
+      return defaultValue === undefined ? -1 : defaultValue
     }
-    const num = parseInt(val, 0);
-    return Number.isNaN(num) ? (defaultValue === undefined ? -1 : defaultValue) : num;
+    const num = parseInt(val, 0)
+    return Number.isNaN(num)
+      ? defaultValue === undefined
+        ? -1
+        : defaultValue
+      : num
   }
 
   /**
@@ -56,11 +60,11 @@ export default class func {
    * @returns {FormData}
    */
   static toFormData(obj) {
-    const data = new FormData();
-    Object.keys(obj).forEach(key => {
-      data.append(key, Array.isArray(obj[key]) ? obj[key].join(',') : obj[key]);
-    });
-    return data;
+    const data = new FormData()
+    Object.keys(obj).forEach((key) => {
+      data.append(key, Array.isArray(obj[key]) ? obj[key].join(',') : obj[key])
+    })
+    return data
   }
 
   /**
@@ -70,7 +74,7 @@ export default class func {
    * @returns {null}
    */
   static format(date, format = 'YYYY-MM-DD HH:mm:ss') {
-    return date ? date.format(format) : null;
+    return date ? date.format(format) : null
   }
 
   /**
@@ -79,7 +83,7 @@ export default class func {
    * @returns {string}
    */
   static join(arr) {
-    return arr ? arr.join(',') : '';
+    return arr ? arr.join(',') : ''
   }
 
   /**
@@ -88,6 +92,6 @@ export default class func {
    * @returns {string}
    */
   static split(str) {
-    return str ? String(str).split(',') : '';
+    return str ? String(str).split(',') : ''
   }
 }

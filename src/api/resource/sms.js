@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const getList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -27,7 +27,7 @@ export const remove = (ids) => {
     url: '/api/blade-resource/sms/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -65,8 +65,7 @@ export const send = (code, phones, params) => {
     params: {
       code,
       phones,
-      params,
+      params
     }
   })
 }
-

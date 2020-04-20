@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const getList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -28,7 +28,7 @@ export const remove = (ids) => {
     url: '/api/blade-system/dept/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -54,7 +54,7 @@ export const getDept = (id) => {
     url: '/api/blade-system/dept/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
@@ -64,7 +64,7 @@ export const getDeptTree = (tenantId) => {
     url: '/api/blade-system/dept/tree',
     method: 'get',
     params: {
-      tenantId,
+      tenantId
     }
   })
 }
@@ -78,4 +78,3 @@ export const getDeptLazyTree = (parentId) => {
     }
   })
 }
-

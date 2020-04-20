@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const getList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -27,7 +27,7 @@ export const remove = (ids) => {
     url: '/api/blade-system/topmenu/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -51,7 +51,7 @@ export const update = (row) => {
 export const grantTree = () => {
   return request({
     url: '/api/blade-system/menu/grant-top-tree',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -60,7 +60,7 @@ export const getTopTree = (topMenuIds) => {
     url: '/api/blade-system/menu/top-tree-keys',
     method: 'get',
     params: {
-      topMenuIds,
+      topMenuIds
     }
   })
 }
@@ -71,7 +71,7 @@ export const grant = (topMenuIds, menuIds) => {
     method: 'post',
     params: {
       topMenuIds,
-      menuIds,
+      menuIds
     }
   })
 }

@@ -66,10 +66,10 @@ export default {
     test: '测试页面'
   },
   login: {
-    title: '登录 ',
+    title: '欢迎登录 ',
     info: 'BladeX 企业级开发平台',
     tenantId: '请输入租户ID',
-    username: '请输入账号',
+    username: '请输入工号',
     password: '请输入密码',
     wechat: '微信',
     qq: 'QQ',
@@ -80,7 +80,7 @@ export default {
     phoneLogin: '手机号登录',
     thirdLogin: '第三方登录',
     msgText: '发送验证码',
-    msgSuccess: '秒后重发',
+    msgSuccess: '秒后重发'
   },
   navbar: {
     logOut: '退出登录',
@@ -99,6 +99,7 @@ export default {
   tagsView: {
     search: '搜索',
     menu: '更多',
+    clearCache: '清除缓存',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'
   }

@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getListDataScope = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const getListDataScope = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -17,7 +17,7 @@ export const removeDataScope = (ids) => {
     url: '/api/blade-system/data-scope/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -43,7 +43,7 @@ export const getMenuDataScope = (id) => {
     url: '/api/blade-system/data-scope/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }
@@ -55,7 +55,7 @@ export const getListApiScope = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -65,7 +65,7 @@ export const removeApiScope = (ids) => {
     url: '/api/blade-system/api-scope/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -91,7 +91,7 @@ export const getMenuApiScope = (id) => {
     url: '/api/blade-system/api-scope/detail',
     method: 'get',
     params: {
-      id,
+      id
     }
   })
 }

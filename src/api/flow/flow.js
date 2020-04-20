@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const modelList = (current, size, params) => {
   return request({
@@ -7,7 +7,7 @@ export const modelList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -19,7 +19,7 @@ export const managerList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
@@ -31,18 +31,17 @@ export const followList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
-
 
 export const removeModel = (ids) => {
   return request({
     url: '/api/blade-flow/model/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -64,15 +63,15 @@ export const changeState = (params) => {
 }
 
 export const deployUpload = (category, tenantIds, files) => {
-  const formData = new FormData();
-  formData.append('category', category);
-  formData.append('tenantIds', tenantIds);
-  files.forEach(file => {
-    formData.append('files', file);
-  });
+  const formData = new FormData()
+  formData.append('category', category)
+  formData.append('tenantIds', tenantIds)
+  files.forEach((file) => {
+    formData.append('files', file)
+  })
   return request({
     headers: {
-      "Content-Type": "multipart/form-data"
+      'Content-Type': 'multipart/form-data'
     },
     url: '/api/blade-flow/manager/deploy-upload',
     method: 'post',
@@ -85,7 +84,7 @@ export const deleteDeployment = (deploymentIds) => {
     url: '/api/blade-flow/manager/delete-deployment',
     method: 'post',
     params: {
-      deploymentIds,
+      deploymentIds
     }
   })
 }

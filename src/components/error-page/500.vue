@@ -1,13 +1,19 @@
 <template>
   <div class="error-page">
-    <div class="img"
-         style=" background-image: url('/img/bg/500.svg');"></div>
+    <div
+      class="img"
+      style=" background-image: url('/img/bg/500.svg');"
+    />
     <div class="content">
       <h1>500</h1>
-      <div class="desc">抱歉，服务器出错了</div>
+      <div class="desc">
+        抱歉，服务器出错了
+      </div>
       <div class="actions">
-        <router-link :to="{path:'/'}">
-          <el-button type="primary">返回首页</el-button>
+        <router-link :to="{ path: '/' }">
+          <el-button type="primary">
+            返回首页
+          </el-button>
         </router-link>
       </div>
     </div>
@@ -16,9 +22,9 @@
 
 <script>
 export default {
-  name: "error-500"
-};
+  name: 'Error500'
+}
 </script>
 <style lang="scss" scoped>
-@import "./style.scss";
+@import './style.scss';
 </style>

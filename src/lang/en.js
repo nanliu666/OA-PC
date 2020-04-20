@@ -66,7 +66,7 @@ export default {
     test: 'test'
   },
   login: {
-    title: 'Login ',
+    title: 'Welcome to login ',
     info: 'Enterprise Development Platform',
     tenantId: 'Please input tenantId',
     username: 'Please input username',
@@ -100,6 +100,7 @@ export default {
   tagsView: {
     search: 'Search',
     menu: 'menu',
+    clearCache: 'Clear Cache',
     closeOthers: 'Close Others',
     closeAll: 'Close All'
   }

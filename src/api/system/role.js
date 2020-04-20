@@ -1,4 +1,4 @@
-import request from '@/router/axios';
+import request from '@/router/axios'
 
 export const getList = (current, size, params) => {
   return request({
@@ -7,14 +7,14 @@ export const getList = (current, size, params) => {
     params: {
       ...params,
       current,
-      size,
+      size
     }
   })
 }
 export const grantTree = () => {
   return request({
     url: '/api/blade-system/menu/grant-tree',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -36,7 +36,7 @@ export const remove = (ids) => {
     url: '/api/blade-system/role/remove',
     method: 'post',
     params: {
-      ids,
+      ids
     }
   })
 }
@@ -57,13 +57,12 @@ export const update = (row) => {
   })
 }
 
-
 export const getRole = (roleIds) => {
   return request({
     url: '/api/blade-system/menu/role-tree-keys',
     method: 'get',
     params: {
-      roleIds,
+      roleIds
     }
   })
 }
@@ -73,7 +72,7 @@ export const getRoleTree = (tenantId) => {
     url: '/api/blade-system/role/tree',
     method: 'get',
     params: {
-      tenantId,
+      tenantId
     }
   })
 }

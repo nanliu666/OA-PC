@@ -2,11 +2,11 @@ import Cookies from 'js-cookie'
 const TokenKey = 'saber-access-token'
 const RefreshTokenKey = 'saber-refresh-token'
 export function getToken() {
-    return Cookies.get(TokenKey)
+  return Cookies.get(TokenKey)
 }
 
 export function setToken(token) {
-    return Cookies.set(TokenKey, token)
+  return Cookies.set(TokenKey, token)
 }
 
 export function getRefreshToken() {
@@ -18,10 +18,9 @@ export function setRefreshToken(token) {
 }
 
 export function removeToken() {
-    return Cookies.remove(TokenKey)
+  return Cookies.remove(TokenKey)
 }
 
 export function removeRefreshToken() {
   return Cookies.remove(RefreshTokenKey)
 }
-
