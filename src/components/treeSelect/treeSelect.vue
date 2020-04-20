@@ -133,7 +133,6 @@ export default {
     treeList: {
       handler(val) {
         this.$emit('input', val)
-        console.log(val)
       },
       deep: true
     }
