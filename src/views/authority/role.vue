@@ -393,7 +393,7 @@ export default {
     onLoad(page, params = {}) {
       this.loading = true
       getList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then((res) => {
-        this.data = res.data.data
+        this.data = res
         this.loading = false
         this.selectionClear()
       })

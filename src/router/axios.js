@@ -17,7 +17,7 @@ import 'nprogress/nprogress.css'
 import { Base64 } from 'js-base64'
 
 //默认超时时间
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 100000
 //返回其他状态码
 axios.defaults.validateStatus = function(status) {
   return status >= 200 && status <= 500
@@ -73,6 +73,9 @@ axios.interceptors.response.use(
         type: 'error'
       })
       return Promise.reject(new Error(message))
+    }
+    if (String.prototype.endsWith.call(res.config.url, '/oauth/token')) {
+      return res.data
     }
     return res.data.response
   },

@@ -77,8 +77,7 @@ const user = {
     },
     GetButtons({ commit }) {
       return new Promise((resolve) => {
-        getButtons().then((res) => {
-          const data = res.data
+        getButtons().then((data) => {
           commit('SET_PERMISSION', data)
           resolve()
         })
@@ -87,8 +86,7 @@ const user = {
     //根据手机号登录
     LoginByPhone({ commit }, userInfo) {
       return new Promise((resolve) => {
-        loginByUsername(userInfo.phone, userInfo.code).then((res) => {
-          const data = res.data
+        loginByUsername(userInfo.phone, userInfo.code).then((data) => {
           commit('SET_TOKEN', data)
           commit('DEL_ALL_TAG')
           commit('CLEAR_LOCK')
@@ -99,8 +97,7 @@ const user = {
     GetUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo()
-          .then((res) => {
-            const data = res.data
+          .then((data) => {
             commit('SET_ROLES', data.roles)
             resolve(data)
           })
@@ -163,8 +160,7 @@ const user = {
     //获取顶部菜单
     GetTopMenu() {
       return new Promise((resolve) => {
-        getTopMenu().then((res) => {
-          const data = res.data || []
+        getTopMenu().then((data = []) => {
           resolve(data)
         })
       })
@@ -172,8 +168,7 @@ const user = {
     //获取系统菜单
     GetMenu({ commit, dispatch }, topMenuId) {
       return new Promise((resolve) => {
-        getRoutes(topMenuId).then((res) => {
-          const data = res.data
+        getRoutes(topMenuId).then((data) => {
           let menu = deepClone(data)
           menu.forEach((ele) => {
             addPath(ele, true)
