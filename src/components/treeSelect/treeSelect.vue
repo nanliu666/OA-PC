@@ -78,15 +78,10 @@ export default {
   name: 'TreeSelect',
   props: {
     isSingle: {
+      // 是否单项选择
       type: Boolean,
       default: () => {
         return false
-      }
-    },
-    dicData: {
-      type: Array,
-      default: () => {
-        return []
       }
     },
     option: {
@@ -112,16 +107,6 @@ export default {
   },
 
   computed: {
-    handleCheckChanges(data, checked, indeterminate) {
-      if (checked) {
-        this.node = this.node === data ? {} : data
-        this.$refs.tree.setCheckedNodes([data])
-      } else {
-        if (this.node === data) {
-          this.node = {}
-        }
-      }
-    },
     showLabelList() {
       return (
         (this.value || []).map((data) => {
@@ -150,17 +135,9 @@ export default {
       immediate: true,
       deep: true
     },
-    // dicData: {
-    //   handler(val) {
-    //     this.filterList = val
-    //   },
-    //   immediate: true,
-    //   deep: true
-    // },
     treeList: {
       handler(val) {
         this.$emit('input', val)
-        console.log(val)
       },
       deep: true
     }
@@ -211,14 +188,10 @@ export default {
         if (checked) {
           this.node = this.node === data ? {} : data
           this.$refs.tree.setCheckedNodes([data])
-          console.log(this.node.id)
           if (this.node.id) {
             let id = this.node.id || null
             this.$emit('input', [id])
           }
-          // console.log(this.node.id)
-          // let id = this.node.id || ''
-          // this.$emit('input', [id])
         } else {
           if (this.node === data) {
             this.node = {}
@@ -227,7 +200,6 @@ export default {
           }
         }
       } else {
-        console.log(checked.checkedKeys)
         this.$emit('input', checked.checkedKeys)
       }
     }
