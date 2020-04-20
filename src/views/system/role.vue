@@ -94,10 +94,10 @@
 </template>
 
 <script>
-import roleEdit from './roleComponent/roleEdit'
-import roleAside from './roleComponent/roleAside'
-import roleLimits from './roleComponent/rolePermission'
-import userList from './roleComponent/userList'
+import roleEdit from './components/roleEdit'
+import roleAside from './components/roleAside'
+import roleLimits from './components/rolePermission'
+import userList from './components/roleUserList'
 import { tableOptions } from '../../util/constant'
 
 export default {

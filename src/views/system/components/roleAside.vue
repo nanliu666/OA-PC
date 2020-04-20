@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import asideTree from './asideTree'
+import asideTree from './roleAsideTree'
 
 const type = {
   group: 'group',

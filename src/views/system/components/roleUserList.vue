@@ -29,7 +29,7 @@
   </div>
 </template>
 <script>
-import userEdit from './userEdit'
+import userEdit from './roleUserEdit'
 import { tableOptions } from '../../../util/constant'
 
 export default {

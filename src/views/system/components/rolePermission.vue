@@ -81,8 +81,8 @@
 </template>
 
 <script>
-import checkLimits from './checkPermission'
-import treeLimits from './treePermission'
+import checkLimits from './roleCheckPermission'
+import treeLimits from './roleTreePermission'
 const orgs = [
   {
     orgName: '百利宏集团',
