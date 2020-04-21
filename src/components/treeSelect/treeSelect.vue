@@ -18,15 +18,14 @@
             placeholder="请输入内容"
           >
             <template slot="append">
-              <i
-                class="el-icon-search"
-                style="cursor: pointer"
-                @click.stop="onClickSearch"
-              />
+              <i class="el-icon-search" />
             </template>
           </el-input>
         </div>
-        <div class="rela-wrap">
+        <div
+          v-if="!isSingle"
+          class="rela-wrap"
+        >
           <el-checkbox
             v-model="checked"
             @change="onClickSearch"
@@ -82,6 +81,13 @@
 export default {
   name: 'TreeSelect',
   props: {
+    isSingle: {
+      // 是否单项选择
+      type: Boolean,
+      default: () => {
+        return false
+      }
+    },
     option: {
       type: Object,
       default: () => {
@@ -99,6 +105,7 @@ export default {
   },
   data() {
     return {
+      node: {},
       searchInput: '',
       checked: false,
       treeMinWidth: '300',
@@ -106,6 +113,7 @@ export default {
       normalHeight: 38
     }
   },
+
   computed: {
     showLabelList() {
       return (
@@ -131,6 +139,9 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    searchInput(val) {
+      this.onClickSearch(val)
     },
     value: {
       handler(val) {
@@ -200,7 +211,25 @@ export default {
       this.value.splice(index, 1)
     },
     handleCheckChange(data, checked) {
-      this.$emit('input', checked.checkedKeys)
+      // this.$emit('input', checked.checkedKeys)
+      if (this.isSingle) {
+        if (checked) {
+          this.node = this.node === data ? {} : data
+          this.$refs.tree.setCheckedNodes([data])
+          if (this.node.id) {
+            let id = this.node.id || null
+            this.$emit('input', [id])
+          }
+        } else {
+          if (this.node === data) {
+            this.node = {}
+            this.$refs.tree.setCheckedNodes([this.node])
+            this.$emit('input', [])
+          }
+        }
+      } else {
+        this.$emit('input', checked.checkedKeys)
+      }
     },
     setCheckedKeys() {
       this.$refs.tree.setCheckedKeys(this.value)
