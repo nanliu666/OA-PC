@@ -132,6 +132,7 @@ export default {
     onClickNode(node, data) {
       console.log(node, data)
     },
+    onClickSearch() {},
     handleCommand(command, node, data) {
       this.$emit(command, node, data)
     }
@@ -143,6 +144,7 @@ export default {
 .search-input {
   margin-bottom: 10px;
 }
+
 .custom-tree-node {
   flex: 1;
   display: flex;
@@ -150,14 +152,17 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px;
+
   .right-content {
     display: none;
   }
+
   &:hover {
     .right-content {
       display: inline-block;
     }
   }
+
   .more-column {
     display: inline-block;
     transform: rotate(90deg);

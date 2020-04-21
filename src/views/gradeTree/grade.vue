@@ -140,9 +140,11 @@
           >确 定</el-button>
         </span>
       </el-dialog>
-
     </div>
-    <position-dialog :dialogVisible.sync="positionDialog" @onsubmit="positionOnsubmit" ></position-dialog>
+    <position-dialog
+      :dialog-visible.sync="positionDialog"
+      @onsubmit="positionOnsubmit"
+    />
   </div>
 </template>
 
@@ -160,7 +162,7 @@ export default {
     return {
       positionDialog: false,
       status: '',
-      menuList:['newOrg','newPosition','edit','delete'],
+      menuList: ['newOrg', 'newPosition', 'edit', 'delete'],
       editStatus: true,
       levelList: [],
       level: '',
@@ -176,30 +178,36 @@ export default {
       myDiagram: '',
       dialogVisible: false,
       data: '',
-      type: ['Enterprise','Company','Department','Group','Job'],
+      type: ['Enterprise', 'Company', 'Department', 'Group', 'Job'],
       TreeModel: {
         class: 'go.TreeModel',
         nodeDataArray: [
           // type Enterprise-企业，Company-公司，Department-部门，Group-小组，Job-职位
-          { key: 1, name: 'Stella Payne Diaz', userName: 'Enterprise', type: 'Enterprise'},
-          { key: 4, name: 'Luke Warm', userName: 'Company', parent: 1,type: 'Company'},
-          { key: 2, name: 'Peggy Flaming', userName: 'Department', parent: 1,type: 'Department' },
-          { key: 3, name: 'Meg Meehan Hoffa', userName: 'Group', parent: 2,type: 'Group' },
-          {key: 5, name: 'Saul Wellingood', userName: 'Manufacturing', parent: 4,type: 'Group'},
-          { key: 6, name: 'Al Ligori', userName: 'Marketing', parent: 2 ,type: 'Group'},
-          { key: 7, name: 'Dot Stubadd', userName: 'Job', parent: 3 ,type: 'Job'},
-          { key: 8, name: 'Les Ismore', userName: 'Project Mgr', parent: 5,type: 'Group' },
-          { key: 9, name: 'April Lynn Parris', userName: 'Events Mgr', parent: 6,type: 'Group'  },
-          { key: 10, name: 'Xavier Breath', userName: 'Engineering', parent: 4 ,type: 'Group' },
-          { key: 11, name: 'Anita Hammer', userName: 'Process', parent: 5 ,type: 'Group' },
-          { key: 14, name: '333', userName: 'Hardware', parent: 10 ,type: 'Group' },
-          { key: 13, name: '111', userName: 'Testing', parent: 10 ,type: 'Group' },
+          { key: 1, name: 'Stella Payne Diaz', userName: 'Enterprise', type: 'Enterprise' },
+          { key: 4, name: 'Luke Warm', userName: 'Company', parent: 1, type: 'Company' },
+          { key: 2, name: 'Peggy Flaming', userName: 'Department', parent: 1, type: 'Department' },
+          { key: 3, name: 'Meg Meehan Hoffa', userName: 'Group', parent: 2, type: 'Group' },
+          { key: 5, name: 'Saul Wellingood', userName: 'Manufacturing', parent: 4, type: 'Group' },
+          { key: 6, name: 'Al Ligori', userName: 'Marketing', parent: 2, type: 'Group' },
+          { key: 7, name: 'Dot Stubadd', userName: 'Job', parent: 3, type: 'Job' },
+          { key: 8, name: 'Les Ismore', userName: 'Project Mgr', parent: 5, type: 'Group' },
+          { key: 9, name: 'April Lynn Parris', userName: 'Events Mgr', parent: 6, type: 'Group' },
+          { key: 10, name: 'Xavier Breath', userName: 'Engineering', parent: 4, type: 'Group' },
+          { key: 11, name: 'Anita Hammer', userName: 'Process', parent: 5, type: 'Group' },
+          { key: 14, name: '333', userName: 'Hardware', parent: 10, type: 'Group' },
+          { key: 13, name: '111', userName: 'Testing', parent: 10, type: 'Group' },
 
-          { key: 12, name: '222', userName: 'Software', parent: 10 ,type: 'Group' },
-          { key: 16, name: '444', userName: 'Software', parent: 10 ,type: 'Group' },
-          { key: 15, name: 'Evan Elpus', userName: 'Quality', parent: 5 ,type: 'Group' },
+          { key: 12, name: '222', userName: 'Software', parent: 10, type: 'Group' },
+          { key: 16, name: '444', userName: 'Software', parent: 10, type: 'Group' },
+          { key: 15, name: 'Evan Elpus', userName: 'Quality', parent: 5, type: 'Group' },
 
-          {key: 16, name: 'Lotta B. Essen', userName: '网水，网嘎，网按个摩，网按个，网按个摩', parent: 3,type: 'Group'}
+          {
+            key: 16,
+            name: 'Lotta B. Essen',
+            userName: '网水，网嘎，网按个摩，网按个，网按个摩',
+            parent: 3,
+            type: 'Group'
+          }
         ]
       }
     }
@@ -208,9 +216,7 @@ export default {
     this.init()
   },
   methods: {
-    positionOnsubmit(){
-
-    },
+    positionOnsubmit() {},
     nodeDoubleClick(e, obj) {
       let clicked = obj.part
       if (clicked !== null) {
@@ -297,35 +303,34 @@ export default {
       )
 
       // type Enterprise-企业，Company-公司，Department-部门，Group-小组，Job-职位
-      let typeBgColor= {
-        Enterprise:'#4A9EFF',
-        Company:'#4A9EFF',
+      let typeBgColor = {
+        Enterprise: '#4A9EFF',
+        Company: '#4A9EFF',
         Department: '#4A9EFF',
         Group: '#EDF8FF',
         Job: '#EDF8FF'
       }
-      let typeBgColor2= {
-        Enterprise:'#4A9EFF',
-        Company:'#4A9EFF',
+      let typeBgColor2 = {
+        Enterprise: '#4A9EFF',
+        Company: '#4A9EFF',
         Department: '#fff',
         Group: '#fff',
         Job: '#fff'
       }
-      let textColor1= {
-        Enterprise:'#FFFFFF',
-        Company:'#FFFFFF',
+      let textColor1 = {
+        Enterprise: '#FFFFFF',
+        Company: '#FFFFFF',
         Department: '#FFF',
         Group: '#1F7DF9',
         Job: '#1F7DF9'
       }
-      let textColor2= {
-        Enterprise:'#C4E6FF',
-        Company:'#C4E6FF',
+      let textColor2 = {
+        Enterprise: '#C4E6FF',
+        Company: '#C4E6FF',
         Department: '#718199',
         Group: '#718199',
         Job: '#718199'
       }
-
 
       // override TreeLayout.commitNodes to also modify the background brush based on the tree depth level
       that.myDiagram.layout.commitNodes = () => {
@@ -368,8 +373,6 @@ export default {
         window.removeEventListener('click', hideCX, true)
       }
       function showContextMenu(obj, diagram) {
-        console.log(obj)
-        console.log(diagram)
         var hasMenuItem = false
         that.itemData = obj.data
         function maybeShowItem(elt, pred, id) {
@@ -388,7 +391,6 @@ export default {
               break
           }
           function newOrg() {
-
             if (pred.type !== that.type[4]) {
               elt.style.display = 'block'
               hasMenuItem = true
@@ -396,7 +398,7 @@ export default {
               elt.style.display = 'none'
             }
           }
-          function newPosition(){
+          function newPosition() {
             if (pred.type !== that.type[4]) {
               elt.style.display = 'block'
               hasMenuItem = true
@@ -417,14 +419,9 @@ export default {
               elt.style.display = 'none'
             }
           }
-
         }
         maybeShowItem(document.getElementById('newOrg'), obj.data, 'newOrg')
-        maybeShowItem(
-          document.getElementById('newPosition'),
-          obj.data,
-          'newPosition'
-        )
+        maybeShowItem(document.getElementById('newPosition'), obj.data, 'newPosition')
         maybeShowItem(document.getElementById('edit'), obj.data, 'edit')
         maybeShowItem(document.getElementById('delete'), obj.data, 'delete')
         if (hasMenuItem) {
@@ -440,46 +437,50 @@ export default {
           that.myDiagram.currentTool.doCancel()
         }
       }
-      go.Shape.defineFigureGenerator("RoundedTopRectangle", function(shape, w, h) {
+      go.Shape.defineFigureGenerator('RoundedTopRectangle', function(shape, w, h) {
         // 这个图像获取了一个参数，角的尺寸
-        var p1 = 5  // 默认的角尺寸
+        var p1 = 5 // 默认的角尺寸
         if (shape !== null) {
           var param1 = shape.parameter1
-          if (!isNaN(param1) && param1 >= 0) p1 = param1  // 不能是非数字或者负数
+          if (!isNaN(param1) && param1 >= 0) p1 = param1 // 不能是非数字或者负数
         }
         p1 = Math.min(p1, w / 2)
-        p1 = Math.min(p1, h / 2)  // p1取值为p1与二分之一h中更小的值?
+        p1 = Math.min(p1, h / 2) // p1取值为p1与二分之一h中更小的值?
         var geo = new go.Geometry()
         // 一个单一的图形，由一些直线和四分之一圆的弧线组成
-        geo.add(new go.PathFigure(0, p1)
-          .add(new go.PathSegment(go.PathSegment.Arc, 180, 90, p1, p1, p1, p1))
-          .add(new go.PathSegment(go.PathSegment.Line, w - p1, 0))
-          .add(new go.PathSegment(go.PathSegment.Arc, 270, 90, w - p1, p1, p1, p1))
-          .add(new go.PathSegment(go.PathSegment.Line, w, h))
-          .add(new go.PathSegment(go.PathSegment.Line, 0, h).close()))
+        geo.add(
+          new go.PathFigure(0, p1)
+            .add(new go.PathSegment(go.PathSegment.Arc, 180, 90, p1, p1, p1, p1))
+            .add(new go.PathSegment(go.PathSegment.Line, w - p1, 0))
+            .add(new go.PathSegment(go.PathSegment.Arc, 270, 90, w - p1, p1, p1, p1))
+            .add(new go.PathSegment(go.PathSegment.Line, w, h))
+            .add(new go.PathSegment(go.PathSegment.Line, 0, h).close())
+        )
         // 当使用一个“Auto”Panel时，不要让顶部的两个角交叉了
         geo.spot1 = new go.Spot(0, 0, 0.3 * p1, 0.3 * p1)
         geo.spot2 = new go.Spot(1, 1, -0.3 * p1, 0)
         return geo
       })
 
-      go.Shape.defineFigureGenerator("RoundedBottomRectangle", function(shape, w, h) {
+      go.Shape.defineFigureGenerator('RoundedBottomRectangle', function(shape, w, h) {
         // 这个图像获取了一个参数，角的尺寸
-        var p1 = 5  // 默认的角尺寸
+        var p1 = 5 // 默认的角尺寸
         if (shape !== null) {
           var param1 = shape.parameter1
-          if (!isNaN(param1) && param1 >= 0) p1 = param1  // 不能是非数字或者负数
+          if (!isNaN(param1) && param1 >= 0) p1 = param1 // 不能是非数字或者负数
         }
         p1 = Math.min(p1, w / 2)
-        p1 = Math.min(p1, h / 2)  // p1取值为p1与二分之一h中更小的值?
+        p1 = Math.min(p1, h / 2) // p1取值为p1与二分之一h中更小的值?
         var geo = new go.Geometry()
         // 一个单一的图形，由一些直线和四分之一圆的弧线组成
-        geo.add(new go.PathFigure(0, 0)
-          .add(new go.PathSegment(go.PathSegment.Line, w, 0))
-          .add(new go.PathSegment(go.PathSegment.Line, w, h - p1))
-          .add(new go.PathSegment(go.PathSegment.Arc, 0, 90, w - p1, h - p1, p1, p1))
-          .add(new go.PathSegment(go.PathSegment.Line, p1, h))
-          .add(new go.PathSegment(go.PathSegment.Arc, 90, 90, p1, h - p1, p1, p1).close()))
+        geo.add(
+          new go.PathFigure(0, 0)
+            .add(new go.PathSegment(go.PathSegment.Line, w, 0))
+            .add(new go.PathSegment(go.PathSegment.Line, w, h - p1))
+            .add(new go.PathSegment(go.PathSegment.Arc, 0, 90, w - p1, h - p1, p1, p1))
+            .add(new go.PathSegment(go.PathSegment.Line, p1, h))
+            .add(new go.PathSegment(go.PathSegment.Arc, 90, 90, p1, h - p1, p1, p1).close())
+        )
         // 当使用一个“Auto”Panel时，不要让顶部的两个角交叉了
         geo.spot1 = new go.Spot(0, 0, 0.3 * p1, 0)
         geo.spot2 = new go.Spot(1, 1, -0.3 * p1, -0.3 * p1)
@@ -490,7 +491,7 @@ export default {
         go.Node,
         'Auto',
         {
-          contextMenu: myContextMenu,
+          contextMenu: myContextMenu
         },
         // {doubleClick: that.nodeDoubleClick},
         {
@@ -502,14 +503,12 @@ export default {
             let shape = node.findObject('SHAPE')
             let shape1 = node.findObject('SHAPE1')
             let shape2 = node.findObject('SHAPE2')
-              console.log(shape2)
             if (shape) {
               shape._prevFill = shape.fill // remember the original brush
               shape1._prevFill = shape1.fill // remember the original brush
               shape2._prevFill = shape2.fill // remember the original brush
               shape1.fill = '#e4393c'
               shape2.fill = '#e4393c'
-
             }
             // console.log(  shape)
           },
@@ -517,9 +516,8 @@ export default {
             let shape = node.findObject('SHAPE')
             let shape1 = node.findObject('SHAPE1')
             let shape2 = node.findObject('SHAPE2')
-            console.log(shape1,shape1._prevFill)
             // console.log(  shape)
-            if (shape ) {
+            if (shape) {
               shape.fill = shape._prevFill // restore the original brush
               shape1.fill = shape1._prevFill // restore the original brush
               shape2.fill = shape2._prevFill // restore the original brush
@@ -536,12 +534,7 @@ export default {
                 link.fromNode = node
               } else {
                 // else create a new link
-                diagram.toolManager.linkingTool.insertLink(
-                  node,
-                  node.port,
-                  selnode,
-                  selnode.port
-                )
+                diagram.toolManager.linkingTool.insertLink(node, node.port, selnode, selnode.port)
               }
             }
           }
@@ -564,11 +557,11 @@ export default {
           toLinkable: true,
           cursor: 'pointer'
         }),
-      $(
+        $(
           go.Panel,
           'RoundedRectangle',
           {
-            margin:1,
+            margin: 1,
             minSize: new go.Size(130, NaN),
             maxSize: new go.Size(200, NaN)
           },
@@ -591,18 +584,16 @@ export default {
                 width: 200
               },
               $(go.Shape, 'RoundedRectangle', {
-                  figure: 'RoundedTopRectangle',
-                  parameter1: '10',
-                name: 'SHAPE1', stroke: null
-                }
-              ),
+                figure: 'RoundedTopRectangle',
+                parameter1: '10',
+                name: 'SHAPE1',
+                stroke: null
+              }),
               $(
                 go.TextBlock,
                 {
-
                   name: 'Name',
-                  font: 'bold 12pt serif',
-
+                  font: 'bold 12pt serif'
                 },
                 new go.Binding('text', 'name').makeTwoWay()
               )
@@ -616,13 +607,12 @@ export default {
                 alignment: go.Spot.Center,
                 width: 200
               },
-              $(go.Shape, 'RoundedRectangle',
-                {
-                  figure: 'RoundedBottomRectangle',
-                  parameter1: '10',
-                  name: 'SHAPE2',
-                  stroke: null
-                }),
+              $(go.Shape, 'RoundedRectangle', {
+                figure: 'RoundedBottomRectangle',
+                parameter1: '10',
+                name: 'SHAPE2',
+                stroke: null
+              }),
               $(
                 go.TextBlock,
                 {
@@ -660,12 +650,10 @@ export default {
         //   that.myDiagram.findNodeForKey(1)
         // )
       })
-      document
-        .getElementById('centerRoot')
-        .addEventListener('click', function() {
-          that.myDiagram.commandHandler.zoomToFit()
-          // that.myDiagram.scale+=0.05
-        })
+      document.getElementById('centerRoot').addEventListener('click', function() {
+        that.myDiagram.commandHandler.zoomToFit()
+        // that.myDiagram.scale+=0.05
+      })
     }, // end init
 
     // Show the diagram's model in JSON format
@@ -674,15 +662,15 @@ export default {
       this.myDiagram.isModified = false
     },
     load() {
-      if(typeof this.TreeModel === 'string'){
+      if (typeof this.TreeModel === 'string') {
         this.TreeModel = JSON.parse(this.TreeModel)
       }
       this.TreeModel.nodeDataArray.map((it) => {
         var reg = new RegExp('，', 'g') //"g"表示全局替换
-        it.userName=it.userName.replace(reg, '\n')
-        it.userNames=it.userName.split('\n')
-        if(it.userNames.length>3){
-          it.userName =it.userNames[0]+'\n'+it.userNames[1]+'\n'+it.userNames[2]+'\n'+'...'
+        it.userName = it.userName.replace(reg, '\n')
+        it.userNames = it.userName.split('\n')
+        if (it.userNames.length > 3) {
+          it.userName = it.userNames[0] + '\n' + it.userNames[1] + '\n' + it.userNames[2] + '\n' + '...'
         }
       })
       this.myDiagram.model = go.Model.fromJson(this.TreeModel)
@@ -699,33 +687,29 @@ export default {
       this.myDiagram.commandHandler.zoomToFit()
     },
     create(event) {
-
       let val = event.currentTarget.id
-      if(val === this.menuList[1]){
-       this.positionDialog =true
+      if (val === this.menuList[1]) {
+        this.positionDialog = true
         return
       }
       this.dialogVisible = true
 
       this.status = val
       if (this.status === 'edit') {
-        if(this.itemData.userNames){
-          this.itemData.userName =this.itemData.userNames.join('\n')
+        if (this.itemData.userNames) {
+          this.itemData.userName = this.itemData.userNames.join('\n')
         }
         this.form = Object.assign(this.form, this.itemData)
       }
     },
     cxcommand(event, val) {
-      console.log(event, val)
       if (val === undefined) val = event.currentTarget.id
-      console.log(this.itemData)
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
       let isChildren = !!nodeDataArray.find((it) => {
         if (it.parent === this.itemData.key) {
           return it
         }
       })
-      console.log(isChildren)
       if (isChildren || !this.itemData.parent) {
         this.$message.warning('暂时不能删除')
         return
@@ -750,17 +734,15 @@ export default {
         this.myDiagram.commitTransaction('add employee')
         this.dialogVisible = false
       } else {
-        var nodeData = this.myDiagram.model.findNodeDataForKey(
-          this.itemData.key
-        )
+        var nodeData = this.myDiagram.model.findNodeDataForKey(this.itemData.key)
         let userNames = this.form.userName.split('\n')
-        let userName =this.form.userName
-        if(userNames.length>3){
-          userName = userNames[0]+'\n'+userNames[1]+'\n'+userNames[2]+'\n'+'...'
+        let userName = this.form.userName
+        if (userNames.length > 3) {
+          userName = userNames[0] + '\n' + userNames[1] + '\n' + userNames[2] + '\n' + '...'
         }
 
-        nodeData.userName = userName//isKey 是节点data中的一个属性
-        nodeData.userNames = userNames//isKey 是节点data中的一个属性
+        nodeData.userName = userName //isKey 是节点data中的一个属性
+        nodeData.userNames = userNames //isKey 是节点data中的一个属性
         nodeData.name = this.form.name
         this.myDiagram.model.updateTargetBindings(nodeData)
         this.dialogVisible = false
@@ -770,7 +752,6 @@ export default {
       this.editStatus = false
     },
     downloadImage() {
-      console.log(this.levelList)
       let arr = []
       this.levelList.map((it) => {
         arr.push(it.level)
@@ -784,41 +765,36 @@ export default {
           levelAggregate[it].push(it)
         }
       })
-      console.log(levelAggregate)
       let number = []
       for (var item of Object.entries(levelAggregate)) {
         number.push(item[1].length)
       }
       let max = Math.max(...number)
       let width = 500
-      console.log(number[1])
       if (number[1] > 3) {
         width += (number[1] - 2) * 200
       }
       width += max * 100 + (max / 5) * 100
-      console.log(width)
       let myDiaramDiv = document.getElementById('myDiagramDiv')
       myDiaramDiv.style.width = width + 'px'
       this.load()
       setTimeout(() => {
-        new html2canvas(document.getElementById('myDiagramDiv')).then(
-          (canvas) => {
-            const href = canvas.toDataURL('image/jpeg')
-            var a = document.createElement('a')
-            a.download = '组织机构图.png'
+        new html2canvas(document.getElementById('myDiagramDiv')).then((canvas) => {
+          const href = canvas.toDataURL('image/jpeg')
+          var a = document.createElement('a')
+          a.download = '组织机构图.png'
 
-            a.href = href
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-            myDiaramDiv.style.width = '100%'
-            // return
-            // <img style="width: 2000px" src="" alt="">
-            //
-            // // return
-            this.load()
-          }
-        )
+          a.href = href
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          myDiaramDiv.style.width = '100%'
+          // return
+          // <img style="width: 2000px" src="" alt="">
+          //
+          // // return
+          this.load()
+        })
       }, 1000)
       // this.myDiagram.commandHandler.zoomToFit()
     }
@@ -921,8 +897,7 @@ export default {
   margin: 0;
   padding: 8px 0;
   z-index: 999;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   list-style: none;
   background-color: #ffffff;
   border-radius: 4px;
