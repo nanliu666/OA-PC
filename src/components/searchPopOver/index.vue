@@ -14,12 +14,12 @@
           v-if="item.type === 'input'"
           v-model="requireForm[item.field]"
           :type="item.config && item.config.type ? item.config.type : 'text'"
-          :placeholder="'请输入' + item.label"
+          :placeholder="item.config && item.config.placeholder"
         />
         <el-select
           v-if="item.type === 'select'"
           v-model="requireForm[item.field]"
-          :placeholder="'请输入' + item.label"
+          :placeholder="item.config && item.config.placeholder"
           :multiple="item.config && item.config.multiple"
         >
           <template v-if="item.config && item.config.group">
@@ -254,14 +254,22 @@ export default {
     initForm() {
       this.requireOptions.forEach((item) => {
         if (item.field.indexOf(',') > -1) {
-          this.$set(this.requireForm, item.field, [])
+          if (item.type === 'cascader') {
+            this.$set(this.requireForm, item.field, { min: '', max: '' })
+          } else {
+            this.$set(this.requireForm, item.field, [])
+          }
         } else {
           this.$set(this.requireForm, item.field, '')
         }
       })
       this.popoverOptions.forEach((item) => {
         if (item.field.indexOf(',') > -1) {
-          this.$set(this.popoverForm, item.field, [])
+          if (item.type === 'cascader') {
+            this.$set(this.popoverForm, item.field, { min: '', max: '' })
+          } else {
+            this.$set(this.popoverForm, item.field, [])
+          }
         } else {
           this.$set(this.popoverForm, item.field, '')
         }
@@ -273,8 +281,14 @@ export default {
         if (key.indexOf(',') > -1 && Array.isArray(this.requireForm[key])) {
           let keyArr = key.split(',')
           keyArr.forEach((item, index) => {
-            params.item = this.requireForm[key][index]
+            params[item] = this.requireForm[key][index]
           })
+        } else if (
+          key.indexOf(',') > -1 &&
+          Object.prototype.toString.call(this.requireForm[key]) === '[object Object]'
+        ) {
+          params[key.split(',')[0]] = this.requireForm[key].min
+          params[key.split(',')[1]] = this.requireForm[key].max
         } else {
           params[key] = this.requireForm[key]
         }
@@ -283,8 +297,14 @@ export default {
         if (key.indexOf(',') > -1 && Array.isArray(this.popoverForm[key])) {
           let keyArr = key.split(',')
           keyArr.forEach((item, index) => {
-            params.item = this.popoverForm[key][index]
+            params[item] = this.popoverForm[key][index]
           })
+        } else if (
+          key.indexOf(',') > -1 &&
+          Object.prototype.toString.call(this.popoverForm[key]) === '[object Object]'
+        ) {
+          params[key.split(',')[0]] = this.popoverForm[key].min
+          params[key.split(',')[1]] = this.popoverForm[key].max
         } else {
           params[key] = this.popoverForm[key]
         }

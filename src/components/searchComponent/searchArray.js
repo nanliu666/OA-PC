@@ -7,74 +7,41 @@ export default [
         type: 'treeSelect',
         data: '',
         label: '部门',
-        field: '',
+        field: 'orgs',
+        arrField: 'orgId',
         config: { multiple: true },
         options: {
           props: {
             label: 'label',
-            value: 'id'
+            value: 'orgId'
           },
           placeholder: '请选择关联部门',
-          dicData: [
-            {
-              id: 1,
-              label: '一级 1',
-              children: [
-                {
-                  id: 4,
-                  label: '二级 1-1',
-                  children: [
-                    {
-                      id: 9,
-                      label: '三级 1-1-1'
-                    },
-                    {
-                      id: 10,
-                      label: '三级 1-1-2'
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 2,
-              label: '一级 2',
-              children: [
-                {
-                  id: 5,
-                  label: '二级 2-1'
-                },
-                {
-                  id: 6,
-                  label: '二级 2-2'
-                }
-              ]
-            },
-            {
-              id: 3,
-              label: '一级 3',
-              children: [
-                {
-                  id: 7,
-                  label: '二级 3-1'
-                },
-                {
-                  id: 8,
-                  label: '二级 3-2'
-                }
-              ]
-            }
-          ]
+          dicData: []
         }
       },
-      { type: 'select', data: '', label: '职位', field: '', config: { multiple: true } },
-      { type: 'select', data: '', label: '岗位', field: '', config: { multiple: true } },
-      { type: 'select', data: '', label: '上级领导', field: '' },
+      { type: 'select', data: '', label: '职位', field: 'jobs', arrField: 'jobId', config: { multiple: true } },
+      {
+        type: 'select',
+        data: '',
+        label: '岗位',
+        field: 'positions',
+        arrField: 'positionId',
+        config: { multiple: true }
+      },
+      {
+        type: 'select',
+        data: '',
+        label: '上级领导',
+        field: 'leader',
+        arrField: 'leaderId',
+        config: { multiple: true }
+      },
       {
         type: 'select',
         data: '',
         label: '工作性质',
-        field: '',
+        field: 'workProperties',
+        arrField: 'workProperty',
         config: { multiple: true },
         options: [
           { label: '全职', value: '' },
@@ -89,21 +56,30 @@ export default [
         type: 'select',
         data: '',
         label: '员工状态',
-        field: '',
+        field: 'statuses',
+        arrField: 'status',
         config: { multiple: true },
         options: [
-          { label: '试用期', value: '' },
-          { label: '正式', value: '' },
-          { label: '待离职', value: '' },
-          { label: '已离职', value: '' }
+          { label: '试用期', value: 'Try' },
+          { label: '正式', value: 'Formal' },
+          { label: '待离职', value: 'WaitLeave' },
+          { label: '已离职', value: 'Leaved' }
         ]
       },
-      { type: 'select', data: '', label: '工作地址', field: '', config: { multiple: true } },
+      {
+        type: 'select',
+        data: '',
+        label: '工作地址',
+        field: 'workAddressIds',
+        arrField: 'workAddressId',
+        config: { multiple: true }
+      },
       {
         type: 'select',
         data: '',
         label: '应聘渠道',
-        field: '',
+        field: 'recruitments',
+        arrField: 'recruitment',
         config: { multiple: true },
         options: [
           { label: '前程无忧', value: '' },
@@ -126,29 +102,30 @@ export default [
         type: 'dataPicker',
         data: '',
         label: '入职日期',
-        field: '',
+        field: 'beginEntryDate,endEntryDate',
         config: { type: 'daterange', 'range-separator': '至' }
       },
       {
         type: 'dataPicker',
         data: '',
         label: '试用期',
-        field: '',
+        field: 'minProbation,maxprobation',
         config: { type: 'monthrange', 'range-separator': '至' }
       },
       {
         type: 'dataPicker',
         data: '',
         label: '转正日期',
-        field: '',
+        field: 'beginFormalDate,endFormalDate',
         config: { type: 'daterange', 'range-separator': '至' }
       },
-      { type: 'numInterval', data: { min: '', max: '' }, label: '司龄(年)', field: 'min,max' },
+      { type: 'numInterval', data: { min: '', max: '' }, label: '司龄(年)', field: 'minEntryAge,maxEntryAge' },
       {
         type: 'select',
         data: '',
         label: '合同类型',
-        field: '',
+        field: 'contractTypes',
+        arrField: 'contractType',
         config: { multiple: true },
         options: [
           { label: '固定期限劳动合同', value: '' },
@@ -166,32 +143,32 @@ export default [
         type: 'dataPicker',
         data: '',
         label: '首次合同开始日期',
-        field: '',
+        field: 'beginBeginFirstDate,endBeginFirstDate',
         config: { type: 'daterange', 'range-separator': '至' }
       },
       {
         type: 'dataPicker',
         data: '',
         label: '首次合同结束日期',
-        field: '',
+        field: 'beginEndFirstDate,endEndFirstDate',
+        config: { type: 'daterange', 'range-separator': '至' }
+      },
+      {
+        type: 'dataPicker',
+        data: '',
+        label: '现合同开始日期',
+        field: 'beginBeginNowDate,endBeginNowDate',
         config: { type: 'daterange', 'range-separator': '至' }
       },
       {
         type: 'dataPicker',
         data: '',
         label: '现合同结束日期',
-        field: '',
+        field: 'beginEndNowDate,endEndNowDate',
         config: { type: 'daterange', 'range-separator': '至' }
       },
-      {
-        type: 'dataPicker',
-        data: '',
-        label: '现合同结束日期',
-        field: '',
-        config: { type: 'daterange', 'range-separator': '至' }
-      },
-      { type: 'numInterval', data: { min: '', max: '' }, label: '现合同期限', field: 'min,max' },
-      { type: 'numInterval', data: { min: '', max: '' }, label: '合同续签次数', field: 'min,max' }
+      { type: 'numInterval', data: { min: '', max: '' }, label: '现合同期限', field: 'minPeriod,maxPeriod' },
+      { type: 'numInterval', data: { min: '', max: '' }, label: '合同续签次数', field: 'minRenewNum,maxRenewNum' }
     ]
   },
   {
@@ -202,20 +179,21 @@ export default [
         type: 'select',
         data: '',
         label: '性别',
-        field: '',
+        field: 'sex',
         config: { multiple: true },
         options: [
-          { label: '男', value: '' },
-          { label: '女', value: '' }
+          { label: '男', value: 1 },
+          { label: '女', value: 0 }
         ]
       },
-      { type: 'input', data: '', label: '手机号码', field: '', config: {} },
-      { type: 'input', data: '', label: '邮箱', field: '', config: { type: 'email' } },
+      { type: 'input', data: '', label: '手机号码', field: 'phonenum', config: {} },
+      { type: 'input', data: '', label: '邮箱', field: 'email', config: { type: 'email' } },
       {
         type: 'select',
         data: '',
         label: '证件类型',
-        field: '',
+        field: 'idTypes',
+        arrField: 'idType',
         config: { multiple: true },
         options: [
           { label: '身份证', value: '' },
@@ -225,13 +203,14 @@ export default [
           { label: '其他', value: '' }
         ]
       },
-      { type: 'input', data: '', label: '证件号码', field: '', config: {} },
-      { type: 'numInterval', data: { min: '', max: '' }, label: '年龄', field: 'min,max' },
+      { type: 'input', data: '', label: '证件号码', field: 'idNo', config: {} },
+      { type: 'numInterval', data: { min: '', max: '' }, label: '年龄', field: 'minAge,maxAge' },
       {
         type: 'select',
         data: '',
         label: '最高学历',
-        field: '',
+        field: 'educationalLevels',
+        arrField: 'educationalLevel',
         config: { multiple: true },
         options: [
           { label: '小学', value: '' },
@@ -249,24 +228,24 @@ export default [
           { label: '其他', value: '' }
         ]
       },
-      { type: 'numInterval', data: { min: '', max: '' }, label: '工龄', field: 'min,max' },
+      { type: 'numInterval', data: { min: '', max: '' }, label: '工龄', field: 'minWorkAge,maxWorkAge' },
       {
         type: 'select',
-        data: '',
+        data: 'marriage',
         label: '婚姻状况',
         field: '',
         config: { multiple: true },
         options: [
-          { label: '未婚', value: '' },
-          { label: '已婚', value: '' }
+          { label: '未婚', value: 0 },
+          { label: '已婚', value: 1 }
         ]
       },
-      { type: 'input', data: '', label: '健康状况', field: '', config: {} },
+      { type: 'input', data: '', label: '健康状况', field: 'health', config: {} },
       {
         type: 'select',
         data: '',
         label: '民族',
-        field: '',
+        field: 'nations',
         config: { multiple: true },
         options: [
           { label: '汉族', value: '' },
@@ -277,7 +256,8 @@ export default [
         type: 'select',
         data: '',
         label: '政治面貌',
-        field: '',
+        field: '"politicalStatuses',
+        arrField: 'politicalStatus',
         config: { multiple: true },
         options: [
           { label: '群众', value: '' },
@@ -296,12 +276,12 @@ export default [
           { label: '无党派民主人士', value: '' }
         ]
       },
-      { type: 'cascader', data: '', label: '籍贯', field: '', config: {}, options: [] },
+      { type: 'cascader', data: '', label: '籍贯', field: 'natives', config: {}, options: [] },
       {
         type: 'select',
         data: '',
         label: '户籍类型',
-        field: '',
+        field: 'householdTypes',
         config: { multiple: true },
         options: [
           { label: '城镇户口', value: '' },
@@ -319,14 +299,15 @@ export default [
         type: 'dataPicker',
         data: '',
         label: '离职日期',
-        field: '',
+        field: 'beginLeaveDate,endLeaveDate',
         config: { type: 'daterange', 'range-separator': '至' }
       },
       {
         type: 'select',
         data: '',
         label: '离职原因',
-        field: '',
+        field: 'leaveReasons',
+        arrField: 'leaveReason',
         config: { multiple: true, group: true },
         options: [
           {
@@ -409,7 +390,7 @@ export default [
         type: 'input',
         data: '',
         label: '离职原因说明',
-        field: '',
+        field: 'leaveReasonNote',
         config: {}
       }
     ]

@@ -831,6 +831,48 @@ const menuRes = {
       categoryName: '',
       actionName: '',
       isOpenName: ''
+    },
+    {
+      id: '11235988157386752',
+      parentId: '0',
+      code: 'system',
+      name: '人事管理',
+      alias: 'menu',
+      path: '/personnel',
+      source: 'iconfont iconicon_setting',
+      sort: 99,
+      category: 1,
+      action: 0,
+      isOpen: 1,
+      remark: '',
+      isDeleted: 0,
+      children: [
+        {
+          id: '1123598815738675261',
+          parentId: '11235988157386752',
+          code: 'client',
+          name: '员工花名册',
+          alias: 'menu',
+          path: '/personnel/roster',
+          source: 'iconfont iconicon_mobilephone',
+          sort: 8,
+          category: 1,
+          action: 0,
+          isOpen: 1,
+          remark: '',
+          isDeleted: 0,
+          hasChildren: false,
+          parentName: '',
+          categoryName: '',
+          actionName: '',
+          isOpenName: ''
+        }
+      ],
+      hasChildren: false,
+      parentName: '',
+      categoryName: '',
+      actionName: '',
+      isOpenName: ''
     }
   ],
   resMsg: '操作成功'
