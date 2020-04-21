@@ -3,7 +3,6 @@
     placement="bottom-start"
     trigger="click"
     popper-class="oa-tree_select"
-    style="background: black"
     :width="treeMinWidth"
   >
     <div :class="{ limitCheck: limitCheck || false }">
