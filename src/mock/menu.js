@@ -838,11 +838,9 @@ const menuRes = {
 export default ({ mock }) => {
   if (!mock) return
   Mock.mock('/api/blade-system/menu/top-menu', 'get', () => {
-    return {
-      response: topMenuRes
-    }
+    return topMenuRes
   })
   Mock.mock('/api/blade-system/menu/routes', 'get', () => {
-    return { reponse: menuRes }
+    return menuRes
   })
 }
