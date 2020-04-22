@@ -488,7 +488,7 @@ export default {
       },
       contactOrder: null,
       emergencyIsEdit: false,
-      emergency: {}
+      emergency: []
     }
   },
   created() {
