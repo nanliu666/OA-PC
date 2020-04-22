@@ -14,10 +14,14 @@
               @click="onClickListImage(img)"
               :key="itemIndex"
             >
-              <div class="thumb-wp"><img :src="img.thumb" alt="img.name" /></div>
+              <div class="thumb-wp">
+                <img :src="img.thumb" alt="img.name" />
+              </div>
               <div class="title">{{ img.name }}</div>
               <div class="label" v-if="img.label">{{ img.label }}</div>
-              <span class="selected" v-if="img.selected"><span class="icon el-icon-check"></span></span>
+              <span class="selected" v-if="img.selected">
+                <span class="icon el-icon-check"></span>
+              </span>
             </div>
           </div>
 
@@ -29,7 +33,12 @@
 
           <div class="elx-foot">
             <el-badge :value="images.length" class="item">
-              <el-button type="primary" size="medium" :disabled="images.length == 0" @click="onConfirm">确定</el-button>
+              <el-button
+                type="primary"
+                size="medium"
+                :disabled="images.length == 0"
+                @click="onConfirm"
+              >确定</el-button>
             </el-badge>
             <el-button
               type="primary"
@@ -37,8 +46,7 @@
               @click="options.activeTab = 'upload'"
               plain
               v-if="options.enableUpload"
-              >上传图片</el-button
-            >
+            >上传图片</el-button>
           </div>
         </el-tab-pane>
 
