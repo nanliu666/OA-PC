@@ -1,6 +1,6 @@
 <template>
   <basic-container>
-    <el-page-header content="添加员工" @back="goBack" />
+    <el-page-header content="员工信息详情" @back="goBack" />
     <el-row type="flex" justify="left">
       <el-col :span="2">
         <div class="detail-box">
@@ -9,35 +9,67 @@
           </div>
         </div>
       </el-col>
+      <!--  -->
     </el-row>
+
+    <!--  -->
+
     <el-row :gutter="20">
-      <el-col :span="2"><div class="grid-content bg-purple">刘德华</div></el-col>
-      <el-col :span="2"><div class="grid-content bg-purple">(GZ878)</div></el-col>
-      <el-col :span="2"
-        ><div class="grid-content bg-purple"><el-button type="primary" size="small" plain>正式</el-button></div></el-col
+      <el-col :span="6"
+        ><div class="grid-content bg-purple">
+          刘德华(GZ878)<el-button type="primary" size="small" plain>正式</el-button>
+        </div></el-col
       >
+      <el-col :span="2"
+        ><div class="grid-content bg-purple"><el-button type="" size="medium" plain>晋升</el-button></div>
+      </el-col>
+      <el-col :span="2"
+        ><div class="grid-content bg-purple"><el-button type="" size="medium" plain>调岗</el-button></div>
+      </el-col>
+      <el-col :span="4"
+        ><div class="grid-content bg-purple"><el-button type="" size="medium" plain>办理离职</el-button></div>
+      </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="8"><div class="grid-content bg-purple">手机号码：13978955852</div></el-col>
-      <el-col :span="8"><div class="grid-content bg-purple">部门：设计小组</div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+      <el-col :span="6"><div class="grid-content bg-purple">手机号码：13978955852</div></el-col>
+      <el-col :span="5"
+        ><div class="grid-content bg-purple">部门：设计小组<el-button type="" size="small" plain>主</el-button></div>
+      </el-col>
+      <el-col :span="5"
+        ><div class="grid-content bg-purple">职位：产品经理<el-button type="" size="small" plain>主</el-button></div>
+      </el-col>
+      <el-col :span="5"><div class="grid-content bg-purple">上级领导：陈晓晓</div> </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
+      <el-col :span="5"><div class="grid-content bg-purple">上级领导：陈晓晓</div> </el-col>
     </el-row>
+    <el-tabs v-model="activeName" stretch="true" @tab-click="handleClick">
+      <el-tab-pane label="在职信息" name="first">在职信息</el-tab-pane>
+      <el-tab-pane label="个人信息" name="second">个人信息</el-tab-pane>
+      <el-tab-pane label="材料附件" name="third"><material-accessories /></el-tab-pane>
+      <el-tab-pane label="操作记录" name="fourth"><action-record /></el-tab-pane>
+    </el-tabs>
   </basic-container>
 </template>
 <script>
+import actionRecord from './components/actionRecord'
+import materialAccessories from './components/materialAccessories'
 export default {
   data() {
-    return {}
+    return {
+      activeName: 'first'
+    }
+  },
+  components: {
+    actionRecord,
+    materialAccessories
   },
   methods: {
     goBack() {
       this.$router.go(-1)
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
     }
   }
 }
