@@ -7,14 +7,13 @@
     </div>
     <basic-container>
       <el-container>
-        <el-aside class="aside-wrap">
-          <div class="cate-wrap">
-            角色分类
-          </div>
-        </el-aside>
+        <roleAside />
         <el-main class="main-wrap">
           <div class="main-wrap">
-            <div class="search-bar">
+            <div
+              v-if="selectArr.length === 0"
+              class="search-bar"
+            >
               <el-form
                 ref="form"
                 :model="form"
@@ -23,7 +22,10 @@
                 :inline="true"
               >
                 <el-form-item>
-                  <el-input v-model="form.roleName">
+                  <el-input
+                    v-model="form.roleName"
+                    placeholder="角色名称"
+                  >
                     <el-button
                       slot="append"
                       icon="el-icon-search"
@@ -45,10 +47,31 @@
                 />
               </div>
             </div>
+            <div
+              v-else
+              class="selected-bar"
+            >
+              <div class="left-part">
+                <span style="color: #999">已选中&nbsp;</span>
+                <span class="selected-num"> {{ selectArr.length }} </span> <span style="color: #999">&nbsp;项</span>
+                <div class="divider" />
+                <span
+                  class="del-all"
+                  @click="delAll"
+                ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+              </div>
+              <i
+                class="el-icon-close"
+                style="cursor: pointer"
+                @click="onCloseSelect"
+              />
+            </div>
             <avue-crud
+              ref="table"
               :data="data"
               :option="option"
               :page.sync="page"
+              @selection-change="selectionChange"
               @on-load="onLoad"
             >
               <template
@@ -69,35 +92,54 @@
                 >
                   查看用户
                 </el-button>
-                <moreBtn
-                  :btn-list="btnList"
-                  :row="scope.row"
-                  @handleBtn="onClickBtn"
-                />
+                <el-dropdown
+                  trigger="hover"
+                  @command="handleCommand($event, scope.row)"
+                >
+                  <span class="el-dropdown-link">
+                    <i class="el-icon-more" />
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item command="del">
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
               </template>
             </avue-crud>
           </div>
         </el-main>
         <roleEdit :visible.sync="visible" />
+        <roleLimits :visible.sync="configVisible" />
+        <userList :visible.sync="userVisible" />
       </el-container>
     </basic-container>
   </div>
 </template>
 
 <script>
-import moreBtn from './component/moreBtn'
-import roleEdit from './component/roleEdit'
+import roleEdit from './components/roleEdit'
+import roleAside from './components/roleAside'
+import roleLimits from './components/rolePermission'
+import userList from './components/roleUserList'
 import { tableOptions } from '../../util/constant'
 
 export default {
   name: 'Role',
   components: {
-    moreBtn,
-    roleEdit
+    roleEdit,
+    roleAside,
+    roleLimits,
+    userList
   },
   data() {
     return {
       visible: false,
+      configVisible: false,
+      userVisible: false,
       btnList: [
         {
           name: '编辑',
@@ -113,66 +155,82 @@ export default {
       },
       page: {
         pageSize: 20,
-        pagerCount: 5
+        pagerCount: 5,
+        total: 100
       },
       data: [
         {
-          name: '张三',
-          sex: '男'
+          roleCode: 'GZ789',
+          roleName: '小明',
+          type: '职位',
+          message: '视觉设计',
+          userNum: 10,
+          num: 20
         },
         {
-          name: '李四',
-          sex: '女'
+          roleCode: 'GZ789',
+          roleName: '小王',
+          type: '职位',
+          message: '视觉设计',
+          userNum: 10,
+          num: 20
         }
       ],
       option: {
         ...tableOptions,
+        selection: true,
         align: 'center',
         menuAlign: 'center',
         column: [
           {
-            label: '姓名',
-            prop: 'name'
+            label: '角色编码',
+            prop: 'roleCode'
           },
           {
-            label: '性别',
-            prop: 'sex'
+            label: '角色名称',
+            prop: 'roleName'
+          },
+          {
+            label: '关联类型',
+            prop: 'type'
+          },
+          {
+            label: '关联信息',
+            prop: 'message'
+          },
+          {
+            label: '用户人数',
+            prop: 'userNum'
+          },
+          {
+            label: '在职人数',
+            prop: 'num'
           }
         ]
-      }
+      },
+      selectArr: []
     }
   },
   methods: {
-    onLoad() {
-      this.page.total = 200
-      //模拟分页
-      if (this.page.currentPage === 1) {
-        this.data = [
-          {
-            name: '张三',
-            sex: '男'
-          }
-        ]
-      } else if (this.page.currentPage == 2) {
-        this.data = [
-          {
-            name: '李四',
-            sex: '女'
-          }
-        ]
-      }
+    onLoad() {},
+    handleConfig() {
+      this.configVisible = !this.configVisible
     },
-    handleConfig() {},
-    handleCheck() {},
-    onClickBtn(row, key) {
-      console.log(row, key)
-      if (key === 'edit') {
-        this.visible = true
-      } else {
-        this.delFunc()
-      }
+    handleCheck() {
+      this.userVisible = !this.userVisible
     },
-    delFunc() {}
+    handleCommand() {},
+    selectionChange(rows) {
+      this.selectArr = rows
+    },
+    toggleSelection(rows = []) {
+      this.$refs.table.toggleSelection(rows)
+    },
+    delAll() {},
+    onCloseSelect() {
+      this.$refs.table.toggleSelection()
+      this.selectArr = []
+    }
   }
 }
 </script>
@@ -180,22 +238,62 @@ export default {
 <style lang="scss" scoped>
 .oa-title_bar {
   padding: 14px 6px;
+
   .title-name {
     color: #202940;
     font-size: 18px;
   }
 }
+
 .aside-wrap {
   border-right: 1px solid #e3e7e9;
 }
+
 .main-wrap {
   padding: 0 20px;
+
   .search-bar {
+    padding: 0;
     display: flex;
     justify-content: space-between;
   }
+  .selected-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    height: 58px;
+    line-height: 58px;
+    .del-all {
+      cursor: pointer;
+    }
+    .selected-num {
+      color: #409eff;
+    }
+    .divider {
+      width: 2px;
+      height: 38px;
+      margin: 0 10px;
+      background-color: #f2f2f2;
+    }
+    .left-part {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
+
+/deep/ .el-card__body {
+  padding-bottom: 0 !important;
+}
+
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+  margin-left: 10px;
 }
 </style>

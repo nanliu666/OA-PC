@@ -89,3 +89,13 @@
 .el-transfer__button {
   margin: 0 0 10px 0;
 }
+
+.avue-crud__menu {
+  min-height: 0;
+}
+
+.el-input--suffix {
+  .el-input__inner {
+    height: 34px !important;
+  }
+}

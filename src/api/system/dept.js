@@ -78,3 +78,11 @@ export const getDeptLazyTree = (parentId) => {
     }
   })
 }
+
+export const getOrgTree = (params) => {
+  return request({
+    url: '/api/org/v1/organization',
+    method: 'get',
+    params
+  })
+}

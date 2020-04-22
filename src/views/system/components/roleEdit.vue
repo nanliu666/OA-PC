@@ -2,24 +2,29 @@
   <el-dialog
     title="新建/编辑角色"
     :visible.sync="roleVisible"
+    width="500px"
+    top="30px"
     :close-on-click-modal="false"
     :modal-append-to-body="false"
   >
-    <avue-form
-      ref="form"
-      v-model="form"
-      :option="option"
-    >
-      <template
-        slot="relaPosition"
-        slot-scope="scope"
+    <div>
+      <avue-form
+        ref="form"
+        v-model="form"
+        :option="option"
       >
-        <treeSelect
-          v-model="form.relaPosition"
-          :option="scope.column"
-        />
-      </template>
-    </avue-form>
+        <template
+          slot="relaPosition"
+          slot-scope="scope"
+        >
+          <treeSelect
+            v-model="form.relaPosition"
+            :option="scope.column"
+          />
+        </template>
+      </avue-form>
+    </div>
+
     <div
       slot="footer"
       class="dialog-footer"
@@ -42,7 +47,8 @@
 </template>
 
 <script>
-import treeSelect from './treeSelect'
+import treeSelect from '../../../components/treeSelect/treeSelect'
+
 export default {
   name: 'RoleEdit',
   components: {
@@ -67,7 +73,7 @@ export default {
         roleName: '',
         type: 0,
         remark: '',
-        relaPosition: ''
+        relaPosition: []
       },
       option: {
         menuBtn: false,
@@ -250,6 +256,12 @@ export default {
       } else {
         column.display = false
       }
+    },
+    'form.relaPosition': {
+      handler() {
+        this.$refs['form'].validateField('relaPosition', () => {})
+      },
+      deep: true
     }
   },
   methods: {
@@ -277,7 +289,8 @@ export default {
 .dialog-footer {
   text-align: center;
 }
-/deep/.is-error {
+
+/deep/ .is-error {
   .tree-button {
     border-color: #f56c6c;
   }
