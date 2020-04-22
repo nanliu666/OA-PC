@@ -170,7 +170,7 @@ export default {
     initForm() {
       this.requireOptions.forEach((item) => {
         if (item.field.indexOf(',') > -1) {
-          if (item.type === 'cascader') {
+          if (item.type === 'numInterval') {
             this.$set(this.requireForm, item.field, { min: '', max: '' })
           } else {
             this.$set(this.requireForm, item.field, [])
@@ -181,7 +181,7 @@ export default {
       })
       this.popoverOptions.forEach((item) => {
         if (item.field.indexOf(',') > -1) {
-          if (item.type === 'cascader') {
+          if (item.type === 'numInterval') {
             this.$set(this.popoverForm, item.field, { min: '', max: '' })
           } else {
             this.$set(this.popoverForm, item.field, [])
