@@ -10,7 +10,7 @@ import system from './system'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: false }
+const options = { mock: true }
 
 // user(options)
 

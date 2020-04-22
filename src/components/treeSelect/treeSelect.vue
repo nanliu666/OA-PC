@@ -2,6 +2,7 @@
   <el-popover
     placement="bottom-start"
     trigger="click"
+    popper-class="oa-tree_select"
     :width="treeMinWidth"
   >
     <div :class="{ limitCheck: limitCheck || false }">
@@ -16,11 +17,7 @@
             placeholder="请输入内容"
           >
             <template slot="append">
-              <i
-                class="el-icon-search"
-                style="cursor: pointer"
-                @click.stop="onClickSearch"
-              />
+              <i class="el-icon-search" />
             </template>
           </el-input>
         </div>
@@ -28,7 +25,10 @@
           v-if="!isSingle"
           class="rela-wrap"
         >
-          <el-checkbox v-model="checked">
+          <el-checkbox
+            v-model="checked"
+            @change="onClickSearch"
+          >
             仅显示未关联
           </el-checkbox>
         </div>
@@ -46,12 +46,12 @@
         @check="handleCheckChange"
       />
     </div>
-    <el-button
-      ref="treeBtn"
+    <div
+      id="treeBtn"
       slot="reference"
       class="tree-button"
     >
-      <div style="display:flex;justify-content: space-between">
+      <div class="tags-list">
         <div v-if="showLabelList.length > 0">
           <el-tag
             v-for="(c, index) in showLabelList"
@@ -72,7 +72,7 @@
         </div>
         <i class="el-icon-arrow-down el-icon--right" />
       </div>
-    </el-button>
+    </div>
   </el-popover>
 </template>
 
@@ -108,8 +108,8 @@ export default {
       searchInput: '',
       checked: false,
       treeMinWidth: '300',
-      treeList: [],
-      filterList: []
+      filterList: [],
+      normalHeight: 38
     }
   },
 
@@ -130,9 +130,6 @@ export default {
     keyID() {
       return this.option.props ? this.option.props.value : 'id'
     }
-    // filterList() {
-    //     return this.option.dicData || []
-    // }
   },
   watch: {
     'option.dicData': {
@@ -142,9 +139,17 @@ export default {
       immediate: true,
       deep: true
     },
-    treeList: {
+    searchInput(val) {
+      this.onClickSearch(val)
+    },
+    value: {
       handler(val) {
         this.$emit('input', val)
+        this.$nextTick(() => {
+          setTimeout(this.changePopPosition, 400)
+          this.setCheckedKeys()
+          this.onClickSearch()
+        })
       },
       deep: true
     }
@@ -158,8 +163,23 @@ export default {
   },
   methods: {
     filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
+      if (this.checked) {
+        const index = this.value.findIndex((item) => data[this.keyID] === item)
+        return data[this.label].indexOf(value) !== -1 && index === -1
+      } else {
+        return data[this.label].indexOf(value) !== -1
+      }
+    },
+    changePopPosition() {
+      if (document.getElementsByClassName('oa-tree_select')[0]) {
+        let inputTop = document.getElementsByClassName('oa-tree_select')[0].style.top.replace('px', '') * 1
+        let inputHeight = document.getElementById('treeBtn').offsetHeight
+        if (this.normalHeight !== inputHeight) {
+          inputTop += inputHeight - this.normalHeight
+          this.normalHeight = inputHeight
+          document.getElementsByClassName('oa-tree_select')[0].style.top = inputTop + 'px'
+        }
+      }
     },
     onClickSearch() {
       this.$refs.tree.filter(this.searchInput)
@@ -183,7 +203,7 @@ export default {
     },
     handleResize() {
       this.$nextTick(() => {
-        this.treeMinWidth = this.$refs.treeBtn.$el.offsetWidth - 25 + ''
+        this.treeMinWidth = document.getElementById('treeBtn').offsetWidth - 25 + ''
       })
     },
     handleCloseCategory(index) {
@@ -209,6 +229,9 @@ export default {
       } else {
         this.$emit('input', checked.checkedKeys)
       }
+    },
+    setCheckedKeys() {
+      this.$refs.tree.setCheckedKeys(this.value)
     }
   }
 }
@@ -236,11 +259,14 @@ export default {
   padding: 15px 0;
   display: flex;
   align-items: center;
+
   .search-input {
     flex: 1;
   }
+
   .rela-wrap {
     padding: 10px;
+
     /deep/ .el-checkbox__input > .el-checkbox__inner {
       display: inline-block;
     }
@@ -249,13 +275,25 @@ export default {
 
 .tree-button {
   width: 100%;
-  height: 36px;
+  min-height: 36px;
   line-height: 36px;
   text-align: left;
-  padding: 0 10px !important;
+  /*padding: 0 10px !important;*/
+  border: 1px solid #dcdfe6;
+
+  border-radius: 5px;
+
+  .tags-list {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+  }
 
   /deep/ .el-icon--right {
-    line-height: 36px;
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+    color: #dcdfe6;
   }
 }
 

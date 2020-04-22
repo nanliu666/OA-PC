@@ -6,10 +6,7 @@
     :close-on-click-modal="false"
     :modal-append-to-body="false"
   >
-    <div
-      class="limit-wrap"
-      style="padding: 0 40px"
-    >
+    <div class="limit-wrap">
       <el-scrollbar class="scroll-item">
         <div class="limit-item">
           <checkLimits

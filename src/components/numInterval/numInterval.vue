@@ -121,7 +121,7 @@ export default {
 }
 /deep/ {
   .el-input__inner {
-    width: 95px;
+    width: 90px;
   }
 }
 </style>
