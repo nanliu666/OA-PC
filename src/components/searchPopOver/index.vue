@@ -36,6 +36,23 @@
               />
             </el-option-group>
           </template>
+          <template v-else-if="item.config && item.config.tree">
+            <el-option
+              style="height: auto;padding:0"
+              :value="requireForm[item.field]"
+              :label="requireForm[item.field + 'Label']"
+            >
+              <el-tree
+                :data="item.options"
+                :node-key="item.config.nodeKey"
+                :props="{
+                  children: 'children',
+                  label: item.config.treeLabel
+                }"
+                @node-click="handleOrgNodeClick($event, requireForm, item.field, item.config)"
+              />
+            </el-option>
+          </template>
           <template v-else>
             <el-option
               v-for="it in item.options"
@@ -77,12 +94,13 @@
           v-if="item.type === 'treeSelect'"
           v-model="requireForm[item.field]"
           :option="item.options"
+          :is-search="false"
         />
       </el-form-item>
       <el-form-item v-if="popoverOptions.length === 0">
         <el-button
           type="primary"
-          size="small"
+          size="medium"
           @click="submitSearch"
         >
           搜索
@@ -194,7 +212,7 @@
           <el-button
             slot="reference"
             type="primary"
-            size="small"
+            size="medium"
           >
             筛选
           </el-button>
@@ -310,6 +328,10 @@ export default {
         }
       }
       this.$emit('submit', params)
+    },
+    handleOrgNodeClick(data, form, field, config) {
+      form[field] = data[config.nodeKey]
+      form[field + 'Label'] = data[config.treeLabel]
     }
   }
 }
