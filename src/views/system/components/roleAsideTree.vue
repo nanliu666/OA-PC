@@ -115,7 +115,9 @@ export default {
       return data[this.props.label].indexOf(value) !== -1
     },
     onClickNode(node, data) {
-      this.$emit('reload', data)
+      if (node.level > 1) {
+        this.$emit('reload', data)
+      }
     },
     handleCommand(command, node, data) {
       this.$emit(command, node, data)

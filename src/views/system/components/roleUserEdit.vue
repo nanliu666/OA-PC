@@ -32,6 +32,7 @@
             stripe
             style="width: 100%"
             @select="handleSelection"
+            @select-all="selectAll"
           >
             <el-table-column
               type="selection"
@@ -77,7 +78,7 @@
                 type="info"
                 @close="onClose(tag, index)"
               >
-                {{ tag.name + ` (${tag.num}) ` }}
+                {{ tag.name + ` (${tag.jobNum}) ` }}
               </el-tag>
             </div>
           </div>
@@ -106,6 +107,7 @@
 </template>
 
 <script>
+import { getAddUser, addUser } from '../../../api/system/role'
 export default {
   name: 'UserEdit',
   props: {
@@ -123,7 +125,7 @@ export default {
       },
       attr: [
         {
-          prop: 'num',
+          prop: 'jobNum',
           label: '工号',
           width: '120'
         },
@@ -140,37 +142,37 @@ export default {
       ],
       tableData: [
         {
-          num: 'L00001',
+          jobNum: 'L00001',
           name: '张彩云',
           dept: '会计部',
           id: 0
         },
         {
-          num: 'L00002',
+          jobNum: 'L00002',
           name: '黎成',
           dept: '资金管理部',
           id: 1
         },
         {
-          num: 'L00002',
+          jobNum: 'L00002',
           name: '黎成',
           dept: '资金管理部',
           id: 2
         },
         {
-          num: 'L00002',
+          jobNum: 'L00002',
           name: '黎成',
           dept: '资金管理部',
           id: 3
         },
         {
-          num: 'L00002',
+          jobNum: 'L00002',
           name: '黎成',
           dept: '资金管理部',
           id: 4
         },
         {
-          num: 'L00002',
+          jobNum: 'L00002',
           name: '黎成',
           dept: '资金管理部',
           id: 5
@@ -189,8 +191,22 @@ export default {
       }
     }
   },
+  created() {
+    this.getAddList()
+  },
   methods: {
     onClickSearch() {},
+    getAddList() {
+      return new Promise((resolve) => {
+        const params = {
+          ...this.page
+        }
+        getAddUser(params).then((res) => {
+          this.tableData = res
+          resolve()
+        })
+      })
+    },
     handleSelection(selection, row) {
       const checkIndex = selection.indexOf(row)
       if (checkIndex > -1) {
@@ -199,17 +215,38 @@ export default {
         this.tags.splice(this.tags.indexOf(row), 1)
       }
     },
+
+    selectAll(selection) {
+      if (selection.length > 0) {
+        selection.forEach((item) => {
+          if (this.tags.findIndex((it) => item.jobNum === it.jobNum) === -1) {
+            this.tags.push(item)
+          }
+        })
+      } else if (selection.length == 0) {
+        this.tableData.forEach((item) => {
+          const num = this.tags.findIndex((it) => item.jobNum === it.jobNum)
+          if (num > -1) {
+            this.tags.splice(num, 1)
+          }
+        })
+      }
+    },
+
     toggleSelection(rows, flag = true) {
       if (rows) {
         this.$nextTick(() => {
-          rows.forEach((row) => {
+          const arr = this.tableData.filter((item) => rows.findIndex((it) => item.jobNum === it.jobNum) > -1)
+          arr.forEach((row) => {
             this.$refs.table.toggleRowSelection(row, flag)
           })
         })
       }
     },
-    handleCurrentChange() {
+    async handleCurrentChange(val) {
+      await this.getAddList()
       this.toggleSelection(this.tags)
+      this.page.currentPage = val
     },
     onClose(tag, index) {
       this.tags.splice(index, 1)
@@ -223,7 +260,12 @@ export default {
       this.$emit('update:visible', false)
     },
     onClickSave() {
-      this.$emit('onClickSave')
+      const params = {}
+      addUser(params).then(() => {
+        this.$message.success('用户添加成功')
+        this.$emit('onAddUser')
+        this.onClickCancel()
+      })
     }
   }
 }

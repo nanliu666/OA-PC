@@ -272,6 +272,10 @@ export const updateRole = (params) => {
   })
 }
 
+/*以下是mock接口*/
+/**
+ * @description 关联职位列表查询
+ */
 export const getJobs = (params) => {
   return request({
     url: '/api/sys/v1/jobs',
@@ -282,9 +286,64 @@ export const getJobs = (params) => {
   })
 }
 
+/**
+ * @description 关联岗位查询
+ */
 export const getPositions = (params) => {
   return request({
     url: '/api/sys/v1/Positions',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 分组预览查询
+ */
+export const getPre = (params) => {
+  return request({
+    url: '/api/sys/v1/preTree',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 用户添加列表查询
+ */
+export const getAddUser = (params) => {
+  return request({
+    url: '/api/sys/v1/user/add',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 用户添加
+ */
+export const addUser = (params) => {
+  return request({
+    url: '/api/sys/v1/user/add',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 用户列表查询
+ */
+export const getUser = (params) => {
+  return request({
+    url: '/api/sys/v1/user/list',
     method: 'get',
     params: {
       ...params

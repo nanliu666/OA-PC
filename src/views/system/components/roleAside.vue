@@ -50,7 +50,7 @@
         >
           <asideTree
             :props="groupForm.groupData === 1 ? props : positionProps"
-            :tree-list="groupForm.groupData === 1 ? treeList : positions"
+            :tree-list="groupForm.groupData === 1 ? preTreeList : positions"
             :show-more="false"
             :show-search="false"
           />
@@ -116,7 +116,7 @@
 
 <script>
 import asideTree from './roleAsideTree'
-import { createGroup, updateGroup, createCate, updateCate } from '../../../api/system/role'
+import { createGroup, updateGroup, createCate, updateCate, delCate, delGroup, getPre } from '../../../api/system/role'
 
 const type = {
   group: 'group',
@@ -255,23 +255,11 @@ export default {
                 trigger: 'change'
               }
             ],
-            dicData: [
-              // {
-              //     label: '默认',
-              //     value: 0
-              // },
-              // {
-              //     label: '财务部',
-              //     value: 1
-              // },
-              // {
-              //     label: '设计部',
-              //     value: 2
-              // }
-            ]
+            dicData: []
           }
         ]
-      }
+      },
+      preTreeList: []
     }
   },
   watch: {
@@ -283,16 +271,10 @@ export default {
           }
         })
       }
-    },
-    treeList: {
-      handler(val) {
-        this.cateOption.column.forEach((item) => {
-          if (item.prop === 'groupId') {
-            item.dicData = val
-          }
-        })
-      }
     }
+  },
+  created() {
+    this.getPreTree()
   },
   methods: {
     filterNode(value, data) {
@@ -302,6 +284,30 @@ export default {
     onClickSearch() {
       this.$refs.tree.filter(this.searchInput)
     },
+
+    getPreTree() {
+      getPre().then((res) => {
+        this.preTreeList = (res || []).map((item) => {
+          let children = []
+          if (item.categories && item.categories.length > 0) {
+            children = item.categories.map((it) => {
+              return {
+                cateId: it.categoryId,
+                label: it.categoryName,
+                roleNum: it.roleNum
+              }
+            })
+          }
+
+          return {
+            cateId: item.groupId,
+            label: item.groupName,
+            children
+          }
+        })
+      })
+    },
+
     onClickVisible(str, node, data) {
       if (str === type.group) {
         // 分组
@@ -348,27 +354,8 @@ export default {
     },
     handleDel(node, data) {
       if (node.level === 1) {
-        if (node.childNodes.length > 0) {
-          let dataIndex = node.childNodes.findIndex((item) => item.data.roleNum > 0)
-          if (dataIndex > -1) {
-            this.$alert('很抱歉，您选中的分组下存在员工，请先将员工调整后再删除', '提示', {
-              confirmButtonText: '确定',
-              type: 'warning',
-              dangerouslyUseHTMLString: true
-            })
-            return
-          }
-        }
         this.delGroup(node, data)
       } else {
-        if (data.roleNum > 0) {
-          this.$alert('很抱歉，您选中的分类下存在员工，请先将员工调整后再删除', '提示', {
-            confirmButtonText: '确定',
-            type: 'warning',
-            dangerouslyUseHTMLString: true
-          })
-          return
-        }
         this.delCate(node, data)
       }
     },
@@ -381,7 +368,7 @@ export default {
         dangerouslyUseHTMLString: true
       })
         .then(() => {
-          this.delFunc(node, data)
+          this.delGroupFunc(node, data)
         })
         .catch(() => {})
     },
@@ -394,12 +381,35 @@ export default {
         dangerouslyUseHTMLString: true
       })
         .then(() => {
-          this.delFunc(node, data)
+          this.delCateFunc(node, data)
         })
         .catch(() => {})
     },
 
-    delFunc() {},
+    delGroupFunc(node, data) {
+      const params = {
+        categoryId: data[this.props.id]
+      }
+      delCate(params).then(() => {
+        this.$message.success('删除分组成功')
+        this.$emit('update:currentId', '')
+        this.reload()
+      })
+    },
+
+    delCateFunc(node, data) {
+      const params = {
+        groupId: data[this.props.id]
+      }
+      delGroup(params).then(() => {
+        this.$message.success('删除分类成功')
+        if (data[this.props.id] === this.currentId) {
+          // 如果删除的分类是当前激活的分类，清空激活分类，重新获取
+          this.$emit('update:currentId', '')
+        }
+        this.reload()
+      })
+    },
 
     onClickSave(str) {
       if (str === type.group) {
@@ -456,7 +466,7 @@ export default {
         groupName: this.groupForm.groupName
       }
       updateGroup(params).then(() => {
-        this.$message.success('新建分类成功')
+        this.$message.success('修改分类成功')
         this.onClickVisible(str)
         this.$emit('reload')
       })

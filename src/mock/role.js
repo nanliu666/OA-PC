@@ -18,12 +18,12 @@ const cateList = {
         {
           categoryId: 2,
           categoryName: '财务部',
-          roleNum: 15
+          roleNum: 0
         },
         {
           categoryId: 3,
           categoryName: '设计部',
-          roleNum: 0
+          roleNum: 15
         },
         {
           categoryId: 4,
@@ -76,6 +76,45 @@ const positionData = {
   ]
 }
 
+const jobsData = {
+  ...normalData,
+  response: [
+    {
+      deptName: '百利宏集团',
+      deptId: 0,
+      children: [
+        {
+          jobId: 1,
+          jobName: '总经理'
+        },
+        {
+          jobId: 2,
+          jobName: '副总经理'
+        },
+        {
+          deptName: '设计部',
+          deptId: 3,
+          children: [
+            {
+              deptName: '设计中心',
+              deptId: 4,
+              children: [
+                {
+                  jobId: 5,
+                  jobName: '交互设计'
+                },
+                {
+                  jobId: 6,
+                  jobName: '视觉设计'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
 // function getAllQuery(options) {
 //   const querys = options.url.split('?')[1].split('&')
 //   const data = {}
@@ -101,34 +140,89 @@ export default ({ mock }) => {
 
   Mock.mock(new RegExp('/api/sys/v1/Positions' + '.*'), 'get', positionData)
 
+  Mock.mock(new RegExp('/api/sys/v1/role' + '.*'), 'post', normalData)
+
+  Mock.mock(new RegExp('/api/sys/v1/jobs' + '.*'), 'get', jobsData)
+
+  Mock.mock(new RegExp('/api/sys/v1/role' + '.*'), 'delete', jobsData)
+
+  Mock.mock(new RegExp('/api/sys/v1/role' + '.*'), 'put', jobsData)
+  Mock.mock(new RegExp('/api/sys/v1/preTree' + '.*'), 'get', cateList)
+  Mock.mock(new RegExp('/api/sys/v1/user/add' + '.*'), 'post', jobsData)
+  Mock.mock(new RegExp('/api/sys/v1/user/add' + '.*'), 'get', () => {
+    const arr = [
+      {
+        jobNum: 'L00001',
+        name: '张彩云',
+        dept: '会计部',
+        userId: 0
+      },
+      {
+        jobNum: 'L00002',
+        name: '黎成',
+        dept: '资金管理部',
+        id: 1
+      }
+    ]
+    let response = []
+    for (let i = 0; i < 8; i++) {
+      response.push(
+        Mock.mock({
+          jobNum: '@character()@natural(100, 1000)',
+          name: '@cword(3,5)',
+          dept: '@cword(4,6)',
+          userId: '@natural(100, 1000)'
+        })
+      )
+    }
+    return {
+      ...normalData,
+      response: [...arr, ...response]
+    }
+  })
+  Mock.mock(new RegExp('/api/sys/v1/user/list' + '.*'), 'get', () => {
+    let response = []
+    for (let i = 0; i < 10; i++) {
+      response.push(
+        Mock.mock({
+          jobNum: '@character()@natural(100, 1000)',
+          name: '@cword(2,3)',
+          dept: '@cword(6,6)',
+          userId: '@natural(100, 1000)',
+          job: '@cword(4,4)'
+        })
+      )
+    }
+    return {
+      ...normalData,
+      response: [...response]
+    }
+  })
   Mock.mock(new RegExp('/sys/v1/role' + '.*'), 'get', () => {
     const response = []
     for (let i = 0; i < 10; i++) {
-      const index = Math.round(Math.random())
-      let arr = ['Job', 'Position']
+      const index = Math.floor(Math.random() * 3)
+      let arr = ['Job', 'Position', 'No']
       response.push(
         Mock.mock({
           roleId: '@character()@natural(100, 1000)',
           roleName: '@cword(3,5)',
           type: arr[index],
+          remark: '@cword(10,20)',
           jobs: [
             {
               jobId: 1,
-              jobName: '交互设计1'
+              jobName: '总经理'
             },
             {
-              jobId: 2,
-              jobName: '视觉设计1'
+              jobId: 5,
+              jobName: '交互设计'
             }
           ],
           positions: [
             {
-              positionId: 1,
-              positionName: '交互设计2'
-            },
-            {
               positionId: 2,
-              positionName: '视觉设计2'
+              positionName: '主管'
             }
           ],
           userNum: '@integer(1, 100)',

@@ -25,12 +25,16 @@
         />
       </div>
     </el-dialog>
-    <userEdit :visible.sync="addVisible" />
+    <userEdit
+      :visible.sync="addVisible"
+      @onAddUser="onAddUser"
+    />
   </div>
 </template>
 <script>
 import userEdit from './roleUserEdit'
 import { tableOptions } from '../../../util/constant'
+import { getUser } from '../../../api/system/role'
 
 export default {
   name: 'UserList',
@@ -79,7 +83,7 @@ export default {
         column: [
           {
             label: '工号',
-            prop: 'num'
+            prop: 'jobNum'
           },
           {
             label: '姓名',
@@ -95,7 +99,7 @@ export default {
           },
           {
             label: '职位',
-            prop: 'position'
+            prop: 'job'
           }
         ]
       }
@@ -112,7 +116,18 @@ export default {
     }
   },
   methods: {
-    onLoad() {},
+    onLoad(page) {
+      const params = {
+        ...page
+      }
+      getUser(params).then((res) => {
+        this.data = res
+      })
+    },
+    onAddUser() {
+      this.page.currentPage = 1
+      this.onLoad(this.page)
+    },
     onClickAdd() {
       this.addVisible = !this.addVisible
     }
