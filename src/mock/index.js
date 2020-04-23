@@ -3,6 +3,7 @@ import menu from './menu'
 import oauth from './oauth'
 import param from './param'
 import system from './system'
+import personnel from './personnel'
 
 /**
  * 模拟数据mock
@@ -16,7 +17,7 @@ const options = { mock: true }
 
 menu(options)
 system(options)
-
+personnel(options)
 // oauth(options)
 
 // param(options)

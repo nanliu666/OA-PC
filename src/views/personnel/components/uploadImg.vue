@@ -5,10 +5,18 @@
       list-type="picture-card"
       :on-preview="handlePictureCardPreview"
       :on-remove="handleRemove"
+      :limit="limit"
+      :on-exceed="handleExceed"
+      :before-upload="beforeAvatarUpload"
+      :on-success="handleAvatarSuccess"
+      :file-list="fileList"
+      :multiple="true"
+      :on-error="onError"
     >
-      <i class="el-icon-plus"></i>
+      <i slot="default" v-if="isonError" class="">重新上传</i>
+      <i class="el-icon-plus" v-else></i>
     </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="true" :append-to-body="true">
       <img width="100%" :src="dialogImageUrl" alt />
     </el-dialog>
   </div>
@@ -16,10 +24,24 @@
 
 <script>
 export default {
+  props: { limit: Number },
   data() {
     return {
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      isonError: false,
+      fileList: [
+        {
+          name: 'food.jpeg',
+          url:
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        },
+        {
+          name: 'food2.jpeg',
+          url:
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        }
+      ]
     }
   },
   methods: {
@@ -29,10 +51,33 @@ export default {
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
+    },
+    handleExceed(file, fileList) {
+      const self = this
+      self.$message.warning('身份证照只能上传两张哦')
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    handleAvatarSuccess(res, file) {
+      const self = this
+      self.$message.success('上传成功')
+      // this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    onError() {
+      this.isonError = true
     }
   }
 }
 </script>
 
-<style>
-</style>
+<style></style>

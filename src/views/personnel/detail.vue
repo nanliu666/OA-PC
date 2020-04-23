@@ -6,7 +6,7 @@
         <div class="detail-box">
           <div class="demo-basic--circle">
             <div class="block">
-              <el-avatar :size="80" :src="circleUrl"></el-avatar>
+              <el-avatar :size="120" src=""></el-avatar>
             </div>
           </div>
         </div>
@@ -51,10 +51,13 @@
         <el-col :span="5">
           <div class="grid-content bg-purple">上级领导：陈晓晓</div>
         </el-col>
+        <el-col :span="5">
+          <div class="grid-content bg-purple">标签： 储备PM；正式PM</div>
+        </el-col>
       </el-col>
     </el-row>
     <!--  -->
-    <el-tabs v-model="activeName" stretch="true" @tab-click="handleClick">
+    <el-tabs v-model="activeName" :stretch="stretch" @tab-click="handleClick">
       <el-tab-pane label="在职信息" name="first">在职信息</el-tab-pane>
       <el-tab-pane label="个人信息" name="second">个人信息</el-tab-pane>
       <el-tab-pane label="材料附件" name="third">
@@ -72,7 +75,8 @@ import uploadData from './components/uploadData'
 export default {
   data() {
     return {
-      activeName: 'first'
+      activeName: 'first',
+      stretch: true
     }
   },
   components: {
@@ -107,7 +111,7 @@ export default {
   background: #99a9bf;
 }
 .bg-purple {
-  background: #d3dce6;
+  // background: #d3dce6;
 }
 .bg-purple-light {
   background: #e5e9f2;
