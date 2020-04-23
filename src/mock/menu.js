@@ -1,57 +1,5 @@
 import Mock from 'mockjs'
 
-const topMenuRes = {
-  resCode: 200,
-  success: true,
-  resMsg: '操作成功',
-  response: [
-    {
-      id: '1152445306956668930',
-      createUser: '1123598821738675201',
-      createDept: '1123598813738675201',
-      createTime: '2019-07-20 13:09:07',
-      updateUser: '1123598821738675201',
-      updateTime: '2019-07-20 13:09:07',
-      status: 1,
-      isDeleted: 0,
-      tenantId: '000000',
-      code: 'work',
-      name: '我的工作',
-      source: 'iconfont iconicon_shakehands',
-      sort: 1
-    },
-    {
-      id: '1152445532379537409',
-      createUser: '1123598821738675201',
-      createDept: '1123598813738675201',
-      createTime: '2019-07-20 13:10:01',
-      updateUser: '1123598821738675201',
-      updateTime: '2019-07-20 13:10:01',
-      status: 1,
-      isDeleted: 0,
-      tenantId: '000000',
-      code: 'monitor',
-      name: '监控流程',
-      source: 'iconfont iconicon_glass',
-      sort: 2
-    },
-    {
-      id: '1152445596879544321',
-      createUser: '1123598821738675201',
-      createDept: '1123598813738675201',
-      createTime: '2019-07-20 13:10:16',
-      updateUser: '1123598821738675201',
-      updateTime: '2019-07-20 13:10:16',
-      status: 1,
-      isDeleted: 0,
-      tenantId: '000000',
-      code: 'sys',
-      name: '系统配置',
-      source: 'iconfont iconicon_setting',
-      sort: 3
-    }
-  ]
-}
 const menuRes = {
   resCode: 200,
   success: true,
@@ -921,10 +869,9 @@ const menuRes = {
 }
 export default ({ mock }) => {
   if (!mock) return
-  Mock.mock('/api/blade-system/menu/top-menu', 'get', () => {
-    return topMenuRes
-  })
-  Mock.mock('/api/blade-system/menu/routes', 'get', () => {
-    return menuRes
+  Mock.mock(new RegExp('/api/blade-system/menu/routes' + '.*'), 'get', () => {
+    return {
+      response: menuRes
+    }
   })
 }

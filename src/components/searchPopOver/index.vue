@@ -85,6 +85,7 @@
           value-format="yyyy-MM-dd"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
+          @change="change"
         />
         <num-interval
           v-if="item.type === 'numInterval'"
@@ -332,6 +333,9 @@ export default {
     handleOrgNodeClick(data, form, field, config) {
       form[field] = data[config.nodeKey]
       form[field + 'Label'] = data[config.treeLabel]
+    },
+    change() {
+      this.submitSearch()
     }
   }
 }
@@ -356,5 +360,8 @@ export default {
 .popOver-footer {
   margin: 0 auto;
   text-align: right;
+}
+.el-form-item {
+  margin-right: 30px;
 }
 </style>
