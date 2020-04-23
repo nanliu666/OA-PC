@@ -13,8 +13,7 @@ export default {
   computed: {},
   watch: {},
   created() {},
-  methods: {
-  }
+  methods: {}
 }
 </script>
 <style lang="scss">
