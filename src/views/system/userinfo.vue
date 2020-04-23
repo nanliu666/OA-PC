@@ -497,7 +497,6 @@ export default {
   methods: {
     getUserAllInfo() {
       getUserInfo().then((res) => {
-        console.log(res)
         const user = res.data.data
         //基本信息
         this.userInfo = {
@@ -540,18 +539,21 @@ export default {
       this.readonly = false
     },
     saveBasicInfo() {
-      this.readonly = true
-
-      update(this.form).then((res) => {
-        if (res.data.success) {
-          this.$message({
-            type: 'success',
-            message: '修改信息成功!'
-          })
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.data.msg
+      this.$refs['userInfo'].validate((isPass) => {
+        if (isPass) {
+          this.readonly = true
+          update(this.form).then((res) => {
+            if (res.data.success) {
+              this.$message({
+                type: 'success',
+                message: '修改信息成功!'
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg
+              })
+            }
           })
         }
       })
