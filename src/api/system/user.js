@@ -146,3 +146,12 @@ export const deleteTag = (params) => {
     params
   })
 }
+
+//操作日志
+export const getActionLog = (params) => {
+  return request({
+    url: '/api/sys/log/v1/action/log',
+    method: 'get',
+    params
+  })
+}
