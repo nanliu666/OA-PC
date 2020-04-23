@@ -2,6 +2,7 @@ import user from './user'
 import menu from './menu'
 import oauth from './oauth'
 import param from './param'
+import position from './position'
 
 /**
  * 模拟数据mock
@@ -10,7 +11,7 @@ import param from './param'
  */
 
 const options = { mock: false }
-
+position({ mock: true })
 user(options)
 
 menu(options)

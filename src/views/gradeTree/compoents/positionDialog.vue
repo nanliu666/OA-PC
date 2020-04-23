@@ -71,26 +71,100 @@
 
 <script>
 import treeSelect from '../../../components/treeSelect/treeSelect'
+import { postV1Job } from '@/api/organize/position'
+
 const options = [
   {
-    value: '选项1',
-    label: '黄金糕'
+    value: '1',
+    label: '阿里巴巴'
   },
   {
-    value: '选项2',
-    label: '双皮奶'
+    value: '2',
+    label: '京东'
   },
   {
-    value: '选项3',
-    label: '蚵仔煎'
+    value: '3',
+    label: '淘宝'
   },
   {
-    value: '选项4',
-    label: '龙须面'
+    value: '4',
+    label: '天猫'
   },
   {
-    value: '选项5',
-    label: '北京烤鸭'
+    value: '5',
+    label: '百利宏'
+  }
+]
+const category = [
+  {
+    value: '1',
+    label: '研发'
+  },
+  {
+    value: '2',
+    label: '测试'
+  },
+  {
+    value: '3',
+    label: '前端'
+  },
+  {
+    value: '4',
+    label: 'java'
+  },
+  {
+    value: '5',
+    label: '项目经理'
+  }
+]
+const orgList = [
+  {
+    id: 1,
+    label: '百利宏',
+    children: [
+      {
+        id: 4,
+        label: '百利宏化工',
+        children: [
+          {
+            id: 9,
+            label: '百利红'
+          },
+          {
+            id: 10,
+            label: '百利'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 2,
+    label: '阿里巴巴',
+    children: [
+      {
+        id: 5,
+        label: '淘宝'
+      },
+      {
+        id: 6,
+        label: '天猫'
+      }
+    ]
+  },
+  {
+    id: 3,
+    label: '京东',
+    children: [
+      {
+        id: 7,
+        label: '京东物流'
+      },
+      {
+        id: 8,
+        label: '京东快递'
+      }
+    ]
   }
 ]
 export default {
@@ -101,6 +175,12 @@ export default {
   props: {
     isEdit: {
       type: Boolean
+    },
+    data: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     },
     title: {
       type: String
@@ -170,7 +250,7 @@ export default {
                 trigger: 'change'
               }
             ],
-            dicData: options
+            dicData: category
           },
           {
             label: '所属组织',
@@ -196,56 +276,7 @@ export default {
                 trigger: 'blur'
               }
             ],
-            dicData: [
-              {
-                id: 1,
-                label: '一级 1',
-                children: [
-                  {
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [
-                      {
-                        id: 9,
-                        label: '三级 1-1-1'
-                      },
-                      {
-                        id: 10,
-                        label: '三级 1-1-2'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2,
-                label: '一级 2',
-                children: [
-                  {
-                    id: 5,
-                    label: '二级 2-1'
-                  },
-                  {
-                    id: 6,
-                    label: '二级 2-2'
-                  }
-                ]
-              },
-              {
-                id: 3,
-                label: '一级 3',
-                children: [
-                  {
-                    id: 7,
-                    label: '二级 3-1'
-                  },
-                  {
-                    id: 8,
-                    label: '二级 3-2'
-                  }
-                ]
-              }
-            ]
+            dicData: orgList
           },
           {
             label: '上级职位',
@@ -294,12 +325,9 @@ export default {
   watch: {
     'form.orgId': {
       handler: function(val) {
-        console.log('org', val)
         if (val.length > 0) {
           this.option.column[3].placeholder = '请选择'
           this.option.column[3].dicData = this.options
-          // this.option.column[3].placeholder = '请先选择所属组织'
-          // this.set()
         } else {
           this.option.column[3].placeholder = '请先选择所属组织'
           this.option.column[3].dicData = []
@@ -311,6 +339,10 @@ export default {
     dialog: {
       handler: function() {
         this.$emit('update:dialogVisible', this.dialog)
+        if (!this.dialog) {
+          this.$refs.form.resetFields()
+          this.form.orgId = []
+        }
       }
     },
     dialogVisible: {
@@ -321,6 +353,21 @@ export default {
     },
     filterText(val) {
       this.$refs.tree.filter(val)
+    },
+    data: {
+      handler: function(val) {
+        if (val.jobName) {
+          this.form.jobName = val.jobName
+          this.form.categoryId = val.categoryId
+          let orgId = parseInt(val.orgId)
+          if (orgId) {
+            this.form.orgId = [orgId]
+          }
+          this.form.parentId = val.parentId
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -331,6 +378,18 @@ export default {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
           // this.$message.success(JSON.stringify(this.obj0))
+          let { jobName, categoryId, remark, parentId, orgId } = { ...this.form }
+          let params = {
+            jobName,
+            categoryId,
+            remark,
+            parentId,
+            orgId: orgId[0]
+          }
+          postV1Job(params).then((res) => {
+            this.$message.success(res.data.data.msg)
+            this.$emit('onsubmit', params)
+          })
           this.dialog = false
         }
       })
@@ -351,20 +410,25 @@ export default {
   color: #202940;
   line-height: 24px;
 }
+
 /deep/ .el-dialog__body {
   padding: 24px;
 }
-/deep/.el-dialog__footer {
+
+/deep/ .el-dialog__footer {
   padding: 0px 24px 24px;
 }
-/deep/.el-form-item__label {
+
+/deep/ .el-form-item__label {
   line-height: 20px;
   font-size: 14px;
   color: #0f0000;
 }
+
 /deep/ .el-form-item {
   margin-bottom: 24px;
 }
+
 .dialog-footer {
   text-align: center;
 }
