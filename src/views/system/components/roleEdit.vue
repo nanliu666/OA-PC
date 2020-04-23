@@ -14,11 +14,11 @@
         :option="option"
       >
         <template
-          slot="relaPosition"
+          slot="positions"
           slot-scope="scope"
         >
           <treeSelect
-            v-model="form.relaPosition"
+            v-model="form.positions"
             :option="scope.column"
           />
         </template>
@@ -58,6 +58,26 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    treeList: {
+      type: Array,
+      default: () => []
+    },
+    positions: {
+      type: Array,
+      default: () => []
+    },
+    props: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
+    positionProps: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   data() {
@@ -71,9 +91,10 @@ export default {
     return {
       form: {
         roleName: '',
-        type: 0,
+        type: 'No',
         remark: '',
-        relaPosition: []
+        positions: [],
+        jobs: []
       },
       option: {
         menuBtn: false,
@@ -110,39 +131,30 @@ export default {
             dicData: [
               {
                 label: '关联职位',
-                value: 0
+                value: 'Job'
               },
               {
                 label: '关联岗位',
-                value: 1
+                value: 'Position'
               },
               {
                 label: '无关联',
-                value: 2
+                value: 'No'
               }
             ]
           },
           {
             label: '关联岗位',
-            prop: 'rela',
+            prop: 'jobs',
             type: 'select',
             display: true,
             placeholder: '请选择关联岗位',
             span: 24,
-            dicData: [
-              {
-                label: '关联职位',
-                value: 0
-              },
-              {
-                label: '关联岗位',
-                value: 1
-              },
-              {
-                label: '无关联',
-                value: 2
-              }
-            ],
+            props: {
+              label: this.positionProps.label,
+              value: this.positionProps.id
+            },
+            dicData: [],
             rules: [
               {
                 required: true,
@@ -153,16 +165,17 @@ export default {
           },
           {
             label: '关联职位',
-            prop: 'relaPosition',
+            prop: 'positions',
             props: {
-              label: 'label',
-              value: 'id'
+              label: this.props.label,
+              value: this.props.id
             },
             formslot: true,
             labelslot: true,
             errorslot: true,
             span: 24,
             limitCheck: true,
+            display: false,
             placeholder: '请选择关联职位',
             rules: [
               {
@@ -175,56 +188,7 @@ export default {
                 trigger: 'blur'
               }
             ],
-            dicData: [
-              {
-                id: 1,
-                label: '一级 1',
-                children: [
-                  {
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [
-                      {
-                        id: 9,
-                        label: '三级 1-1-1'
-                      },
-                      {
-                        id: 10,
-                        label: '三级 1-1-2'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2,
-                label: '一级 2',
-                children: [
-                  {
-                    id: 5,
-                    label: '二级 2-1'
-                  },
-                  {
-                    id: 6,
-                    label: '二级 2-2'
-                  }
-                ]
-              },
-              {
-                id: 3,
-                label: '一级 3',
-                children: [
-                  {
-                    id: 7,
-                    label: '二级 3-1'
-                  },
-                  {
-                    id: 8,
-                    label: '二级 3-2'
-                  }
-                ]
-              }
-            ]
+            dicData: []
           },
           {
             label: '描述',
@@ -249,31 +213,55 @@ export default {
     }
   },
   watch: {
-    'form.type'() {
-      var column = this.findObject(this.option.column, 'rela')
-      if (this.form.text1 === 0) {
-        column.display = true
-      } else {
-        column.display = false
-      }
+    'form.type': {
+      handler(val) {
+        const positionColumn = this.findObject(this.option.column, 'positions')
+        const jobColumn = this.findObject(this.option.column, 'jobs')
+        if (val === 'Position') {
+          positionColumn.display = true
+          jobColumn.display = false
+        } else if (val === 'Job') {
+          positionColumn.display = false
+          jobColumn.display = true
+        } else {
+          jobColumn.display = false
+          positionColumn.display = false
+        }
+      },
+      immediate: true
     },
-    'form.relaPosition': {
+    treeList: {
+      handler(val) {
+        const positionColumn = this.findObject(this.option.column, 'positions')
+        positionColumn.dicData = val
+      },
+      deep: true
+    },
+    positions: {
+      handler(val) {
+        const jobColumn = this.findObject(this.option.column, 'jobs')
+        jobColumn.dicData = val
+      },
+      deep: true
+    },
+    'form.positions': {
       handler() {
-        this.$refs['form'].validateField('relaPosition', () => {})
+        // this.$refs['form'].validateField('positions', () => {
+        // })
       },
       deep: true
     }
   },
   methods: {
     findObject(column, key) {
-      column.find((item) => item.prop === key)
+      return column.find((item) => item.prop === key)
     },
 
     onContinue() {},
     onClickSave() {
       this.$refs.form.validate((vaild) => {
-        if (vaild) {
-          this.$message.success(JSON.stringify(this.obj0))
+        if (!vaild) {
+          return
         }
       })
     },

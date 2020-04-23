@@ -7,8 +7,12 @@
         </div>
         <el-divider />
         <asideTree
+          :props="props"
+          :current-id="currentId"
+          :tree-list="treeList"
           @del="handleDel"
           @edit="handleEdit"
+          @reload="reload"
         />
       </div>
       <div class="bottom-wrap">
@@ -17,7 +21,7 @@
           @click="onClickVisible(type.group, true)"
         >
           <i class="el-icon-circle-plus" />
-          新建分类组
+          新建分组
         </div>
         <div
           class="bottom-item"
@@ -29,14 +33,14 @@
       </div>
     </div>
     <el-dialog
-      :title="groupId ? '编辑分组' : '新建分组'"
+      :title="groupForm.groupId ? '编辑分组' : '新建分组'"
       :visible.sync="groupVisible"
       :close-on-click-modal="false"
       :modal-append-to-body="false"
     >
       <div style="padding: 0 40px">
         <avue-form
-          ref="form"
+          ref="groupForm"
           v-model="groupForm"
           :option="groupOption"
         />
@@ -45,6 +49,8 @@
           class="tree-container"
         >
           <asideTree
+            :props="groupForm.groupData === 1 ? props : positionProps"
+            :tree-list="groupForm.groupData === 1 ? treeList : positions"
             :show-more="false"
             :show-search="false"
           />
@@ -72,14 +78,14 @@
       </div>
     </el-dialog>
     <el-dialog
-      :title="cateId ? '编辑分类' : '新建分类'"
+      :title="cateForm.categoryId ? '编辑分类' : '新建分类'"
       :visible.sync="cateVisible"
       :close-on-click-modal="false"
       :modal-append-to-body="false"
     >
       <div style="padding: 0 40px">
         <avue-form
-          ref="form"
+          ref="cateForm"
           v-model="cateForm"
           :option="cateOption"
         />
@@ -110,6 +116,7 @@
 
 <script>
 import asideTree from './roleAsideTree'
+import { createGroup, updateGroup, createCate, updateCate } from '../../../api/system/role'
 
 const type = {
   group: 'group',
@@ -120,65 +127,40 @@ export default {
   components: {
     asideTree
   },
+  props: {
+    treeList: {
+      type: Array,
+      default: () => []
+    },
+    currentId: {
+      type: [String, Number],
+      default: ''
+    },
+    props: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
+    positionProps: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
+    positions: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
       type,
-      groupId: '',
       groupVisible: false,
-      cateId: '',
       cateVisible: false,
-      filterList: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
-        }
-      ],
       searchInput: '',
       groupForm: {
+        groupId: '',
         groupName: '',
         groupData: 0
       },
@@ -203,6 +185,7 @@ export default {
           },
           {
             label: '同步分类数据',
+            display: true,
             prop: 'groupData',
             type: 'radio',
             row: true,
@@ -232,8 +215,9 @@ export default {
         ]
       },
       cateForm: {
-        cateName: '',
-        cateData: 0
+        categoryId: '',
+        categoryName: '',
+        groupId: 1
       },
       cateOption: {
         menuBtn: false,
@@ -242,7 +226,7 @@ export default {
         column: [
           {
             label: '分类名称',
-            prop: 'cateName',
+            prop: 'categoryName',
             row: true,
             span: 24,
             placeholder: '请输入分类名称',
@@ -256,7 +240,11 @@ export default {
           },
           {
             label: '所属分组',
-            prop: 'cateData',
+            prop: 'groupId',
+            props: {
+              label: this.props.label,
+              value: this.props.id
+            },
             type: 'select',
             row: true,
             span: 24,
@@ -268,21 +256,41 @@ export default {
               }
             ],
             dicData: [
-              {
-                label: '默认',
-                value: 0
-              },
-              {
-                label: '财务部',
-                value: 1
-              },
-              {
-                label: '设计部',
-                value: 2
-              }
+              // {
+              //     label: '默认',
+              //     value: 0
+              // },
+              // {
+              //     label: '财务部',
+              //     value: 1
+              // },
+              // {
+              //     label: '设计部',
+              //     value: 2
+              // }
             ]
           }
         ]
+      }
+    }
+  },
+  watch: {
+    'groupForm.groupId': {
+      handler(val) {
+        this.groupOption.column.forEach((item) => {
+          if (item.prop === 'groupData') {
+            item.display = !val
+          }
+        })
+      }
+    },
+    treeList: {
+      handler(val) {
+        this.cateOption.column.forEach((item) => {
+          if (item.prop === 'groupId') {
+            item.dicData = val
+          }
+        })
       }
     }
   },
@@ -294,24 +302,78 @@ export default {
     onClickSearch() {
       this.$refs.tree.filter(this.searchInput)
     },
-    onClickVisible(str, isAdd = false) {
+    onClickVisible(str, node, data) {
       if (str === type.group) {
-        if (isAdd) {
-          this.groupForm.groupId = ''
-        }
+        // 分组
+        this.$nextTick(() => {
+          if (!data) {
+            // 新增，初始化表单数据
+            this.groupForm.groupId = ''
+            if (this.$refs.groupForm) {
+              this.$refs.groupForm.resetForm()
+            }
+          } else {
+            // 点击的是编辑
+            this.groupForm.groupId = data[this.props.id]
+            this.groupForm.groupName = data[this.props.label]
+          }
+        })
         this.groupVisible = !this.groupVisible
       } else {
-        if (isAdd) {
-          this.cateForm.cateId = ''
-        }
+        //分类
+        this.$nextTick(() => {
+          if (!data) {
+            // 新增，初始化表单数据
+            this.cateForm.categoryId = ''
+            if (this.$refs.cateForm) {
+              this.$refs.cateForm.resetForm()
+            }
+          } else {
+            // 点击的是编辑
+            this.cateForm.categoryId = data[this.props.id]
+            this.cateForm.categoryName = data[this.props.label]
+          }
+        })
+
         this.cateVisible = !this.cateVisible
       }
     },
+    /**
+     * @description 点击分类树节点
+     * @param node 当前节点的 Node 对象
+     * @param data 当前节点的数据
+     */
     handleEdit(node, data) {
-      console.log(node, data)
-      this.onClickVisible(node.level === 1 ? type.group : type.cate)
+      this.onClickVisible(node.level === 1 ? type.group : type.cate, node, data)
     },
     handleDel(node, data) {
+      if (node.level === 1) {
+        if (node.childNodes.length > 0) {
+          let dataIndex = node.childNodes.findIndex((item) => item.data.roleNum > 0)
+          if (dataIndex > -1) {
+            this.$alert('很抱歉，您选中的分组下存在员工，请先将员工调整后再删除', '提示', {
+              confirmButtonText: '确定',
+              type: 'warning',
+              dangerouslyUseHTMLString: true
+            })
+            return
+          }
+        }
+        this.delGroup(node, data)
+      } else {
+        if (data.roleNum > 0) {
+          this.$alert('很抱歉，您选中的分类下存在员工，请先将员工调整后再删除', '提示', {
+            confirmButtonText: '确定',
+            type: 'warning',
+            dangerouslyUseHTMLString: true
+          })
+          return
+        }
+        this.delCate(node, data)
+      }
+    },
+
+    delGroup(node, data) {
       this.$confirm('您确定要删除该分组吗？<br/> 删除后，该分组下的角色分类和角色也会同步清除', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -319,11 +381,90 @@ export default {
         dangerouslyUseHTMLString: true
       })
         .then(() => {
-          console.log(node, data)
+          this.delFunc(node, data)
         })
         .catch(() => {})
     },
-    onClickSave() {}
+
+    delCate(node, data) {
+      this.$confirm('您确定要删除该分类吗？<br/> 删除后，该分类下的角色也会同步清除', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        dangerouslyUseHTMLString: true
+      })
+        .then(() => {
+          this.delFunc(node, data)
+        })
+        .catch(() => {})
+    },
+
+    delFunc() {},
+
+    onClickSave(str) {
+      if (str === type.group) {
+        this.groupForm.groupId ? this.updateGroupFunc(str) : this.createGroupFunc(str)
+      } else {
+        this.cateForm.categoryId ? this.updateCateFunc(str) : this.createCateFunc(str)
+      }
+    },
+
+    createGroupFunc(str) {
+      const params = {
+        groupName: this.groupForm.groupName,
+        categories: this.getCategories
+      }
+      createGroup(params).then(() => {
+        this.$message.success('新建分类成功')
+        this.onClickVisible(str)
+        this.$emit('reload')
+      })
+    },
+
+    getCategories() {
+      return []
+    },
+
+    createCateFunc(str) {
+      const params = {
+        categoryName: this.cateForm.categoryName,
+        groupId: this.cateForm.groupId
+      }
+      createCate(params).then(() => {
+        this.$message.success('新建分组成功')
+        this.onClickVisible(str)
+        this.$emit('reload')
+      })
+    },
+
+    updateGroupFunc(str) {
+      const params = {
+        categoryId: this.cateForm.categoryId,
+        categoryName: this.cateForm.categoryName,
+        groupId: this.cateForm.groupId
+      }
+      updateCate(params).then(() => {
+        this.$message.success('修改分组成功')
+        this.onClickVisible(str)
+        this.$emit('reload')
+      })
+    },
+
+    updateCateFunc(str) {
+      const params = {
+        groupId: this.groupForm.groupId,
+        groupName: this.groupForm.groupName
+      }
+      updateGroup(params).then(() => {
+        this.$message.success('新建分类成功')
+        this.onClickVisible(str)
+        this.$emit('reload')
+      })
+    },
+
+    reload(data) {
+      this.$emit('reload', data)
+    }
   }
 }
 </script>
