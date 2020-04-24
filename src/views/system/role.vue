@@ -6,11 +6,17 @@
       </div>
     </div>
     <basic-container>
-      <el-container>
-        <roleAside />
+      <el-container style="min-height: 600px">
+        <roleAside
+          v-bind="options"
+          @reload="reload"
+        />
         <el-main class="main-wrap">
           <div class="main-wrap">
-            <div class="search-bar">
+            <div
+              v-if="selectArr.length === 0"
+              class="search-bar"
+            >
               <el-form
                 ref="form"
                 :model="form"
@@ -19,11 +25,14 @@
                 :inline="true"
               >
                 <el-form-item>
-                  <el-input v-model="form.roleName">
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                    />
+                  <el-input
+                    v-model="form.roleName"
+                    size="medium"
+                    placeholder="角色名称"
+                  >
+                    <template slot="append">
+                      <i class="el-icon-search" />
+                    </template>
                   </el-input>
                 </el-form-item>
               </el-form>
@@ -41,10 +50,29 @@
                 />
               </div>
             </div>
+            <div
+              v-else
+              class="selected-bar"
+            >
+              <div class="left-part">
+                <span style="color: #999">已选中&nbsp;</span>
+                <span class="selected-num"> {{ selectArr.length }} </span> <span style="color: #999">&nbsp;项</span>
+                <div class="divider" />
+                <span
+                  class="del-all"
+                  @click="delAll"
+                ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+              </div>
+              <i
+                class="el-icon-close"
+                @click="onCloseSelect"
+              />
+            </div>
             <avue-crud
-              :data="data"
+              ref="table"
+              :data="filterList"
               :option="option"
-              :page.sync="page"
+              @selection-change="selectionChange"
               @on-load="onLoad"
             >
               <template
@@ -85,7 +113,13 @@
             </avue-crud>
           </div>
         </el-main>
-        <roleEdit :visible.sync="visible" />
+        <roleEdit
+          :visible.sync="visible"
+          :tree-list="options.treeList"
+          :positions="options.positions"
+          :props="options.props"
+          :position-props="options.positionProps"
+        />
         <roleLimits :visible.sync="configVisible" />
         <userList :visible.sync="userVisible" />
       </el-container>
@@ -99,6 +133,7 @@ import roleAside from './components/roleAside'
 import roleLimits from './components/rolePermission'
 import userList from './components/roleUserList'
 import { tableOptions } from '../../util/constant'
+import { getRoleList, getCate, getPositions } from '../../api/system/role'
 
 export default {
   name: 'Role',
@@ -113,50 +148,32 @@ export default {
       visible: false,
       configVisible: false,
       userVisible: false,
-      btnList: [
-        {
-          name: '编辑',
-          key: 'edit'
+      options: {
+        currentId: '',
+        props: {
+          label: 'label',
+          id: 'cateId'
         },
-        {
-          name: '删除',
-          key: 'del'
-        }
-      ],
+        treeList: [],
+        positionProps: {
+          label: 'positionName',
+          id: 'positionId'
+        },
+        positions: []
+      },
       form: {
         roleName: ''
       },
-      page: {
-        pageSize: 20,
-        pagerCount: 5,
-        total: 100
-      },
-      data: [
-        {
-          roleCode: 'GZ789',
-          roleName: '小明',
-          type: '职位',
-          message: '视觉设计',
-          userNum: 10,
-          num: 20
-        },
-        {
-          roleCode: 'GZ789',
-          roleName: '小王',
-          type: '职位',
-          message: '视觉设计',
-          userNum: 10,
-          num: 20
-        }
-      ],
+      data: [],
       option: {
         ...tableOptions,
+        selection: true,
         align: 'center',
         menuAlign: 'center',
         column: [
           {
             label: '角色编码',
-            prop: 'roleCode'
+            prop: 'roleId'
           },
           {
             label: '角色名称',
@@ -164,11 +181,15 @@ export default {
           },
           {
             label: '关联类型',
-            prop: 'type'
+            prop: 'type',
+            formatter: (row, value) => {
+              return value === 'Job' ? '职位' : '岗位'
+            }
           },
           {
             label: '关联信息',
-            prop: 'message'
+            prop: 'message',
+            formatter: this.messageFormatter
           },
           {
             label: '用户人数',
@@ -176,21 +197,128 @@ export default {
           },
           {
             label: '在职人数',
-            prop: 'num'
+            prop: 'workNum'
           }
         ]
-      }
+      },
+      selectArr: []
     }
   },
+  computed: {
+    filterList() {
+      return this.data.filter((item) => {
+        return item.roleName.indexOf(this.form.roleName) > -1
+      })
+    }
+  },
+  created() {
+    this.getJobsFunc()
+    this.getPositionsFunc()
+  },
   methods: {
-    onLoad() {},
+    async onLoad() {
+      await this.getTreeCate()
+      this.loadRoleData()
+    },
+
+    loadRoleData() {
+      const params = {
+        roleName: '',
+        categoryId: this.options.currentId
+      }
+      getRoleList(params).then((res) => {
+        this.data = res
+      })
+    },
+
+    reload(data = {}) {
+      if (data[this.options.props.id]) {
+        this.options.currentId = data[this.options.props.id]
+        this.onLoad()
+      }
+      this.loadRoleData()
+    },
+
+    getTreeCate() {
+      return new Promise((resolve) => {
+        const params = {
+          categoryName: '123',
+          test: '256'
+        }
+        getCate(params).then((res) => {
+          this.options.treeList = (res || []).map((item) => {
+            let children = []
+            if (item.categories && item.categories.length > 0) {
+              children = item.categories.map((it) => {
+                if (!this.options.currentId) {
+                  this.options.currentId = it.categoryId
+                }
+                return {
+                  cateId: it.categoryId,
+                  label: it.categoryName,
+                  roleNum: it.roleNum
+                }
+              })
+            }
+
+            return {
+              cateId: item.groupId,
+              label: item.groupName,
+              children
+            }
+          })
+          resolve()
+        })
+      })
+    },
+
+    messageFormatter(row) {
+      let str = ''
+      if (row.type) {
+        if (row.type === 'Job' && row.jobs.length > 0) {
+          row.jobs.forEach((item) => {
+            str += item.jobName + ','
+          })
+        } else if (row.type === 'Position' && row.positions.length > 0) {
+          row.positions.forEach((item) => {
+            str += item.positionName + ','
+          })
+        }
+        str = str.substr(0, str.length - 1)
+      }
+      return str
+    },
+
+    getJobsFunc() {
+      // getJobs().then((res) => {
+      //     this.jobList = res
+      // })
+    },
+
+    getPositionsFunc() {
+      getPositions().then((res) => {
+        this.options.positions = res
+      })
+    },
+
     handleConfig() {
       this.configVisible = !this.configVisible
     },
     handleCheck() {
       this.userVisible = !this.userVisible
     },
-    handleCommand() {}
+    handleCommand() {},
+    selectionChange(rows) {
+      this.selectArr = rows
+    },
+    toggleSelection(rows = []) {
+      this.$refs.table.toggleSelection(rows)
+    },
+    delAll() {},
+    onCloseSelect() {
+      this.$refs.table.toggleSelection()
+      this.selectArr = []
+    }
   }
 }
 </script>
@@ -217,7 +345,37 @@ export default {
     display: flex;
     justify-content: space-between;
   }
+
+  .selected-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    height: 58px;
+    line-height: 58px;
+
+    .del-all {
+      cursor: pointer;
+    }
+
+    .selected-num {
+      color: #409eff;
+    }
+
+    .divider {
+      width: 2px;
+      height: 38px;
+      margin: 0 10px;
+      background-color: #f2f2f2;
+    }
+
+    .left-part {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
+
 /deep/ .el-card__body {
   padding-bottom: 0 !important;
 }

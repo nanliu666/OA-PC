@@ -66,7 +66,7 @@
             </el-form-item>
             <el-form-item
               v-for="items in searchArray"
-              :key="items.labal"
+              :key="items.label"
               :label="items.label"
               class="itemForm"
             >
@@ -84,12 +84,16 @@
                     :span="8"
                     class="el-col el-col-8"
                   >
-                    <el-form-item :label="item.label">
+                    <el-form-item
+                      :label="item.label"
+                      :class="item.type === 'treeSelect' ? 'treeSelect' : ''"
+                    >
                       <el-input
                         v-if="item.type === 'input'"
                         v-model="item.data"
                         :type="item.config && item.config.type ? item.config.type : 'text'"
                         :placeholder="'请输入' + item.label"
+                        class="elInput"
                       />
                       <el-select
                         v-if="item.type === 'select'"
@@ -143,19 +147,18 @@
                         value-format="yyyy-MM-dd"
                         start-placeholder="开始时间"
                         end-placeholder="结束时间"
+                        style="width:198px"
                       />
                       <num-interval
                         v-if="item.type === 'numInterval'"
                         v-model="item.data"
                       />
-                      <div style="max-width:200px">
-                        <tree-select
-                          v-if="item.type === 'treeSelect'"
-                          v-model="item.data"
-                          :option="item.options"
-                          :is-search="false"
-                        />
-                      </div>
+                      <tree-select
+                        v-if="item.type === 'treeSelect'"
+                        v-model="item.data"
+                        :option="item.options"
+                        :is-search="false"
+                      />
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -200,6 +203,11 @@ import searchArray from './searchArray'
 export default {
   name: 'ScreenComponent',
   components: { NumInterval, TreeSelect },
+  props: {
+    showStatus: {
+      type: Boolean
+    }
+  },
   data() {
     return {
       tags: [],
@@ -210,6 +218,22 @@ export default {
     }
   },
   watch: {
+    showStatus: {
+      handler(newVal) {
+        if (newVal) {
+          this.searchArray[0].questions.splice(5, 0, this.statusItem)
+        } else {
+          this.searchArray[0].questions = this.searchArray[0].questions.filter((item) => {
+            if (item.field === 'statuses') {
+              this.statusItem = item
+              return false
+            } else {
+              return true
+            }
+          })
+        }
+      }
+    },
     searchArray: {
       handler(newVal) {
         let tagsArr = []
@@ -247,24 +271,44 @@ export default {
     searchParams() {
       let params = {}
       this.tags.forEach((item) => {
-        if (item.field.indexOf(',') > -1) {
-          if (Array.isArray(item.data)) {
-            item.field.split(',').forEach((it, idx) => {
-              params[it] = item.data[idx]
-            })
-          } else if (Object.prototype.toString.call(item.data) === '[object Object]') {
-            params[item.field.split(',')[0]] = item.data.min
-            params[item.field.split(',')[1]] = item.data.max
-          }
-        } else {
-          if (item.type === 'cascader') {
-            params[item.field] = item.data[item.data.length - 1]
-          }
+        if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
           params[item.field] = item.data
+        } else if (item.type === 'numInterval') {
+          params[item.field.split(',')[0]] = item.data.min
+          params[item.field.split(',')[1]] = item.data.max
+        } else if (item.type === 'treeSelect' || item.type === 'select') {
+          if ((item.type === 'select' && item.config && item.config.multiple) || item.type === 'treeSelect') {
+            params[item.field] = item.data.map((it) => {
+              return { [item.arrField]: it }
+            })
+          } else {
+            params[item.field] = item.data
+          }
+        } else if (item.type === 'cascader') {
+          params[item.field] = item.data[item.data.length - 1]
+        } else if (item.type === 'dataPicker') {
+          item.field.split(',').forEach((it, idx) => {
+            params[it] = item.data[idx]
+          })
         }
+        // if (item.field.indexOf(',') > -1) {
+        //   if (Array.isArray(item.data)) {
+        //     item.field.split(',').forEach((it, idx) => {
+        //       params[it] = item.data[idx]
+        //     })
+        //   } else if (Object.prototype.toString.call(item.data) === '[object Object]') {
+        //     params[item.field.split(',')[0]] = item.data.min
+        //     params[item.field.split(',')[1]] = item.data.max
+        //   }
+        // } else {
+        //   if (item.type === 'cascader') {
+        //     params[item.field] = item.data[item.data.length - 1]
+        //   }
+        //   params[item.field] = item.data
+        // }
       })
       // 预留模糊搜索参数
-      params['参数'] = this.fuzzySearch
+      params['search'] = this.fuzzySearch
       return params
     },
     // 重置筛选
@@ -320,18 +364,26 @@ export default {
   border-radius: 4px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04), 0 8px 8px 0 rgba(0, 0, 0, 0.08), 0 10px 20px 8px rgba(0, 0, 0, 0.04);
 }
+.elInput {
+  width: 200px;
+}
+/deep/ .treeSelect {
+  .el-form-item__content {
+    width: 198px;
+  }
+}
 /deep/.itemForm {
   .el-form-item__content {
     .item-form-form {
       width: calc(100% - 70px);
       .el-form-item {
-        // width: 33%;
         .el-form-item__label {
-          text-align: left;
+          text-align: right;
           line-height: 20px;
         }
       }
       .el-col-8 {
+        min-width: 280px;
         height: 40px;
         margin-bottom: 20px;
       }

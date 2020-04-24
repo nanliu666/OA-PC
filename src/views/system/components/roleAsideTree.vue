@@ -10,18 +10,16 @@
         placeholder="请输入内容"
       >
         <template slot="append">
-          <i
-            class="el-icon-search"
-            style="cursor: pointer"
-            @click="onClickSearch"
-          />
+          <i class="el-icon-search" />
         </template>
       </el-input>
     </div>
     <el-tree
       ref="tree"
-      :data="filterList || []"
-      :node-key="'id'"
+      :data="treeList || []"
+      :node-key="props.id"
+      :default-expanded-keys="[currentId]"
+      :highlight-current="true"
       :filter-node-method="filterNode"
     >
       <div
@@ -30,17 +28,22 @@
         @click.prevent="onClickNode(node, data)"
       >
         <span><i
-          v-if="node.level === 1"
-          class="el-icon-folder"
-          style="margin-right: 5px;"
-        />{{ node.label }}</span>
+                v-if="node.level === 1"
+                class="el-icon-folder"
+                style="margin-right: 5px;"
+              />{{ data[props.label] }}
+          <span v-if="data.roleNum">{{ `(${data.roleNum})` }}</span>
+        </span>
         <el-dropdown
           v-if="showMore"
           class="right-content"
           trigger="hover"
           @command="handleCommand($event, node, data)"
         >
-          <span class="el-dropdown-link more-column">
+          <span
+            class="el-dropdown-link more-column"
+            @click.stop=""
+          >
             <i class="el-icon-more" />
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -68,69 +71,51 @@ export default {
     showSearch: {
       type: Boolean,
       default: true
+    },
+    treeList: {
+      type: Array,
+      default: () => []
+    },
+    currentId: {
+      type: [String, Number],
+      default: ''
+    },
+    props: {
+      type: Object,
+      default: () => {
+        return {
+          label: 'label',
+          id: 'id'
+        }
+      }
     }
   },
   data() {
     return {
-      filterList: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
+      searchInput: ''
+    }
+  },
+  watch: {
+    currentId: {
+      handler(newVal, oldVal) {
+        if (!oldVal) {
+          this.$nextTick(() => {
+            this.$refs.tree.setCurrentKey(this.currentId)
+          })
         }
-      ]
+      },
+      immediate: true
+    },
+    searchInput(val) {
+      this.$refs.tree.filter(val)
     }
   },
   methods: {
     filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
+      return data[this.props.label].indexOf(value) !== -1
     },
     onClickNode(node, data) {
-      console.log(node, data)
+      this.$emit('reload', data)
     },
     handleCommand(command, node, data) {
       this.$emit(command, node, data)
@@ -143,6 +128,7 @@ export default {
 .search-input {
   margin-bottom: 10px;
 }
+
 .custom-tree-node {
   flex: 1;
   display: flex;
@@ -150,14 +136,17 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px;
+
   .right-content {
     display: none;
   }
+
   &:hover {
     .right-content {
       display: inline-block;
     }
   }
+
   .more-column {
     display: inline-block;
     transform: rotate(90deg);
