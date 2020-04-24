@@ -14,10 +14,9 @@
         ><span class="slot-title-box">仅支持2M以内jpg、jpeg、png格式图片上传。</span>
       </div>
       <upload-img :limit="limit" />
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="openUpload = false">取 消</el-button>
-        <el-button type="primary" @click="openUpload = false">保 存</el-button>
+        <el-button type="primary" @click="preserve">保 存</el-button>
       </div>
     </el-dialog>
   </div>
@@ -42,6 +41,11 @@ export default {
     },
     invisible() {
       this.seen = false
+    },
+    preserve() {
+      this.openUpload = false
+      // this.$emit('getUploadImg',this.)
+      window.console.log('baocuo ')
     }
   }
 }

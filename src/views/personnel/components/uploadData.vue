@@ -6,7 +6,7 @@
           <el-divider direction="vertical"></el-divider>
           <div>员工基本资料</div>
         </el-col>
-        <el-col>
+        <el-col class="employee-files">
           <upload typeName="身份证原件照片" typeIcon="el-icon-s-custom" :limit="2" />
           <upload typeName="学历证书" typeIcon="el-icon-s-custom" />
           <upload typeName="学位证书" typeIcon="el-icon-s-custom" />
@@ -36,7 +36,7 @@
           <el-divider direction="vertical"></el-divider>
           <div>员工离职资料</div>
         </el-col>
-        <el-col>
+        <el-col class="employee-files">
           <upload typeName="离职审批" typeIcon="el-icon-picture-outline" />
           <upload typeName="离职证明" typeIcon="el-icon-picture-outline" />
           <upload typeName="离职申请表" typeIcon="el-icon-picture-outline" />
