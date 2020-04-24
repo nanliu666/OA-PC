@@ -220,8 +220,8 @@ export default {
     getData() {
       this.params.name = this.form.name
       getCategoryDefine(this.params).then((res) => {
-        this.data = res.data.data.data
-        this.page.total = res.data.data.totalNum
+        this.data = res.data
+        this.page.total = res.totalNum
       })
     },
     onSubmit(val) {

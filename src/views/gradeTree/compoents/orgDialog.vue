@@ -22,6 +22,7 @@
                 v-model="form.parentOrgId"
                 :is-single="isSingle"
                 :option="scope.column"
+                :limit-check="limitCheck"
               />
             </template>
           </avue-form>
@@ -33,14 +34,14 @@
         >
           <el-button
             size="medium"
-            @click="onContinue"
+            @click="againAdd"
           >
             保存并继续添加
           </el-button>
           <el-button
             type="primary"
             size="medium"
-            @click="onClickSave"
+            @click="onClickAdd"
           >
             保存
           </el-button>
@@ -93,12 +94,63 @@ const options = [
     label: '北京烤鸭'
   }
 ]
+let orgList = []
+import { getOrganization, postOrganization, putOrganization } from '@/api/organize/grade'
+const consc = [
+  {
+    label: 'CEO',
+    value: '001'
+  },
+  {
+    label: ' 百利宏化工CEO',
+    value: '002'
+  },
+  {
+    label: '百利宏医药工CEO',
+    value: '003'
+  },
+  {
+    label: '事业部经理1',
+    value: '004'
+  },
+  {
+    label: '事业部经理2',
+    value: '005'
+  },
+  {
+    label: '事业部经理3',
+    value: '006'
+  },
+  {
+    label: '事业部经理4',
+    value: '007'
+  },
+  {
+    label: '飞洒',
+    value: '008'
+  },
+  {
+    label: '发撒',
+    value: '009'
+  },
+  {
+    label: '富士达',
+    value: '0010'
+  },
+  {
+    label: '士大夫',
+    value: '0011'
+  }
+]
 export default {
   name: 'OrgDialog',
   components: { treeSelect },
   props: {
     isEdit: {
-      type: Boolean
+      type: Boolean,
+      default: function() {
+        return false
+      }
     },
     title: {
       type: String,
@@ -135,7 +187,9 @@ export default {
       }
     }
     return {
+      limitCheck: true,
       isSingle: true,
+
       form: {
         orgName: '',
         remark: '',
@@ -174,7 +228,7 @@ export default {
             labelslot: true,
             errorslot: true,
             span: 24,
-            limitCheck: true,
+            limitCheck: false,
             placeholder: '请选择所属组织',
             rules: [
               {
@@ -187,56 +241,7 @@ export default {
                 trigger: 'blur'
               }
             ],
-            dicData: [
-              {
-                id: 1,
-                label: '一级 1',
-                children: [
-                  {
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [
-                      {
-                        id: 9,
-                        label: '三级 1-1-1'
-                      },
-                      {
-                        id: 10,
-                        label: '三级 1-1-2'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2,
-                label: '一级 2',
-                children: [
-                  {
-                    id: 5,
-                    label: '二级 2-1'
-                  },
-                  {
-                    id: 6,
-                    label: '二级 2-2'
-                  }
-                ]
-              },
-              {
-                id: 3,
-                label: '一级 3',
-                children: [
-                  {
-                    id: 7,
-                    label: '二级 3-1'
-                  },
-                  {
-                    id: 8,
-                    label: '二级 3-2'
-                  }
-                ]
-              }
-            ]
+            dicData: orgList
           },
           {
             label: '组织类型',
@@ -248,21 +253,27 @@ export default {
               {
                 required: true,
                 message: '请选择组织类型',
-                trigger: 'change'
+                trigger: 'blur'
               }
             ],
             dicData: [
               {
                 label: '公司',
-                value: 0
+                value: 0,
+                list: ['Enterprise', 'Company'],
+                disabled: false
               },
               {
                 label: '部门',
-                value: 1
+                value: 1,
+                list: ['Enterprise', 'Company', 'Department'],
+                disabled: false
               },
               {
                 label: '小组',
-                value: 2
+                value: 2,
+                list: ['Enterprise', 'Company', 'Department', 'Group'],
+                disabled: false
               }
             ]
           },
@@ -276,25 +287,12 @@ export default {
             multiple: true,
             placeholder: '请选择组织负责人',
             span: 24,
-            dicData: [
-              {
-                label: '关联职位',
-                value: 0
-              },
-              {
-                label: '关联岗位',
-                value: 1
-              },
-              {
-                label: '无关联',
-                value: 2
-              }
-            ],
+            dicData: consc,
             rules: [
               {
                 required: true,
                 message: '请选择关联岗位',
-                trigger: 'change'
+                trigger: 'blur'
               }
             ]
           },
@@ -308,34 +306,27 @@ export default {
           }
         ]
       },
-      dialog: false,
+      dialog: true,
       options
     }
   },
   watch: {
     'form.parentOrgId': {
-      handler: function(val) {
-        if (val.length > 0) {
-          this.option.column[3].placeholder = '请选择'
-          this.option.column[3].dicData = this.options
-          // this.option.column[3].placeholder = '请先选择所属组织'
-          // this.set()
-        } else {
-          this.option.column[3].placeholder = '请先选择上级'
-          this.option.column[3].dicData = []
-          this.form.userId = ''
-        }
+      handler: function() {
+        // if (val.length > 0) {
+        //   this.option.column[3].placeholder = '请选择'
+        //   this.option.column[3].dicData = this.options
+        //   // this.option.column[3].placeholder = '请先选择所属组织'
+        //   // this.set()
+        // } else {
+        //   this.option.column[3].placeholder = '请先选择上级'
+        //   this.option.column[3].dicData = []
+        //   this.form.userId = ''
+        // }
       },
       deep: true //对象内部的属性监听，也叫深度监听
     },
-    dialog: {
-      handler: function() {
-        this.$emit('update:dialogVisible', this.dialog)
-        if (!this.dialog) {
-          this.$refs.form.resetFields()
-        }
-      }
-    },
+
     dialogVisible: {
       handler: function(val) {
         this.dialog = val
@@ -344,8 +335,27 @@ export default {
     },
     orgData: {
       handler: function(val) {
-        // console.log('orgData____', val)
-        this.form.orgName = val.name
+        if (this.isEdit) {
+          this.form.orgName = this.orgData.name
+          let id = this.orgData.id
+          this.form.parentOrgId = [id]
+          this.form.remark = this.orgData.remark
+          this.form.userId = this.orgData.userId
+          let types = {
+            Enterprise: 0,
+            Company: 0,
+            Department: 1,
+            Group: 2
+          }
+          this.form.orgType = types[this.orgData.type]
+        }
+        this.option.column[2].dicData.map((it) => {
+          if (it.list.includes(val.type)) {
+            it.disabled = false
+          } else {
+            it.disabled = true
+          }
+        })
       },
       immediate: true,
       deep: true
@@ -354,19 +364,101 @@ export default {
       this.$refs.tree.filter(val)
     }
   },
+  created() {
+    this.getorgData()
+  },
   methods: {
+    getorgData() {
+      let params = {
+        parentOrgId: '',
+        orgName: '',
+        orgType: '',
+        userId: '',
+        minUserNum: '',
+        maxUserNum: ''
+      }
+      getOrganization(params).then((res) => {
+        // console.log(res)
+        orgList = res
+        function maps(data) {
+          data.map((it) => {
+            it.id = it.orgId
+            it.label = it.orgName
+            if (it.children.length > 0) {
+              maps(it.children)
+            }
+          })
+        }
+        maps(orgList)
+        this.option.column[1].dicData = orgList
+      })
+    },
     onContinue() {
-      this.dialog = false
+      this.$emit('update:dialogVisible', false)
+    },
+    postOrg() {},
+    onClickAdd({ ishow = true }) {
+      this.$refs.form.validate((vaild) => {
+        if (vaild) {
+          let { orgName, parentOrgId, orgType, userId, remark } = { ...this.form }
+          parentOrgId = parentOrgId.join(',')
+          userId = userId.join(',')
+          let type = {
+            0: 'Company',
+            1: 'Department',
+            2: 'Group'
+          }
+          orgType = type[orgType]
+          let params = {
+            orgName,
+            parentOrgId,
+            orgType,
+            userId,
+            remark
+          }
+          postOrganization(params).then(() => {
+            this.$message.success('添加成功')
+          })
+        }
+      })
+      if (ishow) {
+        this.$emit('update:dialogVisible', false)
+      } else {
+        this.$refs.form.resetFields()
+        this.form.userId = ''
+      }
+    },
+    againAdd() {
+      this.onClickAdd({ ishow: false })
     },
     onClickSave() {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
-          this.dialog = false
+          let { orgName, parentOrgId, orgType, userId, remark } = { ...this.form }
+          parentOrgId = parentOrgId.join(',')
+          userId = userId.join(',')
+          let type = {
+            0: 'Company',
+            1: 'Department',
+            2: 'Group'
+          }
+          orgType = type[orgType]
+          let params = {
+            orgName,
+            parentOrgId,
+            orgType,
+            userId,
+            remark
+          }
+          putOrganization(params).then(() => {
+            this.$message.success('修改成功')
+            this.handleClose()
+          })
         }
       })
     },
     handleClose() {
-      this.dialog = false
+      this.$emit('update:dialogVisible', false)
     }
   }
 }

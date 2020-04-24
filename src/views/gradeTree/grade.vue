@@ -144,12 +144,15 @@
       </el-dialog>
     </div>
     <position-dialog
+      v-if="positionDialog"
       :dialog-visible.sync="positionDialog"
       :title="title"
       :is-edit="isEdit"
+      :org-data="selData"
       @onsubmit="positionOnsubmit"
     />
     <orgDialog
+      v-if="orgDialog"
       :dialog-visible.sync="orgDialog"
       :title="title"
       :is-edit="isEdit"
@@ -165,7 +168,8 @@ import html2canvas from 'html2canvas'
 const $ = go.GraphObject.make
 import positionDialog from './compoents/positionDialog'
 import orgDialog from './compoents/orgDialog'
-import { getOrganizationView } from '@/api/organize/grade'
+import { getOrganizationView, deleteOrganization } from '@/api/organize/grade'
+import { deleteV1Job } from '@/api/organize/position'
 
 export default {
   name: 'Grade',
@@ -795,18 +799,47 @@ export default {
       if (val === undefined) val = event.currentTarget.id
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
       let isChildren = !!nodeDataArray.find((it) => {
-        if (it.parent === this.selData.key) {
+        if (it.parent == this.selData.key) {
           return it
         }
       })
       if (isChildren || !this.selData.parent) {
-        this.$message.warning('很抱歉，您选中的组织下存在员工，请先将员工调整后在删除')
+        this.$confirm('很抱歉，您选中的职位下存在员工，请先将员工调整后在删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'info',
+            message: '取消操作!'
+          })
+        })
         return
-      }
-      switch (val) {
-        case 'delete':
-          this.myDiagram.commandHandler.deleteSelection()
-          break
+      } else {
+        this.$confirm('您确定要删除该组织或该职位吗?', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          if (this.selData.type !== this.type[4]) {
+            let params = [this.selData.id]
+            deleteOrganization(params).then(() => {
+              this.$message.success('删除成功')
+              this.myDiagram.commandHandler.deleteSelection()
+            })
+          } else {
+            let params = {
+              jobId: this.selData.id
+            }
+            deleteV1Job(params).then(() => {
+              this.myDiagram.commandHandler.deleteSelection()
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+            })
+          }
+        })
       }
     },
     handleModity() {

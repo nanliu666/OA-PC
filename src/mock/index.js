@@ -3,6 +3,7 @@ import menu from './menu'
 import oauth from './oauth'
 import param from './param'
 import position from './position'
+import grade from './grade'
 
 /**
  * 模拟数据mock
@@ -12,6 +13,7 @@ import position from './position'
 
 const options = { mock: false }
 position({ mock: true })
+grade({ mock: true })
 user(options)
 
 menu(options)

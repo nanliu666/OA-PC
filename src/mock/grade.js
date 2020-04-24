@@ -182,10 +182,87 @@ const orgdata = {
     }
   ]
 }
+const orgList = {
+  ...normalData,
+  response: [
+    {
+      orgId: '1',
+      orgName: '百利宏',
+      children: [
+        {
+          orgId: '2',
+          orgName: '百利宏化工',
+          children: [
+            {
+              orgId: '4',
+              orgName: '百利宏化工事业部',
+              children: [
+                {
+                  orgId: '8',
+                  orgName: '技术小组',
+                  children: []
+                }
+              ]
+            },
+            {
+              orgId: '5',
+              orgName: '百利宏化工事业部事业部',
+              children: [
+                {
+                  orgId: '9',
+                  orgName: '技术小组2',
+                  children: [
+                    {
+                      orgId: '10',
+                      orgName: '职位1',
+                      children: []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          orgId: '3',
+          orgName: '百利宏医药',
+          children: [
+            {
+              orgId: '6',
+              orgName: '百利宏医药技术部',
+              children: []
+            },
+            {
+              orgId: '7',
+              orgName: '百利宏医药计算机部',
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+const addSuccess = {
+  ...normalData,
+  response: {}
+}
 
 export default ({ mock }) => {
   if (!mock) return
   Mock.mock(new RegExp('/api/org/v1/organization/view' + '.*'), 'get', () => {
     return orgdata
+  })
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'get', () => {
+    return orgList
+  })
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'post', () => {
+    return addSuccess
+  })
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'put', () => {
+    return addSuccess
+  })
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'delete', () => {
+    return addSuccess
   })
 }

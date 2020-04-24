@@ -145,6 +145,7 @@
       </el-container>
     </div>
     <position-dialog
+      v-if="positionDialog"
       :dialog-visible.sync="positionDialog"
       :data="row"
       :title="title"
@@ -284,8 +285,8 @@ export default {
     },
     getJobData() {
       gotV1Job(this.params).then((res) => {
-        this.data = res.data.data.data
-        this.page.total = res.data.data.totalNum
+        this.data = res.data
+        this.page.total = res.totalNum
       })
     },
     getCategory() {
@@ -295,7 +296,8 @@ export default {
         name: this.form.name
       }
       getCategoryList(params).then((res) => {
-        this.asideList = res.data.data.data
+        this.asideList = res.data
+
         let all = {
           name: '',
           title: '全部',

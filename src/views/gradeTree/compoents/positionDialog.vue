@@ -72,6 +72,7 @@
 <script>
 import treeSelect from '../../../components/treeSelect/treeSelect'
 import { postV1Job } from '@/api/organize/position'
+import { getOrganization } from '@/api/organize/grade'
 
 const options = [
   {
@@ -117,56 +118,7 @@ const category = [
     label: '项目经理'
   }
 ]
-const orgList = [
-  {
-    id: 1,
-    label: '百利宏',
-    children: [
-      {
-        id: 4,
-        label: '百利宏化工',
-        children: [
-          {
-            id: 9,
-            label: '百利红'
-          },
-          {
-            id: 10,
-            label: '百利'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 2,
-    label: '阿里巴巴',
-    children: [
-      {
-        id: 5,
-        label: '淘宝'
-      },
-      {
-        id: 6,
-        label: '天猫'
-      }
-    ]
-  },
-  {
-    id: 3,
-    label: '京东',
-    children: [
-      {
-        id: 7,
-        label: '京东物流'
-      },
-      {
-        id: 8,
-        label: '京东快递'
-      }
-    ]
-  }
-]
+let orgList = []
 export default {
   name: 'PositionDialog',
   components: {
@@ -175,6 +127,12 @@ export default {
   props: {
     isEdit: {
       type: Boolean
+    },
+    orgData: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     },
     data: {
       type: Object,
@@ -263,7 +221,7 @@ export default {
             labelslot: true,
             errorslot: true,
             span: 24,
-            limitCheck: true,
+            limitCheck: false,
             placeholder: '请选择所属组织',
             rules: [
               {
@@ -318,7 +276,7 @@ export default {
           }
         ]
       },
-      dialog: false,
+      dialog: true,
       options
     }
   },
@@ -368,11 +326,44 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    orgData: {
+      handler: function() {},
+      immediate: true,
+      deep: true
     }
   },
+  created() {
+    this.getorgData()
+  },
   methods: {
+    getorgData() {
+      let params = {
+        parentOrgId: '',
+        orgName: '',
+        orgType: '',
+        userId: '',
+        minUserNum: '',
+        maxUserNum: ''
+      }
+      getOrganization(params).then((res) => {
+        // console.log(res)
+        orgList = res
+        function maps(data) {
+          data.map((it) => {
+            it.id = it.orgId
+            it.label = it.orgName
+            if (it.children.length > 0) {
+              maps(it.children)
+            }
+          })
+        }
+        maps(orgList)
+        this.option.column[2].dicData = orgList
+      })
+    },
     onContinue() {
-      this.dialog = false
+      this.$emit('update:dialogVisible', false)
     },
     onClickSave() {
       this.$refs.form.validate((vaild) => {
@@ -390,12 +381,12 @@ export default {
             this.$message.success(res.data.data.msg)
             this.$emit('onsubmit', params)
           })
-          this.dialog = false
+          this.$emit('update:dialogVisible', false)
         }
       })
     },
     handleClose() {
-      this.dialog = false
+      this.$emit('update:dialogVisible', false)
     }
   }
 }

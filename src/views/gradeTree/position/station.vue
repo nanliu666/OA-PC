@@ -214,7 +214,7 @@ export default {
     getData() {
       this.params.name = this.form.name
       getV1Position(this.params).then((res) => {
-        this.data = res.data.data
+        this.data = res
       })
     },
     onSubmit(val) {
