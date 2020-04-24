@@ -12,7 +12,7 @@ export default ({ mock }) => {
           name: '@cname',
           iconUrl: 'el-icon-picture-outline',
           maxLimit: '2',
-          type: '@cname',
+          'type|0-3': ['员工基本资料', '员工档案资料', '员工离职资料'],
           sort: '0'
         })
       )

@@ -49,6 +49,7 @@ export default {
   },
   mounted() {
     ;[...document.querySelectorAll('.el-steps .el-step__icon div')].forEach((el, index, arr) => {
+      // console.log(el, arr.length - index) // 3,2,1
       el.innerHTML = arr.length - index
     })
   }

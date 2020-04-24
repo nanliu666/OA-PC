@@ -76,7 +76,8 @@ export default {
   data() {
     return {
       activeName: 'first',
-      stretch: true
+      stretch: true,
+      showUpload: true
     }
   },
   components: {
@@ -88,7 +89,7 @@ export default {
       this.$router.go(-1)
     },
     handleClick(tab, event) {
-      // console.log(tab, event)
+      // console.log(tab, event, 'tab')
     }
   }
 }

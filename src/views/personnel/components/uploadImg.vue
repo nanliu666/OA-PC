@@ -63,30 +63,6 @@ export default {
           name: 'food.jpeg',
           url:
             'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        },
-        {
-          id: 2, //	附件材料ID
-          userId: 2, //用户ID
-          categoryId: 2, //附件分类ID
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        },
-        {
-          id: 2, //	附件材料ID
-          userId: 2, //用户ID
-          categoryId: 2, //附件分类ID
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        },
-        {
-          id: 2, //	附件材料ID
-          userId: 2, //用户ID
-          categoryId: 2, //附件分类ID
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }
       ]
     }
@@ -109,6 +85,7 @@ export default {
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
+      window.console.log(file, '文件夹')
       this.$refs.viewPicture.init(this.fileList, this.fileList.length)
       this.dialogVisible = true
     },
