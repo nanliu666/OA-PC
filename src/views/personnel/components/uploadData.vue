@@ -51,7 +51,9 @@ import upload from './upload'
 import { getUploadData } from '@/api/personnel/uploaddata'
 export default {
   data() {
-    return {}
+    return {
+      listData: []
+    }
   },
   components: {
     upload
@@ -62,6 +64,7 @@ export default {
   methods: {
     initData() {
       getUploadData().then((res) => {
+        const getData = res.data
         window.console.log(res, '获得材料分类')
       })
     }

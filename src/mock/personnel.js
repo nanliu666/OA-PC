@@ -1,5 +1,7 @@
 import Mock from 'mockjs'
-export default ({ mock }) => {
+export default ({
+  mock
+}) => {
   if (!mock) return
 
   //获取附件分类接口数据
@@ -12,7 +14,7 @@ export default ({ mock }) => {
           name: '@cname',
           iconUrl: 'el-icon-picture-outline',
           maxLimit: '2',
-          'type|0-3': ['员工基本资料', '员工档案资料', '员工离职资料'],
+          'type|1': ['员工基本资料', '员工档案资料'],
           sort: '0'
         })
       )

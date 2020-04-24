@@ -6,7 +6,7 @@
         <div class="detail-box">
           <div class="demo-basic--circle">
             <div class="block">
-              <el-avatar :size="120" src=""></el-avatar>
+              <el-avatar :size="120" src></el-avatar>
             </div>
           </div>
         </div>
@@ -61,10 +61,10 @@
       <el-tab-pane label="在职信息" name="first">在职信息</el-tab-pane>
       <el-tab-pane label="个人信息" name="second">个人信息</el-tab-pane>
       <el-tab-pane label="材料附件" name="third">
-        <upload-Data />
+        <upload-Data v-if="showTabUpload" />
       </el-tab-pane>
       <el-tab-pane label="操作记录" name="fourth">
-        <action-record />
+        <action-record v-if="showTabAction" />
       </el-tab-pane>
     </el-tabs>
   </basic-container>
@@ -77,7 +77,8 @@ export default {
     return {
       activeName: 'first',
       stretch: true,
-      showUpload: true
+      showTabUpload: false,
+      showTabAction: false
     }
   },
   components: {
@@ -89,6 +90,13 @@ export default {
       this.$router.go(-1)
     },
     handleClick(tab, event) {
+      if (tab.name == 'third') {
+        this.showTabUpload = true
+        this.showTabAction = false
+      } else if (tab.name == 'fourth') {
+        this.showTabUpload = false
+        this.showTabAction = true
+      }
       // console.log(tab, event, 'tab')
     }
   }
