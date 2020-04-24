@@ -13,6 +13,7 @@
         ref="form"
         v-model="form"
         :option="option"
+        @submit="handleSubmit"
       >
         <template
           slot="positions"
@@ -355,6 +356,10 @@ export default {
       this.form.roleId = ''
       this.form.positions = []
       this.form.jobs = []
+    },
+
+    handleSubmit(form, done) {
+      done()
     }
   }
 }

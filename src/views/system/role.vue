@@ -14,44 +14,41 @@
         />
         <el-main class="main-wrap">
           <div class="main-wrap">
-            <transition name="el-fade-in-linear">
-              <div class="search-bar">
-                <el-form
-                  ref="form"
-                  :model="form"
-                  label-width="80px"
-                  size="medium"
-                  :inline="true"
-                >
-                  <el-form-item>
-                    <el-input
-                      v-model="form.roleName"
-                      size="medium"
-                      placeholder="角色名称"
-                    >
-                      <template slot="append">
-                        <i class="el-icon-search" />
-                      </template>
-                    </el-input>
-                  </el-form-item>
-                </el-form>
-                <div>
-                  <el-button
-                    type="primary"
+            <div class="search-bar">
+              <el-form
+                ref="form"
+                :model="form"
+                label-width="80px"
+                size="medium"
+                :inline="true"
+              >
+                <el-form-item>
+                  <el-input
+                    v-model="form.roleName"
                     size="medium"
-                    @click="onHandleEdit"
+                    placeholder="角色名称"
                   >
-                    新建角色
-                  </el-button>
-                  <el-button
-                    icon="el-icon-refresh"
-                    size="medium"
-                    @click="loadRoleData"
-                  />
-                </div>
+                    <template slot="append">
+                      <i class="el-icon-search" />
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-form>
+              <div>
+                <el-button
+                  type="primary"
+                  size="medium"
+                  @click="onHandleEdit"
+                >
+                  新建角色
+                </el-button>
+                <el-button
+                  icon="el-icon-refresh"
+                  size="medium"
+                  @click="loadRoleData"
+                />
               </div>
-            </transition>
-
+            </div>
             <transition name="el-zoom-in-center">
               <div
                 v-show="selectArr.length > 0"
@@ -441,7 +438,7 @@ export default {
 
   .selected-bar {
     background: white;
-    width: 100%;
+    width: calc(100% - 40px);
     top: 0;
     position: absolute;
     display: flex;

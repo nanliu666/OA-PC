@@ -147,8 +147,11 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/api/sys/v1/role' + '.*'), 'delete', jobsData)
 
   Mock.mock(new RegExp('/api/sys/v1/role' + '.*'), 'put', jobsData)
+
   Mock.mock(new RegExp('/api/sys/v1/preTree' + '.*'), 'get', cateList)
+
   Mock.mock(new RegExp('/api/sys/v1/user/add' + '.*'), 'post', jobsData)
+
   Mock.mock(new RegExp('/api/sys/v1/user/add' + '.*'), 'get', () => {
     const arr = [
       {
@@ -180,6 +183,7 @@ export default ({ mock }) => {
       response: [...arr, ...response]
     }
   })
+
   Mock.mock(new RegExp('/api/sys/v1/user/list' + '.*'), 'get', () => {
     let response = []
     for (let i = 0; i < 10; i++) {
@@ -198,6 +202,157 @@ export default ({ mock }) => {
       response: [...response]
     }
   })
+
+  Mock.mock(new RegExp('/sys/v1/role/privilege' + '.*'), 'get', () => {
+    let response = {
+      orgPrivileges: [
+        {
+          orgName: '百利宏集团',
+          orgId: 0,
+          isOwn: true
+        },
+        {
+          orgName: '石化公司',
+          orgId: 1,
+          isOwn: false
+        },
+        {
+          orgName: '油气公司',
+          orgId: 2,
+          isOwn: false
+        },
+        {
+          orgName: '金融公司',
+          orgId: 3,
+          isOwn: true
+        }
+      ],
+      menuPrivileges: [
+        {
+          menuName: '工作台',
+          menuId: 0,
+          isOwn: false,
+          dataPrivileges: [
+            {
+              scopeName: '自定义',
+              dataId: 'customize',
+              isOwn: false
+            },
+            {
+              scopeName: '部门可见',
+              orgId: 'org',
+              isOwn: true
+            },
+            {
+              scopeName: '全部可见',
+              orgId: 'all',
+              isOwn: true
+            },
+            {
+              scopeName: '个人可见',
+              orgId: 'personal',
+              isOwn: false
+            }
+          ],
+          children: [
+            {
+              menuName: '通知公告',
+              menuId: 1,
+              isOwn: true
+            },
+            {
+              menuName: '快捷操作',
+              menuId: 2,
+              isOwn: false
+            },
+            {
+              menuName: '我的待办',
+              menuId: 3,
+              isOwn: true
+            }
+          ]
+        },
+        {
+          menuName: '人事管理',
+          menuId: 4,
+          isOwn: false,
+          dataPrivileges: [
+            {
+              scopeName: '自定义',
+              dataId: 'customize',
+              isOwn: false
+            },
+            {
+              scopeName: '部门可见',
+              orgId: 'org',
+              isOwn: true
+            },
+            {
+              scopeName: '全部可见',
+              orgId: 'all',
+              isOwn: true
+            },
+            {
+              scopeName: '个人可见',
+              orgId: 'personal',
+              isOwn: false
+            }
+          ],
+          children: [
+            {
+              menuName: '招聘需求管理',
+              menuId: 5,
+              isOwn: false
+            },
+            {
+              menuName: '我的招聘需求',
+              menuId: 6,
+              menuType: 'Button',
+              isOwn: true,
+              children: [
+                {
+                  menuName: '新建',
+                  menuId: 'create',
+                  isOwn: true
+                },
+                {
+                  menuName: '修改',
+                  menuId: 'update',
+                  isOwn: false
+                },
+                {
+                  menuName: '查看',
+                  menuId: 'watch',
+                  isOwn: true
+                },
+                {
+                  menuName: '删除',
+                  menuId: 'del',
+                  isOwn: true
+                }
+              ]
+            },
+            {
+              menuName: '候选人管理',
+              menuId: 7,
+              isOwn: false
+            },
+            {
+              menuName: '人才库管理',
+              menuId: 8,
+              isOwn: true
+            }
+          ]
+        }
+      ]
+    }
+
+    return {
+      ...normalData,
+      response
+    }
+  })
+
   Mock.mock(new RegExp('/sys/v1/role' + '.*'), 'get', () => {
     const response = []
     for (let i = 0; i < 10; i++) {
