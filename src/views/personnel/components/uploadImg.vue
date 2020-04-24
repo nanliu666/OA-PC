@@ -13,16 +13,20 @@
       :multiple="true"
       :on-error="onError"
     >
-      <i slot="default" v-if="isonError" class="">重新上传</i>
+      <i slot="default" v-if="isonError" class="isonError">重新上传</i>
       <i class="el-icon-plus" v-else></i>
+      <i slot="default" class="isonError">重新上传</i>
     </el-upload>
-    <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="true" :append-to-body="true">
-      <img width="100%" :src="dialogImageUrl" alt />
-    </el-dialog>
+    <!-- <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="true" :append-to-body="true"> -->
+    <!-- <img width="100%" :src="dialogImageUrl" alt /> -->
+    <viewPictures ref="viewPicture" />
+    <!-- </el-dialog> -->
   </div>
 </template>
 
 <script>
+import viewPictures from './viewPictures'
+import { queryUploadData } from '@/api/personnel/uploaddata'
 export default {
   props: { limit: Number },
   data() {
@@ -30,6 +34,13 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       isonError: false,
+      ajaxData: {
+        pageNo: 1,
+        pageSize: 10,
+        categoryId: '33',
+        userId: '33',
+        name: '33' //非必填
+      },
       fileList: [
         {
           name: 'food.jpeg',
@@ -44,12 +55,19 @@ export default {
       ]
     }
   },
+  components: {
+    viewPictures
+  },
+  mounted() {
+    this.initData()
+  },
   methods: {
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
+      this.$refs.viewPicture.init(this.fileList, this.fileList.length)
       this.dialogVisible = true
     },
     handleExceed(file, fileList) {
@@ -75,9 +93,18 @@ export default {
     },
     onError() {
       this.isonError = true
+    },
+    //发网络请求初始化数据
+    initData() {
+      queryUploadData(this.ajaxData).then((res) => {
+        window.console.log(res, '获得材料接口')
+      })
     }
   }
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.isonError {
+}
+</style>
