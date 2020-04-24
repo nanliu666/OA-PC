@@ -4,6 +4,7 @@ import oauth from './oauth'
 import param from './param'
 import system from './system'
 import role from './role'
+import personalInfo from './personalInfo'
 
 /**
  * 模拟数据mock
@@ -23,3 +24,5 @@ oauth(options)
 param(options)
 
 role(options)
+
+personalInfo(options)

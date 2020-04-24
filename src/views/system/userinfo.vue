@@ -255,7 +255,7 @@
                       label="目前住址:"
                     >
                       <span>
-                        {{ (userInfo.updateUser + userInfo.updateTime).replace(/,/g, '') }}
+                        <!-- {{ (userInfo.updateUser + userInfo.updateTime).replace(/,/g, '') }} -->
                       </span>
                     </el-form-item>
                     <el-form-item
@@ -325,25 +325,9 @@
 <script>
 import emergencyMembers from './userCenter/emergencyMembers.vue'
 import { validateName, isEmail, validataBankCard } from '@/util/validate'
-import { getUserInfo, update } from '@/api/system/user'
+import { getPersonalInfo, updateInfo } from '../../api/personalInfo'
 
-let noEditInfo = {
-  id: 'user.id',
-  name: 'user.name',
-  phone: 'user.phone',
-  email: 'user.email',
-  sexName: 'user.sexName',
-  sex: '1',
-  roleName: 'user.roleName',
-  postName: 'user.postName', //下面都是暂用的字段，后续根据接口实际输出
-  createUser: '1123598821738675201', //暂时先代表开户行
-  createDept: '否', //暂时代替结婚否
-  createTime: '61012555555', //暂时代替卡号
-  updateUser: '陕西省西安市', //暂时代替地址
-  updateTime: '高新区天谷八路', //暂时代替详细地址
-  status: 1,
-  imageUrl: ''
-}
+let noEditInfo = {}
 export default {
   components: {
     emergencyMembers
@@ -469,23 +453,7 @@ export default {
           ]
         }
       },
-      userInfo: {
-        id: 'user.id',
-        name: 'user.name',
-        phone: 'user.phone',
-        email: 'user.email',
-        sexName: 'user.sexName',
-        sex: '1',
-        roleName: 'user.roleName',
-        postName: 'user.postName', //下面都是暂用的字段，后续根据接口实际输出
-        createUser: '1123598821738675201', //暂时先代表开户行
-        createDept: '否', //暂时代替结婚否
-        createTime: '61012555555', //暂时代替卡号
-        updateUser: '陕西省西安市', //暂时代替地址
-        updateTime: '高新区天谷八路', //暂时代替详细地址
-        status: 1,
-        imageUrl: ''
-      },
+      userInfo: {},
       contactOrder: null,
       emergencyIsEdit: false,
       emergency: []
@@ -496,8 +464,12 @@ export default {
   },
   methods: {
     getUserAllInfo() {
-      getUserInfo().then((res) => {
-        const user = res.data.data
+      let params = {
+        companyId: '20200224',
+        userId: '18392172902'
+      }
+      getPersonalInfo(params).then((res) => {
+        const user = res.response.info
         //基本信息
         this.userInfo = {
           id: user.id,
@@ -542,16 +514,16 @@ export default {
       this.$refs['userInfo'].validate((isPass) => {
         if (isPass) {
           this.readonly = true
-          update(this.form).then((res) => {
-            if (res.data.success) {
+          updateInfo(this.userInfo).then((res) => {
+            if (res.response.success) {
               this.$message({
                 type: 'success',
-                message: '修改信息成功!'
+                message: res.response.resMsg
               })
             } else {
               this.$message({
                 type: 'error',
-                message: res.data.msg
+                message: '修改信息失败'
               })
             }
           })
