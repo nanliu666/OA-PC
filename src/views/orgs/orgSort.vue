@@ -1,5 +1,5 @@
 <template>
-  <basic-container>
+  <basic-container :block="true">
     <el-page-header
       content="调整排序"
       @back="goBack"
@@ -7,21 +7,17 @@
     <div class="treeBox">
       <el-tree
         :data="data"
-        node-key="id"
+        node-key="orgId"
+        :props="{ label: 'orgName' }"
         default-expand-all
         draggable
-        :allow-drop="allowDrop"
-        :allow-drag="allowDrag"
-        @node-drag-start="handleDragStart"
-        @node-drag-enter="handleDragEnter"
-        @node-drag-leave="handleDragLeave"
-        @node-drag-over="handleDragOver"
-        @node-drag-end="handleDragEnd"
-        @node-drop="handleDrop"
       />
     </div>
     <div class="btnBox">
-      <el-button size="medium">
+      <el-button
+        size="medium"
+        @click="close"
+      >
         取消
       </el-button>
       <el-button
@@ -36,73 +32,40 @@
 </template>
 
 <script>
+import { getOrgTree, sortOrgTree } from '@/api/org/org'
+
 export default {
   data() {
     return {
-      data: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2',
-              children: [
-                {
-                  id: 11,
-                  label: '三级 3-2-1'
-                },
-                {
-                  id: 12,
-                  label: '三级 3-2-2'
-                },
-                {
-                  id: 13,
-                  label: '三级 3-2-3'
-                }
-              ]
-            }
-          ]
+      data: []
+    }
+  },
+  created() {
+    getOrgTree({ parentOrgId: 0 }).then((res) => {
+      this.data = res
+    })
+  },
+  methods: {
+    goBack() {
+      this.$router.push('/orgs/orgManagement')
+    },
+    close() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.goBack()
+    },
+    loadSort(arr, i) {
+      arr.forEach((item) => {
+        item.sort = i
+        if (item.children.length > 0) {
+          this.loadSort(item.children, i + 1)
         }
-      ]
+      })
+    },
+    onSubmit() {
+      this.loadSort(this.data, 1)
+      sortOrgTree({ orgs: this.data }).then(() => {
+        this.$message.success('保存成功')
+      })
     }
   }
 }
@@ -111,14 +74,23 @@ export default {
 <style lang="scss" scoped>
 .treeBox {
   width: calc (100% - 160) px;
-  padding: 0 80px;
+  padding: 40px 80px 60px;
 }
 .btnBox {
-  margin: 30px 0 0 100px;
+  margin: 0 0 10px 100px;
+  height: 40px;
+  position: absolute;
+  bottom: 0;
 }
 /deep/ .el-tree-node__content {
   height: 40px;
   cursor: move;
   border-bottom: 1px solid #f2f2f2;
+}
+/deep/ .basic-container {
+  height: 100%;
+  .el-card {
+    height: 100%;
+  }
 }
 </style>

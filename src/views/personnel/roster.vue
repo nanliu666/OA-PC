@@ -21,41 +21,43 @@
     <div class="state">
       <div class="on">
         <div
-          :class="status === 'onJob' ? 'current' : ''"
-          @click="status = 'onJob'"
+          :class="tabStatus === 'onJob' ? 'current' : ''"
+          @click="tabClick('onJob')"
         >
-          在职 {{ personStatistics.onJob }} 人
+          在职
+          {{ personStatistics.Formal + personStatistics.Try + personStatistics.WaitLeave + personStatistics.Leaved }} 人
         </div>
         <div
-          :class="status === 'Formal' ? 'current' : ''"
-          @click="status = 'Formal'"
+          :class="tabStatus === 'Formal' ? 'current' : ''"
+          @click="tabClick('Formal')"
         >
           正式 {{ personStatistics.Formal }} 人
         </div>
         <div
-          :class="status === 'Try' ? 'current' : ''"
-          @click="status = 'Try'"
+          :class="tabStatus === 'Try' ? 'current' : ''"
+          @click="tabClick('Try')"
         >
           试用期 {{ personStatistics.Try }} 人
         </div>
         <div
-          :class="status === 'WaitLeave' ? 'current' : ''"
-          @click="status = 'WaitLeave'"
+          :class="tabStatus === 'WaitLeave' ? 'current' : ''"
+          @click="tabClick('WaitLeave')"
         >
           待离职 {{ personStatistics.WaitLeave }} 人
         </div>
       </div>
       <div class="left">
         <div
-          :class="status === 'Leaved' ? 'current' : ''"
-          @click="status = 'Leaved'"
+          :class="tabStatus === 'Leaved' ? 'current' : ''"
+          @click="tabClick('Leaved')"
         >
           已离职 {{ personStatistics.Leaved }} 人
         </div>
       </div>
     </div>
     <search-component
-      :show-status="status === 'onJob'"
+      ref="searchComponent"
+      :show-status="tabStatus === 'onJob'"
       @seacrh="handleSearch"
       @export="handleExport"
     />
@@ -67,6 +69,12 @@
       @size-change="sizeChange"
       @current-change="currentChange"
     >
+      <template
+        slot="status"
+        slot-scope="{ row }"
+      >
+        {{ statusWord[row.status] }}
+      </template>
       <template
         slot="menu"
         slot-scope="{ row }"
@@ -147,6 +155,7 @@
 <script>
 import SearchComponent from '@/components/searchComponent/searchComponent'
 import { tableOptions } from '@/util/constant'
+import { getUserList, getUserStatusStat } from '@/api/personnel/roster'
 
 export default {
   name: 'EmployeeRoster',
@@ -156,13 +165,13 @@ export default {
   data() {
     return {
       // 在职 onJob 正式 Formal 试用期 Try 离职 WaitLeave 已离职 Leaved
-      status: 'onJob',
+      tabStatus: 'onJob',
+      statusWord: { onJob: '在职', Formal: '正式', Try: '试用期', WaitLeave: '离职', Leaved: '已离职' },
       personStatistics: {
-        onJob: 83,
-        Formal: 63,
-        Try: 20,
+        Formal: 0,
+        Try: 0,
         WaitLeave: 0,
-        Leaved: 25
+        Leaved: 0
       },
       obj: {},
       page: {
@@ -172,18 +181,7 @@ export default {
         currentPage: 1
       },
       searchParams: {},
-      data: [
-        {
-          name: '张三',
-          userId: 'GZ002035',
-          org: '产品部',
-          job: '产品经理',
-          position: '设计岗',
-          status: 'Try',
-          date: '1994-02-23',
-          phonenum: '15915988588'
-        }
-      ],
+      data: [],
       option: {
         ...tableOptions,
         align: 'center',
@@ -216,7 +214,8 @@ export default {
           },
           {
             label: '员工状态',
-            prop: 'status'
+            prop: 'status',
+            slot: true
           },
           {
             label: '入职日期',
@@ -233,7 +232,24 @@ export default {
       }
     }
   },
+  created() {
+    this.getTableData(1)
+    this.getUserStatusStat()
+  },
   methods: {
+    getUserStatusStat() {
+      getUserStatusStat().then((res) => {
+        res.forEach((item) => {
+          this.personStatistics[item.status] = item.statusNum
+        })
+      })
+    },
+    tabClick(status) {
+      this.tabStatus = status
+      this.$refs.searchComponent.resetForm()
+      this.searchParams = {}
+      this.getTableData(1)
+    },
     handleCommand(command, row) {
       if (command === 'add') {
         this.$router.push('/personnel/addRoster')
@@ -242,6 +258,17 @@ export default {
       console.log(command, row)
     },
     getTableData(pageNo) {
+      if (!this.searchParams.statuses && this.tabStatus === 'onJob') {
+        // 在职 onJob 正式 Formal 试用期 Try 离职 WaitLeave 已离职 Leaved
+        this.searchParams.statues = [
+          { status: 'Formal' },
+          { status: 'Try' },
+          { status: 'WaitLeave' },
+          { status: 'Leaved' }
+        ]
+      } else if (this.tabStatus !== 'onJob') {
+        this.searchParams.statuses = [{ status: this.tabStatus }]
+      }
       const params = {
         ...this.page,
         ...this.searchParams
@@ -252,6 +279,10 @@ export default {
       } else {
         params.pageNo = this.page.currentPage
       }
+      getUserList(params).then((res) => {
+        this.data = res.data
+        this.page.total = res.totalNum
+      })
     },
     handleSearch(params) {
       this.searchParams = params

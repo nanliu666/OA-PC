@@ -1,5 +1,5 @@
 <template>
-  <basic-container>
+  <basic-container :block="true">
     <el-page-header
       content="组织详情"
       @back="goBack"
@@ -17,16 +17,18 @@
           :props="defaultProps"
           default-expand-all
           :filter-node-method="filterNode"
+          @node-click="handleNodeClick"
         />
       </div>
       <div class="detailBox">
         <div class="mainHeader">
-          <h3>综合管理部</h3>
+          <h3>{{ orgData.orgName }}</h3>
           <div class="btnBox">
             <el-button
               size="medium"
               type="text"
               icon="el-icon-edit-outline"
+              @click="handleOrgEdit(orgData)"
             >
               编辑
             </el-button>
@@ -34,6 +36,7 @@
               type="text"
               size="medium"
               icon="el-icon-delete"
+              @click="deleteOrg"
             >
               删除
             </el-button>
@@ -41,16 +44,16 @@
         </div>
         <div class="mainNum">
           <div class="parent">
-            上级组织：
+            上级组织：{{ findFatherOrgName(orgData) || '' }}
           </div>
           <div class="numInfo">
-            在职人数 56 人
+            在职人数 {{ orgData.workNum }} 人
           </div>
           <div class="numInfo">
-            用户人数 56 人
+            用户人数 {{ orgData.userNum }} 人
           </div>
           <div class="numInfo">
-            职位 16 个
+            职位 {{ orgData.jobNum }} 个
           </div>
         </div>
         <div class="baseInfo">
@@ -60,95 +63,54 @@
               组织编码
             </el-col>
             <el-col :span="20">
-              A02A01A01
+              {{ orgData.orgCode }}
             </el-col>
             <el-col :span="4">
               组织类型
             </el-col>
             <el-col :span="20">
-              部门
+              {{ orgTypeObj[orgData.orgType] }}
             </el-col>
             <el-col :span="4">
               组织负责人
             </el-col>
             <el-col :span="20">
-              朱怡胜
+              {{ orgData.userName }}
             </el-col>
             <el-col :span="4">
               备注
             </el-col>
-            <el-col
-              :span="20"
-            >
-              综合管理部是单位的综合管理部门，主要是负责单位的日常各项行政、人力资源及法律事务等工作；还有组织单位策划、贯标、开展单位研发及代表单位与其他团体联系等职能。
+            <el-col :span="20">
+              {{ orgData.remark }}
             </el-col>
           </div>
         </div>
       </div>
     </div>
+    <org-edit
+      ref="orgEdit"
+      :visible.sync="createOrgDailog"
+    />
   </basic-container>
 </template>
 
 <script>
-export default {
+import { getOrgTree, deleteOrg } from '@/api/org/org'
+import OrgEdit from './components/orgEdit'
 
+export default {
+  components: { OrgEdit },
   data() {
     return {
       filterText: '',
-      treeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
-        }
-      ],
+      treeData: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
-      }
+        label: 'orgName'
+      },
+      orgData: {},
+      orgTypeObj: { Enterprise: '企业', Company: '公司', Department: '部门', Group: '小组' },
+      createOrgDailog: false
     }
   },
   watch: {
@@ -156,11 +118,56 @@ export default {
       this.$refs.tree.filter(val)
     }
   },
-
+  created() {
+    this.loadData()
+  },
   methods: {
+    loadData() {
+      getOrgTree({ parentOrgId: 0 }).then((res) => {
+        this.treeData = res
+        this.handleNodeClick(res[0])
+      })
+    },
+    deleteOrg() {
+      const params = {
+        orgs: [{ orgId: this.orgData.orgId }]
+      }
+      deleteOrg(params).then(() => {
+        this.$message.success('删除成功')
+        this.loadData()
+      })
+    },
+    handleOrgEdit(row) {
+      this.$refs.orgEdit.edit(row)
+    },
+    findFatherOrgName(org) {
+      let fatherOrg = this.findFather(org)
+      return (fatherOrg && fatherOrg.orgName) || ''
+    },
+    findFather(row) {
+      let fatherOrg
+      function deep(arr, orgId) {
+        arr.forEach((item) => {
+          if (item.children.length > 0) {
+            item.children.forEach((it) => {
+              if (it.orgId === orgId) fatherOrg = item
+            })
+            deep(item.children, orgId)
+          }
+        })
+      }
+      deep(this.treeData, row.orgId)
+      return fatherOrg
+    },
+    handleNodeClick(data) {
+      this.orgData = data
+    },
+    goBack() {
+      this.$router.push('/orgs/orgManagement')
+    },
     filterNode(value, data) {
       if (!value) return true
-      return data.label.indexOf(value) !== -1
+      return data[this.defaultProps.label].indexOf(value) !== -1
     }
   }
 }
@@ -168,10 +175,17 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  margin-top: 20px;
   display: flex;
+  height: 100%;
+  padding: 20px 0;
   .treeBox {
     flex: 1;
+    height: 100%;
+    padding: 0 10px;
+    border-right: 1px solid #f2f2f2;
+    .filter-tree {
+      margin-top: 20px;
+    }
   }
   .detailBox {
     flex: 4;
@@ -203,5 +217,12 @@ export default {
       }
     }
   }
+}
+
+/deep/ .el-card__body {
+  height: 100%;
+}
+/deep/ .el-tree-node__content {
+  height: 40px;
 }
 </style>

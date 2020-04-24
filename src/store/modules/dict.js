@@ -28,9 +28,9 @@ const dict = {
           return
         }
         getDictionary({ code: name })
-          .then((res) => {
-            commit('SET_COMMON_DICT', name, res)
-            resolve(res)
+          .then((data) => {
+            commit('SET_COMMON_DICT', { name, data })
+            resolve(data)
           })
           .catch((error) => {
             reject(error)
@@ -52,7 +52,7 @@ const dict = {
         type: 'session'
       })
     },
-    SET_COMMON_DICT: (state, name, data) => {
+    SET_COMMON_DICT: (state, { name, data }) => {
       state.commonDict[name] = data
       setStore({
         name: 'commonDict',

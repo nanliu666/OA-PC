@@ -100,6 +100,7 @@
                         v-model="item.data"
                         :placeholder="'请输入' + item.label"
                         :multiple="item.config && item.config.multiple"
+                        :collapse-tags="item.config && item.config.multiple"
                       >
                         <template v-if="item.config && item.config.group">
                           <el-option-group
@@ -110,17 +111,17 @@
                             <el-option
                               v-for="it in group.options"
                               :key="it.value"
-                              :label="it.label"
-                              :value="it.value"
+                              :label="it[item.config.optionLabel || 'label']"
+                              :value="it[item.config.optionValue || 'value']"
                             />
                           </el-option-group>
                         </template>
                         <template v-else>
                           <el-option
                             v-for="it in item.options"
-                            :key="it.value"
-                            :label="it.label"
-                            :value="it.value"
+                            :key="it[item.config.optionValue || 'value']"
+                            :label="it[item.config.optionLabel || 'label']"
+                            :value="it[item.config.optionValue || 'value']"
                           />
                         </template>
                       </el-select>
@@ -198,7 +199,7 @@
 <script>
 import NumInterval from '../numInterval/numInterval'
 import TreeSelect from '../treeSelect/treeSelect'
-import searchArray from './searchArray'
+import genSearchArray from './searchArray'
 
 export default {
   name: 'ScreenComponent',
@@ -214,7 +215,7 @@ export default {
       showCollapse: false,
       // 模糊搜索
       fuzzySearch: '',
-      searchArray: searchArray
+      searchArray: []
     }
   },
   watch: {
@@ -256,6 +257,9 @@ export default {
       },
       deep: true
     }
+  },
+  async created() {
+    this.searchArray = await genSearchArray()
   },
   methods: {
     handleRefresh() {
@@ -332,6 +336,37 @@ export default {
         item.data = ''
       }
     },
+    // 选择器data为数组时tag展示数据处理
+    findTagLabel(tag) {
+      let arr
+      if (!tag.config.group) {
+        arr = tag.data.map((item) => {
+          for (let i = 0; i < tag.options.length; i++) {
+            if (tag.options[i][tag.config.optionValue || 'value'] === item) {
+              return tag.options[i][tag.config.optionLabel || 'label']
+            }
+          }
+        })
+        return arr
+      } else {
+        arr = tag.data.map((item) => {
+          if (item.indexOf('A') > -1) {
+            for (let i = 0; i < tag.options[0].options.length; i++) {
+              if (tag.options[0].options[i][tag.config.optionValue || 'value'] === item) {
+                return tag.options[0].options[i][tag.config.optionLabel || 'label']
+              }
+            }
+          } else {
+            for (let i = 0; i < tag.options[1].options.length; i++) {
+              if (tag.options[1].options[i][tag.config.optionValue || 'value'] === item) {
+                return tag.options[1].options[i][tag.config.optionLabel || 'label']
+              }
+            }
+          }
+        })
+        return arr
+      }
+    },
     // 处理tag字段
     jointTagName(tag) {
       if (Array.isArray(tag.data)) {
@@ -339,7 +374,7 @@ export default {
           return tag.label + ': ' + tag.data[tag.data.length - 1]
         } else {
           let range = tag.config && tag.config['range-separator'] ? tag.config['range-separator'] : '、'
-          return tag.label + ': ' + tag.data.join(range)
+          return tag.label + ': ' + (tag.type === 'select' ? this.findTagLabel(tag).join(range) : tag.data.join(range))
         }
       } else if (Object.prototype.toString.call(tag.data) === '[object Object]') {
         return tag.label + ': ' + tag.data.min + '-' + tag.data.max

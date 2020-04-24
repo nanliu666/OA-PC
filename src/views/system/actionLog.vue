@@ -34,7 +34,7 @@
 
 <script>
 import { getActionLog } from '@/api/system/user'
-import searchPopOver from '@/components/searchPopOver'
+import searchPopOver from '@/components/searchPopover'
 import { tableOptions } from '../../util/constant'
 export default {
   components: {

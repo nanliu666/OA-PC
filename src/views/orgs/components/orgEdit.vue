@@ -31,23 +31,31 @@
         />
       </el-form-item>
       <el-form-item
-        v-if="form.orgType !== 'Enterprise'"
+        v-show="form.orgType !== 'Enterprise'"
         label="上级组织"
         prop="parentOrgId"
       >
         <el-select
+          ref="parentOrgId"
           v-model="form.parentOrgId"
           placeholder="请选择上级组织"
           :disabled="type === 'createChild'"
         >
           <el-option
-            label="区域一"
-            value="shanghai"
-          />
-          <el-option
-            label="区域二"
-            value="beijing"
-          />
+            style="height: auto;padding:0"
+            :value="form.parentOrgId"
+            :label="parentOrgIdLabel"
+          >
+            <el-tree
+              :data="orgTree"
+              node-key="orgId"
+              :props="{
+                children: 'children',
+                label: 'orgName'
+              }"
+              @node-click="handleOrgNodeClick"
+            />
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item
@@ -56,7 +64,7 @@
       >
         <el-radio-group v-model="form.orgType">
           <el-radio
-            v-if="form.orgType == 'Enterprise'"
+            v-if="form.orgType === 'Enterprise'"
             label="Enterprise"
             disabled
           >
@@ -91,7 +99,7 @@
       >
         <el-select
           v-model="form.userId"
-          placeholder="请选择活动区域"
+          placeholder="请选择组织负责人"
         >
           <el-option
             label="区域一"
@@ -145,6 +153,8 @@
 </template>
 
 <script>
+import { getOrgTree } from '@/api/org/org'
+
 export default {
   name: 'OrgEdit',
   props: {
@@ -161,38 +171,68 @@ export default {
         Department: false,
         Group: false
       },
-      form: {},
+      form: {
+        orgType: ''
+      },
+      parentOrgIdLabel: '',
       rules: {
         orgName: [{ required: true, message: '请输入组织名称', trigger: 'blur' }],
-        parentOrgId: [{ required: true, message: '请选择上级组织', trigger: 'change' }],
+        parentOrgId: [{ required: true, message: '请选择上级组织', trigger: 'blur' }],
         orgType: [{ required: true, message: '请选择组织类型', trigger: 'change' }],
         orgCode: [{ required: true, message: '请输入组织编码', trigger: 'blur' }]
-      }
+      },
+      orgTree: []
     }
   },
+  created() {
+    getOrgTree({ parentOrgId: 0 }).then((res) => {
+      this.orgTree = res
+    })
+  },
   methods: {
-    submitAndCreate() {},
+    submitAndCreate() {
+      this.$refs.ruleForm.validate((valid, obj) => {
+        if (valid) {
+          alert('submit!')
+          this.form = { orgType: '' }
+          this.parentOrgIdLabel = ''
+        } else {
+          this.$message.error(obj[Object.keys(obj)[0]][0].message)
+          return false
+        }
+      })
+    },
     submit() {
-      this.$emit('update:visible', false)
+      this.$refs.ruleForm.validate((valid, obj) => {
+        if (valid) {
+          alert('submit!')
+          this.$emit('update:visible', false)
+        } else {
+          this.$message.error(obj[Object.keys(obj)[0]][0].message)
+          return false
+        }
+      })
     },
     create() {
       this.type = 'create'
+      this.parentOrgIdLabel = ''
       this.$emit('update:visible', true)
     },
     createChild(row) {
       this.type = 'createChild'
-      this.form.parentOrgId = row.parentOrgId
+      this.handleOrgNodeClick(row)
+      // this.form.parentOrgId = row.parentOrgId
       this.form.parentOrgType = row.orgType
       this.loadRadio()
       this.$emit('update:visible', true)
     },
     edit(row) {
       this.type = 'edit'
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.$emit('update:visible', true)
     },
     handleClose() {
-      this.form = {}
+      this.form = { orgType: '' }
       this.radioDisable = {
         Company: false,
         Department: false,
@@ -201,6 +241,7 @@ export default {
       this.$emit('update:visible', false)
     },
     loadRadio() {
+      // this.form.orgType = 'Company'
       if (this.type === 'createChild') {
         if (this.form.parentOrgType === 'Enterprise') {
           this.form.orgType = 'Company'
@@ -215,6 +256,11 @@ export default {
           this.form.orgType = 'Group'
         }
       }
+    },
+    handleOrgNodeClick(data) {
+      this.form.parentOrgId = data.orgId
+      this.parentOrgIdLabel = data.orgName
+      if (this.type !== 'createChild') this.$refs.parentOrgId.blur()
     }
   }
 }

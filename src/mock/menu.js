@@ -870,8 +870,6 @@ const menuRes = {
 export default ({ mock }) => {
   if (!mock) return
   Mock.mock(new RegExp('/api/blade-system/menu/routes' + '.*'), 'get', () => {
-    return {
-      response: menuRes
-    }
+    return menuRes
   })
 }

@@ -82,28 +82,10 @@
                 placeholder="请选择"
               >
                 <el-option
-                  label="1个月"
-                  value="1"
-                />
-                <el-option
-                  label="2个月"
-                  value="2"
-                />
-                <el-option
-                  label="3个月"
-                  value="3"
-                />
-                <el-option
-                  label="4个月"
-                  value="4"
-                />
-                <el-option
-                  label="5个月"
-                  value="5"
-                />
-                <el-option
-                  label="6个月"
-                  value="6"
+                  v-for="item in [1, 2, 3, 4, 5, 6]"
+                  :key="item"
+                  :label="item + '个月'"
+                  :value="item"
                 />
               </el-select>
             </el-form-item>
@@ -131,7 +113,9 @@
             >
               <el-input v-model="form.userId">
                 <template slot="append">
-                  自动生成
+                  <div @click="autoUserId">
+                    自动生成
+                  </div>
                 </template>
               </el-input>
             </el-form-item>
@@ -399,28 +383,7 @@ export default {
         address: [{ required: true, message: '请选择地址', trigger: 'change' }]
       },
       options: [],
-      workAddress: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
+      workAddress: [],
       dialogTableVisible: false
     }
   },
@@ -473,6 +436,19 @@ export default {
       }
       .el-cascader {
         width: 250px;
+      }
+      .el-input-group--append {
+        .el-input__inner {
+          border-top-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+        }
+        .el-input-group__append {
+          background-color: #fff;
+          border: 0;
+          padding: 0 10px;
+          color: cornflowerblue;
+          cursor: pointer;
+        }
       }
     }
   }

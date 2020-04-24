@@ -15,12 +15,14 @@
           v-model="requireForm[item.field]"
           :type="item.config && item.config.type ? item.config.type : 'text'"
           :placeholder="item.config && item.config.placeholder"
+          @change="change"
         />
         <el-select
           v-if="item.type === 'select'"
           v-model="requireForm[item.field]"
           :placeholder="item.config && item.config.placeholder"
           :multiple="item.config && item.config.multiple"
+          @change="change"
         >
           <template v-if="item.config && item.config.group">
             <el-option-group
@@ -40,7 +42,6 @@
             <el-option
               style="height: auto;padding:0"
               :value="requireForm[item.field]"
-              :label="requireForm[item.field + 'Label']"
             >
               <el-tree
                 :data="item.options"
@@ -66,16 +67,19 @@
           v-if="item.type === 'timeSelect'"
           v-model="requireForm[item.field]"
           placeholder="选择时间"
+          @change="change"
         />
         <el-time-picker
           v-if="item.type === 'timePicker'"
           v-model="requireForm[item.field]"
           placeholder="选择时间"
+          @change="change"
         />
         <el-cascader
           v-if="item.type === 'cascader'"
           v-model="requireForm[item.field]"
           :options="item.options"
+          @change="change"
         />
         <el-date-picker
           v-if="item.type === 'dataPicker'"
@@ -265,6 +269,15 @@ export default {
       popoverForm: {}
     }
   },
+  watch: {
+    requireOptions: {
+      handler() {
+        this.initForm()
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   created() {
     this.initForm()
   },
@@ -274,23 +287,27 @@ export default {
       this.requireOptions.forEach((item) => {
         if (item.field.indexOf(',') > -1) {
           if (item.type === 'numInterval') {
-            this.$set(this.requireForm, item.field, { min: '', max: '' })
+            this.$set(this.requireForm, item.field, item.defaultValue || { min: '', max: '' })
           } else {
-            this.$set(this.requireForm, item.field, [])
+            this.$set(this.requireForm, item.field, item.defaultValue || [])
           }
         } else {
-          this.$set(this.requireForm, item.field, '')
+          this.$set(this.requireForm, item.field, item.defaultValue || '')
+          // if (item.defaultValue && item.config && item.config.tree && this.$refs[item.field]) {
+          //   console.log(this.$refs[item.field])
+          //   this.$refs[item.field][0].setCurrentKey(item.defaultValue)
+          // }
         }
       })
       this.popoverOptions.forEach((item) => {
         if (item.field.indexOf(',') > -1) {
           if (item.type === 'numInterval') {
-            this.$set(this.popoverForm, item.field, { min: '', max: '' })
+            this.$set(this.popoverForm, item.field, item.defaultValue || { min: '', max: '' })
           } else {
-            this.$set(this.popoverForm, item.field, [])
+            this.$set(this.popoverForm, item.field, item.defaultValue || [])
           }
         } else {
-          this.$set(this.popoverForm, item.field, '')
+          this.$set(this.popoverForm, item.field, item.defaultValue || '')
         }
       })
     },
@@ -332,7 +349,8 @@ export default {
     },
     handleOrgNodeClick(data, form, field, config) {
       form[field] = data[config.nodeKey]
-      form[field + 'Label'] = data[config.treeLabel]
+      // form[field + 'Label'] = data[config.treeLabel]
+      this.change()
     },
     change() {
       this.submitSearch()

@@ -158,6 +158,11 @@
 </template>
 
 <script>
+import { getOrgTree } from '@/api/org/org'
+import { tableOptions } from '@/util/constant'
+import SearchPopoover from '@/components/searchPopover/index'
+import OrgEdit from './components/orgEdit'
+
 const column = [
   {
     label: '组织名称',
@@ -188,16 +193,13 @@ const column = [
   },
   {
     label: '在职人数',
-    prop: 'wordNum'
+    prop: 'workNum'
   },
   {
     label: '描述',
     prop: 'remark'
   }
 ]
-import { tableOptions } from '@/util/constant'
-import SearchPopoover from '@/components/searchPopover/index'
-import OrgEdit from './components/orgEdit'
 
 export default {
   components: { SearchPopoover, OrgEdit },
@@ -211,8 +213,10 @@ export default {
             type: 'select',
             field: 'parentOrgId',
             label: '',
+            defaultValue: '0',
+            defaultLabel: '@Qy4DZc',
             options: [],
-            config: { tree: true, nodeKey: 'id', treeLabel: 'orgName' }
+            config: { tree: true, nodeKey: 'orgId', treeLabel: 'orgName' }
           },
           {
             type: 'input',
@@ -242,57 +246,7 @@ export default {
           }
         ]
       },
-      data: [
-        {
-          id: 1,
-          orgName: '事件1',
-          icon: 'el-icon-bell',
-          timeLine: 100,
-          comment: '无',
-          orgType: 'Enterprise',
-          menuLevel: 1,
-          children: [
-            {
-              id: 3,
-              orgName: '事件3',
-              timeLine: 90,
-              comment: '无',
-              children: [
-                {
-                  id: 6,
-                  orgName: '事件6',
-                  timeLine: 75,
-                  comment: '无',
-                  children: [
-                    {
-                      id: 7,
-                      orgName: '事件7',
-                      timeLine: 50,
-                      comment: '无',
-                      children: [
-                        {
-                          id: 71,
-                          orgName: '事件71',
-                          timeLine: 25,
-                          comment: 'xx',
-                          children: []
-                        }
-                      ]
-                    },
-                    {
-                      id: 8,
-                      orgName: '事件8',
-                      timeLine: 25,
-                      comment: '无',
-                      children: []
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      data: [],
       multipleSelection: [],
       option: {
         ...tableOptions,
@@ -302,6 +256,8 @@ export default {
         defaultExpandAll: true,
         selection: true,
         formHeight: 20,
+        height: 'auto',
+        rowKey: 'orgId',
         column: column
       },
       newOrg: {},
@@ -311,14 +267,30 @@ export default {
         orgType: [{ required: true, message: '请选择组织类型', trigger: 'change' }]
       },
       createOrgDailog: false,
-      orgTypeObj: { Enterprise: '企业', Company: '公司', Department: '部门', Group: '小组' }
+      orgTypeObj: { Enterprise: '企业', Company: '公司', Department: '部门', Group: '小组' },
+      searchParams: { parentOrgId: 0 }
     }
   },
+  created() {
+    getOrgTree({ parentOrgId: 0 }).then((res) => {
+      this.searchConfig.requireOptions[0].options.push(...res)
+    })
+    this.getOrgTree()
+  },
   methods: {
+    getOrgTree() {
+      const params = this.searchParams
+      getOrgTree(params).then((res) => {
+        this.data = res
+      })
+    },
     toOrgDetail(row) {
       this.$router.push({ path: '/orgs/orgDetail?orgId=' + row.orgId })
     },
-    handleSubmit() {},
+    handleSubmit(params) {
+      this.searchParams = params
+      // this.getOrgTree(this.data)
+    },
     handleCommand(command) {
       if (command === 'add') {
         this.createOrgDailog = true
