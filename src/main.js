@@ -16,6 +16,7 @@ import './styles/common.scss'
 import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
 import website from '@/config/website'
+import '@/styles/oa-custom/theme/index.css'
 
 Vue.use(router)
 Vue.use(VueAxios, axios)

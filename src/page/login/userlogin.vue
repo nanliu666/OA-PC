@@ -150,9 +150,8 @@ export default {
   methods: {
     refreshCode() {
       getCaptcha().then((res) => {
-        const data = res.data
-        this.loginForm.key = data.key
-        this.loginForm.image = data.image
+        this.loginForm.key = res.key
+        this.loginForm.image = res.image
       })
     },
     showPassword() {

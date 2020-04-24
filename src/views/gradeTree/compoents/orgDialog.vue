@@ -101,10 +101,19 @@ export default {
       type: Boolean
     },
     title: {
-      type: String
+      type: String,
+      default: function() {
+        return ''
+      }
     },
     dialogVisible: {
       type: Boolean
+    },
+    orgData: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     },
     visible: {
       type: Boolean,
@@ -332,6 +341,14 @@ export default {
         this.dialog = val
       },
       deep: true //对象内部的属性监听，也叫深度监听
+    },
+    orgData: {
+      handler: function(val) {
+        // console.log('orgData____', val)
+        this.form.orgName = val.name
+      },
+      immediate: true,
+      deep: true
     },
     filterText(val) {
       this.$refs.tree.filter(val)

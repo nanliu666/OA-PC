@@ -153,6 +153,7 @@
       :dialog-visible.sync="orgDialog"
       :title="title"
       :is-edit="isEdit"
+      :org-data="selData"
       @onsubmit="orgOnsubmit"
     />
   </div>
@@ -164,6 +165,8 @@ import html2canvas from 'html2canvas'
 const $ = go.GraphObject.make
 import positionDialog from './compoents/positionDialog'
 import orgDialog from './compoents/orgDialog'
+import { getOrganizationView } from '@/api/organize/grade'
+
 export default {
   name: 'Grade',
   components: {
@@ -190,7 +193,7 @@ export default {
         }
       ],
       value: '选项1',
-      itemData: {},
+      selData: {},
       form: { key: 14, name: '', userName: '' },
       myDiagram: '',
       dialogVisible: false,
@@ -207,29 +210,28 @@ export default {
       TreeModel: {
         class: 'go.TreeModel',
         nodeDataArray: [
-          // type Enterprise-企业，Company-公司，Department-部门，Group-小组，Job-职位
-          { key: 1, name: 'Stella Payne Diaz', userName: 'Enterprise', type: 'Enterprise' },
-          { key: 4, name: 'Luke Warm', userName: 'Company', parent: 1, type: 'Company' },
-          { key: 2, name: 'Peggy Flaming', userName: 'Department', parent: 1, type: 'Company' },
-          { key: 3, name: 'Meg Meehan Hoffa', userName: 'Group', parent: 2, type: 'Department' },
-          { key: 5, name: 'Saul Wellingood', userName: 'Manufacturing', parent: 4, type: 'Department' },
-          { key: 6, name: 'Al Ligori', userName: 'Marketing', parent: 2, type: 'Group' },
-          { key: 7, name: 'Dot Stubadd', userName: 'Job', parent: 3, type: 'Job' },
-          { key: 8, name: 'Les Ismore', userName: 'Project Mgr', parent: 5, type: 'Group' },
-          { key: 9, name: 'April Lynn Parris', userName: 'Events Mgr', parent: 6, type: 'Group' },
-          { key: 10, name: 'Xavier Breath', userName: 'Engineering', parent: 4, type: 'Group' },
-          { key: 11, name: 'Anita Hammer', userName: 'Process', parent: 5, type: 'Group' },
-          { key: 14, name: '333', userName: 'Hardware', parent: 10, type: 'Group' },
-          { key: 13, name: '111', userName: 'Testing', parent: 10, type: 'Group' },
+          { key: 1, orgName: 'Stella Payne Diaz', userName: 'Enterprise', type: 'Enterprise' },
+          { key: 4, orgName: 'Luke Warm', userName: 'Company', parent: 1, type: 'Company' },
+          { key: 2, orgName: 'Peggy Flaming', userName: 'Department', parent: 1, type: 'Company' },
+          { key: 3, orgName: 'Meg Meehan Hoffa', userName: 'Group', parent: 2, type: 'Department' },
+          { key: 5, orgName: 'Saul Wellingood', userName: 'Manufacturing', parent: 4, type: 'Department' },
+          { key: 6, orgName: 'Al Ligori', userName: 'Marketing', parent: 2, type: 'Group' },
+          { key: 7, orgName: 'Dot Stubadd', userName: 'Job', parent: 3, type: 'Job' },
+          { key: 8, orgName: 'Les Ismore', userName: 'Project Mgr', parent: 5, type: 'Group' },
+          { key: 9, orgName: 'April Lynn Parris', userName: 'Events Mgr', parent: 6, type: 'Group' },
+          { key: 10, orgName: 'Xavier Breath', userName: 'Engineering', parent: 4, type: 'Group' },
+          { key: 11, orgName: 'Anita Hammer', userName: 'Process', parent: 5, type: 'Group' },
+          { key: 14, orgName: '333', userName: 'Hardware', parent: 10, type: 'Group' },
+          { key: 13, orgName: '111', userName: 'Testing', parent: 10, type: 'Group' },
 
-          { key: 12, name: '222', userName: 'Software', parent: 10, type: 'Group' },
-          { key: 16, name: '444', userName: 'Software', parent: 10, type: 'Group' },
-          { key: 15, name: 'Evan Elpus', userName: 'Quality', parent: 5, type: 'Group' },
+          { key: 12, orgName: '222', userName: 'Software', parent: 10, type: 'Group' },
+          { key: 16, orgName: '444', userName: 'Software', parent: 10, type: 'Group' },
+          { key: 15, orgName: 'Evan Elpus', userName: 'Quality', parent: 5, type: 'Group' },
 
           {
             key: 16,
-            name: 'Lotta B. Essen',
-            userName: '网水，网嘎，网按个摩，网按个，网按个摩',
+            orgName: 'Lotta B. Essen',
+            userName: '网水,网嘎,网按个摩,网按个,网按个摩',
             parent: 3,
             type: 'Group'
           }
@@ -237,10 +239,36 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {},
+  async mounted() {
+    await this.getOrgData()
     this.init()
   },
   methods: {
+    getOrgData() {
+      let params = {
+        orgId: 0
+      }
+      // console.log(params)
+      return new Promise((resolve, reject) => {
+        getOrganizationView(params)
+          .then((res) => {
+            if (typeof this.TreeModel === 'string') {
+              this.TreeModel = JSON.parse(this.TreeModel)
+            }
+            res.map((it) => {
+              it.key = parseInt(it.sort)
+              if (it.parentId) it.parent = it.parentId
+              it.orgName = it.name + `(${it.jobNum})`
+            })
+            this.TreeModel.nodeDataArray = res
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
     orgOnsubmit() {},
     positionOnsubmit() {},
     nodeDoubleClick(e, obj) {
@@ -400,7 +428,7 @@ export default {
       }
       function showContextMenu(obj, diagram) {
         var hasMenuItem = false
-        that.itemData = obj.data
+        that.selData = obj.data
         function maybeShowItem(elt, pred, id) {
           switch (id) {
             case 'newOrg':
@@ -502,6 +530,7 @@ export default {
             .add(new go.PathSegment(go.PathSegment.Line, p1, h))
             .add(new go.PathSegment(go.PathSegment.Arc, 90, 90, p1, h - p1, p1, p1).close())
         )
+
         // 当使用一个“Auto”Panel时，不要让顶部的两个角交叉了
         geo.spot1 = new go.Spot(0, 0, 0.3 * p1, 0)
         geo.spot2 = new go.Spot(1, 1, -0.3 * p1, -0.3 * p1)
@@ -557,11 +586,16 @@ export default {
               if (sel < me) {
                 let me = that.msgText[node.data.type]
                 let sel = that.msgText[selnode.data.type]
-                that.$confirm(`${me}下不能创建${sel}`, {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning'
-                })
+                that
+                  .$confirm(`${me}下不能创建${sel}`, {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                  })
+                  .then(() => {
+                    // that.load()
+                  })
+
                 return
               }
               // find any existing link into the selected node
@@ -633,7 +667,7 @@ export default {
                   name: 'Name',
                   font: 'bold 12pt serif'
                 },
-                new go.Binding('text', 'name').makeTwoWay()
+                new go.Binding('text', 'orgName').makeTwoWay()
               )
             ),
             $(
@@ -704,7 +738,7 @@ export default {
         this.TreeModel = JSON.parse(this.TreeModel)
       }
       this.TreeModel.nodeDataArray.map((it) => {
-        var reg = new RegExp('，', 'g') //"g"表示全局替换
+        var reg = new RegExp(',', 'g') //"g"表示全局替换
         it.userName = it.userName.replace(reg, '\n')
         it.userNames = it.userName.split('\n')
         if (it.userNames.length > 3) {
@@ -737,11 +771,11 @@ export default {
         this.orgDialog = true
         return
       }
-      // let type =this.itemData.type
-      if (this.itemData.type !== this.type[4]) {
+      if (this.selData.type !== this.type[4]) {
         this.title = this.orgTitle[1]
         this.orgDialog = true
         this.isEdit = true
+        // console.log(this.selData)
       } else {
         this.title = this.positionTitle[1]
         this.isEdit = true
@@ -751,21 +785,21 @@ export default {
 
       this.status = val
       if (this.status === 'edit') {
-        if (this.itemData.userNames) {
-          this.itemData.userName = this.itemData.userNames.join('\n')
+        if (this.selData.userNames) {
+          this.selData.userName = this.selData.userNames.join('\n')
         }
-        this.form = Object.assign(this.form, this.itemData)
+        this.form = Object.assign(this.form, this.selData)
       }
     },
     cxcommand(event, val) {
       if (val === undefined) val = event.currentTarget.id
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
       let isChildren = !!nodeDataArray.find((it) => {
-        if (it.parent === this.itemData.key) {
+        if (it.parent === this.selData.key) {
           return it
         }
       })
-      if (isChildren || !this.itemData.parent) {
+      if (isChildren || !this.selData.parent) {
         this.$message.warning('很抱歉，您选中的组织下存在员工，请先将员工调整后在删除')
         return
       }
@@ -783,13 +817,13 @@ export default {
           name,
           userName,
           comments: '',
-          parent: this.itemData.key
+          parent: this.selData.key
         }
         this.myDiagram.model.addNodeData(newemp)
         this.myDiagram.commitTransaction('add employee')
         this.dialogVisible = false
       } else {
-        var nodeData = this.myDiagram.model.findNodeDataForKey(this.itemData.key)
+        var nodeData = this.myDiagram.model.findNodeDataForKey(this.selData.key)
         let userNames = this.form.userName.split('\n')
         let userName = this.form.userName
         if (userNames.length > 3) {
@@ -830,6 +864,7 @@ export default {
         width += (number[1] - 2) * 200
       }
       width += max * 100 + (max / 5) * 100
+      // console.log(width)
       let myDiaramDiv = document.getElementById('myDiagramDiv')
       myDiaramDiv.style.width = width + 'px'
       this.load()
