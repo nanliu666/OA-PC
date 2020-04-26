@@ -59,7 +59,7 @@
           <el-button
             type="primary"
             size="medium"
-            @click="onClickSave"
+            @click="handleModity"
           >
             保存
           </el-button>
@@ -71,29 +71,53 @@
 
 <script>
 import treeSelect from '../../../components/treeSelect/treeSelect'
-import { postV1Job } from '@/api/organize/position'
+import { postV1Job, putV1Job } from '@/api/organize/position'
 import { getOrganization } from '@/api/organize/grade'
 
 const options = [
   {
-    value: '1',
-    label: '阿里巴巴'
+    label: 'CEO',
+    value: '001'
   },
   {
-    value: '2',
-    label: '京东'
+    label: ' 百利宏化工CEO',
+    value: '002'
   },
   {
-    value: '3',
-    label: '淘宝'
+    label: '百利宏医药工CEO',
+    value: '003'
   },
   {
-    value: '4',
-    label: '天猫'
+    label: '事业部经理1',
+    value: '004'
   },
   {
-    value: '5',
-    label: '百利宏'
+    label: '事业部经理2',
+    value: '005'
+  },
+  {
+    label: '事业部经理3',
+    value: '006'
+  },
+  {
+    label: '事业部经理4',
+    value: '007'
+  },
+  {
+    label: '飞洒',
+    value: '008'
+  },
+  {
+    label: '发撒',
+    value: '009'
+  },
+  {
+    label: '富士达',
+    value: '0010'
+  },
+  {
+    label: '士大夫',
+    value: '0011'
   }
 ]
 const category = [
@@ -169,11 +193,11 @@ export default {
     return {
       isSingle: true,
       form: {
-        jobName: '',
-        categoryId: '',
-        remark: '',
-        parentId: '',
-        orgId: []
+        jobName: '', //职位名称
+        categoryId: '', //职位类别id
+        remark: '', // 描述
+        parentId: '', //所属职位
+        orgId: [] //所属组织
       },
       option: {
         menuBtn: false,
@@ -299,7 +323,7 @@ export default {
         this.$emit('update:dialogVisible', this.dialog)
         if (!this.dialog) {
           this.$refs.form.resetFields()
-          this.form.orgId = []
+          // this.form.orgId = []
         }
       }
     },
@@ -317,7 +341,8 @@ export default {
         if (val.jobName) {
           this.form.jobName = val.jobName
           this.form.categoryId = val.categoryId
-          let orgId = parseInt(val.orgId)
+          this.form.remark = val.remark
+          let orgId = val.orgId
           if (orgId) {
             this.form.orgId = [orgId]
           }
@@ -328,7 +353,22 @@ export default {
       immediate: true
     },
     orgData: {
-      handler: function() {},
+      handler: function(val) {
+        if (this.isEdit) {
+          // jobName: '', //职位名称
+          //   categoryId: '',//职位类别id
+          //   remark: '', // 描述
+          //   parentId: '', //所属职位
+          //   orgId: [] //所属组织
+          this.form.jobName = val.name
+          this.form.categoryId = val.categoryId
+          this.form.remark = val.remark
+          let orgId = val.parentId
+          if (orgId) {
+            this.form.orgId = [orgId]
+          }
+        }
+      },
       immediate: true,
       deep: true
     }
@@ -365,6 +405,25 @@ export default {
     onContinue() {
       this.$emit('update:dialogVisible', false)
     },
+    handleModity() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          let { jobName, categoryId, remark, parentId, orgId } = { ...this.form }
+          let params = {
+            jobName,
+            categoryId,
+            remark,
+            parentId,
+            orgId: orgId[0]
+          }
+          putV1Job(params).then(() => {
+            this.$message.success('修改成功')
+            this.$emit('onsubmit', params)
+            this.$emit('update:dialogVisible', false)
+          })
+        }
+      })
+    },
     onClickSave() {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
@@ -377,11 +436,11 @@ export default {
             parentId,
             orgId: orgId[0]
           }
-          postV1Job(params).then((res) => {
-            this.$message.success(res.data.data.msg)
+          postV1Job(params).then(() => {
+            this.$message.success('保存成功')
             this.$emit('onsubmit', params)
+            this.$emit('update:dialogVisible', false)
           })
-          this.$emit('update:dialogVisible', false)
         }
       })
     },

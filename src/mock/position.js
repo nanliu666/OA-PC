@@ -225,6 +225,9 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/api/org/v1/job' + '.*'), 'post', () => {
     return json
   })
+  Mock.mock(new RegExp('/api/org/v1/job' + '.*'), 'put', () => {
+    return json
+  })
   Mock.mock(new RegExp('/api/org/v1/job' + '.*'), 'delete', () => {
     return deletes
   })

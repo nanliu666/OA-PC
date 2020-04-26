@@ -36,6 +36,18 @@ export const postV1Job = (current, size, params) => {
     }
   })
 }
+export const putV1Job = (current, size, params) => {
+  //职位修改接口
+  return request({
+    url: '/api/org/v1/job',
+    method: 'put',
+    params: {
+      ...params,
+      current,
+      size
+    }
+  })
+}
 export const deleteV1Job = (current, size, params) => {
   //职位删除接口
   return request({
