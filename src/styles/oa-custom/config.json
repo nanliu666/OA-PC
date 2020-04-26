@@ -1,0 +1,27 @@
+{
+  "global": {
+    "$--color-primary": "#207EFA",
+    "$--background-color-base": "#F2F5F7",
+    "$--color-text-secondary": "#718199",
+    "$--font-weight-primary": "400",
+    "$--font-weight-secondary": "300"
+  },
+  "local": {
+    "$--tag-info-color": "#718199",
+    "$--tag-primary-color": "#6AAFFF",
+    "$--tag-success-color": "#7AD683",
+    "$--tag-warning-color": "#FFD122",
+    "$--tag-danger-color": "#FF8B8A",
+    "$--table-header-background-color": "#F7F8FA",
+    "$--table-header-font-color": "#A1A7AE",
+    "$--input-font-color": "#202940",
+    "$--input-placeholder-color": "#A0A8AE",
+    "$--select-input-focus-border-color": "#198CFF",
+    "$--button-padding-horizontal": "26px",
+    "$--button-padding-vertical": "14px",
+    "$--button-medium-padding-horizontal": "18px",
+    "$--button-small-padding-vertical": "6px",
+    "$--button-small-padding-horizontal": "10px",
+    "$--input-height": "34px"
+  }
+}

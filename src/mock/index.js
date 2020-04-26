@@ -2,6 +2,9 @@ import user from './user'
 import menu from './menu'
 import oauth from './oauth'
 import param from './param'
+import system from './system'
+import role from './role'
+import dict from './dict'
 import position from './position'
 import grade from './grade'
 
@@ -20,4 +23,10 @@ menu(options)
 
 oauth(options)
 
+system(options)
+
+dict(options)
+
 param(options)
+
+role(options)

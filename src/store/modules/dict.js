@@ -13,7 +13,7 @@ const dict = {
       return new Promise((resolve, reject) => {
         getDictionary({ code: 'flow' })
           .then((res) => {
-            commit('SET_FLOW_ROUTES', res.data.data)
+            commit('SET_FLOW_ROUTES', res)
             resolve()
           })
           .catch((error) => {

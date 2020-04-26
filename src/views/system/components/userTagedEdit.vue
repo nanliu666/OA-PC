@@ -117,7 +117,7 @@ export default {
     },
     getDeptTree(tenantId) {
       getDeptTree(tenantId).then((res) => {
-        this.depTree = res.data.data
+        this.depTree = res
       })
     },
     handleSubmit() {}

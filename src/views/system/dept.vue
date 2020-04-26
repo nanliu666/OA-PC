@@ -226,7 +226,7 @@ export default {
     initData() {
       getDeptTree().then((res) => {
         const column = this.findObject(this.option.column, 'parentId')
-        column.dicData = res.data.data
+        column.dicData = res
       })
     },
     handleAdd(row) {
@@ -243,10 +243,9 @@ export default {
       add(row).then(
         (res) => {
           // 获取新增数据的相关字段
-          const data = res.data.data
-          row.id = data.id
-          row.deptCategoryName = data.deptCategoryName
-          row.tenantId = data.tenantId
+          row.id = res.id
+          row.deptCategoryName = res.deptCategoryName
+          row.tenantId = res.tenantId
           this.$message({
             type: 'success',
             message: '操作成功!'
@@ -346,7 +345,7 @@ export default {
       }
       if (['edit', 'view'].includes(type)) {
         getDept(this.form.id).then((res) => {
-          this.form = res.data.data
+          this.form = res
         })
       }
       done()
@@ -374,7 +373,7 @@ export default {
     onLoad(page, params = {}) {
       this.loading = true
       getLazyList(this.parentId, Object.assign(params, this.query)).then((res) => {
-        this.data = res.data.data
+        this.data = res
         this.loading = false
         this.selectionClear()
       })
@@ -382,7 +381,7 @@ export default {
     treeLoad(tree, treeNode, resolve) {
       const parentId = tree.id
       getLazyList(parentId).then((res) => {
-        resolve(res.data.data)
+        resolve(res)
       })
     }
   }

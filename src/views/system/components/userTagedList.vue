@@ -208,8 +208,7 @@ export default {
 
     onLoad() {
       // this.loading = true
-      // getList(page.currentPage, page.pageSize, Object.assign(params, this.query), this.treeDeptId).then((res) => {
-      //   const data = res.data.data
+      // getList(page.currentPage, page.pageSize, Object.assign(params, this.query), this.treeDeptId).then((data) => {
       //   this.page.total = data.total
       //   this.data = data.records
       //   this.loading = false
