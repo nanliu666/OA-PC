@@ -248,3 +248,40 @@ export function validatenull(val) {
   }
   return false
 }
+
+/**
+ * 密码的校验规则(密码包含字母，符号或数字中至少两项且长度超过6位的密码)
+ */
+export function validatePW(pw) {
+  let regular = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,}$/
+  if (regular.test(pw)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * 2-10位汉字、英文、空格和点号
+ * @param {Object} name
+ */
+export function validateName(name) {
+  let reg = /^[a-zA-Z\x20\u4e00-\u9fa5.]{2,10}$/
+  if (reg.test(name)) {
+    return true
+  } else {
+    return false
+  }
+}
+/**
+ * 19/17/16位银行卡号
+ * @param {Object} number
+ */
+export function validataBankCard(number) {
+  let reg = /(^\d{15}$)|(^\d{17}$)|(^\d{19}$)/
+  if (reg.test(number)) {
+    return true
+  } else {
+    return false
+  }
+}

@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { getParentList, getChildList, remove, update, add, getDict, getDictTree } from '@/api/system/dict'
+import { getList, remove, update, add } from '@/api/system/dict'
 import { optionParent, optionChild } from '@/const/system/dict'
 import { mapGetters } from 'vuex'
 
@@ -162,12 +162,7 @@ export default {
       return ids.join(',')
     }
   },
-  mounted() {
-    getDictTree().then((res) => {
-      const column = this.findObject(this.optionChild.column, 'parentId')
-      column.dicData = res.data.data
-    })
-  },
+  mounted() {},
   methods: {
     rowSave(row, done, loading) {
       const form = {
@@ -278,9 +273,7 @@ export default {
     },
     beforeOpen(done, type) {
       if (['edit', 'view'].includes(type)) {
-        getDict(this.formParent.id).then((res) => {
-          this.formParent = res.data.data
-        })
+        // this.formParent = this.dataParent.filter((i)=>i.id === this.formParent.id)[0]
       }
       done()
     },
@@ -383,9 +376,9 @@ export default {
     },
     beforeOpenChild(done, type) {
       if (['edit', 'view'].includes(type)) {
-        getDict(this.formChild.id).then((res) => {
-          this.formChild = res.data.data
-        })
+        // getDict(this.formChild.id).then((res) => {
+        //   this.formChild = res.data.data
+        // })
       }
       done()
     },
@@ -400,20 +393,33 @@ export default {
     },
     onLoadParent(page, params = {}) {
       this.loading = true
-      getParentList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then((res) => {
-        const data = res.data.data
-        this.pageParent.total = data.total
-        this.dataParent = data.records
+      getList(
+        page.currentPage,
+        page.pageSize,
+        Object.assign(params, this.query, {
+          parentId: 0
+        })
+      ).then((res) => {
+        this.pageParent.total = res.totalNum
+        this.dataParent = res.data
         this.loading = false
         this.selectionClear()
       })
     },
     onLoadChild(page, params = {}) {
+      if (!this.parentId) {
+        return
+      }
       this.loadingChild = true
-      getChildList(page.currentPage, page.pageSize, this.parentId, Object.assign(params, this.query)).then((res) => {
-        const data = res.data.data
-        this.pageChild.total = data.total
-        this.dataChild = data.records
+      getList(
+        page.currentPage,
+        page.pageSize,
+        Object.assign(params, this.query, {
+          parentId: this.parentId
+        })
+      ).then((res) => {
+        this.pageChild.total = res.totalNum
+        this.dataChild = res.data
         this.loadingChild = false
         this.selectionClear()
       })
