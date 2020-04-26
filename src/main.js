@@ -15,6 +15,7 @@ import i18n from './lang' // Internationalization
 import './styles/common.scss'
 import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
+import commonTable from 'vue-common-table'
 import website from '@/config/website'
 import '@/styles/oa-custom/theme/index.css'
 
@@ -29,6 +30,7 @@ Vue.use(window.AVUE, {
 //注册全局容器
 Vue.component('basicContainer', basicContainer)
 Vue.component('basicBlock', basicBlock)
+Vue.component('commonTable', commonTable)
 // 加载相关url地址
 Object.keys(urls).forEach((key) => {
   Vue.prototype[key] = urls[key]
