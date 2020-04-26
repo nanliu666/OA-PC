@@ -84,7 +84,7 @@ export default {
           this.$store.commit('SET_SCREEN', admin.getScreen())
         }, 0)
       }
-      this.$store.dispatch('FlowRoutes').then(() => {})
+      // this.$store.dispatch('FlowRoutes').then(() => {})
     },
     //打开菜单
     openMenu(item = {}) {
