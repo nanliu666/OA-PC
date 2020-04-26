@@ -8,6 +8,8 @@ import dict from './dict'
 import position from './position'
 import grade from './grade'
 
+import personalInfo from './personalInfo'
+
 /**
  * 模拟数据mock
  *
@@ -30,3 +32,5 @@ dict(options)
 param(options)
 
 role(options)
+
+personalInfo(options)
