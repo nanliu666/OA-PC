@@ -1,55 +1,30 @@
 import request from '@/router/axios'
 
-export const getList = (current, size, params) => {
+export const getList = (pageNo, pageSize, params) => {
   return request({
-    url: '/api/blade-system/dict/list',
+    url: '/api/sys/v1/dict/list',
     method: 'get',
     params: {
       ...params,
-      current,
-      size
+      pageNo,
+      pageSize
     }
   })
 }
 
-export const getParentList = (current, size, params) => {
+export const remove = (id) => {
   return request({
-    url: '/api/blade-system/dict/parent-list',
-    method: 'get',
+    url: '/api/sys/v1/dict',
+    method: 'delete',
     params: {
-      ...params,
-      current,
-      size
-    }
-  })
-}
-
-export const getChildList = (current, size, parentId, params) => {
-  return request({
-    url: '/api/blade-system/dict/child-list',
-    method: 'get',
-    params: {
-      ...params,
-      current,
-      size,
-      parentId: parentId
-    }
-  })
-}
-
-export const remove = (ids) => {
-  return request({
-    url: '/api/blade-system/dict/remove',
-    method: 'post',
-    params: {
-      ids
+      id
     }
   })
 }
 
 export const add = (row) => {
   return request({
-    url: '/api/blade-system/dict/submit',
+    url: '/api/sys/v1/dict',
     method: 'post',
     data: row
   })
@@ -57,25 +32,9 @@ export const add = (row) => {
 
 export const update = (row) => {
   return request({
-    url: '/api/blade-system/dict/submit',
-    method: 'post',
+    url: '/api/sys/v1/dict',
+    method: 'put',
     data: row
-  })
-}
-
-export const getDict = (id) => {
-  return request({
-    url: '/api/blade-system/dict/detail',
-    method: 'get',
-    params: {
-      id
-    }
-  })
-}
-export const getDictTree = () => {
-  return request({
-    url: '/api/blade-system/dict/tree?code=DICT',
-    method: 'get'
   })
 }
 

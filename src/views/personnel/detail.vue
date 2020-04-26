@@ -32,9 +32,7 @@
           (GZ878)
         </div>
       </el-col>
-      <el-col
-        :span="2"
-      >
+      <el-col :span="2">
         <div class="grid-content bg-purple">
           <el-button
             type="primary"

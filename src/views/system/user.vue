@@ -62,9 +62,9 @@ export default {
         lazy: true,
         treeLoad: function(node, resolve) {
           const parentId = node.level === 0 ? 0 : node.data.id
-          getDeptLazyTree(parentId).then((res) => {
+          getDeptLazyTree(parentId).then((data) => {
             resolve(
-              res.data.data.map((item) => {
+              data.map((item) => {
                 return {
                   ...item,
                   leaf: !item.hasChildren

@@ -97,7 +97,7 @@ export default {
         name: this.searchValue
       }
       getTagList(params).then((res) => {
-        this.tagList = res.data.data
+        this.tagList = res
         this.$emit('update:activeTag', this.tagList[0])
       })
     },
