@@ -38,7 +38,7 @@
                 <el-button
                   type="primary"
                   size="medium"
-                  @click="onHandleEdit"
+                  @click="onHandleEdit('add')"
                 >
                   新建角色
                 </el-button>
@@ -125,7 +125,10 @@
           :position-props="options.positionProps"
         />
         <roleLimits :visible.sync="configVisible" />
-        <userList :visible.sync="userVisible" />
+        <userList
+          :visible.sync="userVisible"
+          :role-id="roleId"
+        />
       </el-container>
     </basic-container>
   </div>
@@ -138,6 +141,7 @@ import roleLimits from './components/rolePermission'
 import userList from './components/roleUserList'
 import { tableOptions } from '../../util/constant'
 import { getRoleList, getCate, getPositions, getJobs, delRole } from '../../api/system/role'
+
 export default {
   name: 'Role',
   components: {
@@ -224,7 +228,8 @@ export default {
         ]
       },
       selectArr: [],
-      roleRow: {}
+      roleRow: {},
+      roleId: ''
     }
   },
   computed: {
@@ -239,11 +244,13 @@ export default {
     this.getPositionsFunc()
   },
   methods: {
+    // 加载页面全部数据（左侧分组树，右侧角色列表）
     async onLoad() {
       await this.getTreeCate()
       this.loadRoleData()
     },
 
+    // 加载右侧角色列表
     loadRoleData() {
       const params = {
         roleName: '',
@@ -254,15 +261,19 @@ export default {
       })
     },
 
+    // 刷新数据
     reload(data = {}) {
       if (data[this.options.props.id]) {
+        //有id时，加载全部数据
         this.options.currentId = data[this.options.props.id]
         this.loadRoleData()
       } else {
+        // 没传id，只需加载右侧列表
         this.onLoad()
       }
     },
 
+    // 获取分组树数据
     getTreeCate() {
       return new Promise((resolve) => {
         const params = {
@@ -275,7 +286,7 @@ export default {
             if (item.categories && item.categories.length > 0) {
               children = item.categories.map((it) => {
                 if (!this.options.currentId && it.roleNum > 0) {
-                  this.options.currentId = it.categoryId
+                  this.options.currentId = it.categoryId // 没有设置默认的激活分类时，设置默认激活分类
                 }
                 return {
                   cateId: it.categoryId,
@@ -296,6 +307,7 @@ export default {
       })
     },
 
+    // 表格显示值转换
     messageFormatter(row) {
       let str = ''
       if (row.type) {
@@ -314,6 +326,7 @@ export default {
       return str
     },
 
+    //
     getJobsFunc() {
       getJobs().then((res) => {
         let data = []
@@ -324,15 +337,24 @@ export default {
 
     jobFilter(arr, data) {
       arr.filter((item) => {
-        const obj = {}
-        if (item.children) {
-          obj.label = item.deptName
-          obj.id = item.deptId
-          obj.children = []
-          this.jobFilter(item.children, obj.children)
-        } else {
-          obj.label = item.jobName
-          obj.id = item.jobId
+        const obj = {
+          children: []
+        }
+        if (item.jobs && item.jobs.length > 0) {
+          item.jobs.forEach((item) => {
+            const job = {
+              label: item.jobName,
+              id: item.jobId
+            }
+            obj.children.push(job)
+          })
+        }
+        if (item.orgType) {
+          obj.label = item.orgName
+          obj.id = item.orgId
+          if (item.children && item.children.length > 0) {
+            this.jobFilter(item.children, obj.children)
+          }
         }
         data.push(obj)
       })
@@ -347,7 +369,8 @@ export default {
     handleConfig() {
       this.configVisible = !this.configVisible
     },
-    handleCheck() {
+    handleCheck(row) {
+      this.roleId = row.roleId
       this.userVisible = !this.userVisible
     },
     handleCommand(command, row) {
@@ -359,10 +382,14 @@ export default {
       }
     },
 
-    onHandleEdit() {
+    onHandleEdit(str) {
+      if (str) {
+        this.roleRow = {}
+      }
       this.visible = !this.visible
     },
 
+    // 点击删除角色，提示
     handleDel(rows = []) {
       if (rows.findIndex((row) => row.type !== 'No') > -1) {
         this.$alert('很抱歉，您选中的角色已关联职位/岗位信息，请先解绑才可以删除', '提示', {
@@ -385,6 +412,7 @@ export default {
         .catch(() => {})
     },
 
+    // 删除角色
     delFunc(ids) {
       const params = {
         ids
@@ -395,15 +423,19 @@ export default {
       })
     },
 
+    // 批量全选
     selectionChange(rows) {
       this.selectArr = rows
     },
+    // 设置表格checkbox
     toggleSelection(rows = []) {
       this.$refs.table.toggleSelection(rows)
     },
+    // 批量删除
     delAll() {
       this.handleDel(this.selectArr)
     },
+    // 关闭批量操作栏
     onCloseSelect() {
       this.$refs.table.toggleSelection()
       this.selectArr = []
@@ -447,9 +479,11 @@ export default {
     font-size: 16px;
     height: 58px;
     line-height: 58px;
+
     .left-part {
       flex: 1;
     }
+
     .right-part {
       padding-right: 20px;
       width: 50px;

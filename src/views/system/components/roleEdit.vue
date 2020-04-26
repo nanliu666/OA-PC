@@ -3,10 +3,10 @@
     :title="form.roleId ? '编辑角色' : '新建角色'"
     :visible.sync="roleVisible"
     width="500px"
-    top="30px"
     :close-on-click-modal="false"
     :modal-append-to-body="false"
     :before-close="onClose"
+    @opened="onOpened"
   >
     <div>
       <avue-form
@@ -269,25 +269,6 @@ export default {
       },
       immediate: true
     },
-    row: {
-      handler(val) {
-        this.$nextTick(() => {
-          const { roleId, roleName, type, remark, jobs, positions } = val
-          const form = this.form
-          form.roleId = roleId
-          form.roleName = roleName
-          form.type = type
-          form.remark = remark
-          if (jobs && jobs.length > 0) {
-            form.jobs = jobs.map((it) => it.jobId)
-          }
-          if (positions && positions.length > 0) {
-            form.positions = positions[0].positionId
-          }
-        })
-      },
-      deep: true
-    },
     jobs: {
       handler(val) {
         const jobColumn = this.findObject(this.option.column, 'jobs')
@@ -300,13 +281,14 @@ export default {
       handler(val) {
         if (val[0]) {
           const positionColumn = this.findObject(this.option.column, 'positions')
-          positionColumn.dicData = val[0].children
+          positionColumn.dicData = val
         }
       },
       immediate: true,
       deep: true
     },
     'form.jobs': {
+      // 清空关联职位的校验
       handler() {
         this.$refs['form'].validateField('jobs', () => {})
       },
@@ -318,17 +300,39 @@ export default {
       return column.find((item) => item.prop === key)
     },
 
+    onOpened() {
+      if (this.row.roleId) {
+        this.$nextTick(() => {
+          const { roleId, roleName, type, remark, jobs, positions } = this.row
+          const form = this.form
+          form.roleId = roleId
+          form.roleName = roleName
+          form.type = type
+          form.remark = remark
+          if (jobs && jobs.length > 0) {
+            form.jobs = jobs.map((it) => it.jobId)
+          }
+          if (positions && positions.length > 0) {
+            form.positions = positions[0].positionId
+          }
+        })
+      }
+    },
+
+    // 保存并继续添加
     onContinue() {
       this.onClickSave(this.clearForm)
     },
+    // 点击保存
     onClickSave(callback) {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
-          this.form.roleId ? this.updateFunc() : this.saveFunc(callback)
+          this.form.roleId ? this.updateFunc() : this.createFunc(callback)
         }
       })
     },
-    saveFunc(callback) {
+    //新建角色
+    createFunc(callback) {
       const params = {
         ...this.form
       }
@@ -337,6 +341,7 @@ export default {
         callback()
       })
     },
+    // 更新角色
     updateFunc() {
       const params = {
         ...this.form
@@ -346,11 +351,13 @@ export default {
         this.onClose()
       })
     },
+    // 关闭弹窗
     onClose() {
       this.clearForm()
       this.$emit('update:visible', false)
     },
 
+    // 清空表单
     clearForm() {
       this.$refs.form.resetForm()
       this.form.roleId = ''
@@ -358,6 +365,7 @@ export default {
       this.form.jobs = []
     },
 
+    // 清除avue表单组件防重提交
     handleSubmit(form, done) {
       done()
     }

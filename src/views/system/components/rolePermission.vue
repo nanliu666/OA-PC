@@ -17,6 +17,7 @@
             v-model="org"
             title="组织"
             :check-list="orgPrivileges"
+            :all-check="false"
             :default-props="{
               value: 'orgId',
               label: 'orgName',
@@ -89,7 +90,8 @@
 <script>
 import checkLimits from './roleCheckPermission'
 import treeLimits from './roleTreePermission'
-import { getPrivilege } from '../../../api/system/role'
+import { getPrivilege, updatePrivilege } from '../../../api/system/role'
+
 const pages = [
   {
     orgName: '新建',
@@ -144,7 +146,8 @@ export default {
       tree: [],
       dataPrivileges: [],
       buttonData: {},
-      buttonMenuId: ''
+      buttonMenuId: '',
+      originData: []
     }
   },
   computed: {
@@ -158,14 +161,75 @@ export default {
     }
   },
   methods: {
-    onClickSave() {
-      this.getButtonPrivilege(this.menuPrivileges)
-      // const params = {
-      //     orgPrivileges: this.orgPrivileges,
-      //     menuPrivileges: this.menuPrivileges
-      // }
+    // 查询用户权限
+    getRolePrivilege() {
+      const params = {
+        roleId: this.roleId
+      }
+      this.loading = true
+      getPrivilege(params)
+        .then((res) => {
+          this.originData = JSON.parse(JSON.stringify(res)) // 保存一份原数据，保存的时候用作对比
+          this.orgPrivileges = res.orgPrivileges || []
+          this.menuFilter(res.menuPrivileges)
+          this.menuPrivileges = res.menuPrivileges
+          if (this.menuPrivileges[0]) {
+            this.dataPrivileges = this.menuPrivileges[0].dataPrivileges || []
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
 
+    // 判断当前节点是按钮还是页面
+    menuFilter(arr) {
+      arr.forEach((item) => {
+        if (item.children && item.children.length > 0) {
+          //
+          this.menuFilter(item.children)
+        }
+        if (item.menuType === 'Button') {
+          // 如果节点是按钮类型，保存到buttonData
+          this.$set(this.buttonData, item.menuId, item.children || [])
+          item.children = []
+        }
+      })
+    },
+
+    // 点击保存
+    onClickSave() {
+      this.getButtonPrivilege(this.menuPrivileges)
+      this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断全选数据是否有修改
+      this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
+      const params = {
+        orgPrivileges: this.orgPrivileges,
+        menuPrivileges: this.menuPrivileges
+      }
+      updatePrivilege(params).then(() => {
+        this.$message.success('保存成功')
+        this.getRolePrivilege()
+        this.onClose()
+      })
+    },
+
+    // 根据原数据，添加operatorType字段，Add-添加，Del-删除
+    diff(newList, oldList, key) {
+      newList.forEach((item, index) => {
+        if (item[key] && !oldList[index][key]) {
+          item.operatorType = 'Add'
+        } else if (!item[key] && oldList[index][key]) {
+          item.operatorType = 'Del'
+        }
+        for (const listKey in item) {
+          if (Array.isArray(item[listKey])) {
+            this.diff(item[listKey], oldList[index][listKey], key)
+          }
+        }
+      })
+    },
+
+    // 把抽取出来的buttonData，重新赋值回权限数据
     getButtonPrivilege(arr) {
       arr.forEach((item) => {
         if (item.menuType === 'Button') {
@@ -179,36 +243,6 @@ export default {
 
     onClose() {
       this.$emit('update:visible', false)
-    },
-    getRolePrivilege() {
-      const params = {
-        roleId: this.roleId
-      }
-      this.loading = true
-      getPrivilege(params)
-        .then((res) => {
-          this.orgPrivileges = res.orgPrivileges || []
-          this.menuFilter(res.menuPrivileges)
-          this.menuPrivileges = res.menuPrivileges
-          if (this.menuPrivileges[0]) {
-            this.dataPrivileges = this.menuPrivileges[0].dataPrivileges || []
-          }
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-
-    menuFilter(arr) {
-      arr.forEach((item) => {
-        if (item.children && item.children.length > 0) {
-          this.menuFilter(item.children)
-        }
-        if (item.menuType === 'Button') {
-          this.$set(this.buttonData, item.menuId, item.children || [])
-          item.children = []
-        }
-      })
     },
 
     nodeClick(data) {

@@ -4,6 +4,7 @@
       title="添加用户"
       :visible.sync="dialogVisible"
       type="selection"
+      top="5%"
       width="800px"
       :close-on-click-modal="false"
       :modal-append-to-body="false"
@@ -16,8 +17,8 @@
           <div style="width: 300px;margin: 10px 0">
             <el-input
               v-model="searchInput"
-              popper-class="my-autocomplete"
               placeholder="请输入内容"
+              @keyup.enter.native="onClickSearch"
             >
               <i
                 slot="suffix"
@@ -62,7 +63,7 @@
             <span class="add-title"> 已添加列表</span>
             <span
               style="color: #409EFF;cursor: pointer"
-              @click="onCloseAll"
+              @click="onDelAll"
             >
               全部清除
             </span>
@@ -76,9 +77,9 @@
               <el-tag
                 closable
                 type="info"
-                @close="onClose(tag, index)"
+                @close="onDel(tag, index)"
               >
-                {{ tag.name + ` (${tag.jobNum}) ` }}
+                {{ tag.name + ` (${tag.workNum}) ` }}
               </el-tag>
             </div>
           </div>
@@ -107,13 +108,18 @@
 </template>
 
 <script>
-import { getAddUser, addUser } from '../../../api/system/role'
+import { getUnuser, addUser } from '../../../api/system/role'
+
 export default {
   name: 'UserEdit',
   props: {
     visible: {
       type: Boolean,
       default: false
+    },
+    roleId: {
+      type: [String, Number],
+      default: ''
     }
   },
   data() {
@@ -121,11 +127,12 @@ export default {
       searchInput: '',
       page: {
         currentPage: 1,
+        pageSize: 10,
         total: 100
       },
       attr: [
         {
-          prop: 'jobNum',
+          prop: 'workNum',
           label: '工号',
           width: '120'
         },
@@ -135,49 +142,12 @@ export default {
           width: '100'
         },
         {
-          prop: 'dept',
+          prop: 'orgName',
           label: '部门',
           width: '180'
         }
       ],
-      tableData: [
-        {
-          jobNum: 'L00001',
-          name: '张彩云',
-          dept: '会计部',
-          id: 0
-        },
-        {
-          jobNum: 'L00002',
-          name: '黎成',
-          dept: '资金管理部',
-          id: 1
-        },
-        {
-          jobNum: 'L00002',
-          name: '黎成',
-          dept: '资金管理部',
-          id: 2
-        },
-        {
-          jobNum: 'L00002',
-          name: '黎成',
-          dept: '资金管理部',
-          id: 3
-        },
-        {
-          jobNum: 'L00002',
-          name: '黎成',
-          dept: '资金管理部',
-          id: 4
-        },
-        {
-          jobNum: 'L00002',
-          name: '黎成',
-          dept: '资金管理部',
-          id: 5
-        }
-      ],
+      tableData: [],
       tags: []
     }
   },
@@ -195,18 +165,28 @@ export default {
     this.getAddList()
   },
   methods: {
-    onClickSearch() {},
+    // 搜索
+    onClickSearch() {
+      this.page.currentPage = 1
+      this.getAddList()
+    },
+    // 查询用户列表
     getAddList() {
       return new Promise((resolve) => {
         const params = {
-          ...this.page
+          pageNo: this.page.currentPage,
+          pageSize: this.page.pageSize,
+          roleId: this.roleId,
+          name: this.searchInput
         }
-        getAddUser(params).then((res) => {
-          this.tableData = res
+        getUnuser(params).then((res) => {
+          this.tableData = res.data
+          this.page.total = res.totalNum
           resolve()
         })
       })
     },
+    // 表格多选，改变右侧已选列表
     handleSelection(selection, row) {
       const checkIndex = selection.indexOf(row)
       if (checkIndex > -1) {
@@ -216,16 +196,19 @@ export default {
       }
     },
 
+    // 表格全选，改变右侧已选列表
     selectAll(selection) {
       if (selection.length > 0) {
+        // 全选
         selection.forEach((item) => {
-          if (this.tags.findIndex((it) => item.jobNum === it.jobNum) === -1) {
+          if (this.tags.findIndex((it) => item.workNum === it.workNum) === -1) {
             this.tags.push(item)
           }
         })
       } else if (selection.length == 0) {
+        // 反选
         this.tableData.forEach((item) => {
-          const num = this.tags.findIndex((it) => item.jobNum === it.jobNum)
+          const num = this.tags.findIndex((it) => item.workNum === it.workNum)
           if (num > -1) {
             this.tags.splice(num, 1)
           }
@@ -233,34 +216,43 @@ export default {
       }
     },
 
+    // 根据右侧已选列表，勾选左侧表格列表
     toggleSelection(rows, flag = true) {
       if (rows) {
         this.$nextTick(() => {
-          const arr = this.tableData.filter((item) => rows.findIndex((it) => item.jobNum === it.jobNum) > -1)
+          const arr = this.tableData.filter((item) => rows.findIndex((it) => item.workNum === it.workNum) > -1)
           arr.forEach((row) => {
             this.$refs.table.toggleRowSelection(row, flag)
           })
         })
       }
     },
+    // 翻页
     async handleCurrentChange(val) {
-      await this.getAddList()
-      this.toggleSelection(this.tags)
       this.page.currentPage = val
+      await this.getAddList()
+      this.toggleSelection(this.tags) // 翻页时，根据右侧已选列表，勾选左侧表格列表
     },
-    onClose(tag, index) {
+    // 删除已选tag
+    onDel(tag, index) {
       this.tags.splice(index, 1)
       this.toggleSelection([tag], false)
     },
-    onCloseAll() {
+    // 删除全部已选tag
+    onDelAll() {
       this.toggleSelection(this.tags, false)
       this.tags = []
     },
+    // 关闭弹窗
     onClickCancel() {
       this.$emit('update:visible', false)
     },
+    // 点击保存
     onClickSave() {
-      const params = {}
+      const params = {
+        roleId: this.roleId,
+        users: this.tags
+      }
       addUser(params).then(() => {
         this.$message.success('用户添加成功')
         this.$emit('onAddUser')

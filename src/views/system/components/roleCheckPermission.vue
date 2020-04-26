@@ -5,6 +5,7 @@
     </div>
     <div v-if="checkList.length > 0">
       <el-checkbox
+        v-if="allCheck"
         v-model="checkAll"
         :indeterminate="isIndeterminate"
         @change="handleCheckAllChange"
@@ -49,6 +50,10 @@ export default {
           label: 'label'
         }
       }
+    },
+    allCheck: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -75,6 +80,9 @@ export default {
     // 根据全选按钮状态，改变列表中的isOwn字段
     handleCheckAllChange(val) {
       this.checkList.forEach((item) => {
+        if (!item[this.defaultProps.check]) {
+          item.operatorType = val ? 'Add' : 'Del'
+        }
         item[this.defaultProps.check] = val
       })
     }
