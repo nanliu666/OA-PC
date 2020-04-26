@@ -53,9 +53,7 @@ export const queryUploadData = (params) => {
   return request({
     url: '/api/user/v1/user/attachment/info',
     method: 'get',
-    params: {
-      id
-    }
+    params
   })
 }
 /**

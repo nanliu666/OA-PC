@@ -2,9 +2,14 @@
   <div class="upload-box">
     <div class="upload-name" @mouseenter="visible" @mouseleave="invisible">
       <i :class="typeIcon" class="typeIcon"></i>
+      <!-- <i
+        ><img
+          src="https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+          alt=""
+          class="typeIconImg"
+      /></i> -->
       <div v-show="seen" class="isShow">
-        <span class="preview-box" v-if="isPreview"> 预览</span
-        ><span class="send-box" @click="openUpload = true">上传</span>
+        <span class="preview-box" v-if="isPreview"> 预览</span><span class="send-box" @click="openUploadBtn">上传</span>
       </div>
     </div>
     <div class="upload-card">{{ typeName }}</div>
@@ -13,7 +18,7 @@
         <span>{{ typeName }}</span
         ><span class="slot-title-box">仅支持2M以内jpg、jpeg、png格式图片上传。</span>
       </div>
-      <upload-img :limit="limit" />
+      <upload-img :limit="limit" :id="id" />
       <div slot="footer" class="dialog-footer">
         <el-button @click="openUpload = false">取 消</el-button>
         <el-button type="primary" @click="preserve">保 存</el-button>
@@ -31,10 +36,16 @@ export default {
       isPreview: false //判断是否有图片
     }
   },
-  props: { typeName: String, typeIcon: String, limit: Number },
+  props: {
+    typeName: { type: String, default: true },
+    typeIcon: { type: String, default: true },
+    limit: { type: Number, default: 10 },
+    id: { type: Number, default: 10 }
+  },
   components: {
     uploadImg
   },
+  mounted() {},
   methods: {
     visible() {
       this.seen = true
@@ -46,6 +57,10 @@ export default {
       this.openUpload = false
       // this.$emit('getUploadImg',this.)
       window.console.log('baocuo ')
+    },
+    openUploadBtn() {
+      this.openUpload = true
+      console.log('点击上传')
     }
   }
 }
@@ -55,6 +70,7 @@ export default {
   margin: 20px;
 }
 .upload-name {
+  position: relative;
   background-color: #fbfdff;
   border: 1px dashed #c0ccda;
   border-radius: 6px 6px 0px 0px;
@@ -77,6 +93,10 @@ export default {
   .typeIcon {
     font-size: 40px;
   }
+  .typeIconImg {
+    width: 200px;
+    height: 108px;
+  }
 }
 .upload-card {
   width: 200px;
@@ -90,10 +110,10 @@ export default {
   border-top: none;
 }
 .isShow {
-  width: 198px;
-  position: relative;
+  width: 200px;
+  position: absolute;
   left: 0px;
-  top: -147px;
+  top: 0px;
   background-color: rgba($color: #000000, $alpha: 0.5);
   border-radius: 6px;
   font-size: 18px;

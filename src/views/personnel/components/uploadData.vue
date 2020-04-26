@@ -1,46 +1,20 @@
 <template>
   <div class="material">
     <basic-container>
-      <el-row>
+      <el-row v-for="(item, index) in listData" :key="index">
         <el-col class="title-type">
           <el-divider direction="vertical"></el-divider>
-          <div>员工基本资料</div>
+          <div>{{ item.name }}</div>
         </el-col>
         <el-col class="employee-files">
-          <upload typeName="身份证原件照片" typeIcon="el-icon-s-custom" :limit="2" />
-          <upload typeName="学历证书" typeIcon="el-icon-s-custom" />
-          <upload typeName="学位证书" typeIcon="el-icon-s-custom" />
-          <upload typeName="个人证件照" typeIcon="el-icon-s-custom" />
-          <upload typeName="工资银行" typeIcon="el-icon-bank-card" />
-          <upload typeName="社保卡" typeIcon="el-icon-bank-card" />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col class="title-type">
-          <el-divider direction="vertical"></el-divider>
-          <div>员工档案资料</div>
-        </el-col>
-        <el-col class="employee-files">
-          <upload typeName="劳动合同" typeIcon="el-icon-picture-outline" />
-          <upload typeName="入职简历" typeIcon="el-icon-picture-outline" />
-          <upload typeName="面试登记表" typeIcon="el-icon-picture-outline" />
-          <upload typeName="入职登记表" typeIcon="el-icon-picture-outline" />
-          <upload typeName="入职体检单" typeIcon="el-icon-picture-outline" />
-          <upload typeName="上家公司离职证明" typeIcon="el-icon-picture-outline" />
-          <upload typeName="转正申请表" typeIcon="el-icon-picture-outline" />
-          <upload typeName="人事异动申请表" typeIcon="el-icon-picture-outline" />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col class="title-type">
-          <el-divider direction="vertical"></el-divider>
-          <div>员工离职资料</div>
-        </el-col>
-        <el-col class="employee-files">
-          <upload typeName="离职审批" typeIcon="el-icon-picture-outline" />
-          <upload typeName="离职证明" typeIcon="el-icon-picture-outline" />
-          <upload typeName="离职申请表" typeIcon="el-icon-picture-outline" />
-          <upload typeName="工作交接表" typeIcon="el-icon-picture-outline" />
+          <upload
+            v-for="(i, index) in item.list"
+            :key="index"
+            :typeName="i.name"
+            :typeIcon="i.iconUrl"
+            :limit="Number(i.maxLimit)"
+            :id="Number(i.id)"
+          />
         </el-col>
       </el-row>
     </basic-container>
@@ -52,7 +26,8 @@ import { getUploadData } from '@/api/personnel/uploaddata'
 export default {
   data() {
     return {
-      listData: []
+      listData: [],
+      typeDataList: []
     }
   },
   components: {
@@ -65,7 +40,27 @@ export default {
     initData() {
       getUploadData().then((res) => {
         const getData = res.data
-        window.console.log(res, '获得材料分类')
+        function unique(arr) {
+          const res = new Map()
+          return arr.filter((a) => !res.has(a) && res.set(a, 1))
+        }
+        function group(arr, k) {
+          let allGroupName = arr.map((item) => {
+            return item[k]
+          })
+          let typeList = unique(allGroupName)
+          let list = []
+          typeList.forEach((ele) => {
+            let obj = {}
+            obj.list = []
+            obj.list = arr.filter((sele) => ele == sele[k])
+            obj.name = ele
+            list.push(obj)
+          })
+          return list
+        }
+        this.listData = group(getData, 'type')
+        console.log('处理好数据', group(getData, 'type'), this.listData)
       })
     }
   }

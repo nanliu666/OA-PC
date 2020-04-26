@@ -18,13 +18,23 @@
         :autoplay="false"
         :loop="false"
       >
-        <el-carousel-item v-for="(i, index) in pictureList" :key="index">
+        <el-carousel-item v-for="(i, index) in pictureList" :key="index" name="i">
           <!-- <div> -->
           <!-- <img :src="i.url" /> -->
           <!-- </div> -->
           <el-image style="width: 100%; height: 100%" :src="i.url" fit="contain"></el-image>
         </el-carousel-item>
       </el-carousel>
+      <div>
+        <!-- <el-carousel indicator-position="none" arrow="always" :autoplay="false" :loop="false" type="card" height="80px">
+          <el-carousel-item v-for="(i, index) in pictureList" :key="index">
+            <el-image style="width: 100%; height: 100%" :src="i.url" fit="contain"></el-image>
+          </el-carousel-item>
+        </el-carousel> -->
+        <div class="small-img">
+          <img v-for="(i, index) in pictureList" :key="index" :src="i.url" alt="" @click="switchImg(index)" />
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -47,12 +57,29 @@ export default {
       setTimeout(() => {
         this.$refs.picView.setActiveItem(index ? index : 0)
       })
+    },
+    switchImg(i) {
+      this.$refs.picView.setActiveItem(i)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.small-img {
+  justify-content: center;
+
+  display: flex;
+  width: 100%;
+  height: 50px;
+  overflow: hidden;
+}
+.small-img img {
+  margin: 8px;
+  height: 50px;
+  width: 50px;
+  background: rgba(0, 0, 0, 0.5);
+}
 #view-picture {
   // 图片预览
   .picture-view-modal {

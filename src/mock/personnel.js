@@ -1,7 +1,5 @@
 import Mock from 'mockjs'
-export default ({
-  mock
-}) => {
+export default ({ mock }) => {
   if (!mock) return
 
   //获取附件分类接口数据
@@ -28,13 +26,16 @@ export default ({
   //获取附件接口数据
   Mock.mock(new RegExp('user/v1/user/attachment/info' + '.*'), 'get', () => {
     let list = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
       list.push(
         Mock.mock({
           id: '@increment',
           userId: '@increment',
           name: '@cname',
-          url: 'el-icon-picture-outline',
+          'url|1': [
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+            'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+          ],
           categoryId: '555',
           updateTime: '454548784112',
           createTime: '454548784112'
