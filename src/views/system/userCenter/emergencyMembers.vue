@@ -192,7 +192,6 @@ export default {
           })
         })
         .catch(() => {
-          console.log('取消')
           this.$message({
             type: 'info',
             message: '已取消删除'
@@ -240,6 +239,7 @@ export default {
   color: #207efa;
   font-size: 14px;
   padding: 10px 0;
+
   > span {
     padding: 8px;
     cursor: pointer;
@@ -282,13 +282,13 @@ export default {
   .component-content {
     padding: 20px 20px 0 20px;
     border-bottom: 1px dashed #cecece;
-    input {
+    /deep/ input {
       height: 34px !important;
       color: #202940;
       font-size: 14px;
     }
   }
-  input {
+  /deep/ input {
     height: 34px !important;
   }
 }
@@ -307,5 +307,15 @@ export default {
 .add-emergency-member {
   margin-top: 10px;
   text-align: center;
+}
+.info-button-group {
+  text-align: center;
+  .el-form-item__content {
+    margin-left: 0;
+  }
+  .el-button {
+    width: 80px;
+    height: 42px;
+  }
 }
 </style>

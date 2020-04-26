@@ -345,6 +345,146 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import url('../../../src/styles/getBackPW.scss');
+<style lang="scss" scoped>
+.out-container {
+  height: calc(100vh);
+  background: #f2f5f7;
+  padding: 68px 32px 0 32px !important;
+  position: relative;
+}
+
+.brad-part {
+  position: absolute;
+  height: 68px;
+  top: 0;
+  left: 32px;
+  font-family: 'PingFangSC-Semibold';
+  font-size: 18px;
+  color: #545b66;
+  line-height: 68px;
+}
+
+.getback-pw {
+  height: calc(100vh - 68px);
+  background: #fff;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  position: relative;
+}
+
+.contens-wrapper {
+  width: 40%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding-top: 78px;
+}
+.progress-bar .el-step__icon {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.identity-test,
+.reset-password {
+  width: 78%;
+  position: relative;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  padding-top: 78px;
+}
+
+.identity-test .identity-title,
+.reset-password .resetPW-title {
+  font-family: 'PingFangSC-Regular';
+  font-size: 14px;
+  color: #202940;
+  line-height: 14px;
+}
+.identity-test .test-code-input {
+  width: calc(100% - 117px);
+  margin-right: 5px;
+}
+
+.test-code-input > input,
+.phone-input > input,
+.newPW-input > input,
+.surePW-input > input,
+.get-test-code,
+.count-down-time {
+  height: 34px !important;
+  line-height: 34px !important;
+}
+.get-test-code,
+.count-down-time {
+  width: 112px;
+  padding: 0 !important;
+  font-size: 14px;
+}
+.get-test-code {
+  color: #207efa;
+  border: 1px solid #207efa;
+}
+.count-down-time {
+  width: 100px;
+  color: #fff;
+  background: #cecece;
+}
+
+.form-containner .el-form-item {
+  margin-bottom: 15px;
+}
+.form-containner .el-form-item__label {
+  height: 45px;
+  line-height: 45px;
+  padding: 0 !important;
+}
+.next-button {
+  width: 78%;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
+  top: 24px;
+}
+.next-button .el-button {
+  width: 94px;
+  height: 42px;
+  background: #207efa;
+  border-radius: 4px;
+  border-radius: 4px;
+  color: #fff;
+}
+.success-icon {
+  height: 72px;
+  text-align: center;
+  margin-top: 68px;
+}
+.success-icon .el-icon-success {
+  color: #53c962;
+  font-size: 80px;
+}
+.success-text {
+  height: 32px;
+  font-family: 'PingFangSC-Medium';
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 32px;
+  text-align: center;
+  margin-top: 40px;
+}
+.goback-login {
+  background: #207efa;
+  border-radius: 4px;
+  border-radius: 4px;
+  width: 136px;
+  height: 42px;
+  margin: 0 auto;
+  color: #ffffff;
+}
+.goback-containner {
+  text-align: center;
+  margin-top: 40px;
+}
+.count-down-time {
+}
 </style>
