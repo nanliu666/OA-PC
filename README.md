@@ -12,6 +12,8 @@
 
 * MockJS [参考](https://juejin.im/post/5cf726b5e51d454fbf5409bc)
 
+* vue-common-table 通用表格组件,封装了el-table、el-pagination，[文档](https://github.com/kingqi/vue-common-table/blob/master/README.md)
+
 ## 启动
 
 * 推荐使用yarn作为包管理器，yarn命令使用更简洁，依赖加载速度更快

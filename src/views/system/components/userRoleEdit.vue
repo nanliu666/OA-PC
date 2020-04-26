@@ -101,7 +101,8 @@ export default {
         children: 'children'
       },
       selectList: [],
-      roleEdit: false
+      roleEdit: false,
+      depTree: []
     }
   },
   watch: {
@@ -136,8 +137,8 @@ export default {
       this.$emit('update:visible', true)
     },
     getDeptTree(tenantId) {
-      getDeptTree(tenantId).then((res) => {
-        this.depTree = res.data.data
+      getDeptTree(tenantId).then((data) => {
+        this.depTree = data
       })
     },
     handleSubmit() {}
