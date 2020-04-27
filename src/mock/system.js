@@ -1,7 +1,5 @@
 import Mock from 'mockjs'
-export default ({
-  mock
-}) => {
+export default ({ mock }) => {
   if (!mock) return
 
   //获取表格数据
@@ -21,7 +19,7 @@ export default ({
           'status|1': ['Success', 'Fail'],
           ip: '@increment',
           source: '@cname',
-          createTime: '1533014442'
+          createTime: '1532932422071'
         })
       )
     }

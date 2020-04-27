@@ -91,7 +91,10 @@
       </el-button>
     </el-form-item>
     <el-form-item>
-      <div class="forget-password">
+      <div
+        class="forget-password"
+        @click="forgetPW"
+      >
         忘记密码？
       </div>
     </el-form-item>
@@ -193,6 +196,9 @@ export default {
       //     this.$parent.$refs.login.style.backgroundImage = `url(${data.data.backgroundUrl})`
       //   }
       // })
+    },
+    forgetPW() {
+      this.$router.push({ path: '/setWel/getBackPW' })
     }
   }
 }

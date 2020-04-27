@@ -25,12 +25,17 @@
         />
       </div>
     </el-dialog>
-    <userEdit :visible.sync="addVisible" />
+    <userEdit
+      :visible.sync="addVisible"
+      :role-id="roleId"
+      @onAddUser="onAddUser"
+    />
   </div>
 </template>
 <script>
 import userEdit from './roleUserEdit'
 import { tableOptions } from '../../../util/constant'
+import { getUser } from '../../../api/system/role'
 
 export default {
   name: 'UserList',
@@ -45,32 +50,21 @@ export default {
     roleName: {
       type: String,
       default: ''
+    },
+    roleId: {
+      type: [String, Number],
+      default: ''
     }
   },
   data() {
     return {
       addVisible: false,
       page: {
-        pageSize: 20,
+        pageSize: 10,
         pagerCount: 5,
         total: 100
       },
-      data: [
-        {
-          num: 'L0009383',
-          name: '张彩云',
-          status: '正常',
-          dept: '会计处',
-          position: '总账会计'
-        },
-        {
-          num: 'L0002383',
-          name: '黎成',
-          status: '正常',
-          dept: '资金管理部',
-          position: '总经理'
-        }
-      ],
+      data: [],
       option: {
         ...tableOptions,
         menu: false,
@@ -79,7 +73,7 @@ export default {
         column: [
           {
             label: '工号',
-            prop: 'num'
+            prop: 'workNum'
           },
           {
             label: '姓名',
@@ -87,15 +81,33 @@ export default {
           },
           {
             label: '状态',
-            prop: 'status'
+            prop: 'status',
+            formatter(row, value) {
+              let str = ''
+              switch (value) {
+                case 'Try':
+                  str = '试用期'
+                  break
+                case 'Formal':
+                  str = '正式'
+                  break
+                case 'Leaved':
+                  str = '已离职'
+                  break
+                case 'WaitLeave':
+                  str = '待离职'
+                  break
+              }
+              return str
+            }
           },
           {
             label: '部门',
-            prop: 'dept'
+            prop: 'orgName'
           },
           {
             label: '职位',
-            prop: 'position'
+            prop: 'jobName'
           }
         ]
       }
@@ -112,7 +124,24 @@ export default {
     }
   },
   methods: {
-    onLoad() {},
+    // 加载用户列表
+    onLoad(page) {
+      const params = {
+        pageNo: page.currentPage,
+        pageSize: page.pageSize,
+        roleId: this.roleId
+      }
+      getUser(params).then((res) => {
+        this.data = res.data
+        this.page.total = res.totalNum
+      })
+    },
+    // 添加用户完成后的操作
+    onAddUser() {
+      this.page.currentPage = 1
+      this.onLoad(this.page)
+    },
+    // 点击添加
     onClickAdd() {
       this.addVisible = !this.addVisible
     }

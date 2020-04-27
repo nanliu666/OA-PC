@@ -1,28 +1,20 @@
 import Mock from 'mockjs'
 export default ({ mock }) => {
   if (!mock) return
-  // // 用户登录
-  // Mock.mock('/user/login', 'post', {
-  //   data: new Date().getTime() + ''
-  // })
-  // //用户退出
-  // Mock.mock('/user/logout', 'get', {
-  //   data: true
-  // })
-  // //刷新token
-  // Mock.mock('/user/refesh', 'post', {
-  //   data: new Date().getTime() + ''
-  // })
 
   //获取表格数据
-  Mock.mock(new RegExp('/api/org/v1/user/tag/define' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/sys/v1/dict/list' + '.*'), 'get', () => {
     let list = []
     for (let i = 0; i < 5; i++) {
       list.push(
         Mock.mock({
           id: '@increment',
-          name: '@cname',
-          'userNum|0-100': 0,
+          parentId: '@increment',
+          code: '@string( 2, 10)',
+          dictValue: '@cword( 2, 10)',
+          dictKey: '@string( 2, 10)',
+          sort: '@increment',
+          isSealed: '@integer(0, 1)',
           createTime: '@date',
           updateTime: '@date'
         })

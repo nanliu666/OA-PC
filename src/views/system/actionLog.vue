@@ -21,7 +21,11 @@
         @on-load="onLoad"
       >
         <template slot="menuLeft">
-          <search-pop-over @submit="submit" :require-options="requireOptions" :popover-options="popoverOptions" />
+          <search-pop-over
+            :require-options="requireOptions"
+            :popover-options="popoverOptions"
+            @submit="submit"
+          />
         </template>
       </avue-crud>
     </basic-container>
@@ -33,6 +37,9 @@ import { getActionLog } from '@/api/system/user'
 import searchPopOver from '@/components/searchPopOver'
 import { tableOptions } from '../../util/constant'
 export default {
+  components: {
+    searchPopOver
+  },
   data() {
     return {
       data: [],
@@ -120,9 +127,6 @@ export default {
         ]
       }
     }
-  },
-  components: {
-    searchPopOver
   },
   mounted() {
     this.initData()
