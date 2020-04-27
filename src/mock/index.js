@@ -14,23 +14,23 @@ import personalInfo from './personalInfo'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: false }
+const options = { mock: true }
 
-user(options)
+// user(options)
 
 menu(options)
 
-oauth(options)
+// oauth(options)
 
 system(options)
 
 personnel(options)
 // oauth(options)
 
-dict(options)
+// dict(options)
 
-param(options)
+// param(options)
 
-role(options)
+// role(options)
 
-personalInfo(options)
+// personalInfo(options)

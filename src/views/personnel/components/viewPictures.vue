@@ -9,7 +9,7 @@
       :close-on-click-modal="true"
       :append-to-body="true"
     >
-      <el-carousel
+      <!-- <el-carousel
         ref="picView"
         trigger="click"
         indicator-position="none"
@@ -20,10 +20,11 @@
         <el-carousel-item v-for="(i, index) in pictureList" :key="index" name="i">
           <el-image style="width: 100%; height: 100%" :src="i.url" fit="contain"></el-image>
         </el-carousel-item>
-      </el-carousel>
+      </el-carousel> -->
+      <el-image style="width: 100px; height: 100px" :src="pictureList[0]" :preview-src-list="pictureList"> </el-image>
       <div>
         <div class="small-img">
-          <img v-for="(i, index) in pictureList" :key="index" :src="i.url" alt="" @click="switchImg(index)" />
+          <img v-for="(i, index) in pictureList" :key="index" :src="i" alt="" @click="switchImg(index)" />
         </div>
       </div>
     </el-dialog>
@@ -42,11 +43,13 @@ export default {
   methods: {
     // 初始化
     init(list, index) {
-      this.pictureList = list
+      this.pictureList = list.map((item) => {
+        return item.url
+      })
       this.modal = true
-
+      console.log(this.pictureList)
       setTimeout(() => {
-        this.$refs.picView.setActiveItem(index ? index : 0)
+        // this.$refs.picView.setActiveItem(index ? index : 0)
       })
     },
     switchImg(i) {

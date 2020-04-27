@@ -18,13 +18,15 @@
       >
         <i slot="default" v-if="isonError" class="isonError">重新上传</i>
         <i class="el-icon-plus" v-else></i>
+        <el-progress v-show="uploading" type="circle" :stroke-width="6" :percentage="uploadPercent"></el-progress>
       </el-upload>
-      <el-progress v-show="uploading" :text-inside="true" :stroke-width="20" :percentage="uploadPercent"></el-progress>
     </div>
     <view-pictures ref="viewPicture" />
+    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="pictureList" />
   </div>
 </template>
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import viewPictures from './viewPictures'
 import {
   lookUpAttachmentInfo,
@@ -37,6 +39,16 @@ export default {
   props: { limit: { type: Number, default: '' }, id: { type: Number, default: '' } },
   data() {
     return {
+      showViewer: false,
+      list: [
+        'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+        'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
+        'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
+        'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg',
+        'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg',
+        'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
+        'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
+      ],
       dialogImageUrl: '',
       dialogVisible: false,
       isonError: false,
@@ -65,11 +77,13 @@ export default {
         categoryId: '', //附件分类ID(分必填)
         name: '' //	附件源文件名称，不能超过32个字(分必填)
       },
-      fileList: []
+      fileList: [],
+      pictureList: []
     }
   },
   components: {
-    viewPictures
+    viewPictures,
+    ElImageViewer
   },
   mounted() {
     this.initData()
@@ -83,9 +97,9 @@ export default {
     },
     //预览
     handlePictureCardPreview(file) {
+      this.showViewer = true
       this.dialogImageUrl = file.url
-      window.console.log(file, '文件夹')
-      this.$refs.viewPicture.init(this.fileList, this.fileList.length)
+      // this.$refs.viewPicture.init(this.fileList, this.fileList.length)
       this.dialogVisible = true
     },
     handleExceed(file, fileList) {
@@ -154,7 +168,15 @@ export default {
     initData() {
       lookUpAttachmentInfo(this.lookUpData).then((res) => {
         this.fileList = res.data
+
+        this.pictureList = res.data.map((item) => {
+          return item.url
+        })
+        console.log(this.fileList, 'this.fileList')
       })
+    },
+    closeViewer() {
+      this.showViewer = false
     }
   }
 }

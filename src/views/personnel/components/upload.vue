@@ -2,12 +2,6 @@
   <div class="upload-box">
     <div class="upload-name" @mouseenter="visible" @mouseleave="invisible">
       <i :class="typeIcon" class="typeIcon"></i>
-      <!-- <i
-        ><img
-          src="https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-          alt=""
-          class="typeIconImg"
-      /></i> -->
       <div v-show="seen" class="isShow">
         <span class="preview-box" @click="PictureCardPreview"> 预览</span
         ><span class="send-box" @click="openUploadBtn">上传</span>
@@ -37,11 +31,11 @@ export default {
     return {
       openUpload: false,
       seen: false,
-      ajaxData: {
+      lookUpData: {
         //查询接口
         pageNo: 1,
         pageSize: 10,
-        categoryId: this.id,
+        categoryId: this.id, //附件分类ID
         userId: this.$store.getters.userId,
         name: '' //非必填
       }
@@ -74,7 +68,7 @@ export default {
     },
     //预览
     PictureCardPreview() {
-      lookUpAttachmentInfo(this.ajaxData).then((res) => {
+      lookUpAttachmentInfo(this.lookUpData).then((res) => {
         this.$refs.viewPicture.init(res.data)
       })
     }

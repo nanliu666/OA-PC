@@ -42,8 +42,8 @@ export default {
       getAttachmentCategory().then((res) => {
         const getData = res.data
         function unique(arr) {
-          const res = new Map()
-          return arr.filter((a) => !res.has(a) && res.set(a, 1))
+          return Array.from(new Set(arr))
+          // return arr.filter((a) => !res.has(a) && res.set(a, 1))
         }
         function group(arr, k) {
           let allGroupName = arr.map((item) => {
