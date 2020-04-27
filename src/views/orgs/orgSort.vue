@@ -56,16 +56,16 @@ export default {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.goBack()
     },
-    loadSort(arr, i) {
-      arr.forEach((item) => {
-        item.sort = i
+    loadSort(arr) {
+      arr.forEach((item, index) => {
+        item.sort = index + 1
         if (item.children.length > 0) {
-          this.loadSort(item.children, i + 1)
+          this.loadSort(item.children)
         }
       })
     },
     onSubmit() {
-      this.loadSort(this.data, 1)
+      this.loadSort(this.data)
       sortOrgTree({ orgs: this.data }).then(() => {
         this.$message.success('保存成功')
       })
