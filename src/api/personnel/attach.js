@@ -4,7 +4,7 @@ import request from '@/router/axios'
  * 材料附件分类查询接口,不需要传参
  * @param {Object} params - 参数
  * */
-export const getUploadData = (params) => {
+export const getAttachmentCategory = (params) => {
   return request({
     url: '/api/user/v1/user/attachment/category',
     method: 'get',
@@ -19,7 +19,7 @@ export const getUploadData = (params) => {
  * @param {String} params.categoryId - 附件分类ID
  * @param {String} params.name - 附件源文件名称，不能超过32字
  * */
-export const reviseUploadData = (params) => {
+export const modifyAttachmentInfo = (params) => {
   return request({
     url: '/api/user/v1/user/attachment/info',
     method: 'put',
@@ -33,7 +33,7 @@ export const reviseUploadData = (params) => {
  * @param {String} params.categoryId - 附件分类ID(必填)
  * @param {String} params.attachments[{name:xxx,url:xxxx}] -	附件源文件名称，不能超过32个字 附件URL地址，即七牛云的文件地址
  * */
-export const sendUploadData = (params) => {
+export const uploadAttachmentInfo = (params) => {
   return request({
     url: '/api/user/v1/user/attachment/info',
     method: 'post',
@@ -49,7 +49,7 @@ export const sendUploadData = (params) => {
  * @param {String} params.userId -	用户ID
  * @param {String} params.name -	文件名，支持模糊搜索
  * */
-export const queryUploadData = (params) => {
+export const lookUpAttachmentInfo = (params) => {
   return request({
     url: '/api/user/v1/user/attachment/info',
     method: 'get',
@@ -61,21 +61,10 @@ export const queryUploadData = (params) => {
  * @param {Object} params - 参数
  * @param {String} params.id - 材料附件ID
  * */
-export const deleteUploadData = (params) => {
+export const deleteAttachmentInfo = (params) => {
   return request({
     url: '/api/user/v1/user/attachment/info',
     method: 'delete',
-    params
-  })
-}
-/**
- * 七牛云上传凭证获取接口
- * @param {Object} params - 不需要参数
- * */
-export const getQiniuToken = (params) => {
-  return request({
-    url: '/api/common/v1/upload/token',
-    method: 'get',
     params
   })
 }

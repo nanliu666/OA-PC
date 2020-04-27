@@ -29,7 +29,7 @@
   </div>
 </template>
 <script>
-import { queryUploadData } from '@/api/personnel/uploaddata'
+import { lookUpAttachmentInfo } from '@/api/personnel/attach'
 import viewPictures from './viewPictures'
 import uploadImg from './uploadImg'
 export default {
@@ -42,7 +42,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         categoryId: this.id,
-        userId: '',
+        userId: this.$store.getters.userId,
         name: '' //非必填
       }
     }
@@ -74,7 +74,7 @@ export default {
     },
     //预览
     PictureCardPreview() {
-      queryUploadData(this.ajaxData).then((res) => {
+      lookUpAttachmentInfo(this.ajaxData).then((res) => {
         this.$refs.viewPicture.init(res.data)
       })
     }

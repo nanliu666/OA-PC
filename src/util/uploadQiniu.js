@@ -1,5 +1,5 @@
 import * as qiniu from 'qiniu-js'
-import { getQiniuToken } from '../api/personnel/uploaddata'
+import { getQiniuToken } from '../api/common'
 import uuidv4 from 'uuid/v4'
 import store from 'src/store'
 /**

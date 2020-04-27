@@ -1,15 +1,6 @@
 <template>
   <div>
     <div class="upload-box">
-      <!-- <div
-        :class="['image__wr', file.fileType !== 'image' && file.fileType !== 'video' && 'icon__wr']"
-        v-for="(file, index) in fileList"
-        :key="index"
-      >
-        <img :src="file.url" />
-        <i class="el-icon-view iconView"></i>
-      </div> -->
-
       <el-upload
         action=""
         :http-request="uploadRequst"
@@ -30,14 +21,17 @@
       </el-upload>
       <el-progress v-show="uploading" :text-inside="true" :stroke-width="20" :percentage="uploadPercent"></el-progress>
     </div>
-
     <view-pictures ref="viewPicture" />
   </div>
 </template>
-
 <script>
 import viewPictures from './viewPictures'
-import { queryUploadData, deleteUploadData, sendUploadData, reviseUploadData } from '@/api/personnel/uploaddata'
+import {
+  lookUpAttachmentInfo,
+  deleteAttachmentInfo,
+  uploadAttachmentInfo,
+  modifyAttachmentInfo
+} from '@/api/personnel/attach'
 import { uploadQiniu } from '@/util/uploadQiniu'
 export default {
   props: { limit: { type: Number, default: '' }, id: { type: Number, default: '' } },
@@ -48,7 +42,7 @@ export default {
       isonError: false,
       uploading: false,
       uploadPercent: 0,
-      ajaxData: {
+      lookUpData: {
         //查询接口
         pageNo: 1,
         pageSize: 10,
@@ -56,17 +50,17 @@ export default {
         userId: this.$store.getters.userId,
         name: '' //非必填
       },
-      delete: {
+      deleteData: {
         //删除接口
         id: this.id //材料附件ID
       },
-      sendData: {
+      uploadData: {
         //上传接口
         userId: this.$store.getters.userId, //用户ID
         categoryId: this.id, //	附件分类ID
         attachments: [{ name: '', url: '' }]
       },
-      reviseData: {
+      modifyData: {
         id: this.id, //	材料附件ID
         categoryId: '', //附件分类ID(分必填)
         name: '' //	附件源文件名称，不能超过32个字(分必填)
@@ -75,7 +69,6 @@ export default {
     }
   },
   components: {
-    // this.$store.state.userData.xxx
     viewPictures
   },
   mounted() {
@@ -85,8 +78,8 @@ export default {
     //删除
     handleRemove(file, fileList) {
       //删除接口
-      this.delete.id = file.id
-      deleteUploadData(this.delete).then((res) => {})
+      this.deleteData.id = file.id
+      deleteAttachmentInfo(this.deleteData).then((res) => {})
     },
     //预览
     handlePictureCardPreview(file) {
@@ -159,7 +152,7 @@ export default {
     },
     //发网络请求初始化数据--附件查询
     initData() {
-      queryUploadData(this.ajaxData).then((res) => {
+      lookUpAttachmentInfo(this.lookUpData).then((res) => {
         this.fileList = res.data
       })
     }

@@ -22,7 +22,7 @@
 </template>
 <script>
 import upload from './upload'
-import { getUploadData } from '@/api/personnel/uploaddata'
+import { getAttachmentCategory } from '@/api/personnel/attach'
 export default {
   data() {
     return {
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     initData() {
-      getUploadData().then((res) => {
+      getAttachmentCategory().then((res) => {
         const getData = res.data
         function unique(arr) {
           const res = new Map()
@@ -61,7 +61,6 @@ export default {
           return list
         }
         this.listData = group(getData, 'type')
-        console.log('处理好数据', group(getData, 'type'), this.listData)
       })
     }
   }
