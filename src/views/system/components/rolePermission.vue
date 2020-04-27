@@ -5,17 +5,23 @@
     width="800px"
     :close-on-click-modal="false"
     :modal-append-to-body="false"
+    @opened="getRolePrivilege"
   >
-    <div class="limit-wrap">
+    <div
+      v-loading="loading"
+      class="limit-wrap"
+    >
       <el-scrollbar class="scroll-item">
         <div class="limit-item">
           <checkLimits
             v-model="org"
             title="组织"
-            :check-list="orgs"
+            :check-list="orgPrivileges"
+            :all-check="false"
             :default-props="{
               value: 'orgId',
-              label: 'orgName'
+              label: 'orgName',
+              check: 'isOwn'
             }"
           />
         </div>
@@ -25,7 +31,9 @@
           <treeLimits
             v-model="tree"
             title="菜单权限"
-            :data="trees"
+            :default-props="menuProps"
+            :tree-list="menuPrivileges"
+            @nodeClick="nodeClick"
           />
         </div>
       </el-scrollbar>
@@ -34,23 +42,28 @@
           <checkLimits
             v-model="page"
             title="页面控制权限"
-            :check-list="pages"
+            :check-list="buttonData[buttonMenuId] || []"
             :default-props="{
-              value: 'orgId',
-              label: 'orgName'
+              value: 'menuId',
+              label: 'menuName',
+              check: 'isOwn'
             }"
           />
         </div>
       </el-scrollbar>
-      <el-scrollbar class="scroll-item">
+      <el-scrollbar
+        class="scroll-item"
+        style="border: none"
+      >
         <div class="limit-item">
           <checkLimits
             v-model="rule"
             title="数据规则权限"
-            :check-list="ruleList"
+            :check-list="dataPrivileges"
             :default-props="{
-              value: 'orgId',
-              label: 'orgName'
+              value: 'dataId',
+              label: 'scopeName',
+              check: 'isOwn'
             }"
           />
         </div>
@@ -80,100 +93,28 @@
 <script>
 import checkLimits from './roleCheckPermission'
 import treeLimits from './roleTreePermission'
-const orgs = [
-  {
-    orgName: '百利宏集团',
-    orgId: 0
-  },
-  {
-    orgName: '石化公司',
-    orgId: 1
-  },
-  {
-    orgName: '油气公司',
-    orgId: 2
-  },
-  {
-    orgName: '金融公司',
-    orgId: 3
-  }
-]
+import { getPrivilege, updatePrivilege } from '../../../api/system/role'
+
 const pages = [
   {
     orgName: '新建',
-    orgId: 'create'
+    orgId: 'create',
+    isOwn: true
   },
   {
     orgName: '修改',
-    orgId: 'update'
+    orgId: 'update',
+    isOwn: false
   },
   {
     orgName: '查看',
-    orgId: 'watch'
+    orgId: 'watch',
+    isOwn: true
   },
   {
     orgName: '删除',
-    orgId: 'del'
-  }
-]
-const ruleList = [
-  {
-    orgName: '自定义',
-    orgId: 'customize'
-  },
-  {
-    orgName: '部门可见',
-    orgId: 'org'
-  },
-  {
-    orgName: '全部可见',
-    orgId: 'all'
-  },
-  {
-    orgName: '个人可见',
-    orgId: 'personal'
-  }
-]
-const trees = [
-  {
-    label: '工作台',
-    value: 0,
-    children: [
-      {
-        label: '通知公告',
-        value: 1
-      },
-      {
-        label: '快捷操作',
-        value: 2
-      },
-      {
-        label: '我的待办',
-        value: 3
-      }
-    ]
-  },
-  {
-    label: '人事管理',
-    value: 4,
-    children: [
-      {
-        label: '招聘需求管理',
-        value: 5
-      },
-      {
-        label: '我的招聘需求',
-        value: 6
-      },
-      {
-        label: '候选人管理',
-        value: 7
-      },
-      {
-        label: '人才库管理',
-        value: 8
-      }
-    ]
+    orgId: 'del',
+    isOwn: true
   }
 ]
 export default {
@@ -186,18 +127,31 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    roleId: {
+      // 	角色ID，多个以英文逗号分隔
+      type: [String, Number],
+      default: ''
     }
   },
   data() {
     return {
-      orgs,
-      trees,
+      loading: false,
+      orgPrivileges: [],
+      menuPrivileges: [],
+      menuProps: {
+        label: 'menuName',
+        id: 'menuId'
+      },
       pages,
-      ruleList,
       page: [],
       rule: [],
       org: [0, 1, 2],
-      tree: []
+      tree: [],
+      dataPrivileges: [],
+      buttonData: {},
+      buttonMenuId: '',
+      originData: []
     }
   },
   computed: {
@@ -211,9 +165,93 @@ export default {
     }
   },
   methods: {
-    onClickSave() {},
+    // 查询用户权限
+    getRolePrivilege() {
+      const params = {
+        roleId: this.roleId
+      }
+      this.loading = true
+      getPrivilege(params)
+        .then((res) => {
+          this.originData = JSON.parse(JSON.stringify(res)) // 保存一份原数据，保存的时候用作对比
+          this.orgPrivileges = res.orgPrivileges || []
+          this.menuFilter(res.menuPrivileges)
+          this.menuPrivileges = res.menuPrivileges
+          if (this.menuPrivileges[0]) {
+            this.dataPrivileges = this.menuPrivileges[0].dataPrivileges || []
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+
+    // 判断当前节点是按钮还是页面
+    menuFilter(arr) {
+      arr.forEach((item) => {
+        if (item.children && item.children.length > 0) {
+          //
+          this.menuFilter(item.children)
+        }
+        if (item.menuType === 'Button') {
+          // 如果节点是按钮类型，保存到buttonData
+          this.$set(this.buttonData, item.menuId, item.children || [])
+          item.children = []
+        }
+      })
+    },
+
+    // 点击保存
+    onClickSave() {
+      this.getButtonPrivilege(this.menuPrivileges)
+      this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断全选数据是否有修改
+      this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
+      const params = {
+        orgPrivileges: this.orgPrivileges,
+        menuPrivileges: this.menuPrivileges
+      }
+      updatePrivilege(params).then(() => {
+        this.$message.success('保存成功')
+        this.getRolePrivilege()
+        this.onClose()
+      })
+    },
+
+    // 根据原数据，添加operatorType字段，Add-添加，Del-删除
+    diff(newList, oldList, key) {
+      newList.forEach((item, index) => {
+        if (item[key] && !oldList[index][key]) {
+          item.operatorType = 'Add'
+        } else if (!item[key] && oldList[index][key]) {
+          item.operatorType = 'Del'
+        }
+        for (const listKey in item) {
+          if (Array.isArray(item[listKey])) {
+            this.diff(item[listKey], oldList[index][listKey], key)
+          }
+        }
+      })
+    },
+
+    // 把抽取出来的buttonData，重新赋值回权限数据
+    getButtonPrivilege(arr) {
+      arr.forEach((item) => {
+        if (item.menuType === 'Button') {
+          item.children = this.buttonData[item.menuId] || []
+        }
+        if (item.children && item.children.length > 0) {
+          this.getButtonPrivilege(item.children)
+        }
+      })
+    },
+
     onClose() {
       this.$emit('update:visible', false)
+    },
+
+    nodeClick(data) {
+      this.buttonMenuId = data.menuId
+      this.dataPrivileges = data.dataPrivileges || []
     }
   }
 }
@@ -223,15 +261,19 @@ export default {
 .dialog-footer {
   text-align: center;
 }
+
 .limit-wrap {
   display: flex;
   height: 400px;
+
   .scroll-item {
     border-right: 1px solid #f2f2f2;
-    min-width: 150px;
+    min-width: 180px;
+
     &.scroll-tree {
-      min-width: 200px;
+      min-width: 220px;
     }
+
     .limit-item {
       padding: 0 15px;
       /*flex: 1;*/

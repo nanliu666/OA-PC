@@ -9,14 +9,12 @@
       <el-container style="min-height: 600px">
         <roleAside
           v-bind="options"
+          :current-id.sync="options.currentId"
           @reload="reload"
         />
         <el-main class="main-wrap">
           <div class="main-wrap">
-            <div
-              v-if="selectArr.length === 0"
-              class="search-bar"
-            >
+            <div class="search-bar">
               <el-form
                 ref="form"
                 :model="form"
@@ -40,34 +38,39 @@
                 <el-button
                   type="primary"
                   size="medium"
-                  @click="visible = true"
+                  @click="onHandleEdit('add')"
                 >
                   新建角色
                 </el-button>
                 <el-button
                   icon="el-icon-refresh"
                   size="medium"
+                  @click="loadRoleData"
                 />
               </div>
             </div>
-            <div
-              v-else
-              class="selected-bar"
-            >
-              <div class="left-part">
-                <span style="color: #999">已选中&nbsp;</span>
-                <span class="selected-num"> {{ selectArr.length }} </span> <span style="color: #999">&nbsp;项</span>
-                <div class="divider" />
-                <span
-                  class="del-all"
-                  @click="delAll"
-                ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+            <transition name="el-zoom-in-center">
+              <div
+                v-show="selectArr.length > 0"
+                class="selected-bar"
+              >
+                <div class="left-part">
+                  <span style="color: #999">已选中&nbsp;</span>
+                  <span class="selected-num"> {{ selectArr.length }} </span> <span style="color: #999">&nbsp;项</span>
+                  <div class="divider" />
+                  <span
+                    class="del-all"
+                    @click="delAll"
+                  ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+                </div>
+                <div
+                  class="right-part"
+                  @click="onCloseSelect"
+                >
+                  <i class="el-icon-close" />
+                </div>
               </div>
-              <i
-                class="el-icon-close"
-                @click="onCloseSelect"
-              />
-            </div>
+            </transition>
             <avue-crud
               ref="table"
               :data="filterList"
@@ -114,14 +117,18 @@
           </div>
         </el-main>
         <roleEdit
+          :row="roleRow"
           :visible.sync="visible"
-          :tree-list="options.treeList"
+          :jobs="options.jobs"
           :positions="options.positions"
-          :props="options.props"
+          :job-props="options.jobProps"
           :position-props="options.positionProps"
         />
         <roleLimits :visible.sync="configVisible" />
-        <userList :visible.sync="userVisible" />
+        <userList
+          :visible.sync="userVisible"
+          :role-id="roleId"
+        />
       </el-container>
     </basic-container>
   </div>
@@ -133,7 +140,7 @@ import roleAside from './components/roleAside'
 import roleLimits from './components/rolePermission'
 import userList from './components/roleUserList'
 import { tableOptions } from '../../util/constant'
-import { getRoleList, getCate, getPositions } from '../../api/system/role'
+import { getRoleList, getCate, getPositions, getJobs, delRole } from '../../api/system/role'
 
 export default {
   name: 'Role',
@@ -159,7 +166,12 @@ export default {
           label: 'positionName',
           id: 'positionId'
         },
-        positions: []
+        jobProps: {
+          label: 'label',
+          id: 'id'
+        },
+        positions: [],
+        jobs: []
       },
       form: {
         roleName: ''
@@ -183,7 +195,21 @@ export default {
             label: '关联类型',
             prop: 'type',
             formatter: (row, value) => {
-              return value === 'Job' ? '职位' : '岗位'
+              let str = ''
+              switch (value) {
+                case 'Job':
+                  str = '职位'
+                  break
+                case 'Position':
+                  str = '岗位'
+                  break
+                case 'No':
+                  str = '无'
+                  break
+                default:
+                  break
+              }
+              return str
             }
           },
           {
@@ -201,7 +227,9 @@ export default {
           }
         ]
       },
-      selectArr: []
+      selectArr: [],
+      roleRow: {},
+      roleId: ''
     }
   },
   computed: {
@@ -216,11 +244,13 @@ export default {
     this.getPositionsFunc()
   },
   methods: {
+    // 加载页面全部数据（左侧分组树，右侧角色列表）
     async onLoad() {
       await this.getTreeCate()
       this.loadRoleData()
     },
 
+    // 加载右侧角色列表
     loadRoleData() {
       const params = {
         roleName: '',
@@ -231,14 +261,19 @@ export default {
       })
     },
 
+    // 刷新数据
     reload(data = {}) {
       if (data[this.options.props.id]) {
+        //有id时，加载全部数据
         this.options.currentId = data[this.options.props.id]
+        this.loadRoleData()
+      } else {
+        // 没传id，只需加载右侧列表
         this.onLoad()
       }
-      this.loadRoleData()
     },
 
+    // 获取分组树数据
     getTreeCate() {
       return new Promise((resolve) => {
         const params = {
@@ -250,8 +285,8 @@ export default {
             let children = []
             if (item.categories && item.categories.length > 0) {
               children = item.categories.map((it) => {
-                if (!this.options.currentId) {
-                  this.options.currentId = it.categoryId
+                if (!this.options.currentId && it.roleNum > 0) {
+                  this.options.currentId = it.categoryId // 没有设置默认的激活分类时，设置默认激活分类
                 }
                 return {
                   cateId: it.categoryId,
@@ -272,27 +307,57 @@ export default {
       })
     },
 
+    // 表格显示值转换
     messageFormatter(row) {
       let str = ''
       if (row.type) {
         if (row.type === 'Job' && row.jobs.length > 0) {
           row.jobs.forEach((item) => {
-            str += item.jobName + ','
+            str += item.jobName + '，'
           })
+          str = str.substr(0, str.length - 1)
         } else if (row.type === 'Position' && row.positions.length > 0) {
           row.positions.forEach((item) => {
             str += item.positionName + ','
           })
+          str = str.substr(0, str.length - 1)
         }
-        str = str.substr(0, str.length - 1)
       }
       return str
     },
 
+    //
     getJobsFunc() {
-      // getJobs().then((res) => {
-      //     this.jobList = res
-      // })
+      getJobs().then((res) => {
+        let data = []
+        this.jobFilter(res, data)
+        this.options.jobs = data
+      })
+    },
+
+    jobFilter(arr, data) {
+      arr.filter((item) => {
+        const obj = {
+          children: []
+        }
+        if (item.jobs && item.jobs.length > 0) {
+          item.jobs.forEach((item) => {
+            const job = {
+              label: item.jobName,
+              id: item.jobId
+            }
+            obj.children.push(job)
+          })
+        }
+        if (item.orgType) {
+          obj.label = item.orgName
+          obj.id = item.orgId
+          if (item.children && item.children.length > 0) {
+            this.jobFilter(item.children, obj.children)
+          }
+        }
+        data.push(obj)
+      })
     },
 
     getPositionsFunc() {
@@ -304,17 +369,73 @@ export default {
     handleConfig() {
       this.configVisible = !this.configVisible
     },
-    handleCheck() {
+    handleCheck(row) {
+      this.roleId = row.roleId
       this.userVisible = !this.userVisible
     },
-    handleCommand() {},
+    handleCommand(command, row) {
+      if (command === 'edit') {
+        this.roleRow = row
+        this.onHandleEdit()
+      } else {
+        this.handleDel([row])
+      }
+    },
+
+    onHandleEdit(str) {
+      if (str) {
+        this.roleRow = {}
+      }
+      this.visible = !this.visible
+    },
+
+    // 点击删除角色，提示
+    handleDel(rows = []) {
+      if (rows.findIndex((row) => row.type !== 'No') > -1) {
+        this.$alert('很抱歉，您选中的角色已关联职位/岗位信息，请先解绑才可以删除', '提示', {
+          confirmButtonText: '确定',
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        })
+        return
+      }
+      this.$confirm('您确定要删除该角色吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        dangerouslyUseHTMLString: true
+      })
+        .then(() => {
+          const ids = rows.map((row) => row.roleId)
+          this.delFunc(ids)
+        })
+        .catch(() => {})
+    },
+
+    // 删除角色
+    delFunc(ids) {
+      const params = {
+        ids
+      }
+      delRole(params).then(() => {
+        this.$message.success('删除成功')
+        this.loadRoleData()
+      })
+    },
+
+    // 批量全选
     selectionChange(rows) {
       this.selectArr = rows
     },
+    // 设置表格checkbox
     toggleSelection(rows = []) {
       this.$refs.table.toggleSelection(rows)
     },
-    delAll() {},
+    // 批量删除
+    delAll() {
+      this.handleDel(this.selectArr)
+    },
+    // 关闭批量操作栏
     onCloseSelect() {
       this.$refs.table.toggleSelection()
       this.selectArr = []
@@ -339,20 +460,36 @@ export default {
 
 .main-wrap {
   padding: 0 20px;
+  position: relative;
 
   .search-bar {
-    padding: 0;
+    padding: 10px 0 0 0;
     display: flex;
     justify-content: space-between;
   }
 
   .selected-bar {
+    background: white;
+    width: calc(100% - 40px);
+    top: 0;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 16px;
     height: 58px;
     line-height: 58px;
+
+    .left-part {
+      flex: 1;
+    }
+
+    .right-part {
+      padding-right: 20px;
+      width: 50px;
+      text-align: center;
+      cursor: pointer;
+    }
 
     .del-all {
       cursor: pointer;
