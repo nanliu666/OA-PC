@@ -53,7 +53,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         categoryId: this.id,
-        userId: '',
+        userId: this.$store.getters.userId,
         name: '' //非必填
       },
       delete: {
@@ -62,7 +62,7 @@ export default {
       },
       sendData: {
         //上传接口
-        userId: '', //用户ID
+        userId: this.$store.getters.userId, //用户ID
         categoryId: this.id, //	附件分类ID
         attachments: [{ name: '', url: '' }]
       },
@@ -75,6 +75,7 @@ export default {
     }
   },
   components: {
+    // this.$store.state.userData.xxx
     viewPictures
   },
   mounted() {

@@ -34,6 +34,7 @@ export default {
     upload
   },
   mounted() {
+    console.log(this.$store.getters.userId, 'userId')
     this.initData()
   },
   methods: {
