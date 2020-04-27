@@ -129,6 +129,7 @@ export default {
       default: false
     },
     roleId: {
+      // 	角色ID，多个以英文逗号分隔
       type: [String, Number],
       default: ''
     }
