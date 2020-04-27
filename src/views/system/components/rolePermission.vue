@@ -51,7 +51,10 @@
           />
         </div>
       </el-scrollbar>
-      <el-scrollbar class="scroll-item">
+      <el-scrollbar
+        class="scroll-item"
+        style="border: none"
+      >
         <div class="limit-item">
           <checkLimits
             v-model="rule"
@@ -264,10 +267,10 @@ export default {
 
   .scroll-item {
     border-right: 1px solid #f2f2f2;
-    min-width: 150px;
+    min-width: 180px;
 
     &.scroll-tree {
-      min-width: 200px;
+      min-width: 220px;
     }
 
     .limit-item {

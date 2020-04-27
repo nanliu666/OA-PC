@@ -257,6 +257,7 @@ export default {
         this.$message.success('用户添加成功')
         this.$emit('onAddUser')
         this.onClickCancel()
+        this.onDelAll()
       })
     }
   }
