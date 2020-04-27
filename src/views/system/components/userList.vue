@@ -4,7 +4,7 @@
       ref="crud"
       :config="tableConfig"
       :columns="columns"
-      :table-loading="loading"
+      :loading="loading"
       :data="data"
       :page="page"
       @selection-change="selectionChange"

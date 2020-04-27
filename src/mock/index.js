@@ -19,7 +19,7 @@ import personalInfo from './personalInfo'
 const options = { mock: false }
 position({ mock: true })
 grade({ mock: true })
-user(options)
+user({ mock: true })
 
 menu(options)
 
@@ -31,6 +31,6 @@ dict(options)
 
 param(options)
 
-role(options)
+role({ mock: true })
 
 personalInfo(options)

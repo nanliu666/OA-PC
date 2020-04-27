@@ -49,65 +49,59 @@
           </div>
         </el-aside>
         <el-main>
-          <div class="flex-flow flex justify-content align-items condition">
-            <div>
-              <el-input
-                v-model="form.name"
-                placeholder="职位名称"
-                size="medium"
-                class="input-with-select"
-              >
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click="search"
-                />
-              </el-input>
-            </div>
-
-            <div>
-              <el-button
-                type="primary"
-                size="medium"
-                @click="handleExport"
-              >
-                <i class="el-icon-upload2" /> 导出
-              </el-button>
-              <el-button
-                type="primary"
-                size="medium"
-                @click="getJobData"
-              >
-                <i class="el-icon-refresh" />
-              </el-button>
-            </div>
-          </div>
-          <div>
-            <div
-              v-if="isBatch"
-              class="flex flex-flow justify-content align-items all"
-            >
-              <div>
-                <span>已选中{{ number }}项</span>
-                <span><i class="el-icon-delete" /> 批量删除</span>
-                <span><i class="el-icon-folder" /> 批量导出</span>
-              </div>
-              <div
-                class="el-icon-circle-close"
-                @click="closeBatch"
-              />
-            </div>
-            <avue-crud
+          <div style="margin-top: 20px">
+            <common-table
+              style="width: 100%"
               :data="data"
-              :option="option"
-              :page.sync="page"
-              @on-load="onLoad"
-              @size-change="sizeChange"
-              @current-change="currentChange"
+              :page="page"
+              :config="tableConfig"
+              :columns="columns"
+              @pageSizeChange="sizeChange"
+              @currentPageChange="currentChange"
               @selection-change="selectionChange"
             >
+              <template slot="topMenu">
+                <div class="flex-flow flex justify-content align-items ">
+                  <div>
+                    <el-input
+                      v-model="form.name"
+                      placeholder="职位名称"
+                      size="medium"
+                      class="input-with-select"
+                    >
+                      <el-button
+                        slot="append"
+                        icon="el-icon-search"
+                        @click="search"
+                      />
+                    </el-input>
+                  </div>
+                  <div>
+                    <el-button
+                      type="primary"
+                      size="medium"
+                      @click="handleExport"
+                    >
+                      <i class="el-icon-upload2" /> 导出
+                    </el-button>
+                    <el-button
+                      type="primary"
+                      size="medium"
+                      @click="getJobData"
+                    >
+                      <i class="el-icon-refresh" />
+                    </el-button>
+                  </div>
+                </div>
+              </template>
+              <template slot="multiSelectMenu">
+                <span class="all">
+                  <span><i class="el-icon-delete" /> 批量删除</span>
+                  <span><i class="el-icon-folder" /> 批量导出</span>
+                </span>
+              </template>
               <template
-                slot="menu"
+                slot="handler"
                 slot-scope="scope"
               >
                 <el-button
@@ -139,7 +133,7 @@
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
-            </avue-crud>
+            </common-table>
           </div>
         </el-main>
       </el-container>
@@ -156,7 +150,6 @@
 </template>
 
 <script>
-import { tableOptions } from '@/util/constant'
 import { getCategoryList, gotV1Job, deleteV1Job } from '@/api/organize/position'
 import { getToken } from '@/util/auth'
 import positionDialog from '../compoents/positionDialog'
@@ -180,65 +173,41 @@ export default {
       },
       active: 0,
       asideList: [],
-      data: [
+      data: [],
+      tableConfig: {
+        showHandler: true,
+        enableMultiSelect: true
+      },
+      columns: [
         {
-          roleCode: 'GZ789',
-          roleName: '小明',
-          type: '职位',
-          message: '视觉设计',
-          userNum: 10,
-          num: 20
+          label: '职位编码',
+          prop: 'jobId'
         },
         {
-          roleCode: 'GZ789',
-          roleName: '小王',
-          type: '职位',
-          message: '视觉设计',
-          userNum: 10,
-          num: 20
+          label: '职位名称',
+          prop: 'jobName'
+        },
+        {
+          label: '用户人数',
+          prop: 'userNum'
+        },
+        {
+          label: '在职人数',
+          prop: 'workNum'
+        },
+        {
+          label: '所属组织',
+          prop: 'orgName'
+        },
+        {
+          label: '上级职位',
+          prop: 'parentName'
         }
       ],
-      option: {
-        ...tableOptions,
-        selection: true,
-        align: 'center',
-        menuAlign: 'center',
-        calcHeight: 80,
-        tip: false,
-        searchMenuSpan: 6,
-        dialogType: 'drawer',
-        dialogClickModal: false,
-        column: [
-          {
-            label: '职位编码',
-            prop: 'jobId'
-          },
-          {
-            label: '职位名称',
-            prop: 'jobName'
-          },
-          {
-            label: '用户人数',
-            prop: 'userNum'
-          },
-          {
-            label: '在职人数',
-            prop: 'workNum'
-          },
-          {
-            label: '所属组织',
-            prop: 'orgName'
-          },
-          {
-            label: '上级职位',
-            prop: 'parentName'
-          }
-        ]
-      },
       page: {
         pageSize: 10,
         pagerCount: 1,
-        total: 100
+        total: 0
       },
       params: {
         pageNo: 1,
