@@ -220,6 +220,7 @@ export default {
   },
   watch: {
     showStatus: {
+      // 员工状态 显示切换
       handler(newVal) {
         if (newVal) {
           this.searchArray[0].questions.splice(5, 0, this.statusItem)
@@ -295,21 +296,6 @@ export default {
             params[it] = item.data[idx]
           })
         }
-        // if (item.field.indexOf(',') > -1) {
-        //   if (Array.isArray(item.data)) {
-        //     item.field.split(',').forEach((it, idx) => {
-        //       params[it] = item.data[idx]
-        //     })
-        //   } else if (Object.prototype.toString.call(item.data) === '[object Object]') {
-        //     params[item.field.split(',')[0]] = item.data.min
-        //     params[item.field.split(',')[1]] = item.data.max
-        //   }
-        // } else {
-        //   if (item.type === 'cascader') {
-        //     params[item.field] = item.data[item.data.length - 1]
-        //   }
-        //   params[item.field] = item.data
-        // }
       })
       // 预留模糊搜索参数
       params['search'] = this.fuzzySearch

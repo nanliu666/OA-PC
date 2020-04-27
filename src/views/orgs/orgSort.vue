@@ -1,34 +1,37 @@
 <template>
-  <basic-container :block="true">
+  <div style="height: 100%">
     <el-page-header
       content="调整排序"
+      class="pageHeader"
       @back="goBack"
     />
-    <div class="treeBox">
-      <el-tree
-        :data="data"
-        node-key="orgId"
-        :props="{ label: 'orgName' }"
-        default-expand-all
-        draggable
-      />
-    </div>
-    <div class="btnBox">
-      <el-button
-        size="medium"
-        @click="close"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        size="medium"
-        @click="onSubmit"
-      >
-        保存
-      </el-button>
-    </div>
-  </basic-container>
+    <basic-container :block="true">
+      <div class="treeBox">
+        <el-tree
+          :data="data"
+          node-key="orgId"
+          :props="{ label: 'orgName' }"
+          default-expand-all
+          draggable
+        />
+      </div>
+      <div class="btnBox">
+        <el-button
+          size="medium"
+          @click="close"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="onSubmit"
+        >
+          保存
+        </el-button>
+      </div>
+    </basic-container>
+  </div>
 </template>
 
 <script>
@@ -72,6 +75,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.pageHeader {
+  height: 48px;
+  padding: 0 24px;
+  line-height: 48px;
+  font-size: 18px;
+}
 .treeBox {
   width: calc (100% - 160) px;
   padding: 40px 80px 60px;
@@ -83,14 +92,23 @@ export default {
   bottom: 0;
 }
 /deep/ .el-tree-node__content {
-  height: 40px;
+  height: 42px;
   cursor: move;
   border-bottom: 1px solid #f2f2f2;
 }
 /deep/ .basic-container {
-  height: 100%;
+  height: calc(100% - 48px);
   .el-card {
     height: 100%;
   }
+}
+/deep/ .el-tree-node__expand-icon {
+  color: #115fd4;
+}
+/deep/ .el-tree-node__label {
+  font-family: 'PingFangSC-Regular';
+  font-size: 14px;
+  color: #202940;
+  line-height: 43px;
 }
 </style>

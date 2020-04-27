@@ -22,7 +22,7 @@ export default ({ mock }) => {
           remark: '[t8Q',
           children: [
             {
-              orgId: '!8J&3',
+              orgId: '8J&3',
               orgName: '2g8$&*',
               orgType: 'Company',
               orgCode: '8i9',
@@ -37,7 +37,7 @@ export default ({ mock }) => {
               children: [
                 {
                   orgId: 'f[q5',
-                  orgName: '@Qy4DZc',
+                  orgName: 'y4DZc',
                   orgType: 'Department',
                   orgCode: '*uN',
                   userId: 'Fn0aVl',
@@ -50,7 +50,7 @@ export default ({ mock }) => {
                   remark: '[t8Q',
                   children: [
                     {
-                      orgId: '!8J&3',
+                      orgId: 'J&3',
                       orgName: '2g8$&*',
                       orgType: 'Group',
                       orgCode: '8i9',
@@ -86,7 +86,7 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/org/v1/organization/sort' + '.*'), 'delete', () => {
+  Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'delete', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -94,6 +94,53 @@ export default ({ mock }) => {
         resCode: 7687685643112648,
         resMsg: 'S7@*',
         response: {}
+      }
+    }
+  })
+  Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'put', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        resCode: 7687685643112648,
+        resMsg: 'S7@*',
+        response: {}
+      }
+    }
+  })
+  Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'post', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        resCode: 7687685643112648,
+        resMsg: 'S7@*',
+        response: {}
+      }
+    }
+  })
+  Mock.mock(new RegExp('/user/v1/user/work/list' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        totalNum: 4650048417434880,
+        totalPage: -852333107438548,
+        data: [
+          {
+            userId: 'mP*xgm',
+            workNo: 'GUT&Fw',
+            name: 'ztswwff',
+            orgId: 'fH1TjHN',
+            orgName: 'yM@',
+            jobId: 'HS*!h[',
+            jobName: 'J&mqrd',
+            positionId: '4ij8W@',
+            positionName: 'ZS4#',
+            phonenum: '&WGcZOU',
+            status: '5TyQ6'
+          }
+        ]
       }
     }
   })

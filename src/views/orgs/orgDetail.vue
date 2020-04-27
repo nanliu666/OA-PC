@@ -1,97 +1,100 @@
 <template>
-  <basic-container :block="true">
+  <div style="height: 100%">
     <el-page-header
       content="组织详情"
+      class="pageHeader"
       @back="goBack"
     />
-    <div class="container">
-      <div class="treeBox">
-        <el-input
-          v-model="filterText"
-          placeholder="输入关键字进行过滤"
-        />
-        <el-tree
-          ref="tree"
-          class="filter-tree"
-          :data="treeData"
-          :props="defaultProps"
-          default-expand-all
-          :filter-node-method="filterNode"
-          @node-click="handleNodeClick"
-        />
+    <basic-container :block="true">
+      <div class="container">
+        <div class="treeBox">
+          <el-input
+            v-model="filterText"
+            placeholder="输入关键字进行过滤"
+          />
+          <el-tree
+            ref="tree"
+            class="filter-tree"
+            :data="treeData"
+            :props="defaultProps"
+            default-expand-all
+            :filter-node-method="filterNode"
+            @node-click="handleNodeClick"
+          />
+        </div>
+        <div class="detailBox">
+          <div class="mainHeader">
+            <h3>{{ orgData.orgName }}</h3>
+            <div class="btnBox">
+              <el-button
+                size="medium"
+                type="text"
+                icon="el-icon-edit-outline"
+                @click="handleOrgEdit(orgData)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="text"
+                size="medium"
+                icon="el-icon-delete"
+                @click="deleteOrg"
+              >
+                删除
+              </el-button>
+            </div>
+          </div>
+          <div class="mainNum">
+            <div class="parent">
+              上级组织：{{ findFatherOrgName(orgData) || '' }}
+            </div>
+            <div class="numInfo">
+              在职人数 {{ orgData.workNum }} 人
+            </div>
+            <div class="numInfo">
+              用户人数 {{ orgData.userNum }} 人
+            </div>
+            <div class="numInfo">
+              职位 {{ orgData.jobNum }} 个
+            </div>
+          </div>
+          <div class="baseInfo">
+            <h4>基本信息</h4>
+            <div class="infoBox">
+              <el-col :span="4">
+                组织编码
+              </el-col>
+              <el-col :span="20">
+                {{ orgData.orgCode }}
+              </el-col>
+              <el-col :span="4">
+                组织类型
+              </el-col>
+              <el-col :span="20">
+                {{ orgTypeObj[orgData.orgType] }}
+              </el-col>
+              <el-col :span="4">
+                组织负责人
+              </el-col>
+              <el-col :span="20">
+                {{ orgData.userName }}
+              </el-col>
+              <el-col :span="4">
+                备注
+              </el-col>
+              <el-col :span="20">
+                {{ orgData.remark }}
+              </el-col>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="detailBox">
-        <div class="mainHeader">
-          <h3>{{ orgData.orgName }}</h3>
-          <div class="btnBox">
-            <el-button
-              size="medium"
-              type="text"
-              icon="el-icon-edit-outline"
-              @click="handleOrgEdit(orgData)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              type="text"
-              size="medium"
-              icon="el-icon-delete"
-              @click="deleteOrg"
-            >
-              删除
-            </el-button>
-          </div>
-        </div>
-        <div class="mainNum">
-          <div class="parent">
-            上级组织：{{ findFatherOrgName(orgData) || '' }}
-          </div>
-          <div class="numInfo">
-            在职人数 {{ orgData.workNum }} 人
-          </div>
-          <div class="numInfo">
-            用户人数 {{ orgData.userNum }} 人
-          </div>
-          <div class="numInfo">
-            职位 {{ orgData.jobNum }} 个
-          </div>
-        </div>
-        <div class="baseInfo">
-          <h4>基本信息</h4>
-          <div class="infoBox">
-            <el-col :span="4">
-              组织编码
-            </el-col>
-            <el-col :span="20">
-              {{ orgData.orgCode }}
-            </el-col>
-            <el-col :span="4">
-              组织类型
-            </el-col>
-            <el-col :span="20">
-              {{ orgTypeObj[orgData.orgType] }}
-            </el-col>
-            <el-col :span="4">
-              组织负责人
-            </el-col>
-            <el-col :span="20">
-              {{ orgData.userName }}
-            </el-col>
-            <el-col :span="4">
-              备注
-            </el-col>
-            <el-col :span="20">
-              {{ orgData.remark }}
-            </el-col>
-          </div>
-        </div>
-      </div>
-    </div>
-    <org-edit
-      ref="orgEdit"
-      :visible.sync="createOrgDailog"
-    />
-  </basic-container>
+      <org-edit
+        ref="orgEdit"
+        :visible.sync="createOrgDailog"
+      />
+    </basic-container>
+  </div>
 </template>
 
 <script>
@@ -174,6 +177,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.pageHeader {
+  height: 48px;
+  padding: 0 24px;
+  line-height: 48px;
+  font-size: 18px;
+}
+.basic-container--block {
+  height: calc(100% - 48px);
+}
 .container {
   display: flex;
   height: 100%;

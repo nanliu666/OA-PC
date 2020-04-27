@@ -153,7 +153,7 @@
 </template>
 
 <script>
-import { getOrgTree } from '@/api/org/org'
+import { getOrgTree, editOrg, createOrg } from '@/api/org/org'
 
 export default {
   name: 'OrgEdit',
@@ -193,9 +193,11 @@ export default {
     submitAndCreate() {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
-          alert('submit!')
-          this.form = { orgType: '' }
-          this.parentOrgIdLabel = ''
+          createOrg(this.form).then(() => {
+            this.$message.success('创建成功')
+            this.form = { orgType: '' }
+            this.parentOrgIdLabel = ''
+          })
         } else {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)
           return false
@@ -205,7 +207,15 @@ export default {
     submit() {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
-          alert('submit!')
+          if (this.type !== 'edit') {
+            createOrg(this.form).then(() => {
+              this.$message.success('创建成功')
+            })
+          } else {
+            editOrg(this.form).then(() => {
+              this.$message.success('修改成功')
+            })
+          }
           this.$emit('update:visible', false)
         } else {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)

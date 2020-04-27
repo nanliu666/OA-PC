@@ -1,5 +1,5 @@
 <template>
-  <basic-container>
+  <div>
     <div class="org-header">
       <h4>组织机构管理</h4>
       <el-dropdown @command="handleCommand">
@@ -18,147 +18,160 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <div
-      v-show="multipleSelection.length === 0"
-      class="searchBox"
-    >
-      <search-popoover
-        :require-options="searchConfig.requireOptions"
-        :popover-options="searchConfig.popoverOptions"
-        @submit="handleSubmit"
-      />
-      <el-button
-        icon="el-icon-sort"
-        size="medium"
-        @click="toSort"
-      >
-        调整排序
-      </el-button>
-      <el-button
-        icon="el-icon-upload2"
-        size="medium"
-      >
-        导出
-      </el-button>
-      <el-popover
-        placement="bottom"
-        width="40"
-        trigger="click"
-        style="margin-left:10px"
-      >
-        <el-checkbox-group
-          v-model="checkColumn"
-          @change="columnChange"
-        >
-          <el-checkbox
-            v-for="item in originColumn"
-            :key="item.prop"
-            :label="item.prop"
-            :disabled="item.prop === 'orgName'"
+    <basic-container>
+      <div class="transitionBox">
+        <transition name="el-zoom-in-center">
+          <div
+            v-show="multipleSelection.length === 0"
+            class="searchBox"
           >
-            {{ item.label }}
-          </el-checkbox>
-        </el-checkbox-group>
-        <el-button
-          slot="reference"
-          icon="el-icon-setting"
-          size="medium"
-        />
-      </el-popover>
-    </div>
-    <div
-      v-show="multipleSelection.length > 0"
-      class="multipleBox"
-    >
-      <div class="multipleLeft">
-        <div class="multipleLength">
-          已选中 {{ multipleSelection.length }} 项
-        </div>
-        <el-button
-          type="text"
-          size="medium"
-          icon="el-icon-delete"
-        >
-          批量删除
-        </el-button>
-        <el-button
-          size="medium"
-          type="text"
-          icon="el-icon-upload2"
-        >
-          批量导出
-        </el-button>
+            <div>
+              <search-popoover
+                :require-options="searchConfig.requireOptions"
+                :popover-options="searchConfig.popoverOptions"
+                @submit="handleSubmit"
+              />
+              <el-button
+                icon="el-icon-sort"
+                size="medium"
+                @click="toSort"
+              >
+                调整排序
+              </el-button>
+              <el-button
+                icon="el-icon-upload2"
+                size="medium"
+              >
+                导出
+              </el-button>
+              <el-popover
+                placement="bottom"
+                width="40"
+                trigger="click"
+                style="margin-left:10px"
+              >
+                <el-checkbox-group
+                  v-model="checkColumn"
+                  @change="columnChange"
+                >
+                  <el-checkbox
+                    v-for="item in originColumn"
+                    :key="item.prop"
+                    :label="item.prop"
+                    :disabled="item.prop === 'orgName'"
+                    class="originColumn"
+                  >
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+                <el-button
+                  slot="reference"
+                  icon="el-icon-setting"
+                  size="medium"
+                />
+              </el-popover>
+            </div>
+          </div>
+        </transition>
+        <transition name="el-zoom-in-center">
+          <div
+            v-show="multipleSelection.length > 0"
+            class="multipleBox"
+          >
+            <div class="multipleLeft">
+              <div class="multipleLength">
+                已选中 {{ multipleSelection.length }} 项
+              </div>
+              <el-button
+                type="text"
+                size="medium"
+                icon="el-icon-delete"
+                @click="multipleDeleteClick"
+              >
+                批量删除
+              </el-button>
+              <el-button
+                size="medium"
+                type="text"
+                icon="el-icon-upload2"
+              >
+                批量导出
+              </el-button>
+            </div>
+            <el-button
+              size="medium"
+              type="text"
+              icon="el-icon-close"
+              @click="clearMultipleSelection"
+            />
+          </div>
+        </transition>
       </div>
-      <el-button
-        size="medium"
-        type="text"
-        icon="el-icon-close"
-      />
-    </div>
-    <avue-crud
-      ref="avueCrud"
-      :option="option"
-      :data="data"
-      @select="rowSelect"
-      @select-all="selectAll"
-    >
-      <template
-        slot="orgName"
-        slot-scope="{ row }"
+      <avue-crud
+        ref="avueCrud"
+        :option="option"
+        :data="data"
+        @select="rowSelect"
+        @select-all="selectAll"
       >
-        <span
-          style="cursor: pointer"
-          @click="toOrgDetail(row)"
-        >{{ row.orgName }}</span>
-      </template>
-      <template
-        slot="orgType"
-        slot-scope="{ row }"
-      >
-        {{ orgTypeObj[row.orgType] }}
-      </template>
-      <template
-        slot="menu"
-        slot-scope="{ row }"
-      >
-        <div>
-          <el-button
-            type="text"
-            @click="handleCreateChild(row)"
-          >
-            新建子组织
-          </el-button>
-          <el-button
-            type="text"
-            @click="handleOrgEdit(row)"
-          >
-            编辑
-          </el-button>
-          <el-dropdown @command="handleCommand($event, row)">
+        <template
+          slot="orgName"
+          slot-scope="{ row }"
+        >
+          <span
+            style="cursor: pointer"
+            @click="toOrgDetail(row)"
+          >{{ row.orgName }}</span>
+        </template>
+        <template
+          slot="orgType"
+          slot-scope="{ row }"
+        >
+          {{ orgTypeObj[row.orgType] }}
+        </template>
+        <template
+          slot="menu"
+          slot-scope="{ row }"
+        >
+          <div>
             <el-button
               type="text"
-              style="margin-left: 10px"
+              @click="handleCreateChild(row)"
             >
-              <i class="el-icon-arrow-down el-icon-more" />
+              新建子组织
             </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="deleteOrg">
-                删除
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
-      </template>
-    </avue-crud>
-    <org-edit
-      ref="orgEdit"
-      :visible.sync="createOrgDailog"
-    />
-  </basic-container>
+            <el-button
+              type="text"
+              @click="handleOrgEdit(row)"
+            >
+              编辑
+            </el-button>
+            <el-dropdown @command="handleCommand($event, row)">
+              <el-button
+                type="text"
+                style="margin-left: 10px"
+              >
+                <i class="el-icon-arrow-down el-icon-more" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="deleteOrg">
+                  删除
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </template>
+      </avue-crud>
+      <org-edit
+        ref="orgEdit"
+        :visible.sync="createOrgDailog"
+      />
+    </basic-container>
+  </div>
 </template>
 
 <script>
-import { getOrgTree } from '@/api/org/org'
+import { getOrgTree, getUserWorkList, getOrgTreeSimple, deleteOrg } from '@/api/org/org'
 import { tableOptions } from '@/util/constant'
 import SearchPopoover from '@/components/searchPopover/index'
 import OrgEdit from './components/orgEdit'
@@ -210,18 +223,27 @@ export default {
       searchConfig: {
         requireOptions: [
           {
-            type: 'select',
+            type: 'treeSelect',
             field: 'parentOrgId',
             label: '',
-            defaultValue: '0',
-            defaultLabel: '@Qy4DZc',
-            options: [],
-            config: { tree: true, nodeKey: 'orgId', treeLabel: 'orgName' }
+            data: ['0'],
+            arrField: '',
+            isSingle: true,
+            options: {
+              props: {
+                label: 'orgName',
+                value: 'orgId'
+              },
+              placeholder: '请选择部门',
+              dicData: []
+            },
+            config: {}
           },
           {
             type: 'input',
             field: 'orgName',
             label: '',
+            data: '',
             options: [],
             config: { placeholder: '组织名称' }
           }
@@ -231,18 +253,28 @@ export default {
             type: 'select',
             field: 'orgType',
             label: '组织类型',
-            options: [{ Enterprise: '企业' }, { Company: '公司' }, { Department: '部门' }, { Group: '小组' }]
+            data: '',
+            options: [
+              { value: 'Enterprise', label: '企业' },
+              { value: 'Company', label: '公司' },
+              { value: 'Department', label: '部门' },
+              { value: 'Group', label: '小组' }
+            ],
+            config: { optionLabel: '', optionValue: '' }
           },
           {
             type: 'numInterval',
             field: 'minUserNum,maxUserNum',
+            data: { min: '', max: '' },
             label: '组织人数'
           },
           {
             type: 'select',
             field: 'userId',
+            data: '',
             label: '负责人',
-            options: []
+            options: [],
+            config: { optionLabel: 'name', optionValue: 'userId' }
           }
         ]
       },
@@ -272,16 +304,24 @@ export default {
     }
   },
   created() {
-    getOrgTree({ parentOrgId: 0 }).then((res) => {
-      this.searchConfig.requireOptions[0].options.push(...res)
+    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+      this.searchConfig.requireOptions[0].options.dicData.push(...res)
+    })
+    getUserWorkList({ pageNo: 1, pageSize: 100 }).then((res) => {
+      this.searchConfig.popoverOptions[2].options.push(...res.data)
     })
     this.getOrgTree()
   },
   methods: {
+    clearMultipleSelection() {
+      this.$refs.avueCrud.selectClear()
+      this.multipleSelection = []
+    },
     getOrgTree() {
       const params = this.searchParams
       getOrgTree(params).then((res) => {
         this.data = res
+        this.multipleSelection = []
       })
     },
     toOrgDetail(row) {
@@ -291,7 +331,7 @@ export default {
       this.searchParams = params
       // this.getOrgTree(this.data)
     },
-    handleCommand(command) {
+    handleCommand(command, row) {
       if (command === 'add') {
         this.createOrgDailog = true
         this.$refs.orgEdit.create()
@@ -302,9 +342,12 @@ export default {
           type: 'warning'
         })
           .then(() => {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
+            deleteOrg({ orgs: [{ orgId: row.orgId }] }).then(() => {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getOrgTree()
             })
           })
           .catch(() => {
@@ -314,6 +357,17 @@ export default {
             })
           })
       }
+    },
+    multipleDeleteClick() {
+      let params = {
+        orgs: this.multipleSelection.map((item) => {
+          return { orgId: item.orgId }
+        })
+      }
+      deleteOrg(params).then(() => {
+        this.$message.success('删除成功')
+        this.getOrgTree()
+      })
     },
     handleOrgEdit(row) {
       this.$refs.orgEdit.edit(row)
@@ -341,18 +395,6 @@ export default {
         this.toggleSelection(row.children, true)
         this.deepCheck(selection, true)
       }
-      //   if (selection.indexOf(row) === -1 && row.children.length > 0) {
-      //     this.toggleSelection(row.children, false)
-      //     this.deepCheck(selection, false)
-      //   }
-      //   if (selection.indexOf(row) > -1 && row.menuLevel === 2) {
-      //     let s = this.data.filter((item) => {
-      //       if (item.id === row.menuPid) {
-      //         return item
-      //       }
-      //     })
-      //     this.toggleSelection(s, true)
-      //   }
     },
     deepCheck(arr, check) {
       arr.forEach((item) => {
@@ -392,20 +434,37 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 24px;
+  h4 {
+    font-size: 18px;
+  }
+}
+.originColumn {
+  height: 25px;
+}
+.transitionBox {
+  position: relative;
+  height: 62px;
 }
 .searchBox {
-  display: flex;
-  :first-child {
-    flex: 1;
-  }
-  > button {
-    height: 38px;
+  position: absolute;
+  width: 100%;
+  > div {
+    display: flex;
+    :first-child {
+      flex: 1;
+    }
+    > button {
+      height: 38px;
+    }
   }
 }
 .multipleBox {
+  position: absolute;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 62px;
   .multipleLeft {
     display: flex;
     justify-content: space-between;

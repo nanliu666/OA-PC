@@ -9,53 +9,23 @@ const workAddress = {
     data: [
       {
         id: 'Cws!m',
-        provinceCode: 'w7GYYP',
-        provinceName: 'MmOE',
-        cityCode: 'wFX&',
-        cityName: '*@m',
-        countyCode: 'oGBQ',
+        provinceCode: '140000',
+        provinceName: '山西省',
+        cityCode: '140500',
+        cityName: '晋城市',
+        countyCode: '140502',
         countyName: '7h6HE',
         address: 'jE)T!E'
       },
       {
         id: 'Lf%Cnw',
-        provinceCode: 'Fr37bY',
-        provinceName: '2QzW',
-        cityCode: '9Tqtr@',
-        cityName: ')VHL)^^',
-        countyCode: 'fZL',
+        provinceCode: '440000',
+        provinceName: '广东省',
+        cityCode: '440100',
+        cityName: '广州市',
+        countyCode: '440103',
         countyName: '4^VDL',
         address: 's[Dlwc'
-      },
-      {
-        id: 'Lf%Cnw',
-        provinceCode: 'Fr37bY',
-        provinceName: '2QzW',
-        cityCode: '9Tqtr@',
-        cityName: ')VHL)^^',
-        countyCode: 'fZL',
-        countyName: '4^VDL',
-        address: 's[Dlwc'
-      },
-      {
-        id: 'UZO',
-        provinceCode: 'X@(m',
-        provinceName: 'nv7',
-        cityCode: 'I@l4',
-        cityName: '$ko6g',
-        countyCode: 'YtvT',
-        countyName: 'Nv6l',
-        address: 'Az9'
-      },
-      {
-        id: '(EIC',
-        provinceCode: 'SMm]9Zc',
-        provinceName: '6V4e',
-        cityCode: 'U&JL',
-        cityName: 'PKV^Uz',
-        countyCode: 'CyDe',
-        countyName: 'agZ#FT',
-        address: 'MCc9jji'
       }
     ]
   }
@@ -67,7 +37,7 @@ export default ({ mock }) => {
     return workAddress
   })
 
-  Mock.mock(new RegExp('/user/v1/user/list' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/user/v1/user/list' + '.*'), 'post', () => {
     const userList = {
       resCode: 200,
       resMsg: '',
@@ -180,17 +150,100 @@ export default ({ mock }) => {
         },
         {
           status: 'Formal',
-          statusNum: 15646123
+          statusNum: 1564
         },
         {
           status: 'Leaved',
-          statusNum: 1352465
+          statusNum: 135122
         },
         {
           status: 'WaitLeave',
-          statusNum: 156489464165
+          statusNum: 15
         }
       ]
+    }
+  })
+  Mock.mock(new RegExp('/org/v1/position/define' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: [
+        {
+          id: 'J4D4O',
+          name: 'oj%25'
+        }
+      ]
+    }
+  })
+  Mock.mock(new RegExp('/org/v1/job/list' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: [
+        {
+          jobId: 'rutwR',
+          jobName: 'JlgJv$'
+        }
+      ]
+    }
+  })
+  Mock.mock(new RegExp('/org/v1/organization/company' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: [
+        {
+          orgId: '!xoLp',
+          orgName: '$1BG9',
+          orgType: 'fq&'
+        }
+      ]
+    }
+  })
+  Mock.mock(new RegExp('/org/v1/organization/tree' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: [
+        {
+          orgId: '0',
+          orgName: '#EH6o',
+          orgType: '%*Mz',
+          sort: -8008198835721628,
+          children: [
+            {
+              orgId: 'ZFRQ',
+              orgName: 'y4CE',
+              orgType: 'RcV(z',
+              sort: -1569808853743480,
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+  })
+  Mock.mock(new RegExp('/user/v1/user/workno' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        workNo: '1234'
+      }
+    }
+  })
+  Mock.mock(new RegExp('/user/v1/user/info/check' + '.*'), 'post', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {}
+    }
+  })
+  Mock.mock(new RegExp('/user/v1/user/info' + '.*'), 'post', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {}
     }
   })
 }

@@ -1,5 +1,6 @@
 import store from '@/store/index'
-import { getWorkAddressList } from '@/api/personnel/roster'
+import { getWorkAddressList, getOrgPosition, getOrgJob } from '@/api/personnel/roster'
+import { getOrgTreeSimple, getUserWorkList } from '@/api/org/org'
 
 // let WorkProperty = [],
 //   RecruitmentChannel = [],
@@ -42,6 +43,10 @@ export default async () => {
   const HouseholdType = await store.dispatch('CommonDict', 'HouseholdType')
   const LeaveReason = await store.dispatch('CommonDict', 'LeaveReason')
   const WorkAddress = (await getWorkAddressList({ pageNo: 1, pageSize: 50 })).data
+  const orgTree = await getOrgTreeSimple({ parentOrgId: 0 })
+  const LeaderList = (await getUserWorkList({ pageNo: 1, pageSize: 100 })).data
+  const positionList = await getOrgPosition({ pageNo: 1, pageSize: 100 })
+  const jobList = (await getOrgJob()).data
 
   return [
     {
@@ -57,21 +62,30 @@ export default async () => {
           config: { multiple: true },
           options: {
             props: {
-              label: 'label',
+              label: 'orgName',
               value: 'orgId'
             },
             placeholder: '请选择关联部门',
-            dicData: []
+            dicData: orgTree
           }
         },
-        { type: 'select', data: '', label: '职位', field: 'jobs', arrField: 'jobId', config: { multiple: true } },
+        {
+          type: 'select',
+          data: '',
+          label: '职位',
+          field: 'jobs',
+          arrField: 'jobId',
+          config: { multiple: true, optionLabel: 'jobName', optionValue: 'jobId' },
+          options: jobList
+        },
         {
           type: 'select',
           data: '',
           label: '岗位',
           field: 'positions',
           arrField: 'positionId',
-          config: { multiple: true }
+          config: { multiple: true, optionLabel: 'name', optionValue: 'id' },
+          options: positionList
         },
         {
           type: 'select',
@@ -79,7 +93,8 @@ export default async () => {
           label: '上级领导',
           field: 'leader',
           arrField: 'leaderId',
-          config: { multiple: true }
+          config: { multiple: true, optionLabel: 'name', optionValue: 'userId' },
+          options: LeaderList
         },
         {
           type: 'select',
