@@ -46,7 +46,7 @@ export default async () => {
   const orgTree = await getOrgTreeSimple({ parentOrgId: 0 })
   const LeaderList = (await getUserWorkList({ pageNo: 1, pageSize: 100 })).data
   const positionList = await getOrgPosition({ pageNo: 1, pageSize: 100 })
-  const jobList = (await getOrgJob()).data
+  const jobList = await getOrgJob()
 
   return [
     {
@@ -94,7 +94,18 @@ export default async () => {
           field: 'leader',
           arrField: 'leaderId',
           config: { multiple: true, optionLabel: 'name', optionValue: 'userId' },
-          options: LeaderList
+          options: LeaderList,
+          loadmore: false,
+          pageNo: 2,
+          loadMoreFun(item) {
+            if (item.loadmore) return
+            item.loadmore = true
+            getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
+              item.options.push(...res.data)
+              item.pageNo += 1
+              item.loadmore = false
+            })
+          }
         },
         {
           type: 'select',
@@ -124,10 +135,20 @@ export default async () => {
           data: '',
           label: '工作地址',
           field: 'workAddressIds',
-          pageNo: 1,
           arrField: 'workAddressId',
           config: { multiple: true, optionLabel: 'address', optionValue: 'id' },
-          options: WorkAddress
+          options: WorkAddress,
+          loadmore: false,
+          pageNo: 2,
+          loadMoreFun(item) {
+            if (item.loadmore) return
+            item.loadmore = true
+            getWorkAddressList({ pageNo: item.pageNo, pageSize: 50 }).then((res) => {
+              item.options.push(...res.data)
+              item.pageNo += 1
+              item.loadmore = false
+            })
+          }
         },
         {
           type: 'select',

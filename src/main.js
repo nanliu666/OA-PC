@@ -19,6 +19,7 @@ import commonTable from 'vue-common-table'
 import website from '@/config/website'
 import '@/styles/oa-custom/theme/index.css'
 import _ from 'lodash'
+import directives from './directive/loadmore'
 Vue.prototype._ = _
 
 Vue.use(router)
@@ -29,6 +30,8 @@ Vue.use(Element, {
 Vue.use(window.AVUE, {
   i18n: (key, value) => i18n.t(key, value)
 })
+// 自定义vue指令
+Vue.use(directives)
 //注册全局容器
 Vue.component('basicContainer', basicContainer)
 Vue.component('basicBlock', basicBlock)

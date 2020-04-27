@@ -274,7 +274,18 @@ export default {
             data: '',
             label: '负责人',
             options: [],
-            config: { optionLabel: 'name', optionValue: 'userId' }
+            config: { optionLabel: 'name', optionValue: 'userId' },
+            loadmore: false,
+            pageNo: 2,
+            loadMoreFun(item) {
+              if (item.loadmore) return
+              item.loadmore = true
+              getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
+                item.options.push(...res.data)
+                item.pageNo += 1
+                item.loadmore = false
+              })
+            }
           }
         ]
       },
