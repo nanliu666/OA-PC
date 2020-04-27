@@ -1,8 +1,21 @@
 <template>
   <div>
-    <div class="upload-box">
+    <div class>
+      <div class="upload">
+        <div class="upload-box">
+          <div class="upload-after">
+            <img src="https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg" alt />
+            <span class="pictures">
+              <i class="el-icon-zoom-in common-right"></i>
+            </span>
+            <span class="pictures">
+              <i class="el-icon-delete common-left"></i>
+            </span>
+          </div>
+        </div>
+      </div>
       <el-upload
-        action=""
+        action
         :http-request="uploadRequst"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
@@ -14,7 +27,7 @@
         :file-list="fileList"
         :multiple="true"
         :on-error="onError"
-        accept="image/jpeg,image/jpg,image/png"
+        accept="image/jpeg, image/jpg, image/png"
       >
         <i slot="default" v-if="isonError" class="isonError">重新上传</i>
         <i class="el-icon-plus" v-else></i>
@@ -22,11 +35,9 @@
       </el-upload>
     </div>
     <view-pictures ref="viewPicture" />
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="pictureList" />
   </div>
 </template>
 <script>
-import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import viewPictures from './viewPictures'
 import {
   lookUpAttachmentInfo,
@@ -49,8 +60,6 @@ export default {
         'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg',
         'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
       ],
-      dialogImageUrl: '',
-      dialogVisible: false,
       isonError: false,
       uploading: false,
       uploadPercent: 0,
@@ -82,8 +91,7 @@ export default {
     }
   },
   components: {
-    viewPictures,
-    ElImageViewer
+    viewPictures
   },
   mounted() {
     this.initData()
@@ -97,10 +105,9 @@ export default {
     },
     //预览
     handlePictureCardPreview(file) {
+      console.log(file, 'file0000', file.id)
       this.showViewer = true
-      this.dialogImageUrl = file.url
-      // this.$refs.viewPicture.init(this.fileList, this.fileList.length)
-      this.dialogVisible = true
+      this.$refs.viewPicture.init(this.fileList)
     },
     handleExceed(file, fileList) {
       const that = this
@@ -169,15 +176,15 @@ export default {
       lookUpAttachmentInfo(this.lookUpData).then((res) => {
         this.fileList = res.data
 
-        this.pictureList = res.data.map((item) => {
-          return item.url
-        })
-        console.log(this.fileList, 'this.fileList')
+        // this.pictureList = res.data.map((item) => {
+        //   return item.url
+        // })
+        // console.log(this.fileList, 'this.fileList')
       })
-    },
-    closeViewer() {
-      this.showViewer = false
     }
+    // closeViewer() {
+    //   this.showViewer = false
+    // }
   }
 }
 </script>
@@ -199,7 +206,42 @@ export default {
   font-size: 14px;
 }
 .upload-box {
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid #c0ccda;
+  border-radius: 6px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 148px;
+  height: 148px;
+  margin: 0 8px 8px 0;
+  display: inline-block;
+  position: relative;
+}
+.upload-after {
+  border-radius: 6px;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  cursor: default;
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.common-left {
+  margin-left: 10px;
+}
+.common-right {
+  margin-left: 0px;
+  margin-right: 10px;
 }
 .isonError {
   color: red;

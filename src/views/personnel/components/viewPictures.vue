@@ -1,59 +1,36 @@
 <template>
   <!-- [{url: '' }, {url: '' }] -->
   <!-- 调用 this.$refs.viewPicture.init(pictureList, index); -->
-  <div id="view-picture">
-    <el-dialog
-      title="照片预览"
-      :visible.sync="modal"
-      class="picture-view-modal"
-      :close-on-click-modal="true"
-      :append-to-body="true"
-    >
-      <!-- <el-carousel
-        ref="picView"
-        trigger="click"
-        indicator-position="none"
-        arrow="always"
-        :autoplay="false"
-        :loop="false"
-      >
-        <el-carousel-item v-for="(i, index) in pictureList" :key="index" name="i">
-          <el-image style="width: 100%; height: 100%" :src="i.url" fit="contain"></el-image>
-        </el-carousel-item>
-      </el-carousel> -->
-      <el-image style="width: 100px; height: 100px" :src="pictureList[0]" :preview-src-list="pictureList"> </el-image>
-      <div>
-        <div class="small-img">
-          <img v-for="(i, index) in pictureList" :key="index" :src="i" alt="" @click="switchImg(index)" />
-        </div>
-      </div>
-    </el-dialog>
+  <div>
+    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="pictureList" />
   </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 export default {
   data() {
     return {
-      modal: false,
-      pictureList: []
+      pictureList: [],
+      showViewer: false
     }
   },
-
+  components: {
+    ElImageViewer
+  },
   methods: {
     // 初始化
-    init(list, index) {
+    init(list, id) {
+      this.showViewer = true
       this.pictureList = list.map((item) => {
         return item.url
-      })
-      this.modal = true
-      console.log(this.pictureList)
-      setTimeout(() => {
-        // this.$refs.picView.setActiveItem(index ? index : 0)
       })
     },
     switchImg(i) {
       this.$refs.picView.setActiveItem(i)
+    },
+    closeViewer() {
+      this.showViewer = false
     }
   }
 }

@@ -34,7 +34,6 @@ export default {
     upload
   },
   mounted() {
-    console.log(this.$store.getters.userId, 'userId')
     this.initData()
   },
   methods: {
@@ -43,7 +42,6 @@ export default {
         const getData = res.data
         function unique(arr) {
           return Array.from(new Set(arr))
-          // return arr.filter((a) => !res.has(a) && res.set(a, 1))
         }
         function group(arr, k) {
           let allGroupName = arr.map((item) => {
