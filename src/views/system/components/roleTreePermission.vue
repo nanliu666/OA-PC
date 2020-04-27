@@ -12,6 +12,7 @@
       show-checkbox
       :node-key="defaultProps.id"
       :props="{ label: defaultProps.label }"
+      :expand-on-click-node="false"
       @check="handleCheck"
       @node-click="nodeClick"
     />
