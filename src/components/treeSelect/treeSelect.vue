@@ -157,6 +157,7 @@ export default {
           this.setCheckedKeys()
           this.onClickSearch()
         })
+        this.$emit('change', val)
       },
       deep: true
     }
@@ -222,8 +223,8 @@ export default {
         if (checked) {
           this.node = this.node === data ? {} : data
           this.$refs.tree.setCheckedNodes([data])
-          if (this.node.id) {
-            let id = this.node.id || null
+          if (this.node[this.keyID]) {
+            let id = this.node[this.keyID] || null
             this.$emit('input', [id])
           }
         } else {
@@ -282,8 +283,8 @@ export default {
 
 .tree-button {
   width: 100%;
-  min-height: 36px;
-  line-height: 36px;
+  min-height: 32px;
+  line-height: 32px;
   text-align: left;
   /*padding: 0 10px !important;*/
   border: 1px solid #dcdfe6;
@@ -294,6 +295,7 @@ export default {
     display: flex;
     justify-content: space-between;
     padding-left: 10px;
+    min-height: 34px;
   }
 
   /deep/ .el-icon--right {

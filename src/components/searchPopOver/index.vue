@@ -2,25 +2,29 @@
   <div>
     <el-form
       :inline="true"
-      :model="requireForm"
       class="demo-form-inline"
     >
       <el-form-item
         v-for="item in requireOptions"
         :key="item.field"
         :label="item.label"
+        :class="item.type === 'treeSelect' ? 'treeSelect' : ''"
       >
         <el-input
           v-if="item.type === 'input'"
-          v-model="requireForm[item.field]"
+          v-model="item.data"
           :type="item.config && item.config.type ? item.config.type : 'text'"
-          :placeholder="item.config && item.config.placeholder"
+          :placeholder="'请输入' + item.label"
+          class="elInput"
+          @change="change"
         />
         <el-select
           v-if="item.type === 'select'"
-          v-model="requireForm[item.field]"
-          :placeholder="item.config && item.config.placeholder"
+          v-model="item.data"
+          :placeholder="'请输入' + item.label"
           :multiple="item.config && item.config.multiple"
+          :collapse-tags="item.config && item.config.multiple"
+          @change="change"
         >
           <template v-if="item.config && item.config.group">
             <el-option-group
@@ -31,59 +35,65 @@
               <el-option
                 v-for="it in group.options"
                 :key="it.value"
-                :label="it.label"
-                :value="it.value"
+                :label="it[item.config.optionLabel || 'label']"
+                :value="it[item.config.optionValue || 'value']"
               />
             </el-option-group>
           </template>
           <template v-else>
             <el-option
               v-for="it in item.options"
-              :key="it.value"
-              :label="it.label"
-              :value="it.value"
+              :key="it[item.config.optionValue || 'value']"
+              :label="it[item.config.optionLabel || 'label']"
+              :value="it[item.config.optionValue || 'value']"
             />
           </template>
         </el-select>
         <el-time-select
           v-if="item.type === 'timeSelect'"
-          v-model="requireForm[item.field]"
+          v-model="item.data"
           placeholder="选择时间"
+          @change="change"
         />
         <el-time-picker
           v-if="item.type === 'timePicker'"
-          v-model="requireForm[item.field]"
+          v-model="item.data"
           placeholder="选择时间"
+          @change="change"
         />
         <el-cascader
           v-if="item.type === 'cascader'"
-          v-model="requireForm[item.field]"
+          v-model="item.data"
           :options="item.options"
         />
         <el-date-picker
           v-if="item.type === 'dataPicker'"
-          v-model="requireForm[item.field]"
+          v-model="item.data"
           :type="item.config && item.config.type ? item.config.type : 'data'"
           placeholder="结束时间"
           value-format="yyyy-MM-dd"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
+          style="width:198px"
           @change="change"
         />
         <num-interval
           v-if="item.type === 'numInterval'"
-          v-model="requireForm[item.field]"
+          v-model="item.data"
         />
         <tree-select
           v-if="item.type === 'treeSelect'"
-          v-model="requireForm[item.field]"
+          v-model="item.data"
           :option="item.options"
+          :is-search="false"
+          :is-single="item.isSingle || false"
+          @change="change"
         />
       </el-form-item>
       <el-form-item v-if="popoverOptions.length === 0">
         <el-button
           type="primary"
-          size="small"
+          size="medium"
           @click="submitSearch"
         >
           搜索
@@ -98,83 +108,89 @@
           <div>
             <el-form
               :inline="true"
-              :model="popoverForm"
               class="demo-form-inline"
             >
-              <el-form-item
+              <el-col
                 v-for="item in popoverOptions"
                 :key="item.field"
-                :label="item.label"
+                :span="8"
               >
-                <el-input
-                  v-if="item.type === 'input'"
-                  v-model="popoverForm[item.field]"
-                  :type="item.config && item.config.type ? item.config.type : 'text'"
-                  :placeholder="'请输入' + item.label"
-                />
-                <el-select
-                  v-if="item.type === 'select'"
-                  v-model="popoverForm[item.field]"
-                  :placeholder="'请输入' + item.label"
-                  :multiple="item.config && item.config.multiple"
-                >
-                  <template v-if="item.config && item.config.group">
-                    <el-option-group
-                      v-for="group in item.options"
-                      :key="group.label"
-                      :label="group.label"
-                    >
+                <el-form-item :label="item.label">
+                  <el-input
+                    v-if="item.type === 'input'"
+                    v-model="item.data"
+                    :type="item.config && item.config.type ? item.config.type : 'text'"
+                    :placeholder="'请输入' + item.label"
+                    class="elInput"
+                  />
+                  <el-select
+                    v-if="item.type === 'select'"
+                    v-model="item.data"
+                    :placeholder="'请输入' + item.label"
+                    :multiple="item.config && item.config.multiple"
+                    :collapse-tags="item.config && item.config.multiple"
+                  >
+                    <template v-if="item.config && item.config.group">
+                      <el-option-group
+                        v-for="group in item.options"
+                        :key="group.label"
+                        :label="group.label"
+                      >
+                        <el-option
+                          v-for="it in group.options"
+                          :key="it.value"
+                          :label="it[item.config.optionLabel || 'label']"
+                          :value="it[item.config.optionValue || 'value']"
+                        />
+                      </el-option-group>
+                    </template>
+                    <template v-else>
                       <el-option
-                        v-for="it in group.options"
-                        :key="it.value"
-                        :label="it.label"
-                        :value="it.value"
+                        v-for="it in item.options"
+                        :key="it[item.config.optionValue || 'value']"
+                        :label="it[item.config.optionLabel || 'label']"
+                        :value="it[item.config.optionValue || 'value']"
                       />
-                    </el-option-group>
-                  </template>
-                  <template v-else>
-                    <el-option
-                      v-for="it in item.options"
-                      :key="it.value"
-                      :label="it.label"
-                      :value="it.value"
-                    />
-                  </template>
-                </el-select>
-                <el-time-select
-                  v-if="item.type === 'timeSelect'"
-                  v-model="popoverForm[item.field]"
-                  placeholder="选择时间"
-                />
-                <el-time-picker
-                  v-if="item.type === 'timePicker'"
-                  v-model="popoverForm[item.field]"
-                  placeholder="选择时间"
-                />
-                <el-cascader
-                  v-if="item.type === 'cascader'"
-                  v-model="popoverForm[item.field]"
-                  :options="item.options"
-                />
-                <el-date-picker
-                  v-if="item.type === 'dataPicker'"
-                  v-model="popoverForm[item.field]"
-                  :type="item.config && item.config.type ? item.config.type : 'data'"
-                  placeholder="结束时间"
-                  value-format="yyyy-MM-dd"
-                  start-placeholder="开始时间"
-                  end-placeholder="结束时间"
-                />
-                <num-interval
-                  v-if="item.type === 'numInterval'"
-                  v-model="popoverForm[item.field]"
-                />
-                <tree-select
-                  v-if="item.type === 'treeSelect'"
-                  v-model="popoverForm[item.field]"
-                  :option="item.options"
-                />
-              </el-form-item>
+                    </template>
+                  </el-select>
+                  <el-time-select
+                    v-if="item.type === 'timeSelect'"
+                    v-model="item.data"
+                    placeholder="选择时间"
+                  />
+                  <el-time-picker
+                    v-if="item.type === 'timePicker'"
+                    v-model="item.data"
+                    placeholder="选择时间"
+                  />
+                  <el-cascader
+                    v-if="item.type === 'cascader'"
+                    v-model="item.data"
+                    :options="item.options"
+                  />
+                  <el-date-picker
+                    v-if="item.type === 'dataPicker'"
+                    v-model="item.data"
+                    :type="item.config && item.config.type ? item.config.type : 'data'"
+                    placeholder="结束时间"
+                    value-format="yyyy-MM-dd"
+                    start-placeholder="开始时间"
+                    end-placeholder="结束时间"
+                    style="width:198px"
+                  />
+                  <num-interval
+                    v-if="item.type === 'numInterval'"
+                    v-model="item.data"
+                  />
+                  <tree-select
+                    v-if="item.type === 'treeSelect'"
+                    v-model="item.data"
+                    :option="item.options"
+                    :is-search="false"
+                    :is-single="item.isSingle || false"
+                  />
+                </el-form-item>
+              </el-col>
             </el-form>
             <div class="popOver-footer">
               <el-button
@@ -186,7 +202,7 @@
               </el-button>
               <el-button
                 size="small"
-                @click="initForm"
+                @click="resetForm"
               >
                 重置
               </el-button>
@@ -195,7 +211,7 @@
           <el-button
             slot="reference"
             type="primary"
-            size="small"
+            size="medium"
           >
             筛选
           </el-button>
@@ -243,77 +259,99 @@ export default {
   },
   data() {
     return {
-      requireForm: {},
-      popoverForm: {}
+      tags: []
     }
   },
-  created() {
-    this.initForm()
+  watch: {
+    requireOptions: {
+      handler(newVal) {
+        let tagsArr = []
+        newVal.forEach((item) => {
+          // items.forEach((item, idx) => {
+          if (item.data) {
+            if (Array.isArray(item.data) && item.data.length === 0) return
+            if (item.type === 'numInterval') {
+              if (!(item.data.min && item.data.max)) return
+
+              tagsArr.push(item)
+            } else {
+              tagsArr.push(item)
+            }
+          }
+          // })
+        })
+        this.tags.push(...tagsArr)
+      },
+      deep: true
+    },
+    popoverOptions: {
+      handler(newVal) {
+        let tagsArr = []
+        newVal.forEach((item) => {
+          // items.forEach((item, idx) => {
+          if (item.data) {
+            if (Array.isArray(item.data) && item.data.length === 0) return
+            if (item.type === 'numInterval') {
+              if (!(item.data.min && item.data.max)) return
+
+              tagsArr.push(item)
+            } else {
+              tagsArr.push(item)
+            }
+          }
+          // })
+        })
+        this.tags.push(...tagsArr)
+      },
+      deep: true
+    }
   },
   methods: {
-    // 初始化绑定数据
-    initForm() {
-      this.requireOptions.forEach((item) => {
-        if (item.field.indexOf(',') > -1) {
-          if (item.type === 'numInterval') {
-            this.$set(this.requireForm, item.field, { min: '', max: '' })
-          } else {
-            this.$set(this.requireForm, item.field, [])
-          }
-        } else {
-          this.$set(this.requireForm, item.field, '')
-        }
-      })
-      this.popoverOptions.forEach((item) => {
-        if (item.field.indexOf(',') > -1) {
-          if (item.type === 'numInterval') {
-            this.$set(this.popoverForm, item.field, { min: '', max: '' })
-          } else {
-            this.$set(this.popoverForm, item.field, [])
-          }
-        } else {
-          this.$set(this.popoverForm, item.field, '')
-        }
-      })
-    },
     submitSearch() {
-      let params = {}
-      for (let key in this.requireForm) {
-        if (key.indexOf(',') > -1 && Array.isArray(this.requireForm[key])) {
-          let keyArr = key.split(',')
-          keyArr.forEach((item, index) => {
-            params[item] = this.requireForm[key][index]
-          })
-        } else if (
-          key.indexOf(',') > -1 &&
-          Object.prototype.toString.call(this.requireForm[key]) === '[object Object]'
-        ) {
-          params[key.split(',')[0]] = this.requireForm[key].min
-          params[key.split(',')[1]] = this.requireForm[key].max
-        } else {
-          params[key] = this.requireForm[key]
-        }
-      }
-      for (let key in this.popoverForm) {
-        if (key.indexOf(',') > -1 && Array.isArray(this.popoverForm[key])) {
-          let keyArr = key.split(',')
-          keyArr.forEach((item, index) => {
-            params[item] = this.popoverForm[key][index]
-          })
-        } else if (
-          key.indexOf(',') > -1 &&
-          Object.prototype.toString.call(this.popoverForm[key]) === '[object Object]'
-        ) {
-          params[key.split(',')[0]] = this.popoverForm[key].min
-          params[key.split(',')[1]] = this.popoverForm[key].max
-        } else {
-          params[key] = this.popoverForm[key]
-        }
-      }
-      this.$emit('submit', params)
+      this.$emit('submit', this.searchParams())
+    },
+    handleOrgNodeClick(data, form, field, config) {
+      form[field] = data[config.nodeKey]
+      // form[field + 'Label'] = data[config.treeLabel]
+      this.change()
     },
     change() {
       this.submitSearch()
+    },
+    searchParams() {
+      let params = {}
+      this.tags.forEach((item) => {
+        if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
+          params[item.field] = item.data
+        } else if (item.type === 'numInterval') {
+          params[item.field.split(',')[0]] = item.data.min
+          params[item.field.split(',')[1]] = item.data.max
+        } else if (item.type === 'treeSelect' || item.type === 'select') {
+          if ((item.type === 'select' && item.config && item.config.multiple) || item.type === 'treeSelect') {
+            params[item.field] = item.data.map((it) => {
+              return { [item.arrField]: it }
+            })
+          } else {
+            params[item.field] = item.data
+          }
+        } else if (item.type === 'cascader') {
+          params[item.field] = item.data[item.data.length - 1]
+        } else if (item.type === 'dataPicker') {
+          item.field.split(',').forEach((it, idx) => {
+            params[it] = item.data[idx]
+          })
+        }
+      })
+      return params
+    },
+    resetForm() {
+      this.popoverOptions.forEach((item) => {
+        if (item.type === 'numInterval') {
+          item.data = { min: '', max: '' }
+        } else {
+          item.data = ''
+        }
+      })
     }
   }
 }
@@ -342,4 +380,19 @@ export default {
 .el-form-item {
   margin-right: 30px;
 }
+/deep/ .treeSelect {
+  margin-top: 3px;
+  .el-form-item__content {
+    min-width: 198px;
+  }
+}
+
+.el-col-8 {
+  min-width: 280px;
+  margin-bottom: 20px;
+}
+
+// /deep/ .tags-list {
+//   min-height: 32px;
+// }
 </style>
