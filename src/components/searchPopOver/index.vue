@@ -21,6 +21,7 @@
         <el-select
           v-if="item.type === 'select'"
           v-model="item.data"
+          v-loadmore="() => item.loadMoreFun && item.loadMoreFun(item)"
           :placeholder="'请输入' + item.label"
           :multiple="item.config && item.config.multiple"
           :collapse-tags="item.config && item.config.multiple"
@@ -48,6 +49,13 @@
               :value="it[item.config.optionValue || 'value']"
             />
           </template>
+          <div
+            v-show="item.loadMoreFun ? item.loading : false"
+            class="addressLoading"
+            style="text-align: center"
+          >
+            <i class="el-icon-loading" />
+          </div>
         </el-select>
         <el-time-select
           v-if="item.type === 'timeSelect'"
@@ -108,6 +116,7 @@
           <div>
             <el-form
               :inline="true"
+              size="small"
               class="demo-form-inline"
             >
               <el-col
@@ -126,6 +135,7 @@
                   <el-select
                     v-if="item.type === 'select'"
                     v-model="item.data"
+                    v-loadmore="() => item.loadMoreFun && item.loadMoreFun(item)"
                     :placeholder="'请输入' + item.label"
                     :multiple="item.config && item.config.multiple"
                     :collapse-tags="item.config && item.config.multiple"
@@ -152,6 +162,13 @@
                         :value="it[item.config.optionValue || 'value']"
                       />
                     </template>
+                    <div
+                      v-show="item.loadMoreFun ? item.loading : false"
+                      class="addressLoading"
+                      style="text-align: center"
+                    >
+                      <i class="el-icon-loading" />
+                    </div>
                   </el-select>
                   <el-time-select
                     v-if="item.type === 'timeSelect'"

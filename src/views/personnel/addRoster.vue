@@ -225,6 +225,7 @@
                 <el-select
                   ref="workAddressId"
                   v-model="form.workAddressId"
+                  v-loadmore="loadWorkAddress"
                   placeholder="请选择"
                   @change="handleAddressClick"
                 >
@@ -249,6 +250,12 @@
                       <i class="el-icon-edit-outline" />
                     </span>
                   </el-option>
+                  <div
+                    v-show="loadAddress"
+                    class="addressLoading"
+                  >
+                    <i class="el-icon-loading" />
+                  </div>
                   <div
                     class="newAddress"
                     @click="createAddress"
@@ -447,7 +454,9 @@ export default {
       provinceAndCityData: regionData,
       regionData: regionData,
       workAddress: [],
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      loadAddress: false,
+      addressPageNo: 1
     }
   },
   created() {
@@ -557,6 +566,15 @@ export default {
       this.dialogTableVisible = true
       this.workAddressForm = {}
     },
+    loadWorkAddress() {
+      if (this.loadAddress) return
+      this.loadAddress = true
+      getWorkAddressList({ pageNo: this.addressPageNo, pageSize: 50 }).then((res) => {
+        this.workAddress.push(...res.data)
+        this.addressPageNo += 1
+        this.loadAddress = false
+      })
+    },
     loadSelectData() {
       getOrganizationCompany({ parentOrgId: '0' }).then((res) => {
         this.companyList = res
@@ -570,9 +588,7 @@ export default {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
         this.orgOptions.dicData = res
       })
-      getWorkAddressList({ pageNo: 1, pageSize: 50 }).then((res) => {
-        this.workAddress = res.data
-      })
+      this.loadWorkAddress()
     }
   }
 }
@@ -590,6 +606,9 @@ export default {
 }
 .el-col-12 {
   min-width: 250px;
+}
+.addressLoading {
+  text-align: center;
 }
 .newAddress {
   font-size: 12px;

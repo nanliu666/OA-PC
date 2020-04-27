@@ -78,11 +78,7 @@ export default ({ mock }) => {
     return {
       resCode: 200,
       resMsg: '',
-      response: {
-        resCode: 7687685643112648,
-        resMsg: 'S7@*',
-        response: {}
-      }
+      response: {}
     }
   })
 
@@ -90,33 +86,21 @@ export default ({ mock }) => {
     return {
       resCode: 200,
       resMsg: '',
-      response: {
-        resCode: 7687685643112648,
-        resMsg: 'S7@*',
-        response: {}
-      }
+      response: {}
     }
   })
   Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'put', () => {
     return {
       resCode: 200,
       resMsg: '',
-      response: {
-        resCode: 7687685643112648,
-        resMsg: 'S7@*',
-        response: {}
-      }
+      response: {}
     }
   })
   Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'post', () => {
     return {
       resCode: 200,
       resMsg: '',
-      response: {
-        resCode: 7687685643112648,
-        resMsg: 'S7@*',
-        response: {}
-      }
+      response: {}
     }
   })
   Mock.mock(new RegExp('/user/v1/user/work/list' + '.*'), 'get', () => {

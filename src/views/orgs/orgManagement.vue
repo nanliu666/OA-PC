@@ -173,7 +173,7 @@
 <script>
 import { getOrgTree, getUserWorkList, getOrgTreeSimple, deleteOrg } from '@/api/org/org'
 import { tableOptions } from '@/util/constant'
-import SearchPopoover from '@/components/searchPopover/index'
+import SearchPopoover from '@/components/searchPopOver/index'
 import OrgEdit from './components/orgEdit'
 
 const column = [
@@ -274,7 +274,18 @@ export default {
             data: '',
             label: '负责人',
             options: [],
-            config: { optionLabel: 'name', optionValue: 'userId' }
+            config: { optionLabel: 'name', optionValue: 'userId' },
+            loading: false,
+            pageNo: 2,
+            loadMoreFun(item) {
+              if (item.loading) return
+              item.loading = true
+              getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
+                item.options.push(...res.data)
+                item.pageNo += 1
+                item.loading = false
+              })
+            }
           }
         ]
       },
