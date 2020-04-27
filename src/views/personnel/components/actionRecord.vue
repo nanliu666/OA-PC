@@ -1,14 +1,15 @@
 <template>
   <div class="steps-bos">
     <basic-container>
-      <el-steps direction="vertical" :active="1" space="80px">
-        <el-step
-          :title="item.createTime"
-          :description="item.name"
-          v-for="(item, index) in stepsData"
-          :key="index"
-        ></el-step>
-      </el-steps>
+      <el-timeline :reverse="true">
+        <el-timeline-item v-for="(item, index) in stepsData" :key="index" :timestamp="item.createTime" color="#368AFA">
+          <template slot>
+            <div class="action-name">{{ item.name }}</div>
+            <div class="action-action">{{ item.action }}</div>
+            <div class="action-content">{{ item.content }}</div>
+          </template>
+        </el-timeline-item>
+      </el-timeline>
     </basic-container>
   </div>
 </template>
@@ -17,7 +18,7 @@ import { getActionLog } from '@/api/system/user'
 export default {
   data() {
     return {
-      stepsData: {},
+      stepsData: [],
       ajaxData: {
         pageNo: 1, //请求页码
         pageSize: 10, //每页数据
@@ -31,20 +32,17 @@ export default {
   },
 
   mounted() {
-    ;[...document.querySelectorAll('.el-steps .el-step__icon div')].forEach((el, index, arr) => {
-      el.innerHTML = arr.length - index
-    }),
-      this.initData()
+    this.initData()
   },
   methods: {
     initData() {
       getActionLog(this.ajaxData).then((res) => {
-        this.stepsData = res.data
-        this.stepsData.createTime = []
-        res.data.forEach((item, index) => {
-          this.stepsData[index].createTime = this.formatDate(item.createTime)
-          this.stepsData[index].name = `${item.name} ${item.source}`
-        })
+        this.stepsData = res.data.map((item) => ({
+          createTime: this.formatDate(item.createTime),
+          name: item.name,
+          action: item.action,
+          content: item.content
+        }))
       })
     },
     //时间戳转日期
@@ -62,16 +60,39 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.steps-bos {
-  min-height: 300px;
+/deep/ .el-step__description.is-finish {
+  font-family: PingFangSC-Regular;
+  color: #202940;
+  line-height: 16px;
 }
-// /deep/ .el-step__main {
-//   display: flex;
-//   width: 100%;
-// }
-
-// /deep/ .el-step__description {
-//   line-height: 32px;
-//   margin-left: 20px;
-// }
+/deep/ .el-timeline-item__tail {
+  position: absolute;
+  left: 4px;
+  top: 16px;
+  height: calc(100% - 20px);
+  border-left: 1px solid #368afa;
+}
+/deep/ .el-timeline-item__wrapper {
+  display: flex;
+  line-height: 30px;
+}
+/deep/ .el-timeline-item__timestamp.is-bottom {
+  margin-left: 20px;
+}
+.action-name {
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #202940;
+}
+.action-content {
+  margin-left: 15px;
+  font-family: PingFangSC-Regular;
+  font-size: 12px;
+  color: #757c85;
+}
+.action-action {
+  font-family: PingFangSC-Regular;
+  font-size: 12px;
+  color: #757c85;
+}
 </style>

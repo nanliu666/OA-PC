@@ -31,7 +31,7 @@
       <el-progress v-show="uploading" :text-inside="true" :stroke-width="20" :percentage="uploadPercent"></el-progress>
     </div>
 
-    <viewPictures ref="viewPicture" />
+    <view-pictures ref="viewPicture" />
   </div>
 </template>
 
@@ -40,7 +40,7 @@ import viewPictures from './viewPictures'
 import { queryUploadData, deleteUploadData, sendUploadData, reviseUploadData } from '@/api/personnel/uploaddata'
 import { uploadQiniu } from '@/util/uploadQiniu'
 export default {
-  props: { limit: { type: Number, default: 10 }, id: { type: Number, default: 10 } },
+  props: { limit: { type: Number, default: '' }, id: { type: Number, default: '' } },
   data() {
     return {
       dialogImageUrl: '',
@@ -53,8 +53,8 @@ export default {
         pageNo: 1,
         pageSize: 10,
         categoryId: this.id,
-        userId: '33',
-        name: '33' //非必填
+        userId: '',
+        name: '' //非必填
       },
       delete: {
         //删除接口
@@ -85,20 +85,16 @@ export default {
     handleRemove(file, fileList) {
       //删除接口
       this.delete.id = file.id
-      deleteUploadData(this.delete).then((res) => {
-        window.console.log(res, '删除')
-      })
-      console.log(file, fileList, '删除')
+      deleteUploadData(this.delete).then((res) => {})
     },
+    //预览
     handlePictureCardPreview(file) {
-      console.log(file, '预览')
       this.dialogImageUrl = file.url
       window.console.log(file, '文件夹')
       this.$refs.viewPicture.init(this.fileList, this.fileList.length)
       this.dialogVisible = true
     },
     handleExceed(file, fileList) {
-      console.log(file, '证件照')
       const that = this
       that.$message.warning('此证照只能上传两张哦')
     },
@@ -114,7 +110,6 @@ export default {
           that.$message.error(err.message)
           // that.uploading = false;
           // eslint-disable-next-line
-          console.log('err:', err)
         },
         complete(res) {
           that.uploading = false
@@ -165,7 +160,6 @@ export default {
     initData() {
       queryUploadData(this.ajaxData).then((res) => {
         this.fileList = res.data
-        window.console.log(this.fileList, '获得材料接口')
       })
     }
   }

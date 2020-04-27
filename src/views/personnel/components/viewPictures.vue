@@ -6,10 +6,9 @@
       title="照片预览"
       :visible.sync="modal"
       class="picture-view-modal"
-      :close-on-click-modal="false"
+      :close-on-click-modal="true"
       :append-to-body="true"
     >
-      <!-- <el-button type="info" class="close-btn" icon="el-icon-close" circle @click="modal = false"></el-button> -->
       <el-carousel
         ref="picView"
         trigger="click"
@@ -19,18 +18,10 @@
         :loop="false"
       >
         <el-carousel-item v-for="(i, index) in pictureList" :key="index" name="i">
-          <!-- <div> -->
-          <!-- <img :src="i.url" /> -->
-          <!-- </div> -->
           <el-image style="width: 100%; height: 100%" :src="i.url" fit="contain"></el-image>
         </el-carousel-item>
       </el-carousel>
       <div>
-        <!-- <el-carousel indicator-position="none" arrow="always" :autoplay="false" :loop="false" type="card" height="80px">
-          <el-carousel-item v-for="(i, index) in pictureList" :key="index">
-            <el-image style="width: 100%; height: 100%" :src="i.url" fit="contain"></el-image>
-          </el-carousel-item>
-        </el-carousel> -->
         <div class="small-img">
           <img v-for="(i, index) in pictureList" :key="index" :src="i.url" alt="" @click="switchImg(index)" />
         </div>

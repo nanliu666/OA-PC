@@ -9,7 +9,8 @@
           class="typeIconImg"
       /></i> -->
       <div v-show="seen" class="isShow">
-        <span class="preview-box" v-if="isPreview"> 预览</span><span class="send-box" @click="openUploadBtn">上传</span>
+        <span class="preview-box" @click="PictureCardPreview"> 预览</span
+        ><span class="send-box" @click="openUploadBtn">上传</span>
       </div>
     </div>
     <div class="upload-card">{{ typeName }}</div>
@@ -24,26 +25,37 @@
         <el-button type="primary" @click="preserve">保 存</el-button>
       </div>
     </el-dialog>
+    <view-pictures ref="viewPicture" />
   </div>
 </template>
 <script>
+import { queryUploadData } from '@/api/personnel/uploaddata'
+import viewPictures from './viewPictures'
 import uploadImg from './uploadImg'
 export default {
   data() {
     return {
       openUpload: false,
       seen: false,
-      isPreview: false //判断是否有图片
+      ajaxData: {
+        //查询接口
+        pageNo: 1,
+        pageSize: 10,
+        categoryId: this.id,
+        userId: '',
+        name: '' //非必填
+      }
     }
   },
   props: {
     typeName: { type: String, default: true },
     typeIcon: { type: String, default: true },
-    limit: { type: Number, default: 10 },
-    id: { type: Number, default: 10 }
+    limit: { type: Number, default: '' },
+    id: { type: Number, default: '' }
   },
   components: {
-    uploadImg
+    uploadImg,
+    viewPictures
   },
   mounted() {},
   methods: {
@@ -56,11 +68,15 @@ export default {
     preserve() {
       this.openUpload = false
       // this.$emit('getUploadImg',this.)
-      window.console.log('baocuo ')
     },
     openUploadBtn() {
       this.openUpload = true
-      console.log('点击上传')
+    },
+    //预览
+    PictureCardPreview() {
+      queryUploadData(this.ajaxData).then((res) => {
+        this.$refs.viewPicture.init(res.data)
+      })
     }
   }
 }
