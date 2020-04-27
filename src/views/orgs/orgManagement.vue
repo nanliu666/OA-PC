@@ -173,7 +173,7 @@
 <script>
 import { getOrgTree, getUserWorkList, getOrgTreeSimple, deleteOrg } from '@/api/org/org'
 import { tableOptions } from '@/util/constant'
-import SearchPopoover from '@/components/searchPopover/index'
+import SearchPopoover from '@/components/searchPopOver/index'
 import OrgEdit from './components/orgEdit'
 
 const column = [
