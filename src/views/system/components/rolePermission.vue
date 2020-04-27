@@ -175,10 +175,10 @@ export default {
         .then((res) => {
           this.originData = JSON.parse(JSON.stringify(res)) // 保存一份原数据，保存的时候用作对比
           this.orgPrivileges = res.orgPrivileges || []
-          this.menuFilter(res.menuPrivileges)
-          this.menuPrivileges = res.menuPrivileges
+          this.menuPrivileges = this.menuFilter(res.menuPrivileges)
           if (this.menuPrivileges[0]) {
             this.dataPrivileges = this.menuPrivileges[0].dataPrivileges || []
+            this.buttonMenuId = this.menuPrivileges[0].buttonMenuId
           }
         })
         .finally(() => {
@@ -186,25 +186,32 @@ export default {
         })
     },
 
-    // 判断当前节点是按钮还是页面
-    menuFilter(arr) {
-      arr.forEach((item) => {
-        if (item.children && item.children.length > 0) {
-          //
-          this.menuFilter(item.children)
-        }
-        if (item.menuType === 'Button') {
-          // 如果节点是按钮类型，保存到buttonData
-          this.$set(this.buttonData, item.menuId, item.children || [])
-          item.children = []
-        }
-      })
+    // 判断当前菜单类型是Button的菜单过滤掉
+    menuFilter(arr, parentId) {
+      return (
+        arr.filter((item) => {
+          if (item.menuType === 'Button') {
+            // 如果节点是按钮类型，保存到buttonData
+            if (this.buttonData[parentId]) {
+              this.buttonData[parentId].push(item)
+            } else {
+              this.$set(this.buttonData, parentId || 0, [item])
+            }
+            return false
+          } else {
+            if (item.children && item.children.length > 0) {
+              item.children = this.menuFilter(item.children, item.menuId)
+            }
+            return true
+          }
+        }) || []
+      )
     },
 
     // 点击保存
     onClickSave() {
       this.getButtonPrivilege(this.menuPrivileges)
-      this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断全选数据是否有修改
+      this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
       this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
       const params = {
         orgPrivileges: this.orgPrivileges,
@@ -212,23 +219,27 @@ export default {
       }
       updatePrivilege(params).then(() => {
         this.$message.success('保存成功')
-        this.getRolePrivilege()
         this.onClose()
       })
     },
 
     // 根据原数据，添加operatorType字段，Add-添加，Del-删除
-    diff(newList, oldList, key) {
-      newList.forEach((item, index) => {
-        if (item[key] && !oldList[index][key]) {
-          item.operatorType = 'Add'
-        } else if (!item[key] && oldList[index][key]) {
+    diff(newList, oldList, key, id = 'menuId') {
+      newList.forEach((item) => {
+        const data = oldList.find((oldData) => oldData[id] === item[id])
+        if (!item[key] && data[key]) {
           item.operatorType = 'Del'
+        } else if (item[key] && !data[key]) {
+          item.operatorType = 'Add'
         }
+
         for (const listKey in item) {
           if (Array.isArray(item[listKey])) {
-            this.diff(item[listKey], oldList[index][listKey], key)
+            this.diff(item[listKey], data[listKey], key)
           }
+        }
+        if (item.dataPrivileges && item.dataPrivileges.length > 0) {
+          this.diff(item.dataPrivileges, data.dataPrivileges, key, 'dataId')
         }
       })
     },
@@ -236,8 +247,8 @@ export default {
     // 把抽取出来的buttonData，重新赋值回权限数据
     getButtonPrivilege(arr) {
       arr.forEach((item) => {
-        if (item.menuType === 'Button') {
-          item.children = this.buttonData[item.menuId] || []
+        if (this.buttonData[item.menuId]) {
+          item.children = item.children.concat(this.buttonData[item.menuId])
         }
         if (item.children && item.children.length > 0) {
           this.getButtonPrivilege(item.children)
@@ -246,6 +257,8 @@ export default {
     },
 
     onClose() {
+      this.buttonData = {}
+      this.buttonMenuId = ''
       this.$emit('update:visible', false)
     },
 
