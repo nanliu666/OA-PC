@@ -27,7 +27,6 @@
           :collapse-tags="item.config && item.config.multiple"
           @change="change"
         >
-          <!-- v-loadmore="()=>item.loadMoreFun&&item.loadMoreFun(item)" -->
           <template v-if="item.config && item.config.group">
             <el-option-group
               v-for="group in item.options"
@@ -51,7 +50,7 @@
             />
           </template>
           <div
-            v-show="item.loadMoreFun ? item.loadmore : false"
+            v-show="item.loadMoreFun ? item.loading : false"
             class="addressLoading"
             style="text-align: center"
           >
@@ -164,7 +163,7 @@
                       />
                     </template>
                     <div
-                      v-show="item.loadMoreFun ? item.loadmore : false"
+                      v-show="item.loadMoreFun ? item.loading : false"
                       class="addressLoading"
                       style="text-align: center"
                     >

@@ -275,15 +275,15 @@ export default {
             label: '负责人',
             options: [],
             config: { optionLabel: 'name', optionValue: 'userId' },
-            loadmore: false,
+            loading: false,
             pageNo: 2,
             loadMoreFun(item) {
-              if (item.loadmore) return
-              item.loadmore = true
+              if (item.loading) return
+              item.loading = true
               getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
                 item.options.push(...res.data)
                 item.pageNo += 1
-                item.loadmore = false
+                item.loading = false
               })
             }
           }

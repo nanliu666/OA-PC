@@ -95,15 +95,15 @@ export default async () => {
           arrField: 'leaderId',
           config: { multiple: true, optionLabel: 'name', optionValue: 'userId' },
           options: LeaderList,
-          loadmore: false,
+          loading: false,
           pageNo: 2,
           loadMoreFun(item) {
-            if (item.loadmore) return
-            item.loadmore = true
+            if (item.loading) return
+            item.loading = true
             getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
               item.options.push(...res.data)
               item.pageNo += 1
-              item.loadmore = false
+              item.loading = false
             })
           }
         },
@@ -138,15 +138,15 @@ export default async () => {
           arrField: 'workAddressId',
           config: { multiple: true, optionLabel: 'address', optionValue: 'id' },
           options: WorkAddress,
-          loadmore: false,
+          loading: false,
           pageNo: 2,
           loadMoreFun(item) {
-            if (item.loadmore) return
-            item.loadmore = true
+            if (item.loading) return
+            item.loading = true
             getWorkAddressList({ pageNo: item.pageNo, pageSize: 50 }).then((res) => {
               item.options.push(...res.data)
               item.pageNo += 1
-              item.loadmore = false
+              item.loading = false
             })
           }
         },

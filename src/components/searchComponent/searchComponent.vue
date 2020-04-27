@@ -61,7 +61,9 @@
                 type="info"
                 @close="closeTag(tag)"
               >
-                {{ jointTagName(tag) }}
+                {{
+                  jointTagName(tag)
+                }}
               </el-tag>
             </el-form-item>
             <el-form-item
@@ -126,7 +128,7 @@
                           />
                         </template>
                         <div
-                          v-show="item.loadMoreFun ? item.loadmore : false"
+                          v-show="item.loadMoreFun ? item.loading : false"
                           class="addressLoading"
                           style="text-align: center"
                         >
