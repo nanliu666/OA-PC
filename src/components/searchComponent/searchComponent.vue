@@ -1,9 +1,6 @@
 <template>
   <div>
-    <el-form
-      :inline="true"
-      class="demo-form-inline"
-    >
+    <el-form :inline="true">
       <el-form-item>
         <el-input
           v-model="fuzzySearch"
@@ -29,17 +26,19 @@
       </el-form-item>
       <el-form-item style="float: right">
         <el-button
-          type="primary"
+          type="text"
           icon="el-icon-refresh-right"
           size="medium"
+          class="topBtn"
           @click="handleRefresh"
         />
       </el-form-item>
       <el-form-item style="float: right">
         <el-button
-          type="primary"
+          type="text"
           icon="el-icon-upload2"
           size="medium"
+          class="topBtn"
           @click="handleExport"
         >
           导出
@@ -61,9 +60,7 @@
                 type="info"
                 @close="closeTag(tag)"
               >
-                {{
-                  jointTagName(tag)
-                }}
+                {{ jointTagName(tag) }}
               </el-tag>
             </el-form-item>
             <el-form-item
@@ -73,10 +70,9 @@
               class="itemForm"
             >
               <el-form
-                inline
                 class="item-form-form"
                 label-width="70px"
-                label-position="left"
+                label-position="top"
               >
                 <el-row justify="start">
                   <el-col
@@ -99,12 +95,13 @@
                       />
                       <el-select
                         v-if="item.type === 'select'"
+                        :ref="item.config.multiple ? 'selectMultiple' : ''"
                         v-model="item.data"
                         v-loadmore="() => item.loadMoreFun && item.loadMoreFun(item)"
                         :placeholder="'请输入' + item.label"
                         :multiple="item.config && item.config.multiple"
-                        :collapse-tags="item.config && item.config.multiple"
                       >
+                        <!-- :collapse-tags="item.config && item.config.multiple" -->
                         <template v-if="item.config && item.config.group">
                           <el-option-group
                             v-for="group in item.options"
@@ -158,7 +155,6 @@
                         value-format="yyyy-MM-dd"
                         start-placeholder="开始时间"
                         end-placeholder="结束时间"
-                        style="width:198px"
                       />
                       <num-interval
                         v-if="item.type === 'numInterval'"
@@ -169,6 +165,7 @@
                         v-model="item.data"
                         :option="item.options"
                         :is-search="false"
+                        @change="treeSelectChange(arguments, item)"
                       />
                     </el-form-item>
                   </el-col>
@@ -176,6 +173,7 @@
               </el-form>
               <div class="show-more-btn">
                 <el-button
+                  v-show="items.questions.length > 3"
                   type="text"
                   @click="items.showMore = !items.showMore"
                 >
@@ -225,7 +223,8 @@ export default {
       showCollapse: false,
       // 模糊搜索
       fuzzySearch: '',
-      searchArray: []
+      searchArray: [],
+      test: []
     }
   },
   watch: {
@@ -272,7 +271,15 @@ export default {
   async created() {
     this.searchArray = await genSearchArray()
   },
+  updated() {
+    this.$refs.selectMultiple.forEach((item) => {
+      item.initialInputHeight = 34
+    })
+  },
   methods: {
+    treeSelectChange(e, item) {
+      this.$set(item, 'detailData', e[1])
+    },
     handleRefresh() {
       this.$emit('seacrh', this.searchParams())
     },
@@ -328,6 +335,8 @@ export default {
       let item = this.searchArray[tag.site[0]].questions[tag.site[1]]
       if (item.type === 'numInterval') {
         item.data = { min: '', max: '' }
+      } else if (tag.type === 'treeSelect') {
+        item.data = []
       } else {
         item.data = ''
       }
@@ -368,6 +377,16 @@ export default {
       if (Array.isArray(tag.data)) {
         if (tag.type === 'cascader') {
           return tag.label + ': ' + tag.data[tag.data.length - 1]
+        } else if (tag.type === 'treeSelect') {
+          return (
+            tag.label +
+            ': ' +
+            (tag.detailData || [])
+              .map((item) => {
+                return item[tag.options.props.label]
+              })
+              .join('、')
+          )
         } else {
           let range = tag.config && tag.config['range-separator'] ? tag.config['range-separator'] : '、'
           return tag.label + ': ' + (tag.type === 'select' ? this.findTagLabel(tag).join(range) : tag.data.join(range))
@@ -383,6 +402,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.topBtn {
+  font-family: 'PingFangSC-Regular';
+  font-size: 14px;
+  color: #757c85;
+  margin-right: 20px;
+}
 .collapse {
   background-color: #fff;
   padding: 20px;
@@ -396,27 +421,34 @@ export default {
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04), 0 8px 8px 0 rgba(0, 0, 0, 0.08), 0 10px 20px 8px rgba(0, 0, 0, 0.04);
 }
 .elInput {
-  width: 200px;
+  width: 100%;
+  // width: 200px;
 }
 /deep/ .treeSelect {
   .el-form-item__content {
-    width: 198px;
+    // width: 198px;
+    width: 100%;
   }
 }
 /deep/.itemForm {
   .el-form-item__content {
     .item-form-form {
       width: calc(100% - 70px);
+      margin-top: 4px;
       .el-form-item {
         .el-form-item__label {
-          text-align: right;
-          line-height: 20px;
+          line-height: 14px;
+        }
+        .el-select,
+        .el-date-editor,
+        .el-cascader {
+          width: 100%;
         }
       }
       .el-col-8 {
-        min-width: 280px;
-        height: 40px;
-        margin-bottom: 20px;
+        // min-width: 33%;
+        // height: 81px;
+        padding-right: 24px;
       }
       .numinterval-com {
         > .el-form-item__content {
@@ -435,5 +467,25 @@ export default {
 
 /deep/ .el-tag {
   margin-right: 10px;
+}
+
+/deep/ .el-input__icon {
+  line-height: 26px;
+}
+/deep/ .el-range-separator {
+  line-height: 26px;
+}
+/deep/ .el-form-item__label {
+  font-family: 'PingFangSC-Medium';
+  font-size: 14px;
+  color: #202940;
+}
+/deep/ .el-select__tags {
+  flex-wrap: nowrap;
+  overflow: scroll;
+  line-height: 34px;
+  &::-webkit-scrollbar {
+    height: 3px;
+  }
 }
 </style>

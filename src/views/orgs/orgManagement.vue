@@ -218,7 +218,7 @@ export default {
   components: { SearchPopoover, OrgEdit },
   data() {
     return {
-      checkColumn: ['orgName', 'orgType', 'orgCode', 'userName', 'jobNum', 'userNum', 'wordNum', 'remark'],
+      checkColumn: ['orgName', 'orgType', 'orgCode', 'userName', 'jobNum', 'userNum', 'workNum', 'remark'],
       originColumn: column,
       searchConfig: {
         requireOptions: [

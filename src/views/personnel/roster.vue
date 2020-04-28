@@ -226,6 +226,7 @@ export default {
         height: 'auto',
         index: true,
         indexLabel: '序号',
+        menu: false,
         column: [
           {
             label: '姓名',

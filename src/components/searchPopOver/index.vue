@@ -115,9 +115,9 @@
         >
           <div>
             <el-form
-              :inline="true"
               size="small"
               class="demo-form-inline"
+              label-position="top"
             >
               <el-col
                 v-for="item in popoverOptions"
@@ -365,6 +365,8 @@ export default {
       this.popoverOptions.forEach((item) => {
         if (item.type === 'numInterval') {
           item.data = { min: '', max: '' }
+        } else if (item.type === 'treeSelect') {
+          item.data = []
         } else {
           item.data = ''
         }
@@ -395,7 +397,7 @@ export default {
   text-align: right;
 }
 .el-form-item {
-  margin-right: 30px;
+  padding-right: 24px;
 }
 /deep/ .treeSelect {
   margin-top: 3px;
@@ -404,12 +406,19 @@ export default {
   }
 }
 
+/deep/ .el-form-item__content {
+  .el-select,
+  .el-date-editor,
+  .el-cascader {
+    width: 100%;
+  }
+}
+/deep/ .el-form-item__label {
+  font-family: 'PingFangSC-Medium';
+  font-size: 14px;
+  color: #202940;
+}
 .el-col-8 {
   min-width: 280px;
-  margin-bottom: 20px;
 }
-
-// /deep/ .tags-list {
-//   min-height: 32px;
-// }
 </style>

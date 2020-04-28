@@ -99,12 +99,21 @@
       >
         <el-select
           v-model="form.userId"
+          v-loadmore="loadMoreLeader"
           placeholder="请选择组织负责人"
         >
           <el-option
-            label="区域一"
-            value="shanghai"
+            v-for="item in leaderList"
+            :key="item.userId"
+            :label="item.name"
+            :value="item.userId"
           />
+          <div
+            v-show="loadLeader"
+            class="addressLoading"
+          >
+            <i class="el-icon-loading" />
+          </div>
         </el-select>
       </el-form-item>
       <el-form-item
@@ -153,7 +162,7 @@
 </template>
 
 <script>
-import { getOrgTree, editOrg, createOrg } from '@/api/org/org'
+import { getOrgTreeSimple, editOrg, createOrg, getUserWorkList } from '@/api/org/org'
 
 export default {
   name: 'OrgEdit',
@@ -181,15 +190,31 @@ export default {
         orgType: [{ required: true, message: '请选择组织类型', trigger: 'change' }],
         orgCode: [{ required: true, message: '请输入组织编码', trigger: 'blur' }]
       },
-      orgTree: []
+      orgTree: [],
+      leaderList: [],
+      loadLeader: false,
+      leaderPageNo: 1
     }
   },
   created() {
-    getOrgTree({ parentOrgId: 0 }).then((res) => {
+    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.orgTree = res
+    })
+    getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
+      this.leaderList = res.data
+      this.leaderPageNo += 1
     })
   },
   methods: {
+    loadMoreLeader() {
+      if (this.loadLeader) return
+      this.loadLeader = true
+      getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
+        this.workAddress.push(...res.data)
+        this.leaderPageNo += 1
+        this.loadLeader = false
+      })
+    },
     submitAndCreate() {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
