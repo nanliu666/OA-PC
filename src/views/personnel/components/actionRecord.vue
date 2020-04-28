@@ -2,11 +2,22 @@
   <div class="steps-bos">
     <basic-container>
       <el-timeline :reverse="true">
-        <el-timeline-item v-for="(item, index) in stepsData" :key="index" :timestamp="item.createTime" color="#368AFA">
+        <el-timeline-item
+          v-for="(item, index) in stepsData"
+          :key="index"
+          :timestamp="item.createTime"
+          color="#368AFA"
+        >
           <template slot>
-            <div class="action-name">{{ item.name }}</div>
-            <div class="action-action">{{ item.action }}</div>
-            <div class="action-content">{{ item.content }}</div>
+            <div class="action-name">
+              {{ item.name }}
+            </div>
+            <div class="action-action">
+              {{ item.action }}
+            </div>
+            <div class="action-content">
+              {{ item.content }}
+            </div>
           </template>
         </el-timeline-item>
       </el-timeline>
@@ -47,7 +58,7 @@ export default {
     },
     //时间戳转日期
     formatDate(timestamp) {
-      var date = new Date(parseInt(timestamp) * 1000) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      var date = new Date(parseInt(timestamp)) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
       var Y = date.getFullYear() + '-'
       var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
       var D = date.getDate() + ' '

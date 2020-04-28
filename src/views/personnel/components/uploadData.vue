@@ -1,19 +1,24 @@
 <template>
   <div class="material">
     <basic-container>
-      <el-row v-for="(item, index) in listData" :key="index">
+      <el-row
+        v-for="(item, index) in listData"
+        :key="index"
+      >
         <el-col class="title-type">
-          <el-divider direction="vertical"></el-divider>
-          <div>{{ item.name }}</div>
+          <el-divider direction="vertical" />
+          <div class="name">
+            {{ item.name }}
+          </div>
         </el-col>
         <el-col class="employee-files">
           <upload
             v-for="(i, index) in item.list"
-            :key="index"
-            :typeName="i.name"
-            :typeIcon="i.iconUrl"
-            :limit="Number(i.maxLimit)"
             :id="Number(i.id)"
+            :key="index"
+            :type-name="i.name"
+            :type-icon="i.iconUrl"
+            :limit="Number(i.maxLimit)"
           />
         </el-col>
       </el-row>
@@ -24,14 +29,14 @@
 import upload from './upload'
 import { getAttachmentCategory } from '@/api/personnel/attach'
 export default {
+  components: {
+    upload
+  },
   data() {
     return {
       listData: [],
       typeDataList: []
     }
-  },
-  components: {
-    upload
   },
   mounted() {
     this.initData()
@@ -76,17 +81,11 @@ export default {
     padding-right: 10px;
     background-color: #fff;
   }
-  &:after {
-    content: '';
-    width: calc(100% - 50px);
-
-    display: block;
-    border-bottom: 1px dashed #000;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translate(50px, -50%);
-    z-index: 1;
+  .name {
+    font-family: PingFangSC-Semibold;
+    font-size: 14px;
+    color: #202940;
+    line-height: 24px;
   }
 }
 .employee-files {
