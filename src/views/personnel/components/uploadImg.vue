@@ -37,11 +37,9 @@
         <el-upload
           action
           :http-request="uploadRequst"
+          :show-file-list="false"
           list-type="picture-card"
-          :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove"
           :limit="limit"
-          :on-exceed="handleExceed"
           :before-upload="beforeAvatarUpload"
           :on-success="handleAvatarSuccess"
           :multiple="true"
@@ -69,7 +67,7 @@
 </template>
 <script>
 import viewPictures from './viewPictures'
-import { lookUpAttachmentInfo, deleteAttachmentInfo } from '@/api/personnel/attach'
+import { lookUpAttachmentInfo, deleteAttachmentInfo, uploadAttachmentInfo } from '@/api/personnel/attach'
 import { uploadQiniu } from '@/util/uploadQiniu'
 export default {
   components: {
@@ -161,7 +159,11 @@ export default {
         complete(res) {
           window.console.log(res)
           that.uploading = false
-          that.$message.success('上传成功')
+
+          uploadAttachmentInfo(this.uploadData).then((res) => {
+            that.$message.success('上传成功')
+            window.console.log(res, '上传成功')
+          })
           // that.uploading = false;
           // that.selectedUrl = res.url;
           // that.fileList.push({
@@ -210,17 +212,8 @@ export default {
     initData() {
       lookUpAttachmentInfo(this.lookUpData).then((res) => {
         this.fileList = res.data
-
-        // this.pictureList = res.data.map((item) => {
-        //   return item.url
-        // })
-        // console.log(this.fileList, 'this.fileList')
       })
     }
-
-    // closeViewer() {
-    //   this.showViewer = false
-    // }
   }
 }
 </script>
@@ -382,5 +375,8 @@ export default {
   width: 189px;
   border: 1px solid #e3e7e9;
   border-radius: 0 0 4px 4px;
+}
+/deep/ .el-progress {
+  line-height: 9;
 }
 </style>

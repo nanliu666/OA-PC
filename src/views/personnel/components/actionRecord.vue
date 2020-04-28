@@ -12,9 +12,6 @@
             <div class="action-name">
               {{ item.name }}
             </div>
-            <div class="action-action">
-              {{ item.action }}
-            </div>
             <div class="action-content">
               {{ item.content }}
             </div>
@@ -37,8 +34,7 @@ export default {
         userName: '', //用户名
         beginTime: '', //查询开始时间
         endTime: '', //查询结束时间
-        status: '', //状态
-        test: ''
+        status: '' //状态
       }
     }
   },
@@ -52,7 +48,6 @@ export default {
         this.stepsData = res.data.map((item) => ({
           createTime: this.formatDate(item.createTime),
           name: item.name,
-          action: item.action,
           content: item.content
         }))
       })
@@ -97,7 +92,6 @@ export default {
   color: #202940;
 }
 .action-content {
-  margin-left: 15px;
   font-family: PingFangSC-Regular;
   font-size: 12px;
   color: #757c85;
