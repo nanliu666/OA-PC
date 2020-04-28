@@ -239,7 +239,7 @@ export default {
       }
     },
     setCheckedKeys() {
-      this.$refs.tree.setCheckedKeys(this.value)
+      this.$refs.tree.setCheckedKeys(this.value || [])
     }
   }
 }
