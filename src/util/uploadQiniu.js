@@ -1,5 +1,7 @@
 import * as qiniu from 'qiniu-js'
-import { getQiniuToken } from '../api/common'
+import {
+  getQiniuToken
+} from '../api/common'
 import uuidv4 from 'uuid/v4'
 import store from 'src/store'
 /**
@@ -25,13 +27,22 @@ export async function uploadQiniu(file, hooks) {
     }
 
     // 获取token
-    const { uploadToken, domain } = await getQiniuToken(params)
+    const {
+      uploadToken,
+      domain
+    } = await getQiniuToken(params)
     debugger
-    const observable = qiniu.upload(file, fileName, uploadToken, config, { fname: fileName })
+    const observable = qiniu.upload(file, fileName, uploadToken, config, {
+      fname: fileName
+    })
     // 注册上传监听
     observable.subscribe(hooks.next, hooks.error, (res) => {
       // 上传完成时触发
-      hooks.complete({ ...res, url: domain + '/' + res.key })
+      hooks.complete({
+        ...res,
+        url: domain + '/' + res.key,
+        fileName
+      })
     })
   } catch (e) {
     throw e

@@ -3,34 +3,18 @@
     <div class>
       <div class="upload">
         <template :class="noFile ? 'no-file' : 'image-list'">
-          <div
-            v-for="(item, index) in fileList"
-            :key="index"
-            class="upload-box"
-          >
+          <div v-for="(item, index) in fileList" :key="index" class="upload-box">
             <div class="molde">
-              <img
-                class="upload-img"
-                :src="item.url"
-                alt
-              >
+              <img class="upload-img" :src="item.url" alt />
               <div class="upload-after">
-                <span
-                  class="pictures"
-                  @click="isPictures(index)"
-                >
+                <span class="pictures" @click="isPictures(index)">
                   <i class="el-icon-view common-right" />
                 </span>
-                <span
-                  class="pictures"
-                  @click="isDelete(index, item.id)"
-                >
+                <span class="pictures" @click="isDelete(index, item.id)">
                   <i class="el-icon-delete common-left" />
                 </span>
               </div>
-              <div class="upload-name">
-                {{ item.name }}
-              </div>
+              <div class="upload-name">{{ item.name }}</div>
             </div>
           </div>
         </template>
@@ -46,17 +30,9 @@
           :on-error="onError"
           accept="image/jpeg, image/jpg, image/png"
         >
-          <i
-            v-if="isonError"
-            slot="default"
-            class="isonError"
-          >重新上传</i>
+          <i v-if="isonError" slot="default" class="isonError">重新上传</i>
           <div class="action-upload">
-            <el-progress
-              v-show="uploading"
-              :stroke-width="6"
-              :percentage="uploadPercent"
-            />
+            <el-progress v-show="uploading" :stroke-width="6" :percentage="uploadPercent" />
             <span v-show="!uploading">点击上传</span>
           </div>
         </el-upload>
@@ -133,7 +109,7 @@ export default {
     },
     isDelete(index, id) {
       this.deleteData.id = id
-      // this.fileList.splice(index, 1)
+      this.fileList.splice(index, 1)
       deleteAttachmentInfo(this.deleteData).then((res) => {
         window.console.log(res)
         this.fileList.splice(index, 1)
@@ -157,12 +133,9 @@ export default {
           // eslint-disable-next-line
         },
         complete(res) {
-          window.console.log(res)
           that.uploading = false
-
-          uploadAttachmentInfo(this.uploadData).then((res) => {
+          uploadAttachmentInfo(this.uploadData).then((asd) => {
             that.$message.success('上传成功')
-            window.console.log(res, '上传成功')
           })
           // that.uploading = false;
           // that.selectedUrl = res.url;
@@ -195,12 +168,11 @@ export default {
         this.$message.error('上传图片只能是 jpg、jpeg、png 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
     },
     handleAvatarSuccess(res, file) {
-      window.console.log(res, file)
       const self = this
       self.$message.success('上传成功')
       // this.imageUrl = URL.createObjectURL(file.raw);
