@@ -37,7 +37,8 @@ export default {
         userName: '', //用户名
         beginTime: '', //查询开始时间
         endTime: '', //查询结束时间
-        status: '' //状态
+        status: '', //状态
+        test: ''
       }
     }
   },
