@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import user from './user'
 import menu from './menu'
 import oauth from './oauth'
@@ -14,7 +15,9 @@ import personalInfo from './personalInfo'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: true }
+const options = {
+  mock: false
+}
 
 // user(options)
 
