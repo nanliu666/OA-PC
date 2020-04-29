@@ -126,7 +126,7 @@ export default {
       form: {
         roleId: '',
         roleName: '',
-        type: 'No',
+        type: 'Job',
         remark: '',
         positions: [],
         jobs: []

@@ -292,17 +292,17 @@ export default ({ mock }) => {
             },
             {
               scopeName: '部门可见',
-              orgId: 'org',
+              dataId: 'org',
               isOwn: true
             },
             {
               scopeName: '全部可见',
-              orgId: 'all',
+              dataId: 'all',
               isOwn: true
             },
             {
               scopeName: '个人可见',
-              orgId: 'personal',
+              dataId: 'personal',
               isOwn: false
             }
           ],
@@ -328,28 +328,28 @@ export default ({ mock }) => {
           menuName: '人事管理',
           menuId: 4,
           isOwn: false,
-          dataPrivileges: [
-            {
-              scopeName: '自定义',
-              dataId: 'customize',
-              isOwn: false
-            },
-            {
-              scopeName: '部门可见',
-              orgId: 'org',
-              isOwn: true
-            },
-            {
-              scopeName: '全部可见',
-              orgId: 'all',
-              isOwn: true
-            },
-            {
-              scopeName: '个人可见',
-              orgId: 'personal',
-              isOwn: false
-            }
-          ],
+          // dataPrivileges: [
+          //   {
+          //     scopeName: '自定义',
+          //     dataId: 'customize',
+          //     isOwn: false
+          //   },
+          //   {
+          //     scopeName: '部门可见',
+          //     dataId: 'org',
+          //     isOwn: true
+          //   },
+          //   {
+          //     scopeName: '全部可见',
+          //     dataId: 'all',
+          //     isOwn: true
+          //   },
+          //   {
+          //     scopeName: '个人可见',
+          //     dataId: 'personal',
+          //     isOwn: false
+          //   }
+          // ],
           children: [
             {
               menuName: '招聘需求管理',
@@ -359,27 +359,35 @@ export default ({ mock }) => {
             {
               menuName: '我的招聘需求',
               menuId: 6,
-              menuType: 'Button',
               isOwn: true,
               children: [
                 {
                   menuName: '新建',
                   menuId: 'create',
+                  menuType: 'Button',
                   isOwn: true
                 },
                 {
                   menuName: '修改',
                   menuId: 'update',
+                  menuType: 'Button',
                   isOwn: false
                 },
                 {
                   menuName: '查看',
                   menuId: 'watch',
+                  menuType: 'Button',
                   isOwn: true
                 },
                 {
                   menuName: '删除',
                   menuId: 'del',
+                  menuType: 'Button',
+                  isOwn: true
+                },
+                {
+                  menuName: '管理子页面',
+                  menuId: 11,
                   isOwn: true
                 }
               ]

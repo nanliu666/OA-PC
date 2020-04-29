@@ -98,8 +98,10 @@
                       <el-select
                         v-if="item.type === 'select'"
                         v-model="item.data"
+                        v-loadmore="() => item.loadMoreFun && item.loadMoreFun(item)"
                         :placeholder="'请输入' + item.label"
                         :multiple="item.config && item.config.multiple"
+                        :collapse-tags="item.config && item.config.multiple"
                       >
                         <template v-if="item.config && item.config.group">
                           <el-option-group
@@ -110,19 +112,26 @@
                             <el-option
                               v-for="it in group.options"
                               :key="it.value"
-                              :label="it.label"
-                              :value="it.value"
+                              :label="it[item.config.optionLabel || 'label']"
+                              :value="it[item.config.optionValue || 'value']"
                             />
                           </el-option-group>
                         </template>
                         <template v-else>
                           <el-option
                             v-for="it in item.options"
-                            :key="it.value"
-                            :label="it.label"
-                            :value="it.value"
+                            :key="it[item.config.optionValue || 'value']"
+                            :label="it[item.config.optionLabel || 'label']"
+                            :value="it[item.config.optionValue || 'value']"
                           />
                         </template>
+                        <div
+                          v-show="item.loadMoreFun ? item.loading : false"
+                          class="addressLoading"
+                          style="text-align: center"
+                        >
+                          <i class="el-icon-loading" />
+                        </div>
                       </el-select>
                       <el-time-select
                         v-if="item.type === 'timeSelect'"
@@ -198,7 +207,7 @@
 <script>
 import NumInterval from '../numInterval/numInterval'
 import TreeSelect from '../treeSelect/treeSelect'
-import searchArray from './searchArray'
+import genSearchArray from './searchArray'
 
 export default {
   name: 'ScreenComponent',
@@ -214,11 +223,12 @@ export default {
       showCollapse: false,
       // 模糊搜索
       fuzzySearch: '',
-      searchArray: searchArray
+      searchArray: []
     }
   },
   watch: {
     showStatus: {
+      // 员工状态 显示切换
       handler(newVal) {
         if (newVal) {
           this.searchArray[0].questions.splice(5, 0, this.statusItem)
@@ -257,6 +267,9 @@ export default {
       deep: true
     }
   },
+  async created() {
+    this.searchArray = await genSearchArray()
+  },
   methods: {
     handleRefresh() {
       this.$emit('seacrh', this.searchParams())
@@ -291,21 +304,6 @@ export default {
             params[it] = item.data[idx]
           })
         }
-        // if (item.field.indexOf(',') > -1) {
-        //   if (Array.isArray(item.data)) {
-        //     item.field.split(',').forEach((it, idx) => {
-        //       params[it] = item.data[idx]
-        //     })
-        //   } else if (Object.prototype.toString.call(item.data) === '[object Object]') {
-        //     params[item.field.split(',')[0]] = item.data.min
-        //     params[item.field.split(',')[1]] = item.data.max
-        //   }
-        // } else {
-        //   if (item.type === 'cascader') {
-        //     params[item.field] = item.data[item.data.length - 1]
-        //   }
-        //   params[item.field] = item.data
-        // }
       })
       // 预留模糊搜索参数
       params['search'] = this.fuzzySearch
@@ -332,6 +330,37 @@ export default {
         item.data = ''
       }
     },
+    // 选择器data为数组时tag展示数据处理
+    findTagLabel(tag) {
+      let arr
+      if (!tag.config.group) {
+        arr = tag.data.map((item) => {
+          for (let i = 0; i < tag.options.length; i++) {
+            if (tag.options[i][tag.config.optionValue || 'value'] === item) {
+              return tag.options[i][tag.config.optionLabel || 'label']
+            }
+          }
+        })
+        return arr
+      } else {
+        arr = tag.data.map((item) => {
+          if (item.indexOf('A') > -1) {
+            for (let i = 0; i < tag.options[0].options.length; i++) {
+              if (tag.options[0].options[i][tag.config.optionValue || 'value'] === item) {
+                return tag.options[0].options[i][tag.config.optionLabel || 'label']
+              }
+            }
+          } else {
+            for (let i = 0; i < tag.options[1].options.length; i++) {
+              if (tag.options[1].options[i][tag.config.optionValue || 'value'] === item) {
+                return tag.options[1].options[i][tag.config.optionLabel || 'label']
+              }
+            }
+          }
+        })
+        return arr
+      }
+    },
     // 处理tag字段
     jointTagName(tag) {
       if (Array.isArray(tag.data)) {
@@ -339,7 +368,7 @@ export default {
           return tag.label + ': ' + tag.data[tag.data.length - 1]
         } else {
           let range = tag.config && tag.config['range-separator'] ? tag.config['range-separator'] : '、'
-          return tag.label + ': ' + tag.data.join(range)
+          return tag.label + ': ' + (tag.type === 'select' ? this.findTagLabel(tag).join(range) : tag.data.join(range))
         }
       } else if (Object.prototype.toString.call(tag.data) === '[object Object]') {
         return tag.label + ': ' + tag.data.min + '-' + tag.data.max
