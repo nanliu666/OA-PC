@@ -19,9 +19,9 @@ import basicContainer from './components/basic-container/main'
 import commonTable from 'vue-common-table'
 import website from '@/config/website'
 
-import Permission from '@/util/pcheck'
+import Permission from '@/directive/pcheck'
 import _ from 'lodash'
-import directives from './directive/loadmore'
+import loadmore from './directive/loadmore'
 Vue.prototype._ = _
 
 Vue.use(Permission)
@@ -34,7 +34,7 @@ Vue.use(window.AVUE, {
   i18n: (key, value) => i18n.t(key, value)
 })
 // 自定义vue指令
-Vue.use(directives)
+Vue.use(loadmore)
 //注册全局容器
 Vue.component('basicContainer', basicContainer)
 Vue.component('basicBlock', basicBlock)
