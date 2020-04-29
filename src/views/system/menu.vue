@@ -31,6 +31,7 @@
           删 除
         </el-button>
       </template>
+
       <template
         slot="menu"
         slot-scope="scope"
@@ -46,11 +47,11 @@
         </el-button>
       </template>
       <template
-        slot="source"
+        slot="icon"
         slot-scope="{ row }"
       >
         <div style="text-align:center">
-          <i :class="row.source" />
+          <i :class="row.icon" />
         </div>
       </template>
     </avue-crud>
@@ -58,7 +59,17 @@
 </template>
 
 <script>
-import { getLazyList, remove, update, add, getMenu } from '@/api/system/menu'
+import {
+  // getLazyList,
+  // remove,
+  // update,
+  // add,
+  getMenu,
+  getMenuInfo,
+  postMenuInfo,
+  putMenuInfo,
+  deleteMenuInfo
+} from '@/api/system/menu'
 import { mapGetters } from 'vuex'
 import iconList from '@/config/iconList'
 import func from '@/util/func'
@@ -105,7 +116,7 @@ export default {
             ]
           },
           {
-            label: '路由地址',
+            label: '请求地址',
             prop: 'path',
             rules: [
               {
@@ -134,7 +145,7 @@ export default {
           },
           {
             label: '菜单图标',
-            prop: 'source',
+            prop: 'icon',
             type: 'icon-select',
             slot: true,
             iconList: iconList,
@@ -160,9 +171,13 @@ export default {
           },
           {
             label: '菜单类型',
-            prop: 'category',
+            prop: 'menuType',
             type: 'radio',
             dicData: [
+              {
+                label: '目录',
+                value: 0
+              },
               {
                 label: '菜单',
                 value: 1
@@ -238,7 +253,24 @@ export default {
       })
     }
   },
+  mounted() {
+    this.getMenuData()
+  },
   methods: {
+    getMenuData() {
+      let params = {
+        parentId: '',
+        code: '',
+        name: '',
+        alias: ''
+      }
+      this.loading = true
+      getMenuInfo(params).then((res) => {
+        this.data = res
+        this.loading = false
+        this.selectionClear()
+      })
+    },
     initData() {
       getMenuTree().then((res) => {
         const column = this.findObject(this.option.column, 'parentId')
@@ -247,16 +279,18 @@ export default {
     },
     handleAdd(row) {
       this.$refs.crud.value.parentId = row.id
+      // console.log(row)
       this.$refs.crud.option.column.filter((item) => {
         if (item.prop === 'parentId') {
-          item.value = row.id
+          item.value = row.menuId
           item.addDisabled = true
         }
       })
       this.$refs.crud.rowAdd()
     },
     rowSave(row, done, loading) {
-      add(row).then(
+      // console.log(row)
+      postMenuInfo(row).then(
         (res) => {
           // 获取新增数据的相关字段
           row.id = res.id
@@ -274,7 +308,7 @@ export default {
       )
     },
     rowUpdate(row, index, done, loading) {
-      update(row).then(
+      putMenuInfo(row).then(
         () => {
           this.$message({
             type: 'success',
@@ -296,7 +330,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          return remove(row.id)
+          return deleteMenuInfo(row.id)
         })
         .then(() => {
           this.$message({
@@ -308,6 +342,7 @@ export default {
         })
     },
     handleDelete() {
+      alert(1)
       if (this.selectionList.length === 0) {
         this.$message.warning('请选择至少一条数据')
         return
@@ -318,7 +353,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          return remove(this.ids)
+          return deleteMenuInfo(this.ids)
         })
         .then(() => {
           // 刷新表格数据并重载
@@ -386,17 +421,36 @@ export default {
     },
     onLoad(page, params = {}) {
       this.loading = true
-      getLazyList(this.parentId, Object.assign(params, this.query)).then((res) => {
+      getMenuInfo(this.parentId, Object.assign(params, this.query)).then((res) => {
+        // alert(213)
+        // if(res[0].menuId ){
+        res.map((it) => {
+          it.hasChildren = true
+          it.id = it.menuId
+        })
+        // }
+
+        // this.$nextTick(()=>{
+
         this.data = res
         this.loading = false
         this.selectionClear()
+        // })
       })
     },
     treeLoad(tree, treeNode, resolve) {
-      const parentId = tree.id
-      getLazyList(parentId).then((res) => {
-        resolve(res)
-      })
+      const parentId = tree.menuId
+      // setTimeout(() => {
+      //   resolve([])
+      // }, 1000)
+      // return
+      getMenuInfo(parentId)
+        .then((res) => {
+          resolve(res)
+        })
+        .catch(() => {
+          resolve([])
+        })
     }
   }
 }
