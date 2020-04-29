@@ -61,9 +61,7 @@
                 type="info"
                 @close="closeTag(tag)"
               >
-                {{
-                  jointTagName(tag)
-                }}
+                {{ jointTagName(tag) }}
               </el-tag>
             </el-form-item>
             <el-form-item
