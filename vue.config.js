@@ -42,11 +42,11 @@ module.exports = {
       }
     }
   },
-  configureWebpack:{
+  configureWebpack: {
     resolve: {
       alias: {
         src: resolve('src')
       }
-    },
+    }
   }
 }

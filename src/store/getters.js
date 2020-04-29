@@ -7,8 +7,7 @@ const getters = {
   themeName: (state) => state.common.themeName,
   isShade: (state) => state.common.isShade,
   isCollapse: (state) => state.common.isCollapse,
-  keyCollapse: (state, getters) =>
-    getters.screen > 1 ? getters.isCollapse : false,
+  keyCollapse: (state, getters) => (getters.screen > 1 ? getters.isCollapse : false),
   screen: (state) => state.common.screen,
   isLock: (state) => state.common.isLock,
   isFullScren: (state) => state.common.isFullScren,

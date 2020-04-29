@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import user from './user'
 import menu from './menu'
 import oauth from './oauth'
 import param from './param'
 import system from './system'
+import personnel from './personnel'
 import role from './role'
 import dict from './dict'
 import position from './position'
@@ -15,21 +17,37 @@ import menus from './menus'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: false }
-position({ mock: true })
-grade({ mock: true })
-user({ mock: true })
-menus({ mock: true })
+const options = {
+  mock: false
+}
+position({
+  mock: true
+})
+grade({
+  mock: true
+})
+user({
+  mock: true
+})
+menus({
+  mock: true
+})
 menu(options)
 
-oauth(options)
+// oauth(options)
 
 system(options)
 
-dict(options)
+personnel(options)
+// oauth(options)
 
-param(options)
+// dict(options)
 
-role({ mock: true })
+// param(options)
+role({
+  mock: true
+})
 
-personalInfo(options)
+// role(options)
+
+// personalInfo(options)
