@@ -1,29 +1,21 @@
 <template>
   <div class="grade">
     <div class="header">
-      <div>
-        组织架构图
-        <el-tooltip
-          content="组织架构图"
-          placement="right-end"
-          effect="dark"
-        >
-          <i class="el-icon-question" />
-        </el-tooltip>
-        <span class="org">
-          <el-select
-            v-model="value"
-            filterable
-            placeholder="请选择"
+      <div class="nav">
+        <span style="width: 150px;display: inline-block;">
+          组织架构图
+          <el-tooltip
+            content="组织架构图"
+            placement="right-end"
+            effect="dark"
           >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
+            <i class="el-icon-question" /> </el-tooltip></span>
+
+        <avue-form
+          v-model="form"
+          :option="option"
+          @submit="submit"
+        />
       </div>
       <div
         v-if="editStatus"
@@ -87,18 +79,20 @@
       </li>
     </ul>
     <div class="scale">
-      <div
-        id="zoom-in"
-        class="el-icon-zoom-in"
-      />
-      <div
-        id="zoom-out"
-        class="el-icon-zoom-out"
-      />
-      <div
-        id="centerRoot"
-        class="el-icon-rank"
-      />
+      <div class="flex">
+        <div
+          id="centerRoot"
+          class="el-icon-rank"
+        />
+        <div
+          id="zoom-out"
+          class="el-icon-zoom-out"
+        />
+        <div
+          id="zoom-in"
+          class="el-icon-zoom-in"
+        />
+      </div>
     </div>
     <p />
     <div />
@@ -171,6 +165,65 @@ import orgDialog from './compoents/orgDialog'
 import { getOrganizationView, deleteOrganization } from '@/api/organize/grade'
 import { deleteV1Job } from '@/api/organize/position'
 
+const org = [
+  {
+    value: '1',
+    label: '百利宏',
+    children: [
+      {
+        value: '2',
+        label: '百利宏化工',
+        children: [
+          {
+            value: '4',
+            label: '百利宏化工事业部',
+            children: [
+              {
+                value: '8',
+                label: '技术小组',
+                children: []
+              }
+            ]
+          },
+          {
+            value: '5',
+            label: '百利宏化工事业部事业部',
+            children: [
+              {
+                value: '9',
+                label: '技术小组2',
+                children: [
+                  {
+                    value: '10',
+                    label: '职位1',
+                    children: []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        value: '3',
+        label: '百利宏医药',
+        children: [
+          {
+            value: '6',
+            label: '百利宏医药技术部',
+            children: []
+          },
+          {
+            value: '7',
+            label: '百利宏医药计算机部',
+            children: []
+          }
+        ]
+      }
+    ]
+  }
+]
+
 export default {
   name: 'Grade',
   components: {
@@ -199,6 +252,20 @@ export default {
       value: '选项1',
       selData: {},
       form: { key: 14, name: '', userName: '' },
+      option: {
+        menuBtn: false,
+        labelWidth: 0,
+        column: [
+          {
+            label: '',
+            size: 'medium',
+            prop: 'name',
+            span: 24,
+            type: 'tree',
+            dicData: org
+          }
+        ]
+      },
       myDiagram: '',
       dialogVisible: false,
       data: '',
@@ -621,18 +688,18 @@ export default {
         new go.Binding('layerName', 'isSelected', function(sel) {
           return sel ? 'Foreground' : ''
         }).ofObject(),
-        $(go.Shape, 'Rectangle', {
-          name: 'SHAPE',
-          fill: '#F7F6F6',
-          // fill: 'rgba(241, 250, 255, 1)',
-          stroke: 'white',
-          strokeWidth: 0,
-          // set the port properties:
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          cursor: 'pointer'
-        }),
+        // $(go.Shape, 'Rectangle', {
+        //   name: 'SHAPE',
+        //   fill: '#fff',
+        //   // fill: 'rgba(241, 250, 255, 1)',
+        //   stroke: 'white',
+        //   strokeWidth: 0,
+        //   // set the port properties:
+        //   portId: '',
+        //   fromLinkable: true,
+        //   toLinkable: true,
+        //   cursor: 'pointer'
+        // }),
         $(
           go.Panel,
           'RoundedRectangle',
@@ -992,7 +1059,8 @@ export default {
   }
 }
 #myDiagramDiv {
-  background-color: #fff;
+  background-color: rgba(220, 239, 254, 0.3);
+  /*background:  #DCEFFE;*/
   border: solid 1px #fff;
   height: calc(100% - 150px);
   width: 100%;
@@ -1001,14 +1069,23 @@ export default {
 .scale {
   z-index: 999999999999999;
   position: absolute;
-  top: 60%;
+  top: 120px;
   right: 30px;
   display: flex;
   display: -webkit-flex;
   flex-flow: column nowrap;
+  .flex {
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row nowrap;
+    div {
+      margin: 0 10px;
+      color: #757c85;
+    }
+  }
   div {
     margin: 8px 0;
-    font-size: 30px;
+    font-size: 28px;
   }
 }
 
@@ -1057,5 +1134,10 @@ export default {
 .menu-item:hover .ctxmenu {
   display: block;
   opacity: 1;
+}
+.nav {
+  display: flex;
+  display: -webkit-flex;
+  flex-flow: row nowrap;
 }
 </style>

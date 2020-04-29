@@ -3,28 +3,29 @@
     <div class="limit-title">
       {{ title }}
     </div>
-    <el-checkbox
-      v-model="checkAll"
-      :indeterminate="isIndeterminate"
-      @change="handleCheckAllChange"
-    >
-      全选
-    </el-checkbox>
-    <div style="margin: 10px 0;" />
-    <el-checkbox-group
-      v-model="checkData"
-      @change="handleCheckedCitiesChange"
-    >
+    <div v-if="checkList.length > 0">
+      <el-checkbox
+        v-if="allCheck"
+        v-model="checkAll"
+        :indeterminate="isIndeterminate"
+        @change="handleCheckAllChange"
+      >
+        全选
+      </el-checkbox>
+      <div style="margin: 10px 0;" />
       <div
         v-for="(data, index) in checkList"
         :key="index"
         style="margin-bottom: 10px;"
       >
-        <el-checkbox :label="data[defaultProps.value]">
+        <el-checkbox
+          v-model="data[defaultProps.check]"
+          :label="data[defaultProps.value]"
+        >
           {{ data[defaultProps.label] }}
         </el-checkbox>
       </div>
-    </el-checkbox-group>
+    </div>
   </div>
 </template>
 <script>
@@ -34,12 +35,6 @@ export default {
     title: {
       type: String,
       default: ''
-    },
-    value: {
-      type: [Array, String],
-      default: () => {
-        return []
-      }
     },
     checkList: {
       type: Array,
@@ -55,32 +50,41 @@ export default {
           label: 'label'
         }
       }
+    },
+    allCheck: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
       checkAll: false,
-      checkData: this.value,
-      isIndeterminate: true
+      isIndeterminate: false
     }
   },
   watch: {
-    checkData: {
+    checkList: {
       handler(val) {
-        this.$emit('input', val)
+        if (val.length > 0) {
+          // 列表选中状态改变时，改变全选按钮状态
+          const isOwns = val.filter((item) => !!item[this.defaultProps.check]).length
+          this.isIndeterminate = 0 < isOwns && isOwns < val.length // 半选状态
+          this.checkAll = isOwns === val.length // 全选状态
+        }
       },
+      immediate: true,
       deep: true
     }
   },
   methods: {
+    // 根据全选按钮状态，改变列表中的isOwn字段
     handleCheckAllChange(val) {
-      this.checkData = val ? this.checkList.map((item) => item.orgId) || [] : []
-      this.isIndeterminate = false
-    },
-    handleCheckedCitiesChange(value) {
-      let checkedCount = value.length
-      this.checkAll = checkedCount === this.checkList.length
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkList.length
+      this.checkList.forEach((item) => {
+        if (!item[this.defaultProps.check]) {
+          item.operatorType = val ? 'Add' : 'Del'
+        }
+        item[this.defaultProps.check] = val
+      })
     }
   }
 }

@@ -1,24 +1,43 @@
 <template>
   <el-dialog
-    title="新建/编辑角色"
+    :title="form.roleId ? '编辑角色' : '新建角色'"
     :visible.sync="roleVisible"
     width="500px"
-    top="30px"
     :close-on-click-modal="false"
     :modal-append-to-body="false"
+    :before-close="onClose"
+    @opened="onOpened"
   >
     <div>
       <avue-form
         ref="form"
         v-model="form"
         :option="option"
+        @submit="handleSubmit"
       >
         <template
           slot="positions"
+          slot-scope="{ column }"
+        >
+          <el-select
+            v-model="form.positions"
+            :no-data-text="column.noDataText"
+            :placeholder="column.placeholder"
+          >
+            <el-option
+              v-for="(item, index) in column.dicData"
+              :key="index"
+              :label="item[column.props.label]"
+              :value="item[column.props.value]"
+            />
+          </el-select>
+        </template>
+        <template
+          slot="jobs"
           slot-scope="scope"
         >
           <treeSelect
-            v-model="form.positions"
+            v-model="form.jobs"
             :option="scope.column"
           />
         </template>
@@ -30,6 +49,14 @@
       class="dialog-footer"
     >
       <el-button
+        v-if="form.roleId"
+        size="medium"
+        @click="onClose"
+      >
+        取消
+      </el-button>
+      <el-button
+        v-else
         size="medium"
         @click="onContinue"
       >
@@ -38,7 +65,7 @@
       <el-button
         type="primary"
         size="medium"
-        @click="onClickSave"
+        @click="onClickSave(onClose)"
       >
         保存
       </el-button>
@@ -48,6 +75,7 @@
 
 <script>
 import treeSelect from '../../../components/treeSelect/treeSelect'
+import { createRole, updateRole } from '../../../api/system/role'
 
 export default {
   name: 'RoleEdit',
@@ -59,7 +87,7 @@ export default {
       type: Boolean,
       default: false
     },
-    treeList: {
+    jobs: {
       type: Array,
       default: () => []
     },
@@ -67,13 +95,19 @@ export default {
       type: Array,
       default: () => []
     },
-    props: {
+    jobProps: {
       type: Object,
       default: () => {
         return {}
       }
     },
     positionProps: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
+    row: {
       type: Object,
       default: () => {
         return {}
@@ -90,6 +124,7 @@ export default {
     }
     return {
       form: {
+        roleId: '',
         roleName: '',
         type: 'No',
         remark: '',
@@ -145,10 +180,13 @@ export default {
           },
           {
             label: '关联岗位',
-            prop: 'jobs',
-            type: 'select',
+            prop: 'positions',
             display: true,
+            formslot: true,
+            labelslot: true,
+            errorslot: true,
             placeholder: '请选择关联岗位',
+            noDataText: '您还未维护企业的岗位信息，请前往“岗位管理”处添加',
             span: 24,
             props: {
               label: this.positionProps.label,
@@ -165,10 +203,10 @@ export default {
           },
           {
             label: '关联职位',
-            prop: 'positions',
+            prop: 'jobs',
             props: {
-              label: this.props.label,
-              value: this.props.id
+              label: this.jobProps.label,
+              value: this.jobProps.id
             },
             formslot: true,
             labelslot: true,
@@ -176,6 +214,7 @@ export default {
             span: 24,
             limitCheck: true,
             display: false,
+            noDataText: '您还未维护任何职位信息，请前往“职位管理”处添加',
             placeholder: '请选择关联职位',
             rules: [
               {
@@ -230,24 +269,28 @@ export default {
       },
       immediate: true
     },
-    treeList: {
-      handler(val) {
-        const positionColumn = this.findObject(this.option.column, 'positions')
-        positionColumn.dicData = val
-      },
-      deep: true
-    },
-    positions: {
+    jobs: {
       handler(val) {
         const jobColumn = this.findObject(this.option.column, 'jobs')
         jobColumn.dicData = val
       },
+      immediate: true,
       deep: true
     },
-    'form.positions': {
+    positions: {
+      handler(val) {
+        if (val[0]) {
+          const positionColumn = this.findObject(this.option.column, 'positions')
+          positionColumn.dicData = val
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'form.jobs': {
+      // 清空关联职位的校验
       handler() {
-        // this.$refs['form'].validateField('positions', () => {
-        // })
+        this.$refs['form'].validateField('jobs', () => {})
       },
       deep: true
     }
@@ -257,17 +300,74 @@ export default {
       return column.find((item) => item.prop === key)
     },
 
-    onContinue() {},
-    onClickSave() {
+    onOpened() {
+      if (this.row.roleId) {
+        this.$nextTick(() => {
+          const { roleId, roleName, type, remark, jobs, positions } = this.row
+          const form = this.form
+          form.roleId = roleId
+          form.roleName = roleName
+          form.type = type
+          form.remark = remark
+          if (jobs && jobs.length > 0) {
+            form.jobs = jobs.map((it) => it.jobId)
+          }
+          if (positions && positions.length > 0) {
+            form.positions = positions[0].positionId
+          }
+        })
+      }
+    },
+
+    // 保存并继续添加
+    onContinue() {
+      this.onClickSave(this.clearForm)
+    },
+    // 点击保存
+    onClickSave(callback) {
       this.$refs.form.validate((vaild) => {
-        if (!vaild) {
-          return
+        if (vaild) {
+          this.form.roleId ? this.updateFunc() : this.createFunc(callback)
         }
       })
     },
-    saveFunc() {},
+    //新建角色
+    createFunc(callback) {
+      const params = {
+        ...this.form
+      }
+      createRole(params).then(() => {
+        this.$message.success('新建角色成功')
+        callback()
+      })
+    },
+    // 更新角色
+    updateFunc() {
+      const params = {
+        ...this.form
+      }
+      updateRole(params).then(() => {
+        this.$message.success('编辑角色成功')
+        this.onClose()
+      })
+    },
+    // 关闭弹窗
     onClose() {
+      this.clearForm()
       this.$emit('update:visible', false)
+    },
+
+    // 清空表单
+    clearForm() {
+      this.$refs.form.resetForm()
+      this.form.roleId = ''
+      this.form.positions = []
+      this.form.jobs = []
+    },
+
+    // 清除avue表单组件防重提交
+    handleSubmit(form, done) {
+      done()
     }
   }
 }
@@ -282,5 +382,9 @@ export default {
   .tree-button {
     border-color: #f56c6c;
   }
+}
+
+/deep/ .el-radio {
+  margin-right: 20px;
 }
 </style>

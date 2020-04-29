@@ -7,9 +7,8 @@ import role from './role'
 import dict from './dict'
 import position from './position'
 import grade from './grade'
-
 import personalInfo from './personalInfo'
-
+import menus from './menus'
 /**
  * 模拟数据mock
  *
@@ -20,7 +19,7 @@ const options = { mock: false }
 position({ mock: true })
 grade({ mock: true })
 user({ mock: true })
-
+menus({ mock: true })
 menu(options)
 
 oauth(options)

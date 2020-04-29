@@ -18,6 +18,8 @@ import basicContainer from './components/basic-container/main'
 import commonTable from 'vue-common-table'
 import website from '@/config/website'
 import '@/styles/oa-custom/theme/index.css'
+import _ from 'lodash'
+Vue.prototype._ = _
 
 Vue.use(router)
 Vue.use(VueAxios, axios)

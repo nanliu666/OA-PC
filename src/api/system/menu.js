@@ -106,3 +106,36 @@ export const getRoutes = (topMenuId) =>
       topMenuId
     }
   })
+export const getMenuInfo = (topMenuId) =>
+  request({
+    url: '/api/sys/v1/menu/info',
+    method: 'get',
+    params: {
+      topMenuId
+    }
+  })
+export const postMenuInfo = (parentId, params) =>
+  request({
+    url: '/api/sys/v1/menu/info',
+    method: 'post',
+    params: {
+      ...params,
+      parentId
+    }
+  })
+export const putMenuInfo = (params) =>
+  request({
+    url: '/api/sys/v1/menu/info',
+    method: 'put',
+    params: {
+      ...params
+    }
+  })
+export const deleteMenuInfo = (params) =>
+  request({
+    url: '/api/sys/v1/menu/info',
+    method: 'delete',
+    params: {
+      ...params
+    }
+  })
