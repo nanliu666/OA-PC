@@ -34,6 +34,7 @@
         </div>
       </div>
       <el-tree
+        v-if="filterList.length > 0"
         ref="tree"
         :data="filterList || []"
         :default-expanded-keys="value"
@@ -41,10 +42,16 @@
         show-checkbox
         :check-strictly="true"
         :node-key="keyID"
-        :props="{ label: label }"
+        :props="{ label }"
         :filter-node-method="filterNode"
         @check="handleCheckChange"
       />
+      <p
+        v-else
+        class="no-data_text"
+      >
+        {{ option.noDataText || '无数据' }}
+      </p>
     </div>
     <div
       id="treeBtn"
@@ -150,6 +157,7 @@ export default {
           this.setCheckedKeys()
           this.onClickSearch()
         })
+        this.$emit('change', val)
       },
       deep: true
     }
@@ -215,8 +223,8 @@ export default {
         if (checked) {
           this.node = this.node === data ? {} : data
           this.$refs.tree.setCheckedNodes([data])
-          if (this.node.id) {
-            let id = this.node.id || null
+          if (this.node[this.keyID]) {
+            let id = this.node[this.keyID] || null
             this.$emit('input', [id])
           }
         } else {
@@ -231,7 +239,7 @@ export default {
       }
     },
     setCheckedKeys() {
-      this.$refs.tree.setCheckedKeys(this.value)
+      this.$refs.tree.setCheckedKeys(this.value || [])
     }
   }
 }
@@ -275,8 +283,8 @@ export default {
 
 .tree-button {
   width: 100%;
-  min-height: 36px;
-  line-height: 36px;
+  min-height: 32px;
+  line-height: 32px;
   text-align: left;
   /*padding: 0 10px !important;*/
   border: 1px solid #dcdfe6;
@@ -287,6 +295,7 @@ export default {
     display: flex;
     justify-content: space-between;
     padding-left: 10px;
+    min-height: 34px;
   }
 
   /deep/ .el-icon--right {
@@ -295,6 +304,14 @@ export default {
     margin: 0 10px;
     color: #dcdfe6;
   }
+}
+
+.no-data_text {
+  /*padding: 10px 0;*/
+  margin: 0;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
 }
 
 .limitCheck {

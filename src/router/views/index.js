@@ -2,6 +2,7 @@ import Layout from '@/page/index/'
 // import LayoutNoSidebar from '@/page/index/layoutNoSidebar';
 import gradeTree from '@/router/views/gradeTree'
 import personnel from './personnel'
+import orgs from './orgs'
 export default [
   {
     path: '/wel',
@@ -112,5 +113,6 @@ export default [
     ]
   },
   gradeTree,
-  personnel
+  personnel,
+  orgs
 ]

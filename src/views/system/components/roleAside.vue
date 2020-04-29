@@ -43,16 +43,18 @@
           ref="groupForm"
           v-model="groupForm"
           :option="groupOption"
+          @submit="handleSubmit"
         />
         <el-scrollbar
           v-if="groupForm.groupData !== 0"
           class="tree-container"
         >
           <asideTree
-            :props="groupForm.groupData === 1 ? props : positionProps"
-            :tree-list="groupForm.groupData === 1 ? treeList : positions"
+            :props="groupForm.groupData === 1 ? jobProps : positionProps"
+            :tree-list="groupForm.groupData === 1 ? preTreeList : positions"
             :show-more="false"
             :show-search="false"
+            :show-folder="false"
           />
         </el-scrollbar>
         <div />
@@ -88,6 +90,7 @@
           ref="cateForm"
           v-model="cateForm"
           :option="cateOption"
+          @submit="handleSubmit"
         />
         <div />
       </div>
@@ -116,7 +119,16 @@
 
 <script>
 import asideTree from './roleAsideTree'
-import { createGroup, updateGroup, createCate, updateCate } from '../../../api/system/role'
+import {
+  createGroup,
+  updateGroup,
+  createCate,
+  updateCate,
+  delCate,
+  delGroup,
+  getOrgList,
+  getPosition
+} from '../../../api/system/role'
 
 const type = {
   group: 'group',
@@ -141,16 +153,6 @@ export default {
       default: () => {
         return {}
       }
-    },
-    positionProps: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
-    positions: {
-      type: Array,
-      default: () => []
     }
   },
   data() {
@@ -217,7 +219,7 @@ export default {
       cateForm: {
         categoryId: '',
         categoryName: '',
-        groupId: 1
+        groupId: ''
       },
       cateOption: {
         menuBtn: false,
@@ -233,7 +235,7 @@ export default {
             rules: [
               {
                 required: true,
-                message: '请输入分组名称',
+                message: '请输入分类名称',
                 trigger: 'blur'
               }
             ]
@@ -255,22 +257,17 @@ export default {
                 trigger: 'change'
               }
             ],
-            dicData: [
-              // {
-              //     label: '默认',
-              //     value: 0
-              // },
-              // {
-              //     label: '财务部',
-              //     value: 1
-              // },
-              // {
-              //     label: '设计部',
-              //     value: 2
-              // }
-            ]
+            dicData: []
           }
         ]
+      },
+      preTreeList: [],
+      positions: [],
+      positionProps: {
+        label: 'name'
+      },
+      jobProps: {
+        label: 'orgName'
       }
     }
   },
@@ -286,13 +283,16 @@ export default {
     },
     treeList: {
       handler(val) {
-        this.cateOption.column.forEach((item) => {
-          if (item.prop === 'groupId') {
-            item.dicData = val
-          }
-        })
-      }
+        let data = this.cateOption.column.find((item) => item.prop === 'groupId')
+        this.cateForm.groupId = val[0] ? val[0][this.props.id] : ''
+        data.dicData = val
+      },
+      deep: true
     }
+  },
+  created() {
+    this.getPreTree()
+    this.getPositionList()
   },
   methods: {
     filterNode(value, data) {
@@ -302,6 +302,23 @@ export default {
     onClickSearch() {
       this.$refs.tree.filter(this.searchInput)
     },
+
+    // 查询组织机构列表
+    getPreTree() {
+      const params = {
+        parentOrgId: 0
+      }
+      getOrgList(params).then((res) => {
+        this.preTreeList = res
+      })
+    },
+
+    getPositionList() {
+      getPosition().then((res) => {
+        this.positions = res
+      })
+    },
+
     onClickVisible(str, node, data) {
       if (str === type.group) {
         // 分组
@@ -320,7 +337,7 @@ export default {
         })
         this.groupVisible = !this.groupVisible
       } else {
-        //分类
+        // 分类
         this.$nextTick(() => {
           if (!data) {
             // 新增，初始化表单数据
@@ -348,31 +365,13 @@ export default {
     },
     handleDel(node, data) {
       if (node.level === 1) {
-        if (node.childNodes.length > 0) {
-          let dataIndex = node.childNodes.findIndex((item) => item.data.roleNum > 0)
-          if (dataIndex > -1) {
-            this.$alert('很抱歉，您选中的分组下存在员工，请先将员工调整后再删除', '提示', {
-              confirmButtonText: '确定',
-              type: 'warning',
-              dangerouslyUseHTMLString: true
-            })
-            return
-          }
-        }
         this.delGroup(node, data)
       } else {
-        if (data.roleNum > 0) {
-          this.$alert('很抱歉，您选中的分类下存在员工，请先将员工调整后再删除', '提示', {
-            confirmButtonText: '确定',
-            type: 'warning',
-            dangerouslyUseHTMLString: true
-          })
-          return
-        }
         this.delCate(node, data)
       }
     },
 
+    // 删除分组提示
     delGroup(node, data) {
       this.$confirm('您确定要删除该分组吗？<br/> 删除后，该分组下的角色分类和角色也会同步清除', '提示', {
         confirmButtonText: '确定',
@@ -381,11 +380,12 @@ export default {
         dangerouslyUseHTMLString: true
       })
         .then(() => {
-          this.delFunc(node, data)
+          this.delGroupFunc(node, data)
         })
         .catch(() => {})
     },
 
+    // 删除分类提示
     delCate(node, data) {
       this.$confirm('您确定要删除该分类吗？<br/> 删除后，该分类下的角色也会同步清除', '提示', {
         confirmButtonText: '确定',
@@ -394,13 +394,39 @@ export default {
         dangerouslyUseHTMLString: true
       })
         .then(() => {
-          this.delFunc(node, data)
+          this.delCateFunc(node, data)
         })
         .catch(() => {})
     },
 
-    delFunc() {},
+    // 删除分组
+    delGroupFunc(node, data) {
+      const params = {
+        categoryId: data[this.props.id]
+      }
+      delCate(params).then(() => {
+        this.$message.success('删除分组成功')
+        this.$emit('update:currentId', '')
+        this.reload()
+      })
+    },
 
+    // 删除分类
+    delCateFunc(node, data) {
+      const params = {
+        groupId: data[this.props.id]
+      }
+      delGroup(params).then(() => {
+        this.$message.success('删除分类成功')
+        if (data[this.props.id] === this.currentId) {
+          // 如果删除的分类是当前激活的分类，清空激活分类，重新获取
+          this.$emit('update:currentId', '')
+        }
+        this.reload()
+      })
+    },
+
+    // 点击保存
     onClickSave(str) {
       if (str === type.group) {
         this.groupForm.groupId ? this.updateGroupFunc(str) : this.createGroupFunc(str)
@@ -409,10 +435,11 @@ export default {
       }
     },
 
+    // 新增分组
     createGroupFunc(str) {
       const params = {
         groupName: this.groupForm.groupName,
-        categories: this.getCategories
+        categories: this.getCategories(this.groupForm.groupData)
       }
       createGroup(params).then(() => {
         this.$message.success('新建分类成功')
@@ -421,10 +448,17 @@ export default {
       })
     },
 
-    getCategories() {
-      return []
+    getCategories(type) {
+      if (type === 0) {
+        return []
+      } else if (type === 1) {
+        return this.preTreeList.map((item) => item.orgName)
+      } else {
+        return this.positions.map((item) => item.name)
+      }
     },
 
+    // 新增分类
     createCateFunc(str) {
       const params = {
         categoryName: this.cateForm.categoryName,
@@ -437,6 +471,7 @@ export default {
       })
     },
 
+    // 更新分组
     updateGroupFunc(str) {
       const params = {
         categoryId: this.cateForm.categoryId,
@@ -450,20 +485,26 @@ export default {
       })
     },
 
+    // 更新分类
     updateCateFunc(str) {
       const params = {
         groupId: this.groupForm.groupId,
         groupName: this.groupForm.groupName
       }
       updateGroup(params).then(() => {
-        this.$message.success('新建分类成功')
+        this.$message.success('修改分类成功')
         this.onClickVisible(str)
         this.$emit('reload')
       })
     },
 
+    // 父组件role重新加载数据
     reload(data) {
       this.$emit('reload', data)
+    },
+    // 清除avue表单组件防重提交
+    handleSubmit(form, done) {
+      done()
     }
   }
 }
