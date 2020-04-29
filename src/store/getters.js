@@ -24,7 +24,6 @@ const getters = {
   logsList: (state) => state.logs.logsList,
   logsLen: (state) => state.logs.logsList.length || 0,
   logsFlag: (state, getters) => getters.logsLen === 0,
-  flowRoutes: (state) => state.dict.flowRoutes,
-  commonDict: (state) => state.dict.commonDict
+  flowRoutes: (state) => state.dict.flowRoutes
 }
 export default getters
