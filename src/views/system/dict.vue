@@ -17,7 +17,6 @@
               :table-loading="loading"
               :data="dataParent"
               :page="pageParent"
-              :permission="permissionList"
               :before-open="beforeOpen"
               @row-del="rowDel"
               @row-update="rowUpdate"
@@ -33,7 +32,6 @@
             >
               <template slot="menuLeft">
                 <el-button
-                  v-if="permission.dict_delete"
                   type="danger"
                   size="small"
                   icon="el-icon-delete"
@@ -71,7 +69,6 @@
               :table-loading="loadingChild"
               :data="dataChild"
               :page="pageChild"
-              :permission="permissionList"
               :before-open="beforeOpenChild"
               @row-del="rowDelChild"
               @row-update="rowUpdateChild"
@@ -86,7 +83,6 @@
             >
               <template slot="menuLeft">
                 <el-button
-                  v-if="permission.dict_delete"
                   type="danger"
                   size="small"
                   icon="el-icon-delete"
@@ -113,7 +109,6 @@
 <script>
 import { getList, remove, update, add } from '@/api/system/dict'
 import { optionParent, optionChild } from '@/const/system/dict'
-import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -145,15 +140,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permission']),
-    permissionList() {
-      return {
-        addBtn: this.vaildData(this.permission.dict_add, false),
-        delBtn: this.vaildData(this.permission.dict_delete, false),
-        editBtn: this.vaildData(this.permission.dict_edit, false),
-        viewBtn: false
-      }
-    },
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {

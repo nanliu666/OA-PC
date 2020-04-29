@@ -34,12 +34,15 @@ export const refreshToken = (refresh_token, tenantId) =>
       scope: 'all'
     }
   })
-
-export const getButtons = () =>
-  request({
-    url: '/api/blade-system/menu/buttons',
-    method: 'get'
+export const getUserPrivilege = (userId) => {
+  return request({
+    url: '/api/sys/v1/user/privilege',
+    method: 'get',
+    params: {
+      userId
+    }
   })
+}
 
 export const getCaptcha = () =>
   request({

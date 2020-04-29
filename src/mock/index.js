@@ -17,7 +17,7 @@ const options = { mock: false }
 
 user(options)
 
-menu(options)
+menu({ mock: true })
 
 oauth(options)
 

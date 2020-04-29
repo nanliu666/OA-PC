@@ -1,380 +1,248 @@
 import Mock from 'mockjs'
 
-const top = [
-  {
-    id: '1123598815738675298',
-    parentId: '0',
-    code: 'resource',
-    name: '资源管理',
-    alias: 'menu',
-    path: '/resource',
-    source: 'iconfont iconicon_coinpurse_line',
-    sort: 6,
-    category: 1,
-    action: 0,
-    isOpen: 1,
-    remark: '',
-    isDeleted: 0,
-    children: [
+const res = {
+  resCode: 200,
+  resMsg: '成功',
+  response: {
+    orgPrivileges: [
       {
-        id: '1123598815738675299',
-        parentId: '1123598815738675298',
-        code: 'oss',
-        name: '对象存储',
+        orgId: '1',
+        orgName: '百利宏化工',
+        orgType: 'Enterprise',
+        isOwn: 1
+      }
+    ],
+    menuPrivileges: [
+      {
+        menuId: '1123598815738675203',
+        parentId: '0',
+        code: 'system',
+        menuName: '系统管理',
         alias: 'menu',
-        path: '/resource/oss',
-        source: 'iconfont iconicon_subordinate',
-        sort: 1,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
+        icon: 'iconfont iconicon_setting',
+        menuType: 'Menu',
+        isOwn: 1,
+        children: [
+          {
+            menuId: '1123598815738675204',
+            parentId: '1123598815738675203',
+            code: 'user',
+            menuName: '用户管理',
+            alias: 'menu',
+            path: '/system/user',
+            icon: 'iconfont iconicon_principal',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                path: '/system/user/edit',
+                isOwn: 1,
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '112359881573867528544',
+            parentId: '1123598815738675203',
+            code: 'action',
+            menuName: '操作日志',
+            alias: 'menu',
+            path: '/system/actionLog',
+            icon: 'iconfont iconicon_principal',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/actionLog/edit',
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '1123598815738675205',
+            parentId: '1123598815738675203',
+            code: 'dept',
+            menuName: '机构管理',
+            alias: 'menu',
+            path: '/system/dept',
+            icon: 'iconfont iconicon_group',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/dept/edit',
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '1123598815738675206',
+            parentId: '1123598815738675203',
+            code: 'dict',
+            menuName: '系统字典',
+            alias: 'menu',
+            path: '/system/dict',
+            icon: 'iconfont iconicon_addresslist',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                path: '/system/dict/edit',
+                isOwn: 1,
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '1123598815738675207',
+            parentId: '1123598815738675203',
+            code: 'menu',
+            menuName: '菜单管理',
+            alias: 'menu',
+            path: '/system/menu',
+            icon: 'iconfont iconicon_subordinate',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/menu/edit',
+                menuType: 'Button'
+              }
+            ]
+          }
+        ],
+        hasChildren: false,
+        parentName: '',
+        categoryName: '',
+        actionName: '',
+        isOpenName: ''
+      },
+      {
+        menuId: '11235988157303',
+        parentId: '0',
+        code: 'system',
+        menuName: '系统管理1',
+        alias: 'menu',
+        icon: 'iconfont iconicon_setting',
+        menuType: 'Menu',
+        isOwn: 1,
+        children: [
+          {
+            menuId: '1123598815738675204',
+            parentId: '1123598815738675203',
+            code: 'user',
+            menuName: '用户管理1',
+            alias: 'menu',
+            path: '/system/user',
+            icon: 'iconfont iconicon_principal',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                path: '/system/user/edit',
+                isOwn: 1,
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '112359881573867528544',
+            parentId: '1123598815738675203',
+            code: 'action',
+            menuName: '操作日志1',
+            alias: 'menu',
+            path: '/system/actionLog',
+            icon: 'iconfont iconicon_principal',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/actionLog/edit',
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '1123598815738675205',
+            parentId: '1123598815738675203',
+            code: 'dept',
+            menuName: '机构管理',
+            alias: 'menu',
+            path: '/system/dept',
+            icon: 'iconfont iconicon_group',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/dept/edit',
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '1123598815738675206',
+            parentId: '1123598815738675203',
+            code: 'dict',
+            menuName: '系统字典',
+            alias: 'menu',
+            path: '/system/dict',
+            icon: 'iconfont iconicon_addresslist',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                path: '/system/dict/edit',
+                isOwn: 1,
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
+            menuId: '1123598815738675207',
+            parentId: '1123598815738675203',
+            code: 'menu',
+            menuName: '菜单管理',
+            alias: 'menu',
+            path: '/system/menu',
+            icon: 'iconfont iconicon_subordinate',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/menu/edit',
+                menuType: 'Button'
+              }
+            ]
+          }
+        ],
         hasChildren: false,
         parentName: '',
         categoryName: '',
         actionName: '',
         isOpenName: ''
       }
-    ],
-    hasChildren: false,
-    parentName: '',
-    categoryName: '',
-    actionName: '',
-    isOpenName: ''
-  },
-  {
-    id: '1123598815738675307',
-    parentId: '0',
-    code: 'authority',
-    name: '权限管理',
-    alias: 'menu',
-    path: '/authority',
-    source: 'iconfont icon-bofangqi-suoping',
-    sort: 98,
-    category: 1,
-    action: 0,
-    isOpen: 1,
-    remark: '',
-    isDeleted: 0,
-    children: [
-      {
-        id: '1123598815738675308',
-        parentId: '1123598815738675307',
-        code: 'role',
-        name: '角色管理',
-        alias: 'menu',
-        path: '/authority/role',
-        source: 'iconfont iconicon_boss',
-        sort: 1,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675309',
-        parentId: '1123598815738675307',
-        code: 'data_scope',
-        name: '数据权限',
-        alias: 'menu',
-        path: '/authority/datascope',
-        source: 'iconfont icon-shujuzhanshi2',
-        sort: 2,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675311',
-        parentId: '1123598815738675307',
-        code: 'api_scope',
-        name: '接口权限',
-        alias: 'menu',
-        path: '/authority/apiscope',
-        source: 'iconfont icon-iconset0216',
-        sort: 3,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      }
-    ],
-    hasChildren: false,
-    parentName: '',
-    categoryName: '',
-    actionName: '',
-    isOpenName: ''
-  },
-  {
-    id: '1123598815738675203',
-    parentId: '0',
-    code: 'system',
-    name: '系统管理',
-    alias: 'menu',
-    path: '/system',
-    source: 'iconfont iconicon_setting',
-    sort: 99,
-    category: 1,
-    action: 0,
-    isOpen: 1,
-    remark: '',
-    isDeleted: 0,
-    children: [
-      {
-        id: '1123598815738675204',
-        parentId: '1123598815738675203',
-        code: 'user',
-        name: '用户管理',
-        alias: 'menu',
-        path: '/system/user',
-        source: 'iconfont iconicon_principal',
-        sort: 1,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '112359881573867528544',
-        parentId: '1123598815738675203',
-        code: 'action',
-        name: '操作日志',
-        alias: 'menu',
-        path: '/system/actionLog',
-        source: 'iconfont iconicon_principal',
-        sort: 1,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675205',
-        parentId: '1123598815738675203',
-        code: 'dept',
-        name: '机构管理',
-        alias: 'menu',
-        path: '/system/dept',
-        source: 'iconfont iconicon_group',
-        sort: 2,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675206',
-        parentId: '1123598815738675203',
-        code: 'dict',
-        name: '系统字典',
-        alias: 'menu',
-        path: '/system/dict',
-        source: 'iconfont iconicon_addresslist',
-        sort: 3,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675207',
-        parentId: '1123598815738675203',
-        code: 'menu',
-        name: '菜单管理',
-        alias: 'menu',
-        path: '/system/menu',
-        source: 'iconfont iconicon_subordinate',
-        sort: 4,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675208',
-        parentId: '1123598815738675203',
-        code: 'topmenu',
-        name: '顶部菜单',
-        alias: 'menu',
-        path: '/system/topmenu',
-        source: 'iconfont icon-canshu',
-        sort: 5,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675209',
-        parentId: '1123598815738675203',
-        code: 'param',
-        name: '参数管理',
-        alias: 'menu',
-        path: '/system/param',
-        source: 'iconfont iconicon_community_line',
-        sort: 6,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675256',
-        parentId: '1123598815738675203',
-        code: 'tenant',
-        name: '租户管理',
-        alias: 'menu',
-        path: '/system/tenant',
-        source: 'iconfont icon-quanxian',
-        sort: 7,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      },
-      {
-        id: '1123598815738675261',
-        parentId: '1123598815738675203',
-        code: 'client',
-        name: '应用管理',
-        alias: 'menu',
-        path: '/system/client',
-        source: 'iconfont iconicon_mobilephone',
-        sort: 8,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      }
-    ],
-    hasChildren: false,
-    parentName: '',
-    categoryName: '',
-    actionName: '',
-    isOpenName: ''
-  },
-  {
-    id: '11235988157386752',
-    parentId: '0',
-    code: 'system',
-    name: '人事管理',
-    alias: 'menu',
-    path: '/personnel',
-    source: 'iconfont iconicon_setting',
-    sort: 99,
-    category: 1,
-    action: 0,
-    isOpen: 1,
-    remark: '',
-    isDeleted: 0,
-    children: [
-      {
-        id: '1123598815738675261',
-        parentId: '11235988157386752',
-        code: 'client',
-        name: '员工花名册',
-        alias: 'menu',
-        path: '/personnel/roster',
-        source: 'iconfont iconicon_mobilephone',
-        sort: 8,
-        category: 1,
-        action: 0,
-        isOpen: 1,
-        remark: '',
-        isDeleted: 0,
-        hasChildren: false,
-        parentName: '',
-        categoryName: '',
-        actionName: '',
-        isOpenName: ''
-      }
-    ],
-    hasChildren: false,
-    parentName: '',
-    categoryName: '',
-    actionName: '',
-    isOpenName: ''
+    ]
   }
-]
+}
 export default ({ mock }) => {
   if (!mock) return
-  Mock.mock(new RegExp('/api/blade-system/menu/routes' + '.*'), 'get', () => {
-    return {
-      response: top
-    }
+  Mock.mock(new RegExp('/api/sys/v1/user/privilege' + '.*'), 'get', () => {
+    return res
   })
 }
