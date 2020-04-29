@@ -6,6 +6,8 @@ import system from './system'
 import role from './role'
 import dict from './dict'
 import personalInfo from './personalInfo'
+import personnel from './personnel'
+import org from './org'
 
 /**
  * 模拟数据mock
@@ -13,13 +15,15 @@ import personalInfo from './personalInfo'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: false }
+const options = { mock: true }
 
-user(options)
+// user(options)
 
 menu(options)
 
-oauth(options)
+system(options)
+
+// oauth(options)
 
 system(options)
 
@@ -30,3 +34,6 @@ param(options)
 role(options)
 
 personalInfo(options)
+personnel(options)
+
+org(options)
