@@ -126,7 +126,6 @@ export default {
     info: {
       handler(val) {
         this.bankInfo = val
-        bankInfo = deepClone(val)
       },
       deep: true,
       immediate: true
