@@ -346,3 +346,30 @@ export const openWindow = (url, title, w, h) => {
     newWindow.focus()
   }
 }
+
+export const formatDate = (value) => {
+  let fomatValue = new Date(value)
+  let year = fomatValue.getFullYear()
+  let month = fomatValue.getMonth() + 1
+  let day = fomatValue.getDay()
+  return {
+    year: year,
+    month: month,
+    day: day
+  }
+}
+
+/**
+ * 判断两个日期时间段是否有交集
+ */
+export const judgeRepeatedTime = (section1, section2) => {
+  let section1Start = new Date(section1[0]).getTime()
+  let section1End = new Date(section1[1]).getTime()
+  let section2Start = new Date(section2[0]).getTime()
+  let section2End = new Date(section2[1]).getTime()
+  if (section2Start < section1End && section1Start < section2End) {
+    return true
+  } else {
+    return false
+  }
+}
