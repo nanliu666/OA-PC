@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import user from './user'
 import menu from './menu'
 import oauth from './oauth'
-import param from './param'
 import system from './system'
+import personnel from './personnel'
 import role from './role'
 import dict from './dict'
 import position from './position'
@@ -29,9 +30,9 @@ oauth(options)
 
 system(options)
 
-dict(options)
+personnel(options)
 
-param(options)
+dict(options)
 
 role(options)
 

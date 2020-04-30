@@ -1,0 +1,104 @@
+<template>
+  <div class="steps-bos">
+    <basic-container>
+      <el-timeline :reverse="true">
+        <el-timeline-item
+          v-for="(item, index) in stepsData"
+          :key="index"
+          :timestamp="item.createTime"
+          color="#368AFA"
+        >
+          <template slot>
+            <div class="action-name">
+              {{ item.name }}
+            </div>
+            <div class="action-content">
+              {{ item.content }}
+            </div>
+          </template>
+        </el-timeline-item>
+      </el-timeline>
+    </basic-container>
+  </div>
+</template>
+<script>
+import { getActionLog } from '@/api/system/user'
+export default {
+  data() {
+    return {
+      stepsData: [],
+      ajaxData: {
+        pageNo: 1, //请求页码
+        pageSize: 10, //每页数据
+        model: '', //模糊搜索
+        userName: '', //用户名
+        beginTime: '', //查询开始时间
+        endTime: '', //查询结束时间
+        status: '' //状态
+      }
+    }
+  },
+
+  mounted() {
+    this.initData()
+  },
+  methods: {
+    initData() {
+      getActionLog(this.ajaxData).then((res) => {
+        this.stepsData = res.data.map((item) => ({
+          createTime: this.formatDate(item.createTime),
+          name: item.name,
+          content: item.content
+        }))
+      })
+    },
+    //时间戳转日期
+    formatDate(timestamp) {
+      var date = new Date(parseInt(timestamp)) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      var Y = date.getFullYear() + '-'
+      var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+      var D = date.getDate() + ' '
+      var h = date.getHours() + ':'
+      var m = date.getMinutes() + ':'
+      var s = date.getSeconds()
+      return Y + M + D + h + m + s
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+/deep/ .el-step__description.is-finish {
+  font-family: PingFangSC-Regular;
+  color: #202940;
+  line-height: 16px;
+}
+/deep/ .el-timeline-item__tail {
+  position: absolute;
+  left: 4px;
+  top: 16px;
+  height: calc(100% - 20px);
+  border-left: 1px solid #368afa;
+}
+/deep/ .el-timeline-item__wrapper {
+  display: flex;
+  line-height: 30px;
+}
+/deep/ .el-timeline-item__timestamp.is-bottom {
+  margin-left: 20px;
+}
+.action-name {
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #202940;
+}
+.action-content {
+  font-family: PingFangSC-Regular;
+  font-size: 12px;
+  color: #757c85;
+}
+.action-action {
+  font-family: PingFangSC-Regular;
+  font-size: 12px;
+  color: #757c85;
+}
+</style>
