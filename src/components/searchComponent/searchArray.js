@@ -1,7 +1,7 @@
 import store from '@/store/index'
 import { getWorkAddressList, getOrgPosition, getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple, getUserWorkList } from '@/api/org/org'
-
+import { regionData } from 'element-china-area-data'
 // let WorkProperty = [],
 //   RecruitmentChannel = [],
 //   ContractType = [],
@@ -51,7 +51,7 @@ export default async () => {
   return [
     {
       label: '在职信息',
-      showMore: true,
+      showMore: false,
       questions: [
         {
           type: 'treeSelect',
@@ -224,7 +224,7 @@ export default async () => {
     },
     {
       label: '个人信息',
-      showMore: true,
+      showMore: false,
       questions: [
         {
           type: 'select',
@@ -290,7 +290,7 @@ export default async () => {
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
           options: PoliticalStatus
         },
-        { type: 'cascader', data: '', label: '籍贯', field: 'natives', config: {}, options: [] },
+        { type: 'cascader', data: '', label: '籍贯', field: 'natives', config: {}, options: regionData },
         {
           type: 'select',
           data: '',
@@ -303,7 +303,7 @@ export default async () => {
     },
     {
       label: '离职信息',
-      showMore: true,
+      showMore: false,
       questions: [
         {
           type: 'dataPicker',

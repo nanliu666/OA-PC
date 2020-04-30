@@ -157,7 +157,7 @@ export default {
           this.setCheckedKeys()
           this.onClickSearch()
         })
-        this.$emit('change', val)
+        this.$emit('change', val, this.showLabelList)
       },
       deep: true
     }

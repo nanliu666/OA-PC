@@ -2,7 +2,7 @@ import Mock from 'mockjs'
 
 export default ({ mock }) => {
   if (!mock) return
-  Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'get', () => {
     return {
       resCode: 0,
       resMsg: '',
@@ -74,7 +74,7 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/org/v1/organization/sort' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/org/v1/organization/sort' + '.*'), 'post', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -82,28 +82,28 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'delete', () => {
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'delete', () => {
     return {
       resCode: 200,
       resMsg: '',
       response: {}
     }
   })
-  Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'put', () => {
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'put', () => {
     return {
       resCode: 200,
       resMsg: '',
       response: {}
     }
   })
-  Mock.mock(new RegExp('/org/v1/organization' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'post', () => {
     return {
       resCode: 200,
       resMsg: '',
       response: {}
     }
   })
-  Mock.mock(new RegExp('/user/v1/user/work/list' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/work/list' + '.*'), 'get', () => {
     return {
       resCode: 200,
       resMsg: '',

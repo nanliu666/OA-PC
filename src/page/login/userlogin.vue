@@ -146,7 +146,7 @@ export default {
     ...mapGetters(['tagWel'])
   },
   created() {
-    // this.getTenant()
+    this.getTenant()
     this.refreshCode()
   },
   mounted() {},
@@ -184,7 +184,7 @@ export default {
     },
     getTenant() {
       let domain = window.location.href.split('/#/')[0]
-      getTenantInfo(domain).then((res) => {
+      getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.tenantId = res.tenantId
       })
       // 临时指定域名，方便测试

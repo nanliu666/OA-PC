@@ -81,11 +81,11 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/user/v1/user/work/address' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/work/address' + '.*'), 'get', () => {
     return workAddress
   })
 
-  Mock.mock(new RegExp('/user/v1/user/list' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/list' + '.*'), 'post', () => {
     const userList = {
       resCode: 200,
       resMsg: '',
@@ -187,7 +187,7 @@ export default ({ mock }) => {
     return userList
   })
 
-  Mock.mock(new RegExp('/user/v1/user/status/stat' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/status/stat' + '.*'), 'get', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -211,7 +211,7 @@ export default ({ mock }) => {
       ]
     }
   })
-  Mock.mock(new RegExp('/org/v1/position/define' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/org/v1/position/define' + '.*'), 'get', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -223,7 +223,7 @@ export default ({ mock }) => {
       ]
     }
   })
-  Mock.mock(new RegExp('/org/v1/job/list' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/org/v1/job/list' + '.*'), 'get', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -235,7 +235,7 @@ export default ({ mock }) => {
       ]
     }
   })
-  Mock.mock(new RegExp('/org/v1/organization/company' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/org/v1/organization/company' + '.*'), 'get', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -248,7 +248,7 @@ export default ({ mock }) => {
       ]
     }
   })
-  Mock.mock(new RegExp('/org/v1/organization/tree' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/org/v1/organization/tree' + '.*'), 'get', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -271,7 +271,7 @@ export default ({ mock }) => {
       ]
     }
   })
-  Mock.mock(new RegExp('/user/v1/user/workno' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/workno' + '.*'), 'get', () => {
     return {
       resCode: 200,
       resMsg: '',
@@ -280,14 +280,14 @@ export default ({ mock }) => {
       }
     }
   })
-  Mock.mock(new RegExp('/user/v1/user/info/check' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/info/check' + '.*'), 'post', () => {
     return {
       resCode: 200,
       resMsg: '',
       response: {}
     }
   })
-  Mock.mock(new RegExp('/user/v1/user/info' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/info' + '.*'), 'post', () => {
     return {
       resCode: 200,
       resMsg: '',

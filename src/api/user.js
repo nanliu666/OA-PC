@@ -77,7 +77,7 @@ export const clearCache = () =>
 
 export const getTenantInfo = (domain) =>
   request({
-    url: '/sys/v1/tenant/info',
+    url: '/api/sys/v1/tenant/info',
     method: 'get',
-    data: domain
+    params: domain
   })

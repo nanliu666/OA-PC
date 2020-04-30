@@ -12,7 +12,8 @@
           v-model="value.min"
           @input="handleMinChange"
         />
-      </el-form-item>至
+      </el-form-item>
+      <span>至</span>
       <el-form-item prop="max">
         <el-input
           v-model="value.max"
@@ -111,17 +112,26 @@ export default {
 
 <style lang="scss" scoped>
 .numInterval {
-  display: inline-block;
+  // display: inline-block;
+  width: 100%;
   .numInterval-form {
+    width: 100%;
+    > span {
+      margin: 0 7px;
+      text-align: center;
+    }
     .el-form-item {
       margin-right: 0;
-      padding-right: 0;
+      margin-left: 0px;
+      width: calc(50% - 14px);
+      // padding-right: 0;
+      .el-form-item__content {
+        width: 100%;
+      }
     }
   }
 }
-/deep/ {
-  .el-input__inner {
-    width: 90px;
-  }
+/deep/ .el-form-item__content {
+  width: 100%;
 }
 </style>
