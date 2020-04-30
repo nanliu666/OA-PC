@@ -285,3 +285,29 @@ export function validataBankCard(number) {
     return false
   }
 }
+
+/**
+ * 18位数字个人社保账号校验
+ * @param {Object} no
+ */
+export function validataSSCount(no) {
+  let reg = /^\d{18}$/
+  if (reg.test(no)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * 9位或者12位的公积金账号校验
+ * @param {Object} no
+ */
+export function validataEpt(no) {
+  let reg = /(^\d{9}$)|(^\d{12}$)/
+  if (reg.test(no)) {
+    return true
+  } else {
+    return false
+  }
+}
