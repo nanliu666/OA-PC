@@ -17,14 +17,12 @@ const getters = {
   tagWel: (state) => state.tags.tagWel,
   token: (state) => state.user.token,
   roles: (state) => state.user.roles,
-  permission: (state) => state.user.permission,
+  privileges: (state) => state.user.privileges,
   menu: (state) => state.user.menu,
-  menuId: (state) => state.user.menuId,
   menuAll: (state) => state.user.menuAll,
   logsList: (state) => state.logs.logsList,
   logsLen: (state) => state.logs.logsList.length || 0,
   logsFlag: (state, getters) => getters.logsLen === 0,
-  flowRoutes: (state) => state.dict.flowRoutes,
-  commonDict: (state) => state.dict.commonDict
+  flowRoutes: (state) => state.dict.flowRoutes
 }
 export default getters

@@ -114,7 +114,7 @@ export default {
       tenantMode: this.website.tenantMode,
       loginForm: {
         //租户ID
-        tenantId: '000000',
+        tenantId: 'bestgrand',
         //用户名
         username: 'admin',
         //密码
@@ -146,7 +146,7 @@ export default {
     ...mapGetters(['tagWel'])
   },
   created() {
-    // this.getTenant()
+    this.getTenant()
     this.refreshCode()
   },
   mounted() {},
@@ -170,8 +170,9 @@ export default {
           })
           this.$store
             .dispatch('LoginByUsername', this.loginForm)
-            .then(() => {
+            .then((res) => {
               this.$router.push({ path: this.tagWel.value })
+              this.$store.dispatch('GetUserPrivilege', res.userId)
               loading.close()
             })
             .catch(() => {
@@ -183,7 +184,7 @@ export default {
     },
     getTenant() {
       let domain = window.location.href.split('/#/')[0]
-      getTenantInfo(domain).then((res) => {
+      getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.tenantId = res.tenantId
       })
       // 临时指定域名，方便测试

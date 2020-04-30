@@ -198,21 +198,6 @@ export const delRole = (params) => {
 }
 
 /**
- * @description 角色所属的用户查询接口
- * @param params
- * @returns {*}
- */
-export const getRoleUser = (params) => {
-  return request({
-    url: '/api/sys/v1/role/user',
-    method: 'get',
-    params: {
-      ...params
-    }
-  })
-}
-
-/**
  * @description 角色新增接口
  * @param params
  * @returns {*}
@@ -237,6 +222,21 @@ export const getPrivilege = (params) => {
     url: '/api/sys/v1/role/privilege',
     method: 'get',
     params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 角色权限查询接口
+ * @param params
+ * @returns {*}
+ */
+export const updatePrivilege = (params) => {
+  return request({
+    url: '/api/sys/v1/role/privilege',
+    method: 'put',
+    data: {
       ...params
     }
   })
@@ -272,9 +272,12 @@ export const updateRole = (params) => {
   })
 }
 
-export const getJobs = (params) => {
+/**
+ * @description 用户添加列表查询
+ */
+export const getUser = (params) => {
   return request({
-    url: '/api/sys/v1/jobs',
+    url: '/api/sys/v1/role/user',
     method: 'get',
     params: {
       ...params
@@ -282,9 +285,78 @@ export const getJobs = (params) => {
   })
 }
 
+/**
+ * @description 角色所属的用户添加接口
+ */
+export const addUser = (params) => {
+  return request({
+    url: '/api/sys/v1/role/user',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 角色的待添加用户查询接口
+ */
+export const getUnuser = (params) => {
+  return request({
+    url: '/api/sys/v1/role/unuser',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 组织机构列表查询接口
+ */
+export const getOrgList = (params) => {
+  return request({
+    url: '/api/org/v1/organization/list',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 岗位定义查询接口
+ */
+export const getPosition = (params) => {
+  return request({
+    url: '/api/org/v1/position/define',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+
+/*以下是mock接口*/
+/**
+ * @description 关联职位列表查询
+ */
+export const getJobs = (params) => {
+  return request({
+    url: '/api/org/v1/job/tree',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+
+/**
+ * @description 角色关联岗位查询接口
+ */
 export const getPositions = (params) => {
   return request({
-    url: '/api/sys/v1/Positions',
+    url: '/api/sys/v1/role/position',
     method: 'get',
     params: {
       ...params

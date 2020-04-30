@@ -40,14 +40,15 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['website', 'menu', 'tag', 'keyCollapse', 'screen', 'menuId']),
+    ...mapGetters(['website', 'menu', 'tag', 'keyCollapse', 'screen']),
     nowTagValue: function() {
       return this.$router.$avueRouter.getValue(this.$route)
     }
   },
   created() {
-    this.index.openMenu(this.menuId)
+    // this.index.openMenu(this.menuId)
   },
+
   mounted() {},
   methods: {}
 }

@@ -1,43 +1,18 @@
 import { setToken, setRefreshToken, removeToken, removeRefreshToken } from '@/util/auth'
 import { Message } from 'element-ui'
 import { setStore, getStore } from '@/util/store'
-import { isURL, validatenull } from '@/util/validate'
-import { deepClone } from '@/util/util'
-import website from '@/config/website'
-import { loginByUsername, getUserInfo, logout, refreshToken, getButtons } from '@/api/user'
-import { getTopMenu, getRoutes } from '@/api/system/menu'
+import { filterTree, flatTree } from '@/util/util'
+import { loginByUsername, getUserInfo, logout, refreshToken, getUserPrivilege } from '@/api/user'
 import md5 from 'js-md5'
-
-function addPath(ele, first) {
-  const menu = website.menu
-  const propsConfig = menu.props
-  const propsDefault = {
-    label: propsConfig.label || 'name',
-    path: propsConfig.path || 'path',
-    icon: propsConfig.icon || 'icon',
-    children: propsConfig.children || 'children'
-  }
-  const icon = ele[propsDefault.icon]
-  ele[propsDefault.icon] = validatenull(icon) ? menu.iconDefault : icon
-  const isChild = ele[propsDefault.children] && ele[propsDefault.children].length !== 0
-  if (!isChild) ele[propsDefault.children] = []
-  if (!isChild && first && !isURL(ele[propsDefault.path])) {
-    ele[propsDefault.path] = ele[propsDefault.path] + '/index'
-  } else {
-    ele[propsDefault.children].forEach((child) => {
-      addPath(child)
-    })
-  }
-}
 
 const user = {
   state: {
     tenantId: getStore({ name: 'tenantId' }) || '',
     userInfo: getStore({ name: 'userInfo' }) || [],
-    permission: getStore({ name: 'permission' }) || {},
+    privileges: getStore({ name: 'privileges' }) || [],
+    orgs: getStore({ name: 'orgs' }) || [],
     roles: [],
     menu: getStore({ name: 'menu' }) || [],
-    menuId: getStore({ name: 'menuId' }) || [],
     menuAll: getStore({ name: 'menuAll' }) || [],
     token: getStore({ name: 'token' }) || '',
     refreshToken: getStore({ name: 'refreshToken' }) || ''
@@ -68,17 +43,30 @@ const user = {
               commit('DEL_ALL_TAG')
               commit('CLEAR_LOCK')
             }
-            resolve()
+            resolve(res)
           })
           .catch((error) => {
             reject(error)
           })
       })
     },
-    GetButtons({ commit }) {
+    GetUserPrivilege({ commit }, userId) {
       return new Promise((resolve) => {
-        getButtons().then((data) => {
-          commit('SET_PERMISSION', data)
+        getUserPrivilege(userId).then((data) => {
+          commit(
+            'SET_ORGS',
+            data.orgPrivileges.filter((org) => org.isOwn === 1)
+          )
+          commit(
+            'SET_MENU_ALL',
+            filterTree(data.menuPrivileges, (node) => node.isOwn === 1 && node.menuType !== 'Button')
+          )
+          commit(
+            'SET_PRIVILEGES',
+            flatTree(data.menuPrivileges)
+              .filter((node) => node.isOwn === 1 && node.menuType === 'Button')
+              .map((item) => item.path)
+          )
           resolve()
         })
       })
@@ -128,7 +116,6 @@ const user = {
           .then(() => {
             commit('SET_TOKEN', '')
             commit('SET_MENU', [])
-            commit('SET_MENU_ID', {})
             commit('SET_MENU_ALL', [])
             commit('SET_ROLES', [])
             commit('DEL_ALL_TAG')
@@ -146,7 +133,6 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise((resolve) => {
         commit('SET_TOKEN', '')
-        commit('SET_MENU_ID', {})
         commit('SET_MENU_ALL', [])
         commit('SET_MENU', [])
         commit('SET_ROLES', [])
@@ -157,26 +143,11 @@ const user = {
         resolve()
       })
     },
-    //获取顶部菜单
-    GetTopMenu() {
+    // 获取系统菜单
+    SetMenu({ commit }, menu) {
       return new Promise((resolve) => {
-        getTopMenu().then((data = []) => {
-          resolve(data)
-        })
-      })
-    },
-    //获取系统菜单
-    GetMenu({ commit, dispatch }, topMenuId) {
-      return new Promise((resolve) => {
-        getRoutes(topMenuId).then((data) => {
-          let menu = deepClone(data)
-          menu.forEach((ele) => {
-            addPath(ele, true)
-          })
-          commit('SET_MENU', menu)
-          dispatch('GetButtons')
-          resolve(menu)
-        })
+        commit('SET_MENU', menu)
+        resolve(menu)
       })
     }
   },
@@ -186,13 +157,9 @@ const user = {
       state.token = token
       setStore({ name: 'token', content: state.token, type: 'session' })
     },
-    SET_MENU_ID(state, menuId) {
-      state.menuId = menuId
-      setStore({ name: 'menuId', content: state.menuId, type: 'session' })
-    },
     SET_MENU_ALL: (state, menuAll) => {
       state.menuAll = menuAll
-      setStore({ name: 'menuAll', content: state.menuAll, type: 'session' })
+      setStore({ name: 'menuAll', content: menuAll, type: 'session' })
     },
     SET_REFRESH_TOKEN: (state, refreshToken) => {
       setRefreshToken(refreshToken)
@@ -209,43 +176,18 @@ const user = {
     },
     SET_MENU: (state, menu) => {
       state.menu = menu
-      let menuAll = state.menuAll
-      if (!validatenull(menu)) {
-        const obj = menuAll.filter((ele) => ele.path === menu[0].path)[0]
-        if (!obj) {
-          menuAll = menuAll.concat(menu)
-          state.menuAll = menuAll
-        }
-        setStore({ name: 'menuAll', content: menuAll, type: 'session' })
-      }
       setStore({ name: 'menu', content: state.menu, type: 'session' })
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
-    SET_PERMISSION: (state, permission) => {
-      let result = []
-
-      function getCode(list) {
-        list.forEach((ele) => {
-          if (typeof ele === 'object') {
-            const chiildren = ele.children
-            const code = ele.code
-            if (chiildren) {
-              getCode(chiildren)
-            } else {
-              result.push(code)
-            }
-          }
-        })
-      }
-
-      getCode(permission)
-      state.permission = {}
-      result.forEach((ele) => {
-        state.permission[ele] = true
-      })
-      setStore({ name: 'permission', content: state.permission, type: 'session' })
+    SET_ORGS: (state, orgs) => {
+      state.orgs = orgs
+      setStore({ name: 'orgs', content: orgs, type: 'session' })
+    },
+    SET_PRIVILEGES: (state, privileges) => {
+      state.privileges = privileges
+      setStore({ name: 'privileges', content: privileges, type: 'session' })
     }
   }
 }

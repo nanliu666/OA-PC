@@ -109,32 +109,10 @@ export default {
     },
     //打开菜单
     openMenu(item = {}) {
-      this.$store.dispatch('GetMenu', item.id).then((data) => {
-        if (data.length !== 0) {
-          this.$router.$avueRouter.formatRoutes(data, true)
-        }
-        //当点击顶部菜单后默认打开第一个菜单
-        /*if (!this.validatenull(item)) {
-            let itemActive = {},
-              childItemActive = 0;
-            if (item.path) {
-              itemActive = item;
-            } else {
-              if (this.menu[childItemActive].length === 0) {
-                itemActive = this.menu[childItemActive];
-              } else {
-                itemActive = this.menu[childItemActive].children[childItemActive];
-              }
-            }
-            this.$store.commit('SET_MENU_ID', item);
-            this.$router.push({
-              path: this.$router.$avueRouter.getPath({
-                name: (itemActive.label || itemActive.name),
-                src: itemActive.path
-              }, itemActive.meta)
-            });
-          }*/
+      this.$router.push({
+        path: item.children[0].path
       })
+      this.$store.dispatch('SetMenu', item.children)
     },
     // 定时检测token
     refreshToken() {

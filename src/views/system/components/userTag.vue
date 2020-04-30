@@ -87,7 +87,7 @@ export default {
     }
   },
   created() {
-    this.getTagList()
+    // this.getTagList()
   },
   methods: {
     getTagList() {

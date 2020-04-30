@@ -127,7 +127,12 @@
 <script>
 import { isMobile } from '@/util/validate'
 export default {
-  props: ['emergencyList'],
+  props: {
+    emergencyList: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
       currentEdit: null,
