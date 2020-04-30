@@ -21,9 +21,9 @@ user(options)
 
 menu({ mock: true })
 
-position({ mock: true })
-grade({ mock: true })
-menus({ mock: true })
+position(options)
+grade(options)
+menus(options)
 
 oauth(options)
 
@@ -33,6 +33,6 @@ dict(options)
 
 param(options)
 
-role({ mock: true })
+role(options)
 
 personalInfo(options)

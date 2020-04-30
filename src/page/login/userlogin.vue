@@ -114,7 +114,7 @@ export default {
       tenantMode: this.website.tenantMode,
       loginForm: {
         //租户ID
-        tenantId: '000000',
+        tenantId: 'bestgrand',
         //用户名
         username: 'admin',
         //密码

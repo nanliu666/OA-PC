@@ -91,8 +91,11 @@ export default {
       // this.$store.dispatch('GetMenu', item.id).then((data) => {
       this.$store.dispatch('SetMenu', item.children)
       if (item.children.length !== 0) {
-        this.$router.$avueRouter.formatRoutes(item.children, true)
+        this.$router.$avueRouter.formatRoutes([item], true)
       }
+      this.$router.push({
+        path: item.children[0].path
+      })
       //当点击顶部菜单后默认打开第一个菜单
       /*if (!this.validatenull(item)) {
             let itemActive = {},

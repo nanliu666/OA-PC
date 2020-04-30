@@ -111,14 +111,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         // 判断this.routerList中是否已经存在该path，存在就跳出
         if (this.routerList.includes(oMenu[propsDefault.path])) return
         // 这一块的赋值 也就是取到返回的值
-        let path = (() => {
-            if (first) {
-              // 第一层没有页面路径
-              return ''
-            } else {
-              return oMenu[propsDefault.path]
-            }
-          })(),
+        let path = oMenu[propsDefault.path] || '',
           //特殊处理组件 执行完这个 component 也就是精确到具体的文件了  views文件夹下面就是具体的页面代码
           component = 'views' + oMenu.path,
           name = oMenu[propsDefault.label],
@@ -168,7 +161,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
             ? (() => {
                 if (first) {
                   // 这里的isURL判断，因为这个网站有使用 iframe。所以需要判断是否为网页链接
-                  if (!isURL(path)) oMenu[propsDefault.path] = `${path}/index`
+                  if (!isURL(path)) oMenu[propsDefault.path] = `${path}`
                   return [
                     {
                       component(resolve) {

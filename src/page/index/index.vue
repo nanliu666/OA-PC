@@ -109,6 +109,9 @@ export default {
     },
     //打开菜单
     openMenu(item = {}) {
+      this.$router.push({
+        path: item.children[0].path
+      })
       this.$store.dispatch('SetMenu', item.children)
     },
     // 定时检测token
