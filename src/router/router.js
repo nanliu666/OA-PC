@@ -40,7 +40,7 @@ export const createRouter = () =>
 const Router = createRouter() // 获得 route 实例
 AvueRouter.install(Vue, Router, Store, i18n) // 初始化和注册 AvueRouter
 Router.$avueRouter.formatRoutes(Store.state.user.menuAll, true) // 动态路由核心方法
-Router.addRoutes([...PageRouter, ...ViewsRouter])
+// Router.addRoutes([...PageRouter, ...ViewsRouter])
 export function resetRouter() {
   // 重置路由 比如用于身份验证失败，需要重新登录时 先清空当前的路有权限
   const newRouter = createRouter()

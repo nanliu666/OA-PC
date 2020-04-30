@@ -4,12 +4,12 @@
       ref="crud"
       :config="tableConfig"
       :columns="columns"
-      :table-loading="loading"
+      :loading="loading"
       :data="data"
       :page="page"
       @selection-change="selectionChange"
-      @current-change="currentChange"
-      @size-change="sizeChange"
+      @current-page-change="currentChange"
+      @page-size-change="sizeChange"
     >
       <template
         slot="multiSelectMenu"
@@ -31,7 +31,6 @@
           style="width:200px;margin-right:12px;"
         />
         <el-button
-          v-if="permission.user_add"
           type="primary"
           size="medium"
           plain
@@ -134,15 +133,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'permission']),
-    permissionList() {
-      return {
-        addBtn: this.vaildData(this.permission.user_add, false),
-        viewBtn: this.vaildData(this.permission.user_view, false),
-        delBtn: this.vaildData(this.permission.user_delete, false),
-        editBtn: this.vaildData(this.permission.user_edit, false)
-      }
-    },
+    ...mapGetters(['userInfo']),
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {

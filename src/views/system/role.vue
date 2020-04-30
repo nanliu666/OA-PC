@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="role-wrap">
     <div class="oa-title_bar">
       <div class="title-name">
         角色管理
@@ -12,74 +12,59 @@
           :current-id.sync="options.currentId"
           @reload="reload"
         />
-        <el-main class="main-wrap">
+        <el-main>
           <div class="main-wrap">
-            <div class="search-bar">
-              <el-form
-                ref="form"
-                :model="form"
-                label-width="80px"
-                size="medium"
-                :inline="true"
-              >
-                <el-form-item>
-                  <el-input
-                    v-model="form.roleName"
-                    size="medium"
-                    placeholder="角色名称"
-                  >
-                    <template slot="append">
-                      <i class="el-icon-search" />
-                    </template>
-                  </el-input>
-                </el-form-item>
-              </el-form>
-              <div>
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="onHandleEdit('add')"
-                >
-                  新建角色
-                </el-button>
-                <el-button
-                  icon="el-icon-refresh"
-                  size="medium"
-                  @click="loadRoleData"
-                />
-              </div>
-            </div>
-            <transition name="el-zoom-in-center">
-              <div
-                v-show="selectArr.length > 0"
-                class="selected-bar"
-              >
-                <div class="left-part">
-                  <span style="color: #999">已选中&nbsp;</span>
-                  <span class="selected-num"> {{ selectArr.length }} </span> <span style="color: #999">&nbsp;项</span>
-                  <div class="divider" />
-                  <span
-                    class="del-all"
-                    @click="delAll"
-                  ><i class="el-icon-delete" /> &nbsp;批量删除</span>
-                </div>
-                <div
-                  class="right-part"
-                  @click="onCloseSelect"
-                >
-                  <i class="el-icon-close" />
-                </div>
-              </div>
-            </transition>
-            <avue-crud
-              ref="table"
+            <commonTable
               :data="filterList"
-              :option="option"
+              :config="tableConfig"
+              :columns="columns"
               @selection-change="selectionChange"
-              @on-load="onLoad"
             >
+              <template slot="multiSelectMenu">
+                <span
+                  class="del-all"
+                  @click="delAll"
+                ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+              </template>
+              <template slot="topMenu">
+                <div class="search-bar">
+                  <el-form
+                    ref="form"
+                    :model="form"
+                    label-width="80px"
+                    size="medium"
+                    :inline="true"
+                  >
+                    <el-form-item>
+                      <el-input
+                        v-model="form.roleName"
+                        size="medium"
+                        placeholder="角色名称"
+                      >
+                        <template slot="append">
+                          <i class="el-icon-search" />
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                  </el-form>
+                  <div>
+                    <el-button
+                      type="primary"
+                      size="medium"
+                      @click="onHandleEdit('add')"
+                    >
+                      新建角色
+                    </el-button>
+                    <el-button
+                      icon="el-icon-refresh"
+                      size="medium"
+                      @click="loadRoleData"
+                    />
+                  </div>
+                </div>
+              </template>
               <template
-                slot="menu"
+                slot="handler"
                 slot-scope="scope"
               >
                 <el-button
@@ -113,7 +98,7 @@
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
-            </avue-crud>
+            </commonTable>
           </div>
         </el-main>
         <roleEdit
@@ -139,7 +124,6 @@ import roleEdit from './components/roleEdit'
 import roleAside from './components/roleAside'
 import roleLimits from './components/rolePermission'
 import userList from './components/roleUserList'
-import { tableOptions } from '../../util/constant'
 import { getRoleList, getCate, getPositions, getJobs, delRole } from '../../api/system/role'
 
 export default {
@@ -177,56 +161,54 @@ export default {
         roleName: ''
       },
       data: [],
-      option: {
-        ...tableOptions,
-        selection: true,
-        align: 'center',
-        menuAlign: 'center',
-        column: [
-          {
-            label: '角色编码',
-            prop: 'roleId'
-          },
-          {
-            label: '角色名称',
-            prop: 'roleName'
-          },
-          {
-            label: '关联类型',
-            prop: 'type',
-            formatter: (row, value) => {
-              let str = ''
-              switch (value) {
-                case 'Job':
-                  str = '职位'
-                  break
-                case 'Position':
-                  str = '岗位'
-                  break
-                case 'No':
-                  str = '无'
-                  break
-                default:
-                  break
-              }
-              return str
-            }
-          },
-          {
-            label: '关联信息',
-            prop: 'message',
-            formatter: this.messageFormatter
-          },
-          {
-            label: '用户人数',
-            prop: 'userNum'
-          },
-          {
-            label: '在职人数',
-            prop: 'workNum'
-          }
-        ]
+      tableConfig: {
+        showHandler: true,
+        enableMultiSelect: true
       },
+      columns: [
+        {
+          label: '角色编码',
+          prop: 'roleId'
+        },
+        {
+          label: '角色名称',
+          prop: 'roleName'
+        },
+        {
+          label: '关联类型',
+          prop: 'type',
+          formatter: (row, column, cellValue) => {
+            let str = ''
+            switch (cellValue) {
+              case 'Job':
+                str = '职位'
+                break
+              case 'Position':
+                str = '岗位'
+                break
+              case 'No':
+                str = '无'
+                break
+              default:
+                break
+            }
+            return str
+          }
+        },
+        {
+          label: '关联信息',
+          prop: 'message',
+          formatter: this.messageFormatter
+        },
+        {
+          label: '用户人数',
+          prop: 'userNum'
+        },
+        {
+          label: '在职人数',
+          prop: 'workNum'
+        }
+      ],
       selectArr: [],
       roleRow: {},
       roleId: ''
@@ -242,6 +224,7 @@ export default {
   created() {
     this.getJobsFunc()
     this.getPositionsFunc()
+    this.onLoad()
   },
   methods: {
     // 加载页面全部数据（左侧分组树，右侧角色列表）
@@ -445,85 +428,48 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.oa-title_bar {
-  padding: 14px 6px;
+.role-wrap {
+  margin-bottom: 50px;
+  .oa-title_bar {
+    padding: 14px 6px;
 
-  .title-name {
-    color: #202940;
-    font-size: 18px;
-  }
-}
-
-.aside-wrap {
-  border-right: 1px solid #e3e7e9;
-}
-
-.main-wrap {
-  padding: 0 20px;
-  position: relative;
-
-  .search-bar {
-    padding: 10px 0 0 0;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .selected-bar {
-    background: white;
-    width: calc(100% - 40px);
-    top: 0;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 16px;
-    height: 58px;
-    line-height: 58px;
-
-    .left-part {
-      flex: 1;
+    .title-name {
+      color: #202940;
+      font-size: 18px;
     }
+  }
 
-    .right-part {
-      padding-right: 20px;
-      width: 50px;
-      text-align: center;
-      cursor: pointer;
+  .aside-wrap {
+    border-right: 1px solid #e3e7e9;
+  }
+
+  .main-wrap {
+    padding: 0 20px 20px 20px;
+    position: relative;
+
+    .search-bar {
+      padding: 10px 0 0 0;
+      display: flex;
+      justify-content: space-between;
     }
 
     .del-all {
       cursor: pointer;
     }
-
-    .selected-num {
-      color: #409eff;
-    }
-
-    .divider {
-      width: 2px;
-      height: 38px;
-      margin: 0 10px;
-      background-color: #f2f2f2;
-    }
-
-    .left-part {
-      display: flex;
-      align-items: center;
-    }
   }
-}
 
-/deep/ .el-card__body {
-  padding-bottom: 0 !important;
-}
+  /deep/ .el-card__body {
+    padding-bottom: 0 !important;
+  }
 
-/deep/ .avue-crud__menu {
-  min-height: 0;
-}
+  /deep/ .avue-crud__menu {
+    min-height: 0;
+  }
 
-.el-dropdown-link {
-  cursor: pointer;
-  color: #409eff;
-  margin-left: 10px;
+  .el-dropdown-link {
+    cursor: pointer;
+    color: #409eff;
+    margin-left: 10px;
+  }
 }
 </style>
