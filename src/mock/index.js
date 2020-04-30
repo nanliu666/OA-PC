@@ -2,7 +2,6 @@
 import user from './user'
 import menu from './menu'
 import oauth from './oauth'
-import param from './param'
 import system from './system'
 import personnel from './personnel'
 import role from './role'
@@ -17,37 +16,24 @@ import menus from './menus'
  * mock是否开启模拟数据拦截
  */
 
-const options = {
-  mock: false
-}
-position({
-  mock: true
-})
-grade({
-  mock: true
-})
-user({
-  mock: true
-})
-menus({
-  mock: true
-})
-menu(options)
+const options = { mock: false }
 
-// oauth(options)
+user(options)
+
+menu({ mock: true })
+
+position(options)
+grade(options)
+menus(options)
+
+oauth(options)
 
 system(options)
 
 personnel(options)
-// oauth(options)
 
-// dict(options)
+dict(options)
 
-// param(options)
-role({
-  mock: true
-})
+role(options)
 
-// role(options)
-
-// personalInfo(options)
+personalInfo(options)

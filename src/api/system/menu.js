@@ -92,20 +92,6 @@ export const getMenu = (id) => {
   })
 }
 
-export const getTopMenu = () =>
-  request({
-    url: '/api/blade-system/menu/top-menu',
-    method: 'get'
-  })
-
-export const getRoutes = (topMenuId) =>
-  request({
-    url: '/api/blade-system/menu/routes',
-    method: 'get',
-    params: {
-      topMenuId
-    }
-  })
 export const getMenuInfo = (topMenuId) =>
   request({
     url: '/api/sys/v1/menu/info',

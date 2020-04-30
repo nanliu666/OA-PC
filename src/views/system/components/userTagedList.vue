@@ -5,7 +5,6 @@
       :option="option"
       :table-loading="loading"
       :data="data"
-      :permission="permissionList"
       :page="page"
       @selection-change="selectionChange"
       @current-change="currentChange"
@@ -23,7 +22,6 @@
         </template>
         <template slot="menuRight">
           <el-button
-            v-if="permission.user_add"
             type="primary"
             size="small"
             plain
@@ -152,15 +150,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'permission']),
-    permissionList() {
-      return {
-        addBtn: this.vaildData(this.permission.user_add, false),
-        viewBtn: this.vaildData(this.permission.user_view, false),
-        delBtn: this.vaildData(this.permission.user_delete, false),
-        editBtn: this.vaildData(this.permission.user_edit, false)
-      }
-    },
+    ...mapGetters(['userInfo']),
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {

@@ -2,25 +2,29 @@
   <!-- [{url: '' }, {url: '' }] -->
   <!-- 调用 this.$refs.viewPicture.init(pictureList, index); -->
   <div>
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="pictureList" />
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="closeViewer"
+      :url-list="pictureList"
+    />
   </div>
 </template>
 
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 export default {
+  components: {
+    ElImageViewer
+  },
   data() {
     return {
       pictureList: [],
       showViewer: false
     }
   },
-  components: {
-    ElImageViewer
-  },
   methods: {
     // 初始化
-    init(list, id) {
+    init(list) {
       this.showViewer = true
       this.pictureList = list.map((item) => {
         return item.url

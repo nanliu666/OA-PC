@@ -1,7 +1,5 @@
 import * as qiniu from 'qiniu-js'
-import {
-  getQiniuToken
-} from '../api/common'
+import { getQiniuToken } from '../api/common'
 import uuidv4 from 'uuid/v4'
 import store from 'src/store'
 /**
@@ -14,37 +12,30 @@ import store from 'src/store'
  * @param hooks.complete {Function}
  */
 export async function uploadQiniu(file, hooks) {
-  try {
-    const suffix = file.name.substr(file.name.lastIndexOf('.'))
-    const fileName = uuidv4().replace(/-/g, '') + suffix
-    const params = {
-      userId: store.getters.userId || undefined,
-      companyId: store.getters.companyId || undefined,
-      fileName
-    }
-    const config = {
-      useCdnDomain: true
-    }
-
-    // 获取token
-    const {
-      uploadToken,
-      domain
-    } = await getQiniuToken(params)
-    debugger
-    const observable = qiniu.upload(file, fileName, uploadToken, config, {
-      fname: fileName
-    })
-    // 注册上传监听
-    observable.subscribe(hooks.next, hooks.error, (res) => {
-      // 上传完成时触发
-      hooks.complete({
-        ...res,
-        url: domain + '/' + res.key,
-        fileName
-      })
-    })
-  } catch (e) {
-    throw e
+  const suffix = file.name.substr(file.name.lastIndexOf('.'))
+  const fileName = uuidv4().replace(/-/g, '') + suffix
+  const params = {
+    userId: store.getters.userId || undefined,
+    companyId: store.getters.companyId || undefined,
+    fileName
   }
+  const config = {
+    useCdnDomain: true
+  }
+
+  // 获取token
+  const { uploadToken, domain } = await getQiniuToken(params)
+  debugger
+  const observable = qiniu.upload(file, fileName, uploadToken, config, {
+    fname: fileName
+  })
+  // 注册上传监听
+  observable.subscribe(hooks.next, hooks.error, (res) => {
+    // 上传完成时触发
+    hooks.complete({
+      ...res,
+      url: domain + '/' + res.key,
+      fileName
+    })
+  })
 }

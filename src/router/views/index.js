@@ -1,12 +1,12 @@
 import Layout from '@/page/index/'
-// import LayoutNoSidebar from '@/page/index/layoutNoSidebar';
+import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
 import gradeTree from '@/router/views/gradeTree'
 import personnel from './personnel'
 import orgs from './orgs'
 export default [
   {
     path: '/wel',
-    component: Layout,
+    component: LayoutNoSidebar,
     redirect: '/wel/index',
     children: [
       {
@@ -40,36 +40,6 @@ export default [
           i18n: 'test'
         },
         component: () => import(/* webpackChunkName: "views" */ '@/views/util/test')
-      }
-    ]
-  },
-  {
-    path: '/dict-horizontal',
-    component: Layout,
-    redirect: '/dict-horizontal/index',
-    children: [
-      {
-        path: 'index',
-        name: '字典管理',
-        meta: {
-          i18n: 'dict'
-        },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/util/demo/dict-horizontal')
-      }
-    ]
-  },
-  {
-    path: '/dict-vertical',
-    component: Layout,
-    redirect: '/dict-vertical/index',
-    children: [
-      {
-        path: 'index',
-        name: '字典管理',
-        meta: {
-          i18n: 'dict'
-        },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/util/demo/dict-vertical')
       }
     ]
   },

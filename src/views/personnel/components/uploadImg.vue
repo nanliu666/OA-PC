@@ -3,18 +3,34 @@
     <div class>
       <div class="upload">
         <template :class="noFile ? 'no-file' : 'image-list'">
-          <div v-for="(item, index) in fileList" :key="index" class="upload-box">
+          <div
+            v-for="(item, index) in fileList"
+            :key="index"
+            class="upload-box"
+          >
             <div class="molde">
-              <img class="upload-img" :src="item.url" alt />
+              <img
+                class="upload-img"
+                :src="item.url"
+                alt
+              >
               <div class="upload-after">
-                <span class="pictures" @click="isPictures(index)">
+                <span
+                  class="pictures"
+                  @click="isPictures(index)"
+                >
                   <i class="el-icon-view common-right" />
                 </span>
-                <span class="pictures" @click="isDelete(index, item.id)">
+                <span
+                  class="pictures"
+                  @click="isDelete(index, item.id)"
+                >
                   <i class="el-icon-delete common-left" />
                 </span>
               </div>
-              <div class="upload-name">{{ item.name }}</div>
+              <div class="upload-name">
+                {{ item.name }}
+              </div>
             </div>
           </div>
         </template>
@@ -30,9 +46,17 @@
           :on-error="onError"
           accept="image/jpeg, image/jpg, image/png"
         >
-          <i v-if="isonError" slot="default" class="isonError">重新上传</i>
+          <i
+            v-if="isonError"
+            slot="default"
+            class="isonError"
+          >重新上传</i>
           <div class="action-upload">
-            <el-progress v-show="uploading" :stroke-width="6" :percentage="uploadPercent" />
+            <el-progress
+              v-show="uploading"
+              :stroke-width="6"
+              :percentage="uploadPercent"
+            />
             <span v-show="!uploading">点击上传</span>
           </div>
         </el-upload>
@@ -132,9 +156,9 @@ export default {
           that.$message.error(err.message)
           // eslint-disable-next-line
         },
-        complete(res) {
+        complete() {
           that.uploading = false
-          uploadAttachmentInfo(this.uploadData).then((asd) => {
+          uploadAttachmentInfo(this.uploadData).then(() => {
             that.$message.success('上传成功')
           })
           // that.uploading = false;
@@ -172,7 +196,7 @@ export default {
       }
       return isJPG && isLt2M
     },
-    handleAvatarSuccess(res, file) {
+    handleAvatarSuccess() {
       const self = this
       self.$message.success('上传成功')
       // this.imageUrl = URL.createObjectURL(file.raw);

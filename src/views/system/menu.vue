@@ -6,7 +6,6 @@
       :option="option"
       :table-loading="loading"
       :data="data"
-      :permission="permissionList"
       :before-open="beforeOpen"
       :before-close="beforeClose"
       @row-del="rowDel"
@@ -23,7 +22,6 @@
     >
       <template slot="menuLeft">
         <el-button
-          v-if="permission.menu_delete"
           type="danger"
           size="small"
           icon="el-icon-delete"
@@ -236,15 +234,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'permission']),
-    permissionList() {
-      return {
-        addBtn: this.vaildData(this.permission.menu_add, false),
-        viewBtn: this.vaildData(this.permission.menu_view, false),
-        delBtn: this.vaildData(this.permission.menu_delete, false),
-        editBtn: this.vaildData(this.permission.menu_edit, false)
-      }
-    },
+    ...mapGetters(['userInfo']),
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {

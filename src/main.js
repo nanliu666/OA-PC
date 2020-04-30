@@ -12,16 +12,19 @@ import * as urls from '@/config/env'
 import Element from 'element-ui'
 import { iconfontUrl, iconfontVersion } from '@/config/env'
 import i18n from './lang' // Internationalization
+import '@/styles/oa-custom/theme/index.css'
 import './styles/common.scss'
 import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
 import commonTable from 'vue-common-table'
 import website from '@/config/website'
-import '@/styles/oa-custom/theme/index.css'
+
+import Permission from '@/directive/pcheck'
 import _ from 'lodash'
-import directives from './directive/loadmore'
+import loadmore from './directive/loadmore'
 Vue.prototype._ = _
 
+Vue.use(Permission)
 Vue.use(router)
 Vue.use(VueAxios, axios)
 Vue.use(Element, {
@@ -31,7 +34,7 @@ Vue.use(window.AVUE, {
   i18n: (key, value) => i18n.t(key, value)
 })
 // 自定义vue指令
-Vue.use(directives)
+Vue.use(loadmore)
 //注册全局容器
 Vue.component('basicContainer', basicContainer)
 Vue.component('basicBlock', basicBlock)

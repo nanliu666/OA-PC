@@ -114,7 +114,7 @@ export default {
       tenantMode: this.website.tenantMode,
       loginForm: {
         //租户ID
-        tenantId: '000000',
+        tenantId: 'bestgrand',
         //用户名
         username: 'admin',
         //密码
@@ -170,8 +170,9 @@ export default {
           })
           this.$store
             .dispatch('LoginByUsername', this.loginForm)
-            .then(() => {
+            .then((res) => {
               this.$router.push({ path: this.tagWel.value })
+              this.$store.dispatch('GetUserPrivilege', res.userId)
               loading.close()
             })
             .catch(() => {

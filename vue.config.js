@@ -10,13 +10,21 @@ module.exports = {
   productionSourceMap: false,
   chainWebpack: (config) => {
     //忽略的打包文件
-    config.externals({
-      vue: 'Vue',
-      'vue-router': 'VueRouter',
-      vuex: 'Vuex',
-      axios: 'axios',
-      'element-ui': 'ELEMENT'
-    })
+    if (isProduction) {
+      config.externals({
+        vue: 'Vue',
+        'vue-router': 'VueRouter',
+        vuex: 'Vuex',
+        axios: 'axios',
+        'element-ui': 'ELEMENT',
+        gojs: 'go'
+      })
+    } else {
+      config.externals({
+        gojs: 'go'
+      })
+    }
+
     const entry = config.entry('app')
     entry.add('babel-polyfill').end()
     entry.add('classlist-polyfill').end()
@@ -32,13 +40,10 @@ module.exports = {
     proxy: {
       '/api': {
         //本地服务接口地址
-        // target: 'http://localhost',
+        target: 'http://122.112.183.186/',
         //远程演示服务地址,可用于直接启动项目
-        target: 'https://saber.bladex.vip/api',
-        ws: true,
-        pathRewrite: {
-          '^/api': '/'
-        }
+        // target: 'https://saber.bladex.vip/',
+        ws: true
       }
     }
   },
