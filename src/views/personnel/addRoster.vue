@@ -256,12 +256,14 @@
                   >
                     <i class="el-icon-loading" />
                   </div>
-                  <div
-                    class="newAddress"
-                    @click="createAddress"
-                  >
-                    <i class="el-icon-plus" /> 新建工作地址
-                  </div>
+                  <el-option style="text-align:center">
+                    <div
+                      class="newAddress"
+                      @click="createAddress"
+                    >
+                      <i class="el-icon-plus" /> 新建工作地址
+                    </div>
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -476,7 +478,8 @@ export default {
             cityCode: this.workAddressForm.addressArr[1],
             cityName: inputValue[1],
             countyCode: this.workAddressForm.addressArr[2],
-            countyName: inputValue[2]
+            countyName: inputValue[2],
+            address: this.workAddressForm.address
           }
           if (this.workAddressForm.id) {
             params.id = this.workAddressForm.id

@@ -226,7 +226,7 @@ export default {
             type: 'treeSelect',
             field: 'parentOrgId',
             label: '',
-            data: ['0'],
+            data: ['1252523599903072257'],
             arrField: '',
             isSingle: true,
             options: {

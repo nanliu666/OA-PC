@@ -14,22 +14,19 @@ export default ({ mock }) => {
   })
   Mock.mock(new RegExp('/api/blade-auth/oauth/token' + '.*'), 'post', () => {
     return {
-      resCode: 200,
-      response: {
-        access_token:
-          'eyJ0eXAiOiJKc29uV2ViVG9rZW4iLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjExMjM1OTg4MTc3Mzg2NzUyMDEiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAxIiwidXNlcl9uYW1lIjoiYWRtaW4iLCJuaWNrX25hbWUiOiLnrqHnkIblkZgiLCJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGVwdF9pZCI6IjExMjM1OTg4MTM3Mzg2NzUyMDEiLCJhY2NvdW50IjoiYWRtaW4iLCJjbGllbnRfaWQiOiJzYWJlciIsImV4cCI6MTU4NzAyNTQzMiwibmJmIjoxNTg3MDIxODMyfQ.kzX2qHdtmg4DeC__mYDULvMy--gpKkloWIJ--bi4NVk',
-        account: 'admin',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-        expires_in: 3600,
-        license: 'powered by bladex',
-        nick_name: '管理员',
-        refresh_token:
-          'eyJ0eXAiOiJKc29uV2ViVG9rZW4iLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInRva2VuX3R5cGUiOiJyZWZyZXNoX3Rva2VuIiwiY2xpZW50X2lkIjoic2FiZXIiLCJleHAiOjE1ODc2MjY2MzIsIm5iZiI6MTU4NzAyMTgzMn0.mx_Q8bfaYB82gIIbGidpfTYjAzPZ-rWkxYSQKHlV4h8',
-        role_name: 'administrator',
-        tenant_id: '000000',
-        token_type: 'bearer',
-        user_name: 'admin'
-      }
+      access_token:
+        'eyJ0eXAiOiJKc29uV2ViVG9rZW4iLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjExMjM1OTg4MTc3Mzg2NzUyMDEiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAxIiwidXNlcl9uYW1lIjoiYWRtaW4iLCJuaWNrX25hbWUiOiLnrqHnkIblkZgiLCJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGVwdF9pZCI6IjExMjM1OTg4MTM3Mzg2NzUyMDEiLCJhY2NvdW50IjoiYWRtaW4iLCJjbGllbnRfaWQiOiJzYWJlciIsImV4cCI6MTU4NzAyNTQzMiwibmJmIjoxNTg3MDIxODMyfQ.kzX2qHdtmg4DeC__mYDULvMy--gpKkloWIJ--bi4NVk',
+      account: 'admin',
+      avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+      expires_in: 3600,
+      license: 'powered by bladex',
+      nick_name: '管理员',
+      refresh_token:
+        'eyJ0eXAiOiJKc29uV2ViVG9rZW4iLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInRva2VuX3R5cGUiOiJyZWZyZXNoX3Rva2VuIiwiY2xpZW50X2lkIjoic2FiZXIiLCJleHAiOjE1ODc2MjY2MzIsIm5iZiI6MTU4NzAyMTgzMn0.mx_Q8bfaYB82gIIbGidpfTYjAzPZ-rWkxYSQKHlV4h8',
+      role_name: 'administrator',
+      tenant_id: '000000',
+      token_type: 'bearer',
+      user_name: 'admin'
     }
   })
   Mock.mock('/api/blade-auth/oauth/token/refresh', 'post', () => {

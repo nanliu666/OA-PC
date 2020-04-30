@@ -47,6 +47,11 @@ axios.interceptors.request.use(
     if (config.method === 'post' && meta.isSerialize === true) {
       config.data = serialize(config.data)
     }
+    // 登录接口后台数据从url获取 其他接口正常
+    if (config.method.toLowerCase() !== 'get' && !String.prototype.endsWith.call(config.url, '/oauth/token')) {
+      config.data = config.data || config.params
+      config.params = null
+    }
     return config
   },
   (error) => {

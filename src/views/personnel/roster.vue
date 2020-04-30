@@ -310,18 +310,14 @@ export default {
         this.searchParams.statuses = [{ status: this.tabStatus }]
       }
       const params = {
-        ...this.page,
+        pageNo: pageNo || this.page.currentPage,
+        pageSize: this.page.pageSize,
         ...this.searchParams
-      }
-      if (pageNo) {
-        params.pageNo = pageNo
-        this.page.currentPage = pageNo
-      } else {
-        params.pageNo = this.page.currentPage
       }
       getUserList(params).then((res) => {
         this.data = res.data
         this.page.total = res.totalNum
+        if (pageNo) this.page.currentPage = pageNo
       })
     },
     handleSearch(params) {
