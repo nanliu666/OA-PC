@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <basic-container class="staff-info-container">
     <div class="staff-info-wrapper">
       <div class="staff-info-brad">
@@ -76,7 +75,11 @@
       </div>
 
       <div class="staff-diff-info">
-        <el-tabs v-model="tabs.activeTab">
+        <el-tabs
+          v-model="tabs.activeTab"
+          :stretch="stretch"
+          @tab-click="handleClick"
+        >
           <el-tab-pane
             label="在职信息"
             name="first"
@@ -151,14 +154,13 @@
             label="材料附件"
             name="third"
           >
-            材料附件
+            <upload-Data v-if="showTabUpload" />
           </el-tab-pane>
-
           <el-tab-pane
-            label="操作信息"
-            name="four"
+            label="操作记录"
+            name="fourth"
           >
-            操作信息
+            <action-record v-if="showTabAction" />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -176,6 +178,8 @@ import certificate from './detail/staffInfo/certificate'
 import family from './detail/staffInfo/family'
 import bank from './detail/staffInfo/bank'
 import social from './detail/staffInfo/social-security'
+import actionRecord from './components/actionRecord'
+import uploadData from './components/uploadData'
 export default {
   components: {
     basicInfo,
@@ -186,10 +190,16 @@ export default {
     certificate,
     family,
     bank,
-    social
+    social,
+    actionRecord,
+    uploadData
   },
   data() {
     return {
+      activeName: 'first',
+      stretch: true,
+      showTabUpload: false,
+      showTabAction: false,
       box: null,
       topValue: 0,
       tabs: {
@@ -264,164 +274,6 @@ export default {
       },
       false
     )
-=======
-  <basic-container>
-    <el-page-header
-      content="员工信息详情"
-      @back="goBack"
-    />
-    <el-row
-      class="el-name"
-      :gutter="20"
-    >
-      <el-col :span="2">
-        <div class="detail-box">
-          <div class="demo-basic--circle">
-            <div class="block">
-              <el-avatar
-                :size="120"
-                src
-              />
-            </div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="22">
-        <el-col :span="18">
-          <div class="grid-content bg-purple">
-            刘德华(GZ878)
-            <el-button
-              type="primary"
-              size="small"
-              plain
-            >
-              正式
-            </el-button>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <div class="grid-content bg-purple">
-            <el-button
-              type
-              size="medium"
-              plain
-            >
-              晋升
-            </el-button>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <div class="grid-content bg-purple">
-            <el-button
-              type
-              size="medium"
-              plain
-            >
-              调岗
-            </el-button>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <div class="grid-content bg-purple">
-            <el-button
-              type
-              size="medium"
-              plain
-            >
-              办理离职
-            </el-button>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="grid-content bg-purple">
-            手机号码：13978955852
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="grid-content bg-purple">
-            部门：设计小组
-            <el-button
-              type
-              size="small"
-              plain
-            >
-              主
-            </el-button>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="grid-content bg-purple">
-            职位：产品经理
-            <el-button
-              type
-              size="small"
-              plain
-            >
-              主
-            </el-button>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="grid-content bg-purple">
-            上级领导：陈晓晓
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="grid-content bg-purple">
-            标签： 储备PM；正式PM
-          </div>
-        </el-col>
-      </el-col>
-    </el-row>
-    <!--  -->
-    <el-tabs
-      v-model="activeName"
-      :stretch="stretch"
-      @tab-click="handleClick"
-    >
-      <el-tab-pane
-        label="在职信息"
-        name="first"
-      >
-        在职信息
-      </el-tab-pane>
-      <el-tab-pane
-        label="个人信息"
-        name="second"
-      >
-        个人信息
-      </el-tab-pane>
-      <el-tab-pane
-        label="材料附件"
-        name="third"
-      >
-        <upload-Data v-if="showTabUpload" />
-      </el-tab-pane>
-      <el-tab-pane
-        label="操作记录"
-        name="fourth"
-      >
-        <action-record v-if="showTabAction" />
-      </el-tab-pane>
-    </el-tabs>
-  </basic-container>
-</template>
-<script>
-import actionRecord from './components/actionRecord'
-import uploadData from './components/uploadData'
-export default {
-  components: {
-    actionRecord,
-    uploadData
-  },
-  data() {
-    return {
-      activeName: 'first',
-      stretch: true,
-      showTabUpload: false,
-      showTabAction: false
-    }
->>>>>>> saber/master
   },
   methods: {
     getStatus() {
@@ -446,7 +298,6 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
-<<<<<<< HEAD
     goAnchor(selector, index, event) {
       //设置跟随线的位置
       document.querySelector('.flow-line').style.top = event.target.offsetTop - 12 + 'px'
@@ -456,7 +307,7 @@ export default {
       //页面滚动到具体位置
       // this.$el.querySelector(selecterId).scrollIntoView();
       this.box.scrollTop = this.$el.querySelector(selecterId).offsetTop
-=======
+    },
     handleClick(tab) {
       if (tab.name == 'third') {
         this.showTabUpload = true
@@ -465,24 +316,17 @@ export default {
         this.showTabUpload = false
         this.showTabAction = true
       }
-      // console.log(tab, event, 'tab')
->>>>>>> saber/master
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-<<<<<<< HEAD
 li {
   list-style: none;
 }
 ul {
   margin: 0;
   padding: 0;
-=======
-.el-name {
-  margin-top: 25px;
->>>>>>> saber/master
 }
 
 .el-row {
@@ -495,17 +339,13 @@ ul {
 .activeBar {
   color: #368afa;
 }
-<<<<<<< HEAD
+
 .basic-container {
   padding: 0 !important;
 }
 .survey-value {
   color: #0e001c;
   padding-left: 6px;
-=======
-.bg-purple-light {
-  background: #e5e9f2;
->>>>>>> saber/master
 }
 .grid-content {
   .el-button {
