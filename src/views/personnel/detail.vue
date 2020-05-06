@@ -84,83 +84,32 @@
             label="在职信息"
             name="first"
           >
-            在职信息
+            <postInfo
+              v-if="activeName == 'first'"
+              :info="allInfo"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="个人信息"
             name="second"
           >
-            <div class="personal-deatil-info">
-              <el-row :gutter="20">
-                <!-- 内容区域 -->
-                <el-col
-                  :span="21"
-                  class="main-content-erea"
-                >
-                  <!-- 基本信息 -->
-                  <basicInfo :info="allInfo" />
-                  <!-- 紧急联系人 -->
-                  <emergency />
-
-                  <!-- 薪资银行卡 -->
-                  <bank :info="allInfo" />
-                  <!-- 社保公积金 -->
-                  <social :info="allInfo" />
-                  <!-- 教育经历 -->
-                  <education />
-
-                  <!-- 工作经历 -->
-
-                  <work />
-                  <!-- 培训经历 -->
-
-                  <train />
-
-                  <!-- 证书认证 -->
-                  <certificate />
-
-                  <!-- 家庭信息 -->
-                  <family />
-                </el-col>
-
-                <!-- 右侧锚点导航 -->
-                <el-col
-                  :span="2"
-                  :offset="1"
-                  class="sidebar-erea"
-                >
-                  <div class="sidebar-line">
-                    <span class="flow-line" />
-                  </div>
-                  <ul
-                    class="right-aside-bar"
-                    style="position:relative;"
-                  >
-                    <li
-                      v-for="(item, index) in asideBar"
-                      :key="index"
-                      class="asider-bar-item"
-                      :class="{ activeBar: index == filterNavItemActive }"
-                    >
-                      <span @click="goAnchor(item.contentId, index, $event)">{{ item.title }}</span>
-                    </li>
-                  </ul>
-                </el-col>
-              </el-row>
-            </div>
+            <personalInfo
+              v-if="activeName == 'second'"
+              :info="allInfo"
+            />
           </el-tab-pane>
 
           <el-tab-pane
             label="材料附件"
             name="third"
           >
-            <upload-Data v-if="showTabUpload" />
+            <upload-Data v-if="activeName == 'third'" />
           </el-tab-pane>
           <el-tab-pane
             label="操作记录"
             name="fourth"
           >
-            <action-record v-if="showTabAction" />
+            <action-record v-if="activeName == 'fourth'" />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -169,28 +118,14 @@
 </template>
 <script>
 import { getStaffBasicInfo } from '../../api/personalInfo.js'
-import basicInfo from './detail/staffInfo/basicInfo'
-import emergency from './detail/staffInfo/emergency'
-import education from './detail/staffInfo/education'
-import work from './detail/staffInfo/work'
-import train from './detail/staffInfo/trainning'
-import certificate from './detail/staffInfo/certificate'
-import family from './detail/staffInfo/family'
-import bank from './detail/staffInfo/bank'
-import social from './detail/staffInfo/social-security'
+import postInfo from './detail/postInfo/index'
+import personalInfo from './detail/staffInfo/index'
 import actionRecord from './components/actionRecord'
 import uploadData from './components/uploadData'
 export default {
   components: {
-    basicInfo,
-    emergency,
-    education,
-    work,
-    train,
-    certificate,
-    family,
-    bank,
-    social,
+    personalInfo,
+    postInfo,
     actionRecord,
     uploadData
   },
@@ -198,82 +133,15 @@ export default {
     return {
       activeName: 'first',
       stretch: true,
-      showTabUpload: false,
-      showTabAction: false,
-      box: null,
-      topValue: 0,
       tabs: {
         activeTab: 'first'
       },
-      filterNavItemActive: 0,
-      asideBar: [
-        {
-          title: '基本信息',
-          contentId: 'basic'
-        },
-        {
-          title: '紧急联系人',
-          contentId: 'emergency'
-        },
-        {
-          title: '工资银行卡',
-          contentId: 'bank'
-        },
-        {
-          title: '社保公积金',
-          contentId: 'social-security'
-        },
-        {
-          title: '教育经历',
-          contentId: 'education'
-        },
-        {
-          title: '工作经历',
-          contentId: 'work'
-        },
-        {
-          title: '培训经历',
-          contentId: 'trainning'
-        },
-        {
-          title: '资格证书',
-          contentId: 'certificate'
-        },
-        {
-          title: '家庭信息',
-          contentId: 'family'
-        }
-      ],
       circleUrl: '',
       allInfo: {}
     }
   },
   created() {
     this.getBasicInfo()
-  },
-  mounted() {
-    this.box = document.querySelector('#avue-view')
-    // 监听这个dom的scroll事件
-    this.box.addEventListener(
-      'scroll',
-      () => {
-        let siderBar = document.querySelector('.sidebar-erea')
-        if (this.box.scrollTop - this.topValue > 0) {
-          if (this.box.scrollTop >= 240) {
-            siderBar.style.position = 'fixed'
-            siderBar.style.top = 100 + 'px'
-            siderBar.style.right = 20 + 'px'
-          }
-        } else {
-          if (this.box.scrollTop <= 240) {
-            siderBar.style.position = 'relative'
-            siderBar.style.top = 0
-          }
-        }
-        this.topValue = this.box.scrollTop
-      },
-      false
-    )
   },
   methods: {
     getStatus() {
@@ -298,48 +166,13 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
-    goAnchor(selector, index, event) {
-      //设置跟随线的位置
-      document.querySelector('.flow-line').style.top = event.target.offsetTop - 12 + 'px'
-      let selecterId = `#${selector}`
-      //设置点击的样式
-      this.filterNavItemActive = index
-      //页面滚动到具体位置
-      // this.$el.querySelector(selecterId).scrollIntoView();
-      this.box.scrollTop = this.$el.querySelector(selecterId).offsetTop
-    },
     handleClick(tab) {
-      if (tab.name == 'third') {
-        this.showTabUpload = true
-        this.showTabAction = false
-      } else if (tab.name == 'fourth') {
-        this.showTabUpload = false
-        this.showTabAction = true
-      }
+      this.activeName = tab.name
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-li {
-  list-style: none;
-}
-ul {
-  margin: 0;
-  padding: 0;
-}
-
-.el-row {
-  margin: 0 !important;
-  margin-bottom: 10px !important;
-}
-.el-col {
-  padding: 0 !important;
-}
-.activeBar {
-  color: #368afa;
-}
-
 .basic-container {
   padding: 0 !important;
 }
@@ -419,33 +252,5 @@ ul {
     }
   }
 }
-.personal-deatil-info {
-  position: relative;
-}
-.sidebar-line {
-  float: left;
-  position: relative;
-  margin-right: 15px;
-  height: 300px;
-  width: 2px;
-  background: #ccc;
-  margin-top: 12px;
-}
-.flow-line {
-  display: inline-block;
-  height: 20px;
-  width: 3px;
-  background: #368afa;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.asider-bar-item {
-  line-height: 36px;
-  cursor: pointer;
-}
-.sidebar-erea {
-  position: relative;
-  right: 0;
-}
+@import url('./detail/staffInfo.scss');
 </style>
