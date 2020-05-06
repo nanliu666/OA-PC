@@ -1,5 +1,13 @@
+li {
+  list-style: none;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
 .el-row {
-  margin-bottom: 10px;
+  margin: 0 !important;
+  margin-bottom: 10px !important;
 }
 .el-col {
   padding: 0 !important;
@@ -85,6 +93,39 @@
 .el-form-item__label {
   color: #718199;
 }
+
 .info-item-value {
   color: #202940;
+}
+.personal-deatil-info {
+  position: relative;
+}
+.sidebar-line {
+  float: left;
+  position: relative;
+  margin-right: 15px;
+  height: 300px;
+  width: 2px;
+  background: #ccc;
+  margin-top: 12px;
+}
+.flow-line {
+  display: inline-block;
+  height: 20px;
+  width: 3px;
+  background: #368afa;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.asider-bar-item {
+  line-height: 36px;
+  cursor: pointer;
+}
+.sidebar-erea {
+  position: relative;
+  right: 0;
+}
+.activeBar {
+  color: #368afa;
 }
