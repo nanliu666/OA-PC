@@ -1,5 +1,41 @@
 import request from '@/router/axios'
 
+export const getPositionInfo = (params) => {
+  return request({
+    url: '/org/v1/position/define',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+export const getJobInfo = (params) => {
+  return request({
+    url: '/org/v1/job/list',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
+export const getConpactInfo = (params) => {
+  return request({
+    url: '/user/v1/user/contract/info',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
+export const getOfficeInfo = (params) => {
+  return request({
+    url: '/user/v1/user/office/info',
+    method: 'get',
+    params: {
+      ...params
+    }
+  })
+}
 export const getPersonalInfo = (params) => {
   return request({
     url: '/user/wxmini/v1/user/info',

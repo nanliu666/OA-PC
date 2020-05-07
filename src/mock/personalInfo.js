@@ -28,7 +28,7 @@ export default ({ mock }) => {
             code: '',
             account: 'admin',
             password: '90b9aa7e25f80cf4f64e990b78a9fc5ebd6cecad',
-            name: '����',
+            name: '完颜',
             realName: 'aaaa',
             avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
             email: 'admin@bladex.vip',
@@ -87,6 +87,137 @@ export default ({ mock }) => {
     }
   })
 
+  //在职信息员工合同信息查询
+  Mock.mock(new RegExp('/user/v1/user/contract/info' + '.*'), 'post', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        ...normalData,
+        response: [
+          {
+            id: 'eeefhjh',
+            code: '0394875457',
+            name: '百利宏',
+            type: '固定期限劳动合同',
+            beginDate: '2018-01-31',
+            endDate: '2020-12-31',
+            signDate: '2018-01-31',
+            relieveDate: '2020-12-31',
+            period: '3年',
+            remark: '2次'
+          },
+          {
+            id: 'asds',
+            code: 'jhyuui00u77',
+            name: '百利宏',
+            type: '固定期限劳动合同',
+            beginDate: '2018-01-31',
+            endDate: '2020-12-31',
+            signDate: '2018-01-31',
+            relieveDate: '2020-12-31',
+            period: '3年',
+            remark: '2次'
+          }
+        ]
+      }
+    }
+  })
+
+  //在职员工职位查询
+  Mock.mock(new RegExp('/org/v1/job/list' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        ...normalData,
+        response: [
+          {
+            jobId: 'eeefhjh',
+            jobName: '财务专员'
+          },
+          {
+            jobId: 'eeefhjddh',
+            jobName: '财务总监'
+          }
+        ]
+      }
+    }
+  })
+
+  //在职信息岗位查询
+  Mock.mock(new RegExp('/org/v1/position/define' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        ...normalData,
+        response: [
+          {
+            id: 'errtr',
+            name: '经理级'
+          },
+          {
+            id: 'eeefhjddh',
+            name: '总经理级'
+          }
+        ]
+      }
+    }
+  })
+
+  //在职信息部门查询
+  Mock.mock(new RegExp('/org/v1/organization/tree' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        ...normalData,
+        response: [
+          {
+            id: 'errtr',
+            name: '经理级'
+          },
+          {
+            id: 'eeefhjddh',
+            name: '总经理级'
+          }
+        ]
+      }
+    }
+  })
+  //查询员工任职记录
+  Mock.mock(new RegExp('/user/v1/user/office/info' + '.*'), 'get', () => {
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        ...normalData,
+        response: [
+          {
+            companyName: '百利宏控股',
+            beginDate: '2018-01-31',
+            endDate: '2020-12-31',
+            orgName: '产品部门/设计小组',
+            jobName: '产品经理',
+            positionName: '经理岗位',
+            address: '广东省深圳市宝能科技园',
+            remark: '晋升'
+          },
+          {
+            companyName: '百利宏控股',
+            beginDate: '2018-01-31',
+            endDate: '2020-12-31',
+            orgName: '产品部门/设计小组',
+            jobName: '产品经理',
+            positionName: '经理岗位',
+            address: '广东省深圳市宝能科技园',
+            remark: '晋升'
+          }
+        ]
+      }
+    }
+  })
   // 员工基本信息查询
   Mock.mock(new RegExp('/user/v1/user/info' + '.*'), 'get', () => {
     return {
@@ -126,10 +257,43 @@ export default ({ mock }) => {
           ssNo: '897668999',
           isFirstEpf: '1', //是否本地首次缴纳公积金，1：是，0：否
           epfNo: '897668999',
-          tags: {
-            tagId: '',
-            tagName: '正式PM；储备PM；正式PM；储备PM'
-          }
+          tags: [
+            {
+              tagId: 'qq',
+              tagName: '正式PM；储备PM；正式PM；储备PM'
+            }
+          ],
+          userRemark: '这是在职信息的备注',
+          recruitment: 'BOSS直聘',
+          workProvinceName: '陕西省',
+          workProvinceCode: '610000',
+          workCityCode: '610100',
+          workCityName: '西安市',
+          provinceCode: '610000',
+          provinceName: '陕西省',
+          cityName: '西安市',
+          cityCode: '610100',
+          countyCode: '610113',
+          countyName: '雁塔区',
+          address: 'xxx软件园', //工作的详细地址
+          subOrg: [
+            {
+              subJobId: 'asd',
+              subOrgName: '设计小组'
+            }
+          ],
+          subJob: [
+            {
+              subJobId: 'sdf',
+              subJobName: '产品经理'
+            }
+          ],
+          positionName: '岗位名称',
+          companyName: '入职公司',
+          workProperty: '全职',
+          probation: '3个月',
+          formalDate: '2019-3-20',
+          entryDate: '2018-12-20'
         }
       }
     }

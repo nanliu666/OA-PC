@@ -66,7 +66,12 @@
               <el-col :span="24">
                 <div class="grid-content bg-purple">
                   <span>标签：</span>
-                  <span> {{ allInfo.tags.tagName }}</span>
+                  <span
+                    v-for="(item, index) in allInfo.tags"
+                    :key="index"
+                  >
+                    {{ item.tagName }}
+                  </span>
                 </div>
               </el-col>
             </el-row>
