@@ -311,14 +311,7 @@ export default {
     },
     getTableData(pageNo) {
       if (!this.searchParams.statuses && this.tabStatus === 'onJob') {
-        // 在职 onJob 正式 Formal 试用期 Try 离职 WaitLeave 已离职 Leaved
-        // this.searchParams.statuses = [
-        //   { status: 'Formal' },
-        //   { status: 'Try' },
-        //   { status: 'WaitLeave' },
-        //   { status: 'Leaved' }
-        // ]
-        this.searchParams.statuse = ['Formal', 'Try', 'WaitLeave', 'Leaved']
+        this.searchParams.statuses = ['Formal', 'Try', 'WaitLeave', 'Leaved']
       } else if (this.tabStatus !== 'onJob') {
         this.searchParams.statuses = [this.tabStatus]
       }
