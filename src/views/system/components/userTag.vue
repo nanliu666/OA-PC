@@ -1,22 +1,24 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <el-input
       v-model="searchValue"
       placeholder="标签内容"
       suffix-icon="el-icon-search"
       size="small"
       class="search-input"
-      @blur="getTagList"
+      @change="loadData"
     />
     <ul>
       <li
         v-for="tag in tagList"
         :key="tag.id"
         :class="{ active: tag === activeTag }"
-        @click="handleClick(tag)"
       >
-        <template v-if="!tag.editing">
-          <span>{{ tag.name }}({{ tag.userNum }})</span>
+        <div
+          v-if="!tag.editing"
+          @click="handleClick(tag)"
+        >
+          <span>{{ tag.name }}({{ tag.workNum }})</span>
           <el-dropdown
             style="float:right;height:12px"
             trigger="click"
@@ -33,10 +35,10 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-        </template>
+        </div>
         <template v-else>
           <el-input
-            :v-model="tag.name"
+            v-model="tag.name"
             placeholder="请输入标签内容"
             style="width:calc(100% - 80px);"
           />
@@ -83,27 +85,34 @@ export default {
   data() {
     return {
       searchValue: '',
-      tagList: []
+      tagList: [],
+      loading: false
     }
   },
   created() {
-    // this.getTagList()
+    this.loadData()
   },
   methods: {
-    getTagList() {
+    loadData() {
+      this.loading = true
       const params = {
         pageNo: 1,
         pageSize: 999,
         name: this.searchValue
       }
-      getTagList(params).then((res) => {
-        this.tagList = res
-        this.$emit('update:activeTag', this.tagList[0])
-      })
+      getTagList(params)
+        .then((res) => {
+          this.tagList = res.data
+          this.$emit('update:activeTag', this.tagList[0])
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     deleteTag(tag) {
       deleteTag({ id: tag.id }).then(() => {
         this.$message.success('删除成功')
+        this.loadData()
       })
     },
     handleClick(tag) {
@@ -113,7 +122,7 @@ export default {
     },
     handleCommand(command, tag) {
       if (this.activeTag === tag) {
-        this.$emit('update:activeTag', {})
+        this.$emit('update:activeTag', null)
       }
       if (command == 'edit') {
         this.$set(tag, 'editing', true)
@@ -128,7 +137,7 @@ export default {
       }
     },
     handleQuit() {
-      this.getTagList()
+      this.loadData()
     },
     handleSubmit(tag) {
       let func = createTag
@@ -136,7 +145,8 @@ export default {
         func = modifyTag
       }
       func(tag).then(() => {
-        this.$message.success('保持成功')
+        this.loadData()
+        this.$message.success('提交成功')
       })
     },
     handleAdd() {

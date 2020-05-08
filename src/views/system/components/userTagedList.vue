@@ -1,80 +1,70 @@
 <template>
-  <basic-container>
-    <avue-crud
+  <basic-container
+    block
+    style="padding-top:0;"
+  >
+    <common-table
       ref="crud"
-      :option="option"
-      :table-loading="loading"
+      :config="tableConfig"
+      :columns="columns"
+      :loading="loading"
       :data="data"
       :page="page"
-      @selection-change="selectionChange"
-      @current-change="currentChange"
-      @size-change="sizeChange"
-      @refresh-change="refreshChange"
-      @on-load="onLoad"
+      @current-page-change="currentChange"
+      @page-size-change="sizeChange"
     >
-      <template v-if="selectionList.length === 0">
-        <template slot="menuLeft">
-          <el-input
-            v-model="query.name"
-            placeholder="姓名/工号"
-            suffix-icon="el-icon-search"
-          />
-        </template>
-        <template slot="menuRight">
-          <el-button
-            type="primary"
-            size="small"
-            plain
-            @click="handleAddTagMember"
-          >
-            添加员工
-          </el-button>
-        </template>
-      </template>
-      <template v-else>
-        <template slot="menuLeft">
-          <div style="line-height:40px;">
-            <span>
-              已选中 <span>{{ selectionList.length }}</span> 项
-            </span>
-            <el-divider direction="vertical" />
-            <el-button
-              type="text"
-              style="margin-bottom:0;"
-            >
-              批量移出
-            </el-button>
-          </div>
-        </template>
-        <template slot="menuRight">
-          <i
-            class="el-icon-close"
-            style="line-height: 40px;margin-right:10px;"
-            @click="selectionClear"
-          />
-        </template>
-      </template>
       <template
-        slot="menu"
-        slot-scope="{ row, label, type, size }"
+        slot="multiSelectMenu"
+        slot-scope="{ selection }"
       >
         <el-button
-          :size="size"
-          :type="type"
+          type="text"
+          style="margin-bottom:0;"
+          @click="handleDelete(selection)"
+        >
+          批量移出
+        </el-button>
+      </template>
+      <template slot="topMenu">
+        <el-input
+          v-model="query.name"
+          placeholder="姓名/工号"
+          suffix-icon="el-icon-search"
+          style="width:200px;margin-right:12px;"
+        />
+        <el-button
+          type="primary"
+          size="medium"
+          plain
+          @click="handleEditTagUser"
+        >
+          添加员工
+        </el-button>
+      </template>
+      <template
+        slot="handler"
+        slot-scope="{ row }"
+      >
+        <el-button
+          size="medium"
+          type="text"
           @click="handleDelete(row)"
         >
           移出
         </el-button>
       </template>
-    </avue-crud>
-    <user-taged-edit :visible.sync="editVisible" />
+    </common-table>
+    <user-taged-edit
+      ref="userTagedEdit"
+      :visible.sync="editVisible"
+      :tag-id="activeTag ? activeTag.id : null"
+      @after-submit="handleAfterSubmit"
+    />
   </basic-container>
 </template>
 
 <script>
-import { remove } from '@/api/system/user'
-import { mapGetters } from 'vuex'
-import { tableOptions } from '@/util/constant'
+import { getTagUserList, delTagUser } from '@/api/system/user'
 
 export default {
   name: 'User',
@@ -82,128 +72,130 @@ export default {
     // 标签成员编辑
     userTagedEdit: () => import('./userTagedEdit')
   },
+  props: {
+    activeTag: {
+      type: Object,
+      default: () => null
+    }
+  },
   data() {
     return {
-      selectionList: [],
+      loading: false,
       query: {
         name: ''
       },
-      loading: false,
       page: {
-        pageSize: 10,
         currentPage: 1,
+        size: 10,
         total: 0
       },
-      activeTag: {},
-      editVisible: false,
-      option: {
-        height: 'auto',
-        calcHeight: 80,
-        border: true,
-        index: true,
-        selection: true,
-        menuWidth: 160,
-        ...tableOptions,
-        column: [
-          {
-            label: '工号',
-            prop: 'account',
-            display: false
-          },
-          {
-            label: '姓名',
-            prop: 'realName',
-            display: false
-          },
-          {
-            label: '手机号',
-            prop: 'phone',
-            display: false
-          },
-          {
-            label: '部门',
-            prop: 'deptName',
-            display: false
-          },
-          {
-            label: '职位',
-            prop: 'roleName',
-            display: false
-          }
-        ]
+      tableConfig: {
+        showHandler: true,
+        enableMultiSelect: true
       },
-      data: [
+      columns: [
         {
-          id: '112359882138675201',
-          tenantId: '000000',
-          code: '',
-          account: 'admin',
-          name: '管理员',
-          realName: '管理员',
-          tenantName: '管理组',
-          roleName: '超级管理员',
-          deptName: '刀锋科技',
-          postName: '首席执行官',
-          sexName: '男'
+          label: '姓名',
+          prop: 'name'
+        },
+        //员工状态，Try-试用期，Formal-正式，WaitLeave-待离职
+        {
+          label: '状态',
+          prop: 'status',
+          formatter(record) {
+            return (
+              {
+                Try: '试用期',
+                Formal: '正式',
+                WaitLeave: '待离职'
+              }[record.status] || ''
+            )
+          }
+        },
+        {
+          label: '部门',
+          prop: 'orgName'
+        },
+        {
+          label: '职位',
+          prop: 'jobName'
         }
-      ]
+      ],
+      data: [],
+      editVisible: false
     }
   },
-  computed: {
-    ...mapGetters(['userInfo']),
-    ids() {
-      let ids = []
-      this.selectionList.forEach((ele) => {
-        ids.push(ele.id)
-      })
-      return ids.join(',')
+  watch: {
+    activeTag: function() {
+      this.loadData()
     }
   },
   methods: {
-    handleAddTagMember() {
-      this.editVisible = true
-    },
-    selectionChange(list) {
-      this.selectionList = list
-    },
-    selectionClear() {
-      this.selectionList = []
-      this.$refs.crud.toggleSelection()
+    loadData() {
+      if (!this.activeTag) {
+        return
+      }
+      this.loading = true
+      getTagUserList({
+        pageNo: this.page.currentPage,
+        pageSize: this.page.size,
+        tagId: this.activeTag.id,
+        search: this.query.name
+      })
+        .then((res) => {
+          this.page.total = res.totalNum
+          this.data = res.data
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     currentChange(currentPage) {
       this.page.currentPage = currentPage
+      this.loadData()
     },
     sizeChange(pageSize) {
       this.page.pageSize = pageSize
     },
-    refreshChange() {},
-    handleDelete(row) {
-      this.$confirm('确定将选择数据删除?', {
+    handleDelete(data) {
+      let msg = '删除标签后，标签内的成员也会同步被清除，确定删除该标签么？'
+      let userId = data.userId
+      if (Array.isArray(data)) {
+        msg = `确定将选中的${data.length}个用户移出该标签么？`
+        userId = data.map((item) => item.userId).join(',')
+      }
+      this.$confirm(msg, {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          return remove(row.id)
+          return delTagUser(this.activeTag.id, userId)
         })
         .then(() => {
-          this.onLoad(this.page)
           this.$message({
             type: 'success',
             message: '操作成功!'
           })
-          this.$refs.crud.toggleSelection()
+          this.$refs.crud.clearSelection()
+          this.handleAfterSubmit()
         })
     },
-
-    onLoad() {
-      // this.loading = true
-      // getList(page.currentPage, page.pageSize, Object.assign(params, this.query), this.treeDeptId).then((data) => {
-      //   this.page.total = data.total
-      //   this.data = data.records
-      //   this.loading = false
-      //   this.selectionClear()
-      // })
+    handleAfterSubmit() {
+      this.loadData()
+      this.$emit('refresh-tag')
+    },
+    handleEditTagUser() {
+      if (!this.activeTag) {
+        this.$message({
+          type: 'error',
+          message: '请先创建标签!'
+        })
+      }
+      this.$refs['userTagedEdit'].init({
+        tagId: this.activeTag.id,
+        userList: this.data
+      })
     }
   }
 }

@@ -14,7 +14,7 @@ const res = {
     ],
     menuPrivileges: [
       {
-        menuId: '1123598815738675203',
+        menuId: '1',
         parentId: '0',
         code: 'system',
         menuName: '系统管理',
@@ -24,26 +24,7 @@ const res = {
         isOwn: 1,
         children: [
           {
-            menuId: '1123598815738675204',
-            parentId: '1123598815738675203',
-            code: 'user',
-            menuName: '用户管理',
-            alias: 'menu',
-            path: '/system/user',
-            icon: 'iconfont iconicon_principal',
-            menuType: 'Menu',
-            isOwn: 1,
-            children: [
-              {
-                menuName: '修改',
-                path: '/system/user/edit',
-                isOwn: 1,
-                menuType: 'Button'
-              }
-            ]
-          },
-          {
-            menuId: '112359881573867528544',
+            menuId: '11',
             parentId: '1123598815738675203',
             code: 'action',
             menuName: '操作日志',
@@ -62,27 +43,8 @@ const res = {
             ]
           },
           {
-            menuId: '1123598815738675205',
-            parentId: '1123598815738675203',
-            code: 'dept',
-            menuName: '机构管理',
-            alias: 'menu',
-            path: '/system/dept',
-            icon: 'iconfont iconicon_group',
-            menuType: 'Menu',
-            isOwn: 1,
-            children: [
-              {
-                menuName: '修改',
-                isOwn: 1,
-                path: '/system/dept/edit',
-                menuType: 'Button'
-              }
-            ]
-          },
-          {
-            menuId: '1123598815738675206',
-            parentId: '1123598815738675203',
+            menuId: '12',
+            parentId: '1',
             code: 'dict',
             menuName: '系统字典',
             alias: 'menu',
@@ -100,8 +62,8 @@ const res = {
             ]
           },
           {
-            menuId: '1123598815738675207',
-            parentId: '1123598815738675203',
+            menuId: '13',
+            parentId: '1',
             code: 'menu',
             menuName: '菜单管理',
             alias: 'menu',
@@ -124,6 +86,37 @@ const res = {
         categoryName: '',
         actionName: '',
         isOpenName: ''
+      },
+      {
+        menuId: '2',
+        parentId: '0',
+        code: 'system',
+        menuName: '组织管理',
+        alias: 'menu',
+        icon: 'iconfont iconicon_setting',
+        menuType: 'Menu',
+        isOwn: 1,
+        children: [
+          {
+            menuId: '21',
+            parentId: '2',
+            code: 'user',
+            menuName: '用户管理',
+            alias: 'menu',
+            path: '/system/user',
+            icon: 'iconfont iconicon_principal',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                path: '/system/user/edit',
+                isOwn: 1,
+                menuType: 'Button'
+              }
+            ]
+          }
+        ]
       }
     ]
   }
