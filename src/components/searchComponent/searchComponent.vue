@@ -144,6 +144,7 @@
                       />
                       <el-cascader
                         v-if="item.type === 'cascader'"
+                        :ref="item.field"
                         v-model="item.data"
                         :options="item.options"
                       />
@@ -272,9 +273,10 @@ export default {
     this.searchArray = await genSearchArray()
   },
   updated() {
-    this.$refs.selectMultiple.forEach((item) => {
-      item.initialInputHeight = 34
-    })
+    this.$refs.selectMultiple &&
+      this.$refs.selectMultiple.forEach((item) => {
+        item.initialInputHeight = 34
+      })
   },
   methods: {
     treeSelectChange(e, item) {
@@ -299,15 +301,21 @@ export default {
           params[item.field.split(',')[0]] = item.data.min
           params[item.field.split(',')[1]] = item.data.max
         } else if (item.type === 'treeSelect' || item.type === 'select') {
-          if ((item.type === 'select' && item.config && item.config.multiple) || item.type === 'treeSelect') {
+          if (
+            (item.type === 'select' && item.config && item.config.multiple) ||
+            item.type === 'treeSelect'
+          ) {
             params[item.field] = item.data.map((it) => {
-              return { [item.arrField]: it }
+              // return { [item.arrField]: it }
+              return it
             })
           } else {
             params[item.field] = item.data
           }
         } else if (item.type === 'cascader') {
-          params[item.field] = item.data[item.data.length - 1]
+          item.field.split(',').forEach((it, idx) => {
+            params[it] = [item.data[idx]]
+          })
         } else if (item.type === 'dataPicker') {
           item.field.split(',').forEach((it, idx) => {
             params[it] = item.data[idx]
@@ -376,7 +384,8 @@ export default {
     jointTagName(tag) {
       if (Array.isArray(tag.data)) {
         if (tag.type === 'cascader') {
-          return tag.label + ': ' + tag.data[tag.data.length - 1]
+          console.log(this.$refs[tag.field])
+          return tag.label + ': ' + this.$refs[tag.field][0].inputValue
         } else if (tag.type === 'treeSelect') {
           return (
             tag.label +
@@ -388,13 +397,28 @@ export default {
               .join('、')
           )
         } else {
-          let range = tag.config && tag.config['range-separator'] ? tag.config['range-separator'] : '、'
-          return tag.label + ': ' + (tag.type === 'select' ? this.findTagLabel(tag).join(range) : tag.data.join(range))
+          let range =
+            tag.config && tag.config['range-separator'] ? tag.config['range-separator'] : '、'
+          return (
+            tag.label +
+            ': ' +
+            (tag.type === 'select' ? this.findTagLabel(tag).join(range) : tag.data.join(range))
+          )
         }
       } else if (Object.prototype.toString.call(tag.data) === '[object Object]') {
         return tag.label + ': ' + tag.data.min + '-' + tag.data.max
       } else {
-        return tag.label + ': ' + tag.data
+        if (tag.type === 'select' && !tag.config.multiple) {
+          let label = ''
+          tag.options.forEach((item) => {
+            if (item.value === tag.data) {
+              label = item.label
+            }
+          })
+          return tag.label + ': ' + label
+        } else {
+          return tag.label + ': ' + tag.data
+        }
       }
     }
   }
@@ -418,7 +442,8 @@ export default {
 }
 .collapse-box {
   border-radius: 4px;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04), 0 8px 8px 0 rgba(0, 0, 0, 0.08), 0 10px 20px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04), 0 8px 8px 0 rgba(0, 0, 0, 0.08),
+    0 10px 20px 8px rgba(0, 0, 0, 0.04);
 }
 .elInput {
   width: 100%;

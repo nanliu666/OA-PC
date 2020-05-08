@@ -60,6 +60,7 @@ instance.interceptors.request.use(
     ) {
       config.data = config.data || config.params
     }
+    if (config.method.toLowerCase() === 'delete') config.params = config.data
     return config
   },
   (error) => {

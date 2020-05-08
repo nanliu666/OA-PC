@@ -25,8 +25,8 @@
 </template>
 
 <script>
-const MIN_NUMBER = 1
-const MAX_NUMBER = 10000000000
+// const MIN_NUMBER = 1
+const MAX_NUMBER = 100000000
 
 export default {
   name: 'NumInterval',
@@ -81,10 +81,11 @@ export default {
     validateCom(rule, value, callback) {
       const one = Number(value)
       if (Number.isInteger(one)) {
-        if (one < MIN_NUMBER) {
-          return callback(new Error('必须大于0'))
-        } else if (one > MAX_NUMBER) {
-          return callback(new Error('必须小于100000'))
+        // if (one < MIN_NUMBER) {
+        //   return callback(new Error('必须大于0'))
+        // } else
+        if (one > MAX_NUMBER) {
+          return callback(new Error('必须小于100000000'))
         }
         return callback()
       }

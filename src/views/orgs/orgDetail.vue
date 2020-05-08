@@ -92,6 +92,7 @@
       <org-edit
         ref="orgEdit"
         :visible.sync="createOrgDailog"
+        @refresh="loadData"
       />
     </basic-container>
   </div>
@@ -133,7 +134,7 @@ export default {
     },
     deleteOrg() {
       const params = {
-        orgs: [{ orgId: this.orgData.orgId }]
+        ids: this.orgData.orgId
       }
       deleteOrg(params).then(() => {
         this.$message.success('删除成功')
@@ -151,7 +152,7 @@ export default {
       let fatherOrg
       function deep(arr, orgId) {
         arr.forEach((item) => {
-          if (item.children.length > 0) {
+          if (item.children && item.children.length > 0) {
             item.children.forEach((it) => {
               if (it.orgId === orgId) fatherOrg = item
             })

@@ -2,17 +2,19 @@
   <basic-container class="staff-info-container">
     <div class="staff-info-wrapper">
       <div class="staff-info-brad">
-        <span><i
-          class="el-icon-arrow-left"
-          @click="goBack"
-        /></span>
+        <span>
+          <i
+            class="el-icon-arrow-left"
+            @click="goBack"
+          />
+        </span>
         <span>个人信息</span>
       </div>
       <div class="staff-survey">
         <el-container class="survey-inner-container">
           <el-aside width="100px">
             <div class="detail-box">
-              <div class="demo-basic--circle ">
+              <div class="demo-basic--circle">
                 <div class="block">
                   <el-avatar
                     :size="80"
@@ -40,7 +42,7 @@
               <el-col :span="6">
                 <div class="grid-content">
                   <span>手机号码:</span>
-                  <span class="survey-value"> {{ allInfo.phonenum }}</span>
+                  <span class="survey-value">{{ allInfo.phonenum }}</span>
                 </div>
               </el-col>
               <el-col :span="4">
@@ -66,7 +68,7 @@
               <el-col :span="24">
                 <div class="grid-content bg-purple">
                   <span>标签：</span>
-                  <span> {{ allInfo.tags.tagName }}</span>
+                  <span>{{ allInfo.tags.tagName }}</span>
                 </div>
               </el-col>
             </el-row>
@@ -118,14 +120,14 @@
 </template>
 <script>
 import { getStaffBasicInfo } from '../../api/personalInfo.js'
-import postInfo from './detail/postInfo/index'
+// import postInfo from './detail/postInfo/index'
 import personalInfo from './detail/staffInfo/index'
 import actionRecord from './components/actionRecord'
 import uploadData from './components/uploadData'
 export default {
   components: {
     personalInfo,
-    postInfo,
+    // postInfo,
     actionRecord,
     uploadData
   },
@@ -221,7 +223,8 @@ export default {
       position: relative;
       height: 160px;
       background: #fff;
-      box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04),
+        0 4px 8px 4px rgba(0, 0, 0, 0.04);
       border-radius: 4px;
       font-size: 14px;
       color: #757c85;
@@ -239,7 +242,8 @@ export default {
 }
 .staff-diff-info {
   background: #ffffff;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04),
+    0 4px 8px 4px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   /deep/ .el-tabs__header {
     .el-tabs__nav-wrap {

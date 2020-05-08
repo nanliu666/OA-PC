@@ -59,15 +59,19 @@ export default {
     loadSort(arr) {
       arr.forEach((item, index) => {
         item.sort = index + 1
-        if (item.children.length > 0) {
+        if (item.children && item.children.length > 0) {
           this.loadSort(item.children)
         }
       })
     },
     onSubmit() {
       this.loadSort(this.data)
-      sortOrgTree({ orgs: this.data }).then(() => {
+      // { orgs: this.data }
+      sortOrgTree(this.data).then(() => {
         this.$message.success('保存成功')
+        getOrgTree({ parentOrgId: 0 }).then((res) => {
+          this.data = res
+        })
       })
     }
   }
