@@ -37,6 +37,7 @@ export const getOfficeInfo = (params) => {
   })
 }
 
+//获取手机验证码
 export const getCode = (params) => {
   return request({
     url: '/api/common/v1/sms/send',
@@ -47,6 +48,26 @@ export const getCode = (params) => {
   })
 }
 
+//验证手机验证码
+export const checkPhoneCode = (params) => {
+  return request({
+    url: '/api/user/v1/sms/check',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
+
+export const checkPassword = (params) => {
+  return request({
+    url: '/api/user/v1/user/pwd',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
 //查询员工信息
 export const getStaffBasicInfo = (params) => {
   return request({

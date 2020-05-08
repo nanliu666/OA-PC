@@ -73,7 +73,7 @@
                   class="get-test-code"
                   @click="handleSend"
                 >
-                  {{ identity.msgText }}
+                  <span>获取验证码</span>
                 </el-button>
                 <el-button
                   v-show="identity.msgKey"
@@ -171,8 +171,8 @@
 
 <script>
 import { isMobile, validatePW } from '@/util/validate'
-import { getCode } from '../../api/personalInfo.js'
-
+import { getCode, checkPhoneCode, checkPassword } from '../../api/personalInfo.js'
+import { mapGetters } from 'vuex'
 let code = null
 
 export default {
@@ -281,7 +281,8 @@ export default {
         MSGSCUCCESS: this.$t('login.msgSuccess'),
         MSGTIME: 60
       }
-    }
+    },
+    ...mapGetters(['userInfo'])
   },
   created() {
     this.identity.msgText = this.config.MSGINIT
@@ -295,19 +296,44 @@ export default {
       if (this.step == 1) {
         this.$refs['identity'].validate((isPass) => {
           if (isPass && this.identity.form.code == code) {
-            this.step++
-            this.steps.firstStatus = 'success'
-            this.steps.secondStatus = 'finish'
+            //验证手机验证码
+            let params = {
+              phonenum: this.identity.form.phone,
+              smsCode: this.identity.form.code
+            }
+            checkPhoneCode(params).then((res) => {
+              if (res.resCode == 200) {
+                this.step++
+                this.steps.firstStatus = 'success'
+                this.steps.secondStatus = 'finish'
+              } else {
+                this.$message({
+                  type: 'success',
+                  message: res.resMsg
+                })
+              }
+            })
           }
         })
       } else if (this.step == 2) {
         this.$refs['password'].validate((isPass) => {
           if (isPass && this.password.form.surePW == this.password.form.newPW) {
-            //1.将用户的新密码存入数据库
-            //2.跳到下一步的验证环节
-            this.step++
-            this.steps.secondStatus = 'success'
-            this.steps.finalStatus = 'success'
+            let params = {
+              userId: this.userInfo.user_id,
+              newPassword: this.password.form.newPW
+            }
+            checkPassword(params).then((res) => {
+              if (res.resCode == 200) {
+                this.step++
+                this.steps.secondStatus = 'success'
+                this.steps.finalStatus = 'success'
+              } else {
+                this.$message({
+                  type: 'success',
+                  message: res.resMsg
+                })
+              }
+            })
           }
         })
       }
@@ -352,7 +378,6 @@ export default {
   padding: 68px 32px 0 32px !important;
   position: relative;
 }
-
 .brad-part {
   position: absolute;
   height: 68px;
@@ -379,11 +404,12 @@ export default {
   transform: translate(-50%, 0);
   padding-top: 78px;
 }
-.progress-bar .el-step__icon {
-  width: 32px !important;
-  height: 32px !important;
+.progress-bar {
+  /deep/ .el-step__icon {
+    width: 32px !important;
+    height: 32px !important;
+  }
 }
-
 .identity-test,
 .reset-password {
   width: 78%;
@@ -405,11 +431,13 @@ export default {
   width: calc(100% - 117px);
   margin-right: 5px;
 }
+.form-containner {
+  /deep/ .el-input__inner {
+    height: 34px !important;
+    line-height: 34px !important;
+  }
+}
 
-.test-code-input > input,
-.phone-input > input,
-.newPW-input > input,
-.surePW-input > input,
 .get-test-code,
 .count-down-time {
   height: 34px !important;

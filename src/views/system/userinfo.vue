@@ -399,11 +399,11 @@ export default {
       contactOrder: null
     }
   },
-  created() {
-    this.getUserAllInfo()
-  },
   computed: {
     ...mapGetters(['userInfo'])
+  },
+  created() {
+    this.getUserAllInfo()
   },
   methods: {
     getUserAllInfo() {
@@ -429,7 +429,7 @@ export default {
             if (res.response.success) {
               this.$message({
                 type: 'success',
-                message: res.response.resMsg
+                message: res.resMsg
               })
             } else {
               this.$message({
