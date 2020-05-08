@@ -15,6 +15,6 @@ module.exports = {
   // avoid 能省略括号的时候就省略 例如x => x
   // always 总是有括号
   arrowParens: 'always',
-  printWidth: 120,
+  printWidth: 100,
   tabWidth: 2
 }
