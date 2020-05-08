@@ -2,7 +2,7 @@ import request from '@/router/axios'
 
 export const getPositionInfo = (params) => {
   return request({
-    url: '/org/v1/position/define',
+    url: '/api/org/v1/position/define',
     method: 'get',
     params: {
       ...params
@@ -11,7 +11,7 @@ export const getPositionInfo = (params) => {
 }
 export const getJobInfo = (params) => {
   return request({
-    url: '/org/v1/job/list',
+    url: '/api/org/v1/job/list',
     method: 'get',
     params: {
       ...params
@@ -20,7 +20,7 @@ export const getJobInfo = (params) => {
 }
 export const getConpactInfo = (params) => {
   return request({
-    url: '/user/v1/user/contract/info',
+    url: '/api/user/v1/user/contract/info',
     method: 'post',
     params: {
       ...params
@@ -29,34 +29,17 @@ export const getConpactInfo = (params) => {
 }
 export const getOfficeInfo = (params) => {
   return request({
-    url: '/user/v1/user/office/info',
+    url: '/api/user/v1/user/office/info',
     method: 'get',
     params: {
       ...params
     }
   })
 }
-export const getPersonalInfo = (params) => {
-  return request({
-    url: '/user/wxmini/v1/user/info',
-    method: 'get',
-    params: {
-      ...params
-    }
-  })
-}
-export const updateInfo = (params) => {
-  return request({
-    url: '/user/wxmini/v1/user/info',
-    method: 'post',
-    params: {
-      ...params
-    }
-  })
-}
+
 export const getCode = (params) => {
   return request({
-    url: '/common/v1/sms/send',
+    url: '/api/common/v1/sms/send',
     method: 'post',
     params: {
       ...params
@@ -67,29 +50,25 @@ export const getCode = (params) => {
 //查询员工信息
 export const getStaffBasicInfo = (params) => {
   return request({
-    url: '/user/v1/user/info',
+    url: '/api/user/v1/user/info',
     method: 'get',
-    params: {
-      ...params
-    }
+    params
   })
 }
 
 //编辑员工信息
 export const editStaffBasicInfo = (params) => {
   return request({
-    url: '/user/v1/user/info',
+    url: '/api/user/v1/user/info',
     method: 'put',
-    params: {
-      ...params
-    }
+    params
   })
 }
 
 //查询员工紧急联系人的信息
 export const getStaffEmerInfo = (params) => {
   return request({
-    url: '/user/v1/user/emer/info',
+    url: '/api/user/v1/user/emer/info',
     method: 'get',
     params: {
       ...params
@@ -99,7 +78,7 @@ export const getStaffEmerInfo = (params) => {
 //删除员工紧急联系人的信息
 export const delStaffEmerInfo = (params) => {
   return request({
-    url: '/user/v1/user/emer/info',
+    url: '/api/user/v1/user/emer/info',
     method: 'delete',
     params: {
       ...params
@@ -109,7 +88,7 @@ export const delStaffEmerInfo = (params) => {
 ////修改员工紧急联系人的信息
 export const editStaffEmerInfo = (params) => {
   return request({
-    url: '/user/v1/user/emer/info',
+    url: '/api/user/v1/user/emer/info',
     method: 'put',
     params: {
       ...params
@@ -119,7 +98,7 @@ export const editStaffEmerInfo = (params) => {
 //添加员工紧急联系人的信息
 export const addStaffEmerInfo = (params) => {
   return request({
-    url: '/user/v1/user/emer/info',
+    url: '/api/user/v1/user/emer/info',
     method: 'post',
     params: {
       ...params
@@ -130,7 +109,7 @@ export const addStaffEmerInfo = (params) => {
 //查询员工教育经历的信息
 export const getStaffEducationInfo = (params) => {
   return request({
-    url: '/user/v1/user/education/info',
+    url: '/api/user/v1/user/education/info',
     method: 'get',
     params: {
       ...params
@@ -140,7 +119,7 @@ export const getStaffEducationInfo = (params) => {
 //删除员工教育经历的信息
 export const delStaffEducationInfo = (params) => {
   return request({
-    url: '/user/v1/user/education/info',
+    url: '/api/user/v1/user/education/info',
     method: 'delete',
     params: {
       ...params
@@ -150,7 +129,7 @@ export const delStaffEducationInfo = (params) => {
 ////修改员工教育经历的信息
 export const editStaffEducationInfo = (params) => {
   return request({
-    url: '/user/v1/user/education/info',
+    url: '/api/user/v1/user/education/info',
     method: 'put',
     params: {
       ...params
@@ -160,7 +139,7 @@ export const editStaffEducationInfo = (params) => {
 //添加员工教育经历的信息
 export const addStaffEducationInfo = (params) => {
   return request({
-    url: '/user/v1/user/education/info',
+    url: '/api/user/v1/user/education/info',
     method: 'post',
     params: {
       ...params
@@ -171,7 +150,7 @@ export const addStaffEducationInfo = (params) => {
 //查询员工工作经历的信息
 export const getStaffWorkInfo = (params) => {
   return request({
-    url: '/user/v1/user/work/info',
+    url: '/api/user/v1/user/work/info',
     method: 'get',
     params: {
       ...params
@@ -181,7 +160,7 @@ export const getStaffWorkInfo = (params) => {
 //删除员工工作经历的信息
 export const delStaffWorkInfo = (params) => {
   return request({
-    url: '/user/v1/user/work/info',
+    url: '/api/user/v1/user/work/info',
     method: 'delete',
     params: {
       ...params
@@ -191,7 +170,7 @@ export const delStaffWorkInfo = (params) => {
 ////修改员工工作经历的信息
 export const editStaffWorkInfo = (params) => {
   return request({
-    url: '/user/v1/user/work/info',
+    url: '/api/user/v1/user/work/info',
     method: 'put',
     params: {
       ...params
@@ -201,7 +180,7 @@ export const editStaffWorkInfo = (params) => {
 //添加员工工作经历的信息
 export const addStaffworkInfo = (params) => {
   return request({
-    url: '/user/v1/user/work/info',
+    url: '/api/user/v1/user/work/info',
     method: 'post',
     params: {
       ...params
@@ -212,7 +191,7 @@ export const addStaffworkInfo = (params) => {
 //查询员工培训经历的信息
 export const getStaffTrainInfo = (params) => {
   return request({
-    url: '/user/v1/user/train/info',
+    url: '/api/user/v1/user/train/info',
     method: 'get',
     params: {
       ...params
@@ -222,7 +201,7 @@ export const getStaffTrainInfo = (params) => {
 //删除员工培训经历的信息
 export const delStaffTrainInfo = (params) => {
   return request({
-    url: '/user/v1/user/train/info',
+    url: '/api/user/v1/user/train/info',
     method: 'delete',
     params: {
       ...params
@@ -232,7 +211,7 @@ export const delStaffTrainInfo = (params) => {
 ////修改员工培训经历的信息
 export const editStaffTrainInfo = (params) => {
   return request({
-    url: '/user/v1/user/train/info',
+    url: '/api/user/v1/user/train/info',
     method: 'put',
     params: {
       ...params
@@ -242,7 +221,7 @@ export const editStaffTrainInfo = (params) => {
 //添加员工培训经历的信息
 export const addStaffTrainInfo = (params) => {
   return request({
-    url: '/user/v1/user/train/info',
+    url: '/api/user/v1/user/train/info',
     method: 'post',
     params: {
       ...params
@@ -253,7 +232,7 @@ export const addStaffTrainInfo = (params) => {
 //查询员工家庭信息
 export const getStaffFamilyInfo = (params) => {
   return request({
-    url: '/user/v1/user/family/info',
+    url: '/api/user/v1/user/family/info',
     method: 'get',
     params: {
       ...params
@@ -263,7 +242,7 @@ export const getStaffFamilyInfo = (params) => {
 //删除员工家庭信息
 export const delStaffFamilyInfo = (params) => {
   return request({
-    url: '/user/v1/user/family/info',
+    url: '/api/user/v1/user/family/info',
     method: 'delete',
     params: {
       ...params
@@ -273,7 +252,7 @@ export const delStaffFamilyInfo = (params) => {
 ////修改员工家庭信息
 export const editStaffFamilyInfo = (params) => {
   return request({
-    url: '/user/v1/user/family/info',
+    url: '/api/user/v1/user/family/info',
     method: 'put',
     params: {
       ...params
@@ -283,7 +262,7 @@ export const editStaffFamilyInfo = (params) => {
 //添加员工家庭信息
 export const addStaffFamilyInfo = (params) => {
   return request({
-    url: '/user/v1/user/family/info',
+    url: '/api/user/v1/user/family/info',
     method: 'post',
     params: {
       ...params
@@ -294,7 +273,7 @@ export const addStaffFamilyInfo = (params) => {
 //查询员工证书信息
 export const getStaffCertificate = (params) => {
   return request({
-    url: '/user/v1/user/certificate/info',
+    url: '/api/user/v1/user/certificate/info',
     method: 'get',
     params: {
       ...params
@@ -304,7 +283,7 @@ export const getStaffCertificate = (params) => {
 //删除员工证书信息
 export const delStaffCertificate = (params) => {
   return request({
-    url: '/user/v1/user/certificate/info',
+    url: '/api/user/v1/user/certificate/info',
     method: 'delete',
     params: {
       ...params
@@ -314,7 +293,7 @@ export const delStaffCertificate = (params) => {
 ////修改员工证书信息
 export const editStaffCertificate = (params) => {
   return request({
-    url: '/user/v1/user/certificate/info',
+    url: '/api/user/v1/user/certificate/info',
     method: 'put',
     params: {
       ...params
@@ -324,7 +303,7 @@ export const editStaffCertificate = (params) => {
 //添加员工证书信息
 export const addStaffCertificate = (params) => {
   return request({
-    url: '/user/v1/user/certificate/info',
+    url: '/api/user/v1/user/certificate/info',
     method: 'post',
     params: {
       ...params
