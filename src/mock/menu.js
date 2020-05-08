@@ -79,6 +79,65 @@ const res = {
                 menuType: 'Button'
               }
             ]
+          },
+
+          {
+            menuId: '11235988157386752',
+            parentId: '0',
+            code: 'system',
+            menuName: '组织管理',
+            alias: 'menu',
+            path: '/orgs',
+            source: 'iconfont iconicon_setting',
+            icon: 'iconfont iconicon_subordinate',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuId: '1123598815738675261',
+                parentId: '11235988157386752',
+                code: 'client',
+                menuName: '组织机构管理',
+                alias: 'menu',
+                path: '/orgs/orgManagement',
+                source: 'iconfont iconicon_mobilephone',
+                icon: 'iconfont iconicon_subordinate',
+                menuType: 'Menu',
+                isOwn: 1
+              }
+            ]
+          }
+        ],
+        hasChildren: false,
+        parentName: '',
+        categoryName: '',
+        actionName: '',
+        isOpenName: ''
+      },
+      {
+        menuId: '11235988157386752',
+        parentId: '1123598815738675203',
+        code: 'system',
+        menuName: '人事管理',
+        alias: 'menu',
+        path: '/personnel',
+        source: 'iconfont iconicon_setting',
+        icon: 'iconfont iconicon_subordinate',
+        menuType: 'Menu',
+        isOwn: 1,
+        children: [
+          {
+            menuId: '1123598815738675261',
+            parentId: '11235988157386752',
+            code: 'client',
+            menuName: '员工花名册',
+            alias: 'menu',
+            path: '/personnel/roster',
+            source: 'iconfont iconicon_mobilephone',
+            sort: 8,
+            icon: 'iconfont iconicon_subordinate',
+            menuType: 'Menu',
+            isOwn: 1
           }
         ],
         hasChildren: false,

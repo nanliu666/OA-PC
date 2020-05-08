@@ -1,7 +1,7 @@
 import store from '@/store/index'
 import { getWorkAddressList, getOrgPosition, getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple, getUserWorkList } from '@/api/org/org'
-import { regionData } from 'element-china-area-data'
+import { provinceAndCityData } from 'element-china-area-data'
 // let WorkProperty = [],
 //   RecruitmentChannel = [],
 //   ContractType = [],
@@ -167,11 +167,19 @@ export default async () => {
           config: { type: 'daterange', 'range-separator': '至' }
         },
         {
-          type: 'dataPicker',
+          type: 'select',
           data: '',
           label: '试用期',
           field: 'minProbation,maxprobation',
-          config: { type: 'monthrange', 'range-separator': '至' }
+          config: { multiple: true },
+          options: [
+            { label: '1个月', value: 1 },
+            { label: '2个月', value: 2 },
+            { label: '3个月', value: 3 },
+            { label: '4个月', value: 4 },
+            { label: '5个月', value: 5 },
+            { label: '6个月', value: 6 }
+          ]
         },
         {
           type: 'dataPicker',
@@ -180,7 +188,12 @@ export default async () => {
           field: 'beginFormalDate,endFormalDate',
           config: { type: 'daterange', 'range-separator': '至' }
         },
-        { type: 'numInterval', data: { min: '', max: '' }, label: '司龄(年)', field: 'minEntryAge,maxEntryAge' },
+        {
+          type: 'numInterval',
+          data: { min: '', max: '' },
+          label: '司龄(年)',
+          field: 'minEntryAge,maxEntryAge'
+        },
         {
           type: 'select',
           data: '',
@@ -218,8 +231,18 @@ export default async () => {
           field: 'beginEndNowDate,endEndNowDate',
           config: { type: 'daterange', 'range-separator': '至' }
         },
-        { type: 'numInterval', data: { min: '', max: '' }, label: '现合同期限', field: 'minPeriod,maxPeriod' },
-        { type: 'numInterval', data: { min: '', max: '' }, label: '合同续签次数', field: 'minRenewNum,maxRenewNum' }
+        {
+          type: 'numInterval',
+          data: { min: '', max: '' },
+          label: '现合同期限',
+          field: 'minPeriod,maxPeriod'
+        },
+        {
+          type: 'numInterval',
+          data: { min: '', max: '' },
+          label: '合同续签次数',
+          field: 'minRenewNum,maxRenewNum'
+        }
       ]
     },
     {
@@ -231,10 +254,10 @@ export default async () => {
           data: '',
           label: '性别',
           field: 'sex',
-          config: { multiple: true },
+          config: {},
           options: [
-            { label: '男', value: 1 },
-            { label: '女', value: 0 }
+            { label: '男', value: '1' },
+            { label: '女', value: '0' }
           ]
         },
         { type: 'input', data: '', label: '手机号码', field: 'phonenum', config: {} },
@@ -259,16 +282,21 @@ export default async () => {
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
           options: EducationalLevel
         },
-        { type: 'numInterval', data: { min: '', max: '' }, label: '工龄', field: 'minWorkAge,maxWorkAge' },
+        {
+          type: 'numInterval',
+          data: { min: '', max: '' },
+          label: '工龄',
+          field: 'minWorkAge,maxWorkAge'
+        },
         {
           type: 'select',
-          data: 'marriage',
+          data: '',
           label: '婚姻状况',
-          field: '',
-          config: { multiple: true },
+          field: 'marriage',
+          config: {},
           options: [
-            { label: '未婚', value: 0 },
-            { label: '已婚', value: 1 }
+            { label: '未婚', value: '0' },
+            { label: '已婚', value: '1' }
           ]
         },
         { type: 'input', data: '', label: '健康状况', field: 'health', config: {} },
@@ -285,12 +313,19 @@ export default async () => {
           type: 'select',
           data: '',
           label: '政治面貌',
-          field: '"politicalStatuses',
+          field: 'politicalStatuses',
           arrField: 'politicalStatus',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
           options: PoliticalStatus
         },
-        { type: 'cascader', data: '', label: '籍贯', field: 'natives', config: {}, options: regionData },
+        {
+          type: 'cascader',
+          data: '',
+          label: '籍贯',
+          field: 'nativeProvinces,nativeCities',
+          config: {},
+          options: provinceAndCityData
+        },
         {
           type: 'select',
           data: '',

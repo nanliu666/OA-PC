@@ -47,6 +47,7 @@
             :label="parentOrgIdLabel"
           >
             <el-tree
+              ref="orgTree"
               :data="orgTree"
               node-key="orgId"
               :props="{
@@ -197,22 +198,27 @@ export default {
     }
   },
   created() {
-    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.orgTree = res
-    })
+    this.loadOrgTree()
     getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
       this.leaderList = res.data
       this.leaderPageNo += 1
     })
   },
   methods: {
+    loadOrgTree() {
+      getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+        this.orgTree = res
+      })
+    },
     loadMoreLeader() {
       if (this.loadLeader) return
       this.loadLeader = true
       getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
-        this.workAddress.push(...res.data)
-        this.leaderPageNo += 1
-        this.loadLeader = false
+        if (res.data.length > 0) {
+          this.leaderList.push(...res.data)
+          this.leaderPageNo += 1
+          this.loadLeader = false
+        }
       })
     },
     submitAndCreate() {
@@ -222,6 +228,7 @@ export default {
             this.$message.success('创建成功')
             this.form = { orgType: '' }
             this.parentOrgIdLabel = ''
+            this.$emit('refresh')
           })
         } else {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)
@@ -235,10 +242,12 @@ export default {
           if (this.type !== 'edit') {
             createOrg(this.form).then(() => {
               this.$message.success('创建成功')
+              this.$emit('refresh')
             })
           } else {
             editOrg(this.form).then(() => {
               this.$message.success('修改成功')
+              this.$emit('refresh')
             })
           }
           this.$emit('update:visible', false)
@@ -252,6 +261,7 @@ export default {
       this.type = 'create'
       this.parentOrgIdLabel = ''
       this.$emit('update:visible', true)
+      this.loadOrgTree()
     },
     createChild(row) {
       this.type = 'createChild'
@@ -260,14 +270,34 @@ export default {
       this.form.parentOrgType = row.orgType
       this.loadRadio()
       this.$emit('update:visible', true)
+      this.loadOrgTree()
     },
     edit(row) {
       this.type = 'edit'
       this.form = JSON.parse(JSON.stringify(row))
+      this.parentOrgIdLabel = this.findOrgName(row.parentOrgId)
       this.$emit('update:visible', true)
+      this.loadOrgTree()
+    },
+    findOrgName(id) {
+      let name = ''
+      function deep(arr) {
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].orgId === id) {
+            name = arr[i].orgName
+            return
+          }
+          console.log(arr[i].children)
+          if (arr[i].children && arr[i].children.length > 0) {
+            deep(arr[i].children)
+          }
+        }
+      }
+      deep(this.orgTree)
+      return name
     },
     handleClose() {
-      this.form = { orgType: '' }
+      this.form = { orgType: '', parentOrgId: '' }
       this.radioDisable = {
         Company: false,
         Department: false,
@@ -306,5 +336,8 @@ export default {
   .el-select {
     width: 100%;
   }
+}
+.addressLoading {
+  text-align: center;
 }
 </style>
