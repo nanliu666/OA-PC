@@ -396,14 +396,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffWorkInfo(item.id).then((res) => {
-            if (res.resCode == 200) {
-              this.workInfo.splice(index, 1)
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-            }
+          delStaffWorkInfo(item.id).then(() => {
+            this.workInfo.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -418,26 +416,22 @@ export default {
         if (isPass) {
           delete item.monthRange
           if (this.type == 'add') {
-            addStaffworkInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            addStaffworkInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
             })
           } else {
-            editStaffWorkInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            editStaffWorkInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
             })
           }
         }
@@ -445,10 +439,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.query.userId
       }
       getStaffWorkInfo(params).then((res) => {
-        this.workInfo = res.response
+        this.workInfo = res
         this.workInfo.forEach((item) => {
           this.$set(item, 'monthRange', [item.beginWorkDate, item.endWorkDate])
           this.$set(item, 'secretMonthRange', [item.beginSecretDate, item.endSecretDate])

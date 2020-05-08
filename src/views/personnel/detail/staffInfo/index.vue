@@ -7,14 +7,14 @@
         class="main-content-erea"
       >
         <!-- 基本信息 -->
-        <basicInfo :info="allInfo" />
+        <basicInfo :info.sync="allInfo" />
         <!-- 紧急联系人 -->
         <emergency />
 
         <!-- 薪资银行卡 -->
-        <bank :info="allInfo" />
+        <bank :info.sync="allInfo" />
         <!-- 社保公积金 -->
-        <social :info="allInfo" />
+        <social :info.sync="allInfo" />
         <!-- 教育经历 -->
         <education />
 
@@ -87,9 +87,7 @@ export default {
 
   data() {
     return {
-      box: null,
       filterNavItemActive: 0,
-      topValue: 0,
       allInfo: {},
       asideBar: [
         {
@@ -139,31 +137,6 @@ export default {
       deep: true,
       immediate: true
     }
-  },
-  mounted() {
-    let _this = this
-    this.box = document.querySelector('#avue-view')
-    // 监听这个dom的scroll事件
-    this.box.addEventListener(
-      'scroll',
-      () => {
-        let siderBar = document.querySelector('.sidebar-erea')
-        if (_this.box.scrollTop - _this.topValue > 0) {
-          if (_this.box.scrollTop >= 240) {
-            siderBar.style.position = 'fixed'
-            siderBar.style.top = 100 + 'px'
-            siderBar.style.right = 20 + 'px'
-          }
-        } else {
-          if (_this.box.scrollTop <= 240) {
-            siderBar.style.position = 'relative'
-            siderBar.style.top = 0
-          }
-        }
-        _this.topValue = _this.box.scrollTop
-      },
-      false
-    )
   },
   methods: {
     goAnchor(selector, index, event) {

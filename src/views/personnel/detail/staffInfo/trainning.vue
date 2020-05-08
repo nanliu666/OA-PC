@@ -241,14 +241,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffTrainInfo(item.id).then((res) => {
-            if (res.resCode == 200) {
-              this.trainInfo.splice(index, 1)
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-            }
+          delStaffTrainInfo(item.id).then(() => {
+            this.trainInfo.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -262,26 +260,22 @@ export default {
       this.$refs['train'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
-            addStaffTrainInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            addStaffTrainInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
             })
           } else {
-            editStaffTrainInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            editStaffTrainInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
             })
           }
         }
@@ -289,10 +283,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.query.userId
       }
       getStaffTrainInfo(params).then((res) => {
-        this.trainInfo = res.response
+        this.trainInfo = res
         this.trainInfo.forEach((item) => {
           this.$set(item, 'monthRange', [item.beginDate, item.endDate])
         })

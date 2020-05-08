@@ -130,10 +130,10 @@ export default {
   methods: {
     getCompactInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.query.userId
       }
       getConpactInfo(params).then((res) => {
-        this.compactInfo = res.response
+        this.compactInfo = res
       })
     },
     displayCompact() {

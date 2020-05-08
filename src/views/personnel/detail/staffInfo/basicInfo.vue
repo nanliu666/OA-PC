@@ -673,15 +673,13 @@ export default {
             idAddress: this.staffInfo.idAddress,
             userAddress: this.staffInfo.userAddress
           }
-          editStaffBasicInfo(params).then((res) => {
-            if (res.resCode == 200) {
-              this.readonlyBasicInfo = true
-              staffInfo = deepClone(this.staffInfo)
-              this.$message({
-                type: 'success',
-                message: res.resMsg
-              })
-            }
+          editStaffBasicInfo(params).then(() => {
+            this.readonlyBasicInfo = true
+            staffInfo = deepClone(this.staffInfo)
+            this.$message({
+              type: 'success',
+              message: '保存成功'
+            })
           })
         }
       })

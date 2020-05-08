@@ -91,7 +91,7 @@
           >
             <postInfo
               v-if="activeName == 'first'"
-              :info="allInfo"
+              :info.sync="allInfo"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -100,7 +100,7 @@
           >
             <personalInfo
               v-if="activeName == 'second'"
-              :info="allInfo"
+              :info.sync="allInfo"
             />
           </el-tab-pane>
 
@@ -162,10 +162,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.query.userId
       }
       getStaffBasicInfo(params).then((res) => {
-        this.allInfo = res.response
+        this.allInfo = res
       })
     },
     goBack() {

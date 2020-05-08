@@ -114,16 +114,16 @@
           >
             <el-form-item
               v-show="readonlyBasicInfo"
-              label="附属部门1:"
+              :label="`附属部门${index + 1}:`"
             >
               <span class="info-item-value">{{ item.orjItem.subOrgName }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
-              label="附属部门1:"
+              :label="`附属部门${index + 1}:`"
             >
               <tree-select
-                v-model="item.orjItem.subOrgName"
+                v-model="item.data"
                 :option="subOrgOptions"
                 :is-search="false"
                 :is-single="true"
@@ -137,7 +137,7 @@
           >
             <el-form-item
               v-show="readonlyBasicInfo"
-              label="附属职位1:"
+              :label="`附属职位${index + 1}:`"
             >
               <span class="info-item-value">
                 {{ item.jobItem.subJobName }}
@@ -145,7 +145,7 @@
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
-              label="附属职位1:"
+              :label="`附属职位${index + 1}:`"
               prop="subOrg"
             >
               <el-select
@@ -202,7 +202,7 @@
               label="工作地址:"
             >
               <span class="info-item-value">
-                {{ staffInfo.provinceName + staffInfo.cityName + staffInfo.countyName + staffInfo.address }}
+                {{ getWorkAdress() }}
               </span>
             </el-form-item>
             <el-form-item
@@ -235,7 +235,7 @@
               v-show="readonlyBasicInfo"
               label="工作城市:"
             >
-              <span class="info-item-value">{{ staffInfo.workProvinceName + staffInfo.workCityName }}</span>
+              <span class="info-item-value">{{ getCityDetail() }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -467,7 +467,6 @@ export default {
       return workAge
     }
   },
-
   watch: {
     info: {
       handler(val) {
@@ -477,6 +476,7 @@ export default {
       immediate: true
     }
   },
+
   created() {
     this.getFormatSubJob()
     this.initRegion()
@@ -499,7 +499,9 @@ export default {
       this.workDetailCity = [this.staffInfo.provinceCode, this.staffInfo.cityCode, this.staffInfo.countyCode]
     },
     getFormatSubJob() {
+      this.formatSubJob = []
       this.staffInfo.subOrg.forEach((item, index) => {
+        this.$set(item, 'data', [])
         let obj = {
           orjItem: item,
           jobItem: this.staffInfo.subJob[index]
@@ -543,20 +545,34 @@ export default {
       this.readonlyBasicInfo = false
     },
     saveInfo() {
-      editStaffBasicInfo(this.staffInfo).then((res) => {
-        if (res.resCode == 200) {
-          this.readonlyBasicInfo = true
-          staffInfo = deepClone(this.staffInfo)
-          this.$message({
-            type: 'success',
-            message: res.resMsg
-          })
-        }
+      editStaffBasicInfo(this.staffInfo).then(() => {
+        this.readonlyBasicInfo = true
+        staffInfo = deepClone(this.staffInfo)
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
       })
     },
     cancelEdit() {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
+    },
+    getCityDetail() {
+      if (this.staffInfo.workProvinceName) {
+        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
+      } else {
+        return ''
+      }
+    },
+    getWorkAdress() {
+      if (this.staffInfo.provinceName) {
+        return (
+          this.staffInfo.provinceName + this.staffInfo.cityName + this.staffInfo.countyName + this.staffInfo.address
+        )
+      } else {
+        return ''
+      }
     }
   }
 }

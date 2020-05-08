@@ -222,14 +222,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffCertificate(item.id).then((res) => {
-            if (res.resCode == 200) {
-              this.certificateInfo.splice(index, 1)
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-            }
+          delStaffCertificate(item.id).then(() => {
+            this.certificateInfo.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -243,26 +241,22 @@ export default {
       this.$refs['certificate'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
-            addStaffCertificate(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            addStaffCertificate(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
             })
           } else {
-            editStaffCertificate(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            editStaffCertificate(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
             })
           }
         }
@@ -270,10 +264,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.query.userId
       }
       getStaffCertificate(params).then((res) => {
-        this.certificateInfo = res.response
+        this.certificateInfo = res
       })
     },
     editInfo(item, index) {

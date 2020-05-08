@@ -98,15 +98,18 @@ export default {
 
   methods: {
     getWorkTime() {
-      //计算司龄
-      let fomatToMS = new Date().getTime() - new Date(this.staffInfo.entryDate).getTime()
-      let dayToMS = 1000 * 60 * 60 * 24
-      let totalDay = fomatToMS / dayToMS
-      let year = Math.floor(totalDay / 365)
-      let month = Math.floor((totalDay % 365) / 30)
-      // let day = Math.floor(totalDay % 365 % 30)
-      let workAge = '' + year + '年' + month + '月'
-      workAge = workAge.replace(/-/g, '')
+      let workAge = ''
+      if (this.staffInfo.entryDate) {
+        //计算司龄
+        let fomatToMS = new Date().getTime() - new Date(this.staffInfo.entryDate).getTime()
+        let dayToMS = 1000 * 60 * 60 * 24
+        let totalDay = fomatToMS / dayToMS
+        let year = Math.floor(totalDay / 365)
+        let month = Math.floor((totalDay % 365) / 30)
+        // let day = Math.floor(totalDay % 365 % 30)
+        workAge = '' + year + '年' + month + '月'
+        workAge = workAge.replace(/-/g, '')
+      }
       return workAge
     },
     getStatus() {
