@@ -22,6 +22,7 @@
     "$--button-medium-padding-horizontal": "18px",
     "$--button-small-padding-vertical": "6px",
     "$--button-small-padding-horizontal": "10px",
-    "$--input-height": "34px"
+    "$--input-height": "34px",
+    "$--button-medium-padding-vertical": "9px"
   }
 }

@@ -122,7 +122,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         meta = Object.assign(
           meta,
           (function() {
-            if (meta.keepAlive === true) {
+            if (meta.keepAlive !== false) {
               return {
                 $keepAlive: true
               }
@@ -189,7 +189,9 @@ RouterPlugin.install = function(vue, router, store, i18n) {
       // for循环结束
       // 这个first 卡的其实就是首路由
       if (first) {
-        window.console.log(aRouter)
+        if (process.env.NODE_ENV === 'development') {
+          window.console.log('路由：', aRouter)
+        }
         if (!this.routerList.includes(aRouter[0][propsDefault.path])) {
           this.safe.$router.addRoutes(aRouter)
           this.routerList.push(aRouter[0][propsDefault.path])

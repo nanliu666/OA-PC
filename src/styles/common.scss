@@ -25,6 +25,9 @@ a {
 }
 * {
   outline: none;
+  font-family: 'DIN Alternate', 'Helvetica', 'PingFang SC', 'Microsoft YaHei', 微软雅黑, Arial,
+    sans-serif;
 }
+
 //滚动条样式
 @include scrollBar;

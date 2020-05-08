@@ -118,7 +118,7 @@ export default {
         //用户名
         username: 'admin',
         //密码
-        password: 'admin',
+        password: '123456',
         //账户类型
         type: 'account',
         //验证码的值
