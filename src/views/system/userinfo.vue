@@ -63,16 +63,9 @@
           label="个人信息"
           name="first"
         >
-          <div
-            class="personal-basic-info"
-            :class="[readonly ? 'no-back-color' : 'back-color']"
-          >
+          <div class="personal-basic-info no-back-style">
             <div class="info-edit-button">
               <span class="basic-info">基本信息</span>
-              <span
-                v-show="readonly"
-                class="basic-info-title-line"
-              />
               <span
                 v-show="readonly"
                 style="padding:5px;"
@@ -85,7 +78,10 @@
                 > 编辑</span>
               </span>
             </div>
-            <div class="basic-info-content">
+            <div
+              class="basic-info-content"
+              :class="[readonly ? 'no-back-style' : 'back-style']"
+            >
               <el-form
                 ref="userInfo"
                 :model="perosonnalInfo"
@@ -473,7 +469,7 @@ li {
   list-style: none;
 }
 .back-style {
-  background: #cecece;
+  background: #f7f8fa !important;
 }
 .no-back-style {
   background: #fff;
@@ -496,7 +492,8 @@ li {
   height: 112px;
   margin-top: 20px;
   background: #ffffff;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04),
+    0 4px 8px 4px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   padding-left: 24px;
   font-size: 14px;
@@ -541,7 +538,8 @@ li {
 .info-detail {
   margin-top: 20px;
   background: #ffffff;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04),
+    0 4px 8px 4px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   border-radius: 4px;
 }
@@ -576,12 +574,7 @@ li {
 .personal-basic-info .basic-info {
   float: left;
 }
-.basic-info-title-line {
-  width: calc(100% - 140px);
-  display: inline-block;
-  border-top: 2px dashed #999;
-  margin: 5px;
-}
+
 .info-detail .info-edit-button {
   text-align: right;
   cursor: pointer;
@@ -597,7 +590,6 @@ li {
 }
 
 .info-detail .basic-info-content {
-  background: #fff;
   padding: 15px 0 0 20px;
   /deep/ .el-cascader {
     width: 100%;

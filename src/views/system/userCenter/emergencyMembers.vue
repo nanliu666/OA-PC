@@ -1,18 +1,17 @@
 <template>
   <div class="emergency-component">
     <div
-      class="emergency-contact-info"
-      :class="[editClick ? 'padding-top-style back-style ' : 'no-back-style ']"
+      class="emergency-contact-info no-back-style"
+      :class="[editClick ? 'padding-top-style ' : '']"
     >
       <div class="emergency-contact-title">
         <span class="emergency-memb">紧急联系人</span>
-        <span class="emergency-info-title-line" />
       </div>
       <div class="emergency-info-content">
         <div
           v-for="(item, index) in emergency"
           :key="index"
-          :class="[index == currentEdit ? 'border-style no-back-style' : 'no-border-style']"
+          :class="[index == currentEdit ? 'back-style' : 'no-back-style']"
         >
           <div
             v-show="index != currentEdit"
@@ -127,7 +126,12 @@
 <script>
 import { isMobile } from '@/util/validate'
 import { deepClone, randomLenNum } from '@/util/util'
-import { delStaffEmerInfo, editStaffEmerInfo, addStaffEmerInfo, getStaffEmerInfo } from '../../../api/personalInfo'
+import {
+  delStaffEmerInfo,
+  editStaffEmerInfo,
+  addStaffEmerInfo,
+  getStaffEmerInfo
+} from '../../../api/personalInfo'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -279,7 +283,7 @@ export default {
   }
 }
 .back-style {
-  background: #cecece;
+  background: #f7f8fa;
 }
 .no-back-style {
   background: #fff;
@@ -330,12 +334,6 @@ export default {
 }
 .emergency-contact-title {
   padding: 10px 0;
-  .emergency-info-title-line {
-    width: calc(100% - 95px);
-    display: inline-block;
-    border-top: 2px dashed #999;
-    margin: 5px;
-  }
 }
 .add-emergency-member {
   margin-top: 10px;
@@ -343,12 +341,12 @@ export default {
 }
 .info-button-group {
   text-align: center;
-  .el-form-item__content {
-    margin-left: 0;
-  }
   .el-button {
     width: 80px;
     height: 42px;
+  }
+  /deep/.el-form-item__content {
+    margin-left: 0 !important;
   }
 }
 </style>

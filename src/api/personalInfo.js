@@ -18,15 +18,18 @@ export const getJobInfo = (params) => {
     }
   })
 }
+//获取合同信息
 export const getConpactInfo = (params) => {
   return request({
     url: '/api/user/v1/user/contract/info',
-    method: 'post',
+    method: 'get',
     params: {
       ...params
     }
   })
 }
+
+//获取认知记录
 export const getOfficeInfo = (params) => {
   return request({
     url: '/api/user/v1/user/office/info',
