@@ -185,7 +185,7 @@ export default {
         userId: this.userInfo.user_id //从vuex中获取
       }
       getStaffEmerInfo(params).then((res) => {
-        this.emergency = res.response
+        this.emergency = res
       })
     },
     edit(item, index) {
@@ -201,14 +201,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffEmerInfo(item.id).then((res) => {
-            if (res.resCode == 200) {
-              this.emergencyInfo.splice(index, 1)
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-            }
+          delStaffEmerInfo(item.id).then(() => {
+            this.emergencyInfo.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -224,22 +222,18 @@ export default {
           this.editClick = false
           this.currentEdit = null
           if (this.type == 'add') {
-            addStaffEmerInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            addStaffEmerInfo(item).then(() => {
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
             })
           } else {
-            editStaffEmerInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            editStaffEmerInfo(item).then(() => {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
             })
           }
         }
