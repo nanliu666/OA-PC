@@ -100,7 +100,9 @@
       <span
         class="disply-button"
         @click="displayCompact()"
-      >点击展开<i class="el-icon-arrow-down" /></span>
+      >点击展开<i
+        class="el-icon-arrow-down"
+      /></span>
     </div>
     <div
       v-show="showOtherCompact"
@@ -109,7 +111,9 @@
       <span
         class="disply-button"
         @click="hiddenOtherCompact()"
-      >点击收起<i class="el-icon-arrow-up" /></span>
+      >点击收起<i
+        class="el-icon-arrow-up"
+      /></span>
     </div>
   </div>
 </template>
@@ -130,7 +134,7 @@ export default {
   methods: {
     getCompactInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getConpactInfo(params).then((res) => {
         this.compactInfo = res

@@ -105,7 +105,7 @@
         </el-row>
 
         <el-row
-          v-for="(item, index) in formatSubJob"
+          v-for="(item, index) in staffInfo.subOrg"
           :key="index"
         >
           <el-col
@@ -116,14 +116,14 @@
               v-show="readonlyBasicInfo"
               :label="`附属部门${index + 1}:`"
             >
-              <span class="info-item-value">{{ item.orjItem.subOrgName }}</span>
+              <span class="info-item-value">{{ item.subOrgName }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
               :label="`附属部门${index + 1}:`"
             >
               <tree-select
-                v-model="item.data"
+                v-model="staffInfo.subOrg[index]"
                 :option="subOrgOptions"
                 :is-search="false"
                 :is-single="true"
@@ -140,7 +140,7 @@
               :label="`附属职位${index + 1}:`"
             >
               <span class="info-item-value">
-                {{ item.jobItem.subJobName }}
+                {{ staffInfo.subJob[index].subJobName }}
               </span>
             </el-form-item>
             <el-form-item
@@ -149,7 +149,7 @@
               prop="subOrg"
             >
               <el-select
-                v-model="item.jobItem.subJobName"
+                v-model="staffInfo.subJob[index].subJobName"
                 placeholder="请选择"
               >
                 <el-option
@@ -478,7 +478,6 @@ export default {
   },
 
   created() {
-    this.getFormatSubJob()
     this.initRegion()
     this.loadSelectData()
   },
@@ -496,7 +495,11 @@ export default {
     },
     initRegion() {
       this.workCity = [this.staffInfo.workProvinceCode, this.staffInfo.workCityCode]
-      this.workDetailCity = [this.staffInfo.provinceCode, this.staffInfo.cityCode, this.staffInfo.countyCode]
+      this.workDetailCity = [
+        this.staffInfo.provinceCode,
+        this.staffInfo.cityCode,
+        this.staffInfo.countyCode
+      ]
     },
     getFormatSubJob() {
       this.formatSubJob = []
@@ -568,7 +571,10 @@ export default {
     getWorkAdress() {
       if (this.staffInfo.provinceName) {
         return (
-          this.staffInfo.provinceName + this.staffInfo.cityName + this.staffInfo.countyName + this.staffInfo.address
+          this.staffInfo.provinceName +
+          this.staffInfo.cityName +
+          this.staffInfo.countyName +
+          this.staffInfo.address
         )
       } else {
         return ''

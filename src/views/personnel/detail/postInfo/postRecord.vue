@@ -110,7 +110,7 @@ export default {
   methods: {
     getRecordInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getOfficeInfo(params).then((res) => {
         this.recordInfo = res
