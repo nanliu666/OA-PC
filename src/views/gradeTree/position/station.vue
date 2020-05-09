@@ -38,6 +38,7 @@
           :page="page"
           :config="tableConfig"
           :columns="columns"
+          :loading="loading"
           @pageSizeChange="sizeChange"
           @currentPageChange="currentChange"
           @selection-change="selectionChange"
@@ -78,7 +79,7 @@
           </template>
           <template slot="multiSelectMenu">
             <span class="all">
-              <span><i class="el-icon-delete" /> 批量删除</span>
+              <span @click="handlerDeleteAll"><i class="el-icon-delete" /> 批量删除</span>
               <span><i class="el-icon-folder" /> 批量导出</span>
             </span>
           </template>
@@ -115,7 +116,7 @@
 </template>
 
 <script>
-import { deleteV1Job } from '@/api/organize/position'
+// import { deleteV1Job } from '@/api/organize/position'
 import { getToken } from '@/util/auth'
 import stationDialog from '../compoents/stationDialog'
 import { getV1Position, deleteV1Position } from '@/api/organize/position'
@@ -130,6 +131,8 @@ export default {
       form: {
         name: ''
       },
+      selectionList: [],
+      loading: false,
       isEdit: false,
       title: '新建职位类别',
       stationDialog: false,
@@ -177,39 +180,70 @@ export default {
       }
     }
   },
+  computed: {
+    ids() {
+      let ids = []
+      this.selectionList.forEach((ele) => {
+        ids.push(ele.id)
+      })
+      return ids.join(',')
+    }
+  },
+
   watch: {},
   created() {
     this.getData()
   },
   mounted() {},
   methods: {
+    handlerDeleteAll() {
+      this.$confirm('您确定要删除你选中的岗位吗?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let name = ''
+        this.selectionList.map((item) => {
+          if (item.workNum > 0) {
+            name += ' ' + item.name
+          }
+        })
+        if (name) {
+          name = name.length > 18 ? name.substr(0, 18) + '...' : name
+          this.$confirm(`很抱歉，您选中的岗位 ${name} 下存在员工，请先将员工调整后在删除`, {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'info',
+              message: '取消操作!'
+            })
+          })
+          return
+        }
+        let params = {
+          id: this.ids
+        }
+        deleteV1Position(params).then(() => {
+          this.getData()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+      })
+    },
     getData() {
+      this.loading = true
       this.params.name = this.form.name
       getV1Position(this.params).then((res) => {
         this.data = res
+        this.loading = false
       })
     },
-    onSubmit(val) {
-      let isModity = ''
-
-      this.data.map((it) => {
-        if (it.id === val.id) {
-          isModity = true
-          it.name = val.name
-          it.remark = val.remark
-        }
-      })
-      if (!isModity) {
-        let params = {
-          id: '',
-          name: '开发',
-          remark: '开发前端',
-          isDefault: 0,
-          ...val
-        }
-        params.id = this.data.length + 1
-        this.data.push(params)
-      }
+    onSubmit() {
+      this.getData()
     },
     handleDelete(row) {
       this.$confirm('您确定要删除该岗位吗?', {
@@ -234,7 +268,7 @@ export default {
           id: row.id
         }
         deleteV1Position(params).then(() => {
-          this.data.shift()
+          this.getData()
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -307,42 +341,43 @@ export default {
       this.title = '编辑子组织'
       this.positionDialog = true
     },
-    handleCommand(event, row) {
-      this.$confirm('您确定要删除该职位类别吗?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          if (row.workNum) {
-            this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后在删除', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              this.$message({
-                type: 'info',
-                message: '取消操作!'
-              })
-            })
-            return
-          }
-          let params = {
-            jobId: row.jobId
-          }
-          deleteV1Job(params).then(() => {
-            this.data.shift()
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-          })
-        })
-        .then(() => {})
-    },
+    // handleCommand(event, row) {
+    //   this.$confirm('您确定要删除该岗位?', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   })
+    //     .then(() => {
+    //       if (row.workNum) {
+    //         this.$confirm('很抱歉，您选中的岗位下存在员工，请先将员工调整后在删除', {
+    //           confirmButtonText: '确定',
+    //           cancelButtonText: '取消',
+    //           type: 'warning'
+    //         }).then(() => {
+    //           this.$message({
+    //             type: 'info',
+    //             message: '取消操作!'
+    //           })
+    //         })
+    //         return
+    //       }
+    //       let params = {
+    //         ids: row.id
+    //       }
+    //       deleteV1Job(params).then(() => {
+    //         this.data.shift()
+    //         this.$message({
+    //           type: 'success',
+    //           message: '删除成功!'
+    //         })
+    //       })
+    //     })
+    //     .then(() => {})
+    //
     selectionChange(list) {
       this.isBatch = true
       this.number = list.length
+      this.selectionList = list
     },
     toggleSelection(val) {
       this.$refs.crud.toggleSelection(val)
@@ -482,6 +517,7 @@ export default {
 
 .all {
   /*border: 1px solid #efefef;*/
+  cursor: pointer;
   padding: 10px;
   span:first-child {
     border-right: 1px solid #999;

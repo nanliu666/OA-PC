@@ -38,8 +38,9 @@
         <div
           id="download"
           class="button"
+          @click="sort"
         >
-          保存图片
+          保存视图
         </div>
       </div>
     </div>
@@ -158,11 +159,11 @@
 
 <script>
 import go from 'gojs'
-import html2canvas from 'html2canvas'
+// import html2canvas from 'html2canvas'
 const $ = go.GraphObject.make
 import positionDialog from './compoents/positionDialog'
 import orgDialog from './compoents/orgDialog'
-import { getOrganizationView, deleteOrganization } from '@/api/organize/grade'
+import { getOrganizationView, deleteOrganization, postSort } from '@/api/organize/grade'
 import { deleteV1Job } from '@/api/organize/position'
 
 const org = [
@@ -316,6 +317,7 @@ export default {
     this.init()
   },
   methods: {
+    submit() {},
     getOrgData() {
       let params = {
         orgId: 0
@@ -328,10 +330,11 @@ export default {
               this.TreeModel = JSON.parse(this.TreeModel)
             }
             res.map((it) => {
-              it.key = parseInt(it.sort)
+              it.key = it.id
               if (it.parentId) it.parent = it.parentId
               it.orgName = it.name + `(${it.jobNum})`
             })
+
             this.TreeModel.nodeDataArray = res
             resolve()
           })
@@ -342,22 +345,22 @@ export default {
     },
     orgOnsubmit() {},
     positionOnsubmit() {},
-    nodeDoubleClick(e, obj) {
-      let clicked = obj.part
-      if (clicked !== null) {
-        let thisemp = clicked.data
-        this.myDiagram.startTransaction('add employee')
-        let newemp = {
-          name: '(new person)',
-          userName: '',
-          comments: '',
-          parent: thisemp.key
-        }
-        this.myDiagram.model.addNodeData(newemp)
-        this.myDiagram.commitTransaction('add employee')
-        this.save()
-      }
-    },
+    // nodeDoubleClick(e, obj) {
+    //   let clicked = obj.part
+    //   if (clicked !== null) {
+    //     let thisemp = clicked.data
+    //     this.myDiagram.startTransaction('add employee')
+    //     let newemp = {
+    //       name: '(new person)',
+    //       userName: '',
+    //       comments: '',
+    //       parent: thisemp.key
+    //     }
+    //     this.myDiagram.model.addNodeData(newemp)
+    //     this.myDiagram.commitTransaction('add employee')
+    //     this.save()
+    //   }
+    // },
     init() {
       let that = this
       that.myDiagram = $(
@@ -377,8 +380,8 @@ export default {
             alternateLayerSpacing: 35,
             alternateAlignment: go.TreeLayout.AlignmentBus,
             alternateNodeSpacing: 20
-          })
-          // 'undoManager.isEnabled': false // enable undo & redo
+          }),
+          'undoManager.isEnabled': false // enable undo & redo
         }
       )
 
@@ -432,7 +435,7 @@ export default {
         Enterprise: '#4A9EFF',
         Company: '#4A9EFF',
         Department: '#4A9EFF',
-        Group: '#EDF8FF',
+        Group: '#4A9EFF',
         Job: '#EDF8FF'
       }
       let typeBgColor2 = {
@@ -446,7 +449,7 @@ export default {
         Enterprise: '#FFFFFF',
         Company: '#FFFFFF',
         Department: '#FFF',
-        Group: '#1F7DF9',
+        Group: '#FFF',
         Job: '#1F7DF9'
       }
       let textColor2 = {
@@ -940,52 +943,48 @@ export default {
     isEdit_() {
       this.editStatus = false
     },
-    downloadImage() {
-      let arr = []
-      this.levelList.map((it) => {
-        arr.push(it.level)
-      })
-      let levelAggregate = {}
-      arr.filter((it) => {
-        if (levelAggregate[it]) {
-          levelAggregate[it].push(it)
-        } else {
-          levelAggregate[it] = []
-          levelAggregate[it].push(it)
+    sort() {
+      let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
+      //  // console.log('nodeDataArray________',nodeDataArray)
+      // return
+      let params = []
+      nodeDataArray.map((it) => {
+        // if(typeof it.parent ==='string' ){
+        //   it.parent =  parseInt(it.parent)
+        // }
+        let data = {
+          parentId: it.parentId,
+          id: it.id,
+          name: it.name,
+          type: it.type,
+          sort: it.parent || 0
         }
+        params.push(data)
       })
-      let number = []
-      for (var item of Object.entries(levelAggregate)) {
-        number.push(item[1].length)
-      }
-      let max = Math.max(...number)
-      let width = 500
-      if (number[1] > 3) {
-        width += (number[1] - 2) * 200
-      }
-      width += max * 100 + (max / 5) * 100
-      // console.log(width)
-      let myDiaramDiv = document.getElementById('myDiagramDiv')
-      myDiaramDiv.style.width = width + 'px'
-      this.load()
-      setTimeout(() => {
-        new html2canvas(document.getElementById('myDiagramDiv')).then((canvas) => {
-          const href = canvas.toDataURL('image/jpeg')
-          var a = document.createElement('a')
-          a.download = '组织机构图.png'
+      // console.log(params)
+      // eslint-disable-next-line no-unreachable
+      postSort(params).then(() => {
+        // console.log(res)
+        this.$message.success('排序成功')
+      })
+    },
+    downloadImage() {
+      let images = this.myDiagram.makeImage({
+        scale: 2,
+        padding: 50,
+        type: 'image/jpeg',
+        background: 'rgba(220, 239, 254, 1)'
+        // rgba(220, 239, 254, 0.3)
+      })
+      let href = images.src
+      var a = document.createElement('a')
+      a.download = '组织机构图.png'
 
-          a.href = href
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-          myDiaramDiv.style.width = '100%'
-          // return
-          // <img style="width: 2000px" src="" alt="">
-          //
-          // // return
-          this.load()
-        })
-      }, 1000)
+      a.href = href
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
       // this.myDiagram.commandHandler.zoomToFit()
     }
   }

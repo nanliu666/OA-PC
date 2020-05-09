@@ -211,6 +211,29 @@ export default {
             ]
           },
           {
+            label: '是否展示',
+            prop: 'isShow',
+            type: 'radio',
+            hide: true,
+            dicData: [
+              {
+                label: '展示',
+                value: 0
+              },
+              {
+                label: '隐藏',
+                value: 1
+              }
+            ],
+            rules: [
+              {
+                required: true,
+                message: '是否显示菜单',
+                trigger: 'blur'
+              }
+            ]
+          },
+          {
             label: '菜单排序',
             prop: 'sort',
             type: 'number',
@@ -222,6 +245,7 @@ export default {
               }
             ]
           },
+
           {
             label: '菜单备注',
             prop: 'remark',

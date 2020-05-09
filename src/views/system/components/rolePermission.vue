@@ -124,18 +124,25 @@ export default {
     treeLimits
   },
   props: {
+    role: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
     visible: {
       type: Boolean,
       default: false
-    },
-    roleId: {
-      // 	角色ID，多个以英文逗号分隔
-      type: [String, Number],
-      default: ''
     }
+    // roleId: {
+    //   // 	角色ID，多个以英文逗号分隔
+    //   type: [String, Number],
+    //   default: ''
+    // }
   },
   data() {
     return {
+      roleId: '',
       loading: false,
       orgPrivileges: [],
       menuPrivileges: [],
@@ -162,6 +169,14 @@ export default {
       set: function(val) {
         this.$emit('update:visible', val)
       }
+    }
+  },
+  watch: {
+    role: {
+      handler(newVal) {
+        this.roleId = newVal.roleId
+      },
+      immediate: true
     }
   },
   methods: {
@@ -213,7 +228,9 @@ export default {
       this.getButtonPrivilege(this.menuPrivileges)
       this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
       this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
+
       const params = {
+        roleId: this.roleId,
         orgPrivileges: this.orgPrivileges,
         menuPrivileges: this.menuPrivileges
       }

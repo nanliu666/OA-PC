@@ -16,10 +16,10 @@ import menus from './menus'
  */
 
 const options = { mock: false }
-position({ mock: true })
-grade({ mock: true })
-user({ mock: true })
-menus({ mock: true })
+position({ mock: false })
+grade({ mock: false })
+user({ mock: false })
+menus({ mock: false })
 menu(options)
 
 oauth(options)
@@ -30,6 +30,6 @@ dict(options)
 
 param(options)
 
-role({ mock: true })
+role({ mock: false })
 
 personalInfo(options)

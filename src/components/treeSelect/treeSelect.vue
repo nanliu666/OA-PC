@@ -1,5 +1,6 @@
 <template>
   <el-popover
+    :disabled="disabled"
     placement="bottom-start"
     trigger="click"
     popper-class="oa-tree_select"
@@ -65,7 +66,7 @@
             :key="index"
             style="margin-right: 5px;"
             size="small"
-            closable
+            :closable="!disabled"
             @close="handleCloseCategory(index)"
           >
             {{ c[label] }}
@@ -127,6 +128,9 @@ export default {
           return this.getSelectItem(this.filterList, data, this.keyID) || {}
         }) || []
       )
+    },
+    disabled() {
+      return this.option.disabled || false
     },
     limitCheck() {
       return this.option.limitCheck || false

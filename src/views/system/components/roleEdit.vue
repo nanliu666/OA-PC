@@ -112,6 +112,12 @@ export default {
       default: () => {
         return {}
       }
+    },
+    categoryId: {
+      type: String,
+      default: () => {
+        return ''
+      }
     }
   },
   data() {
@@ -123,6 +129,7 @@ export default {
       }
     }
     return {
+      roleVisible: true,
       form: {
         roleId: '',
         roleName: '',
@@ -242,16 +249,36 @@ export default {
     }
   },
   computed: {
-    roleVisible: {
-      get: function() {
-        return this.visible
-      },
-      set: function(val) {
-        this.$emit('update:visible', val)
-      }
-    }
+    // roleVisible: {
+    //   get: function() {
+    //     return this.visible
+    //   },
+    //   set: function(val) {
+    //     this.$emit('update:visible', val)
+    //   }
+    // }
   },
   watch: {
+    row: {
+      handler: function(newVal) {
+        let { roleId, roleName, type, remark, positions, jobs } = { ...newVal }
+        this.form = {
+          roleId,
+          roleName,
+          type,
+          remark,
+          positions,
+          jobs
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    roleVisible: {
+      handler: function() {
+        this.$emit('update:visible', this.roleVisible)
+      }
+    },
     'form.type': {
       handler(val) {
         const positionColumn = this.findObject(this.option.column, 'positions')
@@ -334,10 +361,12 @@ export default {
     //新建角色
     createFunc(callback) {
       const params = {
-        ...this.form
+        ...this.form,
+        categoryId: this.categoryId
       }
       createRole(params).then(() => {
         this.$message.success('新建角色成功')
+        this.$emit('reload')
         callback()
       })
     },
@@ -353,8 +382,7 @@ export default {
     },
     // 关闭弹窗
     onClose() {
-      this.clearForm()
-      this.$emit('update:visible', false)
+      this.roleVisible = false
     },
 
     // 清空表单
