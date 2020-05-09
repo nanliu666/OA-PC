@@ -143,15 +143,13 @@ export default {
             bankName: this.bankInfo.bankName,
             bankNo: this.bankInfo.bankNo
           }
-          editStaffBasicInfo(params).then((res) => {
-            if (res.resCode == 200) {
-              this.readonlyBasicInfo = true
-              bankInfo = deepClone(this.bankInfo)
-              this.$message({
-                type: 'success',
-                message: res.resMsg
-              })
-            }
+          editStaffBasicInfo(params).then(() => {
+            this.readonlyBasicInfo = true
+            bankInfo = deepClone(this.bankInfo)
+            this.$message({
+              type: 'success',
+              message: '保存成功'
+            })
           })
         }
       })

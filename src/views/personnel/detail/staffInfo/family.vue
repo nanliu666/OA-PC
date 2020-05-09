@@ -303,14 +303,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffFamilyInfo(item.id).then((res) => {
-            if (res.resCode == 200) {
-              this.familyInfo.splice(index, 1)
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-            }
+          delStaffFamilyInfo(item.id).then(() => {
+            this.familyInfo.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -324,26 +322,22 @@ export default {
       this.$refs['family'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
-            addStaffFamilyInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            addStaffFamilyInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
             })
           } else {
-            editStaffFamilyInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            editStaffFamilyInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
             })
           }
         }
@@ -351,10 +345,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.query.userId
       }
       getStaffFamilyInfo(params).then((res) => {
-        this.familyInfo = res.response
+        this.familyInfo = res
       })
     },
     editInfo(item, index) {

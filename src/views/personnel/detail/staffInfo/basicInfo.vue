@@ -102,14 +102,14 @@
               v-show="readonlyBasicInfo"
               label="公司邮箱:"
             >
-              <span class="info-item-value">{{ staffInfo.email }}</span>
+              <span class="info-item-value">{{ staffInfo.userEmail }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
               label="公司邮箱:"
               prop="email"
             >
-              <el-input v-model="staffInfo.email" />
+              <el-input v-model="staffInfo.userEmail" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -673,15 +673,13 @@ export default {
             idAddress: this.staffInfo.idAddress,
             userAddress: this.staffInfo.userAddress
           }
-          editStaffBasicInfo(params).then((res) => {
-            if (res.resCode == 200) {
-              this.readonlyBasicInfo = true
-              staffInfo = deepClone(this.staffInfo)
-              this.$message({
-                type: 'success',
-                message: res.resMsg
-              })
-            }
+          editStaffBasicInfo(params).then(() => {
+            this.readonlyBasicInfo = true
+            staffInfo = deepClone(this.staffInfo)
+            this.$message({
+              type: 'success',
+              message: '保存成功'
+            })
           })
         }
       })

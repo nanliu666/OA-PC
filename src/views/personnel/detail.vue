@@ -68,7 +68,12 @@
               <el-col :span="24">
                 <div class="grid-content bg-purple">
                   <span>标签：</span>
-                  <span>{{ allInfo.tags.tagName }}</span>
+                  <span
+                    v-for="(item, index) in allInfo.tags"
+                    :key="index"
+                  >
+                    {{ item.tagName }}
+                  </span>
                 </div>
               </el-col>
             </el-row>
@@ -88,7 +93,7 @@
           >
             <postInfo
               v-if="activeName == 'first'"
-              :info="allInfo"
+              :info.sync="allInfo"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -97,7 +102,7 @@
           >
             <personalInfo
               v-if="activeName == 'second'"
-              :info="allInfo"
+              :info.sync="allInfo"
             />
           </el-tab-pane>
 
@@ -159,10 +164,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.query.userId
       }
       getStaffBasicInfo(params).then((res) => {
-        this.allInfo = res.response
+        this.allInfo = res
       })
     },
     goBack() {
