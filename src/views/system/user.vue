@@ -1,44 +1,75 @@
 <template>
-  <el-row>
-    <el-col :span="5">
-      <basic-container>
+  <el-row style="height: calc(100% - 32px);">
+    <el-col
+      style="height:100%"
+      :xs="9"
+      :sm="7"
+      :md="6"
+    >
+      <basic-container block>
         <el-tabs v-model="activeTabName">
           <el-tab-pane
             label="组织架构"
-            name="tree"
+            name="orgTree"
           >
-            <avue-tree
-              :option="treeOption"
+            <el-tree
               :data="treeData"
+              node-key="orgId"
+              :props="treeProps"
+              :expand-on-click-node="false"
               @node-click="nodeClick"
-            />
+            >
+              <span
+                slot-scope="{ node, data }"
+                class="custom-tree-node"
+              >
+                <span>{{ data.orgName }}{{ '  ' }} ({{ data.workNum }})</span>
+              </span>
+            </el-tree>
           </el-tab-pane>
-          <el-tab-pane
-            label="标签"
-            name="tags"
-          >
-            <user-tag :active-tag.sync="activeTag" />
+          <el-tab-pane name="tags">
+            <span slot="label">
+              标签
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="对用户进行的自定义分组，不包含业务属性"
+                placement="top-start"
+              >
+                <i class="el-icon-warning" />
+              </el-tooltip>
+            </span>
+            <user-tag
+              ref="tags"
+              :active-tag.sync="activeTag"
+            />
           </el-tab-pane>
         </el-tabs>
       </basic-container>
     </el-col>
-    <el-col :span="19">
+    <el-col
+      :xs="15"
+      :sm="17"
+      :md="18"
+      style="height:100%"
+    >
       <user-list
-        v-if="activeTabName === 'tree'"
+        v-show="activeTabName === 'orgTree'"
         ref="userList"
-        :active-dep="activeDep"
+        :active-org="activeOrg"
       />
       <user-taged-list
-        v-else
+        v-show="activeTabName === 'tags'"
         ref="userTagedList"
         :active-tag="activeTag"
+        @refresh-tag="handleRefreshTag"
       />
     </el-col>
   </el-row>
 </template>
 
 <script>
-import { getDeptLazyTree } from '@/api/system/dept'
+import { getOrganization } from '@/api/system/user'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -53,61 +84,39 @@ export default {
   },
   data() {
     return {
-      activeTabName: 'tree',
+      activeTabName: 'orgTree',
       loading: true,
-      treeDeptId: '',
       treeData: [],
-      treeOption: {
-        nodeKey: 'id',
-        lazy: true,
-        treeLoad: function(node, resolve) {
-          const parentId = node.level === 0 ? 0 : node.data.id
-          getDeptLazyTree(parentId).then((data) => {
-            resolve(
-              data.map((item) => {
-                return {
-                  ...item,
-                  leaf: !item.hasChildren
-                }
-              })
-            )
-          })
-        },
-        addBtn: false,
-        menu: false,
-        size: 'small',
-        props: {
-          labelText: '标题',
-          label: 'title',
-          value: 'value',
-          children: 'children'
-        }
+      treeProps: {
+        labelText: '标题',
+        label: 'orgName',
+        value: 'orgId',
+        children: 'children'
       },
-      activeTag: {},
-      activeDep: {}
+      activeTag: null,
+      activeOrg: null
     }
   },
   computed: {
-    ...mapGetters(['userInfo']),
-    ids() {
-      let ids = []
-      this.selectionList.forEach((ele) => {
-        ids.push(ele.id)
-      })
-      return ids.join(',')
-    }
+    ...mapGetters(['userInfo'])
   },
   mounted() {
-    // this.initData(website.tenantId)
+    this.loadTree()
   },
   methods: {
     nodeClick(data) {
-      this.activeDep = data
-      // this.page.currentPage = 1
-      // this.onLoad(this.page)
+      this.activeOrg = data
     },
     handleAddTagMember() {
       this.tagMemberVisible = true
+    },
+    loadTree(parentOrgId = '0') {
+      getOrganization({ parentOrgId }).then((data) => {
+        this.treeData = data
+      })
+    },
+    handleRefreshTag() {
+      this.$refs['tags'].loadData()
     }
   }
 }

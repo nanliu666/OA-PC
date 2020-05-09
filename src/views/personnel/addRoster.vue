@@ -33,14 +33,12 @@
             <el-col :span="12">
               <el-form-item label="性别">
                 <el-radio-group v-model="form.sex">
-                  <el-radio
-                    label="男"
-                    value="1"
-                  />
-                  <el-radio
-                    label="女"
-                    value="0"
-                  />
+                  <el-radio label="1">
+                    男
+                  </el-radio>
+                  <el-radio label="0">
+                    女
+                  </el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -55,9 +53,9 @@
             <el-col :span="12">
               <el-form-item
                 label="邮箱"
-                prop="email"
+                prop="userEmail"
               >
-                <el-input v-model="form.email" />
+                <el-input v-model="form.userEmail" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -114,9 +112,9 @@
             <el-col :span="12">
               <el-form-item
                 label="工号"
-                prop="userId"
+                prop="workNo"
               >
-                <el-input v-model="form.userId">
+                <el-input v-model="form.workNo">
                   <template slot="append">
                     <div @click="autoUserId">
                       自动生成
@@ -136,9 +134,6 @@
                   :is-search="false"
                   :is-single="true"
                 />
-                <div style="height: 0px">
-                  <i class="el-icon-plus" />添加附属部门及职位
-                </div>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -158,6 +153,59 @@
                   />
                 </el-select>
               </el-form-item>
+            </el-col>
+            <template v-for="(items, index) in form.subOrg">
+              <el-col
+                :key="index"
+                :span="12"
+              >
+                <el-form-item :label="'部门' + (index + 1)">
+                  <tree-select
+                    v-model="form.subOrg[index]"
+                    :option="orgOptions"
+                    :is-search="false"
+                    :is-single="true"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :key="index"
+                :span="11"
+              >
+                <el-form-item :label="'职位' + (index + 1)">
+                  <el-select
+                    v-model="form.subJob[index]"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in jobList"
+                      :key="item.jobId"
+                      :label="item.jobName"
+                      :value="item.jobId"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :key="index"
+                :span="1"
+                style="line-height:112px"
+              >
+                <i
+                  class="el-icon-delete"
+                  @click="deleteSubOrgJob(index)"
+                />
+              </el-col>
+            </template>
+            <el-col :span="24">
+              <div class="addSubOrg">
+                <div
+                  style="width: 200px"
+                  @click="addSubOrgJob"
+                >
+                  <i class="el-icon-plus" />添加附属部门及职位
+                </div>
+              </div>
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位">
@@ -404,10 +452,13 @@ export default {
         name: '',
         sex: '',
         email: '',
-        userId: ''
+        workNo: '',
+        subOrg: [],
+        subJob: []
       },
       workAddressForm: {
-        addressArr: []
+        addressArr: [],
+        address: ''
       },
       companyList: [],
       workPropertyList: [],
@@ -434,16 +485,15 @@ export default {
           { validator: checkPhonenum, trigger: 'blur' },
           { pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }
         ],
-        email: [
+        userEmail: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
           { validator: checkEmail, trigger: 'blur' }
         ],
-        userId: [
+        workNo: [
           { required: true, message: '请输入工号', trigger: 'blur' },
-          { type: 'number', message: '必须为数字值' },
-          { pattern: /^\d{4}/, message: '长度必须为4位', trigger: 'blur' },
-          { validator: checkUserId, trigger: 'change' }
+          { pattern: /^\d{4}/, message: '必须为四位数字', trigger: 'blur' },
+          { validator: checkUserId, trigger: 'blur' }
         ],
         orgId: [{ required: true, message: '请选择部门', trigger: 'change' }],
         jobId: [{ required: true, message: '请选择职位', trigger: 'change' }],
@@ -468,6 +518,14 @@ export default {
     this.loadSelectData()
   },
   methods: {
+    deleteSubOrgJob(index) {
+      this.form.subJob.splice(index, 1)
+      this.form.subOrg.splice(index, 1)
+    },
+    addSubOrgJob() {
+      this.form.subOrg.push('')
+      this.form.subJob.push('')
+    },
     handleCreateAddress() {
       this.$refs.workAddressForm.validate((valid) => {
         if (valid) {
@@ -487,12 +545,18 @@ export default {
               this.$message.success('修改成功')
               this.workAddressForm = {}
               this.dialogTableVisible = false
+              this.workAddress = []
+              this.addressPageNo = 1
+              this.loadWorkAddress()
             })
           } else {
             createWorkAddress(params).then(() => {
               this.$message.success('新建成功')
               this.workAddressForm = {}
               this.dialogTableVisible = false
+              this.workAddress = []
+              this.addressPageNo = 1
+              this.loadWorkAddress()
             })
           }
         } else {
@@ -508,13 +572,22 @@ export default {
     },
     editAddress(item) {
       this.workAddressForm.id = item.id
-      this.workAddressForm.addressArr = [item.provinceCode, item.cityCode, item.countyCode]
-      this.workAddressForm.address = item.address
+      this.$set(this.workAddressForm, 'addressArr', [
+        item.provinceCode,
+        item.cityCode,
+        item.countyCode
+      ])
+      this.$set(this.workAddressForm, 'address', item.address)
       this.dialogTableVisible = true
     },
     deleteAddress(item) {
-      deleteWorkAddress({ id: item.id }).then(() => {
+      deleteWorkAddress({ ids: item.id }).then(() => {
         this.$message.success('删除成功')
+        this.form.workAddressId = ''
+        this.form.workProvinceArr = []
+        this.workAddress = []
+        this.addressPageNo = 1
+        this.loadWorkAddress()
       })
     },
     handleAddressClick() {
@@ -526,15 +599,15 @@ export default {
     },
     autoUserId() {
       createNewWorkNo().then((res) => {
-        this.form.userId = res.workNo * 1
+        this.form.workNo = res.workNo
       })
     },
     goBack() {
-      this.$router.push({ path: '/personnel/roster' })
+      this.$router.back(-1)
     },
     async submitAndCreate() {
       await this.onSubmit()
-      this.form = {}
+      this.form = { subOrg: [], subJob: [] }
     },
     async handleSubmit() {
       await this.onSubmit()
@@ -553,6 +626,10 @@ export default {
             params.countyName = inputValue[1]
             params.workProvinceCode = params.workProvinceArr[0]
             params.workCityCode = params.workProvinceArr[1]
+            params.orgId = params.orgId[0]
+            params.subOrg = params.subOrg.map((item) => {
+              return item[0]
+            })
             createUser(params).then(() => {
               this.$message.success('创建成功')
               resolve()
@@ -615,7 +692,7 @@ export default {
 }
 .newAddress {
   font-size: 12px;
-  margin-top: 10px;
+  // margin-top: 10px;
   height: 30px;
   line-height: 30px;
   border-top: 1px solid rgb(242, 242, 242);
@@ -632,6 +709,10 @@ export default {
       display: inline-block;
     }
   }
+}
+.addSubOrg {
+  font-size: 14px;
+  cursor: pointer;
 }
 /deep/ .el-col {
   .el-form-item {

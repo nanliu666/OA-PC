@@ -16,29 +16,35 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { Base64 } from 'js-base64'
 
-//默认超时时间
-axios.defaults.timeout = 100000
-//返回其他状态码
-axios.defaults.validateStatus = function(status) {
-  return status >= 200 && status <= 500
-}
-//跨域请求，允许保存cookie
-axios.defaults.withCredentials = true
+const instance = axios.create({
+  timeout: 100000, //默认超时时间
+  withCredentials: true, //跨域请求，允许保存cookie
+  validateStatus: function(status) {
+    return status >= 200 && status <= 500
+  }
+})
+
 // NProgress 配置
 NProgress.configure({
   showSpinner: false
 })
 //http request拦截
-axios.interceptors.request.use(
+instance.interceptors.request.use(
   (config) => {
     //开启 progress bar
     NProgress.start()
     const meta = config.meta || {}
     const isToken = meta.isToken === false
-    config.headers['Authorization'] = `Basic ${Base64.encode(`${website.clientId}:${website.clientSecret}`)}`
+    config.headers['Authorization'] = `Basic ${Base64.encode(
+      `${website.clientId}:${website.clientSecret}`
+    )}`
     config.headers.tenantId = store.state.user.userInfo.tenant_id
     config.headers.appId = 'Admin'
-    config.headers.accessToken = store.state.user.userInfo.token_type + ' ' + store.state.user.userInfo.access_token
+    config.headers.accessToken =
+      store.state.user.userInfo.token_type + ' ' + store.state.user.userInfo.access_token
+    if (!config.url.startsWith('/api') && !config.url.startsWith('api')) {
+      config.url = '/api' + config.url
+    }
     if (getToken() && !isToken) {
       //让每个请求携带token--['Authorization']为自定义key 请根据实际情况自行修改
       config.headers['Blade-Auth'] = 'bearer ' + getToken()
@@ -48,10 +54,13 @@ axios.interceptors.request.use(
       config.data = serialize(config.data)
     }
     // 登录接口后台数据从url获取 其他接口正常
-    if (config.method.toLowerCase() !== 'get' && !String.prototype.endsWith.call(config.url, '/oauth/token')) {
+    if (
+      config.method.toLowerCase() !== 'get' &&
+      !String.prototype.endsWith.call(config.url, '/oauth/token')
+    ) {
       config.data = config.data || config.params
-      config.params = null
     }
+    if (config.method.toLowerCase() === 'delete') config.params = config.data
     return config
   },
   (error) => {
@@ -59,7 +68,7 @@ axios.interceptors.request.use(
   }
 )
 //http response 拦截
-axios.interceptors.response.use(
+instance.interceptors.response.use(
   (res) => {
     //关闭 progress bar
     NProgress.done()
@@ -91,4 +100,27 @@ axios.interceptors.response.use(
   }
 )
 
-export default axios
+export function post(urls, data, config = {}) {
+  return instance.post(urls, data, config)
+}
+
+export function get(urls, params, config = {}) {
+  return instance.get(urls, {
+    params,
+    ...config
+  })
+}
+
+export function put(urls, data, config = {}) {
+  return instance.put(urls, data, config)
+}
+
+export function del(urls, data, config = {}) {
+  return instance.delete(urls, {
+    params: data,
+    data,
+    ...config
+  })
+}
+
+export default instance
