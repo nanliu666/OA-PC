@@ -9,17 +9,18 @@ const dict = {
   },
   actions: {
     //发送错误日志
-    FlowRoutes({ commit }) {
-      return new Promise((resolve, reject) => {
-        getDictionary({ code: 'flow' })
-          .then((res) => {
-            commit('SET_FLOW_ROUTES', res)
-            resolve()
-          })
-          .catch((error) => {
-            reject(error)
-          })
-      })
+    FlowRoutes() {
+      return
+      // return new Promise((resolve, reject) => {
+      //   getDictionary({ code: 'flow' })
+      //     .then((res) => {
+      //       commit('SET_FLOW_ROUTES', res)
+      //       resolve()
+      //     })
+      //     .catch((error) => {
+      //       reject(error)
+      //     })
+      // })
     },
     CommonDict({ state, commit }, name) {
       return new Promise((resolve, reject) => {
