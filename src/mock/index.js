@@ -21,7 +21,7 @@ import menus from './menus'
 
 const options = { mock: false }
 
-// user(options)
+user(options)
 
 menu({ mock: true })
 

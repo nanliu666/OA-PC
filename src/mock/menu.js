@@ -24,6 +24,25 @@ const res = {
         isOwn: 1,
         children: [
           {
+            menuId: '13',
+            parentId: '1',
+            code: 'menu',
+            menuName: '菜单管理',
+            alias: 'menu',
+            path: '/system/menu',
+            icon: 'iconfont iconicon_subordinate',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/menu/edit',
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
             menuId: '11',
             parentId: '1123598815738675203',
             code: 'action',
@@ -160,12 +179,12 @@ const res = {
         ]
       },
       {
-        menuId: '3',
+        menuId: '11235988157386752',
         parentId: '0',
         code: 'system',
-        menuName: '人事管理',
+        menuName: '组织管理',
         alias: 'menu',
-        path: '/personnel',
+        path: '/orgs',
         source: 'iconfont iconicon_setting',
         icon: 'iconfont iconicon_subordinate',
         menuType: 'Menu',
@@ -175,11 +194,10 @@ const res = {
             menuId: '31',
             parentId: '3',
             code: 'client',
-            menuName: '员工花名册',
+            menuName: '组织机构管理',
             alias: 'menu',
-            path: '/personnel/roster',
+            path: '/orgs/orgManagement',
             source: 'iconfont iconicon_mobilephone',
-            sort: 8,
             icon: 'iconfont iconicon_subordinate',
             menuType: 'Menu',
             isOwn: 1,

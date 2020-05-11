@@ -59,7 +59,10 @@ const user = {
           )
           commit(
             'SET_MENU_ALL',
-            filterTree(data.menuPrivileges, (node) => node.isOwn === 1 && node.menuType !== 'Button')
+            filterTree(
+              data.menuPrivileges,
+              (node) => node.isOwn === 1 && node.menuType !== 'Button'
+            )
           )
           commit(
             'SET_PRIVILEGES',
@@ -172,7 +175,7 @@ const user = {
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo
-      setStore({ name: 'userInfo', content: state.userInfo })
+      setStore({ name: 'userInfo', content: state.userInfo, type: 'session' })
     },
     SET_MENU: (state, menu) => {
       state.menu = menu

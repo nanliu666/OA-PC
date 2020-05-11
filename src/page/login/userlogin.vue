@@ -172,7 +172,7 @@ export default {
             .dispatch('LoginByUsername', this.loginForm)
             .then((res) => {
               this.$router.push({ path: this.tagWel.value })
-              this.$store.dispatch('GetUserPrivilege', res.userId)
+              this.$store.dispatch('GetUserPrivilege', res.user_id)
               loading.close()
             })
             .catch(() => {

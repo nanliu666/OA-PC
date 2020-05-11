@@ -23,7 +23,7 @@
         >
           <template slot="title">
             <i
-              :class="item.source"
+              :class="item.icon"
               style="padding-right: 5px;"
             />
             <span>{{ generateTitle(item) }}</span>
