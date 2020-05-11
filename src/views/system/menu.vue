@@ -37,11 +37,10 @@
         slot-scope="scope"
       >
         <el-button
-          v-if="userInfo.role_name.includes('admin')"
           type="text"
           icon="el-icon-circle-plus-outline"
           size="small"
-          @click.stop="handleAdd(scope.row, scope.index)"
+          @click.stop="handleAddChild(scope.row, scope.index)"
         >
           新增子项
         </el-button>
@@ -60,11 +59,7 @@
 
 <script>
 import {
-  // getLazyList,
-  // remove,
-  // update,
-  // add,
-  getMenu,
+  getMenuTree,
   getMenuInfo,
   postMenuInfo,
   putMenuInfo,
@@ -73,7 +68,6 @@ import {
 import { mapGetters } from 'vuex'
 import iconList from '@/config/iconList'
 import func from '@/util/func'
-import { getMenuTree } from '@/api/system/menu'
 
 export default {
   data() {
@@ -82,7 +76,7 @@ export default {
       query: {},
       loading: true,
       selectionList: [],
-      parentId: 0,
+      parentId: '0',
       page: {
         pageSize: 10,
         currentPage: 1,
@@ -102,6 +96,7 @@ export default {
         viewBtn: true,
         menuWidth: 300,
         dialogClickModal: false,
+        rowKey: 'menuId',
         column: [
           {
             label: '菜单名称',
@@ -117,14 +112,7 @@ export default {
           },
           {
             label: '请求地址',
-            prop: 'path',
-            rules: [
-              {
-                required: true,
-                message: '请输入路由地址',
-                trigger: 'blur'
-              }
-            ]
+            prop: 'path'
           },
           {
             label: '上级菜单',
@@ -133,7 +121,8 @@ export default {
             dicData: [],
             hide: true,
             props: {
-              label: 'title'
+              label: 'name',
+              value: 'menuId'
             },
             rules: [
               {
@@ -174,20 +163,20 @@ export default {
             prop: 'menuType',
             type: 'radio',
             dicData: [
+              // Dir：目录，Menu：菜单；Button：按钮
               {
                 label: '目录',
-                value: 0
+                value: 'Dir'
               },
               {
                 label: '菜单',
-                value: 1
+                value: 'Menu'
               },
               {
                 label: '按钮',
-                value: 2
+                value: 'Button'
               }
             ],
-            hide: true,
             rules: [
               {
                 required: true,
@@ -195,6 +184,22 @@ export default {
                 trigger: 'blur'
               }
             ]
+          },
+          {
+            label: '隐藏菜单',
+            prop: 'isShow',
+            type: 'radio',
+            dicData: [
+              {
+                label: '显示',
+                value: 1
+              },
+              {
+                label: '隐藏',
+                value: 0
+              }
+            ],
+            hide: true
           },
           {
             label: '菜单别名',
@@ -227,6 +232,21 @@ export default {
             span: 24,
             minRows: 2,
             hide: true
+          },
+          {
+            label: '状态',
+            prop: 'status',
+            type: 'radio',
+            dicData: [
+              {
+                label: '有效',
+                value: 'VALID'
+              },
+              {
+                label: '失效',
+                value: 'INVALID'
+              }
+            ]
           }
         ]
       },
@@ -253,33 +273,15 @@ export default {
       })
     }
   },
-  mounted() {
-    this.getMenuData()
-  },
   methods: {
-    getMenuData() {
-      let params = {
-        parentId: '',
-        code: '',
-        name: '',
-        alias: ''
-      }
-      this.loading = true
-      getMenuInfo(params).then((res) => {
-        this.data = res
-        this.loading = false
-        this.selectionClear()
-      })
-    },
     initData() {
       getMenuTree().then((res) => {
         const column = this.findObject(this.option.column, 'parentId')
         column.dicData = res
       })
     },
-    handleAdd(row) {
-      this.$refs.crud.value.parentId = row.id
-      // console.log(row)
+    handleAddChild(row) {
+      this.$refs.crud.value.parentId = row.menuId
       this.$refs.crud.option.column.filter((item) => {
         if (item.prop === 'parentId') {
           item.value = row.menuId
@@ -290,15 +292,19 @@ export default {
     },
     rowSave(row, done, loading) {
       // console.log(row)
+      if (!row.parentId) {
+        row.parentId = '0'
+      }
       postMenuInfo(row).then(
         (res) => {
           // 获取新增数据的相关字段
-          row.id = res.id
+          row.menuId = res.menuId
           this.$message({
             type: 'success',
             message: '操作成功!'
           })
           // 数据回调进行刷新
+          // this.refreshChange()
           done(row)
         },
         (error) => {
@@ -330,7 +336,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          return deleteMenuInfo(row.id)
+          return deleteMenuInfo(row.menuId)
         })
         .then(() => {
           this.$message({
@@ -342,7 +348,6 @@ export default {
         })
     },
     handleDelete() {
-      alert(1)
       if (this.selectionList.length === 0) {
         this.$message.warning('请选择至少一条数据')
         return
@@ -358,7 +363,7 @@ export default {
         .then(() => {
           // 刷新表格数据并重载
           this.data = []
-          this.parentId = 0
+          this.parentId = '0'
           this.$refs.crud.refreshTable()
           this.$refs.crud.toggleSelection()
           // 表格数据重载
@@ -371,12 +376,12 @@ export default {
     },
     searchReset() {
       this.query = {}
-      this.parentId = 0
+      this.parentId = '0'
       this.onLoad(this.page)
     },
     searchChange(params, done) {
       this.query = params
-      this.parentId = ''
+      this.parentId = '0'
       this.page.currentPage = 1
       this.onLoad(this.page, params)
       done()
@@ -392,17 +397,15 @@ export default {
       if (['add', 'edit'].includes(type)) {
         this.initData()
       }
-      if (['edit', 'view'].includes(type)) {
-        getMenu(this.form.id).then((res) => {
-          this.form = res
-        })
+      if (type == 'add') {
+        this.form = { isShow: 1, status: 'VALID' }
       }
       done()
     },
     beforeClose(done) {
       this.$refs.crud.value.parentId = ''
       this.$refs.crud.value.addDisabled = false
-      this.$refs.crud.option.column.filter((item) => {
+      this.$refs.crud.option.column.forEach((item) => {
         if (item.prop === 'parentId') {
           item.value = ''
           item.addDisabled = false
@@ -422,28 +425,18 @@ export default {
     onLoad(page, params = {}) {
       this.loading = true
       getMenuInfo(this.parentId, Object.assign(params, this.query)).then((res) => {
-        // alert(213)
-        // if(res[0].menuId ){
-        res.map((it) => {
+        res.forEach((it) => {
           it.hasChildren = true
-          it.id = it.menuId
         })
-        // }
-
-        // this.$nextTick(()=>{
-
         this.data = res
-        this.loading = false
-        this.selectionClear()
-        // })
+        this.$nextTick(() => {
+          this.loading = false
+          this.selectionClear()
+        })
       })
     },
     treeLoad(tree, treeNode, resolve) {
       const parentId = tree.menuId
-      // setTimeout(() => {
-      //   resolve([])
-      // }, 1000)
-      // return
       getMenuInfo(parentId)
         .then((res) => {
           resolve(res)
