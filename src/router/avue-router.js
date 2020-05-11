@@ -102,6 +102,14 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         children: propsConfig.children || 'children',
         meta: propsConfig.meta || 'meta'
       }
+      const genComponent = (path = '') => {
+        let index = path.indexOf(':')
+        if (index >= 0) {
+          return 'views' + path.slice(0, index - 1)
+        } else {
+          return 'views' + path
+        }
+      }
       // 如果没有权限菜单就结束
       if (aMenu.length === 0) return
       // 开始处理menu
@@ -113,7 +121,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         // 这一块的赋值 也就是取到返回的值
         let path = oMenu[propsDefault.path] || '',
           //特殊处理组件 执行完这个 component 也就是精确到具体的文件了  views文件夹下面就是具体的页面代码
-          component = 'views' + oMenu.path,
+          component = genComponent(oMenu.path),
           name = oMenu[propsDefault.label],
           icon = oMenu[propsDefault.icon],
           children = oMenu[propsDefault.children],
@@ -140,7 +148,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
               require(['../page/index'], resolve)
               return
               // 判断是否为多层路由
-            } else if (hasChild && !first) {
+            } else if (hasChild && oMenu.menuType === 'Dir' && !first) {
               require(['../page/index/layout'], resolve)
               return
               // 判断是否为最终的页面视图
@@ -151,10 +159,10 @@ RouterPlugin.install = function(vue, router, store, i18n) {
           name: name,
           icon: icon,
           meta: meta,
-          redirect: (() => {
-            // 第一次进来但是没有子路由的 需要添加redirect
-            if (hasChild) return children[0].path
-          })(),
+          // redirect: (() => {
+          //   // 第一次进来但是没有子路由的 需要添加redirect
+          //   if (oMenu==='Dir') return children[0].path
+          // })(),
           // 整理子路由的route 配置
           // 处理是否为一级路由
           children: !hasChild

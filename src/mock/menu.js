@@ -24,6 +24,25 @@ const res = {
         isOwn: 1,
         children: [
           {
+            menuId: '13',
+            parentId: '1',
+            code: 'menu',
+            menuName: '菜单管理',
+            alias: 'menu',
+            path: '/system/menu',
+            icon: 'iconfont iconicon_subordinate',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                isOwn: 1,
+                path: '/system/menu/edit',
+                menuType: 'Button'
+              }
+            ]
+          },
+          {
             menuId: '11',
             parentId: '1123598815738675203',
             code: 'action',
@@ -60,52 +79,6 @@ const res = {
                 menuType: 'Button'
               }
             ]
-          },
-          {
-            menuId: '13',
-            parentId: '1',
-            code: 'menu',
-            menuName: '菜单管理',
-            alias: 'menu',
-            path: '/system/menu',
-            icon: 'iconfont iconicon_subordinate',
-            menuType: 'Menu',
-            isOwn: 1,
-            children: [
-              {
-                menuName: '修改',
-                isOwn: 1,
-                path: '/system/menu/edit',
-                menuType: 'Button'
-              }
-            ]
-          },
-
-          {
-            menuId: '11235988157386752',
-            parentId: '0',
-            code: 'system',
-            menuName: '组织管理',
-            alias: 'menu',
-            path: '/orgs',
-            source: 'iconfont iconicon_setting',
-            icon: 'iconfont iconicon_subordinate',
-            menuType: 'Menu',
-            isOwn: 1,
-            children: [
-              {
-                menuId: '1123598815738675261',
-                parentId: '11235988157386752',
-                code: 'client',
-                menuName: '组织机构管理',
-                alias: 'menu',
-                path: '/orgs/orgManagement',
-                source: 'iconfont iconicon_mobilephone',
-                icon: 'iconfont iconicon_subordinate',
-                menuType: 'Menu',
-                isOwn: 1
-              }
-            ]
           }
         ],
         hasChildren: false,
@@ -113,6 +86,51 @@ const res = {
         categoryName: '',
         actionName: '',
         isOpenName: ''
+      },
+      {
+        menuId: '11235988157386752',
+        parentId: '0',
+        code: 'system',
+        menuName: '组织管理',
+        alias: 'menu',
+        path: '/orgs',
+        source: 'iconfont iconicon_setting',
+        icon: 'iconfont iconicon_subordinate',
+        menuType: 'Menu',
+        isOwn: 1,
+        children: [
+          {
+            menuId: '1123598815738675261',
+            parentId: '11235988157386752',
+            code: 'client',
+            menuName: '组织机构管理',
+            alias: 'menu',
+            path: '/orgs/orgManagement',
+            source: 'iconfont iconicon_mobilephone',
+            icon: 'iconfont iconicon_subordinate',
+            menuType: 'Menu',
+            isOwn: 1
+          },
+          {
+            menuId: '21',
+            parentId: '2',
+            code: 'user',
+            menuName: '用户管理',
+            alias: 'menu',
+            path: '/system/user',
+            icon: 'iconfont iconicon_principal',
+            menuType: 'Menu',
+            isOwn: 1,
+            children: [
+              {
+                menuName: '修改',
+                path: '/system/user/edit',
+                isOwn: 1,
+                menuType: 'Button'
+              }
+            ]
+          }
+        ]
       },
       {
         menuId: '11235988157386752',
@@ -145,37 +163,6 @@ const res = {
         categoryName: '',
         actionName: '',
         isOpenName: ''
-      },
-      {
-        menuId: '2',
-        parentId: '0',
-        code: 'system',
-        menuName: '组织管理',
-        alias: 'menu',
-        icon: 'iconfont iconicon_setting',
-        menuType: 'Menu',
-        isOwn: 1,
-        children: [
-          {
-            menuId: '21',
-            parentId: '2',
-            code: 'user',
-            menuName: '用户管理',
-            alias: 'menu',
-            path: '/system/user',
-            icon: 'iconfont iconicon_principal',
-            menuType: 'Menu',
-            isOwn: 1,
-            children: [
-              {
-                menuName: '修改',
-                path: '/system/user/edit',
-                isOwn: 1,
-                menuType: 'Button'
-              }
-            ]
-          }
-        ]
       }
     ]
   }

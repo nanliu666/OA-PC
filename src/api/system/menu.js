@@ -1,39 +1,5 @@
 import request from '@/router/axios'
 
-export const getList = (current, size, params) => {
-  return request({
-    url: '/api/blade-system/menu/list',
-    method: 'get',
-    params: {
-      ...params,
-      current,
-      size
-    }
-  })
-}
-
-export const getLazyList = (parentId, params) => {
-  return request({
-    url: '/api/blade-system/menu/lazy-list',
-    method: 'get',
-    params: {
-      ...params,
-      parentId
-    }
-  })
-}
-
-export const getLazyMenuList = (parentId, params) => {
-  return request({
-    url: '/api/blade-system/menu/lazy-menu-list',
-    method: 'get',
-    params: {
-      ...params,
-      parentId
-    }
-  })
-}
-
 export const getMenuList = (current, size, params) => {
   return request({
     url: '/api/blade-system/menu/menu-list',
@@ -46,82 +12,44 @@ export const getMenuList = (current, size, params) => {
   })
 }
 
-export const getMenuTree = (tenantId) => {
+export const getMenuTree = (parentId = '0') => {
   return request({
-    url: '/api/blade-system/menu/tree',
+    url: '/api/sys/v1/menu/tree',
     method: 'get',
     params: {
-      tenantId
-    }
-  })
-}
-
-export const remove = (ids) => {
-  return request({
-    url: '/api/blade-system/menu/remove',
-    method: 'post',
-    params: {
-      ids
-    }
-  })
-}
-
-export const add = (row) => {
-  return request({
-    url: '/api/blade-system/menu/submit',
-    method: 'post',
-    data: row
-  })
-}
-
-export const update = (row) => {
-  return request({
-    url: '/api/blade-system/menu/submit',
-    method: 'post',
-    data: row
-  })
-}
-
-export const getMenu = (id) => {
-  return request({
-    url: '/api/blade-system/menu/detail',
-    method: 'get',
-    params: {
-      id
-    }
-  })
-}
-
-export const getMenuInfo = (topMenuId) =>
-  request({
-    url: '/api/sys/v1/menu/info',
-    method: 'get',
-    params: {
-      topMenuId
-    }
-  })
-export const postMenuInfo = (parentId, params) =>
-  request({
-    url: '/api/sys/v1/menu/info',
-    method: 'post',
-    params: {
-      ...params,
       parentId
     }
+  })
+}
+
+export const getMenuInfo = (parentId, query = {}) =>
+  request({
+    url: '/api/sys/v1/menu/info',
+    method: 'get',
+    params: {
+      parentId,
+      ...query
+    }
+  })
+export const postMenuInfo = (data) =>
+  request({
+    url: '/api/sys/v1/menu/info',
+    method: 'post',
+    data
   })
 export const putMenuInfo = (params) =>
   request({
     url: '/api/sys/v1/menu/info',
     method: 'put',
-    params: {
+    data: {
       ...params
     }
   })
-export const deleteMenuInfo = (params) =>
+export const deleteMenuInfo = (menuId) =>
   request({
     url: '/api/sys/v1/menu/info',
     method: 'delete',
     params: {
-      ...params
+      menuId
     }
   })

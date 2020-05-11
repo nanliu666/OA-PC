@@ -40,14 +40,13 @@ instance.interceptors.request.use(
     )}`
     config.headers.tenantId = store.state.user.userInfo.tenant_id
     config.headers.appId = 'Admin'
-    config.headers.accessToken =
-      store.state.user.userInfo.token_type + ' ' + store.state.user.userInfo.access_token
+
     if (!config.url.startsWith('/api') && !config.url.startsWith('api')) {
       config.url = '/api' + config.url
     }
     if (getToken() && !isToken) {
       //让每个请求携带token--['Authorization']为自定义key 请根据实际情况自行修改
-      config.headers['Blade-Auth'] = 'bearer ' + getToken()
+      config.headers.accessToken = store.state.user.userInfo.token_type + ' ' + getToken()
     }
     //headers中配置serialize为true开启序列化
     if (config.method === 'post' && meta.isSerialize === true) {
