@@ -201,8 +201,11 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffEmerInfo(item.id).then(() => {
-            this.emergencyInfo.splice(index, 1)
+          let params = {
+            ids: item.id
+          }
+          delStaffEmerInfo(params).then(() => {
+            this.emergency.splice(index, 1)
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -222,7 +225,13 @@ export default {
           this.editClick = false
           this.currentEdit = null
           if (this.type == 'add') {
-            addStaffEmerInfo(item).then(() => {
+            let params = {
+              userId: this.userInfo.user_id,
+              name: item.name,
+              phone: item.phone,
+              relationship: item.relationship
+            }
+            addStaffEmerInfo(params).then(() => {
               this.$message({
                 type: 'success',
                 message: '添加成功'

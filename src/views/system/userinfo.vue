@@ -222,7 +222,7 @@
                       v-show="readonly"
                       label="婚姻状况:"
                     >
-                      <span>{{ perosonnalInfo.marriage == '1' ? '已婚' : '未婚' }}</span>
+                      <span>{{ getMarrige() }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
@@ -231,12 +231,10 @@
                     >
                       <el-select v-model="perosonnalInfo.marriage">
                         <el-option
-                          label="未婚"
-                          value="未婚"
-                        />
-                        <el-option
-                          label="已婚"
-                          value="已婚"
+                          v-for="item in merrigeOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
                         />
                       </el-select>
                     </el-form-item>
@@ -383,7 +381,17 @@ export default {
         }
       },
       perosonnalInfo: {},
-      contactOrder: null
+      contactOrder: null,
+      merrigeOptions: [
+        {
+          value: 0,
+          label: '未婚'
+        },
+        {
+          value: 1,
+          label: '已婚'
+        }
+      ]
     }
   },
   computed: {
@@ -392,7 +400,11 @@ export default {
   created() {
     this.getUserAllInfo()
   },
+
   methods: {
+    getMarrige() {
+      return this.perosonnalInfo.marriage == 1 ? '已婚' : '未婚'
+    },
     getUserAllInfo() {
       let params = {
         userId: this.userInfo.user_id //从vuex中获取
@@ -411,13 +423,12 @@ export default {
     saveBasicInfo() {
       this.$refs['userInfo'].validate((isPass) => {
         if (isPass) {
-          this.readonly = true
-
           let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
           this.perosonnalInfo.userAddress =
             thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
-
           editStaffBasicInfo(this.perosonnalInfo).then(() => {
+            noEditInfo = this.deepCopy(this.perosonnalInfo)
+            this.readonly = true
             this.$message({
               type: 'success',
               message: '修改成功'
