@@ -57,9 +57,8 @@
               :loading="loading"
               :config="tableConfig"
               :columns="columns"
-              @pageSizeChange="sizeChange"
-              @currentPageChange="currentChange"
-              @selection-change="selectionChange"
+              @page-size-change="sizeChange"
+              @current-page-change="currentChange"
             >
               <template slot="topMenu">
                 <div class="flex-flow flex justify-content align-items ">
@@ -95,9 +94,14 @@
                   </div>
                 </div>
               </template>
-              <template slot="multiSelectMenu">
+              <template
+                slot="multiSelectMenu"
+                slot-scope="{ selection }"
+              >
                 <span class="all">
-                  <span @click="handlerDeleteAll"><i class="el-icon-delete" /> 批量删除</span>
+                  <span
+                    @click="handlerDeleteAll(selection)"
+                  ><i class="el-icon-delete" /> 批量删除</span>
                   <span><i class="el-icon-folder" /> 批量导出</span>
                 </span>
               </template>
@@ -181,7 +185,11 @@ export default {
       data: [],
       tableConfig: {
         showHandler: true,
-        enableMultiSelect: true
+        enableMultiSelect: true,
+        enablePagination: true,
+        handlerColumn: {
+          width: 200
+        }
       },
       columns: [
         {
@@ -222,22 +230,15 @@ export default {
       }
     }
   },
-  computed: {
-    ids() {
-      let ids = []
-      this.selectionList.forEach((ele) => {
-        ids.push(ele.jobId)
-      })
-      return ids.join(',')
-    }
-  },
+
   mounted() {
     this.getCategory()
     this.getJobData()
     this.getTree()
   },
   methods: {
-    handlerDeleteAll() {
+    handlerDeleteAll(list) {
+      debugger
       this.$confirm('您确定要删除你所选中的职位吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -264,7 +265,7 @@ export default {
           return
         }
         let params = {
-          ids: this.ids
+          ids: list.map((i) => i.id).join(',')
         }
         deleteV1Job(params).then(() => {
           this.getJobData()
@@ -299,8 +300,10 @@ export default {
         this.orgTree = res
       })
     },
-    getJobData() {
+    getJobData(pageNo = 1, pageSize = 10) {
       this.loading = true
+      this.form.pageNo = pageNo
+      this.form.pageSize = pageSize
       this.params.jobName = this.form.name
       gotV1Job(this.params).then((res) => {
         this.loading = false
@@ -332,15 +335,13 @@ export default {
     },
     search() {
       this.params.jobName = this.form.name
-      this.getJobData()
+      this.getJobData(1, this.form.pageSize)
     },
     sizeChange(val) {
-      this.params.pageSize = val
-      this.getJobData()
+      this.getJobData(1, val)
     },
     currentChange(val) {
-      this.params.pageNo = val
-      this.getJobData()
+      this.getJobData(val, this.form.pageSize)
     },
     handleExport() {
       this.$confirm('是否导出数据?', '提示', {
@@ -350,15 +351,16 @@ export default {
       }).then(() => {
         const searchForm = this.form
         window.open(
-          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${searchForm.account}&realName=${
-            searchForm.realName
-          }`
+          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${
+            searchForm.account
+          }&realName=${searchForm.realName}`
         )
       })
     },
     onLoad() {},
-    handleConfig() {
+    handleConfig(row) {
       // this.configVisible = !this.configVisible
+      this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = false
       this.title = '新建子组织'
       this.positionDialog = true
@@ -407,11 +409,6 @@ export default {
           })
         })
         .then(() => {})
-    },
-    selectionChange(list) {
-      this.isBatch = true
-      this.number = list.length
-      this.selectionList = list
     },
     toggleSelection(val) {
       this.$refs.crud.toggleSelection(val)
@@ -561,5 +558,8 @@ export default {
 
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+.handler {
+  width: 200px;
 }
 </style>

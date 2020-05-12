@@ -7,7 +7,6 @@
         :option="option"
         :table-loading="loading"
         :data="data"
-        :permission="permissionList"
         :before-open="beforeOpen"
         :page="page"
         @row-update="rowUpdate"

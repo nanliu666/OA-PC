@@ -292,7 +292,7 @@ export const addUser = (params) => {
   return request({
     url: '/api/sys/v1/role/user',
     method: 'post',
-    params: {
+    data: {
       ...params
     }
   })

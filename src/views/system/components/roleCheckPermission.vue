@@ -58,6 +58,7 @@ export default {
   },
   data() {
     return {
+      item: {},
       checkAll: false,
       isIndeterminate: false
     }
@@ -67,6 +68,14 @@ export default {
       handler(val) {
         if (val.length > 0) {
           // 列表选中状态改变时，改变全选按钮状态
+          // console.log(val)
+          val.map((it) => {
+            if (it.isOwn) {
+              it.isOwn = true
+            } else {
+              it.isOwn = false
+            }
+          })
           const isOwns = val.filter((item) => !!item[this.defaultProps.check]).length
           this.isIndeterminate = 0 < isOwns && isOwns < val.length // 半选状态
           this.checkAll = isOwns === val.length // 全选状态

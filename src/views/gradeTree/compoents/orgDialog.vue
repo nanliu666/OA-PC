@@ -7,23 +7,32 @@
       :modal-append-to-body="false"
       :before-close="handleClose"
     >
-      <div>
+      <div v-loading="loading">
         <div>
           <avue-form
             ref="form"
             v-model="form"
             :option="option"
           >
-            <template
-              slot="parentOrgId"
-              slot-scope="scope"
-            >
-              <treeSelect
-                v-model="form.parentOrgId"
-                :is-single="isSingle"
-                :option="scope.column"
-                :limit-check="limitCheck"
-              />
+            <template slot="userId">
+              <el-select
+                v-model="form.userId"
+                v-loadmore="loadMoreLeader"
+                placeholder="请选择组织负责人"
+              >
+                <el-option
+                  v-for="item in leaderList"
+                  :key="item.userId"
+                  :label="item.name"
+                  :value="item.userId"
+                />
+                <div
+                  v-show="loadLeader"
+                  class="addressLoading"
+                >
+                  <i class="el-icon-loading" />
+                </div>
+              </el-select>
             </template>
           </avue-form>
         </div>
@@ -71,7 +80,7 @@
 </template>
 
 <script>
-import treeSelect from '../../../components/treeSelect/treeSelect'
+// import treeSelect from '../../../components/treeSelect/treeSelect'
 const options = [
   {
     value: '选项1',
@@ -96,55 +105,10 @@ const options = [
 ]
 let orgList = []
 import { getOrganization, postOrganization, putOrganization } from '@/api/organize/grade'
-const consc = [
-  {
-    label: 'CEO',
-    value: '001'
-  },
-  {
-    label: ' 百利宏化工CEO',
-    value: '002'
-  },
-  {
-    label: '百利宏医药工CEO',
-    value: '003'
-  },
-  {
-    label: '事业部经理1',
-    value: '004'
-  },
-  {
-    label: '事业部经理2',
-    value: '005'
-  },
-  {
-    label: '事业部经理3',
-    value: '006'
-  },
-  {
-    label: '事业部经理4',
-    value: '007'
-  },
-  {
-    label: '飞洒',
-    value: '008'
-  },
-  {
-    label: '发撒',
-    value: '009'
-  },
-  {
-    label: '富士达',
-    value: '0010'
-  },
-  {
-    label: '士大夫',
-    value: '0011'
-  }
-]
+import { getUserWorkList } from '@/api/org/org'
+const consc = []
 export default {
   name: 'OrgDialog',
-  components: { treeSelect },
   props: {
     isEdit: {
       type: Boolean,
@@ -187,6 +151,11 @@ export default {
       }
     }
     return {
+      loading: false,
+      leaderList: [],
+      totalPage: '',
+      leaderPageNo: 1,
+      loadLeader: false,
       limitCheck: true,
       isSingle: true,
 
@@ -195,7 +164,7 @@ export default {
         remark: '',
         orgType: '',
         userId: '',
-        parentOrgId: []
+        parentOrgId: ''
       },
       option: {
         menuBtn: false,
@@ -220,14 +189,13 @@ export default {
           {
             label: '上级组织',
             prop: 'parentOrgId',
+            type: 'tree',
             props: {
               label: 'label',
               value: 'id'
             },
-            formslot: true,
-            labelslot: true,
-            errorslot: true,
             span: 24,
+            disabled: false,
             limitCheck: false,
             placeholder: '请选择所属组织',
             rules: [
@@ -247,6 +215,7 @@ export default {
             label: '组织类型',
             prop: 'orgType',
             type: 'radio',
+            limitCheck: false,
             row: true,
             span: 24,
             rules: [
@@ -281,7 +250,9 @@ export default {
           {
             label: '组织负责人',
             prop: 'userId',
-            type: 'select',
+            formslot: true,
+            labelslot: true,
+            errorslot: true,
             display: true,
             filterable: true,
             multiple: true,
@@ -334,13 +305,21 @@ export default {
       deep: true //对象内部的属性监听，也叫深度监听
     },
     orgData: {
-      handler: function(val) {
+      handler: async function(val) {
+        // console.log(val)
+        this.loading = true
+        this.getorgData(val.parentId)
+        await this.getWordList()
+        this.loading = false
         if (this.isEdit) {
           this.form.orgName = this.orgData.name
-          let id = this.orgData.id
-          this.form.parentOrgId = [id]
+          this.form.parentOrgId = this.orgData.parentId
           this.form.remark = this.orgData.remark
           this.form.userId = this.orgData.userId
+          if (val.parentId === '0') {
+            this.option.column[1].disabled = true
+            this.option.column[2].disabled = true
+          }
           let types = {
             Enterprise: 0,
             Company: 0,
@@ -348,6 +327,10 @@ export default {
             Group: 2
           }
           this.form.orgType = types[this.orgData.type]
+        } else {
+          this.form.parentOrgId = this.orgData.parentId
+          this.option.column[1].disabled = true
+          setTimeout(() => {})
         }
         this.option.column[2].dicData.map((it) => {
           if (it.list.includes(val.type)) {
@@ -364,33 +347,60 @@ export default {
       this.$refs.tree.filter(val)
     }
   },
-  created() {
-    this.getorgData()
-  },
+  created() {},
   methods: {
-    getorgData() {
+    getWordList() {
+      return new Promise((resolve, reject) => {
+        getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 })
+          .then((res) => {
+            this.leaderList = res.data
+            this.totalPage = res.totalPage
+            this.leaderPageNo += 1
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
+    loadMoreLeader() {
+      if (this.loadLeader) return
+      if (this.leaderPageNo > this.totalPage) return
+      this.loadLeader = true
+      getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
+        if (res.data.length > 0) {
+          this.leaderList.push(...res.data)
+          this.leaderPageNo += 1
+        }
+        this.loadLeader = false
+      })
+    },
+    getorgData(parentOrgId = '0') {
       let params = {
-        parentOrgId: '',
+        parentOrgId: parentOrgId,
         orgName: '',
         orgType: '',
         userId: '',
         minUserNum: '',
         maxUserNum: ''
       }
-      getOrganization(params).then((res) => {
-        // console.log(res)
-        orgList = res
-        function maps(data) {
-          data.map((it) => {
-            it.id = it.orgId
-            it.label = it.orgName
-            if (it.children.length > 0) {
-              maps(it.children)
-            }
-          })
-        }
-        maps(orgList)
-        this.option.column[1].dicData = orgList
+      return new Promise((resolve) => {
+        getOrganization(params).then((res) => {
+          // console.log(res)
+          orgList = res
+          function maps(data) {
+            data.map((it) => {
+              it.id = it.orgId
+              it.label = it.orgName
+              if (it.children) {
+                maps(it.children)
+              }
+            })
+          }
+          maps(orgList)
+          this.option.column[1].dicData = orgList
+          resolve()
+        })
       })
     },
     onContinue() {
@@ -401,8 +411,7 @@ export default {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
           let { orgName, parentOrgId, orgType, userId, remark } = { ...this.form }
-          parentOrgId = parentOrgId.join(',')
-          userId = userId.join(',')
+          // userId = userId.join(',')
           let type = {
             0: 'Company',
             1: 'Department',
@@ -416,17 +425,20 @@ export default {
             userId,
             remark
           }
+          this.loading = true
           postOrganization(params).then(() => {
             this.$message.success('添加成功')
+            this.loading = false
+            if (ishow) {
+              this.$emit('update:dialogVisible', false)
+            } else {
+              let parentOrgId = JSON.parse(JSON.stringify(this.form.parentOrgId))
+              this.$refs.form.resetFields()
+              this.form.parentOrgId = parentOrgId
+            }
           })
         }
       })
-      if (ishow) {
-        this.$emit('update:dialogVisible', false)
-      } else {
-        this.$refs.form.resetFields()
-        this.form.userId = ''
-      }
     },
     againAdd() {
       this.onClickAdd({ ishow: false })
@@ -435,8 +447,6 @@ export default {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
           let { orgName, parentOrgId, orgType, userId, remark } = { ...this.form }
-          parentOrgId = parentOrgId.join(',')
-          userId = userId.join(',')
           let type = {
             0: 'Company',
             1: 'Department',
@@ -444,14 +454,17 @@ export default {
           }
           orgType = type[orgType]
           let params = {
+            orgId: this.orgData.id,
             orgName,
             parentOrgId,
             orgType,
             userId,
             remark
           }
+          this.loading = true
           putOrganization(params).then(() => {
             this.$message.success('修改成功')
+            this.loading = false
             this.handleClose()
           })
         }

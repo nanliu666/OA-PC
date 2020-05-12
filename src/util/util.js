@@ -123,7 +123,8 @@ export const listenfullscreen = (callback) => {
  * 浏览器判断是否全屏
  */
 export const fullscreenEnable = () => {
-  var isFullscreen = document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen
+  var isFullscreen =
+    document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen
   return isFullscreen
 }
 
@@ -169,6 +170,47 @@ export const findParent = (menu, id) => {
       }
     }
   }
+}
+/**
+ * 递归过滤节点，生成新的树结构
+ * @param {Node[]} nodes 要过滤的节点
+ * @param {node => boolean} predicate 过滤条件，符合条件的节点保留
+ * @return 过滤后的节点
+ */
+export const filterTree = (nodes, predicate) => {
+  // 如果已经没有节点了，结束递归
+  if (!(nodes && nodes.length)) {
+    return []
+  }
+
+  const newChildren = []
+  for (const node of nodes) {
+    if (predicate(node)) {
+      // 如果节点符合条件，直接加入新的节点集
+      newChildren.push(node)
+      node.children = filterTree(node.children, predicate)
+    }
+    // else {
+    // 	// 如果当前节点不符合条件，递归过滤子节点，
+    // 	// 把符合条件的子节点提升上来，并入新节点集
+    // 	newChildren.push(...filterTree(node.children, predicate));
+    // }
+  }
+  return newChildren
+}
+/**
+ * 树结构转一维数组
+ */
+export const flatTree = (tree, res = []) => {
+  tree.forEach((node) => {
+    const copy = deepClone(node)
+    delete copy.children
+    res.push(copy)
+    if (node.children && node.children.length > 0) {
+      flatTree(node.children, res)
+    }
+  })
+  return res
 }
 /**
  * 判断2个对象属性和值是否相等
@@ -303,5 +345,32 @@ export const openWindow = (url, title, w, h) => {
   // Puts focus on the newWindow
   if (window.focus) {
     newWindow.focus()
+  }
+}
+
+export const formatDate = (value) => {
+  let fomatValue = new Date(value)
+  let year = fomatValue.getFullYear()
+  let month = fomatValue.getMonth() + 1
+  let day = fomatValue.getDay()
+  return {
+    year: year,
+    month: month,
+    day: day
+  }
+}
+
+/**
+ * 判断两个日期时间段是否有交集
+ */
+export const judgeRepeatedTime = (section1, section2) => {
+  let section1Start = new Date(section1[0]).getTime()
+  let section1End = new Date(section1[1]).getTime()
+  let section2Start = new Date(section2[0]).getTime()
+  let section2End = new Date(section2[1]).getTime()
+  if (section2Start < section1End && section1Start < section2End) {
+    return true
+  } else {
+    return false
   }
 }

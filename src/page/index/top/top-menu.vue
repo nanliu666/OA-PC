@@ -15,10 +15,10 @@
           <span>{{ generateTitle(itemHome) }}</span>
         </template>
       </el-menu-item>
-      <template v-for="(item, index) in items">
+      <template v-for="item in menuAll">
         <el-menu-item
-          :key="index"
-          :index="item.id + ''"
+          :key="item.menuId"
+          :index="item.menuId"
           @click.native="openMenu(item)"
         >
           <template slot="title">
@@ -42,43 +42,27 @@ export default {
   data() {
     return {
       itemHome: {
-        name: '首页',
+        name: '工作台',
         source: 'el-icon-menu'
       },
-      activeIndex: '0',
-      items: []
+      activeIndex: '0'
     }
   },
   inject: ['index'],
   computed: {
-    ...mapGetters(['tagCurrent', 'menu'])
-  },
-  created() {
-    this.getMenu()
+    ...mapGetters(['tagCurrent', 'menuAll'])
   },
   methods: {
     openHome(itemHome) {
-      this.index.openMenu(itemHome)
       this.$router.push({
-        path: this.$router.$avueRouter.getPath(
-          { name: itemHome.name, src: '' },
-          {}
-        )
+        path: this.$router.$avueRouter.getPath({ name: itemHome.name, src: '' }, {})
       })
     },
     openMenu(item) {
       this.index.openMenu(item)
     },
-    getMenu() {
-      this.$store.dispatch('GetTopMenu').then((res) => {
-        this.items = res
-      })
-    },
     generateTitle(item) {
-      return this.$router.$avueRouter.generateTitle(
-        item.name,
-        (item.meta || {}).i18n
-      )
+      return this.$router.$avueRouter.generateTitle(item.menuName, (item.meta || {}).i18n)
     }
   }
 }

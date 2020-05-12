@@ -41,7 +41,6 @@
           :loading="loading"
           @pageSizeChange="sizeChange"
           @currentPageChange="currentChange"
-          @selection-change="selectionChange"
         >
           <template slot="topMenu">
             <div class="flex-flow flex justify-content align-items ">
@@ -70,16 +69,21 @@
                 <el-button
                   type="primary"
                   size="medium"
-                  @click="getJobData"
+                  @click="getData"
                 >
                   <i class="el-icon-refresh" />
                 </el-button>
               </div>
             </div>
           </template>
-          <template slot="multiSelectMenu">
+          <template
+            slot="multiSelectMenu"
+            slot-scope="{ selection }"
+          >
             <span class="all">
-              <span @click="handlerDeleteAll"><i class="el-icon-delete" /> 批量删除</span>
+              <span
+                @click="handlerDeleteAll(selection)"
+              ><i class="el-icon-delete" /> 批量删除</span>
               <span><i class="el-icon-folder" /> 批量导出</span>
             </span>
           </template>
@@ -106,10 +110,11 @@
       </div>
     </div>
     <stationDialog
+      v-if="stationDialog"
       :dialog-visible.sync="stationDialog"
       :title="title"
       :is-edit="isEdit"
-      :data="row"
+      :row="row"
       @onSubmit="onSubmit"
     />
   </div>
@@ -169,24 +174,15 @@ export default {
         }
       ],
       page: {
-        pageSize: 10,
+        pageSize: 100,
         pagerCount: 1,
         total: 10
       },
       params: {
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 100,
         name: ''
       }
-    }
-  },
-  computed: {
-    ids() {
-      let ids = []
-      this.selectionList.forEach((ele) => {
-        ids.push(ele.id)
-      })
-      return ids.join(',')
     }
   },
 
@@ -196,7 +192,7 @@ export default {
   },
   mounted() {},
   methods: {
-    handlerDeleteAll() {
+    handlerDeleteAll(list) {
       this.$confirm('您确定要删除你选中的岗位吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -223,7 +219,7 @@ export default {
           return
         }
         let params = {
-          id: this.ids
+          ids: list.map((i) => i.id).join(',')
         }
         deleteV1Position(params).then(() => {
           this.getData()
@@ -265,7 +261,7 @@ export default {
           return
         }
         let params = {
-          id: row.id
+          ids: row.id
         }
         deleteV1Position(params).then(() => {
           this.getData()
@@ -318,9 +314,9 @@ export default {
       }).then(() => {
         const searchForm = this.form
         window.open(
-          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${searchForm.account}&realName=${
-            searchForm.realName
-          }`
+          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${
+            searchForm.account
+          }&realName=${searchForm.realName}`
         )
       })
     },
@@ -340,44 +336,6 @@ export default {
       this.isEdit = true
       this.title = '编辑子组织'
       this.positionDialog = true
-    },
-    // handleCommand(event, row) {
-    //   this.$confirm('您确定要删除该岗位?', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   })
-    //     .then(() => {
-    //       if (row.workNum) {
-    //         this.$confirm('很抱歉，您选中的岗位下存在员工，请先将员工调整后在删除', {
-    //           confirmButtonText: '确定',
-    //           cancelButtonText: '取消',
-    //           type: 'warning'
-    //         }).then(() => {
-    //           this.$message({
-    //             type: 'info',
-    //             message: '取消操作!'
-    //           })
-    //         })
-    //         return
-    //       }
-    //       let params = {
-    //         ids: row.id
-    //       }
-    //       deleteV1Job(params).then(() => {
-    //         this.data.shift()
-    //         this.$message({
-    //           type: 'success',
-    //           message: '删除成功!'
-    //         })
-    //       })
-    //     })
-    //     .then(() => {})
-    //
-    selectionChange(list) {
-      this.isBatch = true
-      this.number = list.length
-      this.selectionList = list
     },
     toggleSelection(val) {
       this.$refs.crud.toggleSelection(val)

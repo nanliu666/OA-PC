@@ -111,14 +111,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         // 判断this.routerList中是否已经存在该path，存在就跳出
         if (this.routerList.includes(oMenu[propsDefault.path])) return
         // 这一块的赋值 也就是取到返回的值
-        let path = (() => {
-            if (first) {
-              // 将 '/index' 替换为 ''
-              return oMenu[propsDefault.path].replace('/index', '')
-            } else {
-              return oMenu[propsDefault.path]
-            }
-          })(),
+        let path = oMenu[propsDefault.path] || '',
           //特殊处理组件 执行完这个 component 也就是精确到具体的文件了  views文件夹下面就是具体的页面代码
           component = 'views' + oMenu.path,
           name = oMenu[propsDefault.label],
@@ -129,15 +122,16 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         meta = Object.assign(
           meta,
           (function() {
-            if (meta.keepAlive === true) {
+            if (meta.keepAlive !== false) {
               return {
                 $keepAlive: true
               }
             }
           })()
         )
+
         //是否有子路由
-        const isChild = children.length !== 0
+        const hasChild = children.length !== 0
         const oRouter = {
           path: path,
           component(resolve) {
@@ -146,7 +140,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
               require(['../page/index'], resolve)
               return
               // 判断是否为多层路由
-            } else if (isChild && !first) {
+            } else if (hasChild && !first) {
               require(['../page/index/layout'], resolve)
               return
               // 判断是否为最终的页面视图
@@ -159,16 +153,15 @@ RouterPlugin.install = function(vue, router, store, i18n) {
           meta: meta,
           redirect: (() => {
             // 第一次进来但是没有子路由的 需要添加redirect
-            if (!isChild && first && !isURL(path)) return `${path}/index`
-            else return ''
+            if (hasChild) return children[0].path
           })(),
           // 整理子路由的route 配置
           // 处理是否为一级路由
-          children: !isChild
+          children: !hasChild
             ? (() => {
                 if (first) {
                   // 这里的isURL判断，因为这个网站有使用 iframe。所以需要判断是否为网页链接
-                  if (!isURL(path)) oMenu[propsDefault.path] = `${path}/index`
+                  if (!isURL(path)) oMenu[propsDefault.path] = `${path}`
                   return [
                     {
                       component(resolve) {
@@ -196,7 +189,9 @@ RouterPlugin.install = function(vue, router, store, i18n) {
       // for循环结束
       // 这个first 卡的其实就是首路由
       if (first) {
-        window.console.log(aRouter)
+        if (process.env.NODE_ENV === 'development') {
+          window.console.log('路由：', aRouter)
+        }
         if (!this.routerList.includes(aRouter[0][propsDefault.path])) {
           this.safe.$router.addRoutes(aRouter)
           this.routerList.push(aRouter[0][propsDefault.path])

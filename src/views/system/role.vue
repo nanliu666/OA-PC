@@ -112,12 +112,14 @@
           :job-props="options.jobProps"
           :position-props="options.positionProps"
           @reload="reload"
+          @fiter="fiter"
         />
         <roleLimits
           :role="role"
           :visible.sync="configVisible"
         />
         <userList
+          v-if="userVisible"
           :visible.sync="userVisible"
           :role-id="roleId"
         />
@@ -143,6 +145,7 @@ export default {
   },
   data() {
     return {
+      JodOrg: [],
       role: {},
       visible: false,
       configVisible: false,
@@ -235,6 +238,11 @@ export default {
     this.onLoad()
   },
   methods: {
+    fiter(checked) {
+      let data = []
+      this.jobFilter(this.JodOrg, data, checked)
+      this.options.jobs = data
+    },
     // 加载页面全部数据（左侧分组树，右侧角色列表）
     async onLoad() {
       await this.getTreeCate()
@@ -323,6 +331,7 @@ export default {
       }
       getJobs(params).then((res) => {
         let data = []
+        this.JodOrg = res
         this.jobFilter(res, data)
         this.options.jobs = data
       })
@@ -350,7 +359,7 @@ export default {
     //     })
     //   }
     // },
-    jobFilter(arr, data) {
+    jobFilter(arr, data, checked = false) {
       arr.filter((item) => {
         const obj = {
           children: []
@@ -361,14 +370,19 @@ export default {
               label: item.jobName,
               id: item.jobId
             }
-            obj.children.push(job)
+            if (!(item.roles.length > 0 && checked)) {
+              obj.children.push(job)
+            }
           })
         }
         if (item.orgType) {
           obj.label = item.orgName
           obj.id = item.orgId
+
           if (item.children && item.children.length > 0) {
             this.jobFilter(item.children, obj.children)
+          } else {
+            obj.disabled = true
           }
         }
         data.push(obj)

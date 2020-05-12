@@ -25,7 +25,13 @@
           @click="tabClick('onJob')"
         >
           在职
-          {{ personStatistics.Formal + personStatistics.Try + personStatistics.WaitLeave + personStatistics.Leaved }} 人
+          {{
+            personStatistics.Formal +
+              personStatistics.Try +
+              personStatistics.WaitLeave +
+              personStatistics.Leaved
+          }}
+          人
           <div
             v-show="tabStatus === 'onJob'"
             class="bottomBox"
@@ -201,7 +207,13 @@ export default {
     return {
       // 在职 onJob 正式 Formal 试用期 Try 离职 WaitLeave 已离职 Leaved
       tabStatus: 'onJob',
-      statusWord: { onJob: '在职', Formal: '正式', Try: '试用期', WaitLeave: '离职', Leaved: '已离职' },
+      statusWord: {
+        onJob: '在职',
+        Formal: '正式',
+        Try: '试用期',
+        WaitLeave: '待离职',
+        Leaved: '已离职'
+      },
       personStatistics: {
         Formal: 0,
         Try: 0,
@@ -226,6 +238,7 @@ export default {
         height: 'auto',
         index: true,
         indexLabel: '序号',
+        menu: false,
         column: [
           {
             label: '姓名',
@@ -234,7 +247,7 @@ export default {
           },
           {
             label: '工号',
-            prop: 'userId'
+            prop: 'workNo'
           },
           {
             label: '部门',
@@ -274,7 +287,7 @@ export default {
   },
   methods: {
     toUserDetail(row) {
-      this.$router.push('/personnel/detail?userId=' + row.userId)
+      this.$router.push('/personnel/detail/' + row.userId)
     },
     getUserStatusStat() {
       getUserStatusStat().then((res) => {
@@ -298,29 +311,19 @@ export default {
     },
     getTableData(pageNo) {
       if (!this.searchParams.statuses && this.tabStatus === 'onJob') {
-        // 在职 onJob 正式 Formal 试用期 Try 离职 WaitLeave 已离职 Leaved
-        this.searchParams.statues = [
-          { status: 'Formal' },
-          { status: 'Try' },
-          { status: 'WaitLeave' },
-          { status: 'Leaved' }
-        ]
+        this.searchParams.statuses = ['Formal', 'Try', 'WaitLeave', 'Leaved']
       } else if (this.tabStatus !== 'onJob') {
-        this.searchParams.statuses = [{ status: this.tabStatus }]
+        this.searchParams.statuses = [this.tabStatus]
       }
       const params = {
-        ...this.page,
+        pageNo: pageNo || this.page.currentPage,
+        pageSize: this.page.pageSize,
         ...this.searchParams
-      }
-      if (pageNo) {
-        params.pageNo = pageNo
-        this.page.currentPage = pageNo
-      } else {
-        params.pageNo = this.page.currentPage
       }
       getUserList(params).then((res) => {
         this.data = res.data
         this.page.total = res.totalNum
+        if (pageNo) this.page.currentPage = pageNo
       })
     },
     handleSearch(params) {

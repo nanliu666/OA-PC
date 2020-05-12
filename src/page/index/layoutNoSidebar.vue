@@ -88,12 +88,16 @@ export default {
     },
     //打开菜单
     openMenu(item = {}) {
-      this.$store.dispatch('GetMenu', item.id).then((data) => {
-        if (data.length !== 0) {
-          this.$router.$avueRouter.formatRoutes(data, true)
-        }
-        //当点击顶部菜单后默认打开第一个菜单
-        /*if (!this.validatenull(item)) {
+      // this.$store.dispatch('GetMenu', item.id).then((data) => {
+      this.$store.dispatch('SetMenu', item.children)
+      if (item.children.length !== 0) {
+        this.$router.$avueRouter.formatRoutes([item], true)
+      }
+      this.$router.push({
+        path: item.children[0].path
+      })
+      //当点击顶部菜单后默认打开第一个菜单
+      /*if (!this.validatenull(item)) {
             let itemActive = {},
               childItemActive = 0;
             if (item.path) {
@@ -113,7 +117,7 @@ export default {
               }, itemActive.meta)
             });
           }*/
-      })
+      // })
     },
     // 定时检测token
     refreshToken() {

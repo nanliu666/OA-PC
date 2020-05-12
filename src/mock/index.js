@@ -1,13 +1,17 @@
-import user from './user'
+/* eslint-disable no-unused-vars */
+// import user from './user'
 import menu from './menu'
 import oauth from './oauth'
-import param from './param'
 import system from './system'
+import personnel from './personnel'
 import role from './role'
 import dict from './dict'
 import position from './position'
 import grade from './grade'
 import personalInfo from './personalInfo'
+// import personnel from './personnel'
+import org from './org'
+
 import menus from './menus'
 /**
  * 模拟数据mock
@@ -16,20 +20,26 @@ import menus from './menus'
  */
 
 const options = { mock: false }
-position({ mock: false })
-grade({ mock: false })
-user({ mock: false })
-menus({ mock: false })
-menu(options)
 
-oauth(options)
+// user(options)
+
+menu({ mock: true })
+
+position(options)
+grade(options)
+menus(options)
 
 system(options)
 
+oauth(options)
+
+personnel(options)
+
 dict(options)
 
-param(options)
-
-role({ mock: false })
+role(options)
 
 personalInfo(options)
+personnel(options)
+
+org(options)

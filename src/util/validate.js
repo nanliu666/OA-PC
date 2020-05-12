@@ -243,7 +243,8 @@ export function validatenull(val) {
   } else if (val instanceof Object) {
     if (JSON.stringify(val) === '{}') return true
   } else {
-    if (val == 'null' || val == null || val == 'undefined' || val == undefined || val == '') return true
+    if (val == 'null' || val == null || val == 'undefined' || val == undefined || val == '')
+      return true
     return false
   }
   return false
@@ -280,6 +281,32 @@ export function validateName(name) {
 export function validataBankCard(number) {
   let reg = /(^\d{15}$)|(^\d{17}$)|(^\d{19}$)/
   if (reg.test(number)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * 18位数字个人社保账号校验
+ * @param {Object} no
+ */
+export function validataSSCount(no) {
+  let reg = /^\d{18}$/
+  if (reg.test(no)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * 9位或者12位的公积金账号校验
+ * @param {Object} no
+ */
+export function validataEpt(no) {
+  let reg = /(^\d{9}$)|(^\d{12}$)/
+  if (reg.test(no)) {
     return true
   } else {
     return false

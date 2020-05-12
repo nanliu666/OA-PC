@@ -22,6 +22,7 @@
           <el-select
             v-model="form.positions"
             :no-data-text="column.noDataText"
+            multiple
             :placeholder="column.placeholder"
           >
             <el-option
@@ -39,6 +40,7 @@
           <treeSelect
             v-model="form.jobs"
             :option="scope.column"
+            @fiter="fiter"
           />
         </template>
       </avue-form>
@@ -191,6 +193,7 @@ export default {
             display: true,
             formslot: true,
             labelslot: true,
+            multiple: true,
             errorslot: true,
             placeholder: '请选择关联岗位',
             noDataText: '您还未维护企业的岗位信息，请前往“岗位管理”处添加',
@@ -219,7 +222,7 @@ export default {
             labelslot: true,
             errorslot: true,
             span: 24,
-            limitCheck: true,
+            limitCheck: treeSelect,
             display: false,
             noDataText: '您还未维护任何职位信息，请前往“职位管理”处添加',
             placeholder: '请选择关联职位',
@@ -262,6 +265,23 @@ export default {
     row: {
       handler: function(newVal) {
         let { roleId, roleName, type, remark, positions, jobs } = { ...newVal }
+
+        let newpositions = []
+        if (positions) {
+          positions.map((it) => {
+            newpositions.push(it.positionId)
+          })
+        }
+
+        positions = newpositions
+        let newjobs = []
+        if (jobs) {
+          jobs.map((it) => {
+            newjobs.push(it.jobId)
+          })
+        }
+
+        jobs = newjobs
         this.form = {
           roleId,
           roleName,
@@ -323,6 +343,9 @@ export default {
     }
   },
   methods: {
+    fiter(data) {
+      this.$emit('fiter', data)
+    },
     findObject(column, key) {
       return column.find((item) => item.prop === key)
     },
@@ -360,8 +383,18 @@ export default {
     },
     //新建角色
     createFunc(callback) {
+      let positions = []
+      this.form.positions.filter((it) => {
+        positions.push({ positionId: it })
+      })
+      let jobs = []
+      this.form.jobs.filter((it) => {
+        jobs.push({ jobId: it })
+      })
       const params = {
         ...this.form,
+        positions,
+        jobs,
         categoryId: this.categoryId
       }
       createRole(params).then(() => {
@@ -372,11 +405,23 @@ export default {
     },
     // 更新角色
     updateFunc() {
+      let positions = []
+      this.form.positions.filter((it) => {
+        positions.push({ positionId: it })
+      })
+      let jobs = []
+      this.form.jobs.filter((it) => {
+        jobs.push({ jobId: it })
+      })
       const params = {
-        ...this.form
+        ...this.form,
+        positions,
+        jobs,
+        categoryId: this.categoryId
       }
       updateRole(params).then(() => {
         this.$message.success('编辑角色成功')
+        this.$emit('reload')
         this.onClose()
       })
     },

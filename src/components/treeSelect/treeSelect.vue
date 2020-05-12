@@ -161,7 +161,7 @@ export default {
           this.setCheckedKeys()
           this.onClickSearch()
         })
-        this.$emit('change', val)
+        this.$emit('change', val, this.showLabelList)
       },
       deep: true
     }
@@ -184,7 +184,8 @@ export default {
     },
     changePopPosition() {
       if (document.getElementsByClassName('oa-tree_select')[0]) {
-        let inputTop = document.getElementsByClassName('oa-tree_select')[0].style.top.replace('px', '') * 1
+        let inputTop =
+          document.getElementsByClassName('oa-tree_select')[0].style.top.replace('px', '') * 1
         let inputHeight = document.getElementById('treeBtn').offsetHeight
         if (this.normalHeight !== inputHeight) {
           inputTop += inputHeight - this.normalHeight
@@ -194,7 +195,10 @@ export default {
       }
     },
     onClickSearch() {
-      this.$refs.tree.filter(this.searchInput)
+      // console.log('this.searchInput____',this.searchInput)
+      //
+      // this.$refs.tree.filter(this.searchInput)
+      this.$emit('fiter', this.checked)
     },
     getSelectItem(arr1, data, key) {
       let obj

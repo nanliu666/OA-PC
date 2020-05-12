@@ -2,7 +2,7 @@
   <el-dialog
     title="角色设置"
     :visible="visible"
-    width="800px"
+    width="1000px"
     append-to-body
     :before-close="close"
   >
@@ -10,12 +10,8 @@
       <div class="title">
         已选择
       </div>
-      <el-tag
-        v-for="item in userList"
-        :key="item.id"
-        size="small"
-      >
-        {{ item.name }}
+      <el-tag size="small">
+        {{ user.name }} {{ ' ' }}({{ user.workNo }})
       </el-tag>
     </div>
     <div class="content-wr">
@@ -29,12 +25,13 @@
         />
         <el-tree
           ref="tree"
-          :data="depTree"
+          :data="allRoleTree"
           show-checkbox
           default-expand-all
           node-key="id"
           :props="props"
           :filter-node-method="filterNode"
+          :check-on-click-node="true"
           @check="handleCheckChange"
         />
       </div>
@@ -56,7 +53,7 @@
           closable
           @close="handleUnselect(item)"
         >
-          {{ item.title }}
+          {{ item.roleName }}
         </el-tag>
       </div>
     </div>
@@ -76,7 +73,7 @@
   </el-dialog>
 </template>
 <script>
-import { getDeptTree } from '@/api/system/dept'
+import { getRoleList, modifyUserRole, getUserRole } from '@/api/system/user'
 
 export default {
   name: 'UserRoleEdit',
@@ -84,10 +81,6 @@ export default {
     visible: {
       type: Boolean,
       default: false
-    },
-    userList: {
-      type: Array,
-      default: () => [{ name: '张三', id: 1 }]
     }
   },
   data() {
@@ -95,14 +88,14 @@ export default {
       loading: false,
       filterText: '',
       props: {
-        labelText: '标题',
-        label: 'title',
-        value: 'value',
-        children: 'children'
+        disabled: (data) => !data.roleId,
+        label: (item) => item.groupName || item.categoryName || item.roleName
       },
       selectList: [],
+      oldSelectList: [],
       roleEdit: false,
-      depTree: []
+      allRoleTree: [],
+      user: {}
     }
   },
   watch: {
@@ -111,12 +104,21 @@ export default {
     }
   },
   created() {
-    this.getDeptTree(this.website.tenantId)
+    this.getRoleList()
   },
   methods: {
+    /**
+     * 初始化
+     * @param {String} user
+     */
+    init(user) {
+      this.user = user
+      this.getUserRole()
+      this.$emit('update:visible', true)
+    },
     filterNode(value, data) {
       if (!value) return true
-      return data.title.indexOf(value) !== -1
+      return data.roleName && data.roleName.indexOf(value) !== -1
     },
     handleCheckChange(data, checked) {
       this.selectList = checked.checkedNodes.filter((i) => !i.children)
@@ -132,16 +134,90 @@ export default {
     close() {
       this.$emit('update:visible', false)
     },
-    edit(data) {
-      this.form = { ...data }
-      this.$emit('update:visible', true)
+    clear() {
+      this.user = {}
+      this.selectList = []
+      this.oldSelectList = []
+      this.$refs.tree.setCheckedKeys([])
     },
-    getDeptTree(tenantId) {
-      getDeptTree(tenantId).then((data) => {
-        this.depTree = data
+    getUserRole() {
+      getUserRole(this.user.userId).then((res) => {
+        const list = res.map((role) => ({ ...role, id: role.roleId }))
+        this.selectList = list.slice()
+        this.oldSelectList = list.slice()
+
+        this.$nextTick(() => {
+          this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
+        })
       })
     },
-    handleSubmit() {}
+    /**
+     * 比较新旧list，新增,减少的数据分别添加标识
+     * @param {Object} newIdList
+     * @param {Object} oldIdList
+     */
+    diff(newIdList, oldIdList) {
+      // 要添加的
+      const addIdList = this._.difference(newIdList, oldIdList)
+      // 要删除的
+      const removeIdList = this._.difference(oldIdList, newIdList)
+
+      const result = addIdList
+        .map((id) => ({
+          roleId: id,
+          operatorType: 'Add'
+        }))
+        .concat(
+          removeIdList.map((id) => ({
+            roleId: id,
+            operatorType: 'Del'
+          }))
+        )
+
+      return result
+    },
+    handleSubmit() {
+      modifyUserRole(
+        this.user.userId,
+        this.diff(
+          this.selectList.map((i) => i.roleId),
+          this.oldSelectList.map((i) => i.roleId)
+        )
+      ).then(() => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        })
+        this.close()
+        this.$emit('after-submit')
+      })
+    },
+    getRoleList() {
+      getRoleList().then((data) => {
+        this.resolveTree(data)
+        this.allRoleTree = data
+      })
+    },
+    resolveTree(tree) {
+      if (tree.length === 0) {
+        return
+      }
+      tree.forEach((node) => {
+        if (node.categories) {
+          node.children = node.categories.map((category) => ({
+            ...category,
+            id: category.categoryId
+          }))
+          this.resolveTree(node.children)
+        }
+        if (node.roles) {
+          node.children = node.roles.map((role) => ({
+            ...role,
+            id: role.roleId
+          }))
+        }
+      })
+    }
   }
 }
 </script>

@@ -222,17 +222,31 @@ export default {
         }) || []
       )
     },
-
+    ping(data, menus) {
+      data.map((it) => {
+        menus.push(it)
+        if (it.children.length > 0) {
+          this.ping(it.children, menus)
+        }
+      })
+    },
     // 点击保存
     onClickSave() {
       this.getButtonPrivilege(this.menuPrivileges)
       this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
       this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
 
+      let menu = []
+      let menuPrivileges = JSON.parse(JSON.stringify(this.menuPrivileges))
+      this.ping(menuPrivileges, menu)
+
+      menu.map((it) => {
+        delete it.children
+      })
       const params = {
         roleId: this.roleId,
         orgPrivileges: this.orgPrivileges,
-        menuPrivileges: this.menuPrivileges
+        menuPrivileges: menu
       }
       updatePrivilege(params).then(() => {
         this.$message.success('保存成功')

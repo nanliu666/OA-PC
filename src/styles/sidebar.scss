@@ -44,8 +44,8 @@
   background-color: #fff;
   transition: width 0.2s;
   box-sizing: border-box;
-  box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
-
+  // box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
+  border-top: 1px solid #f6f6f6;
   .el-scrollbar__wrap {
     overflow-x: hidden;
   }

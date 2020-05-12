@@ -1,5 +1,8 @@
 <template>
-  <basic-container block>
+  <basic-container
+    block
+    style="padding-top:0;"
+  >
     <common-table
       ref="crud"
       :config="tableConfig"
@@ -7,9 +10,8 @@
       :loading="loading"
       :data="data"
       :page="page"
-      @selection-change="selectionChange"
-      @current-change="currentChange"
-      @size-change="sizeChange"
+      @current-page-change="currentChange"
+      @page-size-change="sizeChange"
     >
       <template
         slot="multiSelectMenu"
@@ -18,7 +20,7 @@
         <el-button
           type="text"
           style="margin-bottom:0;"
-          @click="handleResetBatch(selection)"
+          @click="handleReset(selection)"
         >
           批量重置密码
         </el-button>
@@ -29,12 +31,13 @@
           placeholder="姓名/工号"
           suffix-icon="el-icon-search"
           style="width:200px;margin-right:12px;"
+          @change="loadData"
         />
         <el-button
-          v-if="permission.user_add"
           type="primary"
           size="medium"
           plain
+          @click="jumpAddUser"
         >
           添加员工
         </el-button>
@@ -65,25 +68,37 @@
           <span
             class="el-dropdown-link"
             style="line-height:32px;"
-          > <i class="el-icon-more" /> </span>
+          >
+            <i class="el-icon-more" />
+          </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="suspend">
+            <el-dropdown-item
+              v-if="row.userStatus === '1'"
+              command="suspend"
+            >
               冻结
             </el-dropdown-item>
-            <el-dropdown-item command="suspend">
+            <el-dropdown-item
+              v-if="row.userStatus === '2'"
+              command="unsuspend"
+            >
               解冻
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </template>
     </common-table>
-    <user-role-edit :visible.sync="editVisible" />
+    <user-role-edit
+      ref="userRoleEdit"
+      :visible.sync="editVisible"
+      :user="editingUser"
+      @after-submit="handleAfterSubmit"
+    />
   </basic-container>
 </template>
 
 <script>
-import { getList, resetPassword } from '@/api/system/user'
-import { mapGetters } from 'vuex'
+import { getOrgUserList, modifyUserStatus, resetPwd } from '@/api/system/user'
 
 export default {
   name: 'User',
@@ -91,115 +106,172 @@ export default {
     // 员工角色编辑
     userRoleEdit: () => import('./userRoleEdit')
   },
+  props: {
+    activeOrg: {
+      type: Object,
+      default: () => null
+    }
+  },
   data() {
     return {
-      selectionList: [],
       query: {
         name: ''
       },
       loading: true,
       page: {
-        pageSize: 10,
         currentPage: 1,
+        size: 10,
         total: 0
       },
       tableConfig: {
         showHandler: true,
-        enableMultiSelect: true
+        enableMultiSelect: true,
+        enablePagination: true,
+        handlerColumn: {
+          width: '180'
+        }
       },
       columns: [
         {
-          label: '工号',
-          prop: 'account'
-        },
-        {
-          label: '所属租户',
-          prop: 'tenantName'
-        },
-        {
           label: '姓名',
-          prop: 'realName'
+          prop: 'name'
+        },
+        //状态，1-正常，2-禁用
+        {
+          label: '状态',
+          prop: 'userStatus',
+          formatter(record) {
+            return (
+              {
+                '1': '正常',
+                '2': '禁用'
+              }[record.userStatus] || ''
+            )
+          }
         },
         {
           label: '部门',
-          prop: 'deptName'
+          prop: 'orgName'
         },
         {
           label: '职位',
-          prop: 'roleName'
+          prop: 'jobName'
+        },
+        {
+          label: '角色',
+          prop: 'roles',
+          width: 100,
+          formatter(record) {
+            return record.roles.map((role) => role.roleName).join(';')
+          }
+        },
+        {
+          label: '电话',
+          prop: 'phonenum'
         }
       ],
       data: [],
-      editVisible: false
+      editVisible: false,
+      editingUser: {}
     }
   },
-  computed: {
-    ...mapGetters(['userInfo', 'permission']),
-    permissionList() {
-      return {
-        addBtn: this.vaildData(this.permission.user_add, false),
-        viewBtn: this.vaildData(this.permission.user_view, false),
-        delBtn: this.vaildData(this.permission.user_delete, false),
-        editBtn: this.vaildData(this.permission.user_edit, false)
-      }
-    },
-    ids() {
-      let ids = []
-      this.selectionList.forEach((ele) => {
-        ids.push(ele.id)
-      })
-      return ids.join(',')
+  watch: {
+    activeOrg: function() {
+      this.loadData()
     }
   },
   created() {
-    this.onLoad(this.page)
+    this.loadData()
   },
   methods: {
-    handleEditRole() {
-      this.editVisible = true
+    handleAfterSubmit() {
+      this.loadData()
     },
-    selectionChange(list) {
-      this.selectionList = list
+    jumpAddUser() {
+      this.$router.push('/personnel/addRoster')
     },
-    selectionClear() {
-      this.selectionList = []
-      this.$refs.crud.toggleSelection()
+    handleEditRole(user) {
+      this.$refs['userRoleEdit'].init(user)
     },
     currentChange(currentPage) {
       this.page.currentPage = currentPage
+      this.loadData()
     },
     sizeChange(pageSize) {
-      this.page.pageSize = pageSize
+      this.page.size = pageSize
+      this.loadData()
     },
-    handleResetBatch(selection) {
-      // eslint-disable-next-line
-      console.log('selection:', selection)
-    },
-    handleReset(row) {
+    handleReset(data) {
+      let ids
+      if (Array.isArray(data)) {
+        ids = data.map((item) => item.userId).join(',')
+      } else {
+        ids = data.userId
+      }
       this.$confirm('确定将选择账号密码重置为123456?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          return resetPassword([row.id])
+          return resetPwd(ids)
         })
         .then(() => {
           this.$message({
             type: 'success',
             message: '操作成功!'
           })
-          this.$refs.crud.toggleSelection()
         })
     },
-    onLoad(page, params = {}) {
-      this.loading = true
-      getList(page.currentPage, page.pageSize, Object.assign(params, this.query), this.treeDeptId).then((data) => {
-        this.page.total = data.total
-        this.data = data.records
-        this.loading = false
-        // this.selectionClear()
+    handleCommand(command, row) {
+      let status = null
+      switch (command) {
+        case 'suspend':
+          status = '2'
+          break
+        case 'unsuspend':
+          status = '1'
+          break
+      }
+      this.modifyUserStatus(row.userId, status)
+    },
+    modifyUserStatus(userId, status) {
+      let msg = ''
+      if (status === '2') {
+        msg = '您确定要冻结该用户吗？\n冻结后，该用户将不能登陆系统'
+      } else {
+        msg = '您确定要解冻该用户吗？'
+      }
+      this.$confirm(msg, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => modifyUserStatus(userId, status))
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
+          this.loadData()
+        })
+    },
+    loadData() {
+      this.loading = true
+      getOrgUserList({
+        pageNo: this.page.currentPage,
+        pageSize: this.page.size,
+        orgId: this.activeOrg ? this.activeOrg.orgId : '0',
+        search: this.query.name
+      })
+        .then((res) => {
+          this.page.total = res.totalNum
+          this.data = res.data
+          // this.selectionClear()
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }

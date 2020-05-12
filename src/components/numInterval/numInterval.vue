@@ -12,7 +12,8 @@
           v-model="value.min"
           @input="handleMinChange"
         />
-      </el-form-item>至
+      </el-form-item>
+      <span>至</span>
       <el-form-item prop="max">
         <el-input
           v-model="value.max"
@@ -24,8 +25,8 @@
 </template>
 
 <script>
-const MIN_NUMBER = 1
-const MAX_NUMBER = 10000000000
+// const MIN_NUMBER = 1
+const MAX_NUMBER = 100000000
 
 export default {
   name: 'NumInterval',
@@ -80,10 +81,11 @@ export default {
     validateCom(rule, value, callback) {
       const one = Number(value)
       if (Number.isInteger(one)) {
-        if (one < MIN_NUMBER) {
-          return callback(new Error('必须大于0'))
-        } else if (one > MAX_NUMBER) {
-          return callback(new Error('必须小于100000'))
+        // if (one < MIN_NUMBER) {
+        //   return callback(new Error('必须大于0'))
+        // } else
+        if (one > MAX_NUMBER) {
+          return callback(new Error('必须小于100000000'))
         }
         return callback()
       }
@@ -111,17 +113,26 @@ export default {
 
 <style lang="scss" scoped>
 .numInterval {
-  display: inline-block;
+  // display: inline-block;
+  width: 100%;
   .numInterval-form {
+    width: 100%;
+    > span {
+      margin: 0 7px;
+      text-align: center;
+    }
     .el-form-item {
       margin-right: 0;
-      padding-right: 0;
+      margin-left: 0px;
+      width: calc(50% - 14px);
+      // padding-right: 0;
+      .el-form-item__content {
+        width: 100%;
+      }
     }
   }
 }
-/deep/ {
-  .el-input__inner {
-    width: 90px;
-  }
+/deep/ .el-form-item__content {
+  width: 100%;
 }
 </style>

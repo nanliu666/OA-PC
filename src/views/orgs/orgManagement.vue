@@ -165,6 +165,7 @@
       <org-edit
         ref="orgEdit"
         :visible.sync="createOrgDailog"
+        @refresh="getOrgTree"
       />
     </basic-container>
   </div>
@@ -218,7 +219,16 @@ export default {
   components: { SearchPopoover, OrgEdit },
   data() {
     return {
-      checkColumn: ['orgName', 'orgType', 'orgCode', 'userName', 'jobNum', 'userNum', 'wordNum', 'remark'],
+      checkColumn: [
+        'orgName',
+        'orgType',
+        'orgCode',
+        'userName',
+        'jobNum',
+        'userNum',
+        'workNum',
+        'remark'
+      ],
       originColumn: column,
       searchConfig: {
         requireOptions: [
@@ -226,7 +236,7 @@ export default {
             type: 'treeSelect',
             field: 'parentOrgId',
             label: '',
-            data: ['0'],
+            data: ['1252523599903072257'],
             arrField: '',
             isSingle: true,
             options: {
@@ -281,9 +291,11 @@ export default {
               if (item.loading) return
               item.loading = true
               getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
-                item.options.push(...res.data)
-                item.pageNo += 1
-                item.loading = false
+                if (res.data.length > 0) {
+                  item.options.push(...res.data)
+                  item.pageNo += 1
+                  item.loading = false
+                }
               })
             }
           }
@@ -314,6 +326,16 @@ export default {
       searchParams: { parentOrgId: 0 }
     }
   },
+  watch: {
+    multipleSelection: {
+      handler(newVal) {
+        newVal.forEach((item) => {
+          this.$refs.avueCrud.toggleRowSelection(item, true)
+        })
+      },
+      deep: true
+    }
+  },
   created() {
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.searchConfig.requireOptions[0].options.dicData.push(...res)
@@ -330,6 +352,7 @@ export default {
     },
     getOrgTree() {
       const params = this.searchParams
+      if (Array.isArray(params.parentOrgId)) params.parentOrgId = params.parentOrgId[0]['']
       getOrgTree(params).then((res) => {
         this.data = res
         this.multipleSelection = []
@@ -340,6 +363,7 @@ export default {
     },
     handleSubmit(params) {
       this.searchParams = params
+      this.getOrgTree()
       // this.getOrgTree(this.data)
     },
     handleCommand(command, row) {
@@ -353,7 +377,7 @@ export default {
           type: 'warning'
         })
           .then(() => {
-            deleteOrg({ orgs: [{ orgId: row.orgId }] }).then(() => {
+            deleteOrg({ ids: row.orgId }).then(() => {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
@@ -371,9 +395,11 @@ export default {
     },
     multipleDeleteClick() {
       let params = {
-        orgs: this.multipleSelection.map((item) => {
-          return { orgId: item.orgId }
-        })
+        ids: this.multipleSelection
+          .map((item) => {
+            return item.orgId
+          })
+          .join(',')
       }
       deleteOrg(params).then(() => {
         this.$message.success('删除成功')
@@ -402,20 +428,20 @@ export default {
     },
     rowSelect(selection, row) {
       this.multipleSelection = selection
-      if (selection.indexOf(row) > -1 && row.children.length > 0) {
-        this.toggleSelection(row.children, true)
+      if (selection.indexOf(row) > -1 && row.children && row.children.length > 0) {
+        // this.toggleSelection(row.children, true)
         this.deepCheck(selection, true)
       }
     },
     deepCheck(arr, check) {
       arr.forEach((item) => {
-        if (item.children.length > 0) {
+        if (item.children && item.children.length > 0) {
           this.deepCheck(item.children, check)
         }
         if (this.multipleSelection.indexOf(item) === -1 && check) {
           this.multipleSelection.push(item)
         }
-        this.toggleSelection(item.children, check)
+        // this.toggleSelection(item.children, check)
       })
     },
     selectAll(selection) {

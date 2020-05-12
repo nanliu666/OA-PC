@@ -1,0 +1,131 @@
+li {
+  list-style: none;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+.el-row {
+  margin: 0 !important;
+  margin-bottom: 10px !important;
+}
+.el-col {
+  padding: 0 !important;
+}
+.el-date-editor,
+.el-select {
+  width: 100% !important;
+}
+.el-form-item {
+  margin-bottom: 0 !important;
+}
+.back-style {
+  background: #f7f8fa;
+  border: none !important;
+  margin-top: -1px;
+  padding-top: 25px !important;
+}
+.no-back-style {
+  background: #fff;
+}
+.info-wrapper {
+  padding: 0 35px 30px;
+}
+.info-title-bar {
+  line-height: 40px;
+}
+.info-title {
+  color: #202940;
+}
+.edit-button,
+.delete-button {
+  color: #757c85;
+  float: right;
+  cursor: pointer;
+}
+.edit-button:hover,
+.delete-button:hover {
+  color: #207efa;
+}
+
+.info-wrapper .info-content {
+  padding-top: 15px;
+  border-bottom: 1px solid #cecece;
+}
+.info-content-wrapper > .info-content:last-child {
+  border-bottom: none;
+}
+.el-input__inner {
+  height: 34px !important;
+  line-height: 34px;
+  color: #202940;
+}
+.info-button-group {
+  text-align: center;
+  padding: 20px;
+  .el-form-item__content {
+    margin-left: 0 !important;
+  }
+}
+.el-button {
+  width: 80px !important;
+  height: 42px !important;
+}
+.add-info-item {
+  padding: 10px 0 20px 0;
+  color: #757c85;
+  line-height: 34px;
+  cursor: pointer;
+  border-bottom: 1px solid #cecece;
+}
+.add-info-button {
+  border: 1px dashed #cecece;
+  border-radius: 4px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.add-info-button:hover {
+  color: #207efa;
+  border-color: #bcd8fe;
+  background-color: #e9f2ff;
+}
+.el-form-item__label {
+  color: #718199;
+}
+
+.info-item-value {
+  color: #202940;
+}
+.personal-deatil-info {
+  position: relative;
+}
+.sidebar-line {
+  float: left;
+  position: relative;
+  margin-right: 15px;
+  height: 300px;
+  width: 2px;
+  background: #ccc;
+  margin-top: 12px;
+}
+.flow-line {
+  display: inline-block;
+  height: 20px;
+  width: 3px;
+  background: #368afa;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.asider-bar-item {
+  line-height: 36px;
+  cursor: pointer;
+}
+.sidebar-erea {
+  position: relative;
+  right: 0;
+}
+.activeBar {
+  color: #368afa;
+}
