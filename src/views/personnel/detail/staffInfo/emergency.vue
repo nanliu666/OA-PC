@@ -141,7 +141,12 @@
 </template>
 
 <script>
-import { delStaffEmerInfo, editStaffEmerInfo, addStaffEmerInfo, getStaffEmerInfo } from '../../../../api/personalInfo'
+import {
+  delStaffEmerInfo,
+  editStaffEmerInfo,
+  addStaffEmerInfo,
+  getStaffEmerInfo
+} from '../../../../api/personalInfo'
 import { deepClone, randomLenNum } from '@/util/util'
 import { isMobile, validateName } from '@/util/validate'
 let curItem = {}
@@ -249,7 +254,7 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getStaffEmerInfo(params).then((res) => {
         this.emergencyInfo = res

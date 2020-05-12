@@ -345,7 +345,7 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getStaffFamilyInfo(params).then((res) => {
         this.familyInfo = res

@@ -70,10 +70,10 @@ export default {
     viewPictures
   },
   props: {
-    typeName: String,
-    typeIcon: String,
-    limit: Number,
-    id: Number
+    typeName: { type: String, default: '' },
+    typeIcon: { type: String, default: '' },
+    limit: { type: Number, default: 15 },
+    id: { type: Number, default: 0 }
   },
   data() {
     return {

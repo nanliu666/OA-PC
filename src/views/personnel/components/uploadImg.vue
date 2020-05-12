@@ -17,7 +17,7 @@
               <div class="upload-after">
                 <span
                   class="pictures"
-                  @click="isPictures(index)"
+                  @click="isPictures(index, item)"
                 >
                   <i class="el-icon-view common-right" />
                 </span>
@@ -51,6 +51,7 @@
             slot="default"
             class="isonError"
           >重新上传</i>
+          <!-- 进度条 -->
           <div class="action-upload">
             <el-progress
               v-show="uploading"
@@ -67,13 +68,18 @@
 </template>
 <script>
 import viewPictures from './viewPictures'
-import { lookUpAttachmentInfo, deleteAttachmentInfo, uploadAttachmentInfo } from '@/api/personnel/attach'
+import {
+  lookUpAttachmentInfo,
+  deleteAttachmentInfo,
+  uploadAttachmentInfo
+} from '@/api/personnel/attach'
 import { uploadQiniu } from '@/util/uploadQiniu'
 export default {
+  name: 'UploadImg',
   components: {
     viewPictures
   },
-  props: { limit: Number, id: Number },
+  props: { limit: { type: Number, default: 15 }, id: { type: Number, default: 0 } },
   data() {
     return {
       noFile: true,
@@ -104,7 +110,8 @@ export default {
         name: '' //	附件源文件名称，不能超过32个字(分必填)
       },
       fileList: [],
-      pictureList: []
+      pictureList: [],
+      uploadItem: {}
     }
   },
   watch: {
@@ -136,7 +143,8 @@ export default {
       this.fileList.splice(index, 1)
       deleteAttachmentInfo(this.deleteData).then((res) => {
         window.console.log(res)
-        this.fileList.splice(index, 1)
+        // this.fileList.splice(index, 1)
+        this.initData()
       })
     },
 
@@ -156,10 +164,17 @@ export default {
           that.$message.error(err.message)
           // eslint-disable-next-line
         },
-        complete() {
+        complete(data) {
           that.uploading = false
-          uploadAttachmentInfo(this.uploadData).then(() => {
+          console.log(that.$store.state.user)
+          const params = {
+            userId: that.$route.params.userId,
+            categoryId: that.id,
+            attachments: [{ name: data.fileName, url: data.url }]
+          }
+          uploadAttachmentInfo(params).then(() => {
             that.$message.success('上传成功')
+            that.initData()
           })
           // that.uploading = false;
           // that.selectedUrl = res.url;
@@ -185,7 +200,7 @@ export default {
         this.$message.error('文件名过长,无法上传')
         return false
       }
-      const isJPG = file.type === 'image/jpeg'
+      const isJPG = /^image\/(jpeg|png|jpg)$/.test(file.type)
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {

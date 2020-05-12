@@ -24,6 +24,7 @@
 <script>
 import { getActionLog } from '@/api/system/user'
 export default {
+  name: 'ActionRecord',
   data() {
     return {
       stepsData: [],
@@ -34,7 +35,8 @@ export default {
         userName: '', //用户名
         beginTime: '', //查询开始时间
         endTime: '', //查询结束时间
-        status: '' //状态
+        status: '', //状态
+        userId: this.$route.params.userId
       }
     }
   },
@@ -45,11 +47,12 @@ export default {
   methods: {
     initData() {
       getActionLog(this.ajaxData).then((res) => {
-        this.stepsData = res.data.map((item) => ({
-          createTime: this.formatDate(item.createTime),
-          name: item.name,
-          content: item.content
-        }))
+        // this.stepsData = res.data.map((item) => ({
+        //   createTime: this.formatDate(item.createTime),
+        //   name: item.name,
+        //   content: item.content
+        // }))
+        this.stepsData = res.data
       })
     },
     //时间戳转日期
@@ -67,6 +70,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.steps-bos {
+  padding: 24px;
+}
 /deep/ .el-step__description.is-finish {
   font-family: PingFangSC-Regular;
   color: #202940;
@@ -74,7 +80,7 @@ export default {
 }
 /deep/ .el-timeline-item__tail {
   position: absolute;
-  left: 4px;
+  left: 7px;
   top: 16px;
   height: calc(100% - 20px);
   border-left: 1px solid #368afa;
@@ -82,9 +88,15 @@ export default {
 /deep/ .el-timeline-item__wrapper {
   display: flex;
   line-height: 30px;
+  > .el-timeline-item__content {
+    flex: 1;
+  }
 }
 /deep/ .el-timeline-item__timestamp.is-bottom {
   margin-left: 20px;
+}
+/deep/ .el-timeline-item__node--normal {
+  left: 2px;
 }
 .action-name {
   font-family: PingFangSC-Regular;

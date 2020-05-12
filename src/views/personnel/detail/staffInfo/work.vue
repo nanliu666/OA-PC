@@ -55,7 +55,9 @@
                 v-show="curItemIndex != index"
                 label="在职时间:"
               >
-                <span class="info-item-value">{{ item.beginWorkDate + '至' + item.endWorkDate }}</span>
+                <span class="info-item-value">{{
+                  item.beginWorkDate + '至' + item.endWorkDate
+                }}</span>
               </el-form-item>
               <el-form-item
                 v-show="curItemIndex == index"
@@ -213,7 +215,9 @@
                 v-show="curItemIndex != index"
                 label="遵守义务时间:"
               >
-                <span class="info-item-value">{{ item.beginSecretDate + '至' + item.endSecretDate }}</span>
+                <span class="info-item-value">{{
+                  item.beginSecretDate + '至' + item.endSecretDate
+                }}</span>
               </el-form-item>
               <el-form-item
                 v-show="curItemIndex == index"
@@ -289,7 +293,12 @@
 </template>
 
 <script>
-import { getStaffWorkInfo, delStaffWorkInfo, editStaffWorkInfo, addStaffworkInfo } from '../../../../api/personalInfo'
+import {
+  getStaffWorkInfo,
+  delStaffWorkInfo,
+  editStaffWorkInfo,
+  addStaffworkInfo
+} from '../../../../api/personalInfo'
 import { deepClone, randomLenNum, judgeRepeatedTime } from '@/util/util'
 import { isMobile } from '@/util/validate'
 let curItem = {}
@@ -439,7 +448,7 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getStaffWorkInfo(params).then((res) => {
         this.workInfo = res
