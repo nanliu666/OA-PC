@@ -75,9 +75,14 @@
               </div>
             </div>
           </template>
-          <template slot="multiSelectMenu">
+          <template
+            slot="multiSelectMenu"
+            slot-scope="{ selection }"
+          >
             <span class="all">
-              <span @click="handlerDeleteAll"><i class="el-icon-delete" /> 批量删除</span>
+              <span
+                @click="handlerDeleteAll(selection)"
+              ><i class="el-icon-delete" /> 批量删除</span>
               <span><i class="el-icon-folder" /> 批量导出</span>
             </span>
           </template>
@@ -105,6 +110,7 @@
       </div>
     </div>
     <categoryDialog
+      v-if="categoryDialog"
       :dialog-visible.sync="categoryDialog"
       :title="title"
       :is-edit="isEdit"
@@ -182,22 +188,13 @@ export default {
       }
     }
   },
-  computed: {
-    ids() {
-      let ids = []
-      this.selectionList.forEach((ele) => {
-        ids.push(ele.id)
-      })
-      return ids.join(',')
-    }
-  },
   watch: {},
   created() {
     this.getData()
   },
   mounted() {},
   methods: {
-    handlerDeleteAll() {
+    handlerDeleteAll(list) {
       this.$confirm('您确定要删除你所选中的职位类别吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -224,7 +221,7 @@ export default {
           return
         }
         let params = {
-          ids: this.ids
+          ids: list.map((i) => i.id).join(',')
         }
         deleteCategoryDefine(params).then(() => {
           this.getData()
@@ -320,9 +317,9 @@ export default {
       }).then(() => {
         const searchForm = this.form
         window.open(
-          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${searchForm.account}&realName=${
-            searchForm.realName
-          }`
+          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${
+            searchForm.account
+          }&realName=${searchForm.realName}`
         )
       })
     },
@@ -375,11 +372,6 @@ export default {
           })
         })
         .then(() => {})
-    },
-    selectionChange(list) {
-      this.isBatch = true
-      this.number = list.length
-      this.selectionList = list
     },
     toggleSelection(val) {
       this.$refs.crud.toggleSelection(val)

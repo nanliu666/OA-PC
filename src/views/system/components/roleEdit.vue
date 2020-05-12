@@ -8,7 +8,7 @@
     :before-close="onClose"
     @opened="onOpened"
   >
-    <div>
+    <div v-loading="loading">
       <avue-form
         ref="form"
         v-model="form"
@@ -44,33 +44,32 @@
           />
         </template>
       </avue-form>
-    </div>
-
-    <div
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        v-if="form.roleId"
-        size="medium"
-        @click="onClose"
+      <div
+        slot="footer"
+        class="dialog-footer"
       >
-        取消
-      </el-button>
-      <el-button
-        v-else
-        size="medium"
-        @click="onContinue"
-      >
-        保存并继续添加
-      </el-button>
-      <el-button
-        type="primary"
-        size="medium"
-        @click="onClickSave(onClose)"
-      >
-        保存
-      </el-button>
+        <el-button
+          v-if="form.roleId"
+          size="medium"
+          @click="onClose"
+        >
+          取消
+        </el-button>
+        <el-button
+          v-else
+          size="medium"
+          @click="onContinue"
+        >
+          保存并继续添加
+        </el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="onClickSave(onClose)"
+        >
+          保存
+        </el-button>
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -131,6 +130,7 @@ export default {
       }
     }
     return {
+      loading: false,
       roleVisible: true,
       form: {
         roleId: '',
@@ -397,11 +397,17 @@ export default {
         jobs,
         categoryId: this.categoryId
       }
-      createRole(params).then(() => {
-        this.$message.success('新建角色成功')
-        this.$emit('reload')
-        callback()
-      })
+      this.loading = true
+      createRole(params)
+        .then(() => {
+          this.loading = false
+          this.$message.success('新建角色成功')
+          this.$emit('reload')
+          callback()
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 更新角色
     updateFunc() {
@@ -419,7 +425,9 @@ export default {
         jobs,
         categoryId: this.categoryId
       }
+      this.loading = true
       updateRole(params).then(() => {
+        this.loading = false
         this.$message.success('编辑角色成功')
         this.$emit('reload')
         this.onClose()

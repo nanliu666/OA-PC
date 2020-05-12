@@ -7,7 +7,7 @@
       :close-on-click-modal="false"
       :modal-append-to-body="false"
     >
-      <div>
+      <div v-loading="loading">
         <div style="text-align: right;margin-bottom: 10px;">
           <el-button
             type="primary"
@@ -75,7 +75,7 @@ export default {
         column: [
           {
             label: '工号',
-            prop: 'workNum'
+            prop: 'userId'
           },
           {
             label: '姓名',
@@ -140,7 +140,9 @@ export default {
         pageSize: page.pageSize,
         roleId: this.roleId
       }
+      this.loading = true
       getUser(params).then((res) => {
+        this.loading = false
         this.data = res.data
         this.page.total = res.totalNum
       })
