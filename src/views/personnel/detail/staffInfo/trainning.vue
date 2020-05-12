@@ -283,7 +283,7 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getStaffTrainInfo(params).then((res) => {
         this.trainInfo = res

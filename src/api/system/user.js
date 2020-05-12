@@ -152,7 +152,8 @@ export const deleteTag = (params) => {
 //操作日志
 export const getActionLog = (params) => {
   return request({
-    url: '/api/sys/log/v1/action/log',
+    // url: '/api/sys/log/v1/action/log',
+    url: '/api/log/v1/action/log',
     method: 'get',
     params
   })

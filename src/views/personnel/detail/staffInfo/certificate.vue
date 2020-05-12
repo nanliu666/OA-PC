@@ -264,7 +264,7 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getStaffCertificate(params).then((res) => {
         this.certificateInfo = res

@@ -71,9 +71,7 @@
                   <span
                     v-for="(item, index) in allInfo.tags"
                     :key="index"
-                  >
-                    {{ item.tagName }}
-                  </span>
+                  >{{ item.tagName }}</span>
                 </div>
               </el-col>
             </el-row>
@@ -130,6 +128,7 @@ import personalInfo from './detail/staffInfo/index'
 import actionRecord from './components/actionRecord'
 import uploadData from './components/uploadData'
 export default {
+  name: 'UserDetail',
   components: {
     personalInfo,
     postInfo,
@@ -164,7 +163,7 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: this.$route.query.userId
+        userId: this.$route.params.userId
       }
       getStaffBasicInfo(params).then((res) => {
         this.allInfo = res
