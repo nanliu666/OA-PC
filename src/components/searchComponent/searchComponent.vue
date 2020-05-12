@@ -100,6 +100,7 @@
                         v-loadmore="() => item.loadMoreFun && item.loadMoreFun(item)"
                         :placeholder="'请输入' + item.label"
                         :multiple="item.config && item.config.multiple"
+                        @visible-change="item.firstLoad && item.firstLoad($event, item)"
                       >
                         <!-- :collapse-tags="item.config && item.config.multiple" -->
                         <template v-if="item.config && item.config.group">
@@ -130,6 +131,12 @@
                           style="text-align: center"
                         >
                           <i class="el-icon-loading" />
+                        </div>
+                        <div
+                          v-show="item.noMore"
+                          style="text-align: center; font-size:14px;color: #606266;"
+                        >
+                          没有更多了
                         </div>
                       </el-select>
                       <el-time-select

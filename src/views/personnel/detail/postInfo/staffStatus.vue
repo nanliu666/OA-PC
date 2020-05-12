@@ -19,7 +19,7 @@
             :push="2"
           >
             <el-form-item label="工作性质:">
-              <span class="info-item-value">{{ staffInfo.workProperty }}</span>
+              <span class="info-item-value">{{ getWorkProperty(staffInfo.workProperty) }}</span>
             </el-form-item>
           </el-col>
           <el-col
@@ -82,6 +82,7 @@ export default {
   },
   data() {
     return {
+      WorkProperty: [],
       staffInfo: {}
     }
   },
@@ -95,8 +96,21 @@ export default {
       immediate: true
     }
   },
-
+  created() {
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.WorkProperty = res
+    })
+  },
   methods: {
+    getWorkProperty(type) {
+      let typeWord
+      this.WorkProperty.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
     getWorkTime() {
       let workAge = ''
       if (this.staffInfo.entryDate) {

@@ -33,20 +33,20 @@ function loadReasonArr(params) {
 }
 
 export default async () => {
-  const WorkProperty = await store.dispatch('CommonDict', 'WorkProperty')
-  const RecruitmentChannel = await store.dispatch('CommonDict', 'RecruitmentChannel')
-  const ContractType = await store.dispatch('CommonDict', 'ContractType')
-  const IDType = await store.dispatch('CommonDict', 'IDType')
-  const EducationalLevel = await store.dispatch('CommonDict', 'EducationalLevel')
-  const Nation = await store.dispatch('CommonDict', 'Nation')
-  const PoliticalStatus = await store.dispatch('CommonDict', 'PoliticalStatus')
-  const HouseholdType = await store.dispatch('CommonDict', 'HouseholdType')
-  const LeaveReason = await store.dispatch('CommonDict', 'LeaveReason')
-  const WorkAddress = (await getWorkAddressList({ pageNo: 1, pageSize: 50 })).data
+  // const WorkProperty = await store.dispatch('CommonDict', 'WorkProperty')
+  // const RecruitmentChannel = await store.dispatch('CommonDict', 'RecruitmentChannel')
+  // const ContractType = await store.dispatch('CommonDict', 'ContractType')
+  // const IDType = await store.dispatch('CommonDict', 'IDType')
+  // const EducationalLevel = await store.dispatch('CommonDict', 'EducationalLevel')
+  // const Nation = await store.dispatch('CommonDict', 'Nation')
+  // const PoliticalStatus = await store.dispatch('CommonDict', 'PoliticalStatus')
+  // const HouseholdType = await store.dispatch('CommonDict', 'HouseholdType')
+  // const LeaveReason = await store.dispatch('CommonDict', 'LeaveReason')
+  // const WorkAddress = (await getWorkAddressList({ pageNo: 1, pageSize: 50 })).data
   const orgTree = await getOrgTreeSimple({ parentOrgId: 0 })
-  const LeaderList = (await getUserWorkList({ pageNo: 1, pageSize: 100 })).data
-  const positionList = await getOrgPosition({ pageNo: 1, pageSize: 100 })
-  const jobList = await getOrgJob()
+  // const LeaderList = (await getUserWorkList({ pageNo: 1, pageSize: 100 })).data
+  // const positionList = await getOrgPosition({ pageNo: 1, pageSize: 100 })
+  // const jobList = await getOrgJob()
 
   return [
     {
@@ -68,6 +68,28 @@ export default async () => {
             placeholder: '请选择关联部门',
             dicData: orgTree
           }
+          // loading: false,
+          // noMore: true,
+          // pageNo: 1,
+          // firstLoad(flag, item) {
+          //   console.log(flag)
+          //   if (flag && item.options.dicData.length === 0) {
+          //     item.loadMoreFun(item)
+          //   }
+          // },
+          // loadMoreFun(item) {
+          //   if (item.loading || item.noMore) return
+          //   item.loading = true
+          //   getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+          //     if (res.length > 0) {
+          //       item.options.dicData.push(...res)
+          //       item.pageNo += 1
+          //       item.loading = false
+          //     } else {
+          //       item.noMore = true
+          //     }
+          //   })
+          // }
         },
         {
           type: 'select',
@@ -76,7 +98,24 @@ export default async () => {
           field: 'jobs',
           arrField: 'jobId',
           config: { multiple: true, optionLabel: 'jobName', optionValue: 'jobId' },
-          options: jobList
+          options: [],
+          loading: false,
+          noMore: false,
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.loadMoreFun(item)
+            }
+          },
+          loadMoreFun(item) {
+            if (item.loading || item.noMore) return
+            item.loading = true
+            getOrgJob().then((res) => {
+              if (res.length > 0) {
+                item.options.push(...res)
+                item.loading = false
+              }
+            })
+          }
         },
         {
           type: 'select',
@@ -85,7 +124,29 @@ export default async () => {
           field: 'positions',
           arrField: 'positionId',
           config: { multiple: true, optionLabel: 'name', optionValue: 'id' },
-          options: positionList
+          options: [],
+          loading: false,
+          noMore: false,
+          pageNo: 1,
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.loadMoreFun(item)
+            }
+          },
+          loadMoreFun(item) {
+            if (item.loading || item.noMore) return
+            item.loading = true
+            getOrgPosition({ pageNo: 1, pageSize: 100 }).then((res) => {
+              if (res.length > 0) {
+                item.options.push(...res)
+                item.pageNo += 1
+                item.loading = false
+              } else {
+                item.noMore = true
+                item.loading = false
+              }
+            })
+          }
         },
         {
           type: 'select',
@@ -94,16 +155,27 @@ export default async () => {
           field: 'leader',
           arrField: 'leaderId',
           config: { multiple: true, optionLabel: 'name', optionValue: 'userId' },
-          options: LeaderList,
+          options: [],
           loading: false,
-          pageNo: 2,
+          noMore: false,
+          pageNo: 1,
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.loadMoreFun(item)
+            }
+          },
           loadMoreFun(item) {
-            if (item.loading) return
+            if (item.loading || item.noMore) return
             item.loading = true
             getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
-              item.options.push(...res.data)
-              item.pageNo += 1
-              item.loading = false
+              if (res.data.length > 0) {
+                item.options.push(...res.data)
+                item.pageNo += 1
+                item.loading = false
+              } else {
+                item.noMore = true
+                item.loading = false
+              }
             })
           }
         },
@@ -114,7 +186,12 @@ export default async () => {
           field: 'workProperties',
           arrField: 'workProperty',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: WorkProperty
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'WorkProperty')
+            }
+          }
         },
         {
           type: 'select',
@@ -137,16 +214,27 @@ export default async () => {
           field: 'workAddressIds',
           arrField: 'workAddressId',
           config: { multiple: true, optionLabel: 'address', optionValue: 'id' },
-          options: WorkAddress,
+          options: [],
           loading: false,
-          pageNo: 2,
+          noMore: false,
+          pageNo: 1,
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.loadMoreFun(item)
+            }
+          },
           loadMoreFun(item) {
             if (item.loading) return
             item.loading = true
             getWorkAddressList({ pageNo: item.pageNo, pageSize: 50 }).then((res) => {
-              item.options.push(...res.data)
-              item.pageNo += 1
-              item.loading = false
+              if (res.data.length > 0) {
+                item.options.push(...res.data)
+                item.pageNo += 1
+                item.loading = false
+              } else {
+                item.noMore = true
+                item.loading = false
+              }
             })
           }
         },
@@ -157,7 +245,12 @@ export default async () => {
           field: 'recruitments',
           arrField: 'recruitment',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: RecruitmentChannel
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'RecruitmentChannel')
+            }
+          }
         },
         {
           type: 'dataPicker',
@@ -201,7 +294,12 @@ export default async () => {
           field: 'contractTypes',
           arrField: 'contractType',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: ContractType
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'ContractType')
+            }
+          }
         },
         {
           type: 'dataPicker',
@@ -269,7 +367,12 @@ export default async () => {
           field: 'idTypes',
           arrField: 'idType',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: IDType
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'IDType')
+            }
+          }
         },
         { type: 'input', data: '', label: '证件号码', field: 'idNo', config: {} },
         { type: 'numInterval', data: { min: '', max: '' }, label: '年龄', field: 'minAge,maxAge' },
@@ -280,7 +383,12 @@ export default async () => {
           field: 'educationalLevels',
           arrField: 'educationalLevel',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: EducationalLevel
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'EducationalLevel')
+            }
+          }
         },
         {
           type: 'numInterval',
@@ -307,7 +415,12 @@ export default async () => {
           field: 'nations',
           arrField: 'nation',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: Nation
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'Nation')
+            }
+          }
         },
         {
           type: 'select',
@@ -316,7 +429,12 @@ export default async () => {
           field: 'politicalStatuses',
           arrField: 'politicalStatus',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: PoliticalStatus
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'PoliticalStatus')
+            }
+          }
         },
         {
           type: 'cascader',
@@ -332,7 +450,12 @@ export default async () => {
           label: '户籍类型',
           field: 'householdTypes',
           config: { multiple: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: HouseholdType
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = store.dispatch('CommonDict', 'HouseholdType')
+            }
+          }
         }
       ]
     },
@@ -354,7 +477,12 @@ export default async () => {
           field: 'leaveReasons',
           arrField: 'leaveReason',
           config: { multiple: true, group: true, optionLabel: 'dictValue', optionValue: 'dictKey' },
-          options: loadReasonArr(LeaveReason)
+          options: [],
+          firstLoad(flag, item) {
+            if (flag && item.options.length === 0) {
+              item.options = loadReasonArr(store.dispatch('CommonDict', 'LeaveReason'))
+            }
+          }
         },
         {
           type: 'input',

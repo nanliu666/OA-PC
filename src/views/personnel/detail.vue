@@ -71,9 +71,7 @@
                   <span
                     v-for="(item, index) in allInfo.tags"
                     :key="index"
-                  >
-                    {{ item.tagName }}
-                  </span>
+                  >{{ item.tagName }}</span>
                 </div>
               </el-col>
             </el-row>
@@ -130,6 +128,7 @@ import personalInfo from './detail/staffInfo/index'
 import actionRecord from './components/actionRecord'
 import uploadData from './components/uploadData'
 export default {
+  name: 'UserDetail',
   components: {
     personalInfo,
     postInfo,

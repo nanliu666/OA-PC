@@ -1,7 +1,7 @@
 import * as qiniu from 'qiniu-js'
 import { getQiniuToken } from '../api/common'
 import uuidv4 from 'uuid/v4'
-import store from 'src/store'
+// import store from 'src/store'
 /**
  * 上传文件到七牛
  * 参考：https://developer.qiniu.com/kodo/sdk/1283/javascript
@@ -14,18 +14,17 @@ import store from 'src/store'
 export async function uploadQiniu(file, hooks) {
   const suffix = file.name.substr(file.name.lastIndexOf('.'))
   const fileName = uuidv4().replace(/-/g, '') + suffix
-  const params = {
-    userId: store.getters.userId || undefined,
-    companyId: store.getters.companyId || undefined,
-    fileName
-  }
+  // const params = {
+  //   userId: store.getters.userId || undefined,
+  //   companyId: store.getters.companyId || undefined,
+  //   fileName
+  // }
   const config = {
     useCdnDomain: true
   }
 
   // 获取token
-  const { uploadToken, domain } = await getQiniuToken(params)
-  debugger
+  const { uploadToken, domain } = await getQiniuToken()
   const observable = qiniu.upload(file, fileName, uploadToken, config, {
     fname: fileName
   })

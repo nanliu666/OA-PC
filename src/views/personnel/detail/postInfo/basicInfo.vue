@@ -139,9 +139,7 @@
               v-show="readonlyBasicInfo"
               :label="`附属职位${index + 1}:`"
             >
-              <span class="info-item-value">
-                {{ staffInfo.subJob[index].subJobName }}
-              </span>
+              <span class="info-item-value">{{ staffInfo.subJob[index].subJobName }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -201,9 +199,7 @@
               v-show="readonlyBasicInfo"
               label="工作地址:"
             >
-              <span class="info-item-value">
-                {{ getWorkAdress() }}
-              </span>
+              <span class="info-item-value">{{ getWorkAdress() }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -260,9 +256,7 @@
               v-show="readonlyBasicInfo"
               label="招聘渠道:"
             >
-              <span class="info-item-value">
-                {{ staffInfo.recruitment }}
-              </span>
+              <span class="info-item-value">{{ staffInfo.recruitment }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -503,14 +497,15 @@ export default {
     },
     getFormatSubJob() {
       this.formatSubJob = []
-      this.staffInfo.subOrg.forEach((item, index) => {
-        this.$set(item, 'data', [])
-        let obj = {
-          orjItem: item,
-          jobItem: this.staffInfo.subJob[index]
-        }
-        this.formatSubJob.push(obj)
-      })
+      this.staffInfo.subOrg &&
+        this.staffInfo.subOrg.forEach((item, index) => {
+          this.$set(item, 'data', [])
+          let obj = {
+            orjItem: item,
+            jobItem: this.staffInfo.subJob[index]
+          }
+          this.formatSubJob.push(obj)
+        })
     },
     notEmpty(item) {
       return func.notEmpty(item)
