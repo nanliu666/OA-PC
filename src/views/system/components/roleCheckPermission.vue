@@ -8,6 +8,7 @@
         v-if="allCheck"
         v-model="checkAll"
         :indeterminate="isIndeterminate"
+        :disabled="disabled"
         @change="handleCheckAllChange"
       >
         全选
@@ -21,6 +22,7 @@
         <el-checkbox
           v-model="data[defaultProps.check]"
           :label="data[defaultProps.value]"
+          :disabled="disabled"
         >
           {{ data[defaultProps.label] }}
         </el-checkbox>
@@ -54,6 +56,10 @@ export default {
     allCheck: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

@@ -24,7 +24,6 @@ import _ from 'lodash'
 import loadmore from './directive/loadmore'
 Vue.prototype._ = _
 
-Vue.use(Permission)
 Vue.use(router)
 Vue.use(VueAxios, axios)
 Vue.use(Element, {
@@ -35,6 +34,7 @@ Vue.use(window.AVUE, {
 })
 // 自定义vue指令
 Vue.use(loadmore)
+Vue.use(Permission)
 //注册全局容器
 Vue.component('basicContainer', basicContainer)
 Vue.component('basicBlock', basicBlock)

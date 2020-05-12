@@ -11,8 +11,9 @@
       :highlight-current="true"
       show-checkbox
       :node-key="defaultProps.id"
-      :props="{ label: defaultProps.label }"
+      :props="{ label: defaultProps.label, disabled: genDisabled }"
       :expand-on-click-node="false"
+      :disabled="disabled"
       @check="handleCheck"
       @node-click="nodeClick"
     />
@@ -41,6 +42,10 @@ export default {
       default() {
         return []
       }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -61,6 +66,9 @@ export default {
     }
   },
   methods: {
+    genDisabled() {
+      return this.disabled
+    },
     handleCheck(data, node) {
       const treeKeys = node.checkedKeys
       this.setOwn(this.treeList, treeKeys)

@@ -1,71 +1,81 @@
 <template>
-  <el-row style="height: calc(100% - 32px);">
-    <el-col
-      style="height:100%"
-      :xs="9"
-      :sm="7"
-      :md="6"
-    >
-      <basic-container block>
-        <el-tabs v-model="activeTabName">
-          <el-tab-pane
-            label="组织架构"
-            name="orgTree"
-          >
-            <el-tree
-              :data="treeData"
-              node-key="orgId"
-              :props="treeProps"
-              :expand-on-click-node="false"
-              @node-click="nodeClick"
+  <div style="height:100%">
+    <div class="header">
+      用户管理
+    </div>
+    <el-row style="height: calc(100% - 100px);">
+      <el-col
+        style="height:100%"
+        :xs="9"
+        :sm="7"
+        :md="6"
+      >
+        <basic-container
+          block
+          style="padding-left:0;"
+        >
+          <el-tabs v-model="activeTabName">
+            <el-tab-pane
+              label="组织架构"
+              name="orgTree"
             >
-              <span
-                slot-scope="{ node, data }"
-                class="custom-tree-node"
+              <el-tree
+                :data="treeData"
+                node-key="orgId"
+                :props="treeProps"
+                :expand-on-click-node="false"
+                @node-click="nodeClick"
               >
-                <span>{{ data.orgName }}{{ '  ' }} ({{ data.workNum }})</span>
+                <span
+                  slot-scope="{ node, data }"
+                  class="custom-tree-node"
+                >
+                  <span>{{ data.orgName }}{{ '  ' }} ({{ data.workNum }})</span>
+                </span>
+              </el-tree>
+            </el-tab-pane>
+            <el-tab-pane name="tags">
+              <span slot="label">
+                标签
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="对用户进行的自定义分组，不包含业务属性"
+                  placement="top-start"
+                >
+                  <i class="el-icon-warning" />
+                </el-tooltip>
               </span>
-            </el-tree>
-          </el-tab-pane>
-          <el-tab-pane name="tags">
-            <span slot="label">
-              标签
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="对用户进行的自定义分组，不包含业务属性"
-                placement="top-start"
-              >
-                <i class="el-icon-warning" />
-              </el-tooltip>
-            </span>
-            <user-tag
-              ref="tags"
-              :active-tag.sync="activeTag"
-            />
-          </el-tab-pane>
-        </el-tabs>
-      </basic-container>
-    </el-col>
-    <el-col
-      :xs="15"
-      :sm="17"
-      :md="18"
-      style="height:100%"
-    >
-      <user-list
-        v-show="activeTabName === 'orgTree'"
-        ref="userList"
-        :active-org="activeOrg"
-      />
-      <user-taged-list
-        v-show="activeTabName === 'tags'"
-        ref="userTagedList"
-        :active-tag="activeTag"
-        @refresh-tag="handleRefreshTag"
-      />
-    </el-col>
-  </el-row>
+              <user-tag
+                ref="tags"
+                :active-tag.sync="activeTag"
+              />
+            </el-tab-pane>
+          </el-tabs>
+        </basic-container>
+      </el-col>
+      <el-col
+        :xs="15"
+        :sm="17"
+        :md="18"
+        style="height:100%"
+      >
+        <user-list
+          v-show="activeTabName === 'orgTree'"
+          ref="userList"
+          :active-org="activeOrg"
+          style="padding-right:0;"
+        />
+        <user-taged-list
+          v-show="activeTabName === 'tags'"
+          ref="userTagedList"
+          style="padding-right:0;"
+          :active-tag="activeTag"
+          @refresh-tag="handleRefreshTag"
+        />
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -122,4 +132,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.header {
+  font-size: 18px;
+  padding: 14px 0 24px;
+  margin-left: 6px;
+}
+</style>
