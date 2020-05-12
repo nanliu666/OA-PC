@@ -233,15 +233,13 @@ export default {
             isFirstEpf: this.allInfo.isFirstEpf,
             epfNo: this.allInfo.epfNo
           }
-          editStaffBasicInfo(params).then((res) => {
-            if (res.resCode == 200) {
-              this.readonlyBasicInfo = true
-              allInfo = deepClone(this.allInfo)
-              this.$message({
-                type: 'success',
-                message: res.resMsg
-              })
-            }
+          editStaffBasicInfo(params).then(() => {
+            this.readonlyBasicInfo = true
+            allInfo = deepClone(this.allInfo)
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
           })
         }
       })

@@ -8,14 +8,14 @@
         <el-col class="title-type">
           <el-divider direction="vertical" />
           <div class="name">
-            {{ item.name }}
+            {{ getTypeName(item.name) }}
           </div>
         </el-col>
         <el-col class="employee-files">
           <upload
-            v-for="(i, index) in item.list"
+            v-for="(i, idx) in item.list"
             :id="Number(i.id)"
-            :key="index"
+            :key="idx"
             :type-name="i.name"
             :type-icon="i.iconUrl"
             :limit="Number(i.maxLimit)"
@@ -29,22 +29,36 @@
 import upload from './upload'
 import { getAttachmentCategory } from '@/api/personnel/attach'
 export default {
+  name: 'UploadData',
   components: {
     upload
   },
   data() {
     return {
       listData: [],
-      typeDataList: []
+      typeDataList: [],
+      AttachmentType: []
     }
   },
   mounted() {
+    this.$store.dispatch('CommonDict', 'AttachmentType').then((res) => {
+      this.AttachmentType = res
+    })
     this.initData()
   },
   methods: {
+    getTypeName(type) {
+      let name
+      this.AttachmentType.forEach((item) => {
+        if (item.dictKey == type) {
+          name = item.dictValue
+        }
+      })
+      return name
+    },
     initData() {
       getAttachmentCategory().then((res) => {
-        const getData = res.data
+        const getData = res
         function unique(arr) {
           return Array.from(new Set(arr))
         }

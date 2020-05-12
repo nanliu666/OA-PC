@@ -7,18 +7,6 @@ const normalData = {
   response: ''
 }
 
-const json = {
-  ...normalData,
-  response: { code: 200, success: true, msg: '新增成功' }
-}
-const deletes = {
-  ...normalData,
-  response: { code: 200, success: true, msg: '删除成功' }
-}
-const modity = {
-  ...normalData,
-  response: { code: 200, success: true, msg: '修改成功' }
-}
 const menuList = {
   ...normalData,
   response: [
@@ -119,12 +107,12 @@ export default ({ mock }) => {
     return menuList
   })
   Mock.mock(new RegExp('/api/sys/v1/menu/info' + '.*'), 'delete', () => {
-    return deletes
+    return normalData
   })
   Mock.mock(new RegExp('/api/sys/v1/menu/info' + '.*'), 'post', () => {
-    return json
+    return normalData
   })
   Mock.mock(new RegExp('/api/sys/v1/menu/info' + '.*'), 'put', () => {
-    return modity
+    return normalData
   })
 }

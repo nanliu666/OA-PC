@@ -17,8 +17,8 @@
               :before-upload="beforeAvatarUpload"
             >
               <img
-                v-if="imageUrl"
-                :src="imageUrl"
+                v-if="perosonnalInfo.avatarUrl"
+                :src="perosonnalInfo.avatarUrl"
                 class="avatar"
               >
               <i
@@ -30,25 +30,25 @@
         </el-aside>
         <el-main>
           <p class="info-name">
-            {{ userInfo.name }}
+            {{ perosonnalInfo.name }}
           </p>
           <el-row>
             <el-col :span="5">
               <div class="grid-content bg-purple">
                 <span>部门：</span>
-                <span>{{ userInfo.postName }}</span>
+                <span>{{ perosonnalInfo.orgName }}</span>
               </div>
             </el-col>
             <el-col :span="5">
               <div class="grid-content bg-purple-light">
                 <span>职位：</span>
-                <span>{{ userInfo.roleName }}</span>
+                <span>{{ perosonnalInfo.jobName }}</span>
               </div>
             </el-col>
             <el-col :span="5">
               <div class="grid-content bg-purple">
                 <span>邮箱：</span>
-                <span>{{ userInfo.email }}</span>
+                <span>{{ perosonnalInfo.userEmail }}</span>
               </div>
             </el-col>
           </el-row>
@@ -63,16 +63,9 @@
           label="个人信息"
           name="first"
         >
-          <div
-            class="personal-basic-info"
-            :class="[readonly ? 'no-back-color' : 'back-color']"
-          >
+          <div class="personal-basic-info no-back-style">
             <div class="info-edit-button">
               <span class="basic-info">基本信息</span>
-              <span
-                v-show="readonly"
-                class="basic-info-title-line"
-              />
               <span
                 v-show="readonly"
                 style="padding:5px;"
@@ -85,10 +78,13 @@
                 > 编辑</span>
               </span>
             </div>
-            <div class="basic-info-content">
+            <div
+              class="basic-info-content"
+              :class="[readonly ? 'no-back-style' : 'back-style']"
+            >
               <el-form
                 ref="userInfo"
-                :model="userInfo"
+                :model="perosonnalInfo"
                 :rules="basicInfo.rules"
                 label-width="150px"
                 class="info-form"
@@ -103,7 +99,7 @@
                       v-show="readonly"
                       label="姓名:"
                     >
-                      <span>{{ userInfo.name }}</span>
+                      <span>{{ perosonnalInfo.name }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
@@ -111,7 +107,7 @@
                       prop="name"
                     >
                       <el-input
-                        v-model="userInfo.name"
+                        v-model="perosonnalInfo.name"
                         placeholder="请输入2-10位汉字、英文、空格和点号"
                       />
                     </el-form-item>
@@ -125,13 +121,13 @@
                       prop="sex"
                     >
                       <el-radio
-                        v-model="userInfo.sex"
+                        v-model="perosonnalInfo.sex"
                         label="1"
                       >
                         男
                       </el-radio>
                       <el-radio
-                        v-model="userInfo.sex"
+                        v-model="perosonnalInfo.sex"
                         label="2"
                       >
                         女
@@ -149,14 +145,14 @@
                       v-show="readonly"
                       label="手机号码:"
                     >
-                      <span>{{ userInfo.phone }}</span>
+                      <span>{{ perosonnalInfo.phonenum }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
                       label="手机号码:"
                       prop="phone"
                     >
-                      <el-input v-model="userInfo.phone" />
+                      <el-input v-model="perosonnalInfo.phonenum" />
                     </el-form-item>
                   </el-col>
                   <el-col
@@ -167,14 +163,14 @@
                       v-show="readonly"
                       label="公司邮箱:"
                     >
-                      <span>{{ userInfo.email }}</span>
+                      <span>{{ perosonnalInfo.email }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
                       label="公司邮箱:"
                       prop="email"
                     >
-                      <el-input v-model="userInfo.email" />
+                      <el-input v-model="perosonnalInfo.email" />
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -187,14 +183,14 @@
                       v-show="readonly"
                       label="银行卡号:"
                     >
-                      <span>{{ userInfo.createTime }}</span>
+                      <span>{{ perosonnalInfo.bankNo }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
                       label="银行卡号:"
-                      prop="createTime"
+                      prop="bankNo"
                     >
-                      <el-input v-model="userInfo.createTime" />
+                      <el-input v-model="perosonnalInfo.bankNo" />
                     </el-form-item>
                   </el-col>
                   <el-col
@@ -205,14 +201,14 @@
                       v-show="readonly"
                       label="开户行:"
                     >
-                      <span>{{ userInfo.createUser }}</span>
+                      <span>{{ perosonnalInfo.bankName }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
                       label="开户行:"
-                      prop="createUser"
+                      prop="bankName"
                     >
-                      <el-input v-model="userInfo.createUser" />
+                      <el-input v-model="perosonnalInfo.bankName" />
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -226,14 +222,14 @@
                       v-show="readonly"
                       label="婚姻状况:"
                     >
-                      <span>{{ userInfo.createDept }}</span>
+                      <span>{{ perosonnalInfo.marriage == '1' ? '已婚' : '未婚' }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
                       label="婚姻状况:"
-                      prop="createDept"
+                      prop="marriage"
                     >
-                      <el-select v-model="userInfo.createDept">
+                      <el-select v-model="perosonnalInfo.marriage">
                         <el-option
                           label="未婚"
                           value="未婚"
@@ -255,7 +251,7 @@
                       label="目前住址:"
                     >
                       <span>
-                        <!-- {{ (userInfo.updateUser + userInfo.updateTime).replace(/,/g, '') }} -->
+                        {{ perosonnalInfo.userAddress }}
                       </span>
                     </el-form-item>
                     <el-form-item
@@ -263,16 +259,17 @@
                       label="目前住址:"
                       prop="updateUser"
                     >
-                      <el-cascader
-                        v-model="userInfo.updateUser"
+                      <!-- <el-cascader
+                        v-model="perosonnalInfo.updateUser"
                         :options="regionCascader"
                         :separator="'/'"
-                      />
+                      /> -->
+                      <el-input v-model="perosonnalInfo.userAddress" />
                     </el-form-item>
                   </el-col>
                 </el-row>
 
-                <el-row v-show="!readonly">
+                <!-- <el-row v-show="!readonly">
                   <el-col
                     :span="8"
                     :push="2"
@@ -283,10 +280,10 @@
                     class="detail-position"
                   >
                     <el-form-item prop="updateTime">
-                      <el-input v-model="userInfo.updateTime" />
+                      <el-input v-model="perosonnalInfo.updateTime" />
                     </el-form-item>
                   </el-col>
-                </el-row>
+                </el-row> -->
 
                 <el-form-item
                   v-show="!readonly"
@@ -307,7 +304,7 @@
             </div>
           </div>
           <!-- 紧急联系人列表 -->
-          <emergency-members :emergency-list="emergency" />
+          <emergency-members />
         </el-tab-pane>
 
         <!-- 公司信息 -->
@@ -325,8 +322,9 @@
 <script>
 import emergencyMembers from './userCenter/emergencyMembers.vue'
 import { validateName, isEmail, validataBankCard } from '@/util/validate'
-import { getPersonalInfo, updateInfo } from '../../api/personalInfo'
-
+import { getStaffBasicInfo, editStaffBasicInfo } from '../../api/personalInfo'
+import { mapGetters } from 'vuex'
+import { provinceAndCityData } from 'element-china-area-data'
 let noEditInfo = {}
 export default {
   components: {
@@ -334,77 +332,17 @@ export default {
   },
   data() {
     return {
-      imageUrl: '',
       tabs: {
         activeTab: 'first'
       },
       readonly: true,
-      regionCascader: [
-        {
-          value: '陕西省',
-          label: '陕西省',
-          children: [
-            {
-              value: '西安市',
-              label: '西安市',
-              children: [
-                {
-                  value: '雁塔区',
-                  label: '雁塔区'
-                },
-                {
-                  value: '高新区',
-                  label: '高新区'
-                },
-                {
-                  value: '长安区',
-                  label: '长安区'
-                },
-                {
-                  value: '未央区',
-                  label: '未央区'
-                }
-              ]
-            },
-            {
-              value: '咸阳市',
-              label: '咸阳市',
-              children: [
-                {
-                  value: '雁塔区',
-                  label: '雁塔区'
-                },
-                {
-                  value: '高新区',
-                  label: '高新区'
-                },
-                {
-                  value: '长安区',
-                  label: '长安区'
-                },
-                {
-                  value: '未央区',
-                  label: '未央区'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          value: '广州省',
-          label: '广州省',
-          children: [
-            {
-              value: '广东市',
-              label: '广东市'
-            },
-            {
-              value: '深圳市',
-              label: '深圳市'
-            }
-          ]
+      regionCascader: {
+        option: provinceAndCityData,
+        props: {
+          value: 'value',
+          label: 'label'
         }
-      ],
+      },
       formatMainRegion: '',
       basicInfo: {
         rules: {
@@ -436,7 +374,7 @@ export default {
               }
             }
           ],
-          createTime: [
+          bankNo: [
             {
               required: false,
               trigger: 'blur',
@@ -453,11 +391,12 @@ export default {
           ]
         }
       },
-      userInfo: {},
-      contactOrder: null,
-      emergencyIsEdit: false,
-      emergency: []
+      perosonnalInfo: {},
+      contactOrder: null
     }
+  },
+  computed: {
+    ...mapGetters(['userInfo'])
   },
   created() {
     this.getUserAllInfo()
@@ -465,43 +404,11 @@ export default {
   methods: {
     getUserAllInfo() {
       let params = {
-        companyId: '20200224',
-        userId: '18392172902'
+        userId: this.userInfo.user_id //从vuex中获取
       }
-      getPersonalInfo(params).then((res) => {
-        const user = res.response.info
-        //基本信息
-        this.userInfo = {
-          id: user.id,
-          name: user.name,
-          phone: user.phone,
-          email: user.email,
-          sexName: user.sexName,
-          sex: user.sex,
-          roleName: user.roleName,
-          postName: user.postName, //下面都是暂用的字段，后续根据接口实际输出
-          createUser: '1123598821738675201', //暂时先代表开户行
-          createDept: '否', //暂时代替结婚否
-          createTime: '61012555555', //暂时代替卡号
-          updateUser: '陕西省西安市', //暂时代替地址
-          updateTime: '高新区天谷八路', //暂时代替详细地址
-          status: 1,
-          imageUrl: ''
-        }
-        noEditInfo = this.deepCopy(this.userInfo)
-        //紧急联系人
-        this.emergency = [
-          {
-            phone: '18393709876',
-            relation: '母亲',
-            name: 'aa'
-          },
-          {
-            phone: '1234566',
-            relation: '父亲',
-            name: 'bb'
-          }
-        ]
+      getStaffBasicInfo(params).then((res) => {
+        this.perosonnalInfo = res.response
+        noEditInfo = this.deepCopy(res.response)
       })
     },
     deepCopy(obj) {
@@ -514,11 +421,11 @@ export default {
       this.$refs['userInfo'].validate((isPass) => {
         if (isPass) {
           this.readonly = true
-          updateInfo(this.userInfo).then((res) => {
+          editStaffBasicInfo(this.perosonnalInfo).then((res) => {
             if (res.response.success) {
               this.$message({
                 type: 'success',
-                message: res.response.resMsg
+                message: res.resMsg
               })
             } else {
               this.$message({
@@ -532,7 +439,7 @@ export default {
     },
     cancelBasicEdit() {
       this.readonly = true
-      this.userInfo = this.deepCopy(noEditInfo)
+      this.perosonnalInfo = this.deepCopy(noEditInfo)
     },
 
     handleAvatarSuccess(res, file) {
@@ -562,7 +469,7 @@ li {
   list-style: none;
 }
 .back-style {
-  background: #cecece;
+  background: #f7f8fa !important;
 }
 .no-back-style {
   background: #fff;
@@ -585,7 +492,8 @@ li {
   height: 112px;
   margin-top: 20px;
   background: #ffffff;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04),
+    0 4px 8px 4px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   padding-left: 24px;
   font-size: 14px;
@@ -630,7 +538,8 @@ li {
 .info-detail {
   margin-top: 20px;
   background: #ffffff;
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04),
+    0 4px 8px 4px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   border-radius: 4px;
 }
@@ -665,12 +574,7 @@ li {
 .personal-basic-info .basic-info {
   float: left;
 }
-.basic-info-title-line {
-  width: calc(100% - 140px);
-  display: inline-block;
-  border-top: 2px dashed #999;
-  margin: 5px;
-}
+
 .info-detail .info-edit-button {
   text-align: right;
   cursor: pointer;
@@ -686,7 +590,6 @@ li {
 }
 
 .info-detail .basic-info-content {
-  background: #fff;
   padding: 15px 0 0 20px;
   /deep/ .el-cascader {
     width: 100%;

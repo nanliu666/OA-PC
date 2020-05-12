@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-// import user from './user'
+import user from './user'
 import menu from './menu'
 import oauth from './oauth'
 import system from './system'
@@ -21,7 +21,7 @@ import menus from './menus'
 
 const options = { mock: false }
 
-// user(options)
+user(options)
 
 menu({ mock: true })
 

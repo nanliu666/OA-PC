@@ -12,7 +12,7 @@ export default {
       component: () => import(/* webpackChunkName: "views" */ '@/views/personnel/roster')
     },
     {
-      path: '/personnel/detail',
+      path: '/personnel/detail/:userId',
       name: '员工信息',
       meta: {
         i18n: 'index'

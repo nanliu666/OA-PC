@@ -2,7 +2,7 @@
   <div class="menu-wrapper">
     <template v-for="item in menu">
       <el-menu-item
-        v-if="validatenull(item[childrenKey]) && vaildRoles(item)"
+        v-if="hasShowingChild(item.children) && vaildRoles(item)"
         :key="item[labelKey]"
         :index="item[pathKey]"
         :class="{ 'is-active': vaildAvtive(item) }"
@@ -15,7 +15,7 @@
         >{{ generateTitle(item) }}</span>
       </el-menu-item>
       <el-submenu
-        v-else-if="!validatenull(item[childrenKey]) && vaildRoles(item)"
+        v-else
         :key="item[labelKey]"
         :index="item[pathKey]"
       >
@@ -24,11 +24,13 @@
           <span
             slot="title"
             :class="{ 'el-menu--display': collapse && first }"
-          >{{ generateTitle(item) }}</span>
+          >{{
+            generateTitle(item)
+          }}</span>
         </template>
         <template v-for="(child, cindex) in item[childrenKey]">
           <el-menu-item
-            v-if="validatenull(child[childrenKey])"
+            v-if="validatenull(child[childrenKey]) && child.isShow !== 0"
             :key="child[labelKey]"
             :index="(child[pathKey], cindex)"
             :class="{ 'is-active': vaildAvtive(child) }"
@@ -38,7 +40,7 @@
             <span slot="title">{{ generateTitle(child) }}</span>
           </el-menu-item>
           <sidebar-item
-            v-else
+            v-else-if="child.isShow !== 0"
             :key="cindex"
             :menu="[child]"
             :props="props"
@@ -108,16 +110,14 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    hasShowingChild(children = []) {
+      return children.filter((item) => item.isShow !== 0).length >= 0
+    },
     generateTitle(item) {
-      return this.$router.$avueRouter.generateTitle(
-        item[this.labelKey],
-        (item.meta || {}).i18n
-      )
+      return this.$router.$avueRouter.generateTitle(item[this.labelKey], (item.meta || {}).i18n)
     },
     vaildAvtive(item) {
-      const groupFlag = (item['group'] || []).some((ele) =>
-        this.$route.path.includes(ele)
-      )
+      const groupFlag = (item['group'] || []).some((ele) => this.$route.path.includes(ele))
       return this.nowTagValue === item[this.pathKey] || groupFlag
     },
     vaildRoles(item) {

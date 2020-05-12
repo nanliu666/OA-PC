@@ -175,7 +175,7 @@ const user = {
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo
-      setStore({ name: 'userInfo', content: state.userInfo })
+      setStore({ name: 'userInfo', content: state.userInfo, type: 'session' })
     },
     SET_MENU: (state, menu) => {
       state.menu = menu

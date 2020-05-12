@@ -539,6 +539,7 @@ export default {
             countyName: inputValue[2],
             address: this.workAddressForm.address
           }
+
           if (this.workAddressForm.id) {
             params.id = this.workAddressForm.id
             editWorkAddress(params).then(() => {
@@ -621,11 +622,12 @@ export default {
             const params = { ...this.form }
             if (!params.probation) params.probation = 0
             let inputValue = this.$refs.workProvinceArr.inputValue.split('/ ')
-            params.provinceName = inputValue[0]
-            params.cityName = inputValue[1]
-            params.countyName = inputValue[1]
+            params.workProvinceName = inputValue[0]
+            params.workCityName = inputValue[1]
+            params.workCountyName = inputValue[1]
             params.workProvinceCode = params.workProvinceArr[0]
             params.workCityCode = params.workProvinceArr[1]
+            params.workCountyCode = params.workProvinceArr[2]
             params.orgId = params.orgId[0]
             params.subOrg = params.subOrg.map((item) => {
               return item[0]

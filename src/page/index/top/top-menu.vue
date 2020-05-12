@@ -23,7 +23,7 @@
         >
           <template slot="title">
             <i
-              :class="item.source"
+              :class="item.icon"
               style="padding-right: 5px;"
             />
             <span>{{ generateTitle(item) }}</span>
@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       itemHome: {
-        name: '工作台',
+        menuName: '工作台',
         source: 'el-icon-menu'
       },
       activeIndex: '0'

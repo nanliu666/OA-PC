@@ -114,7 +114,7 @@ export default {
       tenantMode: this.website.tenantMode,
       loginForm: {
         //租户ID
-        tenantId: 'bestgrand',
+        tenantId: '',
         //用户名
         username: 'admin',
         //密码
@@ -172,7 +172,7 @@ export default {
             .dispatch('LoginByUsername', this.loginForm)
             .then((res) => {
               this.$router.push({ path: this.tagWel.value })
-              this.$store.dispatch('GetUserPrivilege', res.userId)
+              this.$store.dispatch('GetUserPrivilege', res.user_id)
               loading.close()
             })
             .catch(() => {
@@ -183,9 +183,12 @@ export default {
       })
     },
     getTenant() {
-      let domain = window.location.href.split('/#/')[0]
+      let domain =
+        process.env.NODE_ENV === 'development'
+          ? 'www.bestgrand.com.cn'
+          : window.location.href.split('/#/')[0]
       getTenantInfo({ domain: `${domain}` }).then((res) => {
-        this.tenantId = res.tenantId
+        this.loginForm.tenantId = res.tenantId || 'bestgrand'
       })
       // 临时指定域名，方便测试
       //domain = "https://bladex.vip";

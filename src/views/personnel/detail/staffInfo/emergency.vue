@@ -212,14 +212,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffEmerInfo(item.id).then((res) => {
-            if (res.resCode == 200) {
-              this.emergencyInfo.splice(index, 1)
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-            }
+          delStaffEmerInfo(item.id).then(() => {
+            this.emergencyInfo.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -233,26 +231,22 @@ export default {
       this.$refs['emergency'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
-            addStaffEmerInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            addStaffEmerInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
             })
           } else {
-            editStaffEmerInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            editStaffEmerInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
             })
           }
         }
@@ -260,10 +254,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.params.userId
       }
       getStaffEmerInfo(params).then((res) => {
-        this.emergencyInfo = res.response
+        this.emergencyInfo = res
       })
     },
     editInfo(item, index) {

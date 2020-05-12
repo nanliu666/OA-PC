@@ -1,18 +1,17 @@
 <template>
   <div class="emergency-component">
     <div
-      class="emergency-contact-info"
-      :class="[editClick ? 'padding-top-style back-style ' : 'no-back-style ']"
+      class="emergency-contact-info no-back-style"
+      :class="[editClick ? 'padding-top-style ' : '']"
     >
       <div class="emergency-contact-title">
         <span class="emergency-memb">紧急联系人</span>
-        <span class="emergency-info-title-line" />
       </div>
       <div class="emergency-info-content">
         <div
           v-for="(item, index) in emergency"
           :key="index"
-          :class="[index == currentEdit ? 'border-style no-back-style' : 'no-border-style']"
+          :class="[index == currentEdit ? 'back-style' : 'no-back-style']"
         >
           <div
             v-show="index != currentEdit"
@@ -29,7 +28,7 @@
           </div>
 
           <el-form
-            ref="contactItem"
+            ref="emergency"
             class="component-content info-form"
             :model="item"
             :rules="rules"
@@ -84,13 +83,13 @@
                   v-show="index != currentEdit"
                   label="紧急联系人关系:"
                 >
-                  <span calss="item-label-value">{{ item.relation }}</span>
+                  <span calss="item-label-value">{{ item.relationship }}</span>
                 </el-form-item>
                 <el-form-item
                   v-show="index == currentEdit"
                   label="紧急联系人关系:"
                 >
-                  <el-input v-model="item.relation" />
+                  <el-input v-model="item.relationship" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -126,13 +125,15 @@
 
 <script>
 import { isMobile } from '@/util/validate'
+import { deepClone, randomLenNum } from '@/util/util'
+import {
+  delStaffEmerInfo,
+  editStaffEmerInfo,
+  addStaffEmerInfo,
+  getStaffEmerInfo
+} from '../../../api/personalInfo'
+import { mapGetters } from 'vuex'
 export default {
-  props: {
-    emergencyList: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
       currentEdit: null,
@@ -172,16 +173,26 @@ export default {
       }
     }
   },
-
-  mounted() {
-    this.emergency = this.emergencyList ? this.emergencyList : []
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
+  created() {
+    this.getEmergencyList()
   },
   methods: {
+    getEmergencyList() {
+      let params = {
+        userId: this.userInfo.user_id //从vuex中获取
+      }
+      getStaffEmerInfo(params).then((res) => {
+        this.emergency = res.response
+      })
+    },
     edit(item, index) {
       this.type = 'edit'
       this.editClick = true
       this.currentEdit = index
-      this.curItem = this.deepCopy(item)
+      this.curItem = deepClone(item)
     },
     del(item, index) {
       this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
@@ -190,10 +201,14 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.emergency.splice(index, 1)
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          delStaffEmerInfo(item.id).then((res) => {
+            if (res.resCode == 200) {
+              this.emergencyInfo.splice(index, 1)
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+            }
           })
         })
         .catch(() => {
@@ -204,10 +219,29 @@ export default {
         })
     },
     saveEmergencyInfo(item, index) {
-      this.$refs['contactItem'][index].validate((isPass) => {
+      this.$refs['emergency'][index].validate((isPass) => {
         if (isPass) {
-          this.currentEdit = null
           this.editClick = false
+          this.currentEdit = null
+          if (this.type == 'add') {
+            addStaffEmerInfo(item).then((res) => {
+              if (res.resCode == 200) {
+                this.$message({
+                  type: 'success',
+                  message: res.resMsg
+                })
+              }
+            })
+          } else {
+            editStaffEmerInfo(item).then((res) => {
+              if (res.resCode == 200) {
+                this.$message({
+                  type: 'success',
+                  message: res.resMsg
+                })
+              }
+            })
+          }
         }
       })
     },
@@ -217,19 +251,17 @@ export default {
       if (this.type == 'add') {
         this.emergency.pop()
       } else {
-        this.emergency[index] = this.deepCopy(this.curItem)
+        this.emergency[index] = deepClone(this.curItem)
       }
-    },
-    deepCopy(obj) {
-      return JSON.parse(JSON.stringify(obj))
     },
     addContact() {
       this.type = 'add'
       this.editClick = true
       let memberInfo = {
+        id: randomLenNum(),
+        name: '',
         phone: '',
-        relation: '',
-        name: ''
+        relationship: ''
       }
       this.emergency.push(memberInfo)
       this.currentEdit = this.emergency.length - 1
@@ -251,7 +283,7 @@ export default {
   }
 }
 .back-style {
-  background: #cecece;
+  background: #f7f8fa;
 }
 .no-back-style {
   background: #fff;
@@ -302,12 +334,6 @@ export default {
 }
 .emergency-contact-title {
   padding: 10px 0;
-  .emergency-info-title-line {
-    width: calc(100% - 95px);
-    display: inline-block;
-    border-top: 2px dashed #999;
-    margin: 5px;
-  }
 }
 .add-emergency-member {
   margin-top: 10px;
@@ -315,12 +341,12 @@ export default {
 }
 .info-button-group {
   text-align: center;
-  .el-form-item__content {
-    margin-left: 0;
-  }
   .el-button {
     width: 80px;
     height: 42px;
+  }
+  /deep/.el-form-item__content {
+    margin-left: 0 !important;
   }
 }
 </style>

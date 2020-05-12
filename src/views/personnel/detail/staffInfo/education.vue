@@ -373,14 +373,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffEducationInfo(item.id).then((res) => {
-            if (res.resCode == 200) {
-              this.educationInfo.splice(index, 1)
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-            }
+          delStaffEducationInfo(item.id).then(() => {
+            this.educationInfo.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -396,26 +394,22 @@ export default {
           //删除初始化附加的属性monthRange
           delete item.monthRange
           if (this.type == 'add') {
-            addStaffEducationInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            addStaffEducationInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
             })
           } else {
-            editStaffEducationInfo(item).then((res) => {
-              if (res.resCode == 200) {
-                this.editClick = false
-                this.curItemIndex = null
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            editStaffEducationInfo(item).then(() => {
+              this.editClick = false
+              this.curItemIndex = null
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
             })
           }
         }
@@ -423,10 +417,10 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: '20200426'
+        userId: this.$route.params.userId
       }
       getStaffEducationInfo(params).then((res) => {
-        this.educationInfo = res.response
+        this.educationInfo = res
         this.educationInfo.forEach((item) => {
           this.$set(item, 'monthRange', [item.beginDate, item.endDate])
         })
