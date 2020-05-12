@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+      v-loading="loading"
       title="添加用户"
       :visible.sync="dialogVisible"
       type="selection"
@@ -124,6 +125,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchInput: '',
       page: {
         currentPage: 1,
@@ -260,7 +262,9 @@ export default {
         roleId: this.roleId,
         users: users
       }
+      this.loading = true
       addUser(params).then(() => {
+        this.loading = false
         this.$message.success('用户添加成功')
         this.$emit('onAddUser')
         this.onClickCancel()

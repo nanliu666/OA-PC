@@ -72,6 +72,7 @@
           取消
         </el-button>
         <el-button
+          v-loading="loading"
           type="primary"
           size="medium"
           @click="onClickSave(type.group)"
@@ -81,6 +82,7 @@
       </div>
     </el-dialog>
     <el-dialog
+      v-if="cateVisible"
       :title="cateForm.categoryId ? '编辑分类' : '新建分类'"
       :visible.sync="cateVisible"
       :close-on-click-modal="false"
@@ -107,6 +109,7 @@
           取消
         </el-button>
         <el-button
+          v-loading="loading"
           type="primary"
           size="medium"
           @click="onClickSave(type.cate)"
@@ -158,6 +161,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       type,
       groupVisible: false,
       cateVisible: false,
@@ -375,12 +379,16 @@ export default {
 
     // 删除分组提示
     delGroup(node, data) {
-      this.$confirm('您确定要删除该分组吗？<br/> 删除后，该分组下的角色分类和角色也会同步清除', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        dangerouslyUseHTMLString: true
-      })
+      this.$confirm(
+        '您确定要删除该分组吗？<br/> 删除后，该分组下的角色分类和角色也会同步清除',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      )
         .then(() => {
           this.delGroupFunc(node, data)
         })
@@ -445,11 +453,17 @@ export default {
           groupName: this.groupForm.groupName,
           categories: this.getCategories(this.groupForm.groupData)
         }
-        createGroup(params).then(() => {
-          this.$message.success('新建分类成功')
-          this.onClickVisible(str)
-          this.$emit('reload')
-        })
+        this.loading = true
+        createGroup(params)
+          .then(() => {
+            this.loading = false
+            this.$message.success('新建分类成功')
+            this.onClickVisible(str)
+            this.$emit('reload')
+          })
+          .catch(() => {
+            this.loading = false
+          })
       })
     },
 
@@ -477,11 +491,17 @@ export default {
         categoryName: this.cateForm.categoryName,
         groupId: this.cateForm.groupId
       }
-      createCate(params).then(() => {
-        this.$message.success('新建分组成功')
-        this.onClickVisible(str)
-        this.$emit('reload')
-      })
+      this.loading = true
+      createCate(params)
+        .then(() => {
+          this.loading = false
+          this.$message.success('新建分组成功')
+          this.onClickVisible(str)
+          this.$emit('reload')
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
 
     // 更新分组
@@ -490,11 +510,17 @@ export default {
         groupName: this.groupForm.groupName,
         groupId: this.groupForm.groupId
       }
-      updateGroup(params).then(() => {
-        this.$message.success('修改分组成功')
-        this.onClickVisible(str)
-        this.$emit('reload')
-      })
+      this.loading = true
+      updateGroup(params)
+        .then(() => {
+          this.$message.success('修改分组成功')
+          this.onClickVisible(str)
+          this.$emit('reload')
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
 
     // 更新分类
@@ -504,11 +530,17 @@ export default {
         categoryName: this.cateForm.categoryName,
         groupId: this.cateForm.groupId
       }
-      updateCate(params).then(() => {
-        this.$message.success('修改分类成功')
-        this.onClickVisible(str)
-        this.$emit('reload')
-      })
+      this.loading = true
+      updateCate(params)
+        .then(() => {
+          this.loading = false
+          this.$message.success('修改分类成功')
+          this.onClickVisible(str)
+          this.$emit('reload')
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
 
     // 父组件role重新加载数据
