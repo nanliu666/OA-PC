@@ -3,17 +3,9 @@
     <basic-container>
       <avue-crud
         ref="crud"
-        v-model="form"
         :option="option"
-        :table-loading="loading"
         :data="data"
-        :before-open="beforeOpen"
         :page="page"
-        @row-update="rowUpdate"
-        @row-save="rowSave"
-        @search-change="searchChange"
-        @search-reset="searchReset"
-        @selection-change="selectionChange"
         @current-change="currentChange"
         @size-change="sizeChange"
         @refresh-change="refreshChange"
@@ -60,6 +52,7 @@ export default {
         {
           type: 'dataPicker',
           field: 'beginTime,endTime',
+          data: '',
           label: '操作时间',
           config: { type: 'daterange', 'range-separator': '至' }
         },
@@ -70,11 +63,13 @@ export default {
         {
           type: 'select',
           field: 'status',
+          data: '',
           label: '状态',
           options: [
             { value: 'Success', label: '成功' },
             { value: 'Fail', label: '失败' }
-          ]
+          ],
+          config: {}
         }
       ],
       option: {
@@ -151,8 +146,9 @@ export default {
       this.initData()
     },
     onLoad() {},
-    submit(submit) {
-      this.ajaxData = submit
+    submit(params) {
+      let { pageNo, pageSize } = this.ajaxData
+      this.ajaxData = { pageNo, pageSize, ...params }
       this.initData()
     }
   }
