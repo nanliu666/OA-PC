@@ -26,6 +26,7 @@
       </div>
     </el-dialog>
     <userEdit
+      v-if="addVisible"
       :visible.sync="addVisible"
       :role-id="roleId"
       @onAddUser="onAddUser"
@@ -58,6 +59,7 @@ export default {
   },
   data() {
     return {
+      dialogVisible: true,
       addVisible: false,
       page: {
         pageSize: 10,
@@ -114,12 +116,19 @@ export default {
     }
   },
   computed: {
+    // dialogVisible: {
+    //   get: function() {
+    //     return this.visible
+    //   },
+    //   set: function(val) {
+    //     this.$emit('update:visible', val)
+    //   }
+    // }
+  },
+  watch: {
     dialogVisible: {
-      get: function() {
-        return this.visible
-      },
-      set: function(val) {
-        this.$emit('update:visible', val)
+      handler: function() {
+        this.$emit('update:visible', this.dialogVisible)
       }
     }
   },

@@ -110,7 +110,7 @@ export default {
           })
         }
       },
-      immediate: true
+      deep: true
     },
     searchInput(val) {
       this.$refs.tree.filter(val)
@@ -121,6 +121,7 @@ export default {
       return data[this.props.label].indexOf(value) !== -1
     },
     onClickNode(node, data) {
+      // console.log(node, data)
       if (node.level > 1) {
         this.$emit('reload', data)
       }

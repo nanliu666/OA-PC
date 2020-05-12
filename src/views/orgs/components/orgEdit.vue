@@ -287,7 +287,6 @@ export default {
             name = arr[i].orgName
             return
           }
-          console.log(arr[i].children)
           if (arr[i].children && arr[i].children.length > 0) {
             deep(arr[i].children)
           }

@@ -344,7 +344,10 @@ export default {
           params[item.field.split(',')[0]] = item.data.min
           params[item.field.split(',')[1]] = item.data.max
         } else if (item.type === 'treeSelect' || item.type === 'select') {
-          if ((item.type === 'select' && item.config && item.config.multiple) || item.type === 'treeSelect') {
+          if (
+            (item.type === 'select' && item.config && item.config.multiple) ||
+            item.type === 'treeSelect'
+          ) {
             params[item.field] = item.data.map((it) => {
               return { [item.arrField]: it }
             })
