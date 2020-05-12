@@ -222,7 +222,7 @@
                       v-show="readonly"
                       label="婚姻状况:"
                     >
-                      <span>{{ perosonnalInfo.marriage == '1' ? '已婚' : '未婚' }}</span>
+                      <span>{{ getMarrige() }}</span>
                     </el-form-item>
                     <el-form-item
                       v-show="!readonly"
@@ -231,12 +231,10 @@
                     >
                       <el-select v-model="perosonnalInfo.marriage">
                         <el-option
-                          label="未婚"
-                          value="未婚"
-                        />
-                        <el-option
-                          label="已婚"
-                          value="已婚"
+                          v-for="item in merrigeOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
                         />
                       </el-select>
                     </el-form-item>
@@ -259,32 +257,19 @@
                       label="目前住址:"
                       prop="updateUser"
                     >
-                      <!-- <el-cascader
-                        v-model="perosonnalInfo.updateUser"
-                        :options="regionCascader"
+                      <el-cascader
+                        ref="regionCascader"
+                        v-model="adress.curAdress"
+                        :options="regionCascader.option"
                         :separator="'/'"
-                      /> -->
-                      <el-input v-model="perosonnalInfo.userAddress" />
+                      />
+                      <el-input
+                        v-model="adress.detailAdress"
+                        class="detail-position"
+                      />
                     </el-form-item>
                   </el-col>
                 </el-row>
-
-                <!-- <el-row v-show="!readonly">
-                  <el-col
-                    :span="8"
-                    :push="2"
-                  />
-                  <el-col
-                    :span="8"
-                    :push="4"
-                    class="detail-position"
-                  >
-                    <el-form-item prop="updateTime">
-                      <el-input v-model="perosonnalInfo.updateTime" />
-                    </el-form-item>
-                  </el-col>
-                </el-row> -->
-
                 <el-form-item
                   v-show="!readonly"
                   class="info-button-group"
@@ -324,7 +309,7 @@ import emergencyMembers from './userCenter/emergencyMembers.vue'
 import { validateName, isEmail, validataBankCard } from '@/util/validate'
 import { getStaffBasicInfo, editStaffBasicInfo } from '../../api/personalInfo'
 import { mapGetters } from 'vuex'
-import { provinceAndCityData } from 'element-china-area-data'
+import { regionData } from 'element-china-area-data'
 let noEditInfo = {}
 export default {
   components: {
@@ -332,12 +317,16 @@ export default {
   },
   data() {
     return {
+      adress: {
+        curAdress: '',
+        detailAdress: ''
+      },
       tabs: {
         activeTab: 'first'
       },
       readonly: true,
       regionCascader: {
-        option: provinceAndCityData,
+        option: regionData,
         props: {
           value: 'value',
           label: 'label'
@@ -392,7 +381,17 @@ export default {
         }
       },
       perosonnalInfo: {},
-      contactOrder: null
+      contactOrder: null,
+      merrigeOptions: [
+        {
+          value: 0,
+          label: '未婚'
+        },
+        {
+          value: 1,
+          label: '已婚'
+        }
+      ]
     }
   },
   computed: {
@@ -401,14 +400,18 @@ export default {
   created() {
     this.getUserAllInfo()
   },
+
   methods: {
+    getMarrige() {
+      return this.perosonnalInfo.marriage == 1 ? '已婚' : '未婚'
+    },
     getUserAllInfo() {
       let params = {
         userId: this.userInfo.user_id //从vuex中获取
       }
       getStaffBasicInfo(params).then((res) => {
-        this.perosonnalInfo = res.response
-        noEditInfo = this.deepCopy(res.response)
+        this.perosonnalInfo = res
+        noEditInfo = this.deepCopy(res)
       })
     },
     deepCopy(obj) {
@@ -420,19 +423,16 @@ export default {
     saveBasicInfo() {
       this.$refs['userInfo'].validate((isPass) => {
         if (isPass) {
-          this.readonly = true
-          editStaffBasicInfo(this.perosonnalInfo).then((res) => {
-            if (res.response.success) {
-              this.$message({
-                type: 'success',
-                message: res.resMsg
-              })
-            } else {
-              this.$message({
-                type: 'error',
-                message: '修改信息失败'
-              })
-            }
+          let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
+          this.perosonnalInfo.userAddress =
+            thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
+          editStaffBasicInfo(this.perosonnalInfo).then(() => {
+            noEditInfo = this.deepCopy(this.perosonnalInfo)
+            this.readonly = true
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
           })
         }
       })
@@ -606,7 +606,7 @@ li {
     border: 1px solid #dcdfe6;
   }
   .detail-position {
-    margin-top: -20px;
+    margin-top: 8px;
     /deep/ input {
       height: 46px !important;
     }

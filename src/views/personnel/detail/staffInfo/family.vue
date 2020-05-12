@@ -102,7 +102,10 @@
                 label="年龄:"
                 prop="age"
               >
-                <el-input v-model="item.age" />
+                <el-input
+                  v-model="item.age"
+                  type="number"
+                />
               </el-form-item>
             </el-col>
             <el-col
@@ -205,7 +208,7 @@ import {
   editStaffFamilyInfo,
   addStaffFamilyInfo
 } from '../../../../api/personalInfo'
-import { deepClone, randomLenNum } from '@/util/util'
+import { deepClone } from '@/util/util'
 import { isMobile, validateName } from '@/util/validate'
 let curItem = {}
 export default {
@@ -278,18 +281,12 @@ export default {
     addInfo() {
       this.type = 'add'
       let item = {
-        id: randomLenNum(),
-        beginWorkDate: '',
-        endWorkDate: '',
+        name: '',
+        phone: '',
+        relationship: '',
         companyName: '',
-        jobName: '',
-        salary: '',
-        witnessName: '',
-        witnessPhone: '',
-        isSecret: '',
-        beginSecretDate: '',
-        endSecretDate: '',
-        content: ''
+        age: '',
+        jobName: ''
       }
       this.familyInfo.push(item)
       this.editClick = true
@@ -297,13 +294,16 @@ export default {
       this.curItemId = item.id
     },
     delInfo(item, index) {
-      this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
+      this.$confirm('您确定要删除该家庭信息吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          delStaffFamilyInfo(item.id).then(() => {
+          let params = {
+            ids: item.id
+          }
+          delStaffFamilyInfo(params).then(() => {
             this.familyInfo.splice(index, 1)
             this.$message({
               type: 'success',
@@ -322,15 +322,20 @@ export default {
       this.$refs['family'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
+            item.userId = this.$route.params.userId
             addStaffFamilyInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null
+              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
               })
             })
           } else {
+            if (item.hasOwnProperty('userId')) {
+              delete item.userId
+            }
             editStaffFamilyInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null

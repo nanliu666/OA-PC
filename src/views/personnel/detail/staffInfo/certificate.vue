@@ -173,7 +173,7 @@ import {
   editStaffCertificate,
   addStaffCertificate
 } from '../../../../api/personalInfo'
-import { deepClone, randomLenNum } from '@/util/util'
+import { deepClone } from '@/util/util'
 let curItem = {}
 export default {
   data() {
@@ -198,31 +198,26 @@ export default {
     addInfo() {
       this.type = 'add'
       let item = {
-        id: randomLenNum(),
-        beginWorkDate: '',
-        endWorkDate: '',
+        name: '',
+        code: '',
         companyName: '',
-        jobName: '',
-        salary: '',
-        witnessName: '',
-        witnessPhone: '',
-        isSecret: '',
-        beginSecretDate: '',
-        endSecretDate: '',
-        content: ''
+        issueDate: ''
       }
       this.certificateInfo.push(item)
       this.editClick = true
       this.curItemIndex = this.certificateInfo.length - 1
     },
     delInfo(item, index) {
-      this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
+      this.$confirm('您确定要删除该资格证书的信息吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          delStaffCertificate(item.id).then(() => {
+          let params = {
+            ids: item.id
+          }
+          delStaffCertificate(params).then(() => {
             this.certificateInfo.splice(index, 1)
             this.$message({
               type: 'success',
@@ -241,15 +236,20 @@ export default {
       this.$refs['certificate'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
+            item.userId = this.$route.params.userId
             addStaffCertificate(item).then(() => {
               this.editClick = false
               this.curItemIndex = null
+              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
               })
             })
           } else {
+            if (item.hasOwnProperty('userId')) {
+              delete item.userId
+            }
             editStaffCertificate(item).then(() => {
               this.editClick = false
               this.curItemIndex = null

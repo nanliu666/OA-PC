@@ -64,9 +64,9 @@
               >
                 <el-date-picker
                   v-model="item.monthRange"
-                  type="monthrange"
-                  format="yyyy-MM"
-                  value-format="yyyy-MM"
+                  type="daterange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
@@ -208,7 +208,7 @@ import {
   editStaffEducationInfo,
   addStaffEducationInfo
 } from '../../../../api/personalInfo'
-import { deepClone, randomLenNum, judgeRepeatedTime } from '@/util/util'
+import { deepClone, judgeRepeatedTime } from '@/util/util'
 let curItem = {}
 export default {
   data() {
@@ -353,7 +353,6 @@ export default {
     addInfo() {
       this.type = 'add'
       let item = {
-        id: randomLenNum(),
         beginDate: '2010-09',
         endDate: '2014-06',
         educationalLevel: '',
@@ -367,13 +366,16 @@ export default {
       this.curItemId = item.id
     },
     delInfo(item, index) {
-      this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
+      this.$confirm('您确定要删除该教育经历吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          delStaffEducationInfo(item.id).then(() => {
+          let params = {
+            ids: item.id
+          }
+          delStaffEducationInfo(params).then(() => {
             this.educationInfo.splice(index, 1)
             this.$message({
               type: 'success',
@@ -394,15 +396,20 @@ export default {
           //删除初始化附加的属性monthRange
           delete item.monthRange
           if (this.type == 'add') {
+            item.userId = this.$route.params.userId
             addStaffEducationInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null
+              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
               })
             })
           } else {
+            if (item.hasOwnProperty('userId')) {
+              delete item.userId
+            }
             editStaffEducationInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null

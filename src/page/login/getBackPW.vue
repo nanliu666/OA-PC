@@ -301,17 +301,10 @@ export default {
               phonenum: this.identity.form.phone,
               smsCode: this.identity.form.code
             }
-            checkPhoneCode(params).then((res) => {
-              if (res.resCode == 200) {
-                this.step++
-                this.steps.firstStatus = 'success'
-                this.steps.secondStatus = 'finish'
-              } else {
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            checkPhoneCode(params).then(() => {
+              this.step++
+              this.steps.firstStatus = 'success'
+              this.steps.secondStatus = 'finish'
             })
           }
         })
@@ -322,17 +315,10 @@ export default {
               userId: this.userInfo.user_id,
               newPassword: this.password.form.newPW
             }
-            checkPassword(params).then((res) => {
-              if (res.resCode == 200) {
-                this.step++
-                this.steps.secondStatus = 'success'
-                this.steps.finalStatus = 'success'
-              } else {
-                this.$message({
-                  type: 'success',
-                  message: res.resMsg
-                })
-              }
+            checkPassword(params).then(() => {
+              this.step++
+              this.steps.secondStatus = 'success'
+              this.steps.finalStatus = 'success'
             })
           }
         })
@@ -349,7 +335,7 @@ export default {
             phonenum: this.identity.form.phone
           }
           getCode(params).then((res) => {
-            code = res.response.code
+            code = res
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
             this.identity.msgKey = true

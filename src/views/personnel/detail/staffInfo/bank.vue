@@ -140,6 +140,7 @@ export default {
       this.$refs['bank'].validate((isPass) => {
         if (isPass) {
           let params = {
+            userId: this.$route.params.userId,
             bankName: this.bankInfo.bankName,
             bankNo: this.bankInfo.bankNo
           }
