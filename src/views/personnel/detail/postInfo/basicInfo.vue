@@ -123,7 +123,7 @@
               :label="`附属部门${index + 1}:`"
             >
               <tree-select
-                v-model="staffInfo.subOrg[index]"
+                v-model="staffInfo.subOrg[index].subJobId"
                 :option="subOrgOptions"
                 :is-search="false"
                 :is-single="true"
@@ -201,6 +201,7 @@
             >
               <span class="info-item-value">{{ getWorkAdress() }}</span>
             </el-form-item>
+
             <el-form-item
               v-show="!readonlyBasicInfo"
               label="工作地址:"
@@ -356,8 +357,8 @@ export default {
       },
       leaderOptions: [
         {
-          value: '啊啊啊',
-          label: '啊啊'
+          value: 'A',
+          label: 'a'
         }
       ],
       regionData: {
@@ -414,6 +415,16 @@ export default {
     this.loadSelectData()
   },
   methods: {
+    addJobOrg() {
+      this.staffInfo.subOrg.push({
+        subOrgId: '',
+        subOrgName: ''
+      })
+      this.staffInfo.subJob.push({
+        subJobId: '',
+        subJobName: ''
+      })
+    },
     dispatchSelect() {
       this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
         this.recruitOptions = res
