@@ -109,10 +109,14 @@ export default {
     },
     //打开菜单
     openMenu(item = {}) {
+      if (item.children.length !== 0) {
+        this.$router.$avueRouter.formatRoutes([item], true)
+      }
+
+      this.$store.dispatch('SetMenu', item.children)
       this.$router.push({
         path: item.children[0].path
       })
-      this.$store.dispatch('SetMenu', item.children)
     },
     // 定时检测token
     refreshToken() {
