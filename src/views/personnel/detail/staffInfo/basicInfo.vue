@@ -120,25 +120,19 @@
             :push="2"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="证件类型:"
-            >
-              <span class="info-item-value">{{ staffInfo.idType }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
               label="证件类型:"
               prop="idType"
             >
               <el-select
                 v-model="staffInfo.idType"
+                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
                 placeholder="请选择"
               >
                 <el-option
                   v-for="item in credentOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
                 />
               </el-select>
             </el-form-item>
@@ -305,25 +299,19 @@
             :push="2"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="政治面貌:"
-            >
-              <span class="info-item-value">{{ staffInfo.politicalStatus }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
               label="政治面貌:"
               prop="politicalStatus"
             >
               <el-select
                 v-model="staffInfo.politicalStatus"
+                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
                 placeholder="请选择"
               >
                 <el-option
                   v-for="item in politicalOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
                 />
               </el-select>
             </el-form-item>
@@ -360,22 +348,18 @@
             :push="2"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="户籍类型:"
-            >
-              <span class="info-item-value">{{ staffInfo.householdType }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
               label="户籍类型:"
               prop="householdType"
             >
-              <el-select v-model="staffInfo.householdType">
+              <el-select
+                v-model="staffInfo.householdType"
+                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
+              >
                 <el-option
                   v-for="item in householdOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
                 />
               </el-select>
             </el-form-item>
@@ -461,96 +445,9 @@ export default {
       staffInfo: {},
       region: [],
       readonlyBasicInfo: true,
-      householdOptions: [
-        {
-          value: '城镇户口',
-          label: '城镇户口'
-        },
-        {
-          value: '农村户口',
-          label: '农村户口'
-        },
-        {
-          value: '居民户口',
-          label: '居民户口'
-        }
-      ],
-      politicalOptions: [
-        {
-          value: '群众',
-          label: '群众'
-        },
-        {
-          value: '中共党员',
-          label: '中共党员'
-        },
-        {
-          value: '共青团员',
-          label: '共青团员'
-        },
-        {
-          value: '普通居民/群众',
-          label: '普通居民/群众'
-        },
-        {
-          value: '中共预备党员',
-          label: '中共预备党员'
-        },
-        {
-          value: '民革党员',
-          label: '民革党员'
-        },
-        {
-          value: '民盟盟员',
-          label: '民盟盟员'
-        },
-        {
-          value: '民建会员',
-          label: '民建会员'
-        },
-        {
-          value: '农工党党员',
-          label: '农工党党员'
-        },
-        {
-          value: '致公党党员',
-          label: '致公党党员'
-        },
-        {
-          value: '九三学社社员',
-          label: '九三学社社员'
-        },
-        {
-          value: '台盟盟员',
-          label: '台盟盟员'
-        },
-        {
-          value: '无党派民主人士',
-          label: '无党派民主人士'
-        }
-      ],
-      credentOptions: [
-        {
-          value: '身份证',
-          label: '身份证'
-        },
-        {
-          value: '港澳居民来往内地通行证',
-          label: '港澳居民来往内地通行证'
-        },
-        {
-          value: '台湾居民来往大陆通行证',
-          label: '台湾居民来往大陆通行证'
-        },
-        {
-          value: '外国护照',
-          label: '外国护照'
-        },
-        {
-          value: '其他',
-          label: '其他'
-        }
-      ],
+      householdOptions: [],
+      politicalOptions: [],
+      credentOptions: [],
       rules: {
         phonenum: [
           {
@@ -600,7 +497,7 @@ export default {
         option: provinceAndCityData,
         props: {
           value: 'value',
-          label: 'label'
+          label: 'l'
         }
       }
     }
@@ -635,7 +532,21 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.dispatchSelect()
+  },
   methods: {
+    dispatchSelect() {
+      this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
+        this.politicalOptions = res
+      })
+      this.$store.dispatch('CommonDict', 'HouseholdType').then((res) => {
+        this.householdOptions = res
+      })
+      this.$store.dispatch('CommonDict', 'IDType').then((res) => {
+        this.credentOptions = res
+      })
+    },
     regionChange(value) {
       let thsAreaCode = this.$refs['cascaderAddr'].getCheckedNodes()[0].pathLabels
       this.staffInfo.nativeProvinceName = thsAreaCode[0]
@@ -692,5 +603,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.selectOption.no-border-style {
+  /deep/.el-input__inner {
+    border: none !important;
+  }
+  /deep/.el-input__suffix {
+    display: none;
+  }
+}
 @import url('../staffInfo.scss');
 </style>

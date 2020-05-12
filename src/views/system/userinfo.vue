@@ -122,13 +122,13 @@
                     >
                       <el-radio
                         v-model="perosonnalInfo.sex"
-                        label="1"
+                        :label="1"
                       >
                         男
                       </el-radio>
                       <el-radio
                         v-model="perosonnalInfo.sex"
-                        label="2"
+                        :label="2"
                       >
                         女
                       </el-radio>
