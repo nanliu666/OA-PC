@@ -137,14 +137,7 @@ export default {
             prop: 'icon',
             type: 'icon-select',
             slot: true,
-            iconList: iconList,
-            rules: [
-              {
-                required: true,
-                message: '请输入菜单图标',
-                trigger: 'click'
-              }
-            ]
+            iconList: iconList
           },
           {
             label: '菜单编号',
@@ -439,6 +432,9 @@ export default {
       const parentId = tree.menuId
       getMenuInfo(parentId)
         .then((res) => {
+          res.forEach((it) => {
+            it.hasChildren = true
+          })
           resolve(res)
         })
         .catch(() => {
