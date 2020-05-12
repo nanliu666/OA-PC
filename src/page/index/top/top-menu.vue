@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       itemHome: {
-        name: '工作台',
+        menuName: '工作台',
         source: 'el-icon-menu'
       },
       activeIndex: '0'
