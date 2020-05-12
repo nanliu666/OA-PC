@@ -64,9 +64,9 @@
               >
                 <el-date-picker
                   v-model="item.monthRange"
-                  type="monthrange"
-                  format="yyyy-MM"
-                  value-format="yyyy-MM"
+                  type="daterange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
@@ -156,7 +156,7 @@ import {
   editStaffTrainInfo,
   addStaffTrainInfo
 } from '../../../../api/personalInfo'
-import { deepClone, randomLenNum, judgeRepeatedTime } from '@/util/util'
+import { deepClone, judgeRepeatedTime } from '@/util/util'
 let curItem = {}
 export default {
   data() {
@@ -216,18 +216,10 @@ export default {
     addInfo() {
       this.type = 'add'
       let item = {
-        id: randomLenNum(),
-        beginWorkDate: '',
-        endWorkDate: '',
-        companyName: '',
-        jobName: '',
-        salary: '',
-        witnessName: '',
-        witnessPhone: '',
-        isSecret: '',
-        beginSecretDate: '',
-        endSecretDate: '',
-        content: ''
+        beginDate: '',
+        endDate: '',
+        name: '',
+        companyName: ''
       }
       this.trainInfo.push(item)
       this.editClick = true
@@ -235,13 +227,16 @@ export default {
       this.curItemId = item.id
     },
     delInfo(item, index) {
-      this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
+      this.$confirm('您确定要删除该培训经历?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          delStaffTrainInfo(item.id).then(() => {
+          let params = {
+            ids: item.id
+          }
+          delStaffTrainInfo(params).then(() => {
             this.trainInfo.splice(index, 1)
             this.$message({
               type: 'success',
@@ -260,15 +255,20 @@ export default {
       this.$refs['train'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
+            item.userId = this.$route.params.userId
             addStaffTrainInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null
+              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
               })
             })
           } else {
+            if (item.hasOwnProperty('userId')) {
+              delete item.userId
+            }
             editStaffTrainInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null

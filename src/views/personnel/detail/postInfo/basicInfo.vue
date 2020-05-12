@@ -105,7 +105,7 @@
         </el-row>
 
         <el-row
-          v-for="(item, index) in formatSubJob"
+          v-for="(item, index) in staffInfo.subOrg"
           :key="index"
         >
           <el-col
@@ -116,14 +116,14 @@
               v-show="readonlyBasicInfo"
               :label="`附属部门${index + 1}:`"
             >
-              <span class="info-item-value">{{ item.orjItem.subOrgName }}</span>
+              <span class="info-item-value">{{ item.subOrgName }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
               :label="`附属部门${index + 1}:`"
             >
               <tree-select
-                v-model="item.data"
+                v-model="staffInfo.subOrg[index]"
                 :option="subOrgOptions"
                 :is-search="false"
                 :is-single="true"
@@ -139,7 +139,7 @@
               v-show="readonlyBasicInfo"
               :label="`附属职位${index + 1}:`"
             >
-              <span class="info-item-value">{{ item.jobItem.subJobName }}</span>
+              <span class="info-item-value">{{ staffInfo.subJob[index].subJobName }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -147,7 +147,7 @@
               prop="subOrg"
             >
               <el-select
-                v-model="item.jobItem.subJobName"
+                v-model="staffInfo.subJob[index].subJobName"
                 placeholder="请选择"
               >
                 <el-option
@@ -472,7 +472,6 @@ export default {
   },
 
   created() {
-    this.getFormatSubJob()
     this.initRegion()
     this.loadSelectData()
   },

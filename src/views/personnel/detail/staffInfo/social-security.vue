@@ -228,6 +228,7 @@ export default {
       this.$refs['socialCount'].validate((isPass) => {
         if (isPass) {
           let params = {
+            userId: this.$route.params.userId,
             isFirstSs: this.allInfo.isFirstSs,
             ssNo: this.allInfo.ssNo,
             isFirstEpf: this.allInfo.isFirstEpf,

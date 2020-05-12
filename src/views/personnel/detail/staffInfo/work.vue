@@ -66,9 +66,9 @@
               >
                 <el-date-picker
                   v-model="item.monthRange"
-                  type="monthrange"
-                  format="yyyy-MM"
-                  value-format="yyyy-MM"
+                  type="daterange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
@@ -226,9 +226,9 @@
               >
                 <el-date-picker
                   v-model="item.secretMonthRange"
-                  type="monthrange"
-                  format="yyyy-MM"
-                  value-format="yyyy-MM"
+                  type="daterange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
@@ -299,7 +299,7 @@ import {
   editStaffWorkInfo,
   addStaffworkInfo
 } from '../../../../api/personalInfo'
-import { deepClone, randomLenNum, judgeRepeatedTime } from '@/util/util'
+import { deepClone, judgeRepeatedTime } from '@/util/util'
 import { isMobile } from '@/util/validate'
 let curItem = {}
 export default {
@@ -380,7 +380,6 @@ export default {
     addInfo() {
       this.type = 'add'
       let item = {
-        id: randomLenNum(),
         beginWorkDate: '',
         endWorkDate: '',
         companyName: '',
@@ -399,13 +398,16 @@ export default {
       this.curItemId = item.id
     },
     delInfo(item, index) {
-      this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
+      this.$confirm('您确定要删除该工作经历吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          delStaffWorkInfo(item.id).then(() => {
+          let params = {
+            ids: item.id
+          }
+          delStaffWorkInfo(params).then(() => {
             this.workInfo.splice(index, 1)
             this.$message({
               type: 'success',
@@ -425,15 +427,20 @@ export default {
         if (isPass) {
           delete item.monthRange
           if (this.type == 'add') {
+            item.userId = this.$route.params.userId
             addStaffworkInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null
+              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
               })
             })
           } else {
+            if (item.hasOwnProperty('userId')) {
+              delete item.userId
+            }
             editStaffWorkInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null

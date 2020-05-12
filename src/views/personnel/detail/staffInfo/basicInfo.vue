@@ -61,13 +61,13 @@
             >
               <el-radio
                 v-model="staffInfo.sex"
-                label="1"
+                :label="1"
               >
                 男
               </el-radio>
               <el-radio
                 v-model="staffInfo.sex"
-                label="2"
+                :label="2"
               >
                 女
               </el-radio>
@@ -102,14 +102,14 @@
               v-show="readonlyBasicInfo"
               label="公司邮箱:"
             >
-              <span class="info-item-value">{{ staffInfo.userEmail }}</span>
+              <span class="info-item-value">{{ staffInfo.email }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
               label="公司邮箱:"
               prop="email"
             >
-              <el-input v-model="staffInfo.userEmail" />
+              <el-input v-model="staffInfo.email" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -182,8 +182,9 @@
               <el-date-picker
                 v-model="staffInfo.birthDate"
                 type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
                 placeholder="选择日期"
-                @change="birthDateChange"
               />
             </el-form-item>
           </el-col>
@@ -219,6 +220,8 @@
               <el-date-picker
                 v-model="staffInfo.firstWorkDate"
                 type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
                 placeholder="选择日期"
               />
             </el-form-item>
@@ -244,11 +247,11 @@
               <el-select v-model="staffInfo.marriage">
                 <el-option
                   label="未婚"
-                  value="0"
+                  :value="0"
                 />
                 <el-option
                   label="已婚"
-                  value="1"
+                  :value="1"
                 />
               </el-select>
             </el-form-item>
@@ -633,11 +636,6 @@ export default {
     }
   },
   methods: {
-    birthDateChange(value) {
-      let fomatValue = new Date(value)
-      let month = fomatValue.getMonth() + 1
-      this.staffInfo.birthDate = fomatValue.getFullYear() + '-' + month
-    },
     regionChange(value) {
       let thsAreaCode = this.$refs['cascaderAddr'].getCheckedNodes()[0].pathLabels
       this.staffInfo.nativeProvinceName = thsAreaCode[0]
@@ -653,6 +651,7 @@ export default {
       this.$refs['basicInfo'].validate((isPass) => {
         if (isPass) {
           let params = {
+            userId: this.$route.params.userId,
             name: this.staffInfo.name,
             sex: this.staffInfo.sex,
             nativeCityCode: this.staffInfo.nativeCityCode,
