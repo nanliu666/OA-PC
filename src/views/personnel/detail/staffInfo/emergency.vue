@@ -147,7 +147,7 @@ import {
   addStaffEmerInfo,
   getStaffEmerInfo
 } from '../../../../api/personalInfo'
-import { deepClone, randomLenNum } from '@/util/util'
+import { deepClone } from '@/util/util'
 import { isMobile, validateName } from '@/util/validate'
 let curItem = {}
 export default {
@@ -196,7 +196,6 @@ export default {
     addInfo() {
       this.type = 'add'
       let item = {
-        id: randomLenNum(),
         name: '',
         phone: '',
         relationship: ''
@@ -212,7 +211,10 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delStaffEmerInfo(item.id).then(() => {
+          let params = {
+            ids: item.id
+          }
+          delStaffEmerInfo(params).then(() => {
             this.emergencyInfo.splice(index, 1)
             this.$message({
               type: 'success',
@@ -231,9 +233,16 @@ export default {
       this.$refs['emergency'][index].validate((isPass) => {
         if (isPass) {
           if (this.type == 'add') {
-            addStaffEmerInfo(item).then(() => {
+            let params = {
+              userId: this.$route.params.userId,
+              name: item.name,
+              phone: item.phone,
+              relationship: item.relationship
+            }
+            addStaffEmerInfo(params).then(() => {
               this.editClick = false
               this.curItemIndex = null
+              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
