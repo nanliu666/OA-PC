@@ -7,24 +7,13 @@
       :modal-append-to-body="false"
       :before-close="handleClose"
     >
-      <div>
+      <div v-loading="loading">
         <div>
           <avue-form
             ref="form"
             v-model="form"
             :option="option"
-          >
-            <template
-              slot="orgId"
-              slot-scope="scope"
-            >
-              <treeSelect
-                v-model="form.orgId"
-                :is-single="isSingle"
-                :option="scope.column"
-              />
-            </template>
-          </avue-form>
+          />
         </div>
         <div
           v-if="!isEdit"
@@ -52,7 +41,7 @@
         >
           <el-button
             size="medium"
-            @click="onContinue"
+            @click="handleClose"
           >
             取消
           </el-button>
@@ -70,87 +59,26 @@
 </template>
 
 <script>
-import treeSelect from '../../../components/treeSelect/treeSelect'
-import { postV1Job, putV1Job } from '@/api/organize/position'
-import { getOrganization } from '@/api/organize/grade'
+import {
+  postV1Job,
+  putV1Job,
+  getCategoryList,
+  getJobTree,
+  getJobList
+} from '@/api/organize/position'
 
-const options = [
-  {
-    label: 'CEO',
-    value: '001'
-  },
-  {
-    label: ' 百利宏化工CEO',
-    value: '002'
-  },
-  {
-    label: '百利宏医药工CEO',
-    value: '003'
-  },
-  {
-    label: '事业部经理1',
-    value: '004'
-  },
-  {
-    label: '事业部经理2',
-    value: '005'
-  },
-  {
-    label: '事业部经理3',
-    value: '006'
-  },
-  {
-    label: '事业部经理4',
-    value: '007'
-  },
-  {
-    label: '飞洒',
-    value: '008'
-  },
-  {
-    label: '发撒',
-    value: '009'
-  },
-  {
-    label: '富士达',
-    value: '0010'
-  },
-  {
-    label: '士大夫',
-    value: '0011'
-  }
-]
-const category = [
-  {
-    value: '1',
-    label: '研发'
-  },
-  {
-    value: '2',
-    label: '测试'
-  },
-  {
-    value: '3',
-    label: '前端'
-  },
-  {
-    value: '4',
-    label: 'java'
-  },
-  {
-    value: '5',
-    label: '项目经理'
-  }
-]
 let orgList = []
 export default {
   name: 'PositionDialog',
-  components: {
-    treeSelect
-  },
   props: {
     isEdit: {
       type: Boolean
+    },
+    orgTree: {
+      type: Array,
+      default: function() {
+        return []
+      }
     },
     orgData: {
       type: Object,
@@ -165,11 +93,17 @@ export default {
       }
     },
     title: {
-      type: String
+      type: String,
+      default: function() {
+        return ''
+      }
     },
 
     dialogVisible: {
-      type: Boolean
+      type: Boolean,
+      default: function() {
+        return false
+      }
     },
     visible: {
       type: Boolean,
@@ -191,13 +125,17 @@ export default {
       }
     }
     return {
+      orgId: '',
+      firstLoad: true,
+      initOrgId: '',
+      loading: true,
       isSingle: true,
       form: {
         jobName: '', //职位名称
         categoryId: '', //职位类别id
         remark: '', // 描述
         parentId: '', //所属职位
-        orgId: [] //所属组织
+        orgId: '' //所属组织
       },
       option: {
         menuBtn: false,
@@ -229,21 +167,19 @@ export default {
               {
                 required: true,
                 message: '请选择职位类别',
-                trigger: 'change'
+                trigger: 'blur'
               }
             ],
-            dicData: category
+            dicData: ''
           },
           {
             label: '所属组织',
             prop: 'orgId',
+            type: 'tree',
             props: {
-              label: 'label',
-              value: 'id'
+              label: 'orgName',
+              value: 'orgId'
             },
-            formslot: true,
-            labelslot: true,
-            errorslot: true,
             span: 24,
             limitCheck: false,
             placeholder: '请选择所属组织',
@@ -265,6 +201,7 @@ export default {
             prop: 'parentId',
             type: 'select',
             display: true,
+            disabled: false,
             filterable: true,
             placeholder: '请选择关联岗位',
             span: 24,
@@ -284,7 +221,7 @@ export default {
             ],
             rules: [
               {
-                required: true,
+                required: false,
                 message: '请选择关联岗位',
                 trigger: 'change'
               }
@@ -300,16 +237,30 @@ export default {
           }
         ]
       },
-      dialog: true,
-      options
+      dialog: true
     }
   },
+  computed: {},
   watch: {
     'form.orgId': {
-      handler: function(val) {
+      handler: async function(val, old) {
+        if (val == old) return
         if (val.length > 0) {
           this.option.column[3].placeholder = '请选择'
-          this.option.column[3].dicData = this.options
+          if (!this.firstLoad) {
+            this.loading = true
+            let jod = await this.getJod(val[0])
+            if (this.form.orgId !== this.initOrgId) {
+              this.form.parentId = ''
+              this.initOrgId = ''
+            }
+            // this.form.parentId = ''
+            jod.map((it) => {
+              (it.label = it.jobName), (it.value = it.jobId)
+            })
+            this.option.column[3].dicData = jod
+            this.loading = false
+          }
         } else {
           this.option.column[3].placeholder = '请先选择所属组织'
           this.option.column[3].dicData = []
@@ -321,10 +272,9 @@ export default {
     dialog: {
       handler: function() {
         this.$emit('update:dialogVisible', this.dialog)
-        if (!this.dialog) {
-          this.$refs.form.resetFields()
-          // this.form.orgId = []
-        }
+        // if (!this.dialog) {
+        //   this.$refs.form.resetFields()
+        // }
       }
     },
     dialogVisible: {
@@ -338,15 +288,33 @@ export default {
     },
     data: {
       handler: function(val) {
-        if (val.jobName) {
-          this.form.jobName = val.jobName
-          this.form.categoryId = val.categoryId
-          this.form.remark = val.remark
-          let orgId = val.orgId
-          if (orgId) {
-            this.form.orgId = [orgId]
+        // console.log(title)
+        this.initOrgId = val.orgId
+        if (val.jobId && this.isEdit) {
+          let { jobName, categoryId, remark, orgId, parentId } = { ...val }
+          let form = {
+            jobName,
+            categoryId,
+            remark,
+            parentId,
+            orgId
           }
-          this.form.parentId = val.parentId
+          setTimeout(() => {
+            this.form = Object.assign(this.form, form)
+          }, 500)
+        } else if (val.jobId && !this.isEdit) {
+          let { orgId, parentId } = { ...val }
+          let form = {
+            parentId,
+            orgId
+          }
+          setTimeout(() => {
+            this.option.column[3].disabled = true
+            this.option.column[2].disabled = true
+            this.form = Object.assign(this.form, form)
+          }, 500)
+        } else {
+          // alert(23)
         }
       },
       deep: true,
@@ -354,18 +322,38 @@ export default {
     },
     orgData: {
       handler: function(val) {
-        if (this.isEdit) {
-          // jobName: '', //职位名称
-          //   categoryId: '',//职位类别id
-          //   remark: '', // 描述
-          //   parentId: '', //所属职位
-          //   orgId: [] //所属组织
-          this.form.jobName = val.name
-          this.form.categoryId = val.categoryId
-          this.form.remark = val.remark
-          let orgId = val.parentId
+        if (this.isEdit && val.name) {
+          // jobName: '', //职位名称//   categoryId: '',//职位类别id//   remark: '', // 描述//   parentId: '', //所属职位//   orgId: [] //所属组织
+          let jobName = val.name
+          let categoryId = val.categoryId
+          let remark = val.remark
+          let orgId = val.orgId
+          // this.orgId = orgId
+          let parentId = val.parentJobId
+          // if (orgId) {
+          //   this.form.orgId = orgId
+          // }
+          let form = {
+            jobName,
+            categoryId,
+            remark,
+            parentId,
+            orgId
+          }
+          setTimeout(() => {
+            this.form = Object.assign(this.form, form)
+          }, 500)
+        } else if (!this.isEdit && val.name) {
+          let orgId = val.orgId
           if (orgId) {
-            this.form.orgId = [orgId]
+            setTimeout(() => {
+              this.form.orgId = orgId
+              this.option.column[2].disabled = true
+            }, 500)
+          }
+          if (val.type === 'Job') {
+            this.form.parentId = val.parentJobId
+            this.option.column[3].disabled = true
           }
         }
       },
@@ -373,50 +361,125 @@ export default {
       deep: true
     }
   },
-  created() {
-    this.getorgData()
+  async created() {},
+  async mounted() {
+    this.loading = true
+    await this.getCategory()
+    await this.getTree()
+    let jod = await this.getJod(this.form.orgId)
+    jod.map((it) => {
+      (it.label = it.jobName), (it.value = it.jobId)
+    })
+    this.option.column[3].dicData = jod
+    this.loading = false
+    this.firstLoad = false
   },
+
   methods: {
-    getorgData() {
+    /**
+     * @author guanfenda
+     * @desc 获取上级职位数据
+     *
+     */
+
+    getJod(orgId = '0') {
       let params = {
-        parentOrgId: '',
-        orgName: '',
-        orgType: '',
-        userId: '',
-        minUserNum: '',
-        maxUserNum: ''
+        jobName: '',
+        orgId: orgId
       }
-      getOrganization(params).then((res) => {
-        // console.log(res)
-        orgList = res
-        function maps(data) {
-          data.map((it) => {
-            it.id = it.orgId
-            it.label = it.orgName
-            if (it.children.length > 0) {
-              maps(it.children)
-            }
+      return new Promise((resolve, reject) => {
+        getJobList(params)
+          .then((res) => {
+            return resolve(res)
           })
-        }
-        maps(orgList)
-        this.option.column[2].dicData = orgList
+          .catch(() => {
+            return reject()
+          })
       })
     },
-    onContinue() {
-      this.$emit('update:dialogVisible', false)
+    /***
+     *@ author guanfenda
+     * @desc 获取所属组织数据
+     *
+     */
+    getTree() {
+      let params = {
+        jobName: ''
+      }
+      return new Promise((resolve, reject) => {
+        getJobTree(params)
+          .then((res) => {
+            this.option.column[2].dicData = res
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
     },
+    /***
+     * @author guanfenda
+     * @desc 获取职位类别
+     *
+     * @returns {Promise<unknown>}
+     */
+    getCategory() {
+      let params = {
+        categoryName: ''
+      }
+
+      return new Promise((resolve, reject) => {
+        getCategoryList(params)
+          .then((res) => {
+            res.map((it) => {
+              it.label = it.categoryName
+              it.value = it.categoryId
+            })
+            this.option.column[1].dicData = res
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
+    reset() {
+      if (this.orgData.orgId || this.data.orgId) {
+        let form = JSON.parse(JSON.stringify(this.form))
+        let { orgId, parentId } = { ...form }
+        this.$refs.form.resetFields()
+        let params = { orgId, parentId }
+        this.form = Object.assign(this.form, params)
+      } else {
+        this.$refs.form.resetFields()
+      }
+    },
+    onContinue() {
+      this.onClickSave({ again: true }, this.reset)
+    },
+    /**
+     * @author guanfenda
+     * @desc 修改职位
+     * @returns {Generator<*, void, *>}
+     */
+
     handleModity() {
       this.$refs.form.validate((valid) => {
         if (valid) {
           let { jobName, categoryId, remark, parentId, orgId } = { ...this.form }
+
           let params = {
+            jobId: this.data.jobId || this.orgData.id,
             jobName,
             categoryId,
             remark,
             parentId,
-            orgId: orgId[0]
+            orgId
           }
+          params.parentId = params.parentId ? params.parentId : '0'
+          this.loading = true
           putV1Job(params).then(() => {
+            this.loading = true
             this.$message.success('修改成功')
             this.$emit('onsubmit', params)
             this.$emit('update:dialogVisible', false)
@@ -424,7 +487,12 @@ export default {
         }
       })
     },
-    onClickSave() {
+    /***
+     *  @author guanfenda
+     *  @desc 添加职位
+     *
+     */
+    onClickSave({ again = false }, reset) {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
           // this.$message.success(JSON.stringify(this.obj0))
@@ -434,16 +502,29 @@ export default {
             categoryId,
             remark,
             parentId,
-            orgId: orgId[0]
+            orgId
           }
+          params.parentId = params.parentId ? params.parentId : '0'
+          this.loading = true
           postV1Job(params).then(() => {
+            this.loading = false
             this.$message.success('保存成功')
             this.$emit('onsubmit', params)
-            this.$emit('update:dialogVisible', false)
+
+            if (!again) {
+              this.$emit('update:dialogVisible', false)
+            } else {
+              reset()
+            }
           })
         }
       })
     },
+    /***
+     *  @author guanfenda
+     *  @desc 退出编辑
+     *
+     */
     handleClose() {
       this.$emit('update:dialogVisible', false)
     }

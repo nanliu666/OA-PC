@@ -7,7 +7,7 @@
       :close-on-click-modal="false"
       :modal-append-to-body="false"
     >
-      <div>
+      <div v-loading="loading">
         <div style="text-align: right;margin-bottom: 10px;">
           <el-button
             type="primary"
@@ -26,6 +26,7 @@
       </div>
     </el-dialog>
     <userEdit
+      v-if="addVisible"
       :visible.sync="addVisible"
       :role-id="roleId"
       @onAddUser="onAddUser"
@@ -58,6 +59,7 @@ export default {
   },
   data() {
     return {
+      dialogVisible: true,
       addVisible: false,
       page: {
         pageSize: 10,
@@ -73,7 +75,7 @@ export default {
         column: [
           {
             label: '工号',
-            prop: 'workNum'
+            prop: 'userId'
           },
           {
             label: '姓名',
@@ -114,12 +116,19 @@ export default {
     }
   },
   computed: {
+    // dialogVisible: {
+    //   get: function() {
+    //     return this.visible
+    //   },
+    //   set: function(val) {
+    //     this.$emit('update:visible', val)
+    //   }
+    // }
+  },
+  watch: {
     dialogVisible: {
-      get: function() {
-        return this.visible
-      },
-      set: function(val) {
-        this.$emit('update:visible', val)
+      handler: function() {
+        this.$emit('update:visible', this.dialogVisible)
       }
     }
   },
@@ -131,7 +140,9 @@ export default {
         pageSize: page.pageSize,
         roleId: this.roleId
       }
+      this.loading = true
       getUser(params).then((res) => {
+        this.loading = false
         this.data = res.data
         this.page.total = res.totalNum
       })

@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+      v-loading="loading"
       title="添加用户"
       :visible.sync="dialogVisible"
       type="selection"
@@ -124,6 +125,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchInput: '',
       page: {
         currentPage: 1,
@@ -201,14 +203,14 @@ export default {
       if (selection.length > 0) {
         // 全选
         selection.forEach((item) => {
-          if (this.tags.findIndex((it) => item.workNum === it.workNum) === -1) {
+          if (this.tags.findIndex((it) => item.userId === it.userId) === -1) {
             this.tags.push(item)
           }
         })
       } else if (selection.length == 0) {
         // 反选
         this.tableData.forEach((item) => {
-          const num = this.tags.findIndex((it) => item.workNum === it.workNum)
+          const num = this.tags.findIndex((it) => item.userId === it.userId)
           if (num > -1) {
             this.tags.splice(num, 1)
           }
@@ -220,7 +222,9 @@ export default {
     toggleSelection(rows, flag = true) {
       if (rows) {
         this.$nextTick(() => {
-          const arr = this.tableData.filter((item) => rows.findIndex((it) => item.workNum === it.workNum) > -1)
+          const arr = this.tableData.filter(
+            (item) => rows.findIndex((it) => item.userId === it.userId) > -1
+          )
           arr.forEach((row) => {
             this.$refs.table.toggleRowSelection(row, flag)
           })
@@ -231,6 +235,7 @@ export default {
     async handleCurrentChange(val) {
       this.page.currentPage = val
       await this.getAddList()
+
       this.toggleSelection(this.tags) // 翻页时，根据右侧已选列表，勾选左侧表格列表
     },
     // 删除已选tag
@@ -249,11 +254,17 @@ export default {
     },
     // 点击保存
     onClickSave() {
+      let users = []
+      this.tags.map((it) => {
+        users.push(it.userId)
+      })
       const params = {
         roleId: this.roleId,
-        users: this.tags
+        users: users
       }
+      this.loading = true
       addUser(params).then(() => {
+        this.loading = false
         this.$message.success('用户添加成功')
         this.$emit('onAddUser')
         this.onClickCancel()

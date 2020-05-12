@@ -38,8 +38,9 @@
         <div
           id="download"
           class="button"
+          @click="sort"
         >
-          保存图片
+          保存视图
         </div>
       </div>
     </div>
@@ -158,11 +159,10 @@
 
 <script>
 import go from 'gojs'
-import html2canvas from 'html2canvas'
 const $ = go.GraphObject.make
 import positionDialog from './compoents/positionDialog'
 import orgDialog from './compoents/orgDialog'
-import { getOrganizationView, deleteOrganization } from '@/api/organize/grade'
+import { getOrganizationView, deleteOrganization, postSort } from '@/api/organize/grade'
 import { deleteV1Job } from '@/api/organize/position'
 
 const org = [
@@ -232,12 +232,12 @@ export default {
   },
   data() {
     return {
-      positionTitle: ['新建子职位', '编辑子职位'],
+      positionTitle: ['新建子职位', '编辑职位'],
       isEdit: '',
       title: '',
       positionDialog: false,
       orgDialog: false,
-      orgTitle: ['新建子组织', '编辑子组织'],
+      orgTitle: ['新建子组织', '编辑组织'],
       status: '',
       menuList: ['newOrg', 'newPosition', 'edit', 'delete'],
       editStatus: true,
@@ -285,11 +285,23 @@ export default {
           { key: 4, orgName: 'Luke Warm', userName: 'Company', parent: 1, type: 'Company' },
           { key: 2, orgName: 'Peggy Flaming', userName: 'Department', parent: 1, type: 'Company' },
           { key: 3, orgName: 'Meg Meehan Hoffa', userName: 'Group', parent: 2, type: 'Department' },
-          { key: 5, orgName: 'Saul Wellingood', userName: 'Manufacturing', parent: 4, type: 'Department' },
+          {
+            key: 5,
+            orgName: 'Saul Wellingood',
+            userName: 'Manufacturing',
+            parent: 4,
+            type: 'Department'
+          },
           { key: 6, orgName: 'Al Ligori', userName: 'Marketing', parent: 2, type: 'Group' },
           { key: 7, orgName: 'Dot Stubadd', userName: 'Job', parent: 3, type: 'Job' },
           { key: 8, orgName: 'Les Ismore', userName: 'Project Mgr', parent: 5, type: 'Group' },
-          { key: 9, orgName: 'April Lynn Parris', userName: 'Events Mgr', parent: 6, type: 'Group' },
+          {
+            key: 9,
+            orgName: 'April Lynn Parris',
+            userName: 'Events Mgr',
+            parent: 6,
+            type: 'Group'
+          },
           { key: 10, orgName: 'Xavier Breath', userName: 'Engineering', parent: 4, type: 'Group' },
           { key: 11, orgName: 'Anita Hammer', userName: 'Process', parent: 5, type: 'Group' },
           { key: 14, orgName: '333', userName: 'Hardware', parent: 10, type: 'Group' },
@@ -316,11 +328,11 @@ export default {
     this.init()
   },
   methods: {
+    submit() {},
     getOrgData() {
       let params = {
         orgId: 0
       }
-      // console.log(params)
       return new Promise((resolve, reject) => {
         getOrganizationView(params)
           .then((res) => {
@@ -328,10 +340,11 @@ export default {
               this.TreeModel = JSON.parse(this.TreeModel)
             }
             res.map((it) => {
-              it.key = parseInt(it.sort)
+              it.key = it.id
               if (it.parentId) it.parent = it.parentId
               it.orgName = it.name + `(${it.jobNum})`
             })
+
             this.TreeModel.nodeDataArray = res
             resolve()
           })
@@ -342,22 +355,6 @@ export default {
     },
     orgOnsubmit() {},
     positionOnsubmit() {},
-    nodeDoubleClick(e, obj) {
-      let clicked = obj.part
-      if (clicked !== null) {
-        let thisemp = clicked.data
-        this.myDiagram.startTransaction('add employee')
-        let newemp = {
-          name: '(new person)',
-          userName: '',
-          comments: '',
-          parent: thisemp.key
-        }
-        this.myDiagram.model.addNodeData(newemp)
-        this.myDiagram.commitTransaction('add employee')
-        this.save()
-      }
-    },
     init() {
       let that = this
       that.myDiagram = $(
@@ -377,8 +374,8 @@ export default {
             alternateLayerSpacing: 35,
             alternateAlignment: go.TreeLayout.AlignmentBus,
             alternateNodeSpacing: 20
-          })
-          // 'undoManager.isEnabled': false // enable undo & redo
+          }),
+          'undoManager.isEnabled': false // enable undo & redo
         }
       )
 
@@ -432,7 +429,7 @@ export default {
         Enterprise: '#4A9EFF',
         Company: '#4A9EFF',
         Department: '#4A9EFF',
-        Group: '#EDF8FF',
+        Group: '#4A9EFF',
         Job: '#EDF8FF'
       }
       let typeBgColor2 = {
@@ -446,7 +443,7 @@ export default {
         Enterprise: '#FFFFFF',
         Company: '#FFFFFF',
         Department: '#FFF',
-        Group: '#1F7DF9',
+        Group: '#FFF',
         Job: '#1F7DF9'
       }
       let textColor2 = {
@@ -498,7 +495,7 @@ export default {
         window.removeEventListener('click', hideCX, true)
       }
       function showContextMenu(obj, diagram) {
-        var hasMenuItem = false
+        var hasMenuItem = true
         that.selData = obj.data
         function maybeShowItem(elt, pred, id) {
           switch (id) {
@@ -509,10 +506,10 @@ export default {
               newPosition()
               break
             case 'edit':
-              edit()
+              edit(pred)
               break
             case 'delete':
-              deletes(1)
+              deletes(pred)
               break
           }
           function newOrg() {
@@ -531,10 +528,9 @@ export default {
             elt.style.display = 'block'
           }
 
-          function deletes() {
-            if (pred.parent) {
+          function deletes(data) {
+            if (data.parentId !== '0') {
               elt.style.display = 'block'
-              hasMenuItem = true
             } else {
               elt.style.display = 'none'
             }
@@ -628,8 +624,8 @@ export default {
               shape._prevFill = shape.fill // remember the original brush
               shape1._prevFill = shape1.fill // remember the original brush
               shape2._prevFill = shape2.fill // remember the original brush
-              shape1.fill = '#e4393c'
-              shape2.fill = '#e4393c'
+              shape1.fill = '#757c85'
+              shape2.fill = '#757c85'
             }
           },
           mouseDragLeave: function(e, node) {
@@ -688,18 +684,18 @@ export default {
         new go.Binding('layerName', 'isSelected', function(sel) {
           return sel ? 'Foreground' : ''
         }).ofObject(),
-        // $(go.Shape, 'Rectangle', {
-        //   name: 'SHAPE',
-        //   fill: '#fff',
-        //   // fill: 'rgba(241, 250, 255, 1)',
-        //   stroke: 'white',
-        //   strokeWidth: 0,
-        //   // set the port properties:
-        //   portId: '',
-        //   fromLinkable: true,
-        //   toLinkable: true,
-        //   cursor: 'pointer'
-        // }),
+        $(go.Shape, 'Rectangle', {
+          name: 'SHAPE',
+          fill: '#fff',
+          // fill: 'rgba(241, 250, 255, 1)',
+          stroke: 'white',
+          strokeWidth: 0,
+          // set the port properties:
+          portId: '',
+          fromLinkable: true,
+          toLinkable: true,
+          cursor: 'pointer'
+        }),
         $(
           go.Panel,
           'RoundedRectangle',
@@ -813,7 +809,8 @@ export default {
         it.userName = it.userName.replace(reg, '\n')
         it.userNames = it.userName.split('\n')
         if (it.userNames.length > 3) {
-          it.userName = it.userNames[0] + '\n' + it.userNames[1] + '\n' + it.userNames[2] + '\n' + '...'
+          it.userName =
+            it.userNames[0] + '\n' + it.userNames[1] + '\n' + it.userNames[2] + '\n' + '...'
         }
       })
       this.myDiagram.model = go.Model.fromJson(this.TreeModel)
@@ -889,14 +886,14 @@ export default {
           type: 'warning'
         }).then(() => {
           if (this.selData.type !== this.type[4]) {
-            let params = [this.selData.id]
+            let params = { ids: this.selData.id }
             deleteOrganization(params).then(() => {
               this.$message.success('删除成功')
               this.myDiagram.commandHandler.deleteSelection()
             })
           } else {
             let params = {
-              jobId: this.selData.id
+              ids: this.selData.id
             }
             deleteV1Job(params).then(() => {
               this.myDiagram.commandHandler.deleteSelection()
@@ -940,52 +937,49 @@ export default {
     isEdit_() {
       this.editStatus = false
     },
-    downloadImage() {
-      let arr = []
-      this.levelList.map((it) => {
-        arr.push(it.level)
-      })
-      let levelAggregate = {}
-      arr.filter((it) => {
-        if (levelAggregate[it]) {
-          levelAggregate[it].push(it)
-        } else {
-          levelAggregate[it] = []
-          levelAggregate[it].push(it)
+    sort() {
+      let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
+      let params = []
+      nodeDataArray.map((it) => {
+        let data = {
+          parentId: it.parent,
+          id: it.id,
+          name: it.name,
+          type: it.type
+          // sort: it.parent || 0
         }
-      })
-      let number = []
-      for (var item of Object.entries(levelAggregate)) {
-        number.push(item[1].length)
-      }
-      let max = Math.max(...number)
-      let width = 500
-      if (number[1] > 3) {
-        width += (number[1] - 2) * 200
-      }
-      width += max * 100 + (max / 5) * 100
-      // console.log(width)
-      let myDiaramDiv = document.getElementById('myDiagramDiv')
-      myDiaramDiv.style.width = width + 'px'
-      this.load()
-      setTimeout(() => {
-        new html2canvas(document.getElementById('myDiagramDiv')).then((canvas) => {
-          const href = canvas.toDataURL('image/jpeg')
-          var a = document.createElement('a')
-          a.download = '组织机构图.png'
 
-          a.href = href
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-          myDiaramDiv.style.width = '100%'
-          // return
-          // <img style="width: 2000px" src="" alt="">
-          //
-          // // return
-          this.load()
+        params.filter((item) => {
+          if (item.parentId === it.parentId) {
+            data.sort = item.sort + 1
+          }
         })
-      }, 1000)
+        data.sort = data.sort ? data.sort : 1
+        // debugger
+        params.push(data)
+      })
+      postSort(params).then(() => {
+        // console.log(res)
+        this.$message.success('排序成功')
+      })
+    },
+    downloadImage() {
+      let images = this.myDiagram.makeImage({
+        scale: 2,
+        padding: 50,
+        type: 'image/jpeg',
+        background: 'rgba(220, 239, 254, 1)'
+        // rgba(220, 239, 254, 0.3)
+      })
+      let href = images.src
+      var a = document.createElement('a')
+      a.download = '组织机构图.png'
+
+      a.href = href
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
       // this.myDiagram.commandHandler.zoomToFit()
     }
   }
@@ -996,6 +990,8 @@ export default {
 .grade {
   position: relative;
   height: 100%;
+  margin: 20px !important;
+  padding: 0 !important;
   background: #fff;
 }
 .header {
@@ -1097,7 +1093,8 @@ export default {
   margin: 0;
   padding: 8px 0;
   z-index: 999;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
   list-style: none;
   background-color: #ffffff;
   border-radius: 4px;

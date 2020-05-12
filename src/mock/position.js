@@ -201,7 +201,7 @@ const station = {
 
 export default ({ mock }) => {
   if (!mock) return
-  Mock.mock(new RegExp('/api/org/v1/job/category/list' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api' + '.*'), 'get', () => {
     return data
   })
   Mock.mock(new RegExp('/api/org/v1/job/category/define' + '.*'), 'get', () => {

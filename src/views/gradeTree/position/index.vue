@@ -54,11 +54,11 @@
               style="width: 100%"
               :data="data"
               :page="page"
+              :loading="loading"
               :config="tableConfig"
               :columns="columns"
-              @pageSizeChange="sizeChange"
-              @currentPageChange="currentChange"
-              @selection-change="selectionChange"
+              @page-size-change="sizeChange"
+              @current-page-change="currentChange"
             >
               <template slot="topMenu">
                 <div class="flex-flow flex justify-content align-items ">
@@ -94,9 +94,14 @@
                   </div>
                 </div>
               </template>
-              <template slot="multiSelectMenu">
+              <template
+                slot="multiSelectMenu"
+                slot-scope="{ selection }"
+              >
                 <span class="all">
-                  <span><i class="el-icon-delete" /> 批量删除</span>
+                  <span
+                    @click="handlerDeleteAll(selection)"
+                  ><i class="el-icon-delete" /> 批量删除</span>
                   <span><i class="el-icon-folder" /> 批量导出</span>
                 </span>
               </template>
@@ -109,7 +114,7 @@
                   size="medium"
                   @click.stop="handleConfig(scope.row, scope.index)"
                 >
-                  新建子组织
+                  新建子职位
                 </el-button>
                 <el-button
                   type="text"
@@ -144,13 +149,14 @@
       :data="row"
       :title="title"
       :is-edit="isEdit"
+      :org-tree="orgTree"
       @onsubmit="positionOnsubmit"
     />
   </div>
 </template>
 
 <script>
-import { getCategoryList, gotV1Job, deleteV1Job } from '@/api/organize/position'
+import { getCategoryList, gotV1Job, deleteV1Job, getJobTree } from '@/api/organize/position'
 import { getToken } from '@/util/auth'
 import positionDialog from '../compoents/positionDialog'
 
@@ -161,8 +167,10 @@ export default {
   },
   data() {
     return {
+      selectionList: [],
       row: {},
       number: '',
+      orgTree: [],
       isBatch: false,
       isEdit: false,
       title: '新增职位',
@@ -171,12 +179,17 @@ export default {
       form: {
         name: ''
       },
+      loading: false,
       active: 0,
       asideList: [],
       data: [],
       tableConfig: {
         showHandler: true,
-        enableMultiSelect: true
+        enableMultiSelect: true,
+        enablePagination: true,
+        handlerColumn: {
+          width: 200
+        }
       },
       columns: [
         {
@@ -217,11 +230,53 @@ export default {
       }
     }
   },
+
   mounted() {
     this.getCategory()
     this.getJobData()
+    this.getTree()
   },
   methods: {
+    handlerDeleteAll(list) {
+      debugger
+      this.$confirm('您确定要删除你所选中的职位吗?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let name = ''
+        this.selectionList.map((item) => {
+          if (item.workNum > 0) {
+            name += ' ' + item.jobName
+          }
+        })
+        if (name) {
+          name = name.length > 18 ? name.substr(0, 18) + '...' : name
+          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后在删除`, {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'info',
+              message: '取消操作!'
+            })
+          })
+          return
+        }
+        let params = {
+          ids: list.map((i) => i.id).join(',')
+        }
+        deleteV1Job(params).then(() => {
+          this.getJobData()
+          this.getCategory()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+      })
+    },
     closeBatch() {
       this.isBatch = false
     },
@@ -231,41 +286,37 @@ export default {
       this.positionDialog = true
       this.row = {}
     },
-    positionOnsubmit(val) {
-      let params = {
-        jobId: '123',
-        jobName: '研发',
-        userNum: '12',
-        workNum: '150',
-        remark: '描述',
-        updateTime: '2020-02-12',
-        createTime: '2020-02-11',
-        orgId: '1',
-        orgName: '怡宝',
-        parentId: '1',
-        parentName: '医保',
-        categoryId: '3',
-        ...val
-      }
-      this.data.push(params)
+    positionOnsubmit() {
+      this.getJobData()
     },
     close() {
       this.show = false
     },
-    getJobData() {
+    getTree() {
+      let params = {
+        jobName: ''
+      }
+      getJobTree(params).then((res) => {
+        this.orgTree = res
+      })
+    },
+    getJobData(pageNo = 1, pageSize = 10) {
+      this.loading = true
+      this.form.pageNo = pageNo
+      this.form.pageSize = pageSize
+      this.params.jobName = this.form.name
       gotV1Job(this.params).then((res) => {
+        this.loading = false
         this.data = res.data
         this.page.total = res.totalNum
       })
     },
     getCategory() {
       let params = {
-        pageNo: 1,
-        pageSize: 1000,
-        name: this.form.name
+        categoryName: ''
       }
       getCategoryList(params).then((res) => {
-        this.asideList = res.data
+        this.asideList = res
 
         let all = {
           name: '',
@@ -284,15 +335,13 @@ export default {
     },
     search() {
       this.params.jobName = this.form.name
-      this.getJobData()
+      this.getJobData(1, this.form.pageSize)
     },
     sizeChange(val) {
-      this.params.pageSize = val
-      this.getJobData()
+      this.getJobData(1, val)
     },
     currentChange(val) {
-      this.params.pageNo = val
-      this.getJobData()
+      this.getJobData(val, this.form.pageSize)
     },
     handleExport() {
       this.$confirm('是否导出数据?', '提示', {
@@ -302,15 +351,16 @@ export default {
       }).then(() => {
         const searchForm = this.form
         window.open(
-          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${searchForm.account}&realName=${
-            searchForm.realName
-          }`
+          `/api/blade-user/export-user?Blade-Auth=${getToken()}&account=${
+            searchForm.account
+          }&realName=${searchForm.realName}`
         )
       })
     },
     onLoad() {},
-    handleConfig() {
+    handleConfig(row) {
       // this.configVisible = !this.configVisible
+      this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = false
       this.title = '新建子组织'
       this.positionDialog = true
@@ -347,10 +397,11 @@ export default {
             return
           }
           let params = {
-            jobId: row.jobId
+            ids: row.jobId
           }
           deleteV1Job(params).then(() => {
-            this.data.shift()
+            this.getJobData()
+            this.getCategory()
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -358,10 +409,6 @@ export default {
           })
         })
         .then(() => {})
-    },
-    selectionChange(list) {
-      this.isBatch = true
-      this.number = list.length
     },
     toggleSelection(val) {
       this.$refs.crud.toggleSelection(val)
@@ -494,6 +541,7 @@ export default {
 
 .all {
   /*border: 1px solid #efefef;*/
+  cursor: pointer;
   padding: 10px;
   span:first-child {
     border-right: 1px solid #999;
@@ -510,5 +558,8 @@ export default {
 
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+.handler {
+  width: 200px;
 }
 </style>

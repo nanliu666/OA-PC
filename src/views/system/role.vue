@@ -13,18 +13,24 @@
           @reload="reload"
         />
         <el-main>
-          <div class="main-wrap">
+          <div
+            v-loading="loading"
+            class="main-wrap"
+          >
             <commonTable
               :data="filterList"
               :config="tableConfig"
               :columns="columns"
               @selection-change="selectionChange"
             >
-              <template slot="multiSelectMenu">
+              <template
+                slot="multiSelectMenu"
+                slot-scope="{ selection }"
+              >
                 <span
                   class="del-all"
-                  @click="delAll"
-                ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+                  @click="handlerDeleteAll(selection)"
+                ><i class="el-icon-delete" />批量删除</span>
               </template>
               <template slot="topMenu">
                 <div class="search-bar">
@@ -51,6 +57,7 @@
                     <el-button
                       type="primary"
                       size="medium"
+                      :disabled="!options.currentId"
                       @click="onHandleEdit('add')"
                     >
                       新建角色
@@ -102,15 +109,23 @@
           </div>
         </el-main>
         <roleEdit
+          v-if="visible"
           :row="roleRow"
           :visible.sync="visible"
           :jobs="options.jobs"
+          :category-id="options.currentId"
           :positions="options.positions"
           :job-props="options.jobProps"
           :position-props="options.positionProps"
+          @reload="reload"
+          @fiter="fiter"
         />
-        <roleLimits :visible.sync="configVisible" />
+        <roleLimits
+          :role-id="editingRoleId"
+          :visible.sync="configVisible"
+        />
         <userList
+          v-if="userVisible"
           :visible.sync="userVisible"
           :role-id="roleId"
         />
@@ -136,6 +151,9 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      JodOrg: [],
+      editingRoleId: '',
       visible: false,
       configVisible: false,
       userVisible: false,
@@ -163,7 +181,10 @@ export default {
       data: [],
       tableConfig: {
         showHandler: true,
-        enableMultiSelect: true
+        enableMultiSelect: true,
+        handlerColumn: {
+          width: 200
+        }
       },
       columns: [
         {
@@ -227,6 +248,52 @@ export default {
     this.onLoad()
   },
   methods: {
+    handlerDeleteAll(list) {
+      debugger
+      this.$confirm('您确定要删除你所选中的角色吗?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let name = ''
+        list.map((item) => {
+          if (item.workNum > 0) {
+            name += ' ' + item.roleName
+          }
+        })
+        if (name) {
+          name = name.length > 18 ? name.substr(0, 18) + '...' : name
+          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后在删除`, {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'info',
+              message: '取消操作!'
+            })
+          })
+          return
+        }
+        let params = {
+          ids: list.map((i) => i.roleId).join(',')
+        }
+        delRole(params).then(() => {
+          this.loadRoleData()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+      })
+    },
+    sizeChange() {},
+    currentChange() {},
+    fiter(checked) {
+      let data = []
+      this.jobFilter(this.JodOrg, data, checked)
+      this.options.jobs = data
+    },
     // 加载页面全部数据（左侧分组树，右侧角色列表）
     async onLoad() {
       await this.getTreeCate()
@@ -239,8 +306,10 @@ export default {
         roleName: '',
         categoryId: this.options.currentId
       }
+      this.loading = true
       getRoleList(params).then((res) => {
         this.data = res
+        this.loading = false
       })
     },
 
@@ -260,8 +329,7 @@ export default {
     getTreeCate() {
       return new Promise((resolve) => {
         const params = {
-          categoryName: '123',
-          test: '256'
+          categoryName: ''
         }
         getCate(params).then((res) => {
           this.options.treeList = (res || []).map((item) => {
@@ -311,14 +379,40 @@ export default {
 
     //
     getJobsFunc() {
-      getJobs().then((res) => {
+      let params = {
+        jobName: ''
+      }
+      getJobs(params).then((res) => {
         let data = []
+        this.JodOrg = res
         this.jobFilter(res, data)
         this.options.jobs = data
       })
     },
-
-    jobFilter(arr, data) {
+    // resolveTree(tree) {
+    //   if (tree.length > 0) {
+    //     tree.forEach((node) => {
+    //       let users
+    //       if (node.users) {
+    //         users = node.users.map((user) => ({
+    //           ...user,
+    //           id: user.userId,
+    //           type: 'user'
+    //         }))
+    //         if (node.children) {
+    //           node.children.push(...users)
+    //           this.resolveTree(node.children)
+    //         } else {
+    //           node.children = users
+    //         }
+    //         if (node.orgId) {
+    //           node.id = node.orgId
+    //         }
+    //       }
+    //     })
+    //   }
+    // },
+    jobFilter(arr, data, checked = false) {
       arr.filter((item) => {
         const obj = {
           children: []
@@ -329,14 +423,19 @@ export default {
               label: item.jobName,
               id: item.jobId
             }
-            obj.children.push(job)
+            if (!(item.roles.length > 0 && checked)) {
+              obj.children.push(job)
+            }
           })
         }
         if (item.orgType) {
           obj.label = item.orgName
           obj.id = item.orgId
+
           if (item.children && item.children.length > 0) {
             this.jobFilter(item.children, obj.children)
+          } else {
+            obj.disabled = true
           }
         }
         data.push(obj)
@@ -344,13 +443,18 @@ export default {
     },
 
     getPositionsFunc() {
-      getPositions().then((res) => {
+      let params = {
+        positionName: ''
+      }
+      getPositions(params).then((res) => {
         this.options.positions = res
       })
     },
 
-    handleConfig() {
+    handleConfig(row) {
       this.configVisible = !this.configVisible
+
+      this.editingRoleId = row.roleId
     },
     handleCheck(row) {
       this.roleId = row.roleId
@@ -358,7 +462,7 @@ export default {
     },
     handleCommand(command, row) {
       if (command === 'edit') {
-        this.roleRow = row
+        this.roleRow = JSON.parse(JSON.stringify(row))
         this.onHandleEdit()
       } else {
         this.handleDel([row])
@@ -397,6 +501,7 @@ export default {
 
     // 删除角色
     delFunc(ids) {
+      ids = ids.join(',')
       const params = {
         ids
       }
@@ -417,12 +522,12 @@ export default {
     // 批量删除
     delAll() {
       this.handleDel(this.selectArr)
-    },
-    // 关闭批量操作栏
-    onCloseSelect() {
-      this.$refs.table.toggleSelection()
-      this.selectArr = []
     }
+    // // 关闭批量操作栏
+    // onCloseSelect() {
+    //   this.$refs.table.toggleSelection()
+    //   this.selectArr = []
+    // }
   }
 }
 </script>

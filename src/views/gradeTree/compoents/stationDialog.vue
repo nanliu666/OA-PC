@@ -7,7 +7,7 @@
       :modal-append-to-body="false"
       :before-close="handleClose"
     >
-      <div>
+      <div v-loading="loading">
         <avue-form
           ref="form"
           v-model="form"
@@ -70,7 +70,7 @@ export default {
     isEdit: {
       type: Boolean
     },
-    data: {
+    row: {
       type: Object
     },
     title: {
@@ -82,6 +82,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
         name: '',
         remark: ''
@@ -116,48 +117,46 @@ export default {
           }
         ]
       },
-      dialog: false
+      dialog: true
     }
   },
   watch: {
-    data: {
+    row: {
       handler: function(val) {
         this.form.name = val.name
         this.form.remark = val.remark
       },
+      immediate: true,
       deep: true
     },
     dialog: {
       handler: function() {
-        this.$emit('update:dialogVisible', this.dialog)
-        if (!this.dialog) {
-          this.$refs.form.resetFields()
-        }
+        this.$emit('update:dialogVisible', false)
       }
-    },
-    dialogVisible: {
-      handler: function(val) {
-        this.dialog = val
-      },
-      deep: true //对象内部的属性监听，也叫深度监听
     }
   },
   methods: {
+    reset() {
+      this.$refs.form.resetFields()
+    },
     onContinue() {
-      this.dialog = false
+      // this.dialog = false
+      this.onClickSave({ again: true }, this.reset)
     },
     modity() {
       let data = {
-        ...this.data,
+        ...this.row,
         ...this.form
       }
+      this.loading = true
       putV1Position(data).then(() => {
         this.$message.success('修改成功')
         this.$emit('onSubmit', data)
+        this.loading = false
         this.dialog = false
       })
     },
-    onClickSave() {
+    onClickSave({ again = false }, reset) {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
           this.$emit('onsubmit')
@@ -166,11 +165,21 @@ export default {
             remark: '',
             ...this.form
           }
-          postV1Position(params).then(() => {
-            this.$message.success('新增成功')
-            this.$emit('onSubmit', params)
-            this.dialog = false
-          })
+          this.loading = true
+          postV1Position(params)
+            .then(() => {
+              this.$message.success('新增成功')
+              this.$emit('onSubmit', params)
+              this.loading = false
+              if (!again) {
+                this.dialog = false
+              } else {
+                reset()
+              }
+            })
+            .catch(() => {
+              this.dialog = false
+            })
         }
       })
     },

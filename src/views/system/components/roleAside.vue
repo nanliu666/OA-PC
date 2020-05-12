@@ -33,6 +33,7 @@
       </div>
     </div>
     <el-dialog
+      v-if="groupVisible"
       :title="groupForm.groupId ? '编辑分组' : '新建分组'"
       :visible.sync="groupVisible"
       :close-on-click-modal="false"
@@ -71,6 +72,7 @@
           取消
         </el-button>
         <el-button
+          v-loading="loading"
           type="primary"
           size="medium"
           @click="onClickSave(type.group)"
@@ -80,6 +82,7 @@
       </div>
     </el-dialog>
     <el-dialog
+      v-if="cateVisible"
       :title="cateForm.categoryId ? '编辑分类' : '新建分类'"
       :visible.sync="cateVisible"
       :close-on-click-modal="false"
@@ -106,6 +109,7 @@
           取消
         </el-button>
         <el-button
+          v-loading="loading"
           type="primary"
           size="medium"
           @click="onClickSave(type.cate)"
@@ -157,6 +161,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       type,
       groupVisible: false,
       cateVisible: false,
@@ -330,6 +335,7 @@ export default {
               this.$refs.groupForm.resetForm()
             }
           } else {
+            // console.log('handleCommand____',node,data)
             // 点击的是编辑
             this.groupForm.groupId = data[this.props.id]
             this.groupForm.groupName = data[this.props.label]
@@ -373,12 +379,16 @@ export default {
 
     // 删除分组提示
     delGroup(node, data) {
-      this.$confirm('您确定要删除该分组吗？<br/> 删除后，该分组下的角色分类和角色也会同步清除', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        dangerouslyUseHTMLString: true
-      })
+      this.$confirm(
+        '您确定要删除该分组吗？<br/> 删除后，该分组下的角色分类和角色也会同步清除',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      )
         .then(() => {
           this.delGroupFunc(node, data)
         })
@@ -402,9 +412,9 @@ export default {
     // 删除分组
     delGroupFunc(node, data) {
       const params = {
-        categoryId: data[this.props.id]
+        groupId: data[this.props.id]
       }
-      delCate(params).then(() => {
+      delGroup(params).then(() => {
         this.$message.success('删除分组成功')
         this.$emit('update:currentId', '')
         this.reload()
@@ -414,9 +424,9 @@ export default {
     // 删除分类
     delCateFunc(node, data) {
       const params = {
-        groupId: data[this.props.id]
+        categoryId: data[this.props.id]
       }
-      delGroup(params).then(() => {
+      delCate(params).then(() => {
         this.$message.success('删除分类成功')
         if (data[this.props.id] === this.currentId) {
           // 如果删除的分类是当前激活的分类，清空激活分类，重新获取
@@ -437,14 +447,23 @@ export default {
 
     // 新增分组
     createGroupFunc(str) {
-      const params = {
-        groupName: this.groupForm.groupName,
-        categories: this.getCategories(this.groupForm.groupData)
-      }
-      createGroup(params).then(() => {
-        this.$message.success('新建分类成功')
-        this.onClickVisible(str)
-        this.$emit('reload')
+      this.$refs.groupForm.validate((valid) => {
+        if (!valid) return
+        const params = {
+          groupName: this.groupForm.groupName,
+          categories: this.getCategories(this.groupForm.groupData)
+        }
+        this.loading = true
+        createGroup(params)
+          .then(() => {
+            this.loading = false
+            this.$message.success('新建分类成功')
+            this.onClickVisible(str)
+            this.$emit('reload')
+          })
+          .catch(() => {
+            this.loading = false
+          })
       })
     },
 
@@ -452,9 +471,17 @@ export default {
       if (type === 0) {
         return []
       } else if (type === 1) {
-        return this.preTreeList.map((item) => item.orgName)
+        let categoryList = []
+        this.preTreeList.map((item) => {
+          categoryList.push({ categoryName: item.orgName })
+        })
+        return categoryList
       } else {
-        return this.positions.map((item) => item.name)
+        let categoryList = []
+        this.positions.map((item) => {
+          categoryList.push({ categoryName: item.name })
+        })
+        return categoryList
       }
     },
 
@@ -464,38 +491,56 @@ export default {
         categoryName: this.cateForm.categoryName,
         groupId: this.cateForm.groupId
       }
-      createCate(params).then(() => {
-        this.$message.success('新建分组成功')
-        this.onClickVisible(str)
-        this.$emit('reload')
-      })
+      this.loading = true
+      createCate(params)
+        .then(() => {
+          this.loading = false
+          this.$message.success('新建分组成功')
+          this.onClickVisible(str)
+          this.$emit('reload')
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
 
     // 更新分组
     updateGroupFunc(str) {
       const params = {
-        categoryId: this.cateForm.categoryId,
-        categoryName: this.cateForm.categoryName,
-        groupId: this.cateForm.groupId
+        groupName: this.groupForm.groupName,
+        groupId: this.groupForm.groupId
       }
-      updateCate(params).then(() => {
-        this.$message.success('修改分组成功')
-        this.onClickVisible(str)
-        this.$emit('reload')
-      })
+      this.loading = true
+      updateGroup(params)
+        .then(() => {
+          this.$message.success('修改分组成功')
+          this.onClickVisible(str)
+          this.$emit('reload')
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
 
     // 更新分类
     updateCateFunc(str) {
       const params = {
-        groupId: this.groupForm.groupId,
-        groupName: this.groupForm.groupName
+        categoryId: this.cateForm.categoryId,
+        categoryName: this.cateForm.categoryName,
+        groupId: this.cateForm.groupId
       }
-      updateGroup(params).then(() => {
-        this.$message.success('修改分类成功')
-        this.onClickVisible(str)
-        this.$emit('reload')
-      })
+      this.loading = true
+      updateCate(params)
+        .then(() => {
+          this.loading = false
+          this.$message.success('修改分类成功')
+          this.onClickVisible(str)
+          this.$emit('reload')
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
 
     // 父组件role重新加载数据

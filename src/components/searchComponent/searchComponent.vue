@@ -391,7 +391,6 @@ export default {
     jointTagName(tag) {
       if (Array.isArray(tag.data)) {
         if (tag.type === 'cascader') {
-          console.log(this.$refs[tag.field])
           return tag.label + ': ' + this.$refs[tag.field][0].inputValue
         } else if (tag.type === 'treeSelect') {
           return (

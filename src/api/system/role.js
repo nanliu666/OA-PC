@@ -220,7 +220,7 @@ export const createRole = (params) => {
 export const getPrivilege = (params) => {
   return request({
     url: '/api/sys/v1/role/privilege',
-    method: 'get',
+    method: 'post',
     params: {
       ...params
     }
@@ -292,7 +292,7 @@ export const addUser = (params) => {
   return request({
     url: '/api/sys/v1/role/user',
     method: 'post',
-    params: {
+    data: {
       ...params
     }
   })

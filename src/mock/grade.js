@@ -12,7 +12,7 @@ const orgdata = {
   response: [
     {
       parentId: '',
-      sort: '1',
+      sort: 1,
       id: '1',
       name: '百利宏',
       type: 'Enterprise',
@@ -29,7 +29,7 @@ const orgdata = {
     },
     {
       parentId: '1',
-      sort: '2',
+      sort: 2,
       id: '2',
       name: '百利宏化工',
       type: 'Company',
@@ -46,7 +46,7 @@ const orgdata = {
     },
     {
       parentId: '1',
-      sort: '3',
+      sort: 3,
       id: '3',
       name: '百利宏医药',
       type: 'Company',
@@ -63,7 +63,7 @@ const orgdata = {
     },
     {
       parentId: '2',
-      sort: '4',
+      sort: 4,
       id: '4',
       name: '百利宏化工事业部',
       type: 'Department',
@@ -80,7 +80,7 @@ const orgdata = {
     },
     {
       parentId: '2',
-      sort: '5',
+      sort: 5,
       id: '5',
       name: '百利宏化工技术部',
       type: 'Department',
@@ -97,7 +97,7 @@ const orgdata = {
     },
     {
       parentId: '3',
-      sort: '6',
+      sort: 6,
       id: '6',
       name: '百利宏医药技术部',
       type: 'Department',
@@ -114,7 +114,7 @@ const orgdata = {
     },
     {
       parentId: '3',
-      sort: '7',
+      sort: 7,
       id: '7',
       name: '百利宏医药计算机部',
       type: 'Department',
@@ -131,7 +131,7 @@ const orgdata = {
     },
     {
       parentId: '4',
-      sort: '8',
+      sort: 8,
       id: '8',
       name: '技术小组',
       type: 'Group',
@@ -148,7 +148,7 @@ const orgdata = {
     },
     {
       parentId: '5',
-      sort: '9',
+      sort: 9,
       id: '9',
       name: '技术小组2',
       type: 'Group',
@@ -165,7 +165,7 @@ const orgdata = {
     },
     {
       parentId: '9',
-      sort: '10',
+      sort: 10,
       id: '10',
       name: '职位1',
       type: 'Job',
@@ -247,6 +247,7 @@ const addSuccess = {
   ...normalData,
   response: {}
 }
+// postSort
 
 export default ({ mock }) => {
   if (!mock) return
@@ -264,5 +265,8 @@ export default ({ mock }) => {
   })
   Mock.mock(new RegExp('/api/org/v1/organization' + '.*'), 'delete', () => {
     return addSuccess
+  })
+  Mock.mock(new RegExp('/api/org/v1/organization/view/sort' + '.*'), 'post', () => {
+    return normalData
   })
 }

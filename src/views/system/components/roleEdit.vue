@@ -8,7 +8,7 @@
     :before-close="onClose"
     @opened="onOpened"
   >
-    <div>
+    <div v-loading="loading">
       <avue-form
         ref="form"
         v-model="form"
@@ -22,6 +22,7 @@
           <el-select
             v-model="form.positions"
             :no-data-text="column.noDataText"
+            multiple
             :placeholder="column.placeholder"
           >
             <el-option
@@ -39,36 +40,36 @@
           <treeSelect
             v-model="form.jobs"
             :option="scope.column"
+            @fiter="fiter"
           />
         </template>
       </avue-form>
-    </div>
-
-    <div
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        v-if="form.roleId"
-        size="medium"
-        @click="onClose"
+      <div
+        slot="footer"
+        class="dialog-footer"
       >
-        取消
-      </el-button>
-      <el-button
-        v-else
-        size="medium"
-        @click="onContinue"
-      >
-        保存并继续添加
-      </el-button>
-      <el-button
-        type="primary"
-        size="medium"
-        @click="onClickSave(onClose)"
-      >
-        保存
-      </el-button>
+        <el-button
+          v-if="form.roleId"
+          size="medium"
+          @click="onClose"
+        >
+          取消
+        </el-button>
+        <el-button
+          v-else
+          size="medium"
+          @click="onContinue"
+        >
+          保存并继续添加
+        </el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="onClickSave(onClose)"
+        >
+          保存
+        </el-button>
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -112,6 +113,12 @@ export default {
       default: () => {
         return {}
       }
+    },
+    categoryId: {
+      type: String,
+      default: () => {
+        return ''
+      }
     }
   },
   data() {
@@ -123,6 +130,8 @@ export default {
       }
     }
     return {
+      loading: false,
+      roleVisible: true,
       form: {
         roleId: '',
         roleName: '',
@@ -184,6 +193,7 @@ export default {
             display: true,
             formslot: true,
             labelslot: true,
+            multiple: true,
             errorslot: true,
             placeholder: '请选择关联岗位',
             noDataText: '您还未维护企业的岗位信息，请前往“岗位管理”处添加',
@@ -212,7 +222,7 @@ export default {
             labelslot: true,
             errorslot: true,
             span: 24,
-            limitCheck: true,
+            limitCheck: treeSelect,
             display: false,
             noDataText: '您还未维护任何职位信息，请前往“职位管理”处添加',
             placeholder: '请选择关联职位',
@@ -242,16 +252,53 @@ export default {
     }
   },
   computed: {
-    roleVisible: {
-      get: function() {
-        return this.visible
-      },
-      set: function(val) {
-        this.$emit('update:visible', val)
-      }
-    }
+    // roleVisible: {
+    //   get: function() {
+    //     return this.visible
+    //   },
+    //   set: function(val) {
+    //     this.$emit('update:visible', val)
+    //   }
+    // }
   },
   watch: {
+    row: {
+      handler: function(newVal) {
+        let { roleId, roleName, type, remark, positions, jobs } = { ...newVal }
+
+        let newpositions = []
+        if (positions) {
+          positions.map((it) => {
+            newpositions.push(it.positionId)
+          })
+        }
+
+        positions = newpositions
+        let newjobs = []
+        if (jobs) {
+          jobs.map((it) => {
+            newjobs.push(it.jobId)
+          })
+        }
+
+        jobs = newjobs
+        this.form = {
+          roleId,
+          roleName,
+          type,
+          remark,
+          positions,
+          jobs
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    roleVisible: {
+      handler: function() {
+        this.$emit('update:visible', this.roleVisible)
+      }
+    },
     'form.type': {
       handler(val) {
         const positionColumn = this.findObject(this.option.column, 'positions')
@@ -296,6 +343,9 @@ export default {
     }
   },
   methods: {
+    fiter(data) {
+      this.$emit('fiter', data)
+    },
     findObject(column, key) {
       return column.find((item) => item.prop === key)
     },
@@ -333,28 +383,59 @@ export default {
     },
     //新建角色
     createFunc(callback) {
-      const params = {
-        ...this.form
-      }
-      createRole(params).then(() => {
-        this.$message.success('新建角色成功')
-        callback()
+      let positions = []
+      this.form.positions.filter((it) => {
+        positions.push({ positionId: it })
       })
+      let jobs = []
+      this.form.jobs.filter((it) => {
+        jobs.push({ jobId: it })
+      })
+      const params = {
+        ...this.form,
+        positions,
+        jobs,
+        categoryId: this.categoryId
+      }
+      this.loading = true
+      createRole(params)
+        .then(() => {
+          this.loading = false
+          this.$message.success('新建角色成功')
+          this.$emit('reload')
+          callback()
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 更新角色
     updateFunc() {
+      let positions = []
+      this.form.positions.filter((it) => {
+        positions.push({ positionId: it })
+      })
+      let jobs = []
+      this.form.jobs.filter((it) => {
+        jobs.push({ jobId: it })
+      })
       const params = {
-        ...this.form
+        ...this.form,
+        positions,
+        jobs,
+        categoryId: this.categoryId
       }
+      this.loading = true
       updateRole(params).then(() => {
+        this.loading = false
         this.$message.success('编辑角色成功')
+        this.$emit('reload')
         this.onClose()
       })
     },
     // 关闭弹窗
     onClose() {
-      this.clearForm()
-      this.$emit('update:visible', false)
+      this.roleVisible = false
     },
 
     // 清空表单

@@ -31,9 +31,7 @@
                 v-if="node.level === 1 && showFolder"
                 class="el-icon-folder"
                 style="margin-right: 5px;"
-              />{{
-                data[props.label]
-              }}
+              />{{ data[props.label] }}
           <span v-if="data.roleNum">{{ `(${data.roleNum})` }}</span>
         </span>
         <el-dropdown
@@ -110,7 +108,7 @@ export default {
           })
         }
       },
-      immediate: true
+      deep: true
     },
     searchInput(val) {
       this.$refs.tree.filter(val)
@@ -121,6 +119,7 @@ export default {
       return data[this.props.label].indexOf(value) !== -1
     },
     onClickNode(node, data) {
+      // console.log(node, data)
       if (node.level > 1) {
         this.$emit('reload', data)
       }

@@ -4,7 +4,7 @@
     :visible.sync="dialogVisible"
     width="800px"
     :close-on-click-modal="false"
-    :modal-append-to-body="false"
+    append-to-body
     @opened="getRolePrivilege"
   >
     <div
@@ -23,6 +23,7 @@
               label: 'orgName',
               check: 'isOwn'
             }"
+            :disabled="disabled"
           />
         </div>
       </el-scrollbar>
@@ -33,6 +34,7 @@
             title="菜单权限"
             :default-props="menuProps"
             :tree-list="menuPrivileges"
+            :disabled="disabled"
             @nodeClick="nodeClick"
           />
         </div>
@@ -48,6 +50,7 @@
               label: 'menuName',
               check: 'isOwn'
             }"
+            :disabled="disabled"
           />
         </div>
       </el-scrollbar>
@@ -65,6 +68,7 @@
               label: 'scopeName',
               check: 'isOwn'
             }"
+            :disabled="disabled"
           />
         </div>
       </el-scrollbar>
@@ -80,6 +84,7 @@
         取消
       </el-button>
       <el-button
+        v-if="!disabled"
         type="primary"
         size="medium"
         @click="onClickSave"
@@ -132,6 +137,10 @@ export default {
       // 	角色ID，多个以英文逗号分隔
       type: [String, Number],
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -207,15 +216,31 @@ export default {
         }) || []
       )
     },
-
+    ping(data, menus) {
+      data.map((it) => {
+        menus.push(it)
+        if (it.children.length > 0) {
+          this.ping(it.children, menus)
+        }
+      })
+    },
     // 点击保存
     onClickSave() {
       this.getButtonPrivilege(this.menuPrivileges)
       this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
       this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
+
+      let menu = []
+      let menuPrivileges = JSON.parse(JSON.stringify(this.menuPrivileges))
+      this.ping(menuPrivileges, menu)
+
+      menu.map((it) => {
+        delete it.children
+      })
       const params = {
+        roleId: this.roleId,
         orgPrivileges: this.orgPrivileges,
-        menuPrivileges: this.menuPrivileges
+        menuPrivileges: menu
       }
       updatePrivilege(params).then(() => {
         this.$message.success('保存成功')
