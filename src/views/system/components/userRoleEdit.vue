@@ -1,82 +1,100 @@
 <template>
-  <el-dialog
-    title="角色设置"
-    :visible="visible"
-    width="1000px"
-    append-to-body
-    :before-close="close"
-  >
-    <div class="title-wr">
-      <div class="title">
-        已选择
-      </div>
-      <el-tag size="small">
-        {{ user.name }} {{ ' ' }}({{ user.workNo }})
-      </el-tag>
-    </div>
-    <div class="content-wr">
-      <div class="left">
+  <div>
+    <el-dialog
+      title="角色设置"
+      :visible="visible"
+      width="1000px"
+      append-to-body
+      :before-close="close"
+    >
+      <div class="title-wr">
         <div class="title">
-          角色列表
+          已选择
         </div>
-        <el-input
-          v-model="filterText"
-          placeholder="成员名称"
-        />
-        <el-tree
-          ref="tree"
-          :data="allRoleTree"
-          show-checkbox
-          default-expand-all
-          node-key="id"
-          :props="props"
-          :filter-node-method="filterNode"
-          :check-on-click-node="true"
-          @check="handleCheckChange"
-        />
-      </div>
-      <div class="right">
-        <div>
-          <span class="title">已添加角色</span>
-          <span style="float:right;">
-            <el-button type="text">预览权限</el-button>
-            <el-button
-              type="text"
-              @click="handleUnselectAll()"
-            >清空</el-button>
-          </span>
-        </div>
-        <el-tag
-          v-for="item in selectList"
-          :key="item.id"
-          size="small"
-          closable
-          @close="handleUnselect(item)"
-        >
-          {{ item.roleName }}
+        <el-tag size="small">
+          {{ user.name }} {{ ' ' }}({{ user.workNo }})
         </el-tag>
       </div>
-    </div>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button @click="close">取 消</el-button>
-      <el-button
-        v-loading="loading"
-        type="primary"
-        @click="handleSubmit"
+      <div class="content-wr">
+        <div class="left">
+          <div class="title">
+            角色列表
+          </div>
+          <el-input
+            v-model="filterText"
+            placeholder="成员名称"
+          />
+          <el-tree
+            ref="tree"
+            :data="allRoleTree"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            :props="props"
+            :filter-node-method="filterNode"
+            :check-on-click-node="true"
+            @check="handleCheckChange"
+          />
+        </div>
+        <div class="right">
+          <div>
+            <span class="title">已添加角色</span>
+            <span style="float:right;">
+              <el-button
+                type="text"
+                @click="showPreview"
+              >预览权限</el-button>
+              <el-button
+                type="text"
+                @click="handleUnselectAll()"
+              >清空</el-button>
+            </span>
+          </div>
+          <el-tag
+            v-for="item in selectList"
+            :key="item.id"
+            size="small"
+            :closable="item.type === 'User'"
+            @close="handleUnselect(item)"
+          >
+            {{ item.roleName }}
+          </el-tag>
+        </div>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
       >
-        确 定
-      </el-button>
-    </span>
-  </el-dialog>
+        <el-button
+          size="medium"
+          @click="close"
+        >取 消</el-button>
+        <el-button
+          v-loading="loading"
+          type="primary"
+          size="medium"
+          @click="handleSubmit"
+        >
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
+    <role-permission
+      :visible.sync="previewVisible"
+      disabled
+      :role-id="roleIds"
+    />
+  </div>
 </template>
 <script>
 import { getRoleList, modifyUserRole, getUserRole } from '@/api/system/user'
+import rolePermission from './rolePermission'
 
 export default {
   name: 'UserRoleEdit',
+  components: {
+    rolePermission
+  },
   props: {
     visible: {
       type: Boolean,
@@ -95,7 +113,13 @@ export default {
       oldSelectList: [],
       roleEdit: false,
       allRoleTree: [],
-      user: {}
+      user: {},
+      previewVisible: false
+    }
+  },
+  computed: {
+    roleIds() {
+      return this.selectList.map((item) => item.roleId).join(',')
     }
   },
   watch: {
@@ -116,6 +140,9 @@ export default {
       this.getUserRole()
       this.$emit('update:visible', true)
     },
+    showPreview() {
+      this.previewVisible = true
+    },
     filterNode(value, data) {
       if (!value) return true
       return data.roleName && data.roleName.indexOf(value) !== -1
@@ -128,10 +155,11 @@ export default {
       this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
     },
     handleUnselectAll() {
-      this.selectList = []
-      this.$refs.tree.setCheckedKeys([])
+      this.selectList = this.selectList.filter((i) => i.type !== 'User')
+      this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
     },
     close() {
+      this.clear()
       this.$emit('update:visible', false)
     },
     clear() {

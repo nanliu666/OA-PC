@@ -4,7 +4,7 @@
     :visible.sync="dialogVisible"
     width="800px"
     :close-on-click-modal="false"
-    :modal-append-to-body="false"
+    append-to-body
     @opened="getRolePrivilege"
   >
     <div
@@ -23,6 +23,7 @@
               label: 'orgName',
               check: 'isOwn'
             }"
+            :disabled="disabled"
           />
         </div>
       </el-scrollbar>
@@ -33,6 +34,7 @@
             title="菜单权限"
             :default-props="menuProps"
             :tree-list="menuPrivileges"
+            :disabled="disabled"
             @nodeClick="nodeClick"
           />
         </div>
@@ -48,6 +50,7 @@
               label: 'menuName',
               check: 'isOwn'
             }"
+            :disabled="disabled"
           />
         </div>
       </el-scrollbar>
@@ -65,6 +68,7 @@
               label: 'scopeName',
               check: 'isOwn'
             }"
+            :disabled="disabled"
           />
         </div>
       </el-scrollbar>
@@ -80,6 +84,7 @@
         取消
       </el-button>
       <el-button
+        v-if="!disabled"
         type="primary"
         size="medium"
         @click="onClickSave"
@@ -124,25 +129,22 @@ export default {
     treeLimits
   },
   props: {
-    role: {
-      type: Object,
-      default: function() {
-        return {}
-      }
-    },
     visible: {
       type: Boolean,
       default: false
+    },
+    roleId: {
+      // 	角色ID，多个以英文逗号分隔
+      type: [String, Number],
+      default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
-    // roleId: {
-    //   // 	角色ID，多个以英文逗号分隔
-    //   type: [String, Number],
-    //   default: ''
-    // }
   },
   data() {
     return {
-      roleId: '',
       loading: false,
       orgPrivileges: [],
       menuPrivileges: [],
@@ -169,14 +171,6 @@ export default {
       set: function(val) {
         this.$emit('update:visible', val)
       }
-    }
-  },
-  watch: {
-    role: {
-      handler(newVal) {
-        this.roleId = newVal.roleId
-      },
-      immediate: true
     }
   },
   methods: {

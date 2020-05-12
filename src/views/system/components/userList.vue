@@ -136,6 +136,10 @@ export default {
           label: '姓名',
           prop: 'name'
         },
+        {
+          label: '工号',
+          prop: 'workNo'
+        },
         //状态，1-正常，2-禁用
         {
           label: '状态',

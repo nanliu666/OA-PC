@@ -115,7 +115,7 @@
           @fiter="fiter"
         />
         <roleLimits
-          :role="role"
+          :role-id="editingRoleId"
           :visible.sync="configVisible"
         />
         <userList
@@ -146,7 +146,7 @@ export default {
   data() {
     return {
       JodOrg: [],
-      role: {},
+      editingRoleId: '',
       visible: false,
       configVisible: false,
       userVisible: false,
@@ -401,7 +401,7 @@ export default {
     handleConfig(row) {
       this.configVisible = !this.configVisible
 
-      this.role = JSON.parse(JSON.stringify(row))
+      this.editingRoleId = row.roleId
     },
     handleCheck(row) {
       this.roleId = row.roleId
