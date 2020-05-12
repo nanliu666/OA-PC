@@ -13,18 +13,24 @@
           @reload="reload"
         />
         <el-main>
-          <div class="main-wrap">
+          <div
+            v-loading="loading"
+            class="main-wrap"
+          >
             <commonTable
               :data="filterList"
               :config="tableConfig"
               :columns="columns"
               @selection-change="selectionChange"
             >
-              <template slot="multiSelectMenu">
+              <template
+                slot="multiSelectMenu"
+                slot-scope="{ selection }"
+              >
                 <span
                   class="del-all"
-                  @click="delAll"
-                ><i class="el-icon-delete" /> &nbsp;批量删除</span>
+                  @click="handlerDeleteAll(selection)"
+                ><i class="el-icon-delete" />批量删除</span>
               </template>
               <template slot="topMenu">
                 <div class="search-bar">
@@ -145,6 +151,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       JodOrg: [],
       editingRoleId: '',
       visible: false,
@@ -174,7 +181,10 @@ export default {
       data: [],
       tableConfig: {
         showHandler: true,
-        enableMultiSelect: true
+        enableMultiSelect: true,
+        handlerColumn: {
+          width: 200
+        }
       },
       columns: [
         {
@@ -238,6 +248,47 @@ export default {
     this.onLoad()
   },
   methods: {
+    handlerDeleteAll(list) {
+      debugger
+      this.$confirm('您确定要删除你所选中的角色吗?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let name = ''
+        list.map((item) => {
+          if (item.workNum > 0) {
+            name += ' ' + item.roleName
+          }
+        })
+        if (name) {
+          name = name.length > 18 ? name.substr(0, 18) + '...' : name
+          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后在删除`, {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'info',
+              message: '取消操作!'
+            })
+          })
+          return
+        }
+        let params = {
+          ids: list.map((i) => i.roleId).join(',')
+        }
+        delRole(params).then(() => {
+          this.loadRoleData()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+      })
+    },
+    sizeChange() {},
+    currentChange() {},
     fiter(checked) {
       let data = []
       this.jobFilter(this.JodOrg, data, checked)
@@ -255,8 +306,10 @@ export default {
         roleName: '',
         categoryId: this.options.currentId
       }
+      this.loading = true
       getRoleList(params).then((res) => {
         this.data = res
+        this.loading = false
       })
     },
 

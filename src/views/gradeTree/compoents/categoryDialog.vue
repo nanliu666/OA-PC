@@ -7,7 +7,7 @@
       :modal-append-to-body="false"
       :before-close="handleClose"
     >
-      <div>
+      <div v-loading="loading">
         <avue-form
           ref="form"
           v-model="form"
@@ -44,7 +44,7 @@
         >
           <el-button
             size="medium"
-            @click="onContinue"
+            @click="handleClose"
           >
             取消
           </el-button>
@@ -82,6 +82,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
         name: '',
         remark: ''
@@ -116,7 +117,7 @@ export default {
           }
         ]
       },
-      dialog: false
+      dialog: true
     }
   },
   watch: {
@@ -125,41 +126,37 @@ export default {
         this.form.name = val.name
         this.form.remark = val.remark
       },
+      immediate: true,
       deep: true
     },
     dialog: {
       handler: function() {
-        this.$emit('update:dialogVisible', this.dialog)
-        if (!this.dialog) {
-          if (!this.dialog) {
-            this.$refs.form.resetFields()
-          }
-        }
+        this.$emit('update:dialogVisible', false)
       }
-    },
-    dialogVisible: {
-      handler: function(val) {
-        this.dialog = val
-      },
-      deep: true //对象内部的属性监听，也叫深度监听
     }
   },
   methods: {
+    reset() {
+      this.$refs.form.resetFields()
+    },
     onContinue() {
-      this.dialog = false
+      this.onClickSave({ again: true }, this.reset)
+      // this.dialog = false
     },
     modity() {
       let data = {
         ...this.data,
         ...this.form
       }
+      this.loading = true
       putCategoryDefine(data).then(() => {
         this.$message.success('修改成功')
+        this.loading = false
         this.$emit('onSubmit', data)
         this.dialog = false
       })
     },
-    onClickSave() {
+    onClickSave({ again = false }, reset) {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
           this.$emit('onsubmit')
@@ -168,11 +165,22 @@ export default {
             remark: '',
             ...this.form
           }
-          postCategoryDefine(params).then(() => {
-            this.$message.success('新增成功')
-            this.$emit('onSubmit', params)
-            this.dialog = false
-          })
+          this.loading = true
+          postCategoryDefine(params)
+            .then(() => {
+              this.loading = false
+              this.$message.success('新增成功')
+              this.$emit('onSubmit', params)
+              if (!again) {
+                this.dialog = false
+              } else {
+                reset()
+              }
+            })
+            .catch(() => {
+              this.loading = false
+              this.dialog = false
+            })
         }
       })
     },

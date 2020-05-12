@@ -123,7 +123,7 @@
 </template>
 <script>
 import { getStaffBasicInfo } from '../../api/personalInfo.js'
-// import postInfo from './detail/postInfo/index'
+import postInfo from './detail/postInfo/index'
 import personalInfo from './detail/staffInfo/index'
 import actionRecord from './components/actionRecord'
 import uploadData from './components/uploadData'
@@ -131,7 +131,7 @@ export default {
   name: 'UserDetail',
   components: {
     personalInfo,
-    // postInfo,
+    postInfo,
     actionRecord,
     uploadData
   },
