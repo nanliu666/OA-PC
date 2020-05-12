@@ -123,7 +123,7 @@
               :label="`附属部门${index + 1}:`"
             >
               <tree-select
-                v-model="staffInfo.subOrg[index]"
+                v-model="staffInfo.subOrg[index].subJobId"
                 :option="subOrgOptions"
                 :is-search="false"
                 :is-single="true"
@@ -201,6 +201,7 @@
             >
               <span class="info-item-value">{{ getWorkAdress() }}</span>
             </el-form-item>
+
             <el-form-item
               v-show="!readonlyBasicInfo"
               label="工作地址:"
@@ -253,25 +254,20 @@
             :push="4"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="招聘渠道:"
-            >
-              <span class="info-item-value">{{ staffInfo.recruitment }}</span>
-            </el-form-item>
-            <el-form-item
               v-show="!readonlyBasicInfo"
               label="招聘渠道:"
               prop="recruitment"
             >
               <el-select
                 v-model="staffInfo.recruitment"
+                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="recruit in recruitOptions"
-                  :key="recruit.value"
-                  :label="recruit.label"
-                  :value="recruit.value"
+                  v-for="item in recruitOptions"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
                 />
               </el-select>
             </el-form-item>
@@ -347,64 +343,7 @@ export default {
       staffInfo: {},
       region: [],
       readonlyBasicInfo: true,
-      recruitOptions: [
-        {
-          value: '前程无忧',
-          label: '前程无忧'
-        },
-        {
-          value: '智联招聘',
-          label: '智联招聘'
-        },
-        {
-          value: '拉勾网',
-          label: '拉勾网'
-        },
-        {
-          value: '猎聘网',
-          label: '猎聘网'
-        },
-        {
-          value: '中国人才热线',
-          label: '中国人才热线'
-        },
-        {
-          value: '58同城',
-          label: '58同城'
-        },
-        {
-          value: '赶集网',
-          label: '赶集网'
-        },
-        {
-          value: 'BOSS直聘',
-          label: 'BOSS直聘'
-        },
-        {
-          value: '大街网',
-          label: '大街网'
-        },
-        {
-          value: '中华英才网',
-          label: '中华英才网'
-        },
-        {
-          value: '内部举荐',
-          label: '内部举荐'
-        },
-        {
-          value: '员工推荐',
-          label: '员工推荐'
-        },
-        {
-          value: '微信招聘',
-          label: '微信招聘'
-        },
-        {
-          value: '其他',
-          label: '其他'
-        }
-      ],
+      recruitOptions: [],
       positionOptions: [],
       subJobOptions: [],
       subOrgOptions: {
@@ -418,8 +357,8 @@ export default {
       },
       leaderOptions: [
         {
-          value: '啊啊啊',
-          label: '啊啊'
+          value: 'A',
+          label: 'a'
         }
       ],
       regionData: {
@@ -476,6 +415,21 @@ export default {
     this.loadSelectData()
   },
   methods: {
+    addJobOrg() {
+      this.staffInfo.subOrg.push({
+        subOrgId: '',
+        subOrgName: ''
+      })
+      this.staffInfo.subJob.push({
+        subJobId: '',
+        subJobName: ''
+      })
+    },
+    dispatchSelect() {
+      this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
+        this.recruitOptions = res
+      })
+    },
     loadSelectData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
         this.subOrgOptions.dicData = res
@@ -580,6 +534,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.selectOption.no-border-style {
+  /deep/.el-input__inner {
+    border: none !important;
+  }
+  /deep/.el-input__suffix {
+    display: none;
+  }
+}
 .el-cascader {
   width: 100% !important;
 }
