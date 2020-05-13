@@ -632,6 +632,8 @@ export default {
             params.subOrg = params.subOrg.map((item) => {
               return item[0]
             })
+            params.subOrg = params.subOrg.sort()
+            params.subJob = params.subJob.sort()
             createUser(params).then(() => {
               this.$message.success('创建成功')
               resolve()

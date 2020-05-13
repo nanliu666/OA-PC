@@ -193,7 +193,6 @@
                     value-format="yyyy-MM-dd"
                     start-placeholder="开始时间"
                     end-placeholder="结束时间"
-                    style="width:198px"
                   />
                   <num-interval
                     v-if="item.type === 'numInterval'"
@@ -254,6 +253,7 @@ export default {
           // {
           //   // 搜索组件
           //   type: 'input',
+          //   data: '',
           //   // 搜索字段
           //   field: 'input',
           //   // 组件label
@@ -289,7 +289,6 @@ export default {
             if (Array.isArray(item.data) && item.data.length === 0) return
             if (item.type === 'numInterval') {
               if (!(item.data.min && item.data.max)) return
-
               tagsArr.push(item)
             } else {
               tagsArr.push(item)
@@ -338,28 +337,30 @@ export default {
     searchParams() {
       let params = {}
       this.tags.forEach((item) => {
-        if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
-          params[item.field] = item.data
-        } else if (item.type === 'numInterval') {
-          params[item.field.split(',')[0]] = item.data.min
-          params[item.field.split(',')[1]] = item.data.max
-        } else if (item.type === 'treeSelect' || item.type === 'select') {
-          if (
-            (item.type === 'select' && item.config && item.config.multiple) ||
-            item.type === 'treeSelect'
-          ) {
-            params[item.field] = item.data.map((it) => {
-              return { [item.arrField]: it }
-            })
-          } else {
+        if (item.data) {
+          if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
             params[item.field] = item.data
+          } else if (item.type === 'numInterval') {
+            params[item.field.split(',')[0]] = item.data.min
+            params[item.field.split(',')[1]] = item.data.max
+          } else if (item.type === 'treeSelect' || item.type === 'select') {
+            if (
+              (item.type === 'select' && item.config && item.config.multiple) ||
+              item.type === 'treeSelect'
+            ) {
+              params[item.field] = item.data.map((it) => {
+                return { [item.arrField]: it }
+              })
+            } else {
+              params[item.field] = item.data
+            }
+          } else if (item.type === 'cascader') {
+            params[item.field] = item.data[item.data.length - 1]
+          } else if (item.type === 'dataPicker') {
+            item.field.split(',').forEach((it, idx) => {
+              params[it] = item.data[idx]
+            })
           }
-        } else if (item.type === 'cascader') {
-          params[item.field] = item.data[item.data.length - 1]
-        } else if (item.type === 'dataPicker') {
-          item.field.split(',').forEach((it, idx) => {
-            params[it] = item.data[idx]
-          })
         }
       })
       return params
@@ -368,7 +369,10 @@ export default {
       this.popoverOptions.forEach((item) => {
         if (item.type === 'numInterval') {
           item.data = { min: '', max: '' }
-        } else if (item.type === 'treeSelect') {
+        } else if (
+          item.type === 'treeSelect' ||
+          (item.config && item.config.type.indexOf('range') > -1)
+        ) {
           item.data = []
         } else {
           item.data = ''
