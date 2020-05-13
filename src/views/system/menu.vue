@@ -179,22 +179,6 @@ export default {
             ]
           },
           {
-            label: '隐藏菜单',
-            prop: 'isShow',
-            type: 'radio',
-            dicData: [
-              {
-                label: '显示',
-                value: 1
-              },
-              {
-                label: '隐藏',
-                value: 0
-              }
-            ],
-            hide: true
-          },
-          {
             label: '菜单别名',
             prop: 'alias',
             search: true,

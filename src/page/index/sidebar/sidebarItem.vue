@@ -2,9 +2,9 @@
   <div class="menu-wrapper">
     <template v-for="item in menu">
       <el-menu-item
-        v-if="hasShowingChild(item.children) && vaildRoles(item)"
+        v-if="!hasShowingChild(item.children)"
         :key="item[labelKey]"
-        :index="item[pathKey]"
+        :index="item.menuId"
         :class="{ 'is-active': vaildAvtive(item) }"
         @click="open(item)"
       >
@@ -17,7 +17,7 @@
       <el-submenu
         v-else
         :key="item[labelKey]"
-        :index="item[pathKey]"
+        :index="item.menuId"
       >
         <template slot="title">
           <i :class="item[iconKey]" />
@@ -32,7 +32,7 @@
           <el-menu-item
             v-if="validatenull(child[childrenKey]) && child.isShow !== 0"
             :key="child[labelKey]"
-            :index="(child[pathKey], cindex)"
+            :index="item.menuId"
             :class="{ 'is-active': vaildAvtive(child) }"
             @click="open(child)"
           >
@@ -111,7 +111,7 @@ export default {
   mounted() {},
   methods: {
     hasShowingChild(children = []) {
-      return children.filter((item) => item.isShow !== 0).length >= 0
+      return children.filter((item) => item.isShow === 1).length > 0
     },
     generateTitle(item) {
       return this.$router.$avueRouter.generateTitle(item[this.labelKey], (item.meta || {}).i18n)
