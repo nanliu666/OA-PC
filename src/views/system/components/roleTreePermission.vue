@@ -69,6 +69,16 @@ export default {
     genDisabled() {
       return this.disabled
     },
+    getCheck() {
+      // 勾选的key
+      var checkedKeys = this.$refs.tree.getCheckedKeys()
+      // 暂选状态的母tab的key
+      var halfKeys = this.$refs.tree.getHalfCheckedKeys()
+      // 合并两个数组
+      var save = checkedKeys.concat(halfKeys)
+      // this.$emit('save',save)
+      return save
+    },
     handleCheck(data, node) {
       const treeKeys = node.checkedKeys
       this.setOwn(this.treeList, treeKeys)
@@ -87,7 +97,7 @@ export default {
     },
     findValue(arr, data) {
       arr.forEach((item) => {
-        if (item.isOwn) {
+        if (item.isOwn && !(item.children.length > 0)) {
           data.push(item[this.defaultProps.id])
         }
         if (item.children && item.children.length > 0) {

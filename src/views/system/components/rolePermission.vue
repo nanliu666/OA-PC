@@ -30,6 +30,7 @@
       <el-scrollbar class="scroll-item scroll-tree">
         <div class="limit-item">
           <treeLimits
+            ref="privilege"
             v-model="tree"
             title="菜单权限"
             :default-props="menuProps"
@@ -226,6 +227,8 @@ export default {
     },
     // 点击保存
     onClickSave() {
+      let save = this.$refs.privilege.getCheck()
+      console.log(save)
       this.getButtonPrivilege(this.menuPrivileges)
       this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
       this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
@@ -236,6 +239,15 @@ export default {
 
       menu.map((it) => {
         delete it.children
+      })
+      console.log(menu)
+      menu.map((it) => {
+        if (it.menuType !== 'Button') it.isOwn = false
+        save.map((item) => {
+          if (it.menuId === item) {
+            it.isOwn = true
+          }
+        })
       })
       const params = {
         roleId: this.roleId,
