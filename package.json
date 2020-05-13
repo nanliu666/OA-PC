@@ -5,11 +5,12 @@
   "scripts": {
     "pre": "yarn --registry https://registry.npm.taobao.org || cnpm install || npm install --registry https://registry.npm.taobao.org ",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && npm run compress",
     "lint": "eslint --fix --ext .vue,.js src/ &&　prettier src/**/*.scss --write",
     "analyz": "npm_config_report=true npm run build",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "compress": "node src/util/compress.js"
   },
   "dependencies": {
     "avue-plugin-ueditor": "^0.0.10",
@@ -43,6 +44,7 @@
     "@vue/cli-plugin-babel": "^3.1.1",
     "@vue/cli-plugin-eslint": "^3.1.5",
     "@vue/cli-service": "^3.1.4",
+    "archiver": "^4.0.1",
     "babel-eslint": "^10.1.0",
     "chai": "^4.1.2",
     "eslint": "^6.8.0",
