@@ -18,7 +18,7 @@
     "$--input-placeholder-color": "#A0A8AE",
     "$--select-input-focus-border-color": "#198CFF",
     "$--button-padding-horizontal": "26px",
-    "$--button-padding-vertical": "14px",
+    "$--button-padding-vertical": "13px",
     "$--button-medium-padding-horizontal": "18px",
     "$--button-small-padding-vertical": "6px",
     "$--button-small-padding-horizontal": "10px",

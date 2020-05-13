@@ -198,11 +198,11 @@ export default {
             dicData: [
               {
                 label: '展示',
-                value: 0
+                value: 1
               },
               {
                 label: '隐藏',
-                value: 1
+                value: 0
               }
             ],
             rules: [
@@ -278,7 +278,7 @@ export default {
     initData() {
       getMenuTree().then((res) => {
         const column = this.findObject(this.option.column, 'parentId')
-        column.dicData = res
+        column.dicData = [{ menuId: '0', name: '顶级菜单', children: res }]
       })
     },
     handleAddChild(row) {

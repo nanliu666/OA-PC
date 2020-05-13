@@ -2,7 +2,7 @@
   <div class="menu-wrapper">
     <template v-for="item in menu">
       <el-menu-item
-        v-if="!hasShowingChild(item.children)"
+        v-if="!hasShowingChild(item.children) && item.isShow === 1"
         :key="item[labelKey]"
         :index="item.menuId"
         :class="{ 'is-active': vaildAvtive(item) }"
@@ -15,7 +15,7 @@
         >{{ generateTitle(item) }}</span>
       </el-menu-item>
       <el-submenu
-        v-else
+        v-else-if="item.isShow === 1"
         :key="item[labelKey]"
         :index="item.menuId"
       >
