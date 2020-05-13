@@ -116,7 +116,7 @@ export default {
         //租户ID
         tenantId: '',
         //用户名
-        username: 'admin',
+        username: '0001',
         //密码
         password: '123456',
         //账户类型

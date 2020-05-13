@@ -117,7 +117,8 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         // 取到当前要处理的一项
         const oMenu = aMenu[i]
         // 判断this.routerList中是否已经存在该path，存在就跳出
-        if (this.routerList.includes(oMenu[propsDefault.path])) return
+        // console.log(oMenu[propsDefault.path]!=="")
+        // if (this.routerList.includes(oMenu[propsDefault.path])&&oMenu[propsDefault.path]!=="") return
         // 这一块的赋值 也就是取到返回的值
         let path = oMenu[propsDefault.path] || '',
           //特殊处理组件 执行完这个 component 也就是精确到具体的文件了  views文件夹下面就是具体的页面代码
@@ -200,10 +201,11 @@ RouterPlugin.install = function(vue, router, store, i18n) {
         if (process.env.NODE_ENV === 'development') {
           window.console.log('路由：', aRouter)
         }
-        if (!this.routerList.includes(aRouter[0][propsDefault.path])) {
-          this.safe.$router.addRoutes(aRouter)
-          this.routerList.push(aRouter[0][propsDefault.path])
-        }
+        // if (!this.routerList.includes(aRouter[0][propsDefault.path])) {
+        this.safe.$router.addRoutes(aRouter)
+        //   this.routerList.push(aRouter[0][propsDefault.path])
+        //   console.log('routerList',this.routerList)
+        // }
       } else {
         // 这里返回的是子组件
         return aRouter

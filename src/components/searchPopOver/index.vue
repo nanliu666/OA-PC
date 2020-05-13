@@ -208,21 +208,23 @@
                 </el-form-item>
               </el-col>
             </el-form>
-            <div class="popOver-footer">
-              <el-button
-                type="primary"
-                size="small"
-                @click="submitSearch"
-              >
-                搜索
-              </el-button>
-              <el-button
-                size="small"
-                @click="resetForm"
-              >
-                重置
-              </el-button>
-            </div>
+            <el-col :span="24">
+              <div class="popOver-footer">
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="submitSearch"
+                >
+                  搜索
+                </el-button>
+                <el-button
+                  size="small"
+                  @click="resetForm"
+                >
+                  重置
+                </el-button>
+              </div>
+            </el-col>
           </div>
           <el-button
             slot="reference"

@@ -29,7 +29,7 @@
             :data="allRoleTree"
             show-checkbox
             default-expand-all
-            node-key="id"
+            node-key="roleId"
             :props="props"
             :filter-node-method="filterNode"
             :check-on-click-node="true"
@@ -52,9 +52,10 @@
           </div>
           <el-tag
             v-for="item in selectList"
-            :key="item.id"
+            :key="item.roleId"
             size="small"
-            :closable="item.type === 'User'"
+            :type="genClosable(item) ? null : 'info'"
+            :closable="genClosable(item)"
             @close="handleUnselect(item)"
           >
             {{ item.roleName }}
@@ -106,7 +107,7 @@ export default {
       loading: false,
       filterText: '',
       props: {
-        disabled: (data) => !data.roleId,
+        disabled: (data) => !data.roleName || !this.genClosable(data),
         label: (item) => item.groupName || item.categoryName || item.roleName
       },
       selectList: [],
@@ -131,6 +132,13 @@ export default {
     this.getRoleList()
   },
   methods: {
+    // 只有用户角色接口没返回的角色，或者返回了的但是角色type是User的才可以删
+    genClosable(item) {
+      return (
+        this.oldSelectList.findIndex((i) => i.roleId === item.roleId) < 0 ||
+        this.oldSelectList.find((i) => i.roleId === item.roleId).type === 'User'
+      )
+    },
     /**
      * 初始化
      * @param {String} user
@@ -147,16 +155,21 @@ export default {
       if (!value) return true
       return data.roleName && data.roleName.indexOf(value) !== -1
     },
-    handleCheckChange(data, checked) {
-      this.selectList = checked.checkedNodes.filter((i) => !i.children)
+    handleCheckChange(data) {
+      let index = this.selectList.findIndex((item) => item.roleId === data.roleId)
+      if (index >= 0) {
+        this.selectList.splice(index, 1)
+      } else {
+        this.selectList.push(data)
+      }
     },
     handleUnselect(item) {
       this.selectList = this.selectList.filter((i) => i != item)
-      this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
+      this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.roleId))
     },
     handleUnselectAll() {
-      this.selectList = this.selectList.filter((i) => i.type !== 'User')
-      this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
+      this.selectList = this.selectList.filter((item) => !this.genClosable(item))
+      this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.roleId))
     },
     close() {
       this.clear()
@@ -170,12 +183,12 @@ export default {
     },
     getUserRole() {
       getUserRole(this.user.userId).then((res) => {
-        const list = res.map((role) => ({ ...role, id: role.roleId }))
+        const list = res
         this.selectList = list.slice()
         this.oldSelectList = list.slice()
 
         this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
+          this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.roleId))
         })
       })
     },
@@ -232,17 +245,15 @@ export default {
       }
       tree.forEach((node) => {
         if (node.categories) {
+          node.roleId = node.groupId
           node.children = node.categories.map((category) => ({
             ...category,
-            id: category.categoryId
+            roleId: category.categoryId
           }))
           this.resolveTree(node.children)
         }
         if (node.roles) {
-          node.children = node.roles.map((role) => ({
-            ...role,
-            id: role.roleId
-          }))
+          node.children = node.roles.slice()
         }
       })
     }

@@ -134,6 +134,7 @@ export default {
 
 <style lang="scss">
 .header {
+  font-weight: bold;
   font-size: 18px;
   padding: 14px 0 24px;
   margin-left: 6px;
