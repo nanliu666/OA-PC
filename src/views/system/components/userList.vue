@@ -187,6 +187,9 @@ export default {
   created() {
     this.loadData()
   },
+  activated() {
+    this.loadData()
+  },
   methods: {
     handleAfterSubmit() {
       this.loadData()
