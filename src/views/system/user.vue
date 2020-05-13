@@ -132,7 +132,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .header {
   font-weight: bold;
   font-size: 18px;
