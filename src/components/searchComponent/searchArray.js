@@ -55,7 +55,7 @@ export default async () => {
       questions: [
         {
           type: 'treeSelect',
-          data: '',
+          data: [],
           label: '部门',
           field: 'orgs',
           arrField: 'orgId',
