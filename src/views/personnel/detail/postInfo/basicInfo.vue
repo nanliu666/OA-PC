@@ -103,64 +103,64 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <el-row
-          v-for="(item, index) in staffInfo.subOrg"
-          :key="index"
-        >
-          <el-col
-            :span="8"
-            :push="2"
+        <template v-if="staffInfo.subOrg.length > 0 || staffInfo.subJob.length > 0">
+          <el-row
+            v-for="(item, index) in staffInfo.subOrg"
+            :key="index"
           >
-            <el-form-item
-              v-show="readonlyBasicInfo"
-              :label="`附属部门${index + 1}:`"
+            <el-col
+              :span="8"
+              :push="2"
             >
-              <span class="info-item-value">{{ item.subOrgName }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
-              :label="`附属部门${index + 1}:`"
-            >
-              <tree-select
-                v-model="staffInfo.subOrg[index].subJobId"
-                :option="subOrgOptions"
-                :is-search="false"
-                :is-single="true"
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col
-            :span="8"
-            :push="4"
-          >
-            <el-form-item
-              v-show="readonlyBasicInfo"
-              :label="`附属职位${index + 1}:`"
-            >
-              <span class="info-item-value">{{ staffInfo.subJob[index].subJobName }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
-              :label="`附属职位${index + 1}:`"
-              prop="subOrg"
-            >
-              <el-select
-                v-model="staffInfo.subJob[index].subJobName"
-                placeholder="请选择"
+              <el-form-item
+                v-show="readonlyBasicInfo"
+                :label="`附属部门${index + 1}:`"
               >
-                <el-option
-                  v-for="subJobItem in subJobOptions"
-                  :key="subJobItem.jobId"
-                  :label="subJobItem.jobName"
-                  :value="subJobItem.jobId"
+                <span class="info-item-value">{{ item.subOrgName }}</span>
+              </el-form-item>
+              <el-form-item
+                v-show="!readonlyBasicInfo"
+                :label="`附属部门${index + 1}:`"
+              >
+                <tree-select
+                  v-model="staffInfo.subOrg[index].subJobId"
+                  :option="subOrgOptions"
+                  :is-search="false"
+                  :is-single="true"
                 />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
+              </el-form-item>
+            </el-col>
 
+            <el-col
+              :span="8"
+              :push="4"
+            >
+              <el-form-item
+                v-show="readonlyBasicInfo"
+                :label="`附属职位${index + 1}:`"
+              >
+                <span class="info-item-value">{{ staffInfo.subJob[index].subJobName }}</span>
+              </el-form-item>
+              <el-form-item
+                v-show="!readonlyBasicInfo"
+                :label="`附属职位${index + 1}:`"
+                prop="subOrg"
+              >
+                <el-select
+                  v-model="staffInfo.subJob[index].subJobName"
+                  placeholder="请选择"
+                >
+                  <el-option
+                    v-for="subJobItem in subJobOptions"
+                    :key="subJobItem.jobId"
+                    :label="subJobItem.jobName"
+                    :value="subJobItem.jobId"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
         <el-row>
           <el-col
             :span="8"
