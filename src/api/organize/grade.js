@@ -52,9 +52,18 @@ export const deleteOrganization = (params) => {
 }
 
 export const postSort = (params) => {
+  //组织机构排序接口
   return request({
     url: '/api/org/v1/organization/view/sort',
     method: 'post',
     data: params
+  })
+}
+// 组织机构树查询接口
+export const getOrganizationTree = (params) => {
+  return request({
+    url: '/api/org/v1/organization/tree',
+    method: 'get',
+    params: params
   })
 }
