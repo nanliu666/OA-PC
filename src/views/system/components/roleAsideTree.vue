@@ -31,9 +31,7 @@
                 v-if="node.level === 1 && showFolder"
                 class="el-icon-folder"
                 style="margin-right: 5px;"
-              />{{
-                data[props.label]
-              }}
+              />{{ data[props.label] }}
           <span v-if="data.roleNum">{{ `(${data.roleNum})` }}</span>
         </span>
         <el-dropdown
