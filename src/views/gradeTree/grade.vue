@@ -1,5 +1,8 @@
 <template>
-  <div class="grade">
+  <div
+    v-loading="loading"
+    class="grade"
+  >
     <div class="header">
       <div class="nav">
         <span style="width: 150px;display: inline-block;">
@@ -12,7 +15,7 @@
             <i class="el-icon-question" /> </el-tooltip></span>
 
         <avue-form
-          v-model="form"
+          v-model="orgForm"
           :option="option"
           @submit="submit"
         />
@@ -162,67 +165,15 @@ import go from 'gojs'
 const $ = go.GraphObject.make
 import positionDialog from './compoents/positionDialog'
 import orgDialog from './compoents/orgDialog'
-import { getOrganizationView, deleteOrganization, postSort } from '@/api/organize/grade'
+import {
+  getOrganizationView,
+  deleteOrganization,
+  postSort,
+  getOrganizationTree
+} from '@/api/organize/grade'
 import { deleteV1Job } from '@/api/organize/position'
 
-const org = [
-  {
-    value: '1',
-    label: '百利宏',
-    children: [
-      {
-        value: '2',
-        label: '百利宏化工',
-        children: [
-          {
-            value: '4',
-            label: '百利宏化工事业部',
-            children: [
-              {
-                value: '8',
-                label: '技术小组',
-                children: []
-              }
-            ]
-          },
-          {
-            value: '5',
-            label: '百利宏化工事业部事业部',
-            children: [
-              {
-                value: '9',
-                label: '技术小组2',
-                children: [
-                  {
-                    value: '10',
-                    label: '职位1',
-                    children: []
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        value: '3',
-        label: '百利宏医药',
-        children: [
-          {
-            value: '6',
-            label: '百利宏医药技术部',
-            children: []
-          },
-          {
-            value: '7',
-            label: '百利宏医药计算机部',
-            children: []
-          }
-        ]
-      }
-    ]
-  }
-]
+let org = []
 
 export default {
   name: 'Grade',
@@ -232,6 +183,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       positionTitle: ['新建子职位', '编辑职位'],
       isEdit: '',
       title: '',
@@ -251,7 +203,7 @@ export default {
       ],
       value: '选项1',
       selData: {},
-      form: { key: 14, name: '', userName: '' },
+      orgForm: { orgId: '' },
       option: {
         menuBtn: false,
         labelWidth: 0,
@@ -259,7 +211,7 @@ export default {
           {
             label: '',
             size: 'medium',
-            prop: 'name',
+            prop: 'orgId',
             span: 24,
             type: 'tree',
             dicData: org
@@ -322,39 +274,85 @@ export default {
       }
     }
   },
+  watch: {
+    'orgForm.orgId': {
+      handler: function(newVal, oldVal) {
+        // debugger
+        if (newVal && oldVal) {
+          (async () => {
+            await this.getOrgData()
+            this.load()
+          })()
+        }
+      },
+      deep: true
+    }
+  },
   created() {},
   async mounted() {
+    this.getTree()
     await this.getOrgData()
     this.init()
   },
   methods: {
+    f(res) {
+      res.map((it) => {
+        it.value = it.orgId
+        it.label = it.orgName
+        if (it.children) {
+          this.f(it.children)
+        }
+      })
+    },
+    getTree() {
+      let params = {
+        parentOrgId: '0'
+      }
+      getOrganizationTree(params).then((res) => {
+        this.f(res)
+        this.option.column[0].dicData = res
+      })
+    },
     submit() {},
     getOrgData() {
       let params = {
-        orgId: 0
+        orgId: this.orgForm.orgId || '0'
       }
       return new Promise((resolve, reject) => {
+        this.loading = true
         getOrganizationView(params)
           .then((res) => {
+            this.loading = false
             if (typeof this.TreeModel === 'string') {
               this.TreeModel = JSON.parse(this.TreeModel)
             }
             res.map((it) => {
               it.key = it.id
               if (it.parentId) it.parent = it.parentId
-              it.orgName = it.name + `(${it.jobNum})`
+              it.orgName = it.name + `(${it.workNum})`
             })
 
             this.TreeModel.nodeDataArray = res
             resolve()
           })
           .catch(() => {
+            this.loading = false
             reject()
           })
       })
     },
-    orgOnsubmit() {},
-    positionOnsubmit() {},
+    orgOnsubmit() {
+      (async () => {
+        await this.getOrgData()
+        this.load()
+      })()
+    },
+    positionOnsubmit() {
+      (async () => {
+        await this.getOrgData()
+        this.load()
+      })()
+    },
     init() {
       let that = this
       that.myDiagram = $(
@@ -862,13 +860,14 @@ export default {
     cxcommand(event, val) {
       if (val === undefined) val = event.currentTarget.id
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
+      console.log(this.selData)
       let isChildren = !!nodeDataArray.find((it) => {
         if (it.parent == this.selData.key) {
           return it
         }
       })
       if (isChildren || !this.selData.parent) {
-        this.$confirm('很抱歉，您选中的职位下存在员工，请先将员工调整后在删除', {
+        this.$confirm('很抱歉，您选中的组织或职位下存在组织或职位，请先将调整后在删除', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -885,6 +884,20 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          if (this.selData.userNum > 0) {
+            this.$confirm('很抱歉，您选中的职位下存在员工，请先将员工调整后再删除', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.$message({
+                type: 'info',
+                message: '取消操作!'
+              })
+            })
+            return
+          }
+
           if (this.selData.type !== this.type[4]) {
             let params = { ids: this.selData.id }
             deleteOrganization(params).then(() => {
@@ -1015,7 +1028,7 @@ export default {
     flex-flow: row nowrap;
   }
   .button {
-    background: rgba(73, 111, 233, 1);
+    background: #207efa;
     height: 36px;
     width: 134px;
     text-align: center;

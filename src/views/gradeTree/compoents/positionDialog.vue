@@ -330,6 +330,8 @@ export default {
           let orgId = val.orgId
           // this.orgId = orgId
           let parentId = val.parentJobId
+          // parentId = val.parentJobId
+
           // if (orgId) {
           //   this.form.orgId = orgId
           // }
@@ -352,7 +354,13 @@ export default {
             }, 500)
           }
           if (val.type === 'Job') {
-            this.form.parentId = val.parentJobId
+            let parentId = ''
+            if (val.type === 'Job') {
+              parentId = val.id
+            } else {
+              parentId = val.parentJobId
+            }
+            this.form.parentId = parentId
             this.option.column[3].disabled = true
           }
         }

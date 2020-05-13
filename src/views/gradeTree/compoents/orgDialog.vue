@@ -427,6 +427,7 @@ export default {
           }
           this.loading = true
           postOrganization(params).then(() => {
+            this.$emit('onsubmit')
             this.$message.success('添加成功')
             this.loading = false
             if (ishow) {
@@ -463,6 +464,7 @@ export default {
           }
           this.loading = true
           putOrganization(params).then(() => {
+            this.$emit('onsubmit')
             this.$message.success('修改成功')
             this.loading = false
             this.handleClose()
