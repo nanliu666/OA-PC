@@ -228,7 +228,6 @@ export default {
     // 点击保存
     onClickSave() {
       let save = this.$refs.privilege.getCheck()
-      console.log(save)
       this.getButtonPrivilege(this.menuPrivileges)
       this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
       this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
@@ -240,7 +239,6 @@ export default {
       menu.map((it) => {
         delete it.children
       })
-      console.log(menu)
       menu.map((it) => {
         if (it.menuType !== 'Button') it.isOwn = false
         save.map((item) => {
