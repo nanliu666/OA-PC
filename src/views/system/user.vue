@@ -136,6 +136,6 @@ export default {
 .header {
   font-weight: bold;
   font-size: 18px;
-  padding: 14px 0 24px;
+  padding: 14px 0 16px;
 }
 </style>
