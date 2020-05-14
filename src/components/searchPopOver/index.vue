@@ -89,14 +89,23 @@
           v-if="item.type === 'numInterval'"
           v-model="item.data"
         />
-        <tree-select
+        <el-tree-select
+          v-if="item.type === 'treeSelect'"
+          :ref="item.field"
+          v-model="item.data"
+          :popover-class="item.config.fas"
+          :styles="item.styles"
+          :select-params="item.config.selectParams"
+          :tree-params="item.config.treeParams"
+        />
+        <!-- <tree-select
           v-if="item.type === 'treeSelect'"
           v-model="item.data"
           :option="item.options"
           :is-search="false"
           :is-single="item.isSingle || false"
           @change="change"
-        />
+        />-->
       </el-form-item>
       <el-form-item v-if="popoverOptions.length === 0">
         <el-button
@@ -198,13 +207,22 @@
                     v-if="item.type === 'numInterval'"
                     v-model="item.data"
                   />
-                  <tree-select
+                  <el-tree-select
+                    v-if="item.type === 'treeSelect'"
+                    :ref="item.field"
+                    v-model="item.data"
+                    :popover-class="item.config.fas"
+                    :styles="item.styles"
+                    :select-params="item.config.selectParams"
+                    :tree-params="item.config.treeParams"
+                  />
+                  <!-- <tree-select
                     v-if="item.type === 'treeSelect'"
                     v-model="item.data"
                     :option="item.options"
                     :is-search="false"
                     :is-single="item.isSingle || false"
-                  />
+                  />-->
                 </el-form-item>
               </el-col>
             </el-form>
@@ -241,11 +259,12 @@
 
 <script>
 import NumInterval from '../numInterval/numInterval'
-import TreeSelect from '../treeSelect/treeSelect'
+// import TreeSelect from '../treeSelect/treeSelect'
+import ElTreeSelect from '../elTreeSelect/elTreeSelect'
 
 export default {
   name: 'SearchPopOver',
-  components: { NumInterval, TreeSelect },
+  components: { NumInterval, ElTreeSelect },
   props: {
     // 筛选弹窗外部
     requireOptions: {
@@ -325,6 +344,9 @@ export default {
     }
   },
   methods: {
+    treeDataUpdateFun(data, refKey) {
+      this.$refs[refKey][0].treeDataUpdateFun(data)
+    },
     submitSearch() {
       this.$emit('submit', this.searchParams())
     },
@@ -409,7 +431,6 @@ export default {
   padding-right: 24px;
 }
 /deep/ .treeSelect {
-  margin-top: 3px;
   .el-form-item__content {
     min-width: 198px;
   }

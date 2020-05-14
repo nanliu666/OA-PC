@@ -102,12 +102,13 @@
           slot="name"
           slot-scope="{ row }"
         >
-          <div
+          <el-button
             style="cursor: pointer"
+            type="text"
             @click="toUserDetail(row)"
           >
             {{ row.name }}
-          </div>
+          </el-button>
         </template>
         <template
           slot="status"
