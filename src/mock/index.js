@@ -23,7 +23,7 @@ const options = { mock: false }
 
 user(options)
 
-menu({ mock: false })
+menu(options)
 
 position(options)
 grade(options)

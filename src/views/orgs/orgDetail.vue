@@ -103,6 +103,7 @@ import { getOrgTree, deleteOrg } from '@/api/org/org'
 import OrgEdit from './components/orgEdit'
 
 export default {
+  name: 'OrgDetail',
   components: { OrgEdit },
   data() {
     return {
