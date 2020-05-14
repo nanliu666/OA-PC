@@ -551,5 +551,4 @@ export default {
     height: 46px !important;
   }
 }
-@import url('../staffInfo.scss');
 </style>

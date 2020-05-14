@@ -457,6 +457,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import url('../staffInfo.scss');
-</style>
+<style lang="scss" scoped></style>
