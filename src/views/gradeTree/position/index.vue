@@ -30,7 +30,10 @@
         >
           <div class="aside_header">
             <span>职位类别</span>
-            <span class="el-icon-setting" />
+            <span
+              class="el-icon-setting"
+              @click="jump"
+            />
           </div>
           <div>
             <ul>
@@ -237,6 +240,9 @@ export default {
     this.getTree()
   },
   methods: {
+    jump() {
+      this.$router.push({ path: `/grade/station` })
+    },
     handlerDeleteAll(list) {
       debugger
       this.$confirm('您确定要删除你所选中的职位吗?', {
