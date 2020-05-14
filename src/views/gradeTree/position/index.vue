@@ -241,7 +241,7 @@ export default {
   },
   methods: {
     jump() {
-      this.$router.push({ path: `/grade/station` })
+      this.$router.push({ path: `/gradeTree/position/station` })
     },
     handlerDeleteAll(list) {
       debugger

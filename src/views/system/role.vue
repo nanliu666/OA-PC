@@ -121,6 +121,7 @@
           @fiter="fiter"
         />
         <roleLimits
+          v-if="configVisible"
           :role-id="editingRoleId"
           :visible.sync="configVisible"
         />

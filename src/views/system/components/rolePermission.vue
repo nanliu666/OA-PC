@@ -5,7 +5,6 @@
     width="800px"
     :close-on-click-modal="false"
     append-to-body
-    @opened="getRolePrivilege"
   >
     <div
       v-loading="loading"
@@ -174,6 +173,9 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getRolePrivilege()
+  },
   methods: {
     // 查询用户权限
     getRolePrivilege() {
@@ -220,7 +222,7 @@ export default {
     ping(data, menus) {
       data.map((it) => {
         menus.push(it)
-        if (it.children.length > 0) {
+        if (it.children && it.children.length > 0) {
           this.ping(it.children, menus)
         }
       })
