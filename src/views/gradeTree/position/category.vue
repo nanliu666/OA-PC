@@ -1,5 +1,5 @@
 <template>
-  <div class="category">
+  <div style="height:100%;width: 100% ">
     <div class="header">
       <div>职位类别</div>
       <div>
@@ -24,98 +24,101 @@
         </span>
       </span>
       <span
-        class="el-icon-circle-close"
+        class="el-icon-close"
+        style="color:#207EFA;font-size: 20px"
         @click="close"
       />
     </nav>
-    <div>
-      <div style="margin-top: 20px">
-        <common-table
-          style="width: 100%"
-          :data="data"
-          :page="page"
-          :loading="loading"
-          :config="tableConfig"
-          :columns="columns"
-          @pageSizeChange="sizeChange"
-          @currentPageChange="currentChange"
-        >
-          <template slot="topMenu">
-            <div class="flex-flow flex justify-content align-items ">
-              <div>
-                <el-input
-                  v-model="form.name"
-                  placeholder="职位名称"
-                  size="medium"
-                  class="input-with-select"
-                >
+    <div class="category">
+      <div>
+        <div style="margin-top: 20px">
+          <common-table
+            style="width: 100%"
+            :data="data"
+            :page="page"
+            :loading="loading"
+            :config="tableConfig"
+            :columns="columns"
+            @pageSizeChange="sizeChange"
+            @currentPageChange="currentChange"
+          >
+            <template slot="topMenu">
+              <div class="flex-flow flex justify-content align-items ">
+                <div>
+                  <el-input
+                    v-model="form.name"
+                    placeholder="职位名称"
+                    size="medium"
+                    class="input-with-select"
+                  >
+                    <el-button
+                      slot="append"
+                      icon="el-icon-search"
+                      @click="search"
+                    />
+                  </el-input>
+                </div>
+                <div>
                   <el-button
-                    slot="append"
-                    icon="el-icon-search"
-                    @click="search"
-                  />
-                </el-input>
+                    type="primary"
+                    size="medium"
+                    @click="handleExport"
+                  >
+                    <i class="el-icon-upload2" /> 导出
+                  </el-button>
+                  <el-button
+                    type="primary"
+                    size="medium"
+                    @click="getData"
+                  >
+                    <i class="el-icon-refresh" />
+                  </el-button>
+                </div>
               </div>
-              <div>
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="handleExport"
-                >
-                  <i class="el-icon-upload2" /> 导出
-                </el-button>
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="getData"
-                >
-                  <i class="el-icon-refresh" />
-                </el-button>
-              </div>
-            </div>
-          </template>
-          <template
-            slot="multiSelectMenu"
-            slot-scope="{ selection }"
-          >
-            <span class="all">
-              <span
-                @click="handlerDeleteAll(selection)"
-              ><i class="el-icon-delete" /> 批量删除</span>
-              <span><i class="el-icon-folder" /> 批量导出</span>
-            </span>
-          </template>
-          <template
-            v-if="scope.row.isDefault === 0"
-            slot="handler"
-            slot-scope="scope"
-          >
-            <el-button
-              type="text"
-              size="medium"
-              @click.stop="handleEdit(scope.row, scope.index)"
+            </template>
+            <template
+              slot="multiSelectMenu"
+              slot-scope="{ selection }"
             >
-              编辑
-            </el-button>
-            <el-button
-              type="text"
-              size="medium"
-              @click.stop="handleDelete(scope.row, scope.index)"
+              <span class="all">
+                <span
+                  @click="handlerDeleteAll(selection)"
+                ><i class="el-icon-delete" /> 批量删除</span>
+                <span><i class="el-icon-folder" /> 批量导出</span>
+              </span>
+            </template>
+            <template
+              v-if="scope.row.isDefault === 0"
+              slot="handler"
+              slot-scope="scope"
             >
-              删除
-            </el-button>
-          </template>
-        </common-table>
+              <el-button
+                type="text"
+                size="medium"
+                @click.stop="handleEdit(scope.row, scope.index)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="text"
+                size="medium"
+                @click.stop="handleDelete(scope.row, scope.index)"
+              >
+                删除
+              </el-button>
+            </template>
+          </common-table>
+        </div>
       </div>
+      <categoryDialog
+        v-if="categoryDialog"
+        :dialog-visible.sync="categoryDialog"
+        :title="title"
+        :is-edit="isEdit"
+        :data="row"
+        @onSubmit="onSubmit"
+      />
     </div>
-    <categoryDialog
-      v-if="categoryDialog"
-      :dialog-visible.sync="categoryDialog"
-      :title="title"
-      :is-edit="isEdit"
-      :data="row"
-      @onSubmit="onSubmit"
-    />
   </div>
 </template>
 
@@ -384,15 +387,12 @@ export default {
   height: auto;
 }
 .category {
+  margin-top: 16px;
   background: #ffffff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
-  border-radius: 4px;
-  padding: 20px !important;
-  min-height: calc(100% - 64px);
-  width: calc(100% - 64px);
-  margin-left: 30px;
-  margin-bottom: 50px;
+  padding: 24px !important;
+  min-height: calc(100% - 224px);
   .form_ {
     padding-top: 40px;
     width: 400px;
@@ -454,6 +454,11 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  font-size: 18px;
+  color: #202940;
+  line-height: 28px;
+  font-weight: bold;
+  margin-top: 14px;
 }
 .nav {
   display: flex;
@@ -463,10 +468,14 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  line-height: 40px;
-  border: 1px solid #efefef;
+  line-height: 26px;
   padding: 5px 20px;
-  margin-top: 20px;
+  margin-top: 8px;
+  background: #edf8ff;
+  border: 1px solid #73b9ff;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
   span {
     line-height: 20px;
   }
