@@ -150,6 +150,10 @@ export default {
       })
     },
     deleteOrg() {
+      if (this.orgData.parentId === 0) {
+        this.$message.error('顶级组织不可删除')
+        return
+      }
       const params = {
         ids: this.orgData.orgId
       }
