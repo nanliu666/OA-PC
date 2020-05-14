@@ -357,4 +357,14 @@ export default {
 .addressLoading {
   text-align: center;
 }
+/deep/ .el-form-item__error {
+  padding-top: 0;
+}
+/deep/ .newOrgDailog {
+  .el-form--label-top {
+    .el-form-item__label {
+      padding: 0 0 0 0;
+    }
+  }
+}
 </style>
