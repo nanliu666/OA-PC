@@ -115,6 +115,12 @@
           >
             <i class="el-icon-loading" />
           </div>
+          <div
+            v-show="noMoreLeader"
+            style="text-align: center; font-size:14px;color: #606266;"
+          >
+            没有更多了
+          </div>
         </el-select>
       </el-form-item>
       <el-form-item
@@ -194,6 +200,7 @@ export default {
       orgTree: [],
       leaderList: [],
       loadLeader: false,
+      noMoreLeader: false,
       leaderPageNo: 1
     }
   },
@@ -211,12 +218,15 @@ export default {
       })
     },
     loadMoreLeader() {
-      if (this.loadLeader) return
+      if (this.loadLeader || this.noMoreLeader) return
       this.loadLeader = true
       getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
         if (res.data.length > 0) {
           this.leaderList.push(...res.data)
           this.leaderPageNo += 1
+          this.loadLeader = false
+        } else {
+          this.noMoreLeader = true
           this.loadLeader = false
         }
       })

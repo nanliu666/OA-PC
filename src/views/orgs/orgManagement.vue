@@ -185,7 +185,8 @@ const column = [
     label: '组织名称',
     prop: 'orgName',
     align: 'left',
-    slot: true
+    slot: true,
+    minWidth: '200px'
   },
   {
     label: '组织类型',
@@ -331,7 +332,7 @@ export default {
         headerAlign: 'center',
         align: 'center',
         border: false,
-        defaultExpandAll: true,
+        defaultExpandAll: false,
         selection: true,
         formHeight: 20,
         height: 'auto',
