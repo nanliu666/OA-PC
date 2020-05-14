@@ -3,7 +3,10 @@
     <div class="header">
       用户管理
     </div>
-    <el-row style="height: calc(100% - 100px);">
+    <el-row
+      style="height: calc(100% - 100px);"
+      :gutter="8"
+    >
       <el-col
         style="height:100%"
         :xs="9"
@@ -24,6 +27,7 @@
                 node-key="orgId"
                 :props="treeProps"
                 :expand-on-click-node="false"
+                default-expand-all
                 @node-click="nodeClick"
               >
                 <span
@@ -136,6 +140,6 @@ export default {
 .header {
   font-weight: bold;
   font-size: 18px;
-  padding: 14px 0 24px;
+  padding: 14px 0 16px;
 }
 </style>
