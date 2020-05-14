@@ -1,5 +1,10 @@
 import Mock from 'mockjs'
-
+/**
+ * menuPrivileges是所有菜单权限
+ * orgPrivileges是所有组织，暂时用不到
+ *
+ * 注意：menuType为Menu的菜单，它的下级menuType只能为Button
+ */
 const res = {
   resCode: 200,
   success: true,
@@ -13,9 +18,9 @@ const res = {
       {
         menuId: '1259069584261287938',
         menuName: '系统管理',
-        menuType: 'Dir',
-        isOwn: 1,
-        isShow: 1,
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
         code: 'system',
         alias: 'system',
         path: '',
