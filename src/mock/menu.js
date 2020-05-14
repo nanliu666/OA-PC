@@ -156,58 +156,31 @@ const res = {
             dataPrivileges: [],
             children: []
           },
-          {
-            menuId: '1259075153063923714',
-            menuName: '组织机构管理',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'org_management',
-            alias: 'orgManagement',
-            path: '/orgs/orgManagement',
-            icon: 'iconfont iconicon_subordinate',
-            dataPrivileges: [],
-            children: [
-              {
-                menuId: '1260118258720522241',
-                menuName: '组织机构排序',
-                menuType: 'Menu',
-                isOwn: 1,
-                isShow: 0,
-                code: 'org_sort',
-                alias: 'org_sort',
-                path: '/orgs/orgSort',
-                icon: 'iconfont icon-caidanguanli',
-                dataPrivileges: [],
-                children: []
-              },
-              {
-                menuId: '1260118573335265281',
-                menuName: '组织机构详情',
-                menuType: 'Menu',
-                isOwn: 1,
-                isShow: 0,
-                code: 'org_detail',
-                alias: 'org_detail',
-                path: '/orgs/orgDetail',
-                icon: 'iconfont icon-daohanglanmoshi02',
-                dataPrivileges: [],
-                children: []
-              }
-            ]
-          },
+
           {
             menuId: '1260116127481413634',
-            menuName: '员工花名册',
-            menuType: 'Menu',
+            menuName: '员工管理',
+            menuType: 'Dir',
             isOwn: 1,
             isShow: 1,
             code: 'roster',
             alias: 'roster',
-            path: '/personnel/roster',
+            path: '',
             icon: 'iconfont iconicon_group',
             dataPrivileges: [],
             children: [
+              {
+                menuId: '1260116127481413634',
+                menuName: '员工花名册',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_roster',
+                alias: 'personnelRoster',
+                path: '/personnel/roster',
+                icon: 'iconfont iconicon_group',
+                dataPrivileges: []
+              },
               {
                 menuId: '1260116557917667329',
                 menuName: '员工信息',
@@ -231,6 +204,59 @@ const res = {
                 alias: 'add_roster',
                 path: '/personnel/addRoster',
                 icon: 'iconfont iconicon_roundadd',
+                dataPrivileges: [],
+                children: []
+              }
+            ]
+          },
+          {
+            menuId: '125907515306392371',
+            menuName: '组织机构管理',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'org_management',
+            alias: 'orgManagement',
+            path: '',
+            icon: 'iconfont iconicon_subordinate',
+            dataPrivileges: [],
+            children: [
+              {
+                menuId: '1259075153063923714',
+                menuName: '组织机构管理',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/orgs/orgManagement',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '1260118258720522241',
+                menuName: '组织机构排序',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'org_sort',
+                alias: 'org_sort',
+                path: '/orgs/orgSort',
+                icon: 'iconfont icon-caidanguanli',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '1260118573335265281',
+                menuName: '组织机构详情',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'org_detail',
+                alias: 'org_detail',
+                path: '/orgs/orgDetail',
+                icon: 'iconfont icon-daohanglanmoshi02',
                 dataPrivileges: [],
                 children: []
               }

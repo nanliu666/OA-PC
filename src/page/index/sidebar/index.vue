@@ -16,10 +16,11 @@
         :collapse="keyCollapse"
       >
         <sidebar-item
-          :menu="menu"
-          :screen="screen"
-          first
+          v-for="item in menu"
+          :key="item.menuId"
+          :item="item"
           :props="website.menu.props"
+          :screen="screen"
           :collapse="keyCollapse"
         />
       </el-menu>
