@@ -1,6 +1,6 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
-import gradeTree from '@/router/views/gradeTree'
+// import gradeTree from '@/router/views/gradeTree'
 import personnel from './personnel'
 // import orgs from './orgs'
 export default [
@@ -97,22 +97,22 @@ export default [
       }
     ]
   },
-  {
-    path: '/system/role',
-    component: Layout,
-    redirect: '/system/menu',
-    children: [
-      {
-        path: '/system/role',
-        name: '角色管理',
-        meta: {
-          i18n: 'work'
-        },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/system/role')
-      }
-    ]
-  },
-  gradeTree,
+  // {
+  //   path: '/system/role',
+  //   component: Layout,
+  //   redirect: '/system/menu',
+  //   children: [
+  //     {
+  //       path: '/system/role',
+  //       name: '角色管理',
+  //       meta: {
+  //         i18n: 'work'
+  //       },
+  //       component: () => import(/* webpackChunkName: "views" */ '@/views/system/role')
+  //     }
+  //   ]
+  // },
+  // gradeTree,
   personnel
   // orgs
 ]
