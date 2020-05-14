@@ -121,6 +121,7 @@
           @fiter="fiter"
         />
         <roleLimits
+          v-if="configVisible"
           :role-id="editingRoleId"
           :visible.sync="configVisible"
         />
@@ -534,7 +535,7 @@ export default {
 
 <style lang="scss" scoped>
 .role-wrap {
-  margin-bottom: 50px;
+  margin-bottom: 150px;
   .oa-title_bar {
     padding: 14px 6px;
 

@@ -31,3 +31,24 @@ a {
 
 //滚动条样式
 @include scrollBar;
+.flex {
+  display: flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -webkit-flex;
+}
+.flex-flow {
+  flex-flow: row nowrap;
+}
+.flex-flow-column {
+  flex-flow: column nowrap;
+}
+.flex-items {
+  align-items: center;
+}
+.flex-justify {
+  justify-content: center;
+}
+.flex-justify-start {
+  justify-content: flex-start;
+}

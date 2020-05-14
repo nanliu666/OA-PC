@@ -249,7 +249,7 @@ export default {
           this.option.column[3].placeholder = '请选择'
           if (!this.firstLoad) {
             this.loading = true
-            let jod = await this.getJod(val[0])
+            let jod = await this.getJod(val)
             if (this.form.orgId !== this.initOrgId) {
               this.form.parentId = ''
               this.initOrgId = ''

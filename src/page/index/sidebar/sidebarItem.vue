@@ -1,55 +1,59 @@
 <template>
-  <div class="menu-wrapper">
-    <template v-for="item in menu">
-      <el-menu-item
-        v-if="!hasShowingChild(item.children) && item.isShow === 1"
-        :key="item[labelKey]"
-        :index="item.menuId"
-        :class="{ 'is-active': vaildAvtive(item) }"
-        @click="open(item)"
-      >
+  <div
+    v-if="item.isShow === 1"
+    class="menu-wrapper"
+  >
+    <el-menu-item
+      v-if="
+        hasOneShowingChild(item.children, item) &&
+          (onlyOneChild.children.length == 0 || onlyOneChild.noShowingChildren) &&
+          !item.alwaysShow
+      "
+      :key="item.menuId"
+      :index="item.menuId"
+      :class="{ 'is-active': vaildActive(onlyOneChild) }"
+      @click="open(onlyOneChild)"
+    >
+      <i :class="onlyOneChild[iconKey]" />
+      <span
+        slot="title"
+        :alt="onlyOneChild[pathKey]"
+      >{{ generateTitle(onlyOneChild) }}</span>
+    </el-menu-item>
+    <el-submenu
+      v-else
+      :key="item[labelKey]"
+      :index="item.menuId"
+    >
+      <template slot="title">
         <i :class="item[iconKey]" />
         <span
           slot="title"
-          :alt="item[pathKey]"
-        >{{ generateTitle(item) }}</span>
-      </el-menu-item>
-      <el-submenu
-        v-else-if="item.isShow === 1"
-        :key="item[labelKey]"
-        :index="item.menuId"
-      >
-        <template slot="title">
-          <i :class="item[iconKey]" />
-          <span
-            slot="title"
-            :class="{ 'el-menu--display': collapse && first }"
-          >{{
-            generateTitle(item)
-          }}</span>
-        </template>
-        <template v-for="(child, cindex) in item[childrenKey]">
-          <el-menu-item
+          :class="{ 'el-menu--display': collapse && first }"
+        >{{
+          generateTitle(item)
+        }}</span>
+      </template>
+      <template v-for="(child, cindex) in item[childrenKey]">
+        <!-- <el-menu-item
             v-if="validatenull(child[childrenKey]) && child.isShow !== 0"
             :key="child[labelKey]"
             :index="item.menuId"
-            :class="{ 'is-active': vaildAvtive(child) }"
+            :class="{ 'is-active': vaildActive(child) }"
             @click="open(child)"
           >
             <i :class="child[iconKey]" />
             <span slot="title">{{ generateTitle(child) }}</span>
-          </el-menu-item>
-          <sidebar-item
-            v-else-if="child.isShow !== 0"
-            :key="cindex"
-            :menu="[child]"
-            :props="props"
-            :screen="screen"
-            :collapse="collapse"
-          />
-        </template>
-      </el-submenu>
-    </template>
+          </el-menu-item> -->
+        <sidebar-item
+          :key="cindex"
+          :item="child"
+          :props="props"
+          :screen="screen"
+          :collapse="collapse"
+        />
+      </template>
+    </el-submenu>
   </div>
 </template>
 <script>
@@ -60,10 +64,10 @@ import config from './config.js'
 export default {
   name: 'SidebarItem',
   props: {
-    menu: {
-      type: Array,
+    item: {
+      type: Object,
       default: () => {
-        return []
+        return {}
       }
     },
     screen: {
@@ -85,6 +89,7 @@ export default {
     }
   },
   data() {
+    this.onlyOneChild = null
     return {
       config: config
     }
@@ -110,35 +115,53 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    hasShowingChild(children = []) {
-      return children.filter((item) => item.isShow === 1).length > 0
+    hasOneShowingChild(children = [], parent) {
+      const showingChildren = children.filter((item) => {
+        if (item.isShow === 0) {
+          return false
+        } else {
+          // Temp set(will be used if only has one showing child)
+          this.onlyOneChild = item
+          return true
+        }
+      })
+
+      // When there is only one child router, the child router is displayed by default
+      if (showingChildren.length === 1) {
+        return true
+      }
+
+      // Show parent if there are no child router to display
+      if (showingChildren.length === 0) {
+        this.onlyOneChild = {
+          ...parent,
+          noShowingChildren: true
+        }
+        return true
+      }
+      return false
     },
     generateTitle(item) {
       return this.$router.$avueRouter.generateTitle(item[this.labelKey], (item.meta || {}).i18n)
     },
-    vaildAvtive(item) {
-      const groupFlag = (item['group'] || []).some((ele) => this.$route.path.includes(ele))
-      return this.nowTagValue === item[this.pathKey] || groupFlag
-    },
-    vaildRoles(item) {
-      item.meta = item.meta || {}
-      return item.meta.roles ? item.meta.roles.includes(this.roles) : true
+    vaildActive(item) {
+      return this.nowTagValue === item[this.pathKey]
     },
     validatenull(val) {
       return validatenull(val)
     },
     open(item) {
       if (this.screen <= 1) this.$store.commit('SET_COLLAPSE')
-      this.$router.$avueRouter.group = item.group
       this.$router.$avueRouter.meta = item.meta
+      const path = this.$router.$avueRouter.getPath(
+        {
+          name: item[this.labelKey],
+          src: item[this.pathKey]
+        },
+        item.meta
+      )
       this.$router.push({
-        path: this.$router.$avueRouter.getPath(
-          {
-            name: item[this.labelKey],
-            src: item[this.pathKey]
-          },
-          item.meta
-        ),
+        path,
         query: item.query
       })
     }

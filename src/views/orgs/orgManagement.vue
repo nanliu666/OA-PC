@@ -26,7 +26,8 @@
             class="searchBox"
           >
             <div>
-              <search-popoover
+              <search-popover
+                ref="searchPopover"
                 :require-options="searchConfig.requireOptions"
                 :popover-options="searchConfig.popoverOptions"
                 @submit="handleSubmit"
@@ -121,7 +122,9 @@
           <span
             style="cursor: pointer"
             @click="toOrgDetail(row)"
-          >{{ row.orgName }}</span>
+          >
+            <el-button type="text">{{ row.orgName }}</el-button>
+          </span>
         </template>
         <template
           slot="orgType"
@@ -174,7 +177,7 @@
 <script>
 import { getOrgTree, getUserWorkList, getOrgTreeSimple, deleteOrg } from '@/api/org/org'
 import { tableOptions } from '@/util/constant'
-import SearchPopoover from '@/components/searchPopOver/index'
+import SearchPopover from '@/components/searchPopOver/index'
 import OrgEdit from './components/orgEdit'
 
 const column = [
@@ -216,7 +219,8 @@ const column = [
 ]
 
 export default {
-  components: { SearchPopoover, OrgEdit },
+  name: 'OrgManagement',
+  components: { SearchPopover, OrgEdit },
   data() {
     return {
       checkColumn: [
@@ -236,18 +240,37 @@ export default {
             type: 'treeSelect',
             field: 'parentOrgId',
             label: '',
-            data: ['1252523599903072257'],
-            arrField: '',
-            isSingle: true,
-            options: {
-              props: {
-                label: 'orgName',
-                value: 'orgId'
+            data: '',
+            // arrField: '',
+            // isSingle: true,
+            // options: {
+            //   props: {
+            //     label: 'orgName',
+            //     value: 'orgId'
+            //   },
+            //   placeholder: '请选择部门',
+            //   dicData: []
+            // },
+            config: {
+              selectParams: {
+                placeholder: '请输入内容',
+                multiple: false
               },
-              placeholder: '请选择部门',
-              dicData: []
-            },
-            config: {}
+              treeParams: {
+                data: [],
+                'check-strictly': true,
+                'default-expand-all': false,
+                'expand-on-click-node': false,
+                clickParent: true,
+                filterable: false,
+                props: {
+                  children: 'children',
+                  label: 'orgName',
+                  disabled: 'disabled',
+                  value: 'orgId'
+                }
+              }
+            }
           },
           {
             type: 'input',
@@ -337,11 +360,13 @@ export default {
     }
   },
   created() {
-    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.searchConfig.requireOptions[0].options.dicData.push(...res)
-    })
     getUserWorkList({ pageNo: 1, pageSize: 100 }).then((res) => {
       this.searchConfig.popoverOptions[2].options.push(...res.data)
+    })
+    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+      this.searchConfig.requireOptions[0].config.treeParams.data = res
+      this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
+      this.searchConfig.requireOptions[0].data = res[0].orgId
     })
     this.getOrgTree()
   },
@@ -492,7 +517,7 @@ export default {
       flex: 1;
     }
     > button {
-      height: 38px;
+      height: 34px;
     }
   }
 }

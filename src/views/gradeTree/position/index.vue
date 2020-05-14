@@ -30,7 +30,10 @@
         >
           <div class="aside_header">
             <span>职位类别</span>
-            <span class="el-icon-setting" />
+            <span
+              class="el-icon-setting"
+              @click="jump"
+            />
           </div>
           <div>
             <ul>
@@ -237,6 +240,9 @@ export default {
     this.getTree()
   },
   methods: {
+    jump() {
+      this.$router.push({ path: `/gradeTree/position/station` })
+    },
     handlerDeleteAll(list) {
       debugger
       this.$confirm('您确定要删除你所选中的职位吗?', {
@@ -300,10 +306,10 @@ export default {
         this.orgTree = res
       })
     },
-    getJobData(pageNo = 1, pageSize = 10) {
+    getJobData({ pageNo = 1, pageSize = 10 } = {}) {
       this.loading = true
-      this.form.pageNo = pageNo
-      this.form.pageSize = pageSize
+      this.params.pageNo = pageNo
+      this.params.pageSize = pageSize
       this.params.jobName = this.form.name
       gotV1Job(this.params).then((res) => {
         this.loading = false
@@ -335,13 +341,13 @@ export default {
     },
     search() {
       this.params.jobName = this.form.name
-      this.getJobData(1, this.form.pageSize)
+      this.getJobData({ pageNo: 1, pageSize: this.form.pageSize })
     },
     sizeChange(val) {
-      this.getJobData(1, val)
+      this.getJobData({ pageNo: 1, pageSize: val })
     },
     currentChange(val) {
-      this.getJobData(val, this.form.pageSize)
+      this.getJobData({ pageNo: val, pageSize: this.form.pageSize })
     },
     handleExport() {
       this.$confirm('是否导出数据?', '提示', {
@@ -418,15 +424,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.avue-view {
+  height: auto;
+}
 .position {
   background: #ffffff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
   border-radius: 4px;
   padding: 20px !important;
-  height: calc(100% - 64px);
+  min-height: calc(100% - 64px);
   width: calc(100% - 64px);
   margin-left: 30px;
+  margin-bottom: 50px;
   .form_ {
     padding-top: 40px;
     width: 400px;

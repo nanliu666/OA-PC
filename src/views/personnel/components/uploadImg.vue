@@ -91,7 +91,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         categoryId: this.id,
-        userId: this.$store.getters.userId,
+        userId: this.$route.params.userId,
         name: '' //非必填
       },
       deleteData: {
@@ -100,7 +100,7 @@ export default {
       },
       uploadData: {
         //上传接口
-        userId: this.$store.getters.userId, //用户ID
+        userId: this.$route.params.userId, //用户ID
         categoryId: this.id, //	附件分类ID
         attachments: [{ name: '', url: '' }]
       },
@@ -141,8 +141,7 @@ export default {
     isDelete(index, id) {
       this.deleteData.id = id
       this.fileList.splice(index, 1)
-      deleteAttachmentInfo(this.deleteData).then((res) => {
-        window.console.log(res)
+      deleteAttachmentInfo(this.deleteData).then(() => {
         // this.fileList.splice(index, 1)
         this.initData()
       })
@@ -166,7 +165,6 @@ export default {
         },
         complete(data) {
           that.uploading = false
-          console.log(that.$store.state.user)
           const params = {
             userId: that.$route.params.userId,
             categoryId: that.id,
