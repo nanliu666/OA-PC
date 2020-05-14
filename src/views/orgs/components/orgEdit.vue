@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+    v-loading="loading"
     :title="type === 'create' ? '新建组织' : type === 'createChild' ? '新建子组织' : '编辑组织'"
     :visible.sync="visible"
     width="30%"
@@ -201,7 +202,8 @@ export default {
       leaderList: [],
       loadLeader: false,
       noMoreLeader: false,
-      leaderPageNo: 1
+      leaderPageNo: 1,
+      loading: false
     }
   },
   created() {
@@ -234,11 +236,13 @@ export default {
     submitAndCreate() {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
+          this.loading = true
           createOrg(this.form).then(() => {
             this.$message.success('创建成功')
             this.form = { orgType: '' }
             this.parentOrgIdLabel = ''
             this.$emit('refresh')
+            this.loading = false
           })
         } else {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)
@@ -250,14 +254,18 @@ export default {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
           if (this.type !== 'edit') {
+            this.loading = true
             createOrg(this.form).then(() => {
               this.$message.success('创建成功')
               this.$emit('refresh')
+              this.loading = false
             })
           } else {
+            this.loading = true
             editOrg(this.form).then(() => {
               this.$message.success('修改成功')
               this.$emit('refresh')
+              this.loading = false
             })
           }
           this.$emit('update:visible', false)

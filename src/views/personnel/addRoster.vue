@@ -5,7 +5,7 @@
       class="pageHeader"
       @back="goBack"
     />
-    <basic-container>
+    <basic-container v-loading="loading">
       <el-row
         type="flex"
         justify="center"
@@ -545,7 +545,8 @@ export default {
       workAddress: [],
       dialogTableVisible: false,
       loadAddress: false,
-      addressPageNo: 1
+      addressPageNo: 1,
+      loading: false
     }
   },
   created() {
@@ -671,8 +672,10 @@ export default {
             // })
             params.subOrg = Array.from(new Set(params.subOrg))
             params.subJob = Array.from(new Set(params.subJob))
+            this.loading = true
             createUser(params).then(() => {
               this.$message.success('创建成功')
+              this.loading = false
               resolve()
             })
           } else {
