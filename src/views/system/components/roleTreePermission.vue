@@ -97,7 +97,7 @@ export default {
     },
     findValue(arr, data) {
       arr.forEach((item) => {
-        if (item.isOwn && !(item.children.length > 0)) {
+        if (item.isOwn && !(item.children && item.children.length > 0)) {
           data.push(item[this.defaultProps.id])
         }
         if (item.children && item.children.length > 0) {
