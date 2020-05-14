@@ -39,7 +39,6 @@ export default {
 
 <style lang="scss">
 .basic-container {
-  padding: 10px 6px;
   box-sizing: border-box;
   &--block {
     height: 100%;

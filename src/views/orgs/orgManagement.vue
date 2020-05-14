@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="org-header">
-      <h4>组织机构管理</h4>
+      <div class="header">
+        组织机构管理
+      </div>
       <el-dropdown @command="handleCommand">
         <el-button
           type="primary"
@@ -334,7 +336,7 @@ export default {
         headerAlign: 'center',
         align: 'center',
         border: false,
-        defaultExpandAll: false,
+        defaultExpandAll: true,
         selection: true,
         formHeight: 20,
         height: 'auto',
@@ -512,8 +514,10 @@ export default {
   justify-content: space-between;
   align-items: center;
   // padding: 0 24px;
-  h4 {
+  .header {
+    font-weight: bold;
     font-size: 18px;
+    padding: 14px 0 16px;
   }
 }
 .originColumn {
