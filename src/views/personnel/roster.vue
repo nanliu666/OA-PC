@@ -358,7 +358,7 @@ export default {
 }
 .state {
   display: flex;
-  padding: 0 6px;
+  // padding: 0 6px;
   margin-bottom: 10px;
   .on {
     flex: 4;
