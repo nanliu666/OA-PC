@@ -397,6 +397,10 @@ export default {
         this.createOrgDailog = true
         this.$refs.orgEdit.create()
       } else if (command === 'deleteOrg') {
+        if (row.parentId === 0) {
+          this.$message.error('顶级组织不可删除')
+          return
+        }
         this.$confirm('您确定要删除选中的组织么？', '提醒', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -420,13 +424,19 @@ export default {
       }
     },
     multipleDeleteClick() {
+      let isError = false
       let params = {
         ids: this.multipleSelection
           .map((item) => {
+            if (item.parentId === 0) {
+              this.$message.error('顶级组织不可删除')
+              isError = true
+            }
             return item.orgId
           })
           .join(',')
       }
+      if (isError) return
       deleteOrg(params).then(() => {
         this.$message.success('删除成功')
         this.getOrgTree()
