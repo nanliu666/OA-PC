@@ -39,12 +39,12 @@
               >
                 调整排序
               </el-button>
-              <el-button
+              <!-- <el-button
                 icon="el-icon-upload2"
                 size="medium"
               >
                 导出
-              </el-button>
+              </el-button>-->
               <el-popover
                 placement="bottom"
                 width="40"
@@ -112,6 +112,7 @@
         ref="avueCrud"
         :option="option"
         :data="data"
+        :table-loading="tableLoading"
         @select="rowSelect"
         @select-all="selectAll"
       >
@@ -326,6 +327,7 @@ export default {
         ]
       },
       data: [],
+      tableLoading: false,
       multipleSelection: [],
       option: {
         ...tableOptions,
@@ -378,10 +380,12 @@ export default {
     },
     getOrgTree() {
       const params = this.searchParams
+      this.tableLoading = true
       if (Array.isArray(params.parentOrgId)) params.parentOrgId = params.parentOrgId[0]['']
       getOrgTree(params).then((res) => {
         this.data = res
         this.multipleSelection = []
+        this.tableLoading = false
       })
     },
     toOrgDetail(row) {

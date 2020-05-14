@@ -119,6 +119,7 @@
       </el-form-item>
       <el-form-item v-else>
         <el-popover
+          v-model="popoverShow"
           placement="bottom"
           trigger="click"
           popper-class="popover-class"
@@ -298,7 +299,8 @@ export default {
   },
   data() {
     return {
-      tags: []
+      tags: [],
+      popoverShow: false
     }
   },
   watch: {
@@ -350,6 +352,7 @@ export default {
     },
     submitSearch() {
       this.$emit('submit', this.searchParams())
+      this.popoverShow = false
     },
     handleOrgNodeClick(data, form, field, config) {
       form[field] = data[config.nodeKey]

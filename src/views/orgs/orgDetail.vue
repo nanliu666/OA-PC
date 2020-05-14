@@ -14,6 +14,7 @@
           />
           <el-tree
             ref="tree"
+            v-loading="loading"
             class="filter-tree"
             :data="treeData"
             :props="defaultProps"
@@ -23,7 +24,10 @@
             @node-click="handleNodeClick"
           />
         </div>
-        <div class="detailBox">
+        <div
+          v-loading="loading"
+          class="detailBox"
+        >
           <div class="mainHeader">
             <h3>{{ orgData.orgName }}</h3>
             <div class="btnBox">
@@ -117,7 +121,8 @@ export default {
       orgData: {},
       orgTypeObj: { Enterprise: '企业', Company: '公司', Department: '部门', Group: '小组' },
       createOrgDailog: false,
-      originOrgId: ''
+      originOrgId: '',
+      loading: false
     }
   },
   watch: {
@@ -137,6 +142,7 @@ export default {
   },
   methods: {
     loadData() {
+      this.loading = true
       getOrgTree({ parentOrgId: 0 }).then((res) => {
         this.treeData = res
         this.$nextTick(() => {
@@ -146,6 +152,7 @@ export default {
             this.$refs.tree.setCurrentKey(this.$route.query.orgId)
           }
           this.handleNodeClick(this.$refs.tree.getCurrentNode())
+          this.loading = false
         })
       })
     },
@@ -201,7 +208,7 @@ export default {
 <style lang="scss" scoped>
 .pageHeader {
   height: 48px;
-  padding: 0 24px;
+  // padding: 0 24px;
   line-height: 48px;
   font-size: 18px;
 }
