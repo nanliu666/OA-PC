@@ -107,7 +107,9 @@
             type="text"
             @click="toUserDetail(row)"
           >
-            {{ row.name }}
+            {{
+              row.name
+            }}
           </el-button>
         </template>
         <template
@@ -347,7 +349,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 24px;
+  // padding: 0 24px;
   h4 {
     font-size: 18px;
   }
