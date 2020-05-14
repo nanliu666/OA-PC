@@ -1,5 +1,5 @@
 <template>
-  <div class="category">
+  <div style="height:100%;width: 100% ">
     <div class="header">
       <div>岗位管理</div>
       <div>
@@ -20,103 +20,106 @@
         class="flex flex-flow justify-content"
         style="padding: 10px 0"
       >
-        <span style="width: 100px">使用指南：</span>
+        <span>使用指南</span>
         <span class="flex flex-flow-column">
-          <span>企业内部人员在组织中所担任的角色以及这个角色赋予他的身份，通常代表企业内部的管理层级，如：普通员工、经理、科长、部长、总监等</span>
+          <span>：企业内部人员在组织中所担任的角色以及这个角色赋予他的身份，通常代表企业内部的管理层级，如：普通员工、经理、科长、部长、总监等</span>
         </span>
       </span>
       <span
-        class="el-icon-circle-close"
+        class="el-icon-close"
+        style="color:#207EFA;font-size: 20px"
         @click="close"
       />
     </nav>
-    <div>
-      <div style="margin-top: 20px">
-        <common-table
-          style="width: 100%"
-          :data="data"
-          :page="page"
-          :config="tableConfig"
-          :columns="columns"
-          :loading="loading"
-          @pageSizeChange="sizeChange"
-          @currentPageChange="currentChange"
-        >
-          <template slot="topMenu">
-            <div class="flex-flow flex justify-content align-items ">
-              <div>
-                <el-input
-                  v-model="form.name"
-                  placeholder="职位名称"
-                  size="medium"
-                  class="input-with-select"
-                >
+    <div class="category">
+      <div>
+        <div style="margin-top: 20px">
+          <common-table
+            style="width: 100%"
+            :data="data"
+            :page="page"
+            :config="tableConfig"
+            :columns="columns"
+            :loading="loading"
+            @pageSizeChange="sizeChange"
+            @currentPageChange="currentChange"
+          >
+            <template slot="topMenu">
+              <div class="flex-flow flex justify-content align-items ">
+                <div>
+                  <el-input
+                    v-model="form.name"
+                    placeholder="职位名称"
+                    size="medium"
+                    class="input-with-select"
+                  >
+                    <el-button
+                      slot="append"
+                      icon="el-icon-search"
+                      @click="search"
+                    />
+                  </el-input>
+                </div>
+                <div>
                   <el-button
-                    slot="append"
-                    icon="el-icon-search"
-                    @click="search"
-                  />
-                </el-input>
+                    type="primary"
+                    size="medium"
+                    @click="handleExport"
+                  >
+                    <i class="el-icon-upload2" /> 导出
+                  </el-button>
+                  <el-button
+                    type="primary"
+                    size="medium"
+                    @click="getData"
+                  >
+                    <i class="el-icon-refresh" />
+                  </el-button>
+                </div>
               </div>
-              <div>
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="handleExport"
-                >
-                  <i class="el-icon-upload2" /> 导出
-                </el-button>
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="getData"
-                >
-                  <i class="el-icon-refresh" />
-                </el-button>
-              </div>
-            </div>
-          </template>
-          <template
-            slot="multiSelectMenu"
-            slot-scope="{ selection }"
-          >
-            <span class="all">
-              <span
-                @click="handlerDeleteAll(selection)"
-              ><i class="el-icon-delete" /> 批量删除</span>
-              <span><i class="el-icon-folder" /> 批量导出</span>
-            </span>
-          </template>
-          <template
-            slot="handler"
-            slot-scope="scope"
-          >
-            <el-button
-              type="text"
-              size="medium"
-              @click.stop="handleEdit(scope.row, scope.index)"
+            </template>
+            <template
+              slot="multiSelectMenu"
+              slot-scope="{ selection }"
             >
-              编辑
-            </el-button>
-            <el-button
-              type="text"
-              size="medium"
-              @click.stop="handleDelete(scope.row, scope.index)"
+              <span class="all">
+                <span
+                  @click="handlerDeleteAll(selection)"
+                ><i class="el-icon-delete" /> 批量删除</span>
+                <span><i class="el-icon-folder" /> 批量导出</span>
+              </span>
+            </template>
+            <template
+              slot="handler"
+              slot-scope="scope"
             >
-              删除
-            </el-button>
-          </template>
-        </common-table>
+              <el-button
+                type="text"
+                size="medium"
+                @click.stop="handleEdit(scope.row, scope.index)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="text"
+                size="medium"
+                @click.stop="handleDelete(scope.row, scope.index)"
+              >
+                删除
+              </el-button>
+            </template>
+          </common-table>
+        </div>
       </div>
+      <stationDialog
+        v-if="stationDialog"
+        :dialog-visible.sync="stationDialog"
+        :title="title"
+        :is-edit="isEdit"
+        :row="row"
+        @onSubmit="onSubmit"
+      />
     </div>
-    <stationDialog
-      v-if="stationDialog"
-      :dialog-visible.sync="stationDialog"
-      :title="title"
-      :is-edit="isEdit"
-      :row="row"
-      @onSubmit="onSubmit"
-    />
   </div>
 </template>
 
@@ -349,15 +352,12 @@ export default {
   height: auto;
 }
 .category {
+  margin-top: 16px;
   background: #ffffff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
-  border-radius: 4px;
-  padding: 20px !important;
-  min-height: calc(100% - 64px);
-  width: calc(100% - 64px);
-  margin-left: 30px;
-  margin-bottom: 50px;
+  padding: 24px !important;
+  min-height: calc(100% - 204px);
   .form_ {
     padding-top: 40px;
     width: 400px;
@@ -419,8 +419,14 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  font-size: 18px;
+  color: #202940;
+  line-height: 28px;
+  font-weight: bold;
+  margin-top: 14px;
 }
 .nav {
+  /*height: 36px;*/
   display: flex;
   display: -ms-flex;
   display: -moz-box;
@@ -428,13 +434,17 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  line-height: 40px;
-  border: 1px solid #efefef;
-  padding: 5px 20px;
-  margin-top: 20px;
-  span {
-    line-height: 20px;
-  }
+  line-height: 16px;
+  padding: 0px 20px;
+  margin-top: 8px;
+  background: #edf8ff;
+  border: 1px solid #73b9ff;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  /*span {*/
+  /*  line-height: 20px;*/
+  /*}*/
 }
 .aside_header {
   display: flex;
