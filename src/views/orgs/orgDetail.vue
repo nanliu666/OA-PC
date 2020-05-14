@@ -19,6 +19,7 @@
             :props="defaultProps"
             default-expand-all
             :filter-node-method="filterNode"
+            node-key="orgId"
             @node-click="handleNodeClick"
           />
         </div>
@@ -126,11 +127,21 @@ export default {
   created() {
     this.loadData()
   },
+  activated() {
+    if (this.orgData) {
+      this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+      this.handleNodeClick(this.$refs.tree.getCurrentNode())
+    }
+  },
   methods: {
     loadData() {
       getOrgTree({ parentOrgId: 0 }).then((res) => {
         this.treeData = res
         this.handleNodeClick(res[0])
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+          this.handleNodeClick(this.$refs.tree.getCurrentNode())
+        })
       })
     },
     deleteOrg() {

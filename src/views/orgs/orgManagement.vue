@@ -531,6 +531,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-right: 20px;
     .multipleLength {
       padding: 0 20px;
       margin-right: 20px;
