@@ -80,7 +80,7 @@
                 type="info"
                 @close="onDel(tag, index)"
               >
-                {{ tag.name + ` (${tag.workNum}) ` }}
+                {{ tag.name + ` (${tag.workNo}) ` }}
               </el-tag>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default {
       },
       attr: [
         {
-          prop: 'workNum',
+          prop: 'workNo',
           label: '工号',
           width: '120'
         },
