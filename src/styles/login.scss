@@ -6,8 +6,12 @@
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  background-image: url('/img/bg/bg.jpg');
-  background-size: 100% 100%;
+  // background-image: url('/img/bg/bg.jpg');
+  background-image: url('/img/bg/login_bg.jpg');
+  // background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #b3d2ff;
   font-family: 'PingFangSC-Regular';
 }
 
