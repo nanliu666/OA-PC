@@ -122,11 +122,19 @@
                 v-show="!readonlyBasicInfo"
                 :label="`附属部门${index + 1}:`"
               >
-                <tree-select
+                <!-- <tree-select
                   v-model="item.data"
                   :option="subOrgOptions"
                   :is-search="false"
                   :is-single="true"
+                /> -->
+                <el-tree-select
+                  ref="orgTree"
+                  v-model="staffInfo.subOrg[index].data"
+                  :popover-class="subOrgOptions.config.fas"
+                  :styles="subOrgOptions.styles"
+                  :select-params="subOrgOptions.config.selectParams"
+                  :tree-params="subOrgOptions.config.treeParams"
                 />
               </el-form-item>
             </el-col>
@@ -403,8 +411,9 @@
 </template>
 
 <script>
-import TreeSelect from '@/components/treeSelect/treeSelect'
-import { editStaffBasicInfo } from '../../../../api/personalInfo.js'
+// import TreeSelect from '@/components/treeSelect/treeSelect'
+import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
+import { getStaffBasicInfo, editStaffBasicInfo } from '../../../../api/personalInfo.js'
 import { deepClone } from '@/util/util'
 import { getOrgTreeSimple } from '@/api/org/org'
 import func from '@/util/func'
@@ -421,7 +430,7 @@ import { getUserWorkList } from '@/api/org/org'
 let staffInfo = {}
 export default {
   components: {
-    TreeSelect
+    ElTreeSelect
   },
   props: {
     info: {
@@ -440,13 +449,32 @@ export default {
       positionOptions: [],
       subJobOptions: [],
       subOrgOptions: {
-        //部门
         props: {
           label: 'orgName',
           value: 'orgId'
         },
         placeholder: '请选择部门',
-        dicData: []
+        dicData: [],
+        config: {
+          selectParams: {
+            placeholder: '请输入内容',
+            multiple: false
+          },
+          treeParams: {
+            data: [],
+            'check-strictly': true,
+            'default-expand-all': false,
+            'expand-on-click-node': false,
+            clickParent: true,
+            filterable: false,
+            props: {
+              children: 'children',
+              label: 'orgName',
+              disabled: 'disabled',
+              value: 'orgId'
+            }
+          }
+        }
       },
       leaderOptions: [],
       regionData: {
@@ -518,15 +546,20 @@ export default {
     addKeyForSubOrg() {
       if (func.notEmpty(this.staffInfo.subOrg)) {
         this.staffInfo.subOrg.forEach((item) => {
-          this.$set(item, 'data', [])
+          this.$set(item, 'data', '')
         })
       }
     },
     changeSubOrg() {
       if (func.notEmpty(this.staffInfo.subOrg)) {
-        this.staffInfo.subOrg.forEach((item) => {
-          item.subOrgId = item.data[0]
+        this.staffInfo.subOrg.forEach((item, index) => {
+          item.subOrgId = item.data
+          item.operatorType = ''
           delete item.data
+          delete item.subOrgName
+
+          this.staffInfo.subJob[index].operatorType = ''
+          delete this.staffInfo.subJob[index].subJobName
         })
       }
     },
@@ -636,7 +669,8 @@ export default {
     },
     loadSelectData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.subOrgOptions.dicData = res
+        this.subOrgOptions.config.treeParams.data = res
+        this.$refs['orgTree'].treeDataUpdateFun(res)
       })
       getOrgJob().then((res) => {
         this.subJobOptions = res
@@ -682,11 +716,15 @@ export default {
       this.staffInfo.workCityCode = value[1]
     },
     editInfo() {
+      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
+        this.subOrgOptions.config.treeParams.data = res
+        this.$refs['orgTree'].treeDataUpdateFun(res)
+      })
       staffInfo = deepClone(this.staffInfo)
       this.readonlyBasicInfo = false
     },
     saveInfo() {
-      // this.changeSubOrg()
+      this.changeSubOrg()
       editStaffBasicInfo(this.staffInfo).then(() => {
         this.readonlyBasicInfo = true
         staffInfo = deepClone(this.staffInfo)
@@ -694,6 +732,15 @@ export default {
           type: 'success',
           message: '修改成功'
         })
+        this.getStaffinfo()
+      })
+    },
+    getStaffinfo() {
+      let params = {
+        userId: this.$route.params.userId
+      }
+      getStaffBasicInfo(params).then((res) => {
+        this.staffInfo = res
       })
     },
     cancelEdit() {

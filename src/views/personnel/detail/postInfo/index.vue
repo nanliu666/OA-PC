@@ -138,6 +138,6 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar-line {
-  height: 120px;
+  height: 120px !important;
 }
 </style>
