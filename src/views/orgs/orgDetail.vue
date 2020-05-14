@@ -60,7 +60,7 @@
           </div>
           <div class="baseInfo">
             <h4>基本信息</h4>
-            <div class="infoBox">
+            <el-row class="infoBox">
               <el-col :span="4">
                 组织编码
               </el-col>
@@ -85,7 +85,7 @@
               <el-col :span="20">
                 {{ orgData.remark }}
               </el-col>
-            </div>
+            </el-row>
           </div>
         </div>
       </div>
@@ -222,6 +222,7 @@ export default {
     .baseInfo {
       .infoBox {
         padding: 0 40px;
+        line-height: 20px;
         .el-col {
           margin-bottom: 20px;
         }
