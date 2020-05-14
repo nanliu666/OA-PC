@@ -19,6 +19,7 @@
             :props="defaultProps"
             default-expand-all
             :filter-node-method="filterNode"
+            node-key="orgId"
             @node-click="handleNodeClick"
           />
         </div>
@@ -60,7 +61,7 @@
           </div>
           <div class="baseInfo">
             <h4>基本信息</h4>
-            <div class="infoBox">
+            <el-row class="infoBox">
               <el-col :span="4">
                 组织编码
               </el-col>
@@ -85,7 +86,7 @@
               <el-col :span="20">
                 {{ orgData.remark }}
               </el-col>
-            </div>
+            </el-row>
           </div>
         </div>
       </div>
@@ -126,11 +127,21 @@ export default {
   created() {
     this.loadData()
   },
+  activated() {
+    if (this.orgData) {
+      this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+      this.handleNodeClick(this.$refs.tree.getCurrentNode())
+    }
+  },
   methods: {
     loadData() {
       getOrgTree({ parentOrgId: 0 }).then((res) => {
         this.treeData = res
         this.handleNodeClick(res[0])
+        this.$nextTick(() => {
+          this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+          this.handleNodeClick(this.$refs.tree.getCurrentNode())
+        })
       })
     },
     deleteOrg() {
@@ -222,6 +233,7 @@ export default {
     .baseInfo {
       .infoBox {
         padding: 0 40px;
+        line-height: 20px;
         .el-col {
           margin-bottom: 20px;
         }

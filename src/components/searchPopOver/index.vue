@@ -97,6 +97,7 @@
           :styles="item.styles"
           :select-params="item.config.selectParams"
           :tree-params="item.config.treeParams"
+          @change="change"
         />
         <!-- <tree-select
           v-if="item.type === 'treeSelect'"
@@ -370,11 +371,9 @@ export default {
           } else if (item.type === 'treeSelect' || item.type === 'select') {
             if (
               (item.type === 'select' && item.config && item.config.multiple) ||
-              item.type === 'treeSelect'
+              (item.type === 'treeSelect' && item.config.selectParams.multiple)
             ) {
-              params[item.field] = item.data.map((it) => {
-                return { [item.arrField]: it }
-              })
+              params[item.field] = item.data
             } else {
               params[item.field] = item.data
             }
@@ -394,8 +393,8 @@ export default {
         if (item.type === 'numInterval') {
           item.data = { min: '', max: '' }
         } else if (
-          item.type === 'treeSelect' ||
-          (item.config && item.config.type.indexOf('range') > -1)
+          (item.type === 'treeSelect' && item.config.selectParams.multiple) ||
+          (item.config && item.config.type && item.config.type.indexOf('range') > -1)
         ) {
           item.data = []
         } else {

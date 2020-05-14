@@ -295,6 +295,7 @@ export default {
         }
       }
       this.$emit('valueChange', this.$refs.tree.getCheckedNodes())
+      this.$emit('change')
     },
     visible: function(val) {
       this.$emit('visible-change', val)
