@@ -62,15 +62,15 @@
         </el-button>
         <el-dropdown
           style="float:right;"
-          trigger="click"
           @command="(command) => handleCommand(command, row)"
         >
-          <span
+          <el-button
+            type="text"
             class="el-dropdown-link"
-            style="line-height:32px;"
+            style="padding:0;"
           >
             <i class="el-icon-more" />
-          </span>
+          </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
               v-if="row.userStatus === '1'"

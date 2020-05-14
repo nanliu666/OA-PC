@@ -81,6 +81,7 @@
       </span>
     </el-dialog>
     <role-permission
+      v-if="previewVisible"
       :visible.sync="previewVisible"
       disabled
       :role-id="roleIds"

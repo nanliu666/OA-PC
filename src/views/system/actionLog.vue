@@ -84,6 +84,7 @@ export default {
         index: true,
         selection: true,
         menu: false,
+        size: 'medium',
         column: [
           {
             label: '操作时间',
