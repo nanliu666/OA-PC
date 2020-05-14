@@ -75,7 +75,7 @@ export default {
         column: [
           {
             label: '工号',
-            prop: 'userId'
+            prop: 'workNo'
           },
           {
             label: '姓名',

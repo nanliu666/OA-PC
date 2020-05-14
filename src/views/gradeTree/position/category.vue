@@ -39,7 +39,6 @@
           :columns="columns"
           @pageSizeChange="sizeChange"
           @currentPageChange="currentChange"
-          @selection-change="selectionChange"
         >
           <template slot="topMenu">
             <div class="flex-flow flex justify-content align-items ">
@@ -381,15 +380,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.avue-view {
+  height: auto;
+}
 .category {
   background: #ffffff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
   border-radius: 4px;
   padding: 20px !important;
-  height: calc(100% - 64px);
+  min-height: calc(100% - 64px);
   width: calc(100% - 64px);
   margin-left: 30px;
+  margin-bottom: 50px;
   .form_ {
     padding-top: 40px;
     width: 400px;

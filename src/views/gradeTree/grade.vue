@@ -4,7 +4,10 @@
     class="grade"
   >
     <div class="header">
-      <div class="nav">
+      <div
+        v-show="editStatus"
+        class="nav"
+      >
         <span style="width: 150px;display: inline-block;">
           组织架构图
           <el-tooltip
@@ -19,6 +22,27 @@
           :option="option"
           @submit="submit"
         />
+      </div>
+      <div
+        v-show="!editStatus"
+        class="back flex flex-flow-column flex-justify-start"
+      >
+        <div class="flex flex-items flex-flow">
+          <el-link
+            type="primary"
+            style="font-size: 16px"
+            @click="back"
+          >
+            返回
+          </el-link><span style="padding:0 10px">|</span>编辑架构图
+        </div>
+
+        <div
+          v-if="orgForm.$orgId"
+          style="margin-top:15px"
+        >
+          {{ orgForm.$orgId }} <span class="el-icon-caret-bottom" />
+        </div>
       </div>
       <div
         v-if="editStatus"
@@ -47,7 +71,16 @@
         </div>
       </div>
     </div>
-    <div id="myDiagramDiv" />
+    <div class="canvas">
+      <div
+        id="myDiagramDiv"
+        class="myDiagramDiv"
+      />
+      <div
+        class="mask"
+        :style="{ zIndex: zIndex }"
+      />
+    </div>
 
     <ul
       id="contextMenu"
@@ -183,6 +216,7 @@ export default {
   },
   data() {
     return {
+      zIndex: 999,
       loading: false,
       positionTitle: ['新建子职位', '编辑职位'],
       isEdit: '',
@@ -212,6 +246,7 @@ export default {
             label: '',
             size: 'medium',
             prop: 'orgId',
+            clearable: false,
             span: 24,
             type: 'tree',
             dicData: org
@@ -277,7 +312,6 @@ export default {
   watch: {
     'orgForm.orgId': {
       handler: function(newVal, oldVal) {
-        // debugger
         if (newVal && oldVal) {
           (async () => {
             await this.getOrgData()
@@ -860,7 +894,6 @@ export default {
     cxcommand(event, val) {
       if (val === undefined) val = event.currentTarget.id
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
-      console.log(this.selData)
       let isChildren = !!nodeDataArray.find((it) => {
         if (it.parent == this.selData.key) {
           return it
@@ -947,8 +980,13 @@ export default {
         this.dialogVisible = false
       }
     },
+    back() {
+      this.editStatus = true
+      this.zIndex = 999
+    },
     isEdit_() {
       this.editStatus = false
+      this.zIndex = -1
     },
     sort() {
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
@@ -1000,12 +1038,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.avue-view {
+  height: auto;
+}
 .grade {
+  background: #ffffff;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 0px !important;
+  /*min-height: calc(100% - 64px);*/
+  width: calc(100% - 64px);
+  margin-left: 30px;
+  margin-bottom: 50px;
   position: relative;
   height: 100%;
-  margin: 20px !important;
-  padding: 0 !important;
-  background: #fff;
+  /*margin: 20px !important;*/
+  /*padding: 0 !important;*/
+  /*background: #fff;*/
+}
+.canvas {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  .mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: 999;
+  }
 }
 .header {
   display: flex;
@@ -1067,11 +1130,16 @@ export default {
     width: 1200px;
   }
 }
+.myDiagramDiv {
+  height: calc(100% - 250px);
+}
 #myDiagramDiv {
   background-color: rgba(220, 239, 254, 0.3);
   /*background:  #DCEFFE;*/
   border: solid 1px #fff;
   height: calc(100% - 150px);
+  padding: 0;
+  margin: 0;
   width: 100%;
   overflow: scroll;
 }
