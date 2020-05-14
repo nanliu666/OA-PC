@@ -1,7 +1,7 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
+// import personnel from './personnel'
 // import gradeTree from '@/router/views/gradeTree'
-import personnel from './personnel'
 // import orgs from './orgs'
 export default [
   {
@@ -96,7 +96,7 @@ export default [
         component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
       }
     ]
-  },
+  }
   // {
   //   path: '/system/role',
   //   component: Layout,
@@ -112,7 +112,7 @@ export default [
   //     }
   //   ]
   // },
-  // gradeTree,
-  personnel
+  // gradeTree
+  // personnel
   // orgs
 ]

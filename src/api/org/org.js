@@ -22,7 +22,7 @@ export const sortOrgTree = (params) => {
   return request({
     url: '/api/org/v1/organization/sort',
     method: 'post',
-    params: params
+    data: params
   })
 }
 

@@ -216,6 +216,7 @@ const column = [
 ]
 
 export default {
+  name: 'OrgManagement',
   components: { SearchPopoover, OrgEdit },
   data() {
     return {

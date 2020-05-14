@@ -38,6 +38,7 @@
 import { getOrgTree, sortOrgTree } from '@/api/org/org'
 
 export default {
+  name: 'OrgSort',
   data() {
     return {
       data: []

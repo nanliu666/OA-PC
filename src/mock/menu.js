@@ -1,5 +1,10 @@
 import Mock from 'mockjs'
-
+/**
+ * menuPrivileges是所有菜单权限
+ * orgPrivileges是所有组织，暂时用不到
+ *
+ * 注意：menuType为Menu的菜单，它的下级menuType只能为Button
+ */
 const res = {
   resCode: 200,
   success: true,
@@ -13,9 +18,9 @@ const res = {
       {
         menuId: '1259069584261287938',
         menuName: '系统管理',
-        menuType: 'Dir',
-        isOwn: 1,
-        isShow: 1,
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
         code: 'system',
         alias: 'system',
         path: '',
@@ -156,58 +161,31 @@ const res = {
             dataPrivileges: [],
             children: []
           },
-          {
-            menuId: '1259075153063923714',
-            menuName: '组织机构管理',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'org_management',
-            alias: 'orgManagement',
-            path: '/orgs/orgManagement',
-            icon: 'iconfont iconicon_subordinate',
-            dataPrivileges: [],
-            children: [
-              {
-                menuId: '1260118258720522241',
-                menuName: '组织机构排序',
-                menuType: 'Menu',
-                isOwn: 1,
-                isShow: 0,
-                code: 'org_sort',
-                alias: 'org_sort',
-                path: '/orgs/orgSort',
-                icon: 'iconfont icon-caidanguanli',
-                dataPrivileges: [],
-                children: []
-              },
-              {
-                menuId: '1260118573335265281',
-                menuName: '组织机构详情',
-                menuType: 'Menu',
-                isOwn: 1,
-                isShow: 0,
-                code: 'org_detail',
-                alias: 'org_detail',
-                path: '/orgs/orgDetail',
-                icon: 'iconfont icon-daohanglanmoshi02',
-                dataPrivileges: [],
-                children: []
-              }
-            ]
-          },
+
           {
             menuId: '1260116127481413634',
-            menuName: '员工花名册',
-            menuType: 'Menu',
+            menuName: '员工管理',
+            menuType: 'Dir',
             isOwn: 1,
             isShow: 1,
             code: 'roster',
             alias: 'roster',
-            path: '/personnel/roster',
+            path: '',
             icon: 'iconfont iconicon_group',
             dataPrivileges: [],
             children: [
+              {
+                menuId: '1260116127481413634',
+                menuName: '员工花名册',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_roster',
+                alias: 'personnelRoster',
+                path: '/personnel/roster',
+                icon: 'iconfont iconicon_group',
+                dataPrivileges: []
+              },
               {
                 menuId: '1260116557917667329',
                 menuName: '员工信息',
@@ -231,6 +209,59 @@ const res = {
                 alias: 'add_roster',
                 path: '/personnel/addRoster',
                 icon: 'iconfont iconicon_roundadd',
+                dataPrivileges: [],
+                children: []
+              }
+            ]
+          },
+          {
+            menuId: '125907515306392371',
+            menuName: '组织机构管理',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'org_management',
+            alias: 'orgManagement',
+            path: '',
+            icon: 'iconfont iconicon_subordinate',
+            dataPrivileges: [],
+            children: [
+              {
+                menuId: '1259075153063923714',
+                menuName: '组织机构管理',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/orgs/orgManagement',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '1260118258720522241',
+                menuName: '组织机构排序',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'org_sort',
+                alias: 'org_sort',
+                path: '/orgs/orgSort',
+                icon: 'iconfont icon-caidanguanli',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '1260118573335265281',
+                menuName: '组织机构详情',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'org_detail',
+                alias: 'org_detail',
+                path: '/orgs/orgDetail',
+                icon: 'iconfont icon-daohanglanmoshi02',
                 dataPrivileges: [],
                 children: []
               }
