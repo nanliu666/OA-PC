@@ -116,7 +116,8 @@ export default {
       },
       orgData: {},
       orgTypeObj: { Enterprise: '企业', Company: '公司', Department: '部门', Group: '小组' },
-      createOrgDailog: false
+      createOrgDailog: false,
+      originOrgId: ''
     }
   },
   watch: {
@@ -126,9 +127,10 @@ export default {
   },
   created() {
     this.loadData()
+    this.originOrgId = this.$route.query.orgId
   },
   activated() {
-    if (this.orgData) {
+    if (this.$route.query.orgId !== this.originOrgId) {
       this.$refs.tree.setCurrentKey(this.$route.query.orgId)
       this.handleNodeClick(this.$refs.tree.getCurrentNode())
     }
@@ -137,9 +139,12 @@ export default {
     loadData() {
       getOrgTree({ parentOrgId: 0 }).then((res) => {
         this.treeData = res
-        this.handleNodeClick(res[0])
         this.$nextTick(() => {
-          this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+          if (this.$route.query.orgId !== this.originOrgId) {
+            this.$refs.tree.setCurrentKey(this.orgData.orgId)
+          } else {
+            this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+          }
           this.handleNodeClick(this.$refs.tree.getCurrentNode())
         })
       })
