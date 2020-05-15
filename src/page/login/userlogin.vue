@@ -189,6 +189,7 @@ export default {
           : window.location.href.split('/#/')[0]
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
+        this.$store.commit('SET_TENANT_ID', res.tenantId)
       })
       // 临时指定域名，方便测试
       //domain = "https://bladex.vip";
