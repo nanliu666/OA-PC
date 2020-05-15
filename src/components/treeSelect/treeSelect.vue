@@ -6,7 +6,10 @@
     popper-class="oa-tree_select"
     :width="treeMinWidth"
   >
-    <div :class="{ limitCheck: limitCheck || false }">
+    <div
+      :class="{ limitCheck: limitCheck || false }"
+      class="flexheight"
+    >
       <div
         v-if="isSearch"
         class="search-bar"
@@ -330,5 +333,9 @@ export default {
   /deep/ .el-checkbox__input > .el-checkbox__inner {
     display: none;
   }
+}
+.flexheight {
+  max-height: 350px;
+  overflow-y: scroll;
 }
 </style>
