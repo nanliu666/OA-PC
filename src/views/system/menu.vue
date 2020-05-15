@@ -260,7 +260,7 @@ export default {
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {
-        ids.push(ele.id)
+        ids.push(ele.menuId)
       })
       return ids.join(',')
     }
