@@ -166,5 +166,4 @@ export default {
     color: #1573f1;
   }
 }
-@import url('../staffInfo.scss');
 </style>
