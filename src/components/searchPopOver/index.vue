@@ -56,6 +56,12 @@
           >
             <i class="el-icon-loading" />
           </div>
+          <div
+            v-show="item.noMore"
+            style="text-align: center; font-size:14px;color: #606266;"
+          >
+            没有更多了
+          </div>
         </el-select>
         <el-time-select
           v-if="item.type === 'timeSelect'"
@@ -89,14 +95,24 @@
           v-if="item.type === 'numInterval'"
           v-model="item.data"
         />
-        <tree-select
+        <el-tree-select
+          v-if="item.type === 'treeSelect'"
+          :ref="item.field"
+          v-model="item.data"
+          :popover-class="item.config.fas"
+          :styles="item.styles"
+          :select-params="item.config.selectParams"
+          :tree-params="item.config.treeParams"
+          @change="change"
+        />
+        <!-- <tree-select
           v-if="item.type === 'treeSelect'"
           v-model="item.data"
           :option="item.options"
           :is-search="false"
           :is-single="item.isSingle || false"
           @change="change"
-        />
+        />-->
       </el-form-item>
       <el-form-item v-if="popoverOptions.length === 0">
         <el-button
@@ -109,6 +125,7 @@
       </el-form-item>
       <el-form-item v-else>
         <el-popover
+          v-model="popoverShow"
           placement="bottom"
           trigger="click"
           popper-class="popover-class"
@@ -169,6 +186,12 @@
                     >
                       <i class="el-icon-loading" />
                     </div>
+                    <div
+                      v-show="item.noMore"
+                      style="text-align: center; font-size:14px;color: #606266;"
+                    >
+                      没有更多了
+                    </div>
                   </el-select>
                   <el-time-select
                     v-if="item.type === 'timeSelect'"
@@ -198,13 +221,22 @@
                     v-if="item.type === 'numInterval'"
                     v-model="item.data"
                   />
-                  <tree-select
+                  <el-tree-select
+                    v-if="item.type === 'treeSelect'"
+                    :ref="item.field"
+                    v-model="item.data"
+                    :popover-class="item.config.fas"
+                    :styles="item.styles"
+                    :select-params="item.config.selectParams"
+                    :tree-params="item.config.treeParams"
+                  />
+                  <!-- <tree-select
                     v-if="item.type === 'treeSelect'"
                     v-model="item.data"
                     :option="item.options"
                     :is-search="false"
                     :is-single="item.isSingle || false"
-                  />
+                  />-->
                 </el-form-item>
               </el-col>
             </el-form>
@@ -241,11 +273,12 @@
 
 <script>
 import NumInterval from '../numInterval/numInterval'
-import TreeSelect from '../treeSelect/treeSelect'
+// import TreeSelect from '../treeSelect/treeSelect'
+import ElTreeSelect from '../elTreeSelect/elTreeSelect'
 
 export default {
   name: 'SearchPopOver',
-  components: { NumInterval, TreeSelect },
+  components: { NumInterval, ElTreeSelect },
   props: {
     // 筛选弹窗外部
     requireOptions: {
@@ -278,7 +311,8 @@ export default {
   },
   data() {
     return {
-      tags: []
+      tags: [],
+      popoverShow: false
     }
   },
   watch: {
@@ -325,8 +359,12 @@ export default {
     }
   },
   methods: {
+    treeDataUpdateFun(data, refKey) {
+      this.$refs[refKey][0].treeDataUpdateFun(data)
+    },
     submitSearch() {
       this.$emit('submit', this.searchParams())
+      this.popoverShow = false
     },
     handleOrgNodeClick(data, form, field, config) {
       form[field] = data[config.nodeKey]
@@ -348,11 +386,9 @@ export default {
           } else if (item.type === 'treeSelect' || item.type === 'select') {
             if (
               (item.type === 'select' && item.config && item.config.multiple) ||
-              item.type === 'treeSelect'
+              (item.type === 'treeSelect' && item.config.selectParams.multiple)
             ) {
-              params[item.field] = item.data.map((it) => {
-                return { [item.arrField]: it }
-              })
+              params[item.field] = item.data
             } else {
               params[item.field] = item.data
             }
@@ -372,8 +408,8 @@ export default {
         if (item.type === 'numInterval') {
           item.data = { min: '', max: '' }
         } else if (
-          item.type === 'treeSelect' ||
-          (item.config && item.config.type.indexOf('range') > -1)
+          (item.type === 'treeSelect' && item.config.selectParams.multiple) ||
+          (item.config && item.config.type && item.config.type.indexOf('range') > -1)
         ) {
           item.data = []
         } else {
@@ -409,7 +445,6 @@ export default {
   padding-right: 24px;
 }
 /deep/ .treeSelect {
-  margin-top: 3px;
   .el-form-item__content {
     min-width: 198px;
   }

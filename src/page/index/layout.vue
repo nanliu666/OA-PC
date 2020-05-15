@@ -1,14 +1,8 @@
 <template>
   <div>
-    <keep-alive>
-      <router-view
-        v-if="$route.meta.$keepAlive"
-        class="avue-view"
-      />
+    <keep-alive v-if="$route.meta.$keepAlive">
+      <router-view />
     </keep-alive>
-    <router-view
-      v-if="!$route.meta.$keepAlive"
-      class="avue-view"
-    />
+    <router-view v-if="!$route.meta.$keepAlive" />
   </div>
 </template>

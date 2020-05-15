@@ -138,7 +138,6 @@ RouterPlugin.install = function(vue, router, store, i18n) {
             }
           })()
         )
-
         //是否有子路由
         const hasChild = children.length !== 0
         const oRouter = {
@@ -149,7 +148,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
               require(['../page/index'], resolve)
               return
               // 判断是否为多层路由
-            } else if (hasChild && oMenu.menuType === 'Dir' && !first) {
+            } else if (hasChild) {
               require(['../page/index/layout'], resolve)
               return
               // 判断是否为最终的页面视图
@@ -170,7 +169,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
             ? (() => {
                 if (first) {
                   // 这里的isURL判断，因为这个网站有使用 iframe。所以需要判断是否为网页链接
-                  if (!isURL(path)) oMenu[propsDefault.path] = `${path}`
+                  // if (!isURL(path)) oMenu[propsDefault.path] = `${path}`
                   return [
                     {
                       component(resolve) {

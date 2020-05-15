@@ -6,7 +6,7 @@ export default {
   children: [
     {
       path: 'index',
-      name: '获选人',
+      name: '候选人管理',
       meta: {
         i18n: 'index'
       },

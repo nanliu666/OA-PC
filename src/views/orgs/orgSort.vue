@@ -8,6 +8,7 @@
     <basic-container :block="true">
       <div class="treeBox">
         <el-tree
+          v-loading="loading"
           :data="data"
           node-key="orgId"
           :props="{ label: 'orgName' }"
@@ -38,14 +39,17 @@
 import { getOrgTree, sortOrgTree } from '@/api/org/org'
 
 export default {
+  name: 'OrgSort',
   data() {
     return {
-      data: []
+      data: [],
+      loading: true
     }
   },
   created() {
     getOrgTree({ parentOrgId: 0 }).then((res) => {
       this.data = res
+      this.loading = false
     })
   },
   methods: {
@@ -67,10 +71,12 @@ export default {
     onSubmit() {
       this.loadSort(this.data)
       // { orgs: this.data }
+      this.loading = true
       sortOrgTree(this.data).then(() => {
         this.$message.success('保存成功')
         getOrgTree({ parentOrgId: 0 }).then((res) => {
           this.data = res
+          this.loading = false
         })
       })
     }
@@ -81,7 +87,7 @@ export default {
 <style lang="scss" scoped>
 .pageHeader {
   height: 48px;
-  padding: 0 24px;
+  // padding: 0 24px;
   line-height: 48px;
   font-size: 18px;
 }

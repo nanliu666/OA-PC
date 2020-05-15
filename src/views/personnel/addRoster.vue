@@ -5,7 +5,7 @@
       class="pageHeader"
       @back="goBack"
     />
-    <basic-container>
+    <basic-container v-loading="loading">
       <el-row
         type="flex"
         justify="center"
@@ -128,11 +128,19 @@
                 label="部门"
                 prop="orgId"
               >
-                <tree-select
+                <!-- <tree-select
                   v-model="form.orgId"
                   :option="orgOptions"
                   :is-search="false"
                   :is-single="true"
+                />-->
+                <el-tree-select
+                  ref="orgTree"
+                  v-model="form.orgId"
+                  :popover-class="orgOptions.config.fas"
+                  :styles="orgOptions.styles"
+                  :select-params="orgOptions.config.selectParams"
+                  :tree-params="orgOptions.config.treeParams"
                 />
               </el-form-item>
             </el-col>
@@ -160,11 +168,19 @@
                 :span="12"
               >
                 <el-form-item :label="'部门' + (index + 1)">
-                  <tree-select
+                  <!-- <tree-select
                     v-model="form.subOrg[index]"
                     :option="orgOptions"
                     :is-search="false"
                     :is-single="true"
+                  />-->
+                  <el-tree-select
+                    ref="orgTree"
+                    v-model="form.subOrg[index]"
+                    :popover-class="orgOptions.config.fas"
+                    :styles="orgOptions.styles"
+                    :select-params="orgOptions.config.selectParams"
+                    :tree-params="orgOptions.config.treeParams"
                   />
                 </el-form-item>
               </el-col>
@@ -413,12 +429,13 @@ import {
   createUser
 } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
-import TreeSelect from '@/components/treeSelect/treeSelect'
+// import TreeSelect from '@/components/treeSelect/treeSelect'
 import { regionData } from 'element-china-area-data'
+import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 
 export default {
   name: 'AddRoster',
-  components: { TreeSelect },
+  components: { ElTreeSelect },
   data() {
     var checkUserId = (rule, value, callback) => {
       checkUserInfo({ workNo: value })
@@ -469,7 +486,27 @@ export default {
           value: 'orgId'
         },
         placeholder: '请选择部门',
-        dicData: []
+        dicData: [],
+        config: {
+          selectParams: {
+            placeholder: '请输入内容',
+            multiple: false
+          },
+          treeParams: {
+            data: [],
+            'check-strictly': true,
+            'default-expand-all': false,
+            'expand-on-click-node': false,
+            clickParent: true,
+            filterable: false,
+            props: {
+              children: 'children',
+              label: 'orgName',
+              disabled: 'disabled',
+              value: 'orgId'
+            }
+          }
+        }
       },
       positionList: [],
       rules: {
@@ -508,7 +545,8 @@ export default {
       workAddress: [],
       dialogTableVisible: false,
       loadAddress: false,
-      addressPageNo: 1
+      addressPageNo: 1,
+      loading: false
     }
   },
   created() {
@@ -629,13 +667,15 @@ export default {
             params.workCityCode = params.workProvinceArr[1]
             params.workCountyCode = params.workProvinceArr[2]
             params.orgId = params.orgId[0]
-            params.subOrg = params.subOrg.map((item) => {
-              return item[0]
-            })
-            params.subOrg = params.subOrg.sort()
-            params.subJob = params.subJob.sort()
+            // params.subOrg = params.subOrg.map((item) => {
+            //   return item[0]
+            // })
+            params.subOrg = Array.from(new Set(params.subOrg))
+            params.subJob = Array.from(new Set(params.subJob))
+            this.loading = true
             createUser(params).then(() => {
               this.$message.success('创建成功')
+              this.loading = false
               resolve()
             })
           } else {
@@ -670,7 +710,8 @@ export default {
         this.positionList = res
       })
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.orgOptions.dicData = res
+        this.orgOptions.config.treeParams.data = res
+        this.$refs['orgTree'].treeDataUpdateFun(res)
       })
       this.loadWorkAddress()
     }
@@ -681,7 +722,7 @@ export default {
 <style lang="scss" scoped>
 .pageHeader {
   height: 48px;
-  padding: 0 24px;
+  // padding: 0 24px;
   line-height: 48px;
   font-size: 18px;
 }

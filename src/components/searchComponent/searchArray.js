@@ -43,7 +43,7 @@ export default async () => {
   // const HouseholdType = await store.dispatch('CommonDict', 'HouseholdType')
   // const LeaveReason = await store.dispatch('CommonDict', 'LeaveReason')
   // const WorkAddress = (await getWorkAddressList({ pageNo: 1, pageSize: 50 })).data
-  const orgTree = await getOrgTreeSimple({ parentOrgId: 0 })
+  // const orgTree = await getOrgTreeSimple({ parentOrgId: 0 })
   // const LeaderList = (await getUserWorkList({ pageNo: 1, pageSize: 100 })).data
   // const positionList = await getOrgPosition({ pageNo: 1, pageSize: 100 })
   // const jobList = await getOrgJob()
@@ -59,37 +59,44 @@ export default async () => {
           label: '部门',
           field: 'orgs',
           arrField: 'orgId',
-          config: { multiple: true },
-          options: {
-            props: {
-              label: 'orgName',
-              value: 'orgId'
+          config: {
+            multiple: true,
+            selectParams: {
+              placeholder: '请输入内容',
+              multiple: true
             },
-            placeholder: '请选择关联部门',
-            dicData: orgTree
+            treeParams: {
+              data: [],
+              'check-strictly': true,
+              'default-expand-all': false,
+              'expand-on-click-node': false,
+              clickParent: true,
+              filterable: false,
+              props: {
+                children: 'children',
+                label: 'orgName',
+                disabled: 'disabled',
+                value: 'orgId'
+              }
+            }
+          },
+          firstLoad(flag, item, callBack) {
+            if (flag && item.config.treeParams.data.length === 0) {
+              item.loadMoreFun(item, callBack)
+            }
+          },
+          loadMoreFun(item, callBack) {
+            if (item.loading || item.noMore) return
+            item.loading = true
+            getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+              if (res.length > 0) {
+                item.config.treeParams.data.push(...res)
+                item.loading = false
+                item.noMore = true
+                callBack(item, res)
+              }
+            })
           }
-          // loading: false,
-          // noMore: true,
-          // pageNo: 1,
-          // firstLoad(flag, item) {
-          //   console.log(flag)
-          //   if (flag && item.options.dicData.length === 0) {
-          //     item.loadMoreFun(item)
-          //   }
-          // },
-          // loadMoreFun(item) {
-          //   if (item.loading || item.noMore) return
-          //   item.loading = true
-          //   getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-          //     if (res.length > 0) {
-          //       item.options.dicData.push(...res)
-          //       item.pageNo += 1
-          //       item.loading = false
-          //     } else {
-          //       item.noMore = true
-          //     }
-          //   })
-          // }
         },
         {
           type: 'select',
@@ -113,6 +120,7 @@ export default async () => {
               if (res.length > 0) {
                 item.options.push(...res)
                 item.loading = false
+                item.noMore = true
               }
             })
           }
@@ -189,7 +197,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'WorkProperty')
+              store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+                item.options = res
+              })
             }
           }
         },
@@ -248,7 +258,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'RecruitmentChannel')
+              store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
+                item.options = res
+              })
             }
           }
         },
@@ -297,7 +309,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'ContractType')
+              store.dispatch('CommonDict', 'ContractType').then((res) => {
+                item.options = res
+              })
             }
           }
         },
@@ -370,7 +384,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'IDType')
+              store.dispatch('CommonDict', 'IDType').then((res) => {
+                item.options = res
+              })
             }
           }
         },
@@ -386,7 +402,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'EducationalLevel')
+              store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+                item.options = res
+              })
             }
           }
         },
@@ -418,7 +436,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'Nation')
+              store.dispatch('CommonDict', 'Nation').then((res) => {
+                item.options = res
+              })
             }
           }
         },
@@ -432,7 +452,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'PoliticalStatus')
+              store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
+                item.options = res
+              })
             }
           }
         },
@@ -453,7 +475,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = store.dispatch('CommonDict', 'HouseholdType')
+              store.dispatch('CommonDict', 'HouseholdType').then((res) => {
+                item.options = res
+              })
             }
           }
         }
@@ -480,7 +504,9 @@ export default async () => {
           options: [],
           firstLoad(flag, item) {
             if (flag && item.options.length === 0) {
-              item.options = loadReasonArr(store.dispatch('CommonDict', 'LeaveReason'))
+              store.dispatch('CommonDict', 'LeaveReason').then((res) => {
+                item.options = loadReasonArr(res)
+              })
             }
           }
         },

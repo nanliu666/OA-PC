@@ -57,7 +57,7 @@
   box-sizing: border-box;
   overflow: hidden;
   transition: all 0.5s;
-  background: #f0f2f5;
+  background: #f2f5f7;
   z-index: 1026;
 
   &--fullscreen {
@@ -67,7 +67,7 @@
 }
 
 .avue-view {
-  padding: 0 24px !important;
+  padding: 0 32px !important;
   width: 100%;
   height: 100%;
   box-sizing: border-box;

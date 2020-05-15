@@ -44,22 +44,34 @@
           {{ orgForm.$orgId }} <span class="el-icon-caret-bottom" />
         </div>
       </div>
-      <div
-        v-if="editStatus"
-        class="edit"
-      >
-        <div
-          class="button"
+      <div v-if="editStatus">
+        <!--        <div-->
+        <!--          class="button"-->
+        <!--          @click="isEdit_"-->
+        <!--        >-->
+        <!--          <i class="el-icon-edit-outline icon" />编辑架构图-->
+        <!--        </div>-->
+        <el-button
+          type="primary"
+          size="medium"
           @click="isEdit_"
         >
-          <i class="el-icon-edit-outline icon" />编辑架构图
-        </div>
-        <div
-          class="button2"
+          <i class="el-icon-edit-outline el-icon--right" /> 编辑架构图
+        </el-button>
+        <el-button
+          size="medium"
           @click="downloadImage"
         >
-          <i class="el-icon-download icon" />下载
-        </div>
+          <span
+            style="display: inline-block; width: 93px"
+          ><i class="el-icon-download el-icon--right" />下载</span>
+        </el-button>
+        <!--        <botton-->
+        <!--          class="button2"-->
+        <!--          @click="downloadImage"-->
+        <!--        >-->
+        <!--          <i class="el-icon-download icon" />下载-->
+        <!--        </botton>-->
       </div>
       <div v-else>
         <div
@@ -1012,6 +1024,7 @@ export default {
       postSort(params).then(() => {
         // console.log(res)
         this.$message.success('排序成功')
+        this.getTree()
       })
     },
     downloadImage() {

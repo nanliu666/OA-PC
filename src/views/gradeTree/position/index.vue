@@ -1,5 +1,5 @@
 <template>
-  <div class="position">
+  <div style="height:100%;width: 100% ">
     <div class="header">
       <div>职位管理</div>
       <div>
@@ -18,143 +18,146 @@
     >
       <span>使用指南：职位是指企业的某个员工需要完成的具体任务，是员工最基础的工作属性，如：司机、行政专员等</span>
       <span
-        class="el-icon-circle-close"
+        class="el-icon-close"
+        style="color:#207EFA;font-size: 20px"
         @click="close"
       />
     </nav>
-    <div style="height: 100%">
-      <el-container style="height: 100%">
-        <el-aside
-          class="aside"
-          style="width: 240px;"
-        >
-          <div class="aside_header">
-            <span>职位类别</span>
-            <span
-              class="el-icon-setting"
-              @click="jump"
-            />
-          </div>
-          <div>
-            <ul>
-              <li
-                v-for="(item, index) in asideList"
-                :key="index"
-                :class="[index === 0 ? 'selection' : '', index === active ? 'actives' : '']"
-                @click="handleAside(item, index)"
+    <div class="position">
+      <div style="height: 100%">
+        <el-container style="height: 100%">
+          <el-aside
+            class="aside"
+            style="width: 240px;"
+          >
+            <div class="aside_header">
+              <span>职位类别</span>
+              <span
+                class="el-icon-setting"
+                @click="jump"
+              />
+            </div>
+            <div>
+              <ul>
+                <li
+                  v-for="(item, index) in asideList"
+                  :key="index"
+                  :class="[index === 0 ? 'selection' : '', index === active ? 'actives' : '']"
+                  @click="handleAside(item, index)"
+                >
+                  <i
+                    v-if="index === 0"
+                    class="el-icon-folder-opened icon"
+                  />{{ item.title }}
+                </li>
+              </ul>
+            </div>
+          </el-aside>
+          <el-main>
+            <div style="margin-top: 20px">
+              <common-table
+                style="width: 100%"
+                :data="data"
+                :page="page"
+                :loading="loading"
+                :config="tableConfig"
+                :columns="columns"
+                @page-size-change="sizeChange"
+                @current-page-change="currentChange"
               >
-                <i
-                  v-if="index === 0"
-                  class="el-icon-folder-opened icon"
-                />{{ item.title }}
-              </li>
-            </ul>
-          </div>
-        </el-aside>
-        <el-main>
-          <div style="margin-top: 20px">
-            <common-table
-              style="width: 100%"
-              :data="data"
-              :page="page"
-              :loading="loading"
-              :config="tableConfig"
-              :columns="columns"
-              @page-size-change="sizeChange"
-              @current-page-change="currentChange"
-            >
-              <template slot="topMenu">
-                <div class="flex-flow flex justify-content align-items ">
-                  <div>
-                    <el-input
-                      v-model="form.name"
-                      placeholder="职位名称"
-                      size="medium"
-                      class="input-with-select"
-                    >
+                <template slot="topMenu">
+                  <div class="flex-flow flex justify-content align-items ">
+                    <div>
+                      <el-input
+                        v-model="form.name"
+                        placeholder="职位名称"
+                        size="medium"
+                        class="input-with-select"
+                      >
+                        <el-button
+                          slot="append"
+                          icon="el-icon-search"
+                          @click="search"
+                        />
+                      </el-input>
+                    </div>
+                    <div>
                       <el-button
-                        slot="append"
-                        icon="el-icon-search"
-                        @click="search"
-                      />
-                    </el-input>
+                        type="primary"
+                        size="medium"
+                        @click="handleExport"
+                      >
+                        <i class="el-icon-upload2" /> 导出
+                      </el-button>
+                      <el-button
+                        type="primary"
+                        size="medium"
+                        @click="getJobData"
+                      >
+                        <i class="el-icon-refresh" />
+                      </el-button>
+                    </div>
                   </div>
-                  <div>
-                    <el-button
-                      type="primary"
-                      size="medium"
-                      @click="handleExport"
-                    >
-                      <i class="el-icon-upload2" /> 导出
-                    </el-button>
-                    <el-button
-                      type="primary"
-                      size="medium"
-                      @click="getJobData"
-                    >
-                      <i class="el-icon-refresh" />
-                    </el-button>
-                  </div>
-                </div>
-              </template>
-              <template
-                slot="multiSelectMenu"
-                slot-scope="{ selection }"
-              >
-                <span class="all">
-                  <span
-                    @click="handlerDeleteAll(selection)"
-                  ><i class="el-icon-delete" /> 批量删除</span>
-                  <span><i class="el-icon-folder" /> 批量导出</span>
-                </span>
-              </template>
-              <template
-                slot="handler"
-                slot-scope="scope"
-              >
-                <el-button
-                  type="text"
-                  size="medium"
-                  @click.stop="handleConfig(scope.row, scope.index)"
+                </template>
+                <template
+                  slot="multiSelectMenu"
+                  slot-scope="{ selection }"
                 >
-                  新建子职位
-                </el-button>
-                <el-button
-                  type="text"
-                  size="medium"
-                  @click.stop="handleCheck(scope.row, scope.index)"
-                >
-                  编辑
-                </el-button>
-                <el-dropdown
-                  style="margin-left: 15px"
-                  trigger="hover"
-                  @command="handleCommand($event, scope.row)"
-                >
-                  <span class="el-dropdown-link">
-                    <i class="el-icon-more" />
+                  <span class="all">
+                    <span
+                      @click="handlerDeleteAll(selection)"
+                    ><i class="el-icon-delete" /> 批量删除</span>
+                    <span><i class="el-icon-folder" /> 批量导出</span>
                   </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="del">
-                      删除
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </template>
-            </common-table>
-          </div>
-        </el-main>
-      </el-container>
+                </template>
+                <template
+                  slot="handler"
+                  slot-scope="scope"
+                >
+                  <el-button
+                    type="text"
+                    size="medium"
+                    @click.stop="handleConfig(scope.row, scope.index)"
+                  >
+                    新建子职位
+                  </el-button>
+                  <el-button
+                    type="text"
+                    size="medium"
+                    @click.stop="handleCheck(scope.row, scope.index)"
+                  >
+                    编辑
+                  </el-button>
+                  <el-dropdown
+                    style="margin-left: 15px"
+                    trigger="hover"
+                    @command="handleCommand($event, scope.row)"
+                  >
+                    <span class="el-dropdown-link">
+                      <i class="el-icon-more" />
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="del">
+                        删除
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </template>
+              </common-table>
+            </div>
+          </el-main>
+        </el-container>
+      </div>
+      <position-dialog
+        v-if="positionDialog"
+        :dialog-visible.sync="positionDialog"
+        :data="row"
+        :title="title"
+        :is-edit="isEdit"
+        :org-tree="orgTree"
+        @onsubmit="positionOnsubmit"
+      />
     </div>
-    <position-dialog
-      v-if="positionDialog"
-      :dialog-visible.sync="positionDialog"
-      :data="row"
-      :title="title"
-      :is-edit="isEdit"
-      :org-tree="orgTree"
-      @onsubmit="positionOnsubmit"
-    />
   </div>
 </template>
 
@@ -306,10 +309,10 @@ export default {
         this.orgTree = res
       })
     },
-    getJobData({ pageNo = 1, pageSize = 10 } = {}) {
+    getJobData({ pageNo = 1 } = {}) {
       this.loading = true
       this.params.pageNo = pageNo
-      this.params.pageSize = pageSize
+      this.params.pageSize = this.form.pageSize
       this.params.jobName = this.form.name
       gotV1Job(this.params).then((res) => {
         this.loading = false
@@ -344,10 +347,12 @@ export default {
       this.getJobData({ pageNo: 1, pageSize: this.form.pageSize })
     },
     sizeChange(val) {
-      this.getJobData({ pageNo: 1, pageSize: val })
+      this.form.pageSize = val
+      this.getJobData({ pageNo: 1 })
     },
     currentChange(val) {
-      this.getJobData({ pageNo: val, pageSize: this.form.pageSize })
+      this.form.pageNo = val
+      this.getJobData({ pageNo: val })
     },
     handleExport() {
       this.$confirm('是否导出数据?', '提示', {
@@ -424,19 +429,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.avue-view {
-  height: auto;
-}
+/*.avue-view {*/
+/*  height: auto;*/
+/*}*/
 .position {
+  margin-top: 16px;
   background: #ffffff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
-  border-radius: 4px;
-  padding: 20px !important;
-  min-height: calc(100% - 64px);
-  width: calc(100% - 64px);
-  margin-left: 30px;
-  margin-bottom: 50px;
+  padding: 24px !important;
+  min-height: calc(100% - 204px);
   .form_ {
     padding-top: 40px;
     width: 400px;
@@ -498,6 +500,11 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  font-size: 18px;
+  color: #202940;
+  line-height: 28px;
+  font-weight: bold;
+  margin-top: 14px;
 }
 .nav {
   display: flex;
@@ -507,10 +514,14 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  line-height: 40px;
-  border: 1px solid #efefef;
+  line-height: 26px;
   padding: 5px 20px;
-  margin-top: 20px;
+  margin-top: 8px;
+  background: #edf8ff;
+  border: 1px solid #73b9ff;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 .aside_header {
   display: flex;

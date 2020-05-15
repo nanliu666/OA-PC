@@ -1,8 +1,9 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
+// import personnel from './personnel'
 // import gradeTree from '@/router/views/gradeTree'
 import selectedPerson from './selectedPerson'
-import personnel from './personnel'
+// import personnel from './personnel'
 // import orgs from './orgs'
 export default [
   {
@@ -113,8 +114,10 @@ export default [
   //     }
   //   ]
   // },
+  // gradeTree
+  // personnel
   // gradeTree,
-  personnel,
+  // personnel,
   selectedPerson
   // orgs
 ]

@@ -84,7 +84,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         categoryId: this.id, //附件分类ID
-        userId: this.$store.getters.userId,
+        userId: this.$route.params.userId,
         name: '' //非必填
       }
     }

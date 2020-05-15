@@ -18,6 +18,12 @@
             @submit="submit"
           />
         </template>
+        <template
+          slot="status"
+          slot-scope="{ row }"
+        >
+          {{ row.status === 'Success' ? '成功' : '失败' }}
+        </template>
       </avue-crud>
     </basic-container>
   </div>
@@ -84,6 +90,7 @@ export default {
         index: true,
         selection: true,
         menu: false,
+        size: 'medium',
         column: [
           {
             label: '操作时间',
@@ -106,7 +113,8 @@ export default {
           {
             label: '状态',
             prop: 'status',
-            display: false
+            display: false,
+            slot: true
           },
           {
             label: '操作内容',

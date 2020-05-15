@@ -168,12 +168,25 @@
                         v-if="item.type === 'numInterval'"
                         v-model="item.data"
                       />
-                      <tree-select
+                      <!-- <tree-select
                         v-if="item.type === 'treeSelect'"
                         v-model="item.data"
                         :option="item.options"
                         :is-search="false"
                         @change="treeSelectChange(arguments, item)"
+                      />-->
+                      <el-tree-select
+                        v-if="item.type === 'treeSelect'"
+                        :ref="item.field"
+                        v-model="item.data"
+                        :popover-class="item.config.fas"
+                        :styles="item.styles"
+                        :select-params="item.config.selectParams"
+                        :tree-params="item.config.treeParams"
+                        @visible-change="
+                          item.firstLoad && item.firstLoad($event, item, treeDataUpdateFun)
+                        "
+                        @valueChange="treeSelectChange($event, item)"
                       />
                     </el-form-item>
                   </el-col>
@@ -214,12 +227,13 @@
 
 <script>
 import NumInterval from '../numInterval/numInterval'
-import TreeSelect from '../treeSelect/treeSelect'
+// import TreeSelect from '../treeSelect/treeSelect'
 import genSearchArray from './searchArray'
+import ElTreeSelect from '../elTreeSelect/elTreeSelect'
 
 export default {
   name: 'ScreenComponent',
-  components: { NumInterval, TreeSelect },
+  components: { NumInterval, ElTreeSelect },
   props: {
     showStatus: {
       type: Boolean
@@ -286,14 +300,18 @@ export default {
       })
   },
   methods: {
+    treeDataUpdateFun(item, res) {
+      this.$refs[item.field][0].treeDataUpdateFun(res)
+    },
     treeSelectChange(e, item) {
-      this.$set(item, 'detailData', e[1])
+      this.$set(item, 'detailData', e)
     },
     handleRefresh() {
       this.$emit('seacrh', this.searchParams())
     },
     handleSearch() {
       this.$emit('seacrh', this.searchParams())
+      this.showCollapse = false
     },
     handleExport() {
       this.$emit('export')
@@ -339,6 +357,8 @@ export default {
         items.questions.forEach((item) => {
           if (item.type === 'numInterval') {
             item.data = { min: '', max: '' }
+          } else if (item.type === 'treeSelect') {
+            item.data = []
           } else {
             item.data = ''
           }
@@ -398,7 +418,7 @@ export default {
             ': ' +
             (tag.detailData || [])
               .map((item) => {
-                return item[tag.options.props.label]
+                return item[tag.config.treeParams.props.label]
               })
               .join('、')
           )
