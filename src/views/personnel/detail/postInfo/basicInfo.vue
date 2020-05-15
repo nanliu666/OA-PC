@@ -122,15 +122,9 @@
                 v-show="!readonlyBasicInfo"
                 :label="`附属部门${index + 1}:`"
               >
-                <!-- <tree-select
-                  v-model="item.data"
-                  :option="subOrgOptions"
-                  :is-search="false"
-                  :is-single="true"
-                /> -->
                 <el-tree-select
                   ref="orgTree"
-                  v-model="staffInfo.subOrg[index].data"
+                  v-model="staffInfo.subOrg[index].subOrgId"
                   :popover-class="subOrgOptions.config.fas"
                   :styles="subOrgOptions.styles"
                   :select-params="subOrgOptions.config.selectParams"
@@ -169,6 +163,17 @@
             </el-col>
           </el-row>
         </template>
+        <div
+          v-show="!readonlyBasicInfo"
+          style="padding-left:150px;font-size:18px;"
+        >
+          <span
+            style="padding: 5px; cursor: pointer;"
+            @click="addJobOrg()"
+          >
+            <i class="el-icon-plus" />
+          </span>
+        </div>
         <el-row>
           <el-col
             :span="10"
@@ -208,7 +213,7 @@
               v-show="readonlyBasicInfo"
               label="工作地址:"
             >
-              <span class="info-item-value">{{ getWorkAdress }}</span>
+              <span class="info-item-value">{{ getWorkAdress() }}</span>
             </el-form-item>
 
             <el-form-item
@@ -274,7 +279,7 @@
               v-show="readonlyBasicInfo"
               label="工作城市:"
             >
-              <span class="info-item-value">{{ getCityDetail }}</span>
+              <span class="info-item-value">{{ getCityDetail() }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -498,6 +503,7 @@ export default {
           label: 'label'
         }
       },
+      loadAddress: false,
       addressPageNo: 1,
       workAdressList: [],
       addAdressForm: {
@@ -512,25 +518,6 @@ export default {
     }
   },
   computed: {
-    getCityDetail() {
-      if (this.staffInfo.workProvinceName) {
-        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
-      } else {
-        return ''
-      }
-    },
-    getWorkAdress() {
-      if (this.staffInfo.address) {
-        return (
-          this.staffInfo.provinceName +
-          this.staffInfo.cityName +
-          this.staffInfo.countyName +
-          this.staffInfo.address
-        )
-      } else {
-        return ''
-      }
-    },
     getRecruitment() {
       let dictValue = ''
       for (let i = 0; i < this.recruitOptions.length; i++) {
@@ -566,23 +553,30 @@ export default {
   created() {
     this.initRegion()
     this.loadSelectData()
-    this.addKeyForSubOrg()
     this.getWorkAdressList()
   },
   methods: {
-    addKeyForSubOrg() {
-      if (func.notEmpty(this.staffInfo.subOrg)) {
-        this.staffInfo.subOrg.forEach((item) => {
-          this.$set(item, 'data', '')
-        })
+    getCityDetail() {
+      if (this.staffInfo.workProvinceName) {
+        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
+      }
+    },
+    getWorkAdress() {
+      if (this.staffInfo.address) {
+        return (
+          this.staffInfo.provinceName +
+          this.staffInfo.cityName +
+          this.staffInfo.countyName +
+          this.staffInfo.address
+        )
+      } else {
+        return ''
       }
     },
     changeSubOrg() {
       if (func.notEmpty(this.staffInfo.subOrg)) {
         this.staffInfo.subOrg.forEach((item, index) => {
-          item.subOrgId = item.data
           item.operatorType = 'Add'
-          delete item.data
           delete item.subOrgName
 
           this.staffInfo.subJob[index].operatorType = 'Add'
@@ -624,11 +618,13 @@ export default {
         if (item.id === value) {
           this.staffInfo.address = item.address
           this.workCity = [item.provinceCode, item.cityCode]
+
+          this.staffInfo.workProvinceName = item.provinceName
+          this.staffInfo.workCityName = item.cityName
         }
       })
     },
     createAddress() {
-      // this.$refs.workAddressId.blur()
       this.dialogTableVisible = true
       this.addAdressForm = {
         addressArr: [],
@@ -672,7 +668,6 @@ export default {
       })
     },
     leaderOptionChange(value) {
-      debugger
       this.leaderOptions.forEach((item) => {
         if (item.orgId === value) {
           this.staffInfo.leaderName = item.name
@@ -682,11 +677,11 @@ export default {
     addJobOrg() {
       this.staffInfo.subOrg.push({
         subOrgId: '',
-        subOrgName: ''
+        operatorType: 'Add'
       })
       this.staffInfo.subJob.push({
         subJobId: '',
-        subJobName: ''
+        operatorType: 'Add'
       })
     },
     dispatchSelect() {

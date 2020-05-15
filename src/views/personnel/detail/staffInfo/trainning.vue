@@ -7,6 +7,9 @@
       <span class="info-title">培训经历</span>
     </div>
     <div class="info-content-wrapper">
+      <div v-if="trainInfo.length == 0">
+        <avue-empty />
+      </div>
       <div
         v-for="(item, index) in trainInfo"
         :key="index"
