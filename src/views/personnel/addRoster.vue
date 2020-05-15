@@ -47,7 +47,10 @@
                 label="手机号"
                 prop="phonenum"
               >
-                <el-input v-model.number="form.phonenum" />
+                <el-input
+                  v-model.number="form.phonenum"
+                  maxlength="11"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -320,7 +323,11 @@
                   >
                     <i class="el-icon-loading" />
                   </div>
-                  <el-option style="text-align:center">
+                  <el-option
+                    value
+                    label
+                    style="text-align:center"
+                  >
                     <div
                       class="newAddress"
                       @click="createAddress"
@@ -659,14 +666,17 @@ export default {
           if (valid) {
             const params = { ...this.form }
             if (!params.probation) params.probation = 0
-            let inputValue = this.$refs.workProvinceArr.inputValue.split('/ ')
+            let inputValue = []
+            if (this.$refs.workProvinceArr.inputValue) {
+              inputValue = this.$refs.workProvinceArr.inputValue.split('/ ')
+            }
             params.workProvinceName = inputValue[0]
             params.workCityName = inputValue[1]
             params.workCountyName = inputValue[1]
-            params.workProvinceCode = params.workProvinceArr[0]
-            params.workCityCode = params.workProvinceArr[1]
-            params.workCountyCode = params.workProvinceArr[2]
-            params.orgId = params.orgId[0]
+            params.workProvinceCode = params.workProvinceArr && params.workProvinceArr[0]
+            params.workCityCode = params.workProvinceArr && params.workProvinceArr[1]
+            params.workCountyCode = params.workProvinceArr && params.workProvinceArr[2]
+            // params.orgId = params.orgId[0]
             // params.subOrg = params.subOrg.map((item) => {
             //   return item[0]
             // })
