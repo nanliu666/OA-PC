@@ -137,6 +137,7 @@ export default {
   },
   data() {
     return {
+      userId: this.$route.params.userId,
       activeName: 'first',
       stretch: true,
       tabs: {
@@ -146,10 +147,19 @@ export default {
       allInfo: {}
     }
   },
+
+  watch: {
+    $route(to, from) {
+      if (from.path == '/personnel/roster') {
+        this.getBasicInfo()
+      }
+    }
+  },
   created() {
     this.getBasicInfo()
     this.getCSS()
   },
+
   methods: {
     getCSS() {
       return require('./detail/staffInfo.scss')

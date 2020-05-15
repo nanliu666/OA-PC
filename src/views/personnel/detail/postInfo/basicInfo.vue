@@ -29,16 +29,16 @@
       >
         <el-row :justify="'center'">
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
-            <el-form-item label="工号">
+            <el-form-item label="工号:">
               <span class="info-item-value">{{ staffInfo.workNo }}</span>
             </el-form-item>
           </el-col>
           <el-col
-            :span="8"
-            :push="4"
+            :span="10"
+            :push="2"
           >
             <el-form-item label="公司邮箱:">
               <span class="info-item-value">{{ staffInfo.email }}</span>
@@ -48,7 +48,7 @@
 
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item label="入职公司:">
@@ -56,14 +56,14 @@
             </el-form-item>
           </el-col>
           <el-col
-            :span="8"
-            :push="4"
+            :span="10"
+            :push="2"
           >
             <el-form-item
               v-show="readonlyBasicInfo"
               label="岗位:"
             >
-              <span class="info-item-value">{{ staffInfo.positionName }}</span>
+              <span class="info-item-value">{{ getPosition }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -71,7 +71,7 @@
               prop="positionName"
             >
               <el-select
-                v-model="staffInfo.positionName"
+                v-model="staffInfo.positionId"
                 placeholder="请选择"
               >
                 <el-option
@@ -87,7 +87,7 @@
 
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item label="部门:">
@@ -95,8 +95,8 @@
             </el-form-item>
           </el-col>
           <el-col
-            :span="8"
-            :push="4"
+            :span="10"
+            :push="2"
           >
             <el-form-item label="职位:">
               <span class="info-item-value">{{ staffInfo.jobName }}</span>
@@ -109,7 +109,7 @@
             :key="index"
           >
             <el-col
-              :span="8"
+              :span="10"
               :push="2"
             >
               <el-form-item
@@ -140,8 +140,8 @@
             </el-col>
 
             <el-col
-              :span="8"
-              :push="4"
+              :span="10"
+              :push="2"
             >
               <el-form-item
                 v-show="readonlyBasicInfo"
@@ -171,7 +171,7 @@
         </template>
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item
@@ -201,8 +201,8 @@
           </el-col>
 
           <el-col
-            :span="8"
-            :push="4"
+            :span="10"
+            :push="2"
           >
             <el-form-item
               v-show="readonlyBasicInfo"
@@ -267,7 +267,7 @@
 
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item
@@ -292,9 +292,15 @@
           </el-col>
 
           <el-col
-            :span="8"
-            :push="4"
+            :span="10"
+            :push="2"
           >
+            <el-form-item
+              v-show="readonlyBasicInfo"
+              label="招聘渠道:"
+            >
+              <span class="info-item-value">{{ getRecruitment }}</span>
+            </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
               label="招聘渠道:"
@@ -302,7 +308,6 @@
             >
               <el-select
                 v-model="staffInfo.recruitment"
-                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
                 placeholder="请选择"
               >
                 <el-option
@@ -317,7 +322,7 @@
         </el-row>
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item
@@ -525,6 +530,28 @@ export default {
       } else {
         return ''
       }
+    },
+    getRecruitment() {
+      let dictValue = ''
+      for (let i = 0; i < this.recruitOptions.length; i++) {
+        let item = this.recruitOptions[i]
+        if (this.staffInfo.recruitment == item.dictKey) {
+          dictValue = item.dictValue
+          return
+        }
+      }
+      return dictValue
+    },
+    getPosition() {
+      let dictValue = ''
+      for (let i = 0; i < this.positionOptions.length; i++) {
+        let item = this.positionOptions[i]
+        if (this.staffInfo.positionId == item.id) {
+          dictValue = item.name
+          return
+        }
+      }
+      return dictValue
     }
   },
   watch: {
@@ -554,11 +581,11 @@ export default {
       if (func.notEmpty(this.staffInfo.subOrg)) {
         this.staffInfo.subOrg.forEach((item, index) => {
           item.subOrgId = item.data
-          item.operatorType = ''
+          item.operatorType = 'Add'
           delete item.data
           delete item.subOrgName
 
-          this.staffInfo.subJob[index].operatorType = ''
+          this.staffInfo.subJob[index].operatorType = 'Add'
           delete this.staffInfo.subJob[index].subJobName
         })
       }
@@ -768,5 +795,8 @@ export default {
   /deep/ .el-input__inner {
     height: 46px !important;
   }
+}
+span.optionRight {
+  float: right;
 }
 </style>
