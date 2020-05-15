@@ -279,7 +279,7 @@ export default {
       this.type = 'create'
       this.parentOrgIdLabel = ''
       this.$emit('update:visible', true)
-      this.loadOrgTree()
+      this.handleOrgNodeClick(this.orgTree[0])
     },
     createChild(row) {
       this.type = 'createChild'
@@ -356,5 +356,15 @@ export default {
 }
 .addressLoading {
   text-align: center;
+}
+/deep/ .el-form-item__error {
+  padding-top: 0;
+}
+/deep/ .newOrgDailog {
+  .el-form--label-top {
+    .el-form-item__label {
+      padding: 0 0 0 0;
+    }
+  }
 }
 </style>

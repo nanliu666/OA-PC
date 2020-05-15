@@ -56,6 +56,12 @@
           >
             <i class="el-icon-loading" />
           </div>
+          <div
+            v-show="item.noMore"
+            style="text-align: center; font-size:14px;color: #606266;"
+          >
+            没有更多了
+          </div>
         </el-select>
         <el-time-select
           v-if="item.type === 'timeSelect'"
@@ -179,6 +185,12 @@
                       style="text-align: center"
                     >
                       <i class="el-icon-loading" />
+                    </div>
+                    <div
+                      v-show="item.noMore"
+                      style="text-align: center; font-size:14px;color: #606266;"
+                    >
+                      没有更多了
                     </div>
                   </el-select>
                   <el-time-select

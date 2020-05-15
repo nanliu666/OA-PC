@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="roster-header">
-      <h4>员工花名册</h4>
+      <div class="header">
+        员工花名册
+      </div>
       <el-dropdown @command="handleCommand">
         <el-button
           type="primary"
@@ -238,7 +240,6 @@ export default {
         menuAlign: 'center',
         selection: true,
         tip: false,
-        height: 'auto',
         index: true,
         indexLabel: '序号',
         menu: false,
@@ -350,13 +351,15 @@ export default {
   justify-content: space-between;
   align-items: center;
   // padding: 0 24px;
-  h4 {
+  .header {
+    font-weight: bold;
     font-size: 18px;
+    padding: 14px 0 16px;
   }
 }
 .state {
   display: flex;
-  padding: 0 6px;
+  // padding: 0 6px;
   margin-bottom: 10px;
   .on {
     flex: 4;

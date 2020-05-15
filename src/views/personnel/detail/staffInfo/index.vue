@@ -89,6 +89,7 @@ export default {
     return {
       filterNavItemActive: 0,
       allInfo: {},
+      box: null,
       asideBar: [
         {
           title: '基本信息',
@@ -137,6 +138,9 @@ export default {
       deep: true,
       immediate: true
     }
+  },
+  mounted() {
+    this.box = document.querySelector('#avue-view')
   },
   methods: {
     goAnchor(selector, index, event) {

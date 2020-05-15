@@ -1,7 +1,7 @@
 import { setToken, setRefreshToken, removeToken, removeRefreshToken } from '@/util/auth'
 import { Message } from 'element-ui'
 import { setStore, getStore } from '@/util/store'
-import { filterTree, flatTree } from '@/util/util'
+import { filterTree, flatTree, sortTree } from '@/util/util'
 import { loginByUsername, getUserInfo, logout, refreshToken, getUserPrivilege } from '@/api/user'
 import md5 from 'js-md5'
 
@@ -57,13 +57,12 @@ const user = {
             'SET_ORGS',
             data.orgPrivileges.filter((org) => org.isOwn === 1)
           )
-          commit(
-            'SET_MENU_ALL',
-            filterTree(
-              data.menuPrivileges,
-              (node) => node.isOwn === 1 && node.menuType !== 'Button'
-            )
+          const menuAll = filterTree(
+            data.menuPrivileges,
+            (node) => node.isOwn === 1 && node.menuType !== 'Button'
           )
+          sortTree(menuAll, (a, b) => a.sort - b.sort)
+          commit('SET_MENU_ALL', menuAll)
           commit(
             'SET_PRIVILEGES',
             flatTree(data.menuPrivileges)
