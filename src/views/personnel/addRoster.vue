@@ -86,6 +86,10 @@
                   placeholder="请选择"
                 >
                   <el-option
+                    label="无试用期"
+                    :value="0"
+                  />
+                  <el-option
                     v-for="item in [1, 2, 3, 4, 5, 6]"
                     :key="item"
                     :label="item + '个月'"
@@ -117,7 +121,10 @@
                 label="工号"
                 prop="workNo"
               >
-                <el-input v-model="form.workNo">
+                <el-input
+                  ref="workNo"
+                  v-model="form.workNo"
+                >
                   <template slot="append">
                     <div @click="autoUserId">
                       自动生成
@@ -475,8 +482,19 @@ export default {
       form: {
         name: '',
         sex: '',
-        email: '',
+        phonenum: '',
+        userEmail: '',
+        entryDate: '',
+        probation: '',
+        companyId: '',
         workNo: '',
+        jobId: '',
+        positionId: '',
+        workProperty: '',
+        workAddressId: '',
+        workProvinceArr: [],
+        status: 'Try',
+        orgId: '',
         subOrg: [],
         subJob: []
       },
@@ -646,18 +664,21 @@ export default {
     autoUserId() {
       createNewWorkNo().then((res) => {
         this.form.workNo = res.workNo
+        this.$refs.workNo.select()
       })
     },
     goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$refs.form.clearValidate()
       this.$router.back(-1)
     },
     async submitAndCreate() {
       await this.onSubmit()
-      this.form = { subOrg: [], subJob: [] }
+      Object.assign(this.$data.form, this.$options.data().form)
+      this.$refs.form.clearValidate()
     },
     async handleSubmit() {
       await this.onSubmit()
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.goBack()
     },
     onSubmit() {
@@ -686,6 +707,7 @@ export default {
             createUser(params).then(() => {
               this.$message.success('创建成功')
               this.loading = false
+              Object.assign(this.$data.form, this.$options.data().form)
               resolve()
             })
           } else {
