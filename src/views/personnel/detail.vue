@@ -149,6 +149,9 @@ export default {
   created() {
     this.getBasicInfo()
   },
+  activated() {
+    this.getBasicInfo()
+  },
   methods: {
     getStatus() {
       if (this.allInfo.status == 'Try') {

@@ -109,7 +109,9 @@
             type="text"
             @click="toUserDetail(row)"
           >
-            {{ row.name }}
+            {{
+              row.name
+            }}
           </el-button>
         </template>
         <template
@@ -238,7 +240,6 @@ export default {
         menuAlign: 'center',
         selection: true,
         tip: false,
-        height: 'auto',
         index: true,
         indexLabel: '序号',
         menu: false,

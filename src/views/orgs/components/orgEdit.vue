@@ -279,7 +279,7 @@ export default {
       this.type = 'create'
       this.parentOrgIdLabel = ''
       this.$emit('update:visible', true)
-      this.loadOrgTree()
+      this.handleOrgNodeClick(this.orgTree[0])
     },
     createChild(row) {
       this.type = 'createChild'
