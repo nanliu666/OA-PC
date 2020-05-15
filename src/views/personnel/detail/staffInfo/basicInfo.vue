@@ -611,5 +611,4 @@ export default {
     display: none;
   }
 }
-@import url('../staffInfo.scss');
 </style>

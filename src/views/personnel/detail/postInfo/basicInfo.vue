@@ -103,7 +103,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <template v-if="staffInfo.subOrg.length > 0 || staffInfo.subJob.length > 0">
+        <template>
           <el-row
             v-for="(item, index) in staffInfo.subOrg"
             :key="index"
@@ -122,11 +122,19 @@
                 v-show="!readonlyBasicInfo"
                 :label="`附属部门${index + 1}:`"
               >
-                <tree-select
-                  v-model="staffInfo.subOrg[index].subJobId"
+                <!-- <tree-select
+                  v-model="item.data"
                   :option="subOrgOptions"
                   :is-search="false"
                   :is-single="true"
+                /> -->
+                <el-tree-select
+                  ref="orgTree"
+                  v-model="staffInfo.subOrg[index].data"
+                  :popover-class="subOrgOptions.config.fas"
+                  :styles="subOrgOptions.styles"
+                  :select-params="subOrgOptions.config.selectParams"
+                  :tree-params="subOrgOptions.config.treeParams"
                 />
               </el-form-item>
             </el-col>
@@ -180,12 +188,13 @@
               <el-select
                 v-model="staffInfo.leaderName"
                 placeholder="请选择"
+                @change="leaderOptionChange"
               >
                 <el-option
-                  v-for="leaderItem in leaderOptions"
-                  :key="leaderItem.value"
-                  :label="leaderItem.label"
-                  :value="leaderItem.value"
+                  v-for="(leaderItem, index) in leaderOptions"
+                  :key="index"
+                  :label="leaderItem.name"
+                  :value="leaderItem.orgId"
                 />
               </el-select>
             </el-form-item>
@@ -199,7 +208,7 @@
               v-show="readonlyBasicInfo"
               label="工作地址:"
             >
-              <span class="info-item-value">{{ getWorkAdress() }}</span>
+              <span class="info-item-value">{{ getWorkAdress }}</span>
             </el-form-item>
 
             <el-form-item
@@ -207,18 +216,51 @@
               label="工作地址:"
               prop="marriage"
             >
-              <el-cascader
-                ref="regionData"
-                v-model="workDetailCity"
-                :options="regionData.option"
-                :separator="'/'"
-                @change="regionDataChange"
-              />
-              <el-input
+              <el-select
+                ref="workAddressId"
                 v-model="staffInfo.address"
-                type="text"
-                class="detail-info-region"
-              />
+                placeholder="请选择"
+                @change="handleAddressClick"
+              >
+                <el-option
+                  v-for="item in workAdressList"
+                  :key="item.id"
+                  :label="item.address"
+                  :value="item.id"
+                  class="workOption"
+                >
+                  <span style="float: left">{{ item.address }}</span>
+                  <span
+                    class="optionRight"
+                    @click="deleteAddress(item)"
+                  >
+                    <i class="el-icon-error" />
+                  </span>
+                  <span
+                    class="optionRight"
+                    @click="editAddress(item)"
+                  >
+                    <i class="el-icon-edit-outline" />
+                  </span>
+                </el-option>
+                <div
+                  v-show="loadAddress"
+                  class="addressLoading"
+                >
+                  <i class="el-icon-loading" />
+                </div>
+                <el-option
+                  style="text-align:center"
+                  value=" "
+                >
+                  <div
+                    class="newAddress"
+                    @click="createAddress"
+                  >
+                    <i class="el-icon-plus" /> 新建工作地址
+                  </div>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -232,7 +274,7 @@
               v-show="readonlyBasicInfo"
               label="工作城市:"
             >
-              <span class="info-item-value">{{ getCityDetail() }}</span>
+              <span class="info-item-value">{{ getCityDetail }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -312,22 +354,83 @@
           </el-button>
         </div>
       </el-form>
+      <el-dialog
+        title="新建工作地址"
+        :visible.sync="dialogTableVisible"
+        :modal-append-to-body="false"
+        custom-class="dialogClass"
+      >
+        <el-form
+          ref="addAdressForm"
+          :model="addAdressForm"
+          label-width="80px"
+          label-position="top"
+          class="dialogForm"
+          :rules="workAddressRules"
+        >
+          <!-- -->
+          <el-form-item
+            label="工作地址"
+            prop="addressArr"
+          >
+            <el-cascader
+              ref="newWorkAddress"
+              v-model="addAdressForm.addressArr"
+              :options="regionData.option"
+            />
+          </el-form-item>
+          <el-form-item
+            label="工作地址"
+            prop="address"
+          >
+            <el-input
+              v-model="addAdressForm.address"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入详细地址，例如街道名称、门牌号码、楼层和房间号等详细地址"
+            />
+          </el-form-item>
+        </el-form>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="medium"
+            @click="dialogTableVisible = false"
+          >取 消</el-button>
+          <el-button
+            type="primary"
+            size="medium"
+            @click="handleCreateAddress"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import TreeSelect from '@/components/treeSelect/treeSelect'
-import { editStaffBasicInfo } from '../../../../api/personalInfo.js'
+// import TreeSelect from '@/components/treeSelect/treeSelect'
+import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
+import { getStaffBasicInfo, editStaffBasicInfo } from '../../../../api/personalInfo.js'
 import { deepClone } from '@/util/util'
 import { getOrgTreeSimple } from '@/api/org/org'
 import func from '@/util/func'
 import { provinceAndCityData, regionData } from 'element-china-area-data'
-import { getOrgPosition, getOrgJob } from '@/api/personnel/roster'
+import {
+  getWorkAddressList,
+  deleteWorkAddress,
+  editWorkAddress,
+  createWorkAddress,
+  getOrgPosition,
+  getOrgJob
+} from '@/api/personnel/roster'
+import { getUserWorkList } from '@/api/org/org'
 let staffInfo = {}
 export default {
   components: {
-    TreeSelect
+    ElTreeSelect
   },
   props: {
     info: {
@@ -338,29 +441,42 @@ export default {
   data() {
     return {
       workCity: [],
-      workDetailCity: [],
       formatSubJob: [],
       staffInfo: {},
-      region: [],
+      pageNo: 1,
       readonlyBasicInfo: true,
       recruitOptions: [],
       positionOptions: [],
       subJobOptions: [],
       subOrgOptions: {
-        //部门
         props: {
           label: 'orgName',
           value: 'orgId'
         },
         placeholder: '请选择部门',
-        dicData: []
-      },
-      leaderOptions: [
-        {
-          value: 'A',
-          label: 'a'
+        dicData: [],
+        config: {
+          selectParams: {
+            placeholder: '请输入内容',
+            multiple: false
+          },
+          treeParams: {
+            data: [],
+            'check-strictly': true,
+            'default-expand-all': false,
+            'expand-on-click-node': false,
+            clickParent: true,
+            filterable: false,
+            props: {
+              children: 'children',
+              label: 'orgName',
+              disabled: 'disabled',
+              value: 'orgId'
+            }
+          }
         }
-      ],
+      },
+      leaderOptions: [],
       regionData: {
         //带区/县的数据
         option: regionData,
@@ -376,28 +492,39 @@ export default {
           value: 'value',
           label: 'label'
         }
+      },
+      addressPageNo: 1,
+      workAdressList: [],
+      addAdressForm: {
+        addressArr: [],
+        address: ''
+      },
+      dialogTableVisible: false,
+      workAddressRules: {
+        addressArr: [{ required: true, message: '请选择地址', trigger: 'change' }],
+        address: [{ required: true, message: '请输入详细地址', trigger: 'blur' }]
       }
     }
   },
   computed: {
-    getAge() {
-      let curYear = new Date().getFullYear()
-      let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
-      return curYear - birthYear
+    getCityDetail() {
+      if (this.staffInfo.workProvinceName) {
+        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
+      } else {
+        return ''
+      }
     },
-    formatNativePlace() {
-      return this.staffInfo.nativeProvinceName + this.staffInfo.nativeCityName
-    },
-    calcWorkAge() {
-      let fomatToMS = new Date().getTime() - new Date(this.staffInfo.firstWorkDate).getTime()
-      let dayToMS = 1000 * 60 * 60 * 24
-      let totalDay = fomatToMS / dayToMS
-      let year = Math.floor(totalDay / 365)
-      let month = Math.floor((totalDay % 365) / 30)
-      // let day = Math.floor(totalDay % 365 % 30)
-      let workAge = '' + year + '年' + month + '月'
-      workAge = workAge.replace(/-/g, '')
-      return workAge
+    getWorkAdress() {
+      if (this.staffInfo.address) {
+        return (
+          this.staffInfo.provinceName +
+          this.staffInfo.cityName +
+          this.staffInfo.countyName +
+          this.staffInfo.address
+        )
+      } else {
+        return ''
+      }
     }
   },
   watch: {
@@ -409,12 +536,122 @@ export default {
       immediate: true
     }
   },
-
   created() {
     this.initRegion()
     this.loadSelectData()
+    this.addKeyForSubOrg()
+    this.getWorkAdressList()
   },
   methods: {
+    addKeyForSubOrg() {
+      if (func.notEmpty(this.staffInfo.subOrg)) {
+        this.staffInfo.subOrg.forEach((item) => {
+          this.$set(item, 'data', '')
+        })
+      }
+    },
+    changeSubOrg() {
+      if (func.notEmpty(this.staffInfo.subOrg)) {
+        this.staffInfo.subOrg.forEach((item, index) => {
+          item.subOrgId = item.data
+          item.operatorType = ''
+          delete item.data
+          delete item.subOrgName
+
+          this.staffInfo.subJob[index].operatorType = ''
+          delete this.staffInfo.subJob[index].subJobName
+        })
+      }
+    },
+    getWorkAdressList() {
+      if (this.loadAddress) return
+      this.loadAddress = true
+      this.workAdressList = []
+      getWorkAddressList({ pageNo: this.addressPageNo, pageSize: 50 }).then((res) => {
+        this.workAdressList.push(...res.data)
+        this.addressPageNo += 1
+        this.loadAddress = false
+      })
+    },
+    deleteAddress(item) {
+      deleteWorkAddress({ ids: item.id }).then(() => {
+        this.$message.success('删除成功')
+        this.staffInfo.address = ''
+        this.workCity = []
+        this.addressPageNo = 1
+        this.getWorkAdressList()
+      })
+    },
+    editAddress(item) {
+      this.addAdressForm.id = item.id
+      this.$set(this.addAdressForm, 'addressArr', [
+        item.provinceCode,
+        item.cityCode,
+        item.countyCode
+      ])
+      this.$set(this.addAdressForm, 'address', item.address)
+      this.dialogTableVisible = true
+    },
+    handleAddressClick(value) {
+      this.workAdressList.forEach((item) => {
+        if (item.id === value) {
+          this.staffInfo.address = item.address
+          this.workCity = [item.provinceCode, item.cityCode]
+        }
+      })
+    },
+    createAddress() {
+      // this.$refs.workAddressId.blur()
+      this.dialogTableVisible = true
+      this.addAdressForm = {
+        addressArr: [],
+        address: '',
+        id: ''
+      }
+    },
+    handleCreateAddress() {
+      this.$refs.addAdressForm.validate((valid) => {
+        if (valid) {
+          let inputValue = this.$refs.newWorkAddress.inputValue.split('/ ')
+          const params = {
+            provinceCode: this.addAdressForm.addressArr[0],
+            provinceName: inputValue[0],
+            cityCode: this.addAdressForm.addressArr[1],
+            cityName: inputValue[1],
+            countyCode: this.addAdressForm.addressArr[2],
+            countyName: inputValue[2],
+            address: this.addAdressForm.address
+          }
+
+          if (this.addAdressForm.id) {
+            params.id = this.addAdressForm.id
+            editWorkAddress(params).then(() => {
+              this.$message.success('修改成功')
+              this.dialogTableVisible = false
+              this.addressPageNo = 1
+              this.getWorkAdressList()
+            })
+          } else {
+            createWorkAddress(params).then(() => {
+              this.$message.success('新建成功')
+              this.dialogTableVisible = false
+              this.addressPageNo = 1
+              this.getWorkAdressList()
+            })
+          }
+        } else {
+          return false
+        }
+      })
+    },
+    leaderOptionChange(value) {
+      debugger
+      this.leaderOptions.forEach((item) => {
+        if (item.orgId === value) {
+          this.staffInfo.leaderName = item.name
+        }
+      })
+    },
     addJobOrg() {
       this.staffInfo.subOrg.push({
         subOrgId: '',
@@ -432,7 +669,8 @@ export default {
     },
     loadSelectData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.subOrgOptions.dicData = res
+        this.subOrgOptions.config.treeParams.data = res
+        this.$refs['orgTree'].treeDataUpdateFun(res)
       })
       getOrgJob().then((res) => {
         this.subJobOptions = res
@@ -440,14 +678,15 @@ export default {
       getOrgPosition().then((res) => {
         this.positionOptions = res
       })
+      getUserWorkList({ pageNo: this.pageNo, pageSize: 100 }).then((res) => {
+        if (res.data.length > 0) {
+          this.leaderOptions.push(...res.data)
+          this.pageNo += 1
+        }
+      })
     },
     initRegion() {
       this.workCity = [this.staffInfo.workProvinceCode, this.staffInfo.workCityCode]
-      this.workDetailCity = [
-        this.staffInfo.provinceCode,
-        this.staffInfo.cityCode,
-        this.staffInfo.countyCode
-      ]
     },
     getFormatSubJob() {
       this.formatSubJob = []
@@ -476,27 +715,16 @@ export default {
       this.staffInfo.workProvinceCode = value[0]
       this.staffInfo.workCityCode = value[1]
     },
-    regionDataChange(value) {
-      let thsAreaCode = this.$refs['regionData'].getCheckedNodes()[0].pathLabels
-      this.staffInfo.provinceName = thsAreaCode[0]
-      this.staffInfo.cityName = thsAreaCode[1]
-      this.staffInfo.countyName = thsAreaCode[2]
-      this.staffInfo.provinceCode = value[0]
-      this.staffInfo.cityCode = value[1]
-      this.staffInfo.countyCode = value[2]
-
-      this.staffInfo.workProvinceName = this.staffInfo.provinceName
-      this.staffInfo.workCityName = this.staffInfo.cityName
-      this.staffInfo.workProvinceCode = this.staffInfo.provinceCode
-      this.staffInfo.workCityCode = this.staffInfo.cityCode
-      this.workCity[0] = this.staffInfo.workProvinceCode
-      this.workCity[1] = this.staffInfo.workCityCode
-    },
     editInfo() {
+      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
+        this.subOrgOptions.config.treeParams.data = res
+        this.$refs['orgTree'].treeDataUpdateFun(res)
+      })
       staffInfo = deepClone(this.staffInfo)
       this.readonlyBasicInfo = false
     },
     saveInfo() {
+      this.changeSubOrg()
       editStaffBasicInfo(this.staffInfo).then(() => {
         this.readonlyBasicInfo = true
         staffInfo = deepClone(this.staffInfo)
@@ -504,30 +732,20 @@ export default {
           type: 'success',
           message: '修改成功'
         })
+        this.getStaffinfo()
+      })
+    },
+    getStaffinfo() {
+      let params = {
+        userId: this.$route.params.userId
+      }
+      getStaffBasicInfo(params).then((res) => {
+        this.staffInfo = res
       })
     },
     cancelEdit() {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
-    },
-    getCityDetail() {
-      if (this.staffInfo.workProvinceName) {
-        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
-      } else {
-        return ''
-      }
-    },
-    getWorkAdress() {
-      if (this.staffInfo.provinceName) {
-        return (
-          this.staffInfo.provinceName +
-          this.staffInfo.cityName +
-          this.staffInfo.countyName +
-          this.staffInfo.address
-        )
-      } else {
-        return ''
-      }
     }
   }
 }
@@ -551,5 +769,4 @@ export default {
     height: 46px !important;
   }
 }
-@import url('../staffInfo.scss');
 </style>

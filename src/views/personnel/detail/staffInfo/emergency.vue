@@ -292,5 +292,4 @@ export default {
 .info-content-wrapper > .info-content:last-child {
   border-bottom: none;
 }
-@import url('../staffInfo.scss');
 </style>
