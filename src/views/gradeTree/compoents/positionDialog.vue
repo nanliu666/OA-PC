@@ -569,6 +569,6 @@ export default {
 }
 
 .dialog-footer {
-  text-align: center;
+  text-align: right;
 }
 </style>

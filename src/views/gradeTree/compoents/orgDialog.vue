@@ -503,6 +503,6 @@ export default {
   margin-bottom: 24px;
 }
 .dialog-footer {
-  text-align: center;
+  text-align: right;
 }
 </style>
