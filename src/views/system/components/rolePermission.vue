@@ -219,11 +219,12 @@ export default {
         }) || []
       )
     },
-    ping(data, menus) {
+    ping(data, menus, popover) {
       data.map((it) => {
         menus.push(it)
+        popover.push(it.dataPrivileges)
         if (it.children && it.children.length > 0) {
-          this.ping(it.children, menus)
+          this.ping(it.children, menus, popover)
         }
       })
     },
@@ -236,8 +237,15 @@ export default {
 
       let menu = []
       let menuPrivileges = JSON.parse(JSON.stringify(this.menuPrivileges))
-      this.ping(menuPrivileges, menu)
+      let Privileges = []
 
+      this.ping(menuPrivileges, menu, Privileges)
+      let dataPrivileges = []
+      Privileges.map((it) => {
+        if (it.length > 0) {
+          dataPrivileges = dataPrivileges.concat(it)
+        }
+      })
       menu.map((it) => {
         delete it.children
       })
@@ -252,7 +260,8 @@ export default {
       const params = {
         roleId: this.roleId,
         orgPrivileges: this.orgPrivileges,
-        menuPrivileges: menu
+        menuPrivileges: menu,
+        dataPrivileges
       }
       updatePrivilege(params).then(() => {
         this.$message.success('保存成功')

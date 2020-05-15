@@ -59,6 +59,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       dialogVisible: true,
       addVisible: false,
       page: {
