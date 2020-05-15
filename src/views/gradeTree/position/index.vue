@@ -309,10 +309,10 @@ export default {
         this.orgTree = res
       })
     },
-    getJobData({ pageNo = 1, pageSize = 10 } = {}) {
+    getJobData({ pageNo = 1 } = {}) {
       this.loading = true
       this.params.pageNo = pageNo
-      this.params.pageSize = pageSize
+      this.params.pageSize = this.form.pageSize
       this.params.jobName = this.form.name
       gotV1Job(this.params).then((res) => {
         this.loading = false
@@ -347,10 +347,12 @@ export default {
       this.getJobData({ pageNo: 1, pageSize: this.form.pageSize })
     },
     sizeChange(val) {
-      this.getJobData({ pageNo: 1, pageSize: val })
+      this.form.pageSize = val
+      this.getJobData({ pageNo: 1 })
     },
     currentChange(val) {
-      this.getJobData({ pageNo: val, pageSize: this.form.pageSize })
+      this.form.pageNo = val
+      this.getJobData({ pageNo: val })
     },
     handleExport() {
       this.$confirm('是否导出数据?', '提示', {
