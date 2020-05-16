@@ -1,9 +1,15 @@
 <template>
   <div class="container">
-    <keep-alive v-if="$route.meta.$keepAlive">
+    <keep-alive
+      v-if="$route.meta.$keepAlive"
+      :key="$route.fullPath"
+    >
       <router-view />
     </keep-alive>
-    <router-view v-if="!$route.meta.$keepAlive" />
+    <router-view
+      v-else
+      :key="$route.fullPath"
+    />
   </div>
 </template>
 <style lang="scss" scoped>
