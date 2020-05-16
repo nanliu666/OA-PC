@@ -357,6 +357,8 @@ export default {
         items.questions.forEach((item) => {
           if (item.type === 'numInterval') {
             item.data = { min: '', max: '' }
+          } else if (item.type === 'treeSelect') {
+            item.data = []
           } else {
             item.data = ''
           }

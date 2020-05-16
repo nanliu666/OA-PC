@@ -36,8 +36,8 @@
       v-if="groupVisible"
       :title="groupForm.groupId ? '编辑分组' : '新建分组'"
       :visible.sync="groupVisible"
-      :close-on-click-modal="false"
-      :modal-append-to-body="false"
+      width="550px"
+      append-to-body
     >
       <div style="padding: 0 40px">
         <avue-form
@@ -82,11 +82,10 @@
       </div>
     </el-dialog>
     <el-dialog
-      v-if="cateVisible"
       :title="cateForm.categoryId ? '编辑分类' : '新建分类'"
       :visible.sync="cateVisible"
-      :close-on-click-modal="false"
-      :modal-append-to-body="false"
+      width="550px"
+      append-to-body
     >
       <div style="padding: 0 40px">
         <avue-form
@@ -286,6 +285,20 @@ export default {
         })
       }
     },
+    groupVisible: {
+      handler: function(val) {
+        if (!val) {
+          this.$refs.groupForm.resetForm()
+        }
+      }
+    },
+    cateVisible: {
+      handler: function(val) {
+        if (!val) {
+          this.$refs.cateForm.resetForm()
+        }
+      }
+    },
     treeList: {
       handler(val) {
         let data = this.cateOption.column.find((item) => item.prop === 'groupId')
@@ -355,6 +368,7 @@ export default {
             // 点击的是编辑
             this.cateForm.categoryId = data[this.props.id]
             this.cateForm.categoryName = data[this.props.label]
+            this.cateForm.groupId = data.groupId
           }
         })
 
@@ -556,6 +570,35 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-dialog__header {
+  padding: 16px 0;
+  margin: 0 24px;
+  border-bottom: 1px solid rgba(208, 211, 214, 0.44);
+  font-size: 18px;
+  color: #202940;
+  line-height: 24px;
+}
+
+/deep/ .el-dialog__body {
+  padding: 24px;
+}
+
+/deep/ .el-dialog__footer {
+  padding: 0px 24px 24px;
+}
+
+/deep/ .el-form-item__label {
+  line-height: 20px;
+  font-size: 14px;
+  color: #0f0000;
+}
+
+/deep/ .el-form-item {
+  margin-bottom: 24px;
+}
+.dialog-footer {
+  text-align: right;
+}
 .aside-wrap {
   margin-left: -16px;
 }

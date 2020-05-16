@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
           next({ path: '/login' })
         })
       } else {
-        const value = to.query.src || to.fullPath
+        const value = to.path
         const label = to.query.name || to.name
         const meta = to.meta || router.$avueRouter.meta || {}
         const i18n = to.query.i18n
@@ -37,7 +37,6 @@ router.beforeEach((to, from, next) => {
             label: label,
             value: value,
             params: to.params,
-            query: to.query,
             meta: (() => {
               if (!i18n) {
                 return meta

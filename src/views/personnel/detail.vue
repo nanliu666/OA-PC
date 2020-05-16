@@ -148,8 +148,15 @@ export default {
   },
   created() {
     this.getBasicInfo()
+    this.getCSS()
+  },
+  activated() {
+    this.getBasicInfo()
   },
   methods: {
+    getCSS() {
+      return require('./detail/staffInfo.scss')
+    },
     getStatus() {
       if (this.allInfo.status == 'Try') {
         return '试用期'
@@ -260,5 +267,4 @@ export default {
     }
   }
 }
-@import url('./detail/staffInfo.scss');
 </style>

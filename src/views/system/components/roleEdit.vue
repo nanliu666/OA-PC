@@ -455,8 +455,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-dialog__header {
+  padding: 16px 0;
+  margin: 0 24px;
+  border-bottom: 1px solid rgba(208, 211, 214, 0.44);
+  font-size: 18px;
+  color: #202940;
+  line-height: 24px;
+}
+
+/deep/ .el-dialog__body {
+  padding: 24px;
+}
+
+/deep/ .el-dialog__footer {
+  padding: 0px 24px 24px;
+}
+
+/deep/ .el-form-item__label {
+  line-height: 20px;
+  font-size: 14px;
+  color: #0f0000;
+}
+
+/deep/ .el-form-item {
+  margin-bottom: 24px;
+}
 .dialog-footer {
-  text-align: center;
+  text-align: right;
 }
 
 /deep/ .is-error {

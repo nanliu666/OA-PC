@@ -8,7 +8,7 @@
       top="5%"
       width="800px"
       :close-on-click-modal="false"
-      :modal-append-to-body="false"
+      append-to-body
     >
       <div class="add-wrap">
         <div class="add-user_left">

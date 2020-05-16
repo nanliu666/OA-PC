@@ -16,7 +16,6 @@
             effect="dark"
           >
             <i class="el-icon-question" /> </el-tooltip></span>
-
         <avue-form
           v-model="orgForm"
           :option="option"
@@ -44,22 +43,22 @@
           {{ orgForm.$orgId }} <span class="el-icon-caret-bottom" />
         </div>
       </div>
-      <div
-        v-if="editStatus"
-        class="edit"
-      >
-        <div
-          class="button"
+      <div v-if="editStatus">
+        <el-button
+          type="primary"
+          size="medium"
           @click="isEdit_"
         >
-          <i class="el-icon-edit-outline icon" />编辑架构图
-        </div>
-        <div
-          class="button2"
+          <i class="el-icon-edit-outline el-icon--right" /> 编辑架构图
+        </el-button>
+        <el-button
+          size="medium"
           @click="downloadImage"
         >
-          <i class="el-icon-download icon" />下载
-        </div>
+          <span
+            style="display: inline-block; width: 93px"
+          ><i class="el-icon-download el-icon--right" />下载</span>
+        </el-button>
       </div>
       <div v-else>
         <div
@@ -75,10 +74,6 @@
       <div
         id="myDiagramDiv"
         class="myDiagramDiv"
-      />
-      <div
-        class="mask"
-        :style="{ zIndex: zIndex }"
       />
     </div>
 
@@ -267,45 +262,7 @@ export default {
       },
       TreeModel: {
         class: 'go.TreeModel',
-        nodeDataArray: [
-          { key: 1, orgName: 'Stella Payne Diaz', userName: 'Enterprise', type: 'Enterprise' },
-          { key: 4, orgName: 'Luke Warm', userName: 'Company', parent: 1, type: 'Company' },
-          { key: 2, orgName: 'Peggy Flaming', userName: 'Department', parent: 1, type: 'Company' },
-          { key: 3, orgName: 'Meg Meehan Hoffa', userName: 'Group', parent: 2, type: 'Department' },
-          {
-            key: 5,
-            orgName: 'Saul Wellingood',
-            userName: 'Manufacturing',
-            parent: 4,
-            type: 'Department'
-          },
-          { key: 6, orgName: 'Al Ligori', userName: 'Marketing', parent: 2, type: 'Group' },
-          { key: 7, orgName: 'Dot Stubadd', userName: 'Job', parent: 3, type: 'Job' },
-          { key: 8, orgName: 'Les Ismore', userName: 'Project Mgr', parent: 5, type: 'Group' },
-          {
-            key: 9,
-            orgName: 'April Lynn Parris',
-            userName: 'Events Mgr',
-            parent: 6,
-            type: 'Group'
-          },
-          { key: 10, orgName: 'Xavier Breath', userName: 'Engineering', parent: 4, type: 'Group' },
-          { key: 11, orgName: 'Anita Hammer', userName: 'Process', parent: 5, type: 'Group' },
-          { key: 14, orgName: '333', userName: 'Hardware', parent: 10, type: 'Group' },
-          { key: 13, orgName: '111', userName: 'Testing', parent: 10, type: 'Group' },
-
-          { key: 12, orgName: '222', userName: 'Software', parent: 10, type: 'Group' },
-          { key: 16, orgName: '444', userName: 'Software', parent: 10, type: 'Group' },
-          { key: 15, orgName: 'Evan Elpus', userName: 'Quality', parent: 5, type: 'Group' },
-
-          {
-            key: 16,
-            orgName: 'Lotta B. Essen',
-            userName: '网水,网嘎,网按个摩,网按个,网按个摩',
-            parent: 3,
-            type: 'Group'
-          }
-        ]
+        nodeDataArray: []
       }
     }
   },
@@ -393,6 +350,7 @@ export default {
         go.Diagram,
         'myDiagramDiv', // must be the ID or reference to div
         {
+          isReadOnly: true,
           maxSelectionCount: 1, // users can select only one part at a time
           validCycle: go.Diagram.CycleDestinationTree, // make sure users can only create trees
           layout: $(go.TreeLayout, {
@@ -410,7 +368,6 @@ export default {
           'undoManager.isEnabled': false // enable undo & redo
         }
       )
-
       // when the document is modified, add a "*" to the title and enable the "Save" button
       that.myDiagram.addDiagramListener('Modified', () => {
         let button = document.getElementById('SaveButton')
@@ -455,7 +412,6 @@ export default {
         },
         false
       )
-
       // type Enterprise-企业，Company-公司，Department-部门，Group-小组，Job-职位
       let typeBgColor = {
         Enterprise: '#4A9EFF',
@@ -485,7 +441,6 @@ export default {
         Group: '#718199',
         Job: '#718199'
       }
-
       // override TreeLayout.commitNodes to also modify the background brush based on the tree depth level
       that.myDiagram.layout.commitNodes = () => {
         this.levelList = []
@@ -516,10 +471,9 @@ export default {
         if (node2.isInTreeOf(node1)) return false // cannot work for someone who works for you
         return true
       }
-
       // define the Node template
       var myContextMenu = $(go.HTMLInfo, {
-        show: showContextMenu,
+        show: showContextMenu.bind(this),
         hide: hideContextMenu
       })
       function hideContextMenu() {
@@ -527,6 +481,7 @@ export default {
         window.removeEventListener('click', hideCX, true)
       }
       function showContextMenu(obj, diagram) {
+        if (this.editStatus) return
         var hasMenuItem = true
         that.selData = obj.data
         function maybeShowItem(elt, pred, id) {
@@ -719,10 +674,8 @@ export default {
         $(go.Shape, 'Rectangle', {
           name: 'SHAPE',
           fill: '#fff',
-          // fill: 'rgba(241, 250, 255, 1)',
           stroke: 'white',
           strokeWidth: 0,
-          // set the port properties:
           portId: '',
           fromLinkable: true,
           toLinkable: true,
@@ -807,23 +760,16 @@ export default {
         { corner: 5, relinkableFrom: true, relinkableTo: true },
         $(go.Shape, { strokeWidth: 2, stroke: '#DDE3E8' })
       ) // the link shape
-
-      // read in the JSON-format data from the "mySavedModel" element
       that.load()
       document.getElementById('zoom-in').addEventListener('click', function() {
-        // that.myDiagram.commandHandler.zoomToFit()
         that.myDiagram.scale += 0.05
       })
 
       document.getElementById('zoom-out').addEventListener('click', function() {
         that.myDiagram.scale -= 0.05
-        // that.myDiagram.commandHandler.scrollToPart(
-        //   that.myDiagram.findNodeForKey(1)
-        // )
       })
       document.getElementById('centerRoot').addEventListener('click', function() {
         that.myDiagram.commandHandler.zoomToFit()
-        // that.myDiagram.scale+=0.05
       })
     }, // end init
 
@@ -846,7 +792,6 @@ export default {
         }
       })
       this.myDiagram.model = go.Model.fromJson(this.TreeModel)
-
       // make sure new data keys are unique positive integers
       let lastkey = 1
       this.myDiagram.model.makeUniqueKeyFunction = function(model, data) {
@@ -875,20 +820,16 @@ export default {
         this.title = this.orgTitle[1]
         this.orgDialog = true
         this.isEdit = true
-        // console.log(this.selData)
       } else {
         this.title = this.positionTitle[1]
         this.isEdit = true
         this.positionDialog = true
       }
-      // type
-
       this.status = val
       if (this.status === 'edit') {
         if (this.selData.userNames) {
           this.selData.userName = this.selData.userNames.join('\n')
         }
-        this.form = Object.assign(this.form, this.selData)
       }
     },
     cxcommand(event, val) {
@@ -930,7 +871,6 @@ export default {
             })
             return
           }
-
           if (this.selData.type !== this.type[4]) {
             let params = { ids: this.selData.id }
             deleteOrganization(params).then(() => {
@@ -987,6 +927,7 @@ export default {
     isEdit_() {
       this.editStatus = false
       this.zIndex = -1
+      this.myDiagram.isReadOnly = false
     },
     sort() {
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
@@ -999,19 +940,17 @@ export default {
           type: it.type
           // sort: it.parent || 0
         }
-
         params.filter((item) => {
           if (item.parentId === it.parentId) {
             data.sort = item.sort + 1
           }
         })
         data.sort = data.sort ? data.sort : 1
-        // debugger
         params.push(data)
       })
       postSort(params).then(() => {
-        // console.log(res)
         this.$message.success('排序成功')
+        this.getTree()
       })
     },
     downloadImage() {
@@ -1020,18 +959,14 @@ export default {
         padding: 50,
         type: 'image/jpeg',
         background: 'rgba(220, 239, 254, 1)'
-        // rgba(220, 239, 254, 0.3)
       })
       let href = images.src
       var a = document.createElement('a')
       a.download = '组织机构图.png'
-
       a.href = href
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-
-      // this.myDiagram.commandHandler.zoomToFit()
     }
   }
 }
@@ -1080,46 +1015,6 @@ export default {
   /*height: 60px;*/
   /*line-height: 60px;*/
   padding: 20px 30px;
-  .org {
-    margin-left: 15px;
-  }
-  .edit {
-    display: flex;
-    display: -webkit-flex;
-    display: -moz-box;
-    display: -ms-flex;
-    flex-flow: row nowrap;
-  }
-  .button {
-    background: #207efa;
-    height: 36px;
-    width: 134px;
-    text-align: center;
-    line-height: 36px;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #fff;
-    cursor: pointer;
-    .icon {
-      margin-right: 6px;
-    }
-  }
-  .button2 {
-    background: #fff;
-    height: 36px;
-    cursor: pointer;
-    width: 134px;
-    text-align: center;
-    line-height: 36px;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #333;
-    border: 1px solid #efefef;
-    margin-left: 20px;
-    .icon {
-      margin-right: 6px;
-    }
-  }
 }
 .go {
   overflow: scroll;

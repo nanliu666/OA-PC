@@ -28,14 +28,15 @@
           id="avue-view"
           style="height:100%;overflow-y:auto;overflow-x:hidden;"
         >
-          <keep-alive>
+          <keep-alive v-if="$route.meta.$keepAlive">
             <router-view
-              v-if="$route.meta.$keepAlive"
+              :key="$route.fullPath"
               class="avue-view"
             />
           </keep-alive>
           <router-view
-            v-if="!$route.meta.$keepAlive"
+            v-else
+            :key="$route.fullPath"
             class="avue-view"
           />
         </div>

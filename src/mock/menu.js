@@ -4,6 +4,10 @@ import Mock from 'mockjs'
  * orgPrivileges是所有组织，暂时用不到
  *
  * 注意：menuType为Menu的菜单，它的下级menuType只能为Button
+ *
+ * menuType为Menu的菜单,它的path在页面渲染时会生成对应的路由，所以path的值要和实际文件路径相同
+ * 例如：页面文件的路径是：src\views\system\role.vue,它对应的path就是/system/role
+ *
  */
 const res = {
   resCode: 200,
@@ -286,7 +290,7 @@ const res = {
                 isOwn: 1,
                 isShow: 1,
                 code: 'positionManagent',
-                alias: '/grade/position',
+                alias: '/gradeTree/position/index',
                 path: '/grade/position',
                 icon: 'iconfont iconicon_compile',
                 dataPrivileges: [],
@@ -299,7 +303,7 @@ const res = {
                 isOwn: 1,
                 isShow: 1,
                 code: 'category',
-                alias: '/grade/category',
+                alias: '/gradeTree/position/category',
                 path: '/grade/category',
                 icon: 'iconfont iconicon_airplay',
                 dataPrivileges: [],
@@ -313,7 +317,7 @@ const res = {
                 isShow: 1,
                 code: 'station',
                 alias: '岗位管理',
-                path: '/grade/station',
+                path: '/gradeTree/position/station',
                 icon: 'iconfont iconicon_doc',
                 dataPrivileges: [],
                 children: []
@@ -327,7 +331,7 @@ const res = {
             isOwn: 1,
             isShow: 1,
             code: 'org',
-            alias: '/grade/index',
+            alias: '/gradeTree/grade',
             path: '/grade/index',
             icon: 'iconfont iconicon_compile',
             dataPrivileges: [],

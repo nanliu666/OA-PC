@@ -5,7 +5,7 @@
       :visible.sync="dialogVisible"
       width="800px"
       :close-on-click-modal="false"
-      :modal-append-to-body="false"
+      append-to-body
     >
       <div v-loading="loading">
         <div style="text-align: right;margin-bottom: 10px;">
@@ -59,6 +59,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       dialogVisible: true,
       addVisible: false,
       page: {

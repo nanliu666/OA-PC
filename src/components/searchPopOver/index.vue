@@ -60,6 +60,12 @@
           >
             <i class="el-icon-loading" />
           </div>
+          <div
+            v-show="item.noMore"
+            style="text-align: center; font-size:14px;color: #606266;"
+          >
+            没有更多了
+          </div>
         </el-select>
         <el-time-select
           v-if="item.type === 'timeSelect'"
@@ -101,6 +107,7 @@
           :styles="item.styles"
           :select-params="item.config.selectParams"
           :tree-params="item.config.treeParams"
+          @change="change"
         />
         <!-- <tree-select
           v-if="item.type === 'treeSelect'"
@@ -123,6 +130,7 @@
       <el-form-item v-else>
         <!-- 内部输入框结构  -->
         <el-popover
+          v-model="popoverShow"
           placement="bottom"
           trigger="click"
           popper-class="popover-class"
@@ -182,6 +190,12 @@
                       style="text-align: center"
                     >
                       <i class="el-icon-loading" />
+                    </div>
+                    <div
+                      v-show="item.noMore"
+                      style="text-align: center; font-size:14px;color: #606266;"
+                    >
+                      没有更多了
                     </div>
                   </el-select>
                   <el-time-select
@@ -302,7 +316,8 @@ export default {
   },
   data() {
     return {
-      tags: []
+      tags: [],
+      popoverShow: false
     }
   },
   watch: {
@@ -354,6 +369,7 @@ export default {
     },
     submitSearch() {
       this.$emit('submit', this.searchParams())
+      this.popoverShow = false
     },
     handleOrgNodeClick(data, form, field, config) {
       form[field] = data[config.nodeKey]
@@ -375,11 +391,9 @@ export default {
           } else if (item.type === 'treeSelect' || item.type === 'select') {
             if (
               (item.type === 'select' && item.config && item.config.multiple) ||
-              item.type === 'treeSelect'
+              (item.type === 'treeSelect' && item.config.selectParams.multiple)
             ) {
-              params[item.field] = item.data.map((it) => {
-                return { [item.arrField]: it }
-              })
+              params[item.field] = item.data
             } else {
               params[item.field] = item.data
             }
@@ -399,8 +413,8 @@ export default {
         if (item.type === 'numInterval') {
           item.data = { min: '', max: '' }
         } else if (
-          item.type === 'treeSelect' ||
-          (item.config && item.config.type.indexOf('range') > -1)
+          (item.type === 'treeSelect' && item.config.selectParams.multiple) ||
+          (item.config && item.config.type && item.config.type.indexOf('range') > -1)
         ) {
           item.data = []
         } else {

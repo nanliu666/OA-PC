@@ -1,14 +1,20 @@
 <template>
-  <div>
-    <keep-alive>
-      <router-view
-        v-if="$route.meta.$keepAlive"
-        class="avue-view"
-      />
+  <div class="container">
+    <keep-alive
+      v-if="$route.meta.$keepAlive"
+      :key="$route.fullPath"
+    >
+      <router-view />
     </keep-alive>
     <router-view
-      v-if="!$route.meta.$keepAlive"
-      class="avue-view"
+      v-else
+      :key="$route.fullPath"
     />
   </div>
 </template>
+<style lang="scss" scoped>
+.container {
+  width: 100%;
+  height: 100%;
+}
+</style>

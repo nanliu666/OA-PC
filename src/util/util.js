@@ -199,6 +199,19 @@ export const filterTree = (nodes, predicate) => {
   return newChildren
 }
 /**
+ * 原地排序树节点
+ * @param {*} nodes
+ * @param {*} compareFunction 比较函数
+ */
+export const sortTree = (nodes, compareFunction) => {
+  nodes.sort(compareFunction)
+  nodes.forEach((node) => {
+    if (node.children && node.children.length > 0) {
+      sortTree(node.children, compareFunction)
+    }
+  })
+}
+/**
  * 树结构转一维数组
  */
 export const flatTree = (tree, res = []) => {

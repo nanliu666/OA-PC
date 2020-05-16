@@ -23,7 +23,7 @@
       <template slot="menuLeft">
         <el-button
           type="danger"
-          size="small"
+          size="medium"
           icon="el-icon-delete"
           plain
           @click="handleDelete"
@@ -39,7 +39,7 @@
         <el-button
           type="text"
           icon="el-icon-circle-plus-outline"
-          size="small"
+          size="medium"
           @click.stop="handleAddChild(scope.row, scope.index)"
         >
           新增子项
@@ -93,10 +93,11 @@ export default {
         border: true,
         index: true,
         selection: true,
-        viewBtn: true,
+        viewBtn: false,
         menuWidth: 300,
         dialogClickModal: false,
         rowKey: 'menuId',
+        size: 'medium',
         column: [
           {
             label: '菜单名称',
@@ -259,7 +260,7 @@ export default {
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {
-        ids.push(ele.id)
+        ids.push(ele.menuId)
       })
       return ids.join(',')
     }
