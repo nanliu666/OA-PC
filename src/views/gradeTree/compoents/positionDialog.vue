@@ -320,7 +320,6 @@ export default {
           await this.init()
         }
         if (this.isEdit && val.name) {
-          // jobName: '', //职位名称//   categoryId: '',//职位类别id//   remark: '', // 描述//   parentId: '', //所属职位//   orgId: [] //所属组织
           let jobName = val.name
           let categoryId = val.categoryId
           let remark = val.remark
@@ -328,7 +327,7 @@ export default {
           // this.orgId = orgId
           let parentId = val.parentJobId
           // parentId = val.parentJobId
-
+          // jobName: '', 职位名称   categoryId: '',职位类别id   remark: '', 描述  parentId: '', 所属职位   orgId: [] 所属组织
           // if (orgId) {
           //   this.form.orgId = orgId
           // }
