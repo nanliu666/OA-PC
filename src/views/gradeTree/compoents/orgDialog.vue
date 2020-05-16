@@ -151,6 +151,7 @@ export default {
       }
     }
     return {
+      allType: ['Enterprise', 'Company', 'Department', 'Group', 'Jod'],
       loading: false,
       leaderList: [],
       totalPage: '',
@@ -209,7 +210,31 @@ export default {
                 trigger: 'blur'
               }
             ],
-            dicData: orgList
+            dicData: orgList,
+            change: ({ value }) => {
+              if (value && value !== '0') {
+                // orgList.filter(it)
+                let orgs = []
+                this.f(orgList, value, orgs)
+
+                let selectIndex = this.allType.findIndex((value) => value === orgs[0].orgType)
+                let dataIndex = this.allType.findIndex((value) => value === this.orgData.type)
+                let type = selectIndex > dataIndex ? orgs[0].orgType : this.orgData.type
+                if (selectIndex > dataIndex) {
+                  this.form.orgType = ''
+                }
+                this.option.column[2].dicData.map((it, index) => {
+                  if (it.list.includes(type)) {
+                    if (selectIndex > dataIndex) {
+                      if (!this.form.orgType) this.form.orgType = index
+                    }
+                    it.disabled = false
+                  } else {
+                    it.disabled = true
+                  }
+                })
+              }
+            }
           },
           {
             label: '组织类型',
@@ -284,6 +309,7 @@ export default {
   watch: {
     'form.parentOrgId': {
       handler: function() {
+        // console.log()
         // if (val.length > 0) {
         //   this.option.column[3].placeholder = '请选择'
         //   this.option.column[3].dicData = this.options
@@ -308,7 +334,7 @@ export default {
       handler: async function(val) {
         // console.log(val)
         this.loading = true
-        this.getorgData(val.parentId)
+        await this.getorgData()
         await this.getWordList()
         this.loading = false
         if (this.isEdit) {
@@ -320,18 +346,20 @@ export default {
             this.option.column[1].disabled = true
             this.option.column[2].disabled = true
           }
-          let types = {
-            Enterprise: 0,
-            Company: 0,
-            Department: 1,
-            Group: 2
-          }
-          this.form.orgType = types[this.orgData.type]
         } else {
-          this.form.parentOrgId = this.orgData.parentId
+          // setTimeout(() => {
+
+          this.form.parentOrgId = this.orgData.id
           this.option.column[1].disabled = true
-          setTimeout(() => {})
+          // },500)
         }
+        let types = {
+          Enterprise: 0,
+          Company: 0,
+          Department: 1,
+          Group: 2
+        }
+        this.form.orgType = types[this.orgData.type]
         this.option.column[2].dicData.map((it) => {
           if (it.list.includes(val.type)) {
             it.disabled = false
@@ -349,6 +377,17 @@ export default {
   },
   created() {},
   methods: {
+    f(org, value, orgs) {
+      org.filter((it) => {
+        if (it.id === value) {
+          orgs.push(it)
+          // orgs = JSON.parse(JSON.stringify(it))
+        }
+        if (it.children && it.children.length > 0) {
+          this.f(it.children, value, orgs)
+        }
+      })
+    },
     getWordList() {
       return new Promise((resolve, reject) => {
         getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 })
@@ -386,7 +425,6 @@ export default {
       }
       return new Promise((resolve) => {
         getOrganization(params).then((res) => {
-          // console.log(res)
           orgList = res
           function maps(data) {
             data.map((it) => {

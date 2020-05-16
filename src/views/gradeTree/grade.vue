@@ -900,7 +900,7 @@ export default {
         if (this.selData.userNames) {
           this.selData.userName = this.selData.userNames.join('\n')
         }
-        this.form = Object.assign(this.form, this.selData)
+        // this.form = Object.assign(this.form, this.selData)
       }
     },
     cxcommand(event, val) {

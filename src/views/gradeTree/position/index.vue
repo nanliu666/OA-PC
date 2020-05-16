@@ -151,7 +151,7 @@
       <position-dialog
         v-if="positionDialog"
         :dialog-visible.sync="positionDialog"
-        :data="row"
+        :row="row"
         :title="title"
         :is-edit="isEdit"
         :org-tree="orgTree"
@@ -244,7 +244,7 @@ export default {
   },
   methods: {
     jump() {
-      this.$router.push({ path: `/gradeTree/position/station` })
+      this.$router.push({ path: `/gradeTree/position/category` })
     },
     handlerDeleteAll(list) {
       debugger
