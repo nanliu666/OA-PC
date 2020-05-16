@@ -1,16 +1,17 @@
 import Layout from '@/page/index/'
 export default {
-  path: '/selectedPerson',
+  path: '/personnel',
   component: Layout,
-  redirect: '/selectedPerson/index',
+  redirect: '/personnel/selectedPerson/index',
   children: [
     {
-      path: 'index',
+      path: '/personnel/selectedPerson/index',
       name: '候选人管理',
       meta: {
         i18n: 'index'
       },
-      component: () => import(/* webpackChunkName: "views" */ '@/views/selectedPerson/index')
+      component: () =>
+        import(/* webpackChunkName: "views" */ '@/views/personnel/selectedPerson/index')
     }
   ]
 }
