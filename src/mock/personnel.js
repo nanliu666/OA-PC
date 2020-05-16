@@ -33,7 +33,6 @@ const workAddress = {
 
 export default ({ mock }) => {
   if (!mock) return
-
   //获取附件分类接口数据
   Mock.mock(new RegExp('/user/v1/user/attachment/category' + '.*'), 'get', () => {
     let list = []
@@ -295,3 +294,29 @@ export default ({ mock }) => {
     }
   })
 }
+
+// 制造转正管理接口
+Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
+  let list = []
+  for (let i = 0; i < 12; i++) {
+    list.push(
+      Mock.mock({
+        id: '@increment',
+        name: '@cname',
+        workNo: 'f9ecu1!',
+        'userNum|0-100': 0,
+        createTime: '@date',
+        updateTime: '@date'
+      })
+    )
+  }
+  return {
+    resCode: 200,
+    resMsg: '描述',
+    response: {
+      totalNum: 12,
+      totalPage: 12,
+      data: list
+    }
+  }
+})

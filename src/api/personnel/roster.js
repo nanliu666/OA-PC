@@ -103,3 +103,11 @@ export const createUser = (params) => {
     params: params
   })
 }
+// 获取转正管理数据
+export const getStaffList = (params) => {
+  return request({
+    url: '/api/user/v1/staff/list',
+    method: 'post',
+    params: { ...params }
+  })
+}
