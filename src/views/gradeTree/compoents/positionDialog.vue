@@ -86,7 +86,7 @@ export default {
         return {}
       }
     },
-    data: {
+    row: {
       type: Object,
       default: function() {
         return {}
@@ -128,7 +128,7 @@ export default {
       orgId: '',
       firstLoad: true,
       initOrgId: '',
-      loading: true,
+      loading: false,
       isSingle: true,
       form: {
         jobName: '', //职位名称
@@ -205,20 +205,7 @@ export default {
             filterable: true,
             placeholder: '请选择关联岗位',
             span: 24,
-            dicData: [
-              {
-                label: '关联职位',
-                value: 0
-              },
-              {
-                label: '关联岗位',
-                value: 1
-              },
-              {
-                label: '无关联',
-                value: 2
-              }
-            ],
+            dicData: [],
             rules: [
               {
                 required: false,
@@ -254,7 +241,12 @@ export default {
               this.form.parentId = ''
               this.initOrgId = ''
             }
-            // this.form.parentId = ''
+
+            jod = jod.filter((it) => {
+              if (this.row.id !== it.jobId) {
+                return it
+              }
+            })
             jod.map((it) => {
               (it.label = it.jobName), (it.value = it.jobId)
             })
@@ -286,8 +278,11 @@ export default {
     filterText(val) {
       this.$refs.tree.filter(val)
     },
-    data: {
-      handler: function(val) {
+    row: {
+      handler: async function(val) {
+        if (!this.orgData.name) {
+          await this.init()
+        }
         // console.log(title)
         this.initOrgId = val.orgId
         if (val.jobId && this.isEdit) {
@@ -299,29 +294,31 @@ export default {
             parentId,
             orgId
           }
-          setTimeout(() => {
-            this.form = Object.assign(this.form, form)
-          }, 500)
+          // setTimeout(() => {
+          this.form = Object.assign(this.form, form)
+          // }, 500)
         } else if (val.jobId && !this.isEdit) {
           let { orgId, parentId } = { ...val }
           let form = {
             parentId,
             orgId
           }
-          setTimeout(() => {
-            this.option.column[3].disabled = true
-            this.option.column[2].disabled = true
-            this.form = Object.assign(this.form, form)
-          }, 500)
+          // setTimeout(() => {
+          this.option.column[3].disabled = true
+          this.option.column[2].disabled = true
+          this.form = Object.assign(this.form, form)
+          // }, 500)
         } else {
           // alert(23)
         }
       },
-      deep: true,
       immediate: true
     },
     orgData: {
-      handler: function(val) {
+      handler: async function(val) {
+        if (val.name) {
+          await this.init()
+        }
         if (this.isEdit && val.name) {
           // jobName: '', //职位名称//   categoryId: '',//职位类别id//   remark: '', // 描述//   parentId: '', //所属职位//   orgId: [] //所属组织
           let jobName = val.name
@@ -370,20 +367,22 @@ export default {
     }
   },
   async created() {},
-  async mounted() {
-    this.loading = true
-    await this.getCategory()
-    await this.getTree()
-    let jod = await this.getJod(this.form.orgId)
-    jod.map((it) => {
-      (it.label = it.jobName), (it.value = it.jobId)
-    })
-    this.option.column[3].dicData = jod
-    this.loading = false
-    this.firstLoad = false
-  },
+  async mounted() {},
 
   methods: {
+    async init() {
+      this.loading = true
+      await this.getCategory()
+      await this.getTree()
+      let jod = await this.getJod(this.form.orgId)
+      jod.map((it) => {
+        it.label = it.jobName
+        it.value = it.jobId
+      })
+      this.option.column[3].dicData = jod
+      this.loading = false
+      this.firstLoad = false
+    },
     /**
      * @author guanfenda
      * @desc 获取上级职位数据
