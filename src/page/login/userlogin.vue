@@ -116,9 +116,9 @@ export default {
         //租户ID
         tenantId: '',
         //用户名
-        username: '0001',
+        username: '',
         //密码
-        password: '123456',
+        password: '',
         //账户类型
         type: 'account',
         //验证码的值
@@ -189,6 +189,7 @@ export default {
           : window.location.href.split('/#/')[0]
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
+        this.$store.commit('SET_TENANT_ID', res.tenantId)
       })
       // 临时指定域名，方便测试
       //domain = "https://bladex.vip";
