@@ -88,10 +88,10 @@
         id="myDiagramDiv"
         class="myDiagramDiv"
       />
-      <div
-        class="mask"
-        :style="{ zIndex: zIndex }"
-      />
+      <!--      <div-->
+      <!--        class="mask"-->
+      <!--        :style="{ zIndex: zIndex }"-->
+      <!--      />-->
     </div>
 
     <ul
@@ -405,6 +405,7 @@ export default {
         go.Diagram,
         'myDiagramDiv', // must be the ID or reference to div
         {
+          isReadOnly: true,
           maxSelectionCount: 1, // users can select only one part at a time
           validCycle: go.Diagram.CycleDestinationTree, // make sure users can only create trees
           layout: $(go.TreeLayout, {
@@ -531,7 +532,7 @@ export default {
 
       // define the Node template
       var myContextMenu = $(go.HTMLInfo, {
-        show: showContextMenu,
+        show: showContextMenu.bind(this),
         hide: hideContextMenu
       })
       function hideContextMenu() {
@@ -539,6 +540,7 @@ export default {
         window.removeEventListener('click', hideCX, true)
       }
       function showContextMenu(obj, diagram) {
+        if (this.editStatus) return
         var hasMenuItem = true
         that.selData = obj.data
         function maybeShowItem(elt, pred, id) {
@@ -999,6 +1001,8 @@ export default {
     isEdit_() {
       this.editStatus = false
       this.zIndex = -1
+      this.myDiagram.isReadOnly = false
+      // console.log()
     },
     sort() {
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
