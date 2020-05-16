@@ -368,6 +368,7 @@ export default {
             // 点击的是编辑
             this.cateForm.categoryId = data[this.props.id]
             this.cateForm.categoryName = data[this.props.label]
+            this.cateForm.groupId = data.groupId
           }
         })
 
