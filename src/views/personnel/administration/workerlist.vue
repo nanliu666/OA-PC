@@ -6,11 +6,11 @@
       </h4>
     </div>
     <basic-container>
-      <search-component
-        ref="searchComponent"
-        :show-status="tabStatus === 'onJob'"
-        @seacrh="handleSearch"
-        @export="handleExport"
+      <search-popover
+        ref="searchPopover"
+        :require-options="searchConfig.requireOptions"
+        :popover-options="searchConfig.popoverOptions"
+        @submit="handleSubmit"
       />
       <avue-crud
         v-model="obj"
@@ -117,17 +117,141 @@
 </template>
 
 <script>
-import SearchComponent from '@/components/searchComponent/searchComponent'
+import SearchPopover from '@/components/searchPopOver/index'
 import { tableOptions } from '@/util/constant'
 import { getStaffList, getUserStatusStat } from '@/api/personnel/roster'
 
 export default {
   name: 'EmployeeRoster',
   components: {
-    SearchComponent
+    SearchPopover
   },
   data() {
     return {
+      searchConfig: {
+        requireOptions: [
+          {
+            type: 'select',
+            field: 'parentOrgId',
+            label: '',
+            data: '',
+            config: {
+              selectParams: {
+                placeholder: '姓名/工号',
+                multiple: false
+              },
+              treeParams: {
+                data: [],
+                'check-strictly': true,
+                'default-expand-all': false,
+                'expand-on-click-node': false,
+                clickParent: true,
+                filterable: false,
+                props: {
+                  children: 'children',
+                  label: 'orgName',
+                  disabled: 'disabled',
+                  value: 'orgId'
+                }
+              }
+            }
+          }
+        ],
+        popoverOptions: [
+          {
+            type: 'select',
+            field: 'orgType',
+            label: '部门',
+            data: '',
+            options: [
+              { value: 'Enterprise', label: '企业' },
+              { value: 'Company', label: '公司' },
+              { value: 'Department', label: '部门' },
+              { value: 'Group', label: '小组' }
+            ],
+            config: { optionLabel: '请选择', optionValue: '' }
+          },
+          {
+            type: 'select',
+            field: 'orgType',
+            data: '',
+            label: '职位',
+            options: [
+              { value: 'Enterprise', label: 'java开发' },
+              { value: 'Company', label: 'web前端' },
+              { value: 'Department', label: '开发负责人' },
+              { value: 'Group', label: '地域总监' }
+            ],
+            config: { optionLabel: '请选择', optionValue: '' }
+          },
+          {
+            type: 'timePicker',
+            field: 'userId',
+            data: '',
+            label: '入职日期',
+            options: [],
+            config: { optionLabel: 'name', optionValue: 'userId' },
+            loading: false,
+            pageNo: 2
+            // loadMoreFun(item) {
+            //   if (item.loading) return
+            //   item.loading = true
+            //   getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
+            //     if (res.data.length > 0) {
+            //       item.options.push(...res.data)
+            //       item.pageNo += 1
+            //       item.loading = false
+            //     }
+            //   })
+            // }
+          },
+          {
+            type: 'timePicker',
+            field: 'userId',
+            data: '',
+            label: '转正日期',
+            options: [],
+            config: { optionLabel: 'name', optionValue: 'userId' },
+            loading: false,
+            pageNo: 2
+            // loadMoreFun(item) {
+            //   if (item.loading) return
+            //   item.loading = true
+            //   getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
+            //     if (res.data.length > 0) {
+            //       item.options.push(...res.data)
+            //       item.pageNo += 1
+            //       item.loading = false
+            //     }
+            //   })
+            // }
+          },
+          {
+            type: 'select',
+            field: 'orgType',
+            data: '',
+            label: '试用期',
+            options: [
+              { value: '一个月', label: 'onemonth' },
+              { value: '两个月', label: 'towmonth' },
+              { value: '三个月', label: 'threemonths' }
+            ],
+            config: { optionLabel: '请选择', optionValue: '' }
+          },
+          {
+            type: 'select',
+            field: 'orgType',
+            data: '',
+            label: '申请状态',
+            options: [
+              { value: '已通过', label: 'onemonth' },
+              { value: '已拒绝', label: 'towmonth' },
+              { value: '申请中', label: 'threemonths' }
+            ],
+            config: { optionLabel: '请选择', optionValue: '' }
+          }
+        ]
+      },
       numberofpersonnel: 'xxx',
       tabStatus: 'onJob',
       statusWord: {
@@ -174,7 +298,7 @@ export default {
           },
           {
             label: '转正申请状态',
-            prop: 'orgName'
+            prop: 'status'
           },
           {
             label: '审批标号',
@@ -186,23 +310,25 @@ export default {
           },
           {
             label: '入职日期',
-            prop: 'status',
-            slot: true
-          },
-          {
-            label: '转正日期',
             prop: 'entryDate',
             type: 'date',
             format: 'yyyy-MM-dd',
             valueFormat: 'yyyy-MM-dd'
           },
           {
+            label: '转正日期',
+            prop: 'formalDate',
+            type: 'date',
+            format: 'yyyy-MM-dd',
+            valueFormat: 'yyyy-MM-dd'
+          },
+          {
             label: '试用期',
-            prop: 'phonenum'
+            prop: 'probation'
           },
           {
             label: '调整试用期',
-            prop: 'phonenum'
+            prop: 'adjustment'
           }
         ]
       }

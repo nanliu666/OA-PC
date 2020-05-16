@@ -13,11 +13,15 @@
         <el-input
           v-if="item.type === 'input'"
           v-model="item.data"
+          placeholder="姓名/手机号码/工号"
           :type="item.config && item.config.type ? item.config.type : 'text'"
-          :placeholder="'请输入' + item.label"
-          class="elInput"
-          @change="change"
-        />
+        >
+          <i
+            slot="suffix"
+            class="el-input__icon el-icon-search"
+          />
+        </el-input>
+
         <el-select
           v-if="item.type === 'select'"
           v-model="item.data"
@@ -117,6 +121,7 @@
         </el-button>
       </el-form-item>
       <el-form-item v-else>
+        <!-- 内部输入框结构  -->
         <el-popover
           placement="bottom"
           trigger="click"
