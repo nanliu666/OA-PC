@@ -14,46 +14,63 @@
         :model="apply"
         class="demo-form-inline"
       >
-        <el-form-item label="入职时间">
-          <el-input
-            v-model="probationperiod.start"
-            disabled="false"
-            suffix-icon="el-icon-date"
-          />
-        </el-form-item>
-        <el-form-item label="预计转正时间">
-          <el-input
-            v-model="probationperiod.end"
-            disabled="false"
-            suffix-icon="el-icon-date"
-          />
-        </el-form-item>
-        <div>
-          <el-form-item
-            label="试用期工作总结"
-            prop="summary"
-          >
-            <el-input
-              v-model="apply.summary"
-              type="textarea"
-              :rows="2"
-              placeholder="请输入"
-            />
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item
-            label="对公司的意见和建议"
-            prop="proposal"
-          >
-            <el-input
-              v-model="apply.proposal"
-              type="textarea"
-              :rows="2"
-              placeholder="请输入"
-            />
-          </el-form-item>
-        </div>
+        <el-row :gutter="24">
+          <el-col :span="4" />
+          <el-col :span="8">
+            <el-form-item label="入职时间">
+              <el-input
+                v-model="probationperiod.start"
+                disabled="false"
+                suffix-icon="el-icon-date"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="预计转正时间">
+              <el-input
+                v-model="probationperiod.end"
+                disabled="false"
+                suffix-icon="el-icon-date"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" />
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="4" />
+          <el-col :span="20">
+            <el-form-item
+              label="试用期工作总结"
+              prop="summary"
+            >
+              <el-input
+                v-model="apply.summary"
+                type="textarea"
+                :rows="2"
+                placeholder="请输入"
+              />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="4" />
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="4" />
+          <el-col :span="20">
+            <el-form-item
+              label="对公司的意见和建议"
+              prop="proposal"
+            >
+              <el-input
+                v-model="apply.proposal"
+                type="textarea"
+                :rows="2"
+                placeholder="请输入"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" />
+        </el-row>
         <el-form-item>
           <el-button
             size="medium"
