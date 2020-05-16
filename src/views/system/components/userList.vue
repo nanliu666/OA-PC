@@ -181,6 +181,11 @@ export default {
   },
   watch: {
     activeOrg: function() {
+      this.page = {
+        currentPage: 1,
+        size: 10,
+        total: 0
+      }
       this.loadData()
     }
   },
