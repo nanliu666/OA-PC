@@ -120,3 +120,11 @@ export const getOperation = (params) => {
     params: { ...params }
   })
 }
+// 获取当前员工的入职以及转正时间
+export const getFormalTime = (params) => {
+  return {
+    url: '/api/user/v1/staff/FormalTime',
+    method: 'post',
+    params: { ...params }
+  }
+}

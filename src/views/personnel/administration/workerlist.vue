@@ -97,7 +97,7 @@ export default {
         popoverOptions: [
           {
             type: 'select',
-            field: 'orgType',
+            field: 'orgSelect',
             label: '部门',
             data: '',
             options: [
@@ -110,7 +110,7 @@ export default {
           },
           {
             type: 'select',
-            field: 'orgType',
+            field: 'orgCompany',
             data: '',
             label: '职位',
             options: [
@@ -123,11 +123,11 @@ export default {
           },
           {
             type: 'timePicker',
-            field: 'userId',
+            field: 'userEntry',
             data: '',
             label: '入职日期',
             options: [],
-            config: { optionLabel: 'name', optionValue: 'userId' },
+            config: { optionLabel: 'name', optionValue: 'userEntry' },
             loading: false,
             pageNo: 2
             // loadMoreFun(item) {
@@ -165,7 +165,7 @@ export default {
           },
           {
             type: 'select',
-            field: 'orgType',
+            field: 'onTrial',
             data: '',
             label: '试用期',
             options: [
@@ -328,7 +328,8 @@ export default {
     currentChange() {
       this.getTableData()
     },
-    handleExport() {}
+    handleExport() {},
+    handleSubmit() {}
   }
 }
 </script>

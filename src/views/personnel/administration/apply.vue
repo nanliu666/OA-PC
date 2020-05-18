@@ -22,8 +22,9 @@
           <el-col :span="12">
             <el-form-item label="入职时间">
               <el-input
-                v-model="probationperiod.start"
-                disabled="false"
+                v-model="apply.start"
+                size="medium"
+                :disabled="inputdisabled"
                 suffix-icon="el-icon-date"
               />
             </el-form-item>
@@ -31,8 +32,9 @@
           <el-col :span="12">
             <el-form-item label="预计转正时间">
               <el-input
-                v-model="probationperiod.end"
-                disabled="false"
+                v-model="apply.end"
+                size="medium"
+                :disabled="inputdisabled"
                 suffix-icon="el-icon-date"
               />
             </el-form-item>
@@ -44,6 +46,7 @@
             >
               <el-input
                 v-model="apply.summary"
+                size="medium"
                 style="width:156%"
                 type="textarea"
                 :rows="2"
@@ -58,6 +61,7 @@
             >
               <el-input
                 v-model="apply.proposal"
+                size="medium"
                 style="width:156%"
                 type="textarea"
                 :rows="2"
@@ -66,21 +70,21 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item>
-          <el-button
-            size="medium"
-            @click="resetForm('ruleForm')"
-          >
-            取消
-          </el-button>
-          <el-button
-            type="primary"
-            @click="submitForm('apply')"
-          >
-            提交
-          </el-button>
-        </el-form-item>
       </el-form>
+    </basic-container>
+    <basic-container class="bottomList">
+      <el-button
+        size="medium"
+        @click="resetForm()"
+      >
+        取消
+      </el-button>
+      <el-button
+        size="medium"
+        @click="submitForm('apply')"
+      >
+        提交
+      </el-button>
     </basic-container>
   </div>
 </template>
@@ -90,11 +94,10 @@ import { getOperation } from '@/api/personnel/roster'
 export default {
   data() {
     return {
-      probationperiod: {
-        start: '暂无数据',
-        end: '暂无数据'
-      },
+      inputdisabled: true,
       apply: {
+        start: '暂无数据',
+        end: '暂无数据',
         proposal: '',
         summary: ''
       },
@@ -109,7 +112,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const params = this.apply
-          this.apply = {}
+          this.apply.proposal = ''
+          this.apply.summary = ''
           getOperation(params)
             .catch((rej) => {
               if (rej instanceof Object) {
@@ -128,8 +132,9 @@ export default {
         }
       })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
+    resetForm() {
+      this.apply.proposal = ''
+      this.apply.summary = ''
     }
   }
 }
@@ -202,17 +207,18 @@ export default {
     }
   }
 }
-</style>
-
-<style scoped>
 .el-form-item__label {
   padding: 0;
 }
 .el-form-item {
   width: 48%;
 }
-/*  */
-/* >>> .el-textarea__inner {
-  width: 125%;
-} */
+.bottomList {
+  box-shadow: 0px -10px 10px rgba(49, 48, 48, 0.274);
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 70px;
+  width: 100%;
+}
 </style>
