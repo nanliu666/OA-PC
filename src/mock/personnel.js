@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-
+import { dateFormat } from '@/util/date'
 const workAddress = {
   resCode: 200,
   resMsg: '',
@@ -336,4 +336,19 @@ Mock.mock(new RegExp('/api/user/v1/staff/apply' + '.*'), 'post', () => {
     }
   }
   return operationList
+})
+
+Mock.mock(new RegExp('/api/user/v1/staff/FormalTime' + '.*'), 'post', () => {
+  let newTime = new Date()
+  let itsTime = dateFormat(newTime)
+
+  const entryTime = {
+    resCode: 200,
+    resMsg: '描述',
+    response: {
+      probationperiod: itsTime,
+      Endtime: itsTime
+    }
+  }
+  return entryTime
 })

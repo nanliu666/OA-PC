@@ -90,7 +90,8 @@
 </template>
 
 <script>
-import { getOperation } from '@/api/personnel/roster'
+// import { getStore } from '@/util/store'
+import { getOperation, getFormalTime } from '@/api/personnel/roster'
 export default {
   data() {
     return {
@@ -107,11 +108,26 @@ export default {
       }
     }
   },
+  mounted() {
+    // let username = getStore({
+    //   name: 'saber-userInfo',
+    //   debug: true
+    // })
+
+    let params = {
+      Employeeketon: 'tonken',
+      Employeename: '测试虚拟'
+    }
+    getFormalTime(params).then((res) => {
+      this.apply.start = res.probationperiod
+      this.apply.end = res.Endtime
+    })
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const params = this.apply
+          let params = this.apply
           this.apply.proposal = ''
           this.apply.summary = ''
           getOperation(params)
