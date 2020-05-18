@@ -96,7 +96,6 @@
       class="info-content no-back-color"
     >
       <el-form
-        :model="item"
         label-width="150px"
         class="info-form"
         size="small"

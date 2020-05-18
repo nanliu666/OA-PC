@@ -37,7 +37,7 @@
             </el-form-item>
           </el-col>
           <el-col
-            :span="10"
+            :span="9"
             :push="2"
           >
             <el-form-item label="公司邮箱:">
@@ -56,7 +56,7 @@
             </el-form-item>
           </el-col>
           <el-col
-            :span="10"
+            :span="9"
             :push="2"
           >
             <el-form-item
@@ -134,7 +134,7 @@
             </el-col>
 
             <el-col
-              :span="10"
+              :span="9"
               :push="2"
             >
               <el-form-item
@@ -149,7 +149,7 @@
                 prop="subOrg"
               >
                 <el-select
-                  v-model="staffInfo.subJob[index].subJobName"
+                  v-model="staffInfo.subJob[index].subJobId"
                   placeholder="请选择"
                 >
                   <el-option
@@ -161,16 +161,25 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
+            <el-col
+              v-show="!readonlyBasicInfo && index > 0"
+              class="delete-org-job"
+              :span="1"
+            >
+              <div @click="deleteOrgjob(index)">
+                <span>
+                  <i class="el-icon-delete" />
+                </span>
+              </div>
+            </el-col>
           </el-row>
         </template>
         <div
           v-show="!readonlyBasicInfo"
-          style="padding-left:150px;font-size:18px;"
+          class="add-job-org"
         >
-          <span
-            style="padding: 5px; cursor: pointer;"
-            @click="addJobOrg()"
-          >
+          <span @click="addJobOrg()">
             <i class="el-icon-plus" />
           </span>
         </div>
@@ -206,7 +215,7 @@
           </el-col>
 
           <el-col
-            :span="10"
+            :span="9"
             :push="2"
           >
             <el-form-item
@@ -297,7 +306,7 @@
           </el-col>
 
           <el-col
-            :span="10"
+            :span="9"
             :push="2"
           >
             <el-form-item
@@ -768,6 +777,10 @@ export default {
     cancelEdit() {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
+    },
+    deleteOrgjob(index) {
+      this.staffInfo.subJob.splice(index, 1)
+      this.staffInfo.subOrg.splice(index, 1)
     }
   }
 }
@@ -793,5 +806,26 @@ export default {
 }
 span.optionRight {
   float: right;
+}
+.add-job-org {
+  padding-left: 150px;
+  font-size: 14px;
+  padding-bottom: 20px;
+  span {
+    padding: 5px;
+    cursor: pointer;
+    &:hover {
+      color: #207efa;
+    }
+  }
+}
+.delete-org-job {
+  float: right;
+  margin-right: 5%;
+  margin-top: 7px;
+  cursor: pointer;
+  &:hover {
+    color: #207efa;
+  }
 }
 </style>
