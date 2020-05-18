@@ -322,13 +322,17 @@
           slot="interview"
           slot-scope="{ row }"
         >
-          {{ row.sex == 1 ? '已发送' : '未发送' }}
+          {{
+            row.sex == 1 ? '已发送' : '未发送'
+          }}
         </template>
         <template
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{ row.proviceName + row.cityName }}
+          {{
+            row.proviceName + row.cityName
+          }}
         </template>
         <template
           slot="handler"
@@ -729,7 +733,7 @@ export default {
             label: '',
             data: '',
             options: [],
-            config: { placeholder: '姓名/邮箱/手机号码' }
+            config: { placeholder: '姓名/邮箱/手机号码', 'suffix-icon': 'el-icon-search' }
           }
         ],
         popoverOptions: [
