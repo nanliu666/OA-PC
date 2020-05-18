@@ -103,7 +103,7 @@ export const createUser = (params) => {
     params: params
   })
 }
-// 获取转正管理数据
+// 获取管理员工转正数据
 export const getStaffList = (params) => {
   return request({
     url: '/api/user/v1/staff/list',
@@ -123,7 +123,7 @@ export const getOperation = (params) => {
 // 获取当前员工的入职以及转正时间
 export const getFormalTime = (params) => {
   return request({
-    url: '/api/user/v1/staff/FormalTime',
+    url: '/api/user/v1/staff/formalTime',
     method: 'post',
     params: { ...params }
   })

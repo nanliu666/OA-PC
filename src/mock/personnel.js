@@ -303,12 +303,13 @@ Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
       Mock.mock({
         id: '@increment',
         name: '@cname',
-        workNo: '@increment',
+        workNum: '@increment',
         status: '测试数据',
-        jobName: '@increment',
-        positionName: '百利宏',
+        workNo: 'GZ@increment',
+        jobName: '测试员工@increment',
+        orgName: '百利宏',
         formalDate: '@data',
-        entryDate: '@data',
+        companyDate: '@data',
         probation: '3个月',
         adjustment: '调整时间'
       })

@@ -6,56 +6,80 @@
       </h4>
     </div>
     <basic-container>
-      <search-popover
-        ref="searchPopover"
-        :require-options="searchConfig.requireOptions"
-        :popover-options="searchConfig.popoverOptions"
-        @submit="handleSubmit"
-      />
-      <avue-crud
-        v-model="obj"
+      <common-table
+        style="width: 100%"
         :data="data"
-        :option="option"
-        :page.sync="page"
-        @size-change="sizeChange"
-        @current-change="currentChange"
+        :page="page"
+        :loading="loading"
+        :config="tableConfig"
+        :columns="columns"
+        @pageSizeChange="sizeChange"
+        @currentPageChange="currentChange"
       >
+        <template slot="topMenu">
+          <div class="flex-flow flex justify-content align-items ">
+            <div>
+              <search-popover
+                ref="searchPopover"
+                :require-options="searchConfig.requireOptions"
+                :popover-options="searchConfig.popoverOptions"
+                @submit="handleSubmit"
+              />
+            </div>
+            <div class="edge">
+              <el-button
+                type="primary"
+                size="medium"
+                @click="handleExport"
+              >
+                <i class="el-icon-upload2" /> 导出
+              </el-button>
+              <el-button
+                type="primary"
+                size="medium"
+                @click="getData"
+              >
+                <i class="el-icon-refresh" />
+              </el-button>
+            </div>
+          </div>
+        </template>
         <template
-          slot="name"
-          slot-scope="{ row }"
+          slot="multiSelectMenu"
+          slot-scope="{ selection }"
+        >
+          <span class="all">
+            <span @click="handlerDeleteAll(selection)"><i class="el-icon-delete" /> 批量删除</span>
+            <span><i class="el-icon-folder" /> 批量导出</span>
+          </span>
+        </template>
+        <template
+          v-if="scope.row.isDefault === 0"
+          slot="handler"
+          slot-scope="scope"
         >
           <el-button
-            style="cursor: pointer"
             type="text"
-            @click="toUserDetail(row)"
+            size="medium"
+            @click.stop="handleEdit(scope.row, scope.index)"
           >
-            {{ row.name }}
+            编辑
+          </el-button>
+          <el-button
+            type="text"
+            size="medium"
+            @click.stop="handleDelete(scope.row, scope.index)"
+          >
+            删除
           </el-button>
         </template>
-        <template
-          slot="status"
-          slot-scope="{ row }"
-        >
-          {{ statusWord[row.status] }}
-        </template>
-        <template
-          slot="menu"
-          slot-scope="{ row }"
-        >
-          <el-dropdown @command="handleCommand($event, row)">
-            <span class="el-dropdown-link">
-              <i class="el-icon-arrow-down el-icon-more" />
-            </span>
-          </el-dropdown>
-        </template>
-      </avue-crud>
+      </common-table>
     </basic-container>
   </div>
 </template>
 
 <script>
 import SearchPopover from '@/components/searchPopOver/index'
-import { tableOptions } from '@/util/constant'
 import { getStaffList, getUserStatusStat } from '@/api/personnel/roster'
 
 export default {
@@ -71,7 +95,7 @@ export default {
             type: 'input',
             field: 'parentOrgId',
             label: '',
-            data: '',
+            data: [],
             config: {
               selectParams: {
                 placeholder: '姓名/工号',
@@ -204,70 +228,70 @@ export default {
         WaitLeave: 0,
         Leaved: 0
       },
-      obj: {},
+      form: {
+        name: ''
+      },
+      loading: false,
+      isEdit: false,
+      title: '新建职位类别',
+      categoryDialog: false,
+      dialogVisible: false,
+      isBatch: false,
+      show: true,
+      number: 0,
+      row: {},
+      data: [],
+      tableConfig: {
+        showHandler: true,
+        enableMultiSelect: true
+      },
+      columns: [
+        {
+          label: '姓名',
+          prop: 'name'
+        },
+        {
+          label: '工号',
+          prop: 'workNo'
+        },
+        {
+          label: '转正状态申请',
+          prop: 'status'
+        },
+        {
+          label: '审批编号',
+          prop: 'workNum'
+        },
+        {
+          label: '部门',
+          prop: 'orgName'
+        },
+        {
+          label: '职务',
+          prop: 'jobName'
+        },
+        {
+          label: '入职时间',
+          prop: 'companyDate'
+        },
+        {
+          label: '转正日期',
+          prop: 'formalDate'
+        },
+        {
+          label: '试用期',
+          prop: 'probation'
+        }
+      ],
       page: {
         pageSize: 10,
-        pagerCount: 5,
-        total: 200,
-        currentPage: 1
+        pagerCount: 1,
+        total: 10
       },
-      searchParams: {},
-      data: [],
-      option: {
-        ...tableOptions,
-        align: 'center',
-        menuAlign: 'center',
-        selection: true,
-        tip: false,
-        height: 'auto',
-        index: true,
-        indexLabel: '序号',
-        menu: false,
-        column: [
-          {
-            label: '姓名',
-            prop: 'name',
-            slot: true
-          },
-          {
-            label: '工号',
-            prop: 'workNo'
-          },
-          {
-            label: '转正申请状态',
-            prop: 'status'
-          },
-          {
-            label: '审批标号',
-            prop: 'jobName'
-          },
-          {
-            label: '部门',
-            prop: 'positionName'
-          },
-          {
-            label: '入职日期',
-            prop: 'entryDate',
-            type: 'date',
-            format: 'yyyy-MM-dd',
-            valueFormat: 'yyyy-MM-dd'
-          },
-          {
-            label: '转正日期',
-            prop: 'formalDate',
-            type: 'date',
-            format: 'yyyy-MM-dd',
-            valueFormat: 'yyyy-MM-dd'
-          },
-          {
-            label: '试用期',
-            prop: 'probation'
-          },
-          {
-            label: '调整试用期',
-            prop: 'adjustment'
-          }
-        ]
+      params: {
+        pageNo: 1,
+        pageSize: 10,
+        name: ''
       }
     }
   },
@@ -300,11 +324,6 @@ export default {
       console.log(command, row)
     },
     getTableData(pageNo) {
-      if (!this.searchParams.statuses && this.tabStatus === 'onJob') {
-        this.searchParams.statuses = ['Formal', 'Try', 'WaitLeave', 'Leaved']
-      } else if (this.tabStatus !== 'onJob') {
-        this.searchParams.statuses = [this.tabStatus]
-      }
       const params = {
         pageNo: pageNo || this.page.currentPage,
         pageSize: this.page.pageSize,
@@ -400,5 +419,10 @@ export default {
       color: #207efa;
     }
   }
+}
+
+.edge {
+  position: absolute;
+  right: 59px;
 }
 </style>
