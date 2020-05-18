@@ -128,8 +128,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let params = this.apply
-          this.apply.proposal = ''
-          this.apply.summary = ''
           getOperation(params)
             .catch((rej) => {
               if (rej instanceof Object) {
@@ -143,6 +141,7 @@ export default {
                 this.$message({ type: 'success', message: res.restate })
               }
             })
+          return this.resetForm()
         } else {
           return false
         }
