@@ -365,6 +365,30 @@ const res = {
             children: []
           }
         ]
+      },
+      {
+        menuId: '3',
+        menuName: '人事管理',
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
+        code: 'personnel',
+        alias: 'personnel',
+        path: '',
+        icon: 'iconfont iconicon_setting',
+        children: [
+          {
+            menuId: '31',
+            menuName: '添加候选人',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/editPerson',
+            icon: 'iconfont iconicon_compile'
+          }
+        ]
       }
     ]
   },
