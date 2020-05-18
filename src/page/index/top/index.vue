@@ -54,7 +54,7 @@
           <top-lock />
         </div>
       </el-tooltip>
-      <el-tooltip
+      <!-- <el-tooltip
         v-if="showTheme"
         effect="dark"
         :content="$t('navbar.theme')"
@@ -63,7 +63,7 @@
         <div class="top-bar__item top-bar__item--show">
           <top-theme />
         </div>
-      </el-tooltip>
+      </el-tooltip> -->
       <el-tooltip
         effect="dark"
         :content="$t('navbar.notice')"
@@ -85,9 +85,7 @@
       <el-tooltip
         v-if="showFullScren"
         effect="dark"
-        :content="
-          isFullScren ? $t('navbar.screenfullF') : $t('navbar.screenfull')
-        "
+        :content="isFullScren ? $t('navbar.screenfullF') : $t('navbar.screenfull')"
         placement="bottom"
       >
         <div class="top-bar__item">
@@ -135,7 +133,7 @@ import { fullscreenToggel, listenfullscreen } from '@/util/util'
 import topLock from './top-lock'
 import topMenu from './top-menu'
 import topSearch from './top-search'
-import topTheme from './top-theme'
+// import topTheme from './top-theme'
 import topLogs from './top-logs'
 import topColor from './top-color'
 import topNotice from './top-notice'
@@ -148,7 +146,7 @@ export default {
     topLock,
     topMenu,
     topSearch,
-    topTheme,
+    // topTheme,
     topLogs,
     topColor,
     topNotice,
