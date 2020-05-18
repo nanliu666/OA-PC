@@ -376,6 +376,19 @@ const res = {
             icon: 'iconfont iconicon_compile',
             dataPrivileges: [],
             children: []
+          },
+          {
+            menuId: '12604478712712765454',
+            menuName: '面试登记表编辑',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_registrationFormEdit',
+            alias: 'registrationFormEdit',
+            path: '/personnel/selectedPerson/registrationFormEdit',
+            icon: 'iconfont iconicon_compile',
+            dataPrivileges: [],
+            children: []
           }
         ]
       }
