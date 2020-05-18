@@ -14,7 +14,7 @@
           v-if="item.type === 'input'"
           v-model="item.data"
           :type="item.config && item.config.type ? item.config.type : 'text'"
-          :placeholder="'请输入' + item.label"
+          :placeholder="item.config.placeholder || '请输入' + item.label"
           class="elInput"
           @change="change"
         />
@@ -136,109 +136,112 @@
               class="demo-form-inline"
               label-position="top"
             >
-              <el-col
-                v-for="item in popoverOptions"
-                :key="item.field"
-                :span="8"
-              >
-                <el-form-item :label="item.label">
-                  <el-input
-                    v-if="item.type === 'input'"
-                    v-model="item.data"
-                    :type="item.config && item.config.type ? item.config.type : 'text'"
-                    :placeholder="'请输入' + item.label"
-                    class="elInput"
-                  />
-                  <el-select
-                    v-if="item.type === 'select'"
-                    v-model="item.data"
-                    v-loadmore="() => item.loadMoreFun && item.loadMoreFun(item)"
-                    :placeholder="'请输入' + item.label"
-                    :multiple="item.config && item.config.multiple"
-                    :collapse-tags="item.config && item.config.multiple"
-                  >
-                    <template v-if="item.config && item.config.group">
-                      <el-option-group
-                        v-for="group in item.options"
-                        :key="group.label"
-                        :label="group.label"
-                      >
+              <el-row justify="start">
+                <el-col
+                  v-for="item in popoverOptions"
+                  :key="item.field"
+                  :span="8"
+                  style="height: 95px"
+                >
+                  <el-form-item :label="item.label">
+                    <el-input
+                      v-if="item.type === 'input'"
+                      v-model="item.data"
+                      :type="item.config && item.config.type ? item.config.type : 'text'"
+                      :placeholder="item.config.placeholder || '请输入' + item.label"
+                      class="elInput"
+                    />
+                    <el-select
+                      v-if="item.type === 'select'"
+                      v-model="item.data"
+                      v-loadmore="() => item.loadMoreFun && item.loadMoreFun(item)"
+                      :placeholder="'请输入' + item.label"
+                      :multiple="item.config && item.config.multiple"
+                      :collapse-tags="item.config && item.config.multiple"
+                    >
+                      <template v-if="item.config && item.config.group">
+                        <el-option-group
+                          v-for="group in item.options"
+                          :key="group.label"
+                          :label="group.label"
+                        >
+                          <el-option
+                            v-for="it in group.options"
+                            :key="it.value"
+                            :label="it[item.config.optionLabel || 'label']"
+                            :value="it[item.config.optionValue || 'value']"
+                          />
+                        </el-option-group>
+                      </template>
+                      <template v-else>
                         <el-option
-                          v-for="it in group.options"
-                          :key="it.value"
+                          v-for="it in item.options"
+                          :key="it[item.config.optionValue || 'value']"
                           :label="it[item.config.optionLabel || 'label']"
                           :value="it[item.config.optionValue || 'value']"
                         />
-                      </el-option-group>
-                    </template>
-                    <template v-else>
-                      <el-option
-                        v-for="it in item.options"
-                        :key="it[item.config.optionValue || 'value']"
-                        :label="it[item.config.optionLabel || 'label']"
-                        :value="it[item.config.optionValue || 'value']"
-                      />
-                    </template>
-                    <div
-                      v-show="item.loadMoreFun ? item.loading : false"
-                      class="addressLoading"
-                      style="text-align: center"
-                    >
-                      <i class="el-icon-loading" />
-                    </div>
-                    <div
-                      v-show="item.noMore"
-                      style="text-align: center; font-size:14px;color: #606266;"
-                    >
-                      没有更多了
-                    </div>
-                  </el-select>
-                  <el-time-select
-                    v-if="item.type === 'timeSelect'"
-                    v-model="item.data"
-                    placeholder="选择时间"
-                  />
-                  <el-time-picker
-                    v-if="item.type === 'timePicker'"
-                    v-model="item.data"
-                    placeholder="选择时间"
-                  />
-                  <el-cascader
-                    v-if="item.type === 'cascader'"
-                    v-model="item.data"
-                    :options="item.options"
-                  />
-                  <el-date-picker
-                    v-if="item.type === 'dataPicker'"
-                    v-model="item.data"
-                    :type="item.config && item.config.type ? item.config.type : 'data'"
-                    placeholder="结束时间"
-                    value-format="yyyy-MM-dd"
-                    start-placeholder="开始时间"
-                    end-placeholder="结束时间"
-                  />
-                  <num-interval
-                    v-if="item.type === 'numInterval'"
-                    v-model="item.data"
-                  />
-                  <el-tree-select
-                    v-if="item.type === 'treeSelect'"
-                    :ref="item.field"
-                    v-model="item.data"
-                    :popover-class="item.config.fas"
-                    :styles="item.styles"
-                    :select-params="item.config.selectParams"
-                    :tree-params="item.config.treeParams"
-                  />
-                  <!-- <tree-select
+                      </template>
+                      <div
+                        v-show="item.loadMoreFun ? item.loading : false"
+                        class="addressLoading"
+                        style="text-align: center"
+                      >
+                        <i class="el-icon-loading" />
+                      </div>
+                      <div
+                        v-show="item.noMore"
+                        style="text-align: center; font-size:14px;color: #606266;"
+                      >
+                        没有更多了
+                      </div>
+                    </el-select>
+                    <el-time-select
+                      v-if="item.type === 'timeSelect'"
+                      v-model="item.data"
+                      placeholder="选择时间"
+                    />
+                    <el-time-picker
+                      v-if="item.type === 'timePicker'"
+                      v-model="item.data"
+                      placeholder="选择时间"
+                    />
+                    <el-cascader
+                      v-if="item.type === 'cascader'"
+                      v-model="item.data"
+                      :options="item.options"
+                    />
+                    <el-date-picker
+                      v-if="item.type === 'dataPicker'"
+                      v-model="item.data"
+                      :type="item.config && item.config.type ? item.config.type : 'data'"
+                      placeholder="结束时间"
+                      value-format="yyyy-MM-dd"
+                      start-placeholder="开始时间"
+                      end-placeholder="结束时间"
+                    />
+                    <num-interval
+                      v-if="item.type === 'numInterval'"
+                      v-model="item.data"
+                    />
+                    <el-tree-select
+                      v-if="item.type === 'treeSelect'"
+                      :ref="item.field"
+                      v-model="item.data"
+                      :popover-class="item.config.fas"
+                      :styles="item.styles"
+                      :select-params="item.config.selectParams"
+                      :tree-params="item.config.treeParams"
+                    />
+                    <!-- <tree-select
                     v-if="item.type === 'treeSelect'"
                     v-model="item.data"
                     :option="item.options"
                     :is-search="false"
                     :is-single="item.isSingle || false"
-                  />-->
-                </el-form-item>
-              </el-col>
+                    />-->
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-form>
             <el-col :span="24">
               <div class="popOver-footer">
@@ -442,7 +445,7 @@ export default {
   text-align: right;
 }
 .el-form-item {
-  padding-right: 24px;
+  padding-right: 6px;
 }
 /deep/ .treeSelect {
   .el-form-item__content {
