@@ -8,15 +8,18 @@
         <h4>转正信息</h4>
       </div>
       <el-form
+        ref="apply"
         label-position="top"
         :rules="rules"
         :inline="true"
         :model="apply"
         class="demo-form-inline"
       >
-        <el-row :gutter="24">
-          <el-col :span="4" />
-          <el-col :span="8">
+        <el-row
+          :gutter="24"
+          style=" position: relative; left: 90px;"
+        >
+          <el-col :span="12">
             <el-form-item label="入职时间">
               <el-input
                 v-model="probationperiod.start"
@@ -25,7 +28,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="预计转正时间">
               <el-input
                 v-model="probationperiod.end"
@@ -34,42 +37,34 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="4" />
-        </el-row>
-        <el-row :gutter="24">
-          <el-col :span="4" />
-          <el-col :span="20">
+          <el-col :span="24">
             <el-form-item
               label="试用期工作总结"
               prop="summary"
             >
               <el-input
                 v-model="apply.summary"
+                style="width:156%"
                 type="textarea"
                 :rows="2"
                 placeholder="请输入"
               />
             </el-form-item>
           </el-col>
-
-          <el-col :span="4" />
-        </el-row>
-        <el-row :gutter="24">
-          <el-col :span="4" />
-          <el-col :span="20">
+          <el-col :span="24">
             <el-form-item
               label="对公司的意见和建议"
               prop="proposal"
             >
               <el-input
                 v-model="apply.proposal"
+                style="width:156%"
                 type="textarea"
                 :rows="2"
                 placeholder="请输入"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="4" />
         </el-row>
         <el-form-item>
           <el-button
@@ -80,7 +75,7 @@
           </el-button>
           <el-button
             type="primary"
-            @click="submitForm('ruleForm')"
+            @click="submitForm('apply')"
           >
             提交
           </el-button>
@@ -91,6 +86,7 @@
 </template>
 
 <script>
+import { getOperation } from '@/api/personnel/roster'
 export default {
   data() {
     return {
@@ -99,8 +95,8 @@ export default {
         end: '暂无数据'
       },
       apply: {
-        summary: '',
-        proposal: ''
+        proposal: '',
+        summary: ''
       },
       rules: {
         summary: [{ required: true, message: '请简单说说您的工作心得', trigger: 'blur' }],
@@ -112,7 +108,21 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          const params = this.apply
+          this.apply = {}
+          getOperation(params)
+            .catch((rej) => {
+              if (rej instanceof Object) {
+                this.$message({ type: 'success', message: '申请成功' })
+              } else {
+                this.$message({ message: '该功能暂不可用请联系相关管理员', type: 'warning' })
+              }
+            })
+            .then((res) => {
+              if (res.restate) {
+                this.$message({ type: 'success', message: res.restate })
+              }
+            })
         } else {
           return false
         }
@@ -195,15 +205,14 @@ export default {
 </style>
 
 <style scoped>
-/* 修改表单样式的默认值 */
 .el-form-item__label {
   padding: 0;
 }
 .el-form-item {
   width: 48%;
 }
-
-.el-textarea__inner {
-  width: 200%;
-}
+/*  */
+/* >>> .el-textarea__inner {
+  width: 125%;
+} */
 </style>

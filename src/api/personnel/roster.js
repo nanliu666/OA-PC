@@ -111,3 +111,12 @@ export const getStaffList = (params) => {
     params: { ...params }
   })
 }
+
+// 转正申请接口
+export const getOperation = (params) => {
+  return request({
+    url: '/api/user/v1/staff/apply',
+    method: 'post',
+    params: { ...params }
+  })
+}

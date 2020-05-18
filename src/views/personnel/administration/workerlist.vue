@@ -46,69 +46,6 @@
             <span class="el-dropdown-link">
               <i class="el-icon-arrow-down el-icon-more" />
             </span>
-            <el-dropdown-menu slot="dropdown">
-              <!-- v-show 判断个人信息中员工状态 -->
-              <el-dropdown-item
-                v-show="row.status === 'Try' || row.status === 'onJob'"
-                command="toFormal"
-              >
-                转正
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'Try' || row.status === 'Formal' || row.status === 'onJob'"
-                command="changeJob"
-              >
-                调岗
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'Try' || row.status === 'Formal' || row.status === 'onJob'"
-                command="toLeave"
-              >
-                办理离职
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'Formal' || row.status === 'onJob'"
-                command="toBetter"
-              >
-                晋升
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'WaitLeave' || row.status === 'onJob'"
-                command="checkLeaveInfo"
-              >
-                查看离职信息
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'WaitLeave' || row.status === 'onJob'"
-                command="toLeft"
-              >
-                确认离职
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'WaitLeave' || row.status === 'onJob'"
-                command="getUpLeft"
-              >
-                放弃离职
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'Leaved'"
-                command="leftProve"
-              >
-                离职证明
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'Leaved'"
-                command="practiceProve"
-              >
-                实习证明
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-show="row.status === 'Leaved'"
-                command="onJobProve"
-              >
-                在职证明
-              </el-dropdown-item>
-            </el-dropdown-menu>
           </el-dropdown>
         </template>
       </avue-crud>
@@ -131,7 +68,7 @@ export default {
       searchConfig: {
         requireOptions: [
           {
-            type: 'select',
+            type: 'input',
             field: 'parentOrgId',
             label: '',
             data: '',
@@ -375,8 +312,9 @@ export default {
       }
 
       getStaffList(params).then((res) => {
+        if (typeof res === 'undefined') this.Message({ message: '暂无可查看数据', type: 'error' })
         this.data = res.data
-        this.numberofpersonnel = res.totalNum
+        this.numberofpersonnel = res.data.length
         if (pageNo) this.page.currentPage = pageNo
       })
     },

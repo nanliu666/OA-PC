@@ -324,3 +324,16 @@ Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
     }
   }
 })
+
+//转正申请接口
+Mock.mock(new RegExp('/api/user/v1/staff/apply' + '.*'), 'post', () => {
+  const operationList = {
+    resCode: 200,
+    resMsg: '描述',
+    response: {
+      resCode: 200,
+      restate: '申请成功'
+    }
+  }
+  return operationList
+})
