@@ -191,7 +191,7 @@ export default {
 
     const validateCode = (rule, value, callback) => {
       if (!_this.identity.form.code) {
-        callback(new Error('请输入四位验证码'))
+        callback(new Error('请输入六位验证码'))
       } else if (_this.identity.form.code != code) {
         callback(new Error('验证码不正确'))
       } else {
