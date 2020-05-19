@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="type === 'change' ? '更改应聘职位' : '恢复为候选人'"
+    :title="titleObj[type] || ''"
     :visible.sync="visible"
     width="30%"
     :modal-append-to-body="false"
@@ -63,9 +63,8 @@
   </el-dialog>
 </template>
 <script>
-// import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import { getRecruitmentList, changeCandidateJob, recoverCandidate } from '@/api/personnel/candidate'
-import { getOrgTreeSimple } from '@/api/org/org'
+import { addToCandidate } from '@/api/personnel/person'
 
 export default {
   name: 'ChangeJobDialog',
@@ -83,41 +82,21 @@ export default {
       rules: {
         recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }]
       },
-      config: {
-        selectParams: {
-          placeholder: '请选择',
-          multiple: false,
-          disabled: true
-        },
-        treeParams: {
-          data: [],
-          'check-strictly': true,
-          'default-expand-all': false,
-          'expand-on-click-node': false,
-          clickParent: true,
-          filterable: false,
-          props: {
-            children: 'children',
-            label: 'orgName',
-            disabled: 'disabled',
-            value: 'orgId'
-          }
-        }
-      },
       orgId: '',
       orgList: [],
-      candidata: {},
+      person: {},
       loading: false,
-      type: 'change'
+      type: 'change',
+      titleObj: {
+        change: '更改应聘职位',
+        recover: '恢复为候选人',
+        add: '添加到候选人'
+      }
     }
   },
   created() {
     getRecruitmentList().then((res) => {
       this.recruitmentList = res
-    })
-    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.config.treeParams.data = res
-      this.$refs['orgTree'].treeDataUpdateFun(res)
     })
   },
   methods: {
@@ -127,12 +106,17 @@ export default {
     },
     changeJob(data) {
       this.type = 'change'
-      this.candidata = JSON.parse(JSON.stringify(data))
+      this.person = JSON.parse(JSON.stringify(data))
       this.$emit('update:visible', true)
     },
     recover(data) {
       this.type = 'recover'
-      this.candidata = JSON.parse(JSON.stringify(data))
+      this.person = JSON.parse(JSON.stringify(data))
+      this.$emit('update:visible', true)
+    },
+    init(type, data) {
+      this.type = type
+      this.person = JSON.parse(JSON.stringify(data))
       this.$emit('update:visible', true)
     },
     recruitmentChange() {
@@ -144,45 +128,40 @@ export default {
       })
     },
     submit() {
-      this.$refs.ruleForm.validate((valid, obj) => {
-        if (valid) {
-          const params = {
-            personId: this.candidata.personId,
-            recruitmentId: this.form.recruitmentId
-          }
-          this.loading = true
-          if (this.type === 'change') {
-            changeCandidateJob(params)
-              .then(() => {
-                this.$message.success('更改成功!')
-                this.loading = false
-                Object.assign(this.$data.form, this.$options.data().form)
-                this.$emit('refresh')
-                this.$emit('update:visible', false)
-              })
-              .catch(() => {
-                this.loading = false
-                this.$message.error('更改失败')
-              })
-          } else {
-            params.userId = this.$store.state.user.userInfo.user_id
-            recoverCandidate(params)
-              .then(() => {
-                this.$message.success('恢复成功!')
-                this.loading = false
-                Object.assign(this.$data.form, this.$options.data().form)
-                this.$emit('refresh')
-                this.$emit('update:visible', false)
-              })
-              .catch(() => {
-                this.loading = false
-                this.$message.error('恢复失败')
-              })
-          }
-        } else {
-          this.$message.error(obj[Object.keys(obj)[0]][0].message)
-          return false
+      this.$refs.ruleForm.validate((valid) => {
+        if (!valid) {
+          return
         }
+        const params = {
+          personId: this.person.personId,
+          recruitmentId: this.form.recruitmentId,
+          userId: this.$store.state.user.userInfo.user_id
+        }
+        this.loading = true
+
+        let submitFunc
+        if (this.type === 'change') {
+          submitFunc = changeCandidateJob
+        } else if (this.type === 'recover') {
+          submitFunc = recoverCandidate
+        } else if (this.type === 'add') {
+          submitFunc = addToCandidate
+        }
+
+        submitFunc(params)
+          .then(() => {
+            this.$message.success('操作成功')
+            this.loading = false
+            Object.assign(this.$data.form, this.$options.data().form)
+            this.$emit('refresh')
+            this.$emit('update:visible', false)
+          })
+          .catch(() => {
+            this.$message.error('操作失败')
+          })
+          .finally(() => {
+            this.loading = false
+          })
       })
     }
   }

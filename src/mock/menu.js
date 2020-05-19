@@ -377,17 +377,28 @@ const res = {
         path: '',
         icon: 'iconfont iconicon_setting',
         children: [
-          // {
-          //   menuId: '31',
-          //   menuName: '添加候选人',
-          //   menuType: 'Menu',
-          //   isOwn: 1,
-          //   isShow: 1,
-          //   code: 'personnel_editPerson',
-          //   alias: 'editPerson',
-          //   path: '/personnel/editPerson',
-          //   icon: 'iconfont iconicon_compile'
-          // }
+          {
+            menuId: '31',
+            menuName: '添加候选人',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/editPerson',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '311',
+            menuName: '人才库管理',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_talent',
+            alias: 'talent',
+            path: '/personnel/talent/list',
+            icon: 'iconfont iconicon_compile'
+          },
           {
             menuId: '32',
             menuName: '人事异动',
