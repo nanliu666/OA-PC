@@ -180,7 +180,7 @@ export default {
     }
   },
   watch: {
-    parentOrgId: function(newval, oval) {
+    parentOrgId: function(newval, oldval) {
       if (newval != oldval) this.conversionTime(newval)
     }
   },
