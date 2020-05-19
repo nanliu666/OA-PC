@@ -18,13 +18,7 @@
           :suffix-icon="item.config && item.config['suffix-icon']"
           class="elInput"
           @change="change"
-        >
-          <i
-            slot="suffix"
-            class="el-input__icon el-icon-search"
-          />
-        </el-input>
-
+        />
         <el-select
           v-if="item.type === 'select'"
           v-model="item.data"
@@ -131,7 +125,6 @@
         </el-button>
       </el-form-item>
       <el-form-item v-else>
-        <!-- 内部输入框结构  -->
         <el-popover
           v-model="popoverShow"
           placement="bottom"
