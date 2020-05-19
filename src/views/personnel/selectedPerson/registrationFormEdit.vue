@@ -1,5 +1,8 @@
 <template>
-  <div style="height: 100%">
+  <div
+    v-loading="loading"
+    style="height: 100%"
+  >
     <div class="header">
       <div>
         <i
@@ -31,24 +34,139 @@
       >
         基本信息
       </div>
-      <div>
-        <avue-form
-          ref="form"
-          v-model="form"
-          :option="option"
-          @submit="submit"
-          @error="error"
+      <div style="margin:0 100px;">
+        <inputArray
+          ref="info"
+          :form.sync="form"
+          :info-form.sync="infoForm"
         />
+      </div>
+    </div>
+    <div class="contacts">
+      <div class="title">
+        紧急联系人
+      </div>
+      <div
+        class="contactsContent"
+        style="margin:0 100px;"
+      >
+        <div
+          v-for="(contacts, i) in contactsform"
+          :key="i"
+          class="contactsform"
+        >
+          <span
+            v-if="contactsform.length > 1"
+            class="delete"
+            @click="handleDelete(contacts, i)"
+          >
+            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
+          </span>
+          <inputArray
+            :ref="`contacts${i}`"
+            :info-form.sync="contacts.contacts"
+            :form="contacts.form"
+          />
+        </div>
+
+        <div
+          class="flex flex-justify flex-items add "
+          @click="handlerAddContacts"
+        >
+          <i class="el-icon-plus" />添加紧急联系人
+        </div>
+      </div>
+    </div>
+    <div class="education">
+      <div class="title">
+        家庭信息
+      </div>
+      <div
+        class="contactsContent"
+        style="margin:0 100px;"
+      >
+        <div
+          v-for="(family, i) in familyform"
+          :key="i"
+          class="contactsform"
+        >
+          <span
+            v-if="familyform.length > 1"
+            class="delete"
+            @click="handleDeleteFY(family, i)"
+          >
+            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
+          </span>
+          <inputArray
+            :ref="`family${i}`"
+            :info-form.sync="family.family"
+            :form="family.form"
+          />
+        </div>
+
+        <div
+          class="flex flex-justify flex-items add "
+          @click="handlerAddFamilyform"
+        >
+          <i class="el-icon-plus" />添加紧急联系人
+        </div>
+      </div>
+    </div>
+    <div class="education">
+      <div class="title">
+        教育经历
+      </div>
+      <div
+        class="contactsContent"
+        style="margin:0 100px;"
+      >
+        <div
+          v-for="(education, i) in educationform"
+          :key="i"
+          class="contactsform"
+        >
+          <span
+            v-if="educationform.length > 1"
+            class="delete"
+            @click="handleDeleteED(education, i)"
+          >
+            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
+          </span>
+          <inputArray
+            :ref="`education${i}`"
+            :info-form.sync="education.education"
+            :form="education.form"
+          />
+        </div>
+
+        <div
+          class="flex flex-justify flex-items add "
+          @click="handlerAddEducationform"
+        >
+          <i class="el-icon-plus" />添加紧急联系人
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import inputArray from './components/inputArray'
+import { infoForm, contacts, education, family } from './components/userInfo'
+
 export default {
   name: 'RegistrationFormEdit',
+  components: {
+    inputArray
+  },
   data() {
     return {
+      infoForm,
+      contactsform: [{ contacts: contacts, form: {} }],
+      educationform: [{ education: education, form: {} }],
+      familyform: [{ family: family, form: {} }],
+      contacts,
+      loading: false,
       ruleForm: {
         name: '',
         region: '',
@@ -58,20 +176,6 @@ export default {
         type: [],
         resource: '',
         desc: ''
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ],
-        region: [{ required: true, message: '请选择活动区域', trigger: 'change' }],
-        date1: [{ type: 'date', required: true, message: '请选择日期', trigger: 'change' }],
-        date2: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-        ],
-        resource: [{ required: true, message: '请选择活动资源', trigger: 'change' }],
-        desc: [{ required: true, message: '请填写活动形式', trigger: 'blur' }]
       },
       personInfo: {
         name: '张琪',
@@ -83,6 +187,15 @@ export default {
         name: '1',
         six: '1',
         age: '1',
+        phone: '',
+        email: '',
+        healthy: '',
+        fisrtWork: '',
+        nativePlace: '',
+        newAddress: '',
+        IDaddress: '',
+        householdRegister: '',
+        nation: '',
         marriage: '1',
         birth: '1',
         height: '1',
@@ -93,8 +206,9 @@ export default {
         type: '1',
         PresentAddress: '1',
         relatives: '1',
-        telephtone: '1'
+        telephone: '1'
       },
+
       option: {
         menuBtn: false,
         labelPosition: 'top',
@@ -314,42 +428,38 @@ export default {
       }
     }
   },
+  mounted() {},
   methods: {
-    submitForm() {
-      Promise.all(
-        ['form'].map((it) => {
-          return new Promise((resolve, reject) => {
-            this.$refs[it].validate((valid) => {
-              if (valid) {
-                resolve(it)
-              } else {
-                reject(it)
-              }
-            })
-          })
-        })
-      )
-        .then(() => {
-          // this.submitFunc(status);
-        })
-        .catch((err) => {
-          this.$nextTick(() => {
-            this.$refs[err] &&
-              this.$refs[err].$el &&
-              this.$refs[err].$el.scrollIntoView &&
-              this.$refs[err].$el.scrollIntoView({
-                behavior: 'smooth'
-              })
-          })
-        })
+    handleDelete(data, i) {
+      if (this.contactsform.length > 1) {
+        this.contactsform.splice(i, 1)
+      }
     },
-    submit(data, done) {
-      setTimeout(() => {
-        done()
-      }, 500)
+    handlerAddContacts() {
+      this.contactsform.push({ contacts: contacts, form: {} })
     },
-    error() {
-      // console.log(data)
+    handleDeleteFY(data, i) {
+      if (this.familyform.length > 1) {
+        this.familyform.splice(i, 1)
+      }
+    },
+    handleDeleteED(data, i) {
+      if (this.educationform.length > 1) {
+        this.educationform.splice(i, 1)
+      }
+    },
+    handlerAddFamilyform() {
+      this.familyform.push({ family: family, form: {} })
+    },
+    handlerAddEducationform() {
+      this.educationform.push({ education: education, form: {} })
+    },
+    async submitForm() {
+      this.$refs.info.submitForm()
+      this.contactsform.map((it, i) => {
+        let contacts = `contacts${i}`
+        this.$refs[contacts][0].submitForm()
+      })
     }
   }
 }
@@ -422,41 +532,44 @@ export default {
   }
 }
 
-.basicInfo {
+.education {
+  margin-bottom: 60px;
+}
+
+.basicInfo,
+.education,
+.contacts {
   margin-top: 16px;
   background: #ffffff;
   border-radius: 4px;
   padding: 0 24px 15px 24px;
-  /*.attribute{*/
-  /*  div{*/
-  /*    !*width: 200px;*!*/
-  /*    padding: 15px 0;*/
-  /*    ont-size: 14px;*/
-  /*  }*/
-  /*  div:first-child{*/
-  /*    color: #718199;*/
-
-  /*  }*/
-  /*  div:nth-child(2){*/
-  /*    color: #202940;*/
-  /*    !*width: 230px;*!*/
-  /*  }*/
-
-  /*}*/
-  /*.attribute:nth-child(odd){*/
-  /*  width: 50%;*/
-  /*  div:first-child{*/
-  /*    min-width: 50%;*/
-  /*    text-align: right;*/
-  /*  }*/
-  /*}*/
-  /*.attribute:nth-child(even){*/
-  /*  width: 50%;*/
-  /*  div:first-child{*/
-  /*    min-width: 25%;*/
-  /*    text-align: right;*/
-  /*  }*/
-  /*}*/
+  .add {
+    font-size: 14px;
+    color: #1e9fff;
+    border: 1px dashed #efefef;
+    line-height: 40px;
+    cursor: pointer;
+  }
+  .contactsContent {
+    .contactsform {
+      position: relative;
+      .delete {
+        position: absolute;
+        right: 10px;
+        top: 0px;
+        z-index: 9000;
+      }
+    }
+    .contactsform:not(:nth-child(1)) {
+      border-top: 1px dashed #e3e7e9;
+      padding-top: 15px;
+      .delete {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+    }
+  }
   .title {
     height: 52px;
     font-size: 16px;
