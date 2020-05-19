@@ -4,7 +4,7 @@
       <i
         v-if="showBack"
         class="el-icon-arrow-left"
-        style="margin-right:12px"
+        style="margin-right:12px;cursor: pointer;"
         @click="goBack"
       />
       <span>{{ title }}</span>
