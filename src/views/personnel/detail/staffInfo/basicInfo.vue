@@ -453,7 +453,7 @@
 
 <script>
 import { isMobile, validateName, isEmail } from '@/util/validate'
-import { editStaffBasicInfo } from '../../../../api/personalInfo.js'
+import { getStaffBasicInfo, editStaffBasicInfo } from '../../../../api/personalInfo.js'
 import { deepClone } from '@/util/util'
 import { provinceAndCityData } from 'element-china-area-data'
 
@@ -575,7 +575,7 @@ export default {
         let item = this.credentOptions[i]
         if (this.staffInfo.idType == item.dictKey) {
           dictValue = item.dictValue
-          return
+          return dictValue
         }
       }
       return dictValue
@@ -616,6 +616,14 @@ export default {
       staffInfo = deepClone(this.staffInfo)
       this.readonlyBasicInfo = false
     },
+    getBasicInfo() {
+      let params = {
+        userId: this.$route.params.userId
+      }
+      getStaffBasicInfo(params).then((res) => {
+        this.staffInfo = res
+      })
+    },
     saveInfo() {
       this.$refs['basicInfo'].validate((isPass) => {
         if (isPass) {
@@ -642,6 +650,7 @@ export default {
             userAddress: this.staffInfo.userAddress
           }
           editStaffBasicInfo(params).then(() => {
+            this.getBasicInfo()
             this.readonlyBasicInfo = true
             staffInfo = deepClone(this.staffInfo)
             this.$message({
