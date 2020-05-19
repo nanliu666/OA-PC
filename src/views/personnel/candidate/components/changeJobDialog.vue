@@ -65,7 +65,7 @@
 <script>
 // import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import { getRecruitmentList, changeCandidateJob, recoverCandidate } from '@/api/personnel/candidate'
-import { getOrgTreeSimple } from '@/api/org/org'
+// import { getOrgTreeSimple } from '@/api/org/org'
 
 export default {
   name: 'ChangeJobDialog',
@@ -115,10 +115,10 @@ export default {
     getRecruitmentList().then((res) => {
       this.recruitmentList = res
     })
-    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.config.treeParams.data = res
-      this.$refs['orgTree'].treeDataUpdateFun(res)
-    })
+    // getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+    //   this.config.treeParams.data = res
+    //   this.$refs['orgTree'].treeDataUpdateFun(res)
+    // })
   },
   methods: {
     handleClose() {

@@ -149,7 +149,9 @@
                       v-if="item.type === 'input'"
                       v-model="item.data"
                       :type="item.config && item.config.type ? item.config.type : 'text'"
-                      :placeholder="item.config.placeholder || '请输入' + item.label"
+                      :placeholder="
+                        (item.config && item.config.placeholder) || '请输入' + item.label
+                      "
                       :suffix-icon="item.config && item.config['suffix-icon']"
                       class="elInput"
                     />

@@ -39,3 +39,13 @@ export const acceptCandidateOffer = (params) => {
 export const changeCandidateOffer = (params) => {
   return post('/api/user/v1/candidate/offer/change', params)
 }
+
+// 人员详情查询
+export const getPersonInfo = (params) => {
+  return get('/api/user/v1/person/info', params)
+}
+
+// 人员动态查询
+export const getPersonRecord = (params) => {
+  return get('/api/user/v1/person/record', params)
+}
