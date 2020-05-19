@@ -335,7 +335,7 @@ export default {
             phone: this.identity.form.phone
           }
           getCode(params).then((res) => {
-            code = res
+            code = res.value
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
             this.identity.msgKey = true
