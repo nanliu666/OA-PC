@@ -93,6 +93,89 @@
       </el-form>
     </div>
     <div
+      v-show="compactInfo.length == 0"
+      class="info-content no-back-color"
+    >
+      <el-form
+        label-width="150px"
+        class="info-form"
+        size="small"
+      >
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="现合同公司:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="现合同类型:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="首次合同开始日期:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="首次合同结束日期:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="现合同开始日期:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="现合同结束日期:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="现合同期限:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="合同签订次数:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <div
       v-show="compactInfo.length > 0 && !showOtherCompact"
       class="display-compact"
     >

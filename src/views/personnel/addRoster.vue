@@ -313,13 +313,13 @@
                     <span style="float: left">{{ item.address }}</span>
                     <span
                       class="optionRight"
-                      @click="deleteAddress(item)"
+                      @click.stop="deleteAddress(item)"
                     >
                       <i class="el-icon-error" />
                     </span>
                     <span
                       class="optionRight"
-                      @click="editAddress(item)"
+                      @click.stop="editAddress(item)"
                     >
                       <i class="el-icon-edit-outline" />
                     </span>

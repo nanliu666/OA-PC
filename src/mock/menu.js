@@ -215,6 +215,33 @@ const res = {
                 icon: 'iconfont iconicon_roundadd',
                 dataPrivileges: [],
                 children: []
+              },
+              {
+                menuId: '1260117682788057090',
+                menuName: '候选人管理',
+                menuType: 'Dir',
+                isOwn: 1,
+                isShow: 1,
+                code: 'candidate',
+                alias: 'candidate',
+                path: '',
+                icon: 'iconfont iconicon_roundadd',
+                dataPrivileges: [],
+                children: [
+                  {
+                    menuId: '1260117682788057091',
+                    menuName: '候选人管理',
+                    menuType: 'menu',
+                    isOwn: 1,
+                    isShow: 1,
+                    code: 'candidate',
+                    alias: 'candidate',
+                    path: '/personnel/candidate/candidateManagement',
+                    icon: 'iconfont iconicon_roundadd',
+                    dataPrivileges: [],
+                    children: []
+                  }
+                ]
               }
             ]
           },
@@ -336,6 +363,74 @@ const res = {
             icon: 'iconfont iconicon_compile',
             dataPrivileges: [],
             children: []
+          }
+        ]
+      },
+      {
+        menuId: '3',
+        menuName: '人事管理',
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
+        code: 'personnel',
+        alias: 'personnel',
+        path: '',
+        icon: 'iconfont iconicon_setting',
+        children: [
+          // {
+          //   menuId: '31',
+          //   menuName: '添加候选人',
+          //   menuType: 'Menu',
+          //   isOwn: 1,
+          //   isShow: 1,
+          //   code: 'personnel_editPerson',
+          //   alias: 'editPerson',
+          //   path: '/personnel/editPerson',
+          //   icon: 'iconfont iconicon_compile'
+          // }
+          {
+            menuId: '32',
+            menuName: '人事异动',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/transaction/perChange',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '33',
+            menuName: '异动申请',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/transaction/changeApply',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '32',
+            menuName: '转正申请',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/administration/apply',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '32',
+            menuName: '转正列表',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/administration/apply',
+            icon: 'iconfont iconicon_doc'
           }
         ]
       }

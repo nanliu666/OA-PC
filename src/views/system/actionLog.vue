@@ -22,9 +22,7 @@
           slot="status"
           slot-scope="{ row }"
         >
-          {{
-            row.status === 'Success' ? '成功' : '失败'
-          }}
+          {{ row.status === 'Success' ? '成功' : '失败' }}
         </template>
       </avue-crud>
     </basic-container>
@@ -64,10 +62,10 @@ export default {
           label: '操作时间',
           config: { type: 'daterange', 'range-separator': '至' }
         },
-        { type: 'input', field: 'userName', label: '操作人' }
+        { type: 'input', field: 'userName', label: '操作人', config: {} }
       ],
       popoverOptions: [
-        { type: 'input', field: 'model', label: '模块' },
+        { type: 'input', field: 'model', label: '模块', config: {} },
         {
           type: 'select',
           field: 'status',

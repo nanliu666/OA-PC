@@ -332,7 +332,7 @@ export default {
           //1.发送获取验证码的网络请求
 
           let params = {
-            phonenum: this.identity.form.phone
+            phone: this.identity.form.phone
           }
           getCode(params).then((res) => {
             code = res
