@@ -154,17 +154,6 @@ export default {
             config: { optionLabel: 'name', optionValue: 'userEntry' },
             loading: false,
             pageNo: 2
-            // loadMoreFun(item) {
-            //   if (item.loading) return
-            //   item.loading = true
-            //   getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
-            //     if (res.data.length > 0) {
-            //       item.options.push(...res.data)
-            //       item.pageNo += 1
-            //       item.loading = false
-            //     }
-            //   })
-            // }
           },
           {
             type: 'timePicker',
@@ -175,17 +164,6 @@ export default {
             config: { optionLabel: 'name', optionValue: 'userId' },
             loading: false,
             pageNo: 2
-            // loadMoreFun(item) {
-            //   if (item.loading) return
-            //   item.loading = true
-            //   getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
-            //     if (res.data.length > 0) {
-            //       item.options.push(...res.data)
-            //       item.pageNo += 1
-            //       item.loading = false
-            //     }
-            //   })
-            // }
           },
           {
             type: 'select',
@@ -331,7 +309,6 @@ export default {
       }
 
       getStaffList(params).then((res) => {
-        if (typeof res === 'undefined') this.Message({ message: '暂无可查看数据', type: 'error' })
         this.data = res.data
         this.numberofpersonnel = res.data.length
         if (pageNo) this.page.currentPage = pageNo

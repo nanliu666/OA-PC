@@ -360,6 +360,28 @@ const res = {
             alias: 'editPerson',
             path: '/personnel/editPerson',
             icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '32',
+            menuName: '转正申请',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/administration/apply',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '32',
+            menuName: '转正列表',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/administration/apply',
+            icon: 'iconfont iconicon_doc'
           }
         ]
       }
