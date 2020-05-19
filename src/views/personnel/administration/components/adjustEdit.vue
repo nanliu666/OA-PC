@@ -1,6 +1,5 @@
 <template>
   <el-dialog
-    v-loading="loading"
     :title="
       type === 'adjustment' ? '调整试用期' : type === 'createChild' ? '新建子组织' : '编辑组织'
     "
@@ -38,7 +37,7 @@
       >
         <el-select
           ref="parentOrgId"
-          v-model="form.parentOrgId"
+          v-model="parentOrgId"
           placeholder="请输入"
         >
           <el-option
@@ -54,8 +53,8 @@
         prop="userId"
       >
         <el-input
-          v-model="form.userId"
-          placeholder="请选择日期"
+          v-model="conversiontiem"
+          placeholder="请选择"
           suffix-icon="el-icon-date"
           :disabled="true"
         />
@@ -86,8 +85,8 @@
     >
       <el-button
         size="medium"
-        @click="submitAndCreate"
-      >完成并继续新建</el-button>
+        @click="handleClose"
+      >取消</el-button>
       <el-button
         type="primary"
         size="medium"
@@ -133,6 +132,8 @@ export default {
       },
       month: null,
       time: null,
+      conversiontiem: null,
+      parentOrgId: null,
       form: {
         orgType: ''
       },
@@ -167,9 +168,8 @@ export default {
         }
       ],
       rules: {
-        orgName: [{ required: true, message: '请输入组织名称', trigger: 'blur' }],
         parentOrgId: [{ required: true, message: '请输入对应时间', trigger: 'blur' }],
-        orgCode: [{ required: true, message: '请输入组织编码', trigger: 'blur' }]
+        userId: [{ required: true, message: ' ', trigger: 'blur' }]
       },
       orgTree: [],
       leaderList: [],
@@ -177,6 +177,11 @@ export default {
       noMoreLeader: false,
       leaderPageNo: 1,
       loading: false
+    }
+  },
+  watch: {
+    parentOrgId: function(newval, oval) {
+      if (newval != oldval) this.conversionTime(newval)
     }
   },
   created() {
@@ -191,9 +196,7 @@ export default {
     },
     submitAndCreate() {
       this.$refs.ruleForm.validate((valid, obj) => {
-        if (valid) {
-          this.loading = true
-        } else {
+        if (!valid) {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)
           return false
         }
@@ -202,11 +205,6 @@ export default {
     submit() {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
-          if (this.type !== 'edit') {
-            this.loading = true
-          } else {
-            this.loading = true
-          }
           this.$emit('update:visible', false)
         } else {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)
@@ -280,6 +278,10 @@ export default {
       this.form.parentOrgId = data.orgId
       this.parentOrgIdLabel = data.orgName
       if (this.type !== 'createChild') this.$refs.parentOrgId.blur()
+    },
+    conversionTime(newtiem) {
+      // eslint-disable-next-line
+      console.log('查看数据节点错误地点', newtiem)
     }
   }
 }

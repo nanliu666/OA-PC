@@ -23,7 +23,7 @@ const options = { mock: false }
 
 user(options)
 
-menu({ mock: false })
+menu({ mock: true })
 
 position(options)
 grade(options)
@@ -33,7 +33,7 @@ system(options)
 
 oauth(options)
 
-personnel(options)
+personnel({ mock: true })
 
 dict(options)
 
