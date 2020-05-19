@@ -10,7 +10,7 @@
 
 * css动画库 [animate css](https://daneden.github.io/animate.css/)
 
-* MockJS [参考](https://juejin.im/post/5cf726b5e51d454fbf5409bc)
+* MockJS [参考](https://juejin.im/post/5cf726b5e51d454fbf5409bc),[官方示例](http://mockjs.com/examples.html)
 
 * vue-common-table 通用表格组件,封装了el-table、el-pagination，[文档](https://github.com/kingqi/vue-common-table/blob/master/README.md)
 

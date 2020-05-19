@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-
+import { dateFormat } from '@/util/date'
 const workAddress = {
   resCode: 200,
   resMsg: '',
@@ -33,7 +33,6 @@ const workAddress = {
 
 export default ({ mock }) => {
   if (!mock) return
-
   //获取附件分类接口数据
   Mock.mock(new RegExp('/user/v1/user/attachment/category' + '.*'), 'get', () => {
     let list = []
@@ -295,3 +294,59 @@ export default ({ mock }) => {
     }
   })
 }
+
+// 制造转正管理接口
+Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
+  let list = []
+  for (let i = 0; i < 12; i++) {
+    list.push(
+      Mock.mock({
+        id: '@increment',
+        name: '@cname',
+        workNum: '@increment',
+        status: '测试数据',
+        workNo: 'GZ@increment',
+        jobName: '测试员工@increment',
+        orgName: '百利宏',
+        formalDate: '@data',
+        companyDate: '@data',
+        probation: '3个月',
+        adjustment: '调整时间'
+      })
+    )
+  }
+  return {
+    resCode: 200,
+    resMsg: '',
+    response: {
+      totalNum: 12,
+      totalPage: 12,
+      data: list
+    }
+  }
+})
+
+//转正申请接口
+Mock.mock(new RegExp('/api/user/v1/staff/apply' + '.*'), 'post', () => {
+  const operationList = {
+    resCode: 200,
+    resMsg: '申请成功',
+    response: {}
+  }
+  return operationList
+})
+
+Mock.mock(new RegExp('/api/user/v1/staff/formalTime' + '.*'), 'post', () => {
+  let newTime = new Date()
+  let itsTime = dateFormat(newTime)
+
+  const entryTime = {
+    resCode: 200,
+    resMsg: '描述',
+    response: {
+      probationperiod: itsTime,
+      Endtime: itsTime
+    }
+  }
+  return entryTime
+})
