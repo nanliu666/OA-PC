@@ -66,14 +66,14 @@ export default {
         },
         complete({ url, fileName }) {
           that.uploading = false
-          let file = {
+          let newFile = {
             fileUrl: url,
             fileName,
             localName: file.file.name
           }
-          let newValue = [file]
+          let newValue = [newFile]
           if (that.multiple) {
-            newValue = [...that.value, file]
+            newValue = [...that.value, newFile]
           }
           that.$emit('input', newValue)
         }
