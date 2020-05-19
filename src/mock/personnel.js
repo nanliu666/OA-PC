@@ -317,7 +317,7 @@ Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
   }
   return {
     resCode: 200,
-    resMsg: '描述',
+    resMsg: '',
     response: {
       totalNum: 12,
       totalPage: 12,
@@ -330,16 +330,13 @@ Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
 Mock.mock(new RegExp('/api/user/v1/staff/apply' + '.*'), 'post', () => {
   const operationList = {
     resCode: 200,
-    resMsg: '描述',
-    response: {
-      resCode: 200,
-      restate: '申请成功'
-    }
+    resMsg: '申请成功',
+    response: {}
   }
   return operationList
 })
 
-Mock.mock(new RegExp('/api/user/v1/staff/FormalTime' + '.*'), 'post', () => {
+Mock.mock(new RegExp('/api/user/v1/staff/formalTime' + '.*'), 'post', () => {
   let newTime = new Date()
   let itsTime = dateFormat(newTime)
 

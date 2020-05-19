@@ -15,6 +15,7 @@
           v-model="item.data"
           placeholder="姓名/手机号码/工号"
           :type="item.config && item.config.type ? item.config.type : 'text'"
+          @change="change"
         >
           <i
             slot="suffix"

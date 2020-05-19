@@ -73,6 +73,23 @@
             删除
           </el-button>
         </template>
+
+        <template
+          slot="handler"
+          slot-scope="{ row }"
+        >
+          <el-button
+            size="medium"
+            type="text"
+            @click="handleEditRole(row)"
+          >
+            调整试用期
+          </el-button>
+          <el-dropdown
+            style="float:right;"
+            @command="(command) => handleCommand(command, row)"
+          />
+        </template>
       </common-table>
     </basic-container>
   </div>
@@ -324,8 +341,17 @@ export default {
     currentChange() {
       this.getTableData()
     },
+    // 导出事件
     handleExport() {},
-    handleSubmit() {}
+    // 事件判定
+    handleSubmit() {},
+    // 删除事件
+    handlerDeleteAll() {},
+    // 调整员工试用时间
+    handleEditRole(row) {
+      // eslint-disable-next-line no-console
+      console.log('查看引用..............', row)
+    }
   }
 }
 </script>

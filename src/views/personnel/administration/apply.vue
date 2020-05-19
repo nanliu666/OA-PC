@@ -90,7 +90,6 @@
 </template>
 
 <script>
-// import { getStore } from '@/util/store'
 import { getOperation, getFormalTime } from '@/api/personnel/roster'
 export default {
   data() {
@@ -109,11 +108,6 @@ export default {
     }
   },
   mounted() {
-    // let username = getStore({
-    //   name: 'saber-userInfo',
-    //   debug: true
-    // })
-
     let params = {
       Employeeketon: 'tonken',
       Employeename: '测试虚拟'
@@ -129,16 +123,16 @@ export default {
         if (valid) {
           let params = this.apply
           getOperation(params)
+            .then((res) => {
+              if (res.restate) {
+                this.$message({ type: 'success', message: res.restate })
+              }
+            })
             .catch((rej) => {
               if (rej instanceof Object) {
                 this.$message({ type: 'success', message: '申请成功' })
               } else {
                 this.$message({ message: '该功能暂不可用请联系相关管理员', type: 'warning' })
-              }
-            })
-            .then((res) => {
-              if (res.restate) {
-                this.$message({ type: 'success', message: res.restate })
               }
             })
           return this.resetForm()
