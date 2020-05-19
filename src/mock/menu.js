@@ -377,16 +377,60 @@ const res = {
         path: '',
         icon: 'iconfont iconicon_setting',
         children: [
+          // {
+          //   menuId: '31',
+          //   menuName: '添加候选人',
+          //   menuType: 'Menu',
+          //   isOwn: 1,
+          //   isShow: 1,
+          //   code: 'personnel_editPerson',
+          //   alias: 'editPerson',
+          //   path: '/personnel/editPerson',
+          //   icon: 'iconfont iconicon_compile'
+          // }
           {
-            menuId: '31',
-            menuName: '添加候选人',
+            menuId: '32',
+            menuName: '人事异动',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
-            path: '/personnel/editPerson',
+            path: '/personnel/transaction/perChange',
             icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '33',
+            menuName: '异动申请',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/transaction/changeApply',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '32',
+            menuName: '转正申请',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/administration/apply',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '32',
+            menuName: '转正列表',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/administration/apply',
+            icon: 'iconfont iconicon_doc'
           }
         ]
       }

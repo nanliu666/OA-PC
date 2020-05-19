@@ -91,6 +91,89 @@
         </el-row>
       </el-form>
     </div>
+    <div
+      v-if="recordInfo.length == 0"
+      class="info-content no-back-color"
+    >
+      <el-form
+        label-width="150px"
+        class="info-form"
+        size="small"
+      >
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="任职开始日期:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="任职结束日期:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="部门:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="职位:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="岗位:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="合同公司:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :justify="'center'">
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item label="工作地址:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item label="备注:">
+              <span class="info-item-value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
   </div>
 </template>
 
