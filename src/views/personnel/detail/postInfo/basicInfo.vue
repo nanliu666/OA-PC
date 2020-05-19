@@ -29,16 +29,16 @@
       >
         <el-row :justify="'center'">
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
-            <el-form-item label="工号">
+            <el-form-item label="工号:">
               <span class="info-item-value">{{ staffInfo.workNo }}</span>
             </el-form-item>
           </el-col>
           <el-col
-            :span="8"
-            :push="4"
+            :span="9"
+            :push="2"
           >
             <el-form-item label="公司邮箱:">
               <span class="info-item-value">{{ staffInfo.email }}</span>
@@ -48,7 +48,7 @@
 
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item label="入职公司:">
@@ -56,14 +56,14 @@
             </el-form-item>
           </el-col>
           <el-col
-            :span="8"
-            :push="4"
+            :span="9"
+            :push="2"
           >
             <el-form-item
               v-show="readonlyBasicInfo"
               label="岗位:"
             >
-              <span class="info-item-value">{{ staffInfo.positionName }}</span>
+              <span class="info-item-value">{{ getPosition }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -71,7 +71,7 @@
               prop="positionName"
             >
               <el-select
-                v-model="staffInfo.positionName"
+                v-model="staffInfo.positionId"
                 placeholder="请选择"
               >
                 <el-option
@@ -87,7 +87,7 @@
 
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item label="部门:">
@@ -95,8 +95,8 @@
             </el-form-item>
           </el-col>
           <el-col
-            :span="8"
-            :push="4"
+            :span="10"
+            :push="2"
           >
             <el-form-item label="职位:">
               <span class="info-item-value">{{ staffInfo.jobName }}</span>
@@ -109,7 +109,7 @@
             :key="index"
           >
             <el-col
-              :span="8"
+              :span="10"
               :push="2"
             >
               <el-form-item
@@ -122,15 +122,9 @@
                 v-show="!readonlyBasicInfo"
                 :label="`附属部门${index + 1}:`"
               >
-                <!-- <tree-select
-                  v-model="item.data"
-                  :option="subOrgOptions"
-                  :is-search="false"
-                  :is-single="true"
-                /> -->
                 <el-tree-select
                   ref="orgTree"
-                  v-model="staffInfo.subOrg[index].data"
+                  v-model="staffInfo.subOrg[index].subOrgId"
                   :popover-class="subOrgOptions.config.fas"
                   :styles="subOrgOptions.styles"
                   :select-params="subOrgOptions.config.selectParams"
@@ -140,8 +134,8 @@
             </el-col>
 
             <el-col
-              :span="8"
-              :push="4"
+              :span="9"
+              :push="2"
             >
               <el-form-item
                 v-show="readonlyBasicInfo"
@@ -155,7 +149,7 @@
                 prop="subOrg"
               >
                 <el-select
-                  v-model="staffInfo.subJob[index].subJobName"
+                  v-model="staffInfo.subJob[index].subJobId"
                   placeholder="请选择"
                 >
                   <el-option
@@ -167,11 +161,31 @@
                 </el-select>
               </el-form-item>
             </el-col>
+
+            <el-col
+              v-show="!readonlyBasicInfo && index > 0"
+              class="delete-org-job"
+              :span="1"
+            >
+              <div @click="deleteOrgjob(index)">
+                <span>
+                  <i class="el-icon-delete" />
+                </span>
+              </div>
+            </el-col>
           </el-row>
         </template>
+        <div
+          v-show="!readonlyBasicInfo"
+          class="add-job-org"
+        >
+          <span @click="addJobOrg()">
+            <i class="el-icon-plus" />
+          </span>
+        </div>
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item
@@ -201,14 +215,14 @@
           </el-col>
 
           <el-col
-            :span="8"
-            :push="4"
+            :span="9"
+            :push="2"
           >
             <el-form-item
               v-show="readonlyBasicInfo"
               label="工作地址:"
             >
-              <span class="info-item-value">{{ getWorkAdress }}</span>
+              <span class="info-item-value">{{ getWorkAdress() }}</span>
             </el-form-item>
 
             <el-form-item
@@ -267,14 +281,14 @@
 
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item
               v-show="readonlyBasicInfo"
               label="工作城市:"
             >
-              <span class="info-item-value">{{ getCityDetail }}</span>
+              <span class="info-item-value">{{ getCityDetail() }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
@@ -292,9 +306,15 @@
           </el-col>
 
           <el-col
-            :span="8"
-            :push="4"
+            :span="9"
+            :push="2"
           >
+            <el-form-item
+              v-show="readonlyBasicInfo"
+              label="招聘渠道:"
+            >
+              <span class="info-item-value">{{ getRecruitment }}</span>
+            </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
               label="招聘渠道:"
@@ -302,7 +322,6 @@
             >
               <el-select
                 v-model="staffInfo.recruitment"
-                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
                 placeholder="请选择"
               >
                 <el-option
@@ -317,7 +336,7 @@
         </el-row>
         <el-row>
           <el-col
-            :span="8"
+            :span="10"
             :push="2"
           >
             <el-form-item
@@ -493,6 +512,7 @@ export default {
           label: 'label'
         }
       },
+      loadAddress: false,
       addressPageNo: 1,
       workAdressList: [],
       addAdressForm: {
@@ -507,24 +527,27 @@ export default {
     }
   },
   computed: {
-    getCityDetail() {
-      if (this.staffInfo.workProvinceName) {
-        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
-      } else {
-        return ''
+    getRecruitment() {
+      let dictValue = ''
+      for (let i = 0; i < this.recruitOptions.length; i++) {
+        let item = this.recruitOptions[i]
+        if (this.staffInfo.recruitment == item.dictKey) {
+          dictValue = item.dictValue
+          return
+        }
       }
+      return dictValue
     },
-    getWorkAdress() {
-      if (this.staffInfo.address) {
-        return (
-          this.staffInfo.provinceName +
-          this.staffInfo.cityName +
-          this.staffInfo.countyName +
-          this.staffInfo.address
-        )
-      } else {
-        return ''
+    getPosition() {
+      let dictValue = ''
+      for (let i = 0; i < this.positionOptions.length; i++) {
+        let item = this.positionOptions[i]
+        if (this.staffInfo.positionId == item.id) {
+          dictValue = item.name
+          return
+        }
       }
+      return dictValue
     }
   },
   watch: {
@@ -539,26 +562,33 @@ export default {
   created() {
     this.initRegion()
     this.loadSelectData()
-    this.addKeyForSubOrg()
     this.getWorkAdressList()
   },
   methods: {
-    addKeyForSubOrg() {
-      if (func.notEmpty(this.staffInfo.subOrg)) {
-        this.staffInfo.subOrg.forEach((item) => {
-          this.$set(item, 'data', '')
-        })
+    getCityDetail() {
+      if (this.staffInfo.workProvinceName) {
+        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
+      }
+    },
+    getWorkAdress() {
+      if (this.staffInfo.address) {
+        return (
+          this.staffInfo.provinceName +
+          this.staffInfo.cityName +
+          this.staffInfo.countyName +
+          this.staffInfo.address
+        )
+      } else {
+        return ''
       }
     },
     changeSubOrg() {
       if (func.notEmpty(this.staffInfo.subOrg)) {
         this.staffInfo.subOrg.forEach((item, index) => {
-          item.subOrgId = item.data
-          item.operatorType = ''
-          delete item.data
+          item.operatorType = 'Add'
           delete item.subOrgName
 
-          this.staffInfo.subJob[index].operatorType = ''
+          this.staffInfo.subJob[index].operatorType = 'Add'
           delete this.staffInfo.subJob[index].subJobName
         })
       }
@@ -597,11 +627,13 @@ export default {
         if (item.id === value) {
           this.staffInfo.address = item.address
           this.workCity = [item.provinceCode, item.cityCode]
+
+          this.staffInfo.workProvinceName = item.provinceName
+          this.staffInfo.workCityName = item.cityName
         }
       })
     },
     createAddress() {
-      // this.$refs.workAddressId.blur()
       this.dialogTableVisible = true
       this.addAdressForm = {
         addressArr: [],
@@ -645,7 +677,6 @@ export default {
       })
     },
     leaderOptionChange(value) {
-      debugger
       this.leaderOptions.forEach((item) => {
         if (item.orgId === value) {
           this.staffInfo.leaderName = item.name
@@ -655,11 +686,11 @@ export default {
     addJobOrg() {
       this.staffInfo.subOrg.push({
         subOrgId: '',
-        subOrgName: ''
+        operatorType: 'Add'
       })
       this.staffInfo.subJob.push({
         subJobId: '',
-        subJobName: ''
+        operatorType: 'Add'
       })
     },
     dispatchSelect() {
@@ -746,6 +777,10 @@ export default {
     cancelEdit() {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
+    },
+    deleteOrgjob(index) {
+      this.staffInfo.subJob.splice(index, 1)
+      this.staffInfo.subOrg.splice(index, 1)
     }
   }
 }
@@ -767,6 +802,30 @@ export default {
   margin-top: 5px;
   /deep/ .el-input__inner {
     height: 46px !important;
+  }
+}
+span.optionRight {
+  float: right;
+}
+.add-job-org {
+  padding-left: 150px;
+  font-size: 14px;
+  padding-bottom: 20px;
+  span {
+    padding: 5px;
+    cursor: pointer;
+    &:hover {
+      color: #207efa;
+    }
+  }
+}
+.delete-org-job {
+  float: right;
+  margin-right: 5%;
+  margin-top: 7px;
+  cursor: pointer;
+  &:hover {
+    color: #207efa;
   }
 }
 </style>

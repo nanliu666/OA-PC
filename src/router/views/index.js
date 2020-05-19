@@ -96,6 +96,17 @@ export default [
         component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
       }
     ]
+  },
+  {
+    path: '/personnel/editPerson',
+    component: Layout,
+    children: [
+      {
+        path: '/personnel/editPerson',
+        name: '添加候选人',
+        component: () => import(/* webpackChunkName: "views" */ '@/views/personnel/editPerson')
+      }
+    ]
   }
   // {
   //   path: '/system/role',

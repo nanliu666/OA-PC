@@ -7,6 +7,9 @@
       <span class="info-title">家庭信息</span>
     </div>
     <div class="info-content-wrapper">
+      <div v-if="familyInfo.length == 0">
+        <avue-empty />
+      </div>
       <div
         v-for="(item, index) in familyInfo"
         :key="index"

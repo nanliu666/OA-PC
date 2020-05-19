@@ -389,6 +389,39 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
+            menuId: '311',
+            menuName: '人才库管理',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_talent',
+            alias: 'talent',
+            path: '/personnel/talent/list',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '32',
+            menuName: '人事异动',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/transaction/perChange',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '33',
+            menuName: '异动申请',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/transaction/changeApply',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
             menuId: '32',
             menuName: '转正申请',
             menuType: 'Menu',

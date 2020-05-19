@@ -39,13 +39,17 @@ module.exports = {
     open: true,
     proxy: {
       '/api': {
-        //本地服务接口地址
-        // target: 'http://122.112.183.186/',
-        // target: 'http://192.168.0.106/',
-        // target: 'http://apidev.epro.com.cn/',
+        // 本地环境
         target: 'http://192.168.1.100:8000/',
-        // target: 'http://192.168.1.24/',// 国烨本地
-        //远程演示服务地址,可用于直接启动项目
+
+        // 开发环境
+        // target: 'http://122.112.183.186/',
+        // target: 'http://apidev.epro.com.cn/',
+
+        // 测试环境
+        // target: 'http://122.112.190.144/',
+
+        // saber远程演示服务地址
         // target: 'https://saber.bladex.vip/',
         ws: true,
         changeOrigin: true
