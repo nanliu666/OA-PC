@@ -146,4 +146,96 @@ export default ({ mock }) => {
       response: ''
     }
   })
+
+  Mock.mock(new RegExp('/api/user/v1/person/info' + '.*'), 'get', () => {
+    let tags = []
+    for (let i = 0; i < 3; i++) {
+      tags.push(
+        Mock.mock({
+          tagId: '@integer(1, 100000000)',
+          name: '@cword(3, 5)',
+          color: '@color'
+        })
+      )
+    }
+    Mock.Random.extend({
+      constellation: function() {
+        const educationalLevel = [
+          'Primary',
+          'Juniormiddle',
+          'High',
+          'JuniorCollege',
+          'Undergraduate',
+          'Master',
+          'Doctor',
+          'PostDoctoral',
+          'VocationalHigh',
+          'SecondarySpecialized',
+          'Technical',
+          'SecondaryNormal',
+          'Other'
+        ]
+        return this.pick(educationalLevel)
+      }
+    })
+    let data = Mock.mock({
+      personId: '@integer(10000000000, 20000000000)',
+      name: '@cname',
+      phonenum: '@integer(10000000000, 20000000000)',
+      sex: '@integer(0, 1)',
+      age: '@integer(1, 100)',
+      email: '@email',
+      interview: '@integer(0, 1)',
+      provinceCode: 'Vm[Z',
+      proviceName: 'FmF',
+      cityCode: '1R2)@W',
+      cityName: 'F6z7tql',
+      educationalLevel: '@constellation',
+      university: 'RH92',
+      major: 'X[RRQ',
+      workAge: '@integer(0, 45)',
+      lastCompany: '@cword(3, 5)',
+      'recruitment|1': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
+      monthSalary: '@natural(4000, 100000)',
+      resumeUrl: '@url',
+      attachmentUrl: '@url',
+      attachmentName: '@cword(3, 5)',
+      remark: '@sentence(3, 5)',
+      status: /[0-6]/,
+      recruitmentId: '@integer(1, 100)',
+      userId: '@integer(1, 1000000)',
+      userName: '@cname',
+      createTime: "@date('yyyy-mm-dd')",
+      orgId: '@integer(1, 10000000)',
+      orgName: '@cword(3, 5)',
+      jobId: '@integer(1, 10000000)',
+      jobName: '@cword(3, 5)'
+    })
+    data.tags = tags
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: data
+    }
+  })
+
+  Mock.mock(new RegExp('/api/user/v1/person/record' + '.*'), 'get', () => {
+    let data = []
+    for (let i = 0; i < 20; i++) {
+      data.push(
+        Mock.mock({
+          userId: '@integer(10000000000, 20000000000)',
+          name: '@cname',
+          content: '@csentence(5, 20)',
+          remark: '@csentence(5, 30)',
+          createTime: '@date("yyyy-yy-y MM:MM:dd")'
+        })
+      )
+    }
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: data
+    }
+  })
 }

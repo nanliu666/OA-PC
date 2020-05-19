@@ -120,7 +120,9 @@ export default {
       Object.assign(this.$data.form, this.$options.data().form)
       this.$emit('update:visible', false)
     },
-    submit() {},
+    submit() {
+      this.$message.info('此功能待开发')
+    },
     pushAudit(item) {
       if (Array.isArray(item)) {
         this.candiateList = JSON.parse(JSON.stringify(item))
