@@ -252,6 +252,7 @@
           <!-- <el-button type="text" style="margin-bottom:0;" @click="handlerDeleteAll(selection)">
             <i class="el-icon-delete" />批量淘汰
           </el-button>-->
+          <!-- 待沟通 -->
           <el-button
             v-show="tabStatus === '1'"
             type="text"
@@ -260,6 +261,7 @@
           >
             <i class="el-icon-coordinate" />批量推送审核
           </el-button>
+          <!-- 初选通过 -->
           <el-button
             v-show="tabStatus === '2'"
             type="text"
@@ -267,6 +269,7 @@
           >
             <i class="el-icon-coordinate" />批量安排面试
           </el-button>
+          <!-- 面试中 -->
           <el-button
             v-show="tabStatus === '3'"
             type="text"
@@ -281,6 +284,7 @@
           >
             <i class="el-icon-coordinate" />批量发送面试登记表
           </el-button>
+          <!-- 面试通过 -->
           <el-button
             v-show="tabStatus === '4'"
             type="text"
@@ -322,23 +326,20 @@
           slot="interview"
           slot-scope="{ row }"
         >
-          {{
-            row.sex == 1 ? '已发送' : '未发送'
-          }}
+          {{ row.sex == 1 ? '已发送' : '未发送' }}
         </template>
         <template
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{
-            row.proviceName + row.cityName
-          }}
+          {{ row.proviceName + row.cityName }}
         </template>
         <template
           slot="handler"
           slot-scope="{ row }"
         >
           <div class="handlerRow">
+            <!-- 待沟通 -->
             <template v-if="row.status === '1'">
               <el-button
                 type="text"
@@ -372,6 +373,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
+            <!-- 初选通过 -->
             <template v-if="row.status === '2'">
               <el-button type="text">
                 安排面试
@@ -399,6 +401,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
+            <!-- 面试中 -->
             <template v-if="row.status === '3'">
               <el-button type="text">
                 重新安排面试
@@ -426,6 +429,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
+            <!-- 面试通过 -->
             <template v-if="row.status === '4'">
               <el-button type="text">
                 申请录用
@@ -462,6 +466,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
+            <!-- 待发Offer -->
             <template v-if="row.status === '5'">
               <el-button type="text">
                 发送Offer
@@ -489,6 +494,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
+            <!-- 已发Offer -->
             <template v-if="row.status === '6'">
               <el-button
                 type="text"
@@ -522,6 +528,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
+            <!-- 已淘汰 -->
             <template v-if="row.status === '0'">
               <el-button
                 type="text"
