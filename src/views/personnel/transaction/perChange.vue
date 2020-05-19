@@ -18,15 +18,6 @@
       @current-page-change="currentPageChange"
       @page-size-change="pageSizeChange"
     >
-      <template
-        slot="status"
-        slot-scope="{ row }"
-      >
-        <span v-if="row.status === 'Try'">试用期</span>
-        <span v-else-if="row.status === 'Formal'">正式</span>
-        <span v-else-if="row.status === 'Leaved'">已离职</span>
-        <span v-else-if="row.status === 'WaitLeave'">待离职</span>
-      </template>
       <template slot="topMenu">
         <!-- 搜素框 -->
         <div class="search-box">
@@ -54,15 +45,7 @@
           <i class="el-icon-upload2"></i>批量导出
         </span>-->
       </template>
-      <!-- 调岗列 -->
-      <template
-        slot="type"
-        slot-scope="{ row }"
-      >
-        <span v-if="row.type === 'Position'">调岗</span>
-        <span v-else-if="row.type === 'Up'">晋升</span>
-        <span v-else-if="row.type === 'Down'">降级</span>
-      </template>
+
       <!-- 姓名列 -->
       <template
         slot="name"
@@ -73,7 +56,9 @@
           size="medium"
           @click="jumpInfo(row.userId)"
         >
-          {{ row.name }}
+          {{
+            row.name
+          }}
         </el-button>
       </template>
     </commonTable>
@@ -157,18 +142,30 @@ export default {
         },
         {
           label: '原公司/现公司',
-          prop: 'oldOrNewCompanyName',
-          width: '200px'
+          width: '200px',
+          formatter(row) {
+            return row.newCompanyName
+              ? `${row.companyName}/${row.newCompanyName}`
+              : `${row.companyName}`
+          }
         },
         {
           label: '原部门职位/现部门职位',
-          prop: 'oldOrNewOrgNameAndJobName',
-          width: '250px'
+          width: '250px',
+          formatter(row) {
+            return row.newOrgName || row.newJobName
+              ? `${row.orgName}-${row.jobName}/${row.newOrgName}-${row.newJobName}`
+              : `${row.orgName}-${row.jobName}`
+          }
         },
         {
           label: '原岗位/现岗位',
-          prop: 'oldOrNewPositionName',
-          width: '150px'
+          width: '150px',
+          formatter(row) {
+            return row.newPositionName
+              ? `${row.positionName}/${row.newPositionName}`
+              : `${row.positionName}`
+          }
         },
         {
           label: '生效日期',
@@ -177,8 +174,12 @@ export default {
         },
         {
           label: '员工状态',
-          prop: 'status',
-          slot: true
+          formatter(row) {
+            if (row.status === 'Try') return '试用期'
+            if (row.status === 'Formal') return '正式'
+            if (row.status === 'Leaved') return '已离职'
+            if (row.status === 'WaitLeave') return '待离职'
+          }
         },
         {
           label: '手机号码',
@@ -186,8 +187,11 @@ export default {
         },
         {
           label: '异动类型',
-          prop: 'type',
-          slot: true
+          formatter(row) {
+            if (row.type === 'Position') return '调岗'
+            if (row.type === 'Up') return '晋升'
+            if (row.type === 'Down') return '降级'
+          }
         },
         {
           label: '备注',
@@ -234,33 +238,12 @@ export default {
     getTableList() {
       this.loading = true
       getChangeList(this.paramsInfo)
-        .then((res) => {
-          if (res.resCode === '200') {
-            let { data, totalNum } = res.response
-            this.handelData(data)
-            this.tableData = data
-            this.page.total = totalNum
-            this.loading = false
-          } else {
-            this.$message.error(res.resMsg)
-          }
+        .then(({ data, totalNum }) => {
+          this.tableData = data
+          this.page.total = totalNum
+          this.loading = false
         })
         .catch(() => {})
-    },
-    // 处理表格数据
-    handelData(data) {
-      data.forEach((item) => {
-        item.oldOrNewCompanyName =
-          item.companyName + (item.newCompanyName ? '/' + item.newCompanyName : '')
-        item.oldOrNewOrgNameAndJobName =
-          item.orgName +
-          '-' +
-          item.jobName +
-          (item.newOrgName ? '/' + item.newOrgName + '-' + item.newJobName : '')
-        item.oldOrNewPositionName =
-          item.positionName + (item.newPositionName ? '/' + item.newPositionName : '')
-        return
-      })
     },
     // 监听页码发生改变
     currentPageChange(param) {
@@ -274,12 +257,8 @@ export default {
       this.getTableList()
     },
     // 监听筛选事件
-    handleSubmit({ search, types, reasons, beginEffectDate, endEffectDate }) {
-      this.paramsInfo.search = search
-      this.paramsInfo.types = types
-      this.paramsInfo.reasons = reasons
-      this.paramsInfo.beginEffectDate = beginEffectDate
-      this.paramsInfo.endEffectDate = endEffectDate
+    handleSubmit(params) {
+      this.paramsInfo = { ...this.paramsInfo, ...params }
       this.getTableList()
     },
 
