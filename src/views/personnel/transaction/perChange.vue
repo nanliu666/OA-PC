@@ -56,9 +56,7 @@
           size="medium"
           @click="jumpInfo(row.userId)"
         >
-          {{
-            row.name
-          }}
+          {{ row.name }}
         </el-button>
       </template>
     </commonTable>
@@ -83,7 +81,7 @@ export default {
           label: '',
           data: '',
           options: [],
-          config: { placeholder: '请输入姓名/工号' }
+          config: { placeholder: '请输入姓名/工号', 'suffix-icon': 'el-icon-search' }
         }
       ],
       popoverOptions: [

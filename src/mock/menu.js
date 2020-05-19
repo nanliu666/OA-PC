@@ -215,6 +215,33 @@ const res = {
                 icon: 'iconfont iconicon_roundadd',
                 dataPrivileges: [],
                 children: []
+              },
+              {
+                menuId: '1260117682788057090',
+                menuName: '候选人管理',
+                menuType: 'Dir',
+                isOwn: 1,
+                isShow: 1,
+                code: 'candidate',
+                alias: 'candidate',
+                path: '',
+                icon: 'iconfont iconicon_roundadd',
+                dataPrivileges: [],
+                children: [
+                  {
+                    menuId: '1260117682788057091',
+                    menuName: '候选人管理',
+                    menuType: 'menu',
+                    isOwn: 1,
+                    isShow: 1,
+                    code: 'candidate',
+                    alias: 'candidate',
+                    path: '/personnel/candidate/candidateManagement',
+                    icon: 'iconfont iconicon_roundadd',
+                    dataPrivileges: [],
+                    children: []
+                  }
+                ]
               }
             ]
           },

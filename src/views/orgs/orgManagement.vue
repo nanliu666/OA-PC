@@ -245,16 +245,6 @@ export default {
             field: 'parentOrgId',
             label: '',
             data: '',
-            // arrField: '',
-            // isSingle: true,
-            // options: {
-            //   props: {
-            //     label: 'orgName',
-            //     value: 'orgId'
-            //   },
-            //   placeholder: '请选择部门',
-            //   dicData: []
-            // },
             config: {
               selectParams: {
                 placeholder: '请输入内容',
