@@ -4,6 +4,10 @@ import Mock from 'mockjs'
  * orgPrivileges是所有组织，暂时用不到
  *
  * 注意：menuType为Menu的菜单，它的下级menuType只能为Button
+ *
+ * menuType为Menu的菜单,它的path在页面渲染时会生成对应的路由，所以path的值要和实际文件路径相同
+ * 例如：页面文件的路径是：src\views\system\role.vue,它对应的path就是/system/role
+ *
  */
 const res = {
   resCode: 200,
@@ -211,6 +215,33 @@ const res = {
                 icon: 'iconfont iconicon_roundadd',
                 dataPrivileges: [],
                 children: []
+              },
+              {
+                menuId: '1260117682788057090',
+                menuName: '候选人管理',
+                menuType: 'Dir',
+                isOwn: 1,
+                isShow: 1,
+                code: 'candidate',
+                alias: 'candidate',
+                path: '',
+                icon: 'iconfont iconicon_roundadd',
+                dataPrivileges: [],
+                children: [
+                  {
+                    menuId: '1260117682788057091',
+                    menuName: '候选人管理',
+                    menuType: 'menu',
+                    isOwn: 1,
+                    isShow: 1,
+                    code: 'candidate',
+                    alias: 'candidate',
+                    path: '/personnel/candidate/candidateManagement',
+                    icon: 'iconfont iconicon_roundadd',
+                    dataPrivileges: [],
+                    children: []
+                  }
+                ]
               }
             ]
           },
@@ -286,7 +317,7 @@ const res = {
                 isOwn: 1,
                 isShow: 1,
                 code: 'positionManagent',
-                alias: '/grade/position',
+                alias: '/gradeTree/position/index',
                 path: '/grade/position',
                 icon: 'iconfont iconicon_compile',
                 dataPrivileges: [],
@@ -299,7 +330,7 @@ const res = {
                 isOwn: 1,
                 isShow: 1,
                 code: 'category',
-                alias: '/grade/category',
+                alias: '/gradeTree/position/category',
                 path: '/grade/category',
                 icon: 'iconfont iconicon_airplay',
                 dataPrivileges: [],
@@ -313,7 +344,7 @@ const res = {
                 isShow: 1,
                 code: 'station',
                 alias: '岗位管理',
-                path: '/grade/station',
+                path: '/gradeTree/position/station',
                 icon: 'iconfont iconicon_doc',
                 dataPrivileges: [],
                 children: []
@@ -327,11 +358,35 @@ const res = {
             isOwn: 1,
             isShow: 1,
             code: 'org',
-            alias: '/grade/index',
+            alias: '/gradeTree/grade',
             path: '/grade/index',
             icon: 'iconfont iconicon_compile',
             dataPrivileges: [],
             children: []
+          }
+        ]
+      },
+      {
+        menuId: '3',
+        menuName: '人事管理',
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
+        code: 'personnel',
+        alias: 'personnel',
+        path: '',
+        icon: 'iconfont iconicon_setting',
+        children: [
+          {
+            menuId: '31',
+            menuName: '添加候选人',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'editPerson',
+            path: '/personnel/editPerson',
+            icon: 'iconfont iconicon_compile'
           }
         ]
       }

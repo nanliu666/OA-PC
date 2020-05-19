@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="org-header">
-      <h4>组织机构管理</h4>
+      <div class="header">
+        组织机构管理
+      </div>
       <el-dropdown @command="handleCommand">
         <el-button
           type="primary"
@@ -39,12 +41,12 @@
               >
                 调整排序
               </el-button>
-              <el-button
+              <!-- <el-button
                 icon="el-icon-upload2"
                 size="medium"
               >
                 导出
-              </el-button>
+              </el-button>-->
               <el-popover
                 placement="bottom"
                 width="40"
@@ -112,6 +114,7 @@
         ref="avueCrud"
         :option="option"
         :data="data"
+        :table-loading="tableLoading"
         @select="rowSelect"
         @select-all="selectAll"
       >
@@ -185,7 +188,8 @@ const column = [
     label: '组织名称',
     prop: 'orgName',
     align: 'left',
-    slot: true
+    slot: true,
+    minWidth: '200px'
   },
   {
     label: '组织类型',
@@ -241,16 +245,6 @@ export default {
             field: 'parentOrgId',
             label: '',
             data: '',
-            // arrField: '',
-            // isSingle: true,
-            // options: {
-            //   props: {
-            //     label: 'orgName',
-            //     value: 'orgId'
-            //   },
-            //   placeholder: '请选择部门',
-            //   dicData: []
-            // },
             config: {
               selectParams: {
                 placeholder: '请输入内容',
@@ -309,14 +303,18 @@ export default {
             options: [],
             config: { optionLabel: 'name', optionValue: 'userId' },
             loading: false,
+            noMore: false,
             pageNo: 2,
             loadMoreFun(item) {
-              if (item.loading) return
+              if (item.loading || item.noMore) return
               item.loading = true
               getUserWorkList({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
                 if (res.data.length > 0) {
                   item.options.push(...res.data)
                   item.pageNo += 1
+                  item.loading = false
+                } else {
+                  item.noMore = true
                   item.loading = false
                 }
               })
@@ -325,6 +323,7 @@ export default {
         ]
       },
       data: [],
+      tableLoading: false,
       multipleSelection: [],
       option: {
         ...tableOptions,
@@ -377,10 +376,12 @@ export default {
     },
     getOrgTree() {
       const params = this.searchParams
+      this.tableLoading = true
       if (Array.isArray(params.parentOrgId)) params.parentOrgId = params.parentOrgId[0]['']
       getOrgTree(params).then((res) => {
         this.data = res
         this.multipleSelection = []
+        this.tableLoading = false
       })
     },
     toOrgDetail(row) {
@@ -396,6 +397,10 @@ export default {
         this.createOrgDailog = true
         this.$refs.orgEdit.create()
       } else if (command === 'deleteOrg') {
+        if (row.parentId === 0) {
+          this.$message.error('顶级组织不可删除')
+          return
+        }
         this.$confirm('您确定要删除选中的组织么？', '提醒', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -419,13 +424,19 @@ export default {
       }
     },
     multipleDeleteClick() {
+      let isError = false
       let params = {
         ids: this.multipleSelection
           .map((item) => {
+            if (item.parentId === 0) {
+              this.$message.error('顶级组织不可删除')
+              isError = true
+            }
             return item.orgId
           })
           .join(',')
       }
+      if (isError) return
       deleteOrg(params).then(() => {
         this.$message.success('删除成功')
         this.getOrgTree()
@@ -496,9 +507,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 24px;
-  h4 {
+  // padding: 0 24px;
+  .header {
+    font-weight: bold;
     font-size: 18px;
+    padding: 14px 0 16px;
   }
 }
 .originColumn {
@@ -531,12 +544,17 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-right: 20px;
     .multipleLength {
       padding: 0 20px;
       margin-right: 20px;
       border-right: 1px solid #999999;
     }
   }
+}
+
+/deep/ .avue-crud__pagination {
+  height: 0px;
 }
 .newOrgDailog {
   .el-select {

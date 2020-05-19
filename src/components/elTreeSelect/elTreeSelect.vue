@@ -87,7 +87,7 @@
 .el-tree-select-popper {
   max-height: 400px;
   overflow: auto;
-  padding: 12px 0;
+  padding: 12px 2px;
 }
 </style>
 <style lang="scss" scoped>
@@ -295,6 +295,7 @@ export default {
         }
       }
       this.$emit('valueChange', this.$refs.tree.getCheckedNodes())
+      this.$emit('change')
     },
     visible: function(val) {
       this.$emit('visible-change', val)

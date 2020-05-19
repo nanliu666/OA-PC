@@ -14,15 +14,20 @@
           />
           <el-tree
             ref="tree"
+            v-loading="loading"
             class="filter-tree"
             :data="treeData"
             :props="defaultProps"
             default-expand-all
             :filter-node-method="filterNode"
+            node-key="orgId"
             @node-click="handleNodeClick"
           />
         </div>
-        <div class="detailBox">
+        <div
+          v-loading="loading"
+          class="detailBox"
+        >
           <div class="mainHeader">
             <h3>{{ orgData.orgName }}</h3>
             <div class="btnBox">
@@ -60,7 +65,7 @@
           </div>
           <div class="baseInfo">
             <h4>基本信息</h4>
-            <div class="infoBox">
+            <el-row class="infoBox">
               <el-col :span="4">
                 组织编码
               </el-col>
@@ -85,7 +90,7 @@
               <el-col :span="20">
                 {{ orgData.remark }}
               </el-col>
-            </div>
+            </el-row>
           </div>
         </div>
       </div>
@@ -115,7 +120,9 @@ export default {
       },
       orgData: {},
       orgTypeObj: { Enterprise: '企业', Company: '公司', Department: '部门', Group: '小组' },
-      createOrgDailog: false
+      createOrgDailog: false,
+      originOrgId: '',
+      loading: false
     }
   },
   watch: {
@@ -125,15 +132,35 @@ export default {
   },
   created() {
     this.loadData()
+    this.originOrgId = this.$route.query.orgId
+  },
+  activated() {
+    if (this.$route.query.orgId !== this.originOrgId) {
+      this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+      this.handleNodeClick(this.$refs.tree.getCurrentNode())
+    }
   },
   methods: {
     loadData() {
+      this.loading = true
       getOrgTree({ parentOrgId: 0 }).then((res) => {
         this.treeData = res
-        this.handleNodeClick(res[0])
+        this.$nextTick(() => {
+          if (this.$route.query.orgId !== this.originOrgId) {
+            this.$refs.tree.setCurrentKey(this.orgData.orgId)
+          } else {
+            this.$refs.tree.setCurrentKey(this.$route.query.orgId)
+          }
+          this.handleNodeClick(this.$refs.tree.getCurrentNode())
+          this.loading = false
+        })
       })
     },
     deleteOrg() {
+      if (this.orgData.parentId === 0) {
+        this.$message.error('顶级组织不可删除')
+        return
+      }
       const params = {
         ids: this.orgData.orgId
       }
@@ -181,7 +208,7 @@ export default {
 <style lang="scss" scoped>
 .pageHeader {
   height: 48px;
-  padding: 0 24px;
+  // padding: 0 24px;
   line-height: 48px;
   font-size: 18px;
 }
@@ -222,6 +249,7 @@ export default {
     .baseInfo {
       .infoBox {
         padding: 0 40px;
+        line-height: 20px;
         .el-col {
           margin-bottom: 20px;
         }

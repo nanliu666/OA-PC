@@ -159,7 +159,9 @@ export default {
     this.getBasicInfo()
     this.getCSS()
   },
-
+  activated() {
+    this.getBasicInfo()
+  },
   methods: {
     getCSS() {
       return require('./detail/staffInfo.scss')

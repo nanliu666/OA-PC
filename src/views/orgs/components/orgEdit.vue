@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+    v-loading="loading"
     :title="type === 'create' ? '新建组织' : type === 'createChild' ? '新建子组织' : '编辑组织'"
     :visible.sync="visible"
     width="30%"
@@ -115,6 +116,12 @@
           >
             <i class="el-icon-loading" />
           </div>
+          <div
+            v-show="noMoreLeader"
+            style="text-align: center; font-size:14px;color: #606266;"
+          >
+            没有更多了
+          </div>
         </el-select>
       </el-form-item>
       <el-form-item
@@ -194,7 +201,9 @@ export default {
       orgTree: [],
       leaderList: [],
       loadLeader: false,
-      leaderPageNo: 1
+      noMoreLeader: false,
+      leaderPageNo: 1,
+      loading: false
     }
   },
   created() {
@@ -211,12 +220,15 @@ export default {
       })
     },
     loadMoreLeader() {
-      if (this.loadLeader) return
+      if (this.loadLeader || this.noMoreLeader) return
       this.loadLeader = true
       getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
         if (res.data.length > 0) {
           this.leaderList.push(...res.data)
           this.leaderPageNo += 1
+          this.loadLeader = false
+        } else {
+          this.noMoreLeader = true
           this.loadLeader = false
         }
       })
@@ -224,11 +236,13 @@ export default {
     submitAndCreate() {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
+          this.loading = true
           createOrg(this.form).then(() => {
             this.$message.success('创建成功')
             this.form = { orgType: '' }
             this.parentOrgIdLabel = ''
             this.$emit('refresh')
+            this.loading = false
           })
         } else {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)
@@ -240,14 +254,18 @@ export default {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
           if (this.type !== 'edit') {
+            this.loading = true
             createOrg(this.form).then(() => {
               this.$message.success('创建成功')
               this.$emit('refresh')
+              this.loading = false
             })
           } else {
+            this.loading = true
             editOrg(this.form).then(() => {
               this.$message.success('修改成功')
               this.$emit('refresh')
+              this.loading = false
             })
           }
           this.$emit('update:visible', false)
@@ -261,7 +279,7 @@ export default {
       this.type = 'create'
       this.parentOrgIdLabel = ''
       this.$emit('update:visible', true)
-      this.loadOrgTree()
+      this.handleOrgNodeClick(this.orgTree[0])
     },
     createChild(row) {
       this.type = 'createChild'
@@ -338,5 +356,15 @@ export default {
 }
 .addressLoading {
   text-align: center;
+}
+/deep/ .el-form-item__error {
+  padding-top: 0;
+}
+/deep/ .newOrgDailog {
+  .el-form--label-top {
+    .el-form-item__label {
+      padding: 0 0 0 0;
+    }
+  }
 }
 </style>

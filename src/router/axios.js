@@ -38,7 +38,7 @@ instance.interceptors.request.use(
     config.headers['Authorization'] = `Basic ${Base64.encode(
       `${website.clientId}:${website.clientSecret}`
     )}`
-    config.headers.tenantId = store.state.user.userInfo.tenant_id
+    config.headers.tenantId = store.state.user.tenantId
     config.headers.appId = 'Admin'
 
     if (!config.url.startsWith('/api') && !config.url.startsWith('api')) {

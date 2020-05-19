@@ -5,7 +5,7 @@
       class="pageHeader"
       @back="goBack"
     />
-    <basic-container>
+    <basic-container v-loading="loading">
       <el-row
         type="flex"
         justify="center"
@@ -47,7 +47,10 @@
                 label="手机号"
                 prop="phonenum"
               >
-                <el-input v-model.number="form.phonenum" />
+                <el-input
+                  v-model.number="form.phonenum"
+                  maxlength="11"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -83,6 +86,10 @@
                   placeholder="请选择"
                 >
                   <el-option
+                    label="无试用期"
+                    :value="0"
+                  />
+                  <el-option
                     v-for="item in [1, 2, 3, 4, 5, 6]"
                     :key="item"
                     :label="item + '个月'"
@@ -114,7 +121,10 @@
                 label="工号"
                 prop="workNo"
               >
-                <el-input v-model="form.workNo">
+                <el-input
+                  ref="workNo"
+                  v-model="form.workNo"
+                >
                   <template slot="append">
                     <div @click="autoUserId">
                       自动生成
@@ -303,13 +313,13 @@
                     <span style="float: left">{{ item.address }}</span>
                     <span
                       class="optionRight"
-                      @click="deleteAddress(item)"
+                      @click.stop="deleteAddress(item)"
                     >
                       <i class="el-icon-error" />
                     </span>
                     <span
                       class="optionRight"
-                      @click="editAddress(item)"
+                      @click.stop="editAddress(item)"
                     >
                       <i class="el-icon-edit-outline" />
                     </span>
@@ -320,7 +330,11 @@
                   >
                     <i class="el-icon-loading" />
                   </div>
-                  <el-option style="text-align:center">
+                  <el-option
+                    value
+                    label
+                    style="text-align:center"
+                  >
                     <div
                       class="newAddress"
                       @click="createAddress"
@@ -468,8 +482,19 @@ export default {
       form: {
         name: '',
         sex: '',
-        email: '',
+        phonenum: '',
+        userEmail: '',
+        entryDate: '',
+        probation: '',
+        companyId: '',
         workNo: '',
+        jobId: '',
+        positionId: '',
+        workProperty: '',
+        workAddressId: '',
+        workProvinceArr: [],
+        status: 'Try',
+        orgId: '',
         subOrg: [],
         subJob: []
       },
@@ -545,7 +570,8 @@ export default {
       workAddress: [],
       dialogTableVisible: false,
       loadAddress: false,
-      addressPageNo: 1
+      addressPageNo: 1,
+      loading: false
     }
   },
   created() {
@@ -638,18 +664,21 @@ export default {
     autoUserId() {
       createNewWorkNo().then((res) => {
         this.form.workNo = res.workNo
+        this.$refs.workNo.select()
       })
     },
     goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$refs.form.clearValidate()
       this.$router.back(-1)
     },
     async submitAndCreate() {
       await this.onSubmit()
-      this.form = { subOrg: [], subJob: [] }
+      Object.assign(this.$data.form, this.$options.data().form)
+      this.$refs.form.clearValidate()
     },
     async handleSubmit() {
       await this.onSubmit()
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.goBack()
     },
     onSubmit() {
@@ -658,21 +687,27 @@ export default {
           if (valid) {
             const params = { ...this.form }
             if (!params.probation) params.probation = 0
-            let inputValue = this.$refs.workProvinceArr.inputValue.split('/ ')
+            let inputValue = []
+            if (this.$refs.workProvinceArr.inputValue) {
+              inputValue = this.$refs.workProvinceArr.inputValue.split('/ ')
+            }
             params.workProvinceName = inputValue[0]
             params.workCityName = inputValue[1]
             params.workCountyName = inputValue[1]
-            params.workProvinceCode = params.workProvinceArr[0]
-            params.workCityCode = params.workProvinceArr[1]
-            params.workCountyCode = params.workProvinceArr[2]
-            params.orgId = params.orgId[0]
+            params.workProvinceCode = params.workProvinceArr && params.workProvinceArr[0]
+            params.workCityCode = params.workProvinceArr && params.workProvinceArr[1]
+            params.workCountyCode = params.workProvinceArr && params.workProvinceArr[2]
+            // params.orgId = params.orgId[0]
             // params.subOrg = params.subOrg.map((item) => {
             //   return item[0]
             // })
-            params.subOrg = params.subOrg.sort()
-            params.subJob = params.subJob.sort()
+            params.subOrg = Array.from(new Set(params.subOrg))
+            params.subJob = Array.from(new Set(params.subJob))
+            this.loading = true
             createUser(params).then(() => {
               this.$message.success('创建成功')
+              this.loading = false
+              Object.assign(this.$data.form, this.$options.data().form)
               resolve()
             })
           } else {
@@ -719,7 +754,7 @@ export default {
 <style lang="scss" scoped>
 .pageHeader {
   height: 48px;
-  padding: 0 24px;
+  // padding: 0 24px;
   line-height: 48px;
   font-size: 18px;
 }
