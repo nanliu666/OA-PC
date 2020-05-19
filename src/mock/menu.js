@@ -400,14 +400,14 @@ const res = {
             icon: 'iconfont iconicon_doc'
           },
           {
-            menuId: '32',
+            menuId: '33',
             menuName: '转正列表',
             menuType: 'Menu',
             isOwn: 1,
-            isShow: 0,
+            isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
-            path: '/personnel/administration/apply',
+            path: '/personnel/administration/workerlist',
             icon: 'iconfont iconicon_doc'
           }
         ]

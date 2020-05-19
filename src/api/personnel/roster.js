@@ -115,7 +115,7 @@ export const getStaffList = (params) => {
 // 转正申请接口
 export const getOperation = (params) => {
   return request({
-    url: '/api/user/v1/staff/apply',
+    url: '/user/v1/user/formal/info',
     method: 'post',
     params: { ...params }
   })
@@ -126,5 +126,14 @@ export const getFormalTime = (params) => {
     url: '/api/user/v1/staff/formalTime',
     method: 'post',
     params: { ...params }
+  })
+}
+
+// 获取员工转正时间延长的具体时间
+export const getExtend = (params) => {
+  return request({
+    url: '/api/user/v1/staff/extend',
+    method: 'get',
+    params: params
   })
 }

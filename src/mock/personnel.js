@@ -64,7 +64,8 @@ export default ({ mock }) => {
           userId: '@increment',
           name: '@cname',
           'url|1': [
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+            `https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2
+            /thumbnail/360x360/format/webp/quality/100`,
             'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
           ],
           categoryId: '555',
@@ -304,12 +305,12 @@ Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
         id: '@increment',
         name: '@cname',
         workNum: '@increment',
-        status: '测试数据',
+        status: `${i / 2 == 0 ? '已驳回' : '申请中'}`,
         workNo: 'GZ@increment',
         jobName: '测试员工@increment',
         orgName: '百利宏',
-        formalDate: '@data',
-        companyDate: '@data',
+        formalDate: '@date("yyyy y MM")',
+        companyDate: '@date("yyyy y MM")',
         probation: '3个月',
         adjustment: '调整时间'
       })
@@ -327,7 +328,7 @@ Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
 })
 
 //转正申请接口
-Mock.mock(new RegExp('/api/user/v1/staff/apply' + '.*'), 'post', () => {
+Mock.mock(new RegExp('/user/v1/user/formal/info' + '.*'), 'post', () => {
   const operationList = {
     resCode: 200,
     resMsg: '申请成功',
@@ -339,7 +340,6 @@ Mock.mock(new RegExp('/api/user/v1/staff/apply' + '.*'), 'post', () => {
 Mock.mock(new RegExp('/api/user/v1/staff/formalTime' + '.*'), 'post', () => {
   let newTime = new Date()
   let itsTime = dateFormat(newTime)
-
   const entryTime = {
     resCode: 200,
     resMsg: '描述',
@@ -349,4 +349,20 @@ Mock.mock(new RegExp('/api/user/v1/staff/formalTime' + '.*'), 'post', () => {
     }
   }
   return entryTime
+})
+Mock.mock(new RegExp('/api/user/v1/staff/extend' + '.*'), 'get', () => {
+  const extendList = {
+    resCode: 200,
+    resMsg: '获取成功',
+    response: {
+      onmonth: '无试用期',
+      onemonth: '1月',
+      twomonth: '2月',
+      threemonth: '3月',
+      fourmonth: '4月',
+      fivemonth: '5月',
+      sixmonth: '6月'
+    }
+  }
+  return extendList
 })

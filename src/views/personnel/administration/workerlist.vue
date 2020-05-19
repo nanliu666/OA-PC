@@ -85,24 +85,26 @@
           >
             调整试用期
           </el-button>
-          <el-dropdown
-            style="float:right;"
-            @command="(command) => handleCommand(command, row)"
-          />
         </template>
       </common-table>
     </basic-container>
+    <adjust-edit
+      ref="adjustEdit"
+      :visible.sync="createOrgDailog"
+      @refresh="getOrgTree"
+    />
   </div>
 </template>
 
 <script>
 import SearchPopover from '@/components/searchPopOver/index'
-import { getStaffList, getUserStatusStat } from '@/api/personnel/roster'
-
+import { getStaffList, getUserStatusStat, getExtend } from '@/api/personnel/roster'
+import AdjustEdit from './components/adjustEdit'
 export default {
   name: 'EmployeeRoster',
   components: {
-    SearchPopover
+    SearchPopover,
+    AdjustEdit
   },
   data() {
     return {
@@ -113,6 +115,7 @@ export default {
             field: 'parentOrgId',
             label: '',
             data: [],
+            month: [],
             config: {
               selectParams: {
                 placeholder: '姓名/工号',
@@ -208,6 +211,7 @@ export default {
           }
         ]
       },
+      createOrgDailog: false,
       numberofpersonnel: 'xxx',
       tabStatus: 'onJob',
       statusWord: {
@@ -228,7 +232,6 @@ export default {
       },
       loading: false,
       isEdit: false,
-      title: '新建职位类别',
       categoryDialog: false,
       dialogVisible: false,
       isBatch: false,
@@ -240,6 +243,7 @@ export default {
         showHandler: true,
         enableMultiSelect: true
       },
+      month: [],
       columns: [
         {
           label: '姓名',
@@ -293,6 +297,9 @@ export default {
   created() {
     this.getTableData(1)
     this.getUserStatusStat()
+    getExtend().then((res) => {
+      this.month = res
+    })
   },
   methods: {
     toUserDetail(row) {
@@ -327,7 +334,7 @@ export default {
 
       getStaffList(params).then((res) => {
         this.data = res.data
-        this.numberofpersonnel = res.data.length
+        this.numberofpersonnel = res.totalNum
         if (pageNo) this.page.currentPage = pageNo
       })
     },
@@ -349,9 +356,18 @@ export default {
     handlerDeleteAll() {},
     // 调整员工试用时间
     handleEditRole(row) {
-      // eslint-disable-next-line no-console
-      console.log('查看引用..............', row)
-    }
+      let { status } = row
+      if (status == '申请中' || status == '已退回') {
+        return this.$message({
+          showClose: true,
+          message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
+          type: 'warning'
+        })
+      }
+      this.$refs.adjustEdit.creAdjustment(row)
+    },
+    getData() {},
+    getOrgTree() {}
   }
 }
 </script>
