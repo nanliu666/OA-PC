@@ -123,6 +123,7 @@
                 v-show="!readonlyBasicInfo"
                 :label="`附属部门${index + 1}:`"
               >
+                <div />
                 <el-tree-select
                   ref="orgTree"
                   v-model="staffInfo.subOrg[index].subOrgId"
@@ -142,15 +143,16 @@
                 v-show="readonlyBasicInfo"
                 :label="`附属职位${index + 1}:`"
               >
-                <span class="info-item-value">{{ staffInfo.subJob[index].subJobName }}</span>
+                <span class="info-item-value">{{ item.subJobName }}</span>
               </el-form-item>
               <el-form-item
                 v-show="!readonlyBasicInfo"
                 :label="`附属职位${index + 1}:`"
               >
                 <el-select
-                  v-model="staffInfo.subJob[index].subJobId"
+                  v-model="item.subJobId"
                   placeholder="请选择"
+                  @focus="getJob(item)"
                 >
                   <el-option
                     v-for="subJobItem in subJobOptions"
@@ -167,7 +169,7 @@
               class="delete-org-job"
               :span="1"
             >
-              <div @click="deleteOrgjob(index)">
+              <div @click="deleteOrgjob(item)">
                 <span>
                   <i class="el-icon-delete" />
                 </span>
@@ -544,22 +546,14 @@ export default {
         let item = this.positionOptions[i]
         if (this.staffInfo.positionId == item.id) {
           dictValue = item.name
-          return
+          return dictValue
         }
       }
       return dictValue
     }
   },
-  watch: {
-    info: {
-      handler(val) {
-        this.staffInfo = val
-      },
-      deep: true,
-      immediate: true
-    }
-  },
   created() {
+    this.getStaffinfo()
     this.initRegion()
     this.loadSelectData()
     this.getWorkAdressList()
@@ -580,31 +574,6 @@ export default {
         )
       } else {
         return ''
-      }
-    },
-    changeSubOrg() {
-      if (func.notEmpty(this.staffInfo.subOrg)) {
-        this.staffInfo.subOrg.forEach((item, index) => {
-          item.operatorType = 'Add'
-          delete item.subOrgName
-
-          this.staffInfo.subJob[index].operatorType = 'Add'
-          delete this.staffInfo.subJob[index].subJobName
-          if (staffInfo.subOrg.length > 0) {
-            for (let i = 0; i < staffInfo.subOrg.length; i++) {
-              let orgInfo = staffInfo.subOrg[i]
-              let jobInfo = staffInfo.subJob[i]
-              if (
-                orgInfo.subOrgId == item.subOrgId &&
-                jobInfo.subJobId == this.staffInfo.subJob[index].subJobId
-              ) {
-                this.staffInfo.subOrg.splice(index, 1)
-                this.staffInfo.subJob.splice(index, 1)
-                return
-              }
-            }
-          }
-        })
       }
     },
     getWorkAdressList() {
@@ -697,16 +666,6 @@ export default {
         }
       })
     },
-    addJobOrg() {
-      this.staffInfo.subOrg.push({
-        subOrgId: '',
-        operatorType: 'Add'
-      })
-      this.staffInfo.subJob.push({
-        subJobId: '',
-        operatorType: 'Add'
-      })
-    },
     dispatchSelect() {
       this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
         this.recruitOptions = res
@@ -716,9 +675,6 @@ export default {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
         this.subOrgOptions.config.treeParams.data = res
         this.$refs['orgTree'].treeDataUpdateFun(res)
-      })
-      getOrgJob().then((res) => {
-        this.subJobOptions = res
       })
       getOrgPosition().then((res) => {
         this.positionOptions = res
@@ -732,18 +688,6 @@ export default {
     },
     initRegion() {
       this.workCity = [this.staffInfo.workProvinceCode, this.staffInfo.workCityCode]
-    },
-    getFormatSubJob() {
-      this.formatSubJob = []
-      this.staffInfo.subOrg &&
-        this.staffInfo.subOrg.forEach((item, index) => {
-          this.$set(item, 'data', [])
-          let obj = {
-            orjItem: item,
-            jobItem: this.staffInfo.subJob[index]
-          }
-          this.formatSubJob.push(obj)
-        })
     },
     notEmpty(item) {
       return func.notEmpty(item)
@@ -769,8 +713,41 @@ export default {
       this.readonlyBasicInfo = false
     },
     saveInfo() {
-      this.changeSubOrg()
-      editStaffBasicInfo(this.staffInfo).then(() => {
+      let jobOrg = this.changeSubOrg()
+      if (jobOrg.repeatJobFlag) {
+        this.$message({
+          type: 'warn',
+          message: '附属职位不能重复'
+        })
+        return
+      }
+      let params = {
+        subOrg: jobOrg.subOrg,
+        subJob: jobOrg.subJob,
+        userId: this.$route.params.userId,
+        workNo: this.staffInfo.workNo,
+        email: this.staffInfo.email,
+        companyName: this.staffInfo.companyName,
+        companyId: this.staffInfo.companyId,
+        positionId: this.staffInfo.positionId,
+        orgId: this.staffInfo.orgId,
+        orgName: this.staffInfo.orgName,
+        leaderName: this.staffInfo.leaderName,
+        userRemark: this.staffInfo.userRemark,
+        recruitment: this.staffInfo.recruitment,
+        provinceCode: this.staffInfo.provinceCode,
+        provinceName: this.staffInfo.provinceName,
+        cityCode: this.staffInfo.cityCode,
+        cityName: this.staffInfo.cityName,
+        countyCode: this.staffInfo.countyCode,
+        countyName: this.staffInfo.countyName,
+        address: this.staffInfo.address,
+        workProvinceCode: this.staffInfo.workProvinceCode,
+        workProvinceName: this.staffInfo.workProvinceName,
+        workCityCode: this.staffInfo.workCityCode,
+        workCityName: this.staffInfo.workCityName
+      }
+      editStaffBasicInfo(params).then(() => {
         this.readonlyBasicInfo = true
         staffInfo = deepClone(this.staffInfo)
         this.$message({
@@ -792,9 +769,102 @@ export default {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
     },
-    deleteOrgjob(index) {
-      this.staffInfo.subJob.splice(index, 1)
-      this.staffInfo.subOrg.splice(index, 1)
+    getJob(item) {
+      if (item.subOrgId) {
+        let params = {
+          orgId: item.subOrgId
+        }
+        getOrgJob(params).then((res) => {
+          this.subJobOptions = res
+        })
+      } else {
+        this.subJobOptions = []
+      }
+    },
+    addJobOrg() {
+      this.staffInfo.subOrg.push({
+        subOrgId: '',
+        subJobId: '',
+        subOrgName: '',
+        subJobName: '',
+        operatorType: 'Add'
+      })
+    },
+    deleteOrgjob(item) {
+      let params = {
+        subOrg: [
+          {
+            subOrgId: item.subOrgId,
+            operatorType: 'del'
+          }
+        ],
+        subJob: [
+          {
+            subJobId: item.subJobId,
+            operatorType: 'del'
+          }
+        ]
+      }
+      editStaffBasicInfo(params).then(() => {
+        this.readonlyBasicInfo = true
+        staffInfo = deepClone(this.staffInfo)
+        this.$message({
+          type: 'success',
+          message: '删除成功'
+        })
+        this.getStaffinfo()
+      })
+    },
+    changeSubOrg() {
+      let subOrg = []
+      let subJob = []
+      let repeatJobFlag = false
+      if (func.notEmpty(this.staffInfo.subOrg)) {
+        this.staffInfo.subOrg.forEach((item, index) => {
+          //重构数据结构
+          let orgObj = {
+            subOrgId: item.subOrgId,
+            operatorType: item.operatorType ? item.operatorType : ''
+          }
+          let jobObj = {
+            subJobId: item.subJobId,
+            operatorType: item.operatorType ? item.operatorType : ''
+          }
+          subOrg.push(orgObj)
+          subJob.push(jobObj)
+
+          //删除已有且未编辑的数据
+          for (let i = 0; i < staffInfo.subOrg.length; i++) {
+            let itemOrg = staffInfo.subOrg[i]
+            if (itemOrg.subOrgId == item.subOrgId && itemOrg.subJobId == item.subJobId) {
+              subOrg.splice(index, 1)
+              subJob.splice(index, 1)
+              break
+            }
+          }
+
+          //去掉重复的subOrgId项
+          let obj = {}
+          subOrg = subOrg.reduce(function(item, next) {
+            obj[next.subOrgId] ? '' : (obj[next.subOrgId] = true && item.push(next))
+            return item
+          }, [])
+
+          //判断subJob是否有重复的subJobId
+          let preItemId = ''
+          for (let i = 0; i < subJob.length; i++) {
+            if (preItemId == subJob[i].subJobId) {
+              repeatJobFlag = true
+            }
+            preItemId = subJob[i].subJobId
+          }
+        })
+      }
+      return {
+        subOrg: subOrg,
+        subJob: subJob,
+        repeatJobFlag: repeatJobFlag
+      }
     }
   }
 }
