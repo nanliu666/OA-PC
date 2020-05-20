@@ -94,31 +94,22 @@ export default {
       if (item.children.length !== 0) {
         this.$router.$avueRouter.formatRoutes([item], true)
       }
-      this.$router.push({
-        path: item.children[0].path
-      })
+
       //当点击顶部菜单后默认打开第一个菜单
-      /*if (!this.validatenull(item)) {
-            let itemActive = {},
-              childItemActive = 0;
-            if (item.path) {
-              itemActive = item;
-            } else {
-              if (this.menu[childItemActive].length === 0) {
-                itemActive = this.menu[childItemActive];
-              } else {
-                itemActive = this.menu[childItemActive].children[childItemActive];
-              }
-            }
-            this.$store.commit('SET_MENU_ID', item);
-            this.$router.push({
-              path: this.$router.$avueRouter.getPath({
-                name: (itemActive.label || itemActive.name),
-                src: itemActive.path
-              }, itemActive.meta)
-            });
-          }*/
-      // })
+      let path = this.getFirstPath(item.children, 0, true)
+      this.$router.push({
+        path
+      })
+    },
+    getFirstPath(children, index = 0) {
+      if (children[index].menuType !== 'Dir' && children[index].path) {
+        return children[index].path
+      }
+      if (children[0].children.length > 0) {
+        return this.getFirstPath(children[0].children)
+      } else {
+        return this.getFirstPath(children, index + 1)
+      }
     },
     // 定时检测token
     refreshToken() {
