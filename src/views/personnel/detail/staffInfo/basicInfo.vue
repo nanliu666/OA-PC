@@ -120,12 +120,20 @@
             :push="2"
           >
             <el-form-item
+              v-show="readonlyBasicInfo"
+              label="证件类型:"
+            >
+              <span class="info-item-value">
+                {{ getIdType }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
               label="证件类型:"
               prop="idType"
             >
               <el-select
                 v-model="staffInfo.idType"
-                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
                 placeholder="请选择"
               >
                 <el-option
@@ -299,12 +307,20 @@
             :push="2"
           >
             <el-form-item
+              v-show="readonlyBasicInfo"
+              label="政治面貌:"
+            >
+              <span class="info-item-value">
+                {{ getpoliticalStatus }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
               label="政治面貌:"
               prop="politicalStatus"
             >
               <el-select
                 v-model="staffInfo.politicalStatus"
-                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
                 placeholder="请选择"
               >
                 <el-option
@@ -348,12 +364,21 @@
             :push="2"
           >
             <el-form-item
+              v-show="readonlyBasicInfo"
+              label="户籍类型:"
+            >
+              <span class="info-item-value">
+                {{ getHouseholdType }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
               label="户籍类型:"
               prop="householdType"
             >
               <el-select
                 v-model="staffInfo.householdType"
-                :class="{ 'selectOption no-border-style': readonlyBasicInfo }"
+                placeholder="请选择"
               >
                 <el-option
                   v-for="item in householdOptions"
@@ -521,6 +546,39 @@ export default {
       let workAge = '' + year + '年' + month + '月'
       workAge = workAge.replace(/-/g, '')
       return workAge
+    },
+    getHouseholdType() {
+      let dictValue = ''
+      for (let i = 0; i < this.householdOptions.length; i++) {
+        let item = this.householdOptions[i]
+        if (this.staffInfo.householdType == item.dictKey) {
+          dictValue = item.dictValue
+          return dictValue
+        }
+      }
+      return dictValue
+    },
+    getpoliticalStatus() {
+      let dictValue = ''
+      for (let i = 0; i < this.politicalOptions.length; i++) {
+        let item = this.politicalOptions[i]
+        if (this.staffInfo.politicalStatus == item.dictKey) {
+          dictValue = item.dictValue
+          return dictValue
+        }
+      }
+      return dictValue
+    },
+    getIdType() {
+      let dictValue = ''
+      for (let i = 0; i < this.credentOptions.length; i++) {
+        let item = this.credentOptions[i]
+        if (this.staffInfo.idType == item.dictKey) {
+          dictValue = item.dictValue
+          return
+        }
+      }
+      return dictValue
     }
   },
   watch: {

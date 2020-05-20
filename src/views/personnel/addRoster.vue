@@ -689,7 +689,7 @@ export default {
             if (!params.probation) params.probation = 0
             let inputValue = []
             if (this.$refs.workProvinceArr.inputValue) {
-              inputValue = this.$refs.workProvinceArr.inputValue.split('/ ')
+              inputValue = this.$refs.workProvinceArr.inputValue.split(' / ')
             }
             params.workProvinceName = inputValue[0]
             params.workCityName = inputValue[1]

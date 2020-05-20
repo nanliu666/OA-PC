@@ -109,9 +109,7 @@
             type="text"
             @click="toUserDetail(row)"
           >
-            {{
-              row.name
-            }}
+            {{ row.name }}
           </el-button>
         </template>
         <template
