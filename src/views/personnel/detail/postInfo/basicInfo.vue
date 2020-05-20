@@ -22,6 +22,7 @@
       :class="{ 'back-style': !readonlyBasicInfo }"
     >
       <el-form
+        ref="jobBasicInfo"
         :model="staffInfo"
         label-width="150px"
         class="info-form"
@@ -146,7 +147,6 @@
               <el-form-item
                 v-show="!readonlyBasicInfo"
                 :label="`附属职位${index + 1}:`"
-                prop="subOrg"
               >
                 <el-select
                   v-model="staffInfo.subJob[index].subJobId"
@@ -590,6 +590,20 @@ export default {
 
           this.staffInfo.subJob[index].operatorType = 'Add'
           delete this.staffInfo.subJob[index].subJobName
+          if (staffInfo.subOrg.length > 0) {
+            for (let i = 0; i < staffInfo.subOrg.length; i++) {
+              let orgInfo = staffInfo.subOrg[i]
+              let jobInfo = staffInfo.subJob[i]
+              if (
+                orgInfo.subOrgId == item.subOrgId &&
+                jobInfo.subJobId == this.staffInfo.subJob[index].subJobId
+              ) {
+                this.staffInfo.subOrg.splice(index, 1)
+                this.staffInfo.subJob.splice(index, 1)
+                return
+              }
+            }
+          }
         })
       }
     },
