@@ -389,6 +389,20 @@ const res = {
             icon: 'iconfont iconicon_compile',
             dataPrivileges: [],
             children: []
+          },
+
+          {
+            menuId: '126044787127127654545',
+            menuName: '申请录用',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_apply',
+            alias: 'apply',
+            path: '/personnel/selectedPerson/apply',
+            icon: 'iconfont iconicon_compile',
+            dataPrivileges: [],
+            children: []
           }
         ]
       }

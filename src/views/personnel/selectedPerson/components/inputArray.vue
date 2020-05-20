@@ -11,9 +11,9 @@
         <el-col :span="24">
           <el-row :gutter="100">
             <el-col
-              v-for="(basic, index) in infoForm.basicAttrs"
+              v-for="basic in infoForm.basicAttrs"
               :key="basic.attrId"
-              :span="12"
+              :span="basic.span ? basic.span : 12"
             >
               <el-form-item
                 :label="basic.attrName"
@@ -26,6 +26,7 @@
                     :minlength="basic.minLen"
                     :maxlength="basic.maxLen"
                     class="widthSet"
+                    :placeholder="basic.message"
                     :class="[basic.attrId === '1' ? 'active' : '']"
                     disabled
                     @blur="blur(basic)"
@@ -38,17 +39,18 @@
                     :maxlength="basic.maxLen"
                     class="widthSet"
                     :class="[basic.attrId === '1' ? '' : '']"
-                    :disabled="disabled"
-                    @input="(value) => inputPhonenum(value, index)"
+                    :disabled="basic.disabled || disabled"
+                    :placeholder="basic.message"
+                    @input="(value) => inputPhonenum(value, basic.props, basic.dataType)"
                     @blur="blur(basic, basic.attrId === '1' ? true : false)"
                   />
                 </template>
                 <template v-if="basic.inType == 2">
                   <el-select
                     v-model="form[basic.props]"
-                    placeholder="请选择"
+                    :placeholder="basic.message"
                     class="widthSet select"
-                    :disabled="disabled"
+                    :disabled="basic.disabled || disabled"
                     @change="blur(basic)"
                   >
                     <el-option
@@ -63,10 +65,10 @@
                   <el-select
                     v-model="form[basic.props]"
                     multiple
-                    placeholder="请选择"
+                    :placeholder="basic.message"
                     clearable
                     class="widthSet select"
-                    :disabled="disabled"
+                    :disabled="basic.disabled || disabled"
                   >
                     <el-option
                       v-for="item in basic.value || ''"
@@ -83,7 +85,7 @@
                     class="widthSet select"
                     value-format="yyyy-MM-dd"
                     placeholder="选择日期"
-                    :disabled="disabled"
+                    :disabled="basic.disabled || disabled"
                     @change="blur(basic)"
                   />
                 </template>
@@ -97,10 +99,11 @@
                     <b />
                     <el-input
                       v-model="form[basic.props]"
+                      :placeholder="basic.message"
                       :minlength="basic.minLen"
                       :maxlength="basic.maxLen"
                       class="widthSet"
-                      :disabled="disabled"
+                      :disabled="basic.disabled || disabled"
                     >
                       <i
                         slot="suffix"
@@ -112,26 +115,51 @@
                 <template v-if="basic.inType == 7">
                   <el-radio-group
                     v-model="form[basic.props]"
-                    :disabled="disabled"
+                    :disabled="basic.disabled || disabled"
                     @change="blur(basic)"
                   >
-                    <el-radio label="1">
-                      是
-                    </el-radio>
-                    <el-radio label="0">
-                      否
+                    <el-radio
+                      v-for="item in basic.value"
+                      :key="item.value"
+                      :label="item.value"
+                    >
+                      {{ item.label }}
                     </el-radio>
                   </el-radio-group>
                 </template>
                 <template v-if="basic.inType == 8">
                   <el-cascader
                     v-model="form[basic.props]"
-                    :disabled="disabled"
+                    :placeholder="basic.message"
+                    :disabled="basic.disabled || disabled"
                     clearable
                     size="medium"
                     :options="options"
                     class="widthSet select"
                     @change="blur(basic)"
+                  />
+                </template>
+                <template v-if="basic.inType == 9">
+                  <el-checkbox-group v-model="form[basic.props]">
+                    <el-checkbox
+                      v-for="item in basic.value"
+                      :key="item.value"
+                      :label="item.value"
+                    >
+                      {{ item.label }}
+                    </el-checkbox>
+                  </el-checkbox-group>
+                </template>
+                <template v-if="basic.inType == 10">
+                  <el-input
+                    v-model="form[basic.props]"
+                    type="textarea"
+                    :minlength="basic.minLen"
+                    :maxlength="basic.maxLen"
+                    class="widthSet"
+                    :disabled="basic.disabled || disabled"
+                    :placeholder="basic.message"
+                    @blur="blur(basic, basic.attrId === '1' ? true : false)"
                   />
                 </template>
               </el-form-item>
@@ -145,6 +173,7 @@
 
 <script>
 import { provinceAndCityData } from 'element-china-area-data'
+const cityOptions = ['上海', '北京', '广州', '深圳']
 export default {
   name: 'InputArray',
   components: {},
@@ -164,6 +193,8 @@ export default {
   },
   data() {
     return {
+      checkedCities: [],
+      cities: cityOptions,
       options: provinceAndCityData,
       pass: this.ispass,
       userId: {
@@ -173,46 +204,15 @@ export default {
       phonenum: null
     }
   },
-  watch: {
-    // infoForm: {
-    //     handler(data) {
-    //         console.log(data.basicAttrs[1]);
-    //         this.phonenum = data.basicAttrs[1];
-    //     },
-    //     immediate: true
-    // }
-  },
-  mounted() {
-    // this.getLevel();
-    // // this.profession();
-    // this.getPosition();
-  },
+  watch: {},
+  mounted() {},
   methods: {
     refsform() {},
     async check(data) {
       const obj = await this.getInfoCheck(data)
       return obj
     },
-    getInfoCheck() {
-      // const params = {
-      //     [data.keyName]: data.attrValue
-      // };
-      // return new Promise(resolve => {
-      //     getInfoCheck(params)
-      //         .then(() => {
-      //             const msg = {
-      //                 val: true
-      //             };
-      //             resolve(msg);
-      //         }).catch(err => {
-      //             const msg = {
-      //                 val: false,
-      //                 messges: err.errMsg
-      //             };
-      //             resolve(msg);
-      //         });
-      // });
-    },
+    getInfoCheck() {},
     blur(data) {
       if (data.attrValue === data.attrvalue) {
         return
@@ -236,8 +236,9 @@ export default {
         })
       )
         .then(() => {
+          // console.log('it_____',it)
+          this.$emit('update:form', this.form)
           return true
-          // this.submitFunc(status);
         })
         .catch((err) => {
           this.$nextTick(() => {
@@ -249,6 +250,7 @@ export default {
                 block: 'end'
               })
           })
+          return false
         })
     },
     validate() {
@@ -271,114 +273,12 @@ export default {
         let rules = [...basic.rules]
         return rules
       }
-
-      // if (basic.inType === 1 || basic.inType === 7) {
-      //     // inType =1 有必填规则
-      //     rules.push({
-      //         required: basic.status,
-      //         trigger: 'change',
-      //         message: basic.message
-      //     })
-      //     // if (basic.status) {
-      //     //     rules.push({
-      //     //         trigger: 'change',
-      //     //         validator: (rule, value, callback) => {
-      //     //             if (basic.dataType === 1) {
-      //     //                 if (
-      //     //                     (basic.minLen > 0 &&
-      //     //                         (!value ||
-      //     //                             value.length < basic.minLen)) ||
-      //     //                     (basic.maxLen > 0 &&
-      //     //                         (!value || value.length > basic.maxLen))
-      //     //                 ) {
-      //     //                     callback(
-      //     //                         new Error(
-      //     //                             `长度限制在${basic.minLen}~${
-      //     //                                 basic.maxLen
-      //     //                             }之间`
-      //     //                         )
-      //     //                     )
-      //     //                 } else {
-      //     //                     callback()
-      //     //                 }
-      //     //             } else if (basic.dataType === 2) {
-      //     //                 if (/^[0-9]+$/.test(value)) {
-      //     //                     callback()
-      //     //                 } else {
-      //     //                     callback(new Error('请输入整数'))
-      //     //                 }
-      //     //             } else if (basic.dataType === 3) {
-      //     //                 if (/^[0-9]+[.]{0,1}[0-9]+$/.test(value)) {
-      //     //                     callback()
-      //     //                 } else {
-      //     //                     callback(new Error('请输入小数'))
-      //     //                 }
-      //     //             } else {
-      //     //                 callback()
-      //     //             }
-      //     //         }
-      //     //     })
-      //     //     if (basic.keyName === 'phonenum') {
-      //     //         rules.push({
-      //     //             trigger: 'change',
-      //     //             validator: (rule, value, callback) => {
-      //     //                 if (/^[0-9]+$/.test(value)) {
-      //     //                     callback()
-      //     //                 } else {
-      //     //                     callback(new Error('请输入整数'))
-      //     //                 }
-      //     //             }
-      //     //         })
-      //     //         rules.push({
-      //     //             trigger: 'blur',
-      //     //             validator: (rule, value, callback) => {
-      //     //                 if (/^1[3456789]\d{9}$/.test(value)) {
-      //     //                     callback()
-      //     //                 } else {
-      //     //                     callback(new Error('请输入正确手机号码'))
-      //     //                 }
-      //     //             }
-      //     //         })
-      //     //     }
-      //     // }
-      // }
-      // // if (basic.attrId === '1' || basic.attrId === '2') {
-      // //     rules.push({
-      // //         trigger: 'blur',
-      // //         validator: async(rule, value, callback) => {
-      // //             if (basic.attrValue === basic.attrvalue) {
-      // //                 return
-      // //             }
-      // //             const msg = await this.check(basic)
-      // //             if (msg.val) {
-      // //                 callback()
-      // //             } else {
-      // //                 callback(new Error('该手机号已占用'))
-      // //             }
-      // //         }
-      // //     })
-      // // }
-      // if (basic.inType === 2) {
-      //     rules.push({
-      //         required: basic.status,
-      //         trigger: 'change',
-      //         message: basic.message
-      //     })
-      // }
-      // if (basic.inType === 3) {
-      //     rules.push({
-      //         required: basic.status,
-      //         trigger: 'blur',
-      //         message: basic.message
-      //     })
-      // }
-      // console.log('rules——',rules)
     },
     loadings() {},
-    inputPhonenum(value, index) {
-      if (this.infoForm.basicAttrs[index].keyName === 'phonenum') {
+    inputPhonenum(value, index, dataType) {
+      if (dataType == 1) {
         value = value.replace(/[^\d]/g, '')
-        this.infoForm.basicAttrs[index].attrValue = value
+        this.form[index] = value
       }
     }
   }
@@ -395,20 +295,4 @@ export default {
 /deep/ .el-form--label-top .el-form-item__label {
   padding: 5px 0;
 }
-/*@media screen and (max-width: 1500px) {*/
-/*    .widthSet {*/
-/*        !*width: 500px;*!*/
-/*    }*/
-/*    .active {*/
-/*        width: 130px;*/
-/*    }*/
-/*}*/
-/*@media screen and (min-width: 1500px) {*/
-/*    .widthSet {*/
-/*      !*width: 500px;*!*/
-/*        .active {*/
-/*            width: 175px;*/
-/*        }*/
-/*    }*/
-/*}*/
 </style>

@@ -77,7 +77,7 @@
         </div>
       </div>
     </div>
-    <div class="education">
+    <div class="famliy">
       <div class="title">
         家庭信息
       </div>
@@ -143,16 +143,143 @@
           class="flex flex-justify flex-items add "
           @click="handlerAddEducationform"
         >
-          <i class="el-icon-plus" />添加紧急联系人
+          <i class="el-icon-plus" />添加教育经历
         </div>
       </div>
+    </div>
+    <div class="education">
+      <div class="title">
+        工作经验
+      </div>
+      <div
+        class="contactsContent"
+        style="margin:0 100px;"
+      >
+        <div
+          v-for="(work, i) in workform"
+          :key="i"
+          class="contactsform"
+        >
+          <span
+            v-if="workform.length > 1"
+            class="delete"
+            @click="handleDeleteWK(work, i)"
+          >
+            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
+          </span>
+          <inputArray
+            :ref="`education${i}`"
+            :info-form.sync="work.work"
+            :form="work.form"
+          />
+        </div>
+
+        <div
+          class="flex flex-justify flex-items add "
+          @click="handlerAddWorkform"
+        >
+          <i class="el-icon-plus" />添加工作经验
+        </div>
+      </div>
+    </div>
+    <div class="education">
+      <div class="title">
+        培训经历
+      </div>
+      <div
+        class="contactsContent"
+        style="margin:0 100px;"
+      >
+        <div
+          v-for="(train, i) in trainform"
+          :key="i"
+          class="contactsform"
+        >
+          <span
+            v-if="trainform.length > 1"
+            class="delete"
+            @click="handleDeleteTR(train, i)"
+          >
+            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
+          </span>
+          <inputArray
+            :ref="`education${i}`"
+            :info-form.sync="train.train"
+            :form="train.form"
+          />
+        </div>
+
+        <div
+          class="flex flex-justify flex-items add "
+          @click="handlerAddTrainform"
+        >
+          <i class="el-icon-plus" />添加培训经历
+        </div>
+      </div>
+    </div>
+    <div class="education">
+      <div class="title">
+        资格证书
+      </div>
+      <div
+        class="contactsContent"
+        style="margin:0 100px;"
+      >
+        <div
+          v-for="(certificate, i) in certificateform"
+          :key="i"
+          class="contactsform"
+        >
+          <span
+            v-if="certificateform.length > 1"
+            class="delete"
+            @click="handleDeleteCE(certificate, i)"
+          >
+            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
+          </span>
+          <inputArray
+            :ref="`education${i}`"
+            :info-form.sync="certificate.certificate"
+            :form="certificate.form"
+          />
+        </div>
+
+        <div
+          class="flex flex-justify flex-items add "
+          @click="handlerAddCEform"
+        >
+          <i class="el-icon-plus" />添加资格证书
+        </div>
+      </div>
+    </div>
+    <div class="footer flex flex-items flex-justify">
+      <el-button
+        type="primary"
+        size="medium"
+      >
+        保存
+      </el-button>
+      <el-button
+        type="info"
+        size="medium"
+      >
+        取消
+      </el-button>
     </div>
   </div>
 </template>
 
 <script>
 import inputArray from './components/inputArray'
-import { infoForm, contacts, education, family } from './components/userInfo'
+import {
+  infoForm,
+  contacts,
+  education,
+  family,
+  work,
+  train,
+  certificate
+} from './components/userInfo'
 
 export default {
   name: 'RegistrationFormEdit',
@@ -165,6 +292,9 @@ export default {
       contactsform: [{ contacts: contacts, form: {} }],
       educationform: [{ education: education, form: {} }],
       familyform: [{ family: family, form: {} }],
+      workform: [{ work: work, form: {} }],
+      trainform: [{ train: train, form: {} }],
+      certificateform: [{ certificate: certificate, form: {} }],
       contacts,
       loading: false,
       ruleForm: {
@@ -207,224 +337,6 @@ export default {
         PresentAddress: '1',
         relatives: '1',
         telephone: '1'
-      },
-
-      option: {
-        menuBtn: false,
-        labelPosition: 'top',
-        size: 'medium',
-        column: [
-          {
-            label: '姓名',
-            prop: 'name',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入职位类别名称',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '性别',
-            prop: 'six',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '年龄',
-            prop: 'age',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '婚姻状况',
-            prop: 'marriage',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '出生日期',
-            prop: 'birth',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '身高',
-            prop: 'height',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '体重',
-            prop: 'weight',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '最高学历',
-            prop: 'education',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '身份证地址',
-            prop: 'adress',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '户口类型',
-            prop: 'type',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '紧急联系人',
-            prop: 'contacts',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '现住址',
-            prop: 'PresentAddress',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '是否有亲属再本公司工作',
-            prop: 'relatives',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '紧急电话',
-            prop: 'telephtone',
-            type: 'input',
-            row: false,
-            span: 12,
-            placeholder: '请输入描述',
-            rules: [
-              {
-                required: true,
-                message: '请输入职位类别名称',
-                trigger: 'blur'
-              }
-            ]
-          }
-        ]
       }
     }
   },
@@ -453,6 +365,28 @@ export default {
     },
     handlerAddEducationform() {
       this.educationform.push({ education: education, form: {} })
+    },
+    handleDeleteWK(data, i) {
+      if (this.workform.length > 1) {
+        this.workform.splice(i, 1)
+      }
+    },
+    handlerAddWorkform() {
+      this.workform.push({ work: work, form: {} })
+    },
+    handleDeleteTR(data, i) {
+      if (this.trainform.length > 1) {
+        this.trainform.splice(i, 1)
+      }
+    },
+    handlerAddTrainform() {
+      this.trainform.push({ train: train, form: {} })
+    },
+    handleDeleteCE(data, i) {
+      this.certificateform.length > 1 && this.certificateform.splice(i, 1)
+    },
+    handlerAddCEform() {
+      this.certificateform.push({ certificate: certificate, form: {} })
     },
     async submitForm() {
       this.$refs.info.submitForm()
@@ -533,9 +467,9 @@ export default {
 }
 
 .education {
-  margin-bottom: 60px;
+  margin-bottom: 0px;
 }
-
+.famliy,
 .basicInfo,
 .education,
 .contacts {
@@ -578,5 +512,11 @@ export default {
     border-bottom: 1px solid #e3e7e9;
     margin-bottom: 20px;
   }
+}
+.footer {
+  height: 100px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  background: #fff;
 }
 </style>
