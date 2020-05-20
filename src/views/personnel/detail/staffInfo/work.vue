@@ -197,20 +197,20 @@
               >
                 <el-radio
                   v-model="item.isSecret"
-                  label="1"
+                  :label="1"
                 >
                   有
                 </el-radio>
                 <el-radio
                   v-model="item.isSecret"
-                  label="0"
+                  :label="0"
                 >
                   无
                 </el-radio>
               </el-form-item>
             </el-col>
             <el-col
-              v-show="item.isSecret == '1'"
+              v-if="item.isSecret == '1'"
               :span="8"
               :push="4"
             >
@@ -350,7 +350,13 @@ export default {
           {
             required: true,
             trigger: 'blur',
-            message: '时间不能为空'
+            validator: (rule, value, callback) => {
+              if (!value[0]) {
+                callback(new Error('时间不能为空'))
+              } else {
+                callback()
+              }
+            }
           }
         ],
         companyName: [
