@@ -560,9 +560,7 @@ export default {
   },
   methods: {
     getCityDetail() {
-      if (this.staffInfo.workProvinceName) {
-        return this.staffInfo.workProvinceName + this.staffInfo.workCityName
-      }
+      return this.staffInfo.workProvinceName + this.staffInfo.workCityName
     },
     getWorkAdress() {
       if (this.staffInfo.address) {
