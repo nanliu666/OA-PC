@@ -151,6 +151,7 @@
                   :styles="orgOptions.styles"
                   :select-params="orgOptions.config.selectParams"
                   :tree-params="orgOptions.config.treeParams"
+                  @change="handleOrgChange"
                 />
               </el-form-item>
             </el-col>
@@ -223,7 +224,7 @@
                 />
               </el-col>
             </template>
-            <el-col :span="24">
+            <!-- <el-col :span="24">
               <div class="addSubOrg">
                 <div
                   style="width: 200px"
@@ -232,7 +233,7 @@
                   <i class="el-icon-plus" />添加附属部门及职位
                 </div>
               </div>
-            </el-col>
+            </el-col> -->
             <el-col :span="12">
               <el-form-item label="岗位">
                 <el-select
@@ -581,6 +582,12 @@ export default {
     this.loadSelectData()
   },
   methods: {
+    handleOrgChange() {
+      this.form.jobId = ''
+      getOrgJob({ orgId: this.form.orgId }).then((res) => {
+        this.jobList = res
+      })
+    },
     deleteSubOrgJob(index) {
       this.form.subJob.splice(index, 1)
       this.form.subOrg.splice(index, 1)
@@ -734,9 +741,6 @@ export default {
     loadSelectData() {
       getOrganizationCompany({ parentOrgId: '0' }).then((res) => {
         this.companyList = res
-      })
-      getOrgJob().then((res) => {
-        this.jobList = res
       })
       getOrgPosition().then((res) => {
         this.positionList = res

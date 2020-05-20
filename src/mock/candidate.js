@@ -1,9 +1,12 @@
+/* eslint-disable */
+
 import Mock from 'mockjs'
 
 export default ({ mock }) => {
   if (!mock) return
 
-  Mock.mock(new RegExp('/api/user/v1/candidate/status/stat' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/candidate/status/stat' + '.*'), 'get', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     let data = []
     for (let i = 0; i < 7; i++) {
       data.push(
@@ -21,6 +24,7 @@ export default ({ mock }) => {
   })
 
   Mock.mock(new RegExp('/api/user/v1/candidate/list' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     let data = []
     for (let i = 0; i < JSON.parse(options.body).pageSize; i++) {
       data.push(
@@ -70,7 +74,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/candidate/out' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/candidate/out' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     return {
       resCode: 200,
       resMsg: '',
@@ -78,7 +83,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/candidate/recruitment/list' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/candidate/recruitment/list' + '.*'), 'get', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     Mock.Random.extend({
       constellation: function() {
         const orgTree = [
@@ -115,7 +121,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/candidate/job/change' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/candidate/job/change' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     return {
       resCode: 200,
       resMsg: '',
@@ -123,7 +130,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/candidate/recover' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/candidate/recover' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     return {
       resCode: 200,
       resMsg: '',
@@ -131,7 +139,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/candidate/offer/accept' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/candidate/offer/accept' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     return {
       resCode: 200,
       resMsg: '',
@@ -139,7 +148,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/candidate/offer/change' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/candidate/offer/change' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     return {
       resCode: 200,
       resMsg: '',
@@ -147,7 +157,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/person/info' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/person/info' + '.*'), 'get', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     let tags = []
     for (let i = 0; i < 3; i++) {
       tags.push(
@@ -219,7 +230,8 @@ export default ({ mock }) => {
     }
   })
 
-  Mock.mock(new RegExp('/api/user/v1/person/record' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/person/record' + '.*'), 'get', (options) => {
+    console.log(options.url, JSON.parse(options.body))
     let data = []
     for (let i = 0; i < 20; i++) {
       data.push(
