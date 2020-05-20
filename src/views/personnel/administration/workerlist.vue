@@ -67,9 +67,20 @@
           </el-button>
         </template>
         <template
+          slot="name"
+          slot-scope="{ row }"
+        >
+          <el-button
+            type="text"
+            size="medium"
+            @click="jumpToDetail(row.personId)"
+          >
+            {{ row.name }}
+          </el-button>
+        </template>
+        <template
           slot="handler"
           slot-scope="{ row }"
-          style="height:180px"
         >
           <el-button
             size="medium"
@@ -205,13 +216,6 @@ export default {
       createOrgDailog: false,
       numberofpersonnel: 'xxx',
       tabStatus: 'onJob',
-      statusWord: {
-        onJob: '在职',
-        Formal: '正式',
-        Try: '试用期',
-        WaitLeave: '待离职',
-        Leaved: '已离职'
-      },
       personStatistics: {
         Formal: 0,
         Try: 0,
@@ -238,7 +242,8 @@ export default {
       columns: [
         {
           label: '姓名',
-          prop: 'name'
+          prop: 'name',
+          slot: true
         },
         {
           label: '工号',
@@ -290,28 +295,12 @@ export default {
     this.getUserStatusStat()
   },
   methods: {
-    toUserDetail(row) {
-      this.$router.push('/personnel/detail/' + row.userId)
-    },
     getUserStatusStat() {
       getUserStatusStat().then((res) => {
         res.forEach((item) => {
           this.personStatistics[item.status] = item.statusNum
         })
       })
-    },
-    tabClick(status) {
-      this.tabStatus = status
-      this.$refs.searchComponent.resetForm()
-      this.searchParams = {}
-      this.getTableData(1)
-    },
-    handleCommand(command, row) {
-      if (command === 'add') {
-        this.$router.push('/personnel/addRoster')
-      }
-      // eslint-disable-next-line no-console
-      console.log(command, row)
     },
     getTableData(pageNo) {
       const params = {
@@ -342,7 +331,6 @@ export default {
       // eslint-disable-next-line
       console.log('查看数据...............', selection)
     },
-    // 调整员工试用时间
     handleEditRole(row) {
       let { status } = row
       if (status == '申请中' || status == '已退回') {
@@ -353,6 +341,9 @@ export default {
         })
       }
       this.$refs.adjustEdit.init(row)
+    },
+    jumpToDetail(personId) {
+      this.$router.push('/personnel/detail/' + personId)
     },
     getData() {},
     getOrgTree() {}
