@@ -439,7 +439,7 @@ const res = {
             menuName: '转正申请',
             menuType: 'Menu',
             isOwn: 1,
-            isShow: 0,
+            isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
             path: '/personnel/administration/apply',

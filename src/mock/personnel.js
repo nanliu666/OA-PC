@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import { dateFormat } from '@/util/date'
+
 const workAddress = {
   resCode: 200,
   resMsg: '',
@@ -302,7 +302,7 @@ Mock.mock(new RegExp('/user/v1/user/formal/list' + '.*'), 'post', () => {
   for (let i = 0; i < 12; i++) {
     list.push(
       Mock.mock({
-        userId: '@increment',
+        userId: 'GZ@increment',
         personId: 'GZ@increment',
         name: '@cname',
         workNum: '@increment',
@@ -339,14 +339,12 @@ Mock.mock(new RegExp('/user/v1/user/formal/info' + '.*'), 'post', () => {
 })
 
 Mock.mock(new RegExp('/user/v1/user/formal/formalTime' + '.*'), 'post', () => {
-  let newTime = new Date()
-  let itsTime = dateFormat(newTime)
   const entryTime = {
     resCode: 200,
     resMsg: '描述',
     response: {
-      entryDate: itsTime,
-      formalDate: itsTime
+      entryDate: Mock.Random.date(),
+      formalDate: Mock.Random.date()
     }
   }
   return entryTime

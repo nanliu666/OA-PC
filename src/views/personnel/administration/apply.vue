@@ -22,9 +22,9 @@
           <el-col :span="12">
             <el-form-item label="入职时间">
               <el-input
-                v-model="apply.start"
+                :value="apply.entryDate"
                 size="medium"
-                :disabled="inputdisabled"
+                disabled
                 suffix-icon="el-icon-date"
               />
             </el-form-item>
@@ -32,9 +32,9 @@
           <el-col :span="12">
             <el-form-item label="预计转正时间">
               <el-input
-                v-model="apply.end"
+                :value="apply.formalDate"
                 size="medium"
-                :disabled="inputdisabled"
+                disabled
                 suffix-icon="el-icon-date"
               />
             </el-form-item>
@@ -57,10 +57,10 @@
           <el-col :span="24">
             <el-form-item
               label="对公司的意见和建议"
-              prop="proposal"
+              prop="advise"
             >
               <el-input
-                v-model="apply.proposal"
+                v-model="apply.advise"
                 size="medium"
                 style="width:156%"
                 type="textarea"
@@ -96,32 +96,33 @@ export default {
     return {
       inputdisabled: true,
       apply: {
-        start: '暂无数据',
-        end: '暂无数据',
-        proposal: '',
+        entryDate: '暂无数据',
+        formalDate: '暂无数据',
+        advise: '',
         summary: ''
       },
       rules: {
         summary: [{ required: true, message: '请简单说说您的工作心得', trigger: 'blur' }],
-        proposal: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }]
+        advise: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }]
       }
     }
   },
   mounted() {
-    let params = {
-      Employeeketon: 'tonken',
-      Employeename: '测试虚拟'
-    }
+    let params = {}
+    params.userId = 'tonken'
     getFormalTime(params).then((res) => {
-      this.apply.start = res.entryDate
-      this.apply.end = res.Endtime
+      this.apply.entryDate = res.entryDate
+      this.apply.formalDate = res.formalDate
     })
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let params = this.apply
+          let params = {}
+          params.userId = 'tonken'
+          params.summary = this.apply.summary
+          params.advise = this.apply.advise
           getOperation(params)
             .then((res) => {
               if (res.restate) {
@@ -142,7 +143,7 @@ export default {
       })
     },
     resetForm() {
-      this.apply.proposal = ''
+      this.apply.advise = ''
       this.apply.summary = ''
     }
   }

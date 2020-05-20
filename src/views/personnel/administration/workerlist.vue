@@ -95,7 +95,6 @@
     <adjust-edit
       ref="adjustEdit"
       :visible.sync="createOrgDailog"
-      @refresh="getOrgTree"
     />
   </div>
 </template>
@@ -324,7 +323,6 @@ export default {
     currentChange() {
       this.getTableData()
     },
-    // 事件判定
     handleSubmit() {},
     // 删除事件
     handlerDeleteAll(selection) {
@@ -345,8 +343,9 @@ export default {
     jumpToDetail(personId) {
       this.$router.push('/personnel/detail/' + personId)
     },
-    getData() {},
-    getOrgTree() {}
+    getData() {
+      this.getTableData()
+    }
   }
 }
 </script>
