@@ -64,6 +64,7 @@
 </template>
 <script>
 import { getRecruitmentList, changeCandidateJob, recoverCandidate } from '@/api/personnel/candidate'
+// import { getOrgTreeSimple } from '@/api/org/org'
 import { addToCandidate } from '@/api/personnel/person'
 
 export default {
@@ -98,6 +99,10 @@ export default {
     getRecruitmentList().then((res) => {
       this.recruitmentList = res
     })
+    // getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+    //   this.config.treeParams.data = res
+    //   this.$refs['orgTree'].treeDataUpdateFun(res)
+    // })
   },
   methods: {
     handleClose() {

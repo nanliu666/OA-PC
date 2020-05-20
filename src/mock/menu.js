@@ -240,6 +240,19 @@ const res = {
                     icon: 'iconfont iconicon_roundadd',
                     dataPrivileges: [],
                     children: []
+                  },
+                  {
+                    menuId: '1260117682788057092',
+                    menuName: '候选人详情',
+                    menuType: 'menu',
+                    isOwn: 1,
+                    isShow: 0,
+                    code: 'detail',
+                    alias: 'detail',
+                    path: '/personnel/personDetail/:personId',
+                    icon: 'iconfont iconicon_roundadd',
+                    dataPrivileges: [],
+                    children: []
                   }
                 ]
               }

@@ -364,7 +364,7 @@
                   <el-dropdown-item command="changeJob">
                     更改应聘职位
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
                   <el-dropdown-item command>
@@ -392,7 +392,7 @@
                   <i class="el-icon-arrow-down el-icon-more" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
                   <el-dropdown-item command>
@@ -420,7 +420,7 @@
                   <el-dropdown-item command="weedOut">
                     淘汰
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
                   <el-dropdown-item command>
@@ -451,7 +451,7 @@
                   <el-dropdown-item command>
                     安排复试
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
                   <el-dropdown-item command>
@@ -485,7 +485,7 @@
                   <i class="el-icon-arrow-down el-icon-more" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
                   <el-dropdown-item command>
@@ -519,7 +519,7 @@
                   <el-dropdown-item command="offerChange">
                     Offer变更
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
                   <el-dropdown-item command>
@@ -828,7 +828,7 @@ export default {
   methods: {
     handleExport() {},
     toDetail(row) {
-      this.$router.push('/candidate/detail/' + row.personId)
+      this.$router.push('/personnel/personDetail/' + row.personId)
     },
     handleAcceptOffer(row) {
       this.$confirm('您确认要替候选人接受入职offer？接受后该候选人后将会进入待入职状态', '提示', {
@@ -906,6 +906,8 @@ export default {
             this.loadData(1)
           })
         })
+      } else if (command === 'edit') {
+        this.$router.push('/personnel/editPerson?personId=' + data.personId)
       }
     },
     handleSubmit(params) {
