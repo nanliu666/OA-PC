@@ -435,7 +435,7 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
-            menuId: '34',
+            menuId: '35',
             menuName: '转正申请',
             menuType: 'Menu',
             isOwn: 1,
@@ -446,7 +446,7 @@ const res = {
             icon: 'iconfont iconicon_doc'
           },
           {
-            menuId: '35',
+            menuId: '36',
             menuName: '转正列表',
             menuType: 'Menu',
             isOwn: 1,

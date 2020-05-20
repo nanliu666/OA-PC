@@ -113,7 +113,7 @@ export default {
       Employeename: '测试虚拟'
     }
     getFormalTime(params).then((res) => {
-      this.apply.start = res.probationperiod
+      this.apply.start = res.entryDate
       this.apply.end = res.Endtime
     })
   },

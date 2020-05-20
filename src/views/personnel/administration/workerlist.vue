@@ -30,13 +30,6 @@
               <el-button
                 type="primary"
                 size="medium"
-                @click="handleExport"
-              >
-                <i class="el-icon-upload2" /> 导出
-              </el-button>
-              <el-button
-                type="primary"
-                size="medium"
                 @click="getData"
               >
                 <i class="el-icon-refresh" />
@@ -73,10 +66,10 @@
             删除
           </el-button>
         </template>
-
         <template
           slot="handler"
           slot-scope="{ row }"
+          style="height:180px"
         >
           <el-button
             size="medium"
@@ -98,7 +91,7 @@
 
 <script>
 import SearchPopover from '@/components/searchPopOver/index'
-import { getStaffList, getUserStatusStat, getExtend } from '@/api/personnel/roster'
+import { getStaffList, getUserStatusStat } from '@/api/personnel/roster'
 import AdjustEdit from './components/adjustEdit'
 export default {
   name: 'EmployeeRoster',
@@ -141,7 +134,6 @@ export default {
         popoverOptions: [
           {
             type: 'select',
-            field: 'orgSelect',
             label: '部门',
             data: '',
             options: [
@@ -154,7 +146,6 @@ export default {
           },
           {
             type: 'select',
-            field: 'orgCompany',
             data: '',
             label: '职位',
             options: [
@@ -271,7 +262,7 @@ export default {
         },
         {
           label: '入职时间',
-          prop: 'companyDate'
+          prop: 'entryDate'
         },
         {
           label: '转正日期',
@@ -297,9 +288,6 @@ export default {
   created() {
     this.getTableData(1)
     this.getUserStatusStat()
-    getExtend().then((res) => {
-      this.month = res
-    })
   },
   methods: {
     toUserDetail(row) {
@@ -331,7 +319,6 @@ export default {
         pageSize: this.page.pageSize,
         ...this.searchParams
       }
-
       getStaffList(params).then((res) => {
         this.data = res.data
         this.numberofpersonnel = res.totalNum
@@ -348,12 +335,13 @@ export default {
     currentChange() {
       this.getTableData()
     },
-    // 导出事件
-    handleExport() {},
     // 事件判定
     handleSubmit() {},
     // 删除事件
-    handlerDeleteAll() {},
+    handlerDeleteAll(selection) {
+      // eslint-disable-next-line
+      console.log('查看数据...............', selection)
+    },
     // 调整员工试用时间
     handleEditRole(row) {
       let { status } = row
@@ -364,7 +352,7 @@ export default {
           type: 'warning'
         })
       }
-      this.$refs.adjustEdit.creAdjustment(row)
+      this.$refs.adjustEdit.init(row)
     },
     getData() {},
     getOrgTree() {}
@@ -441,6 +429,11 @@ export default {
 }
 
 .edge {
+  position: absolute;
+  right: 59px;
+}
+
+.beBverdue {
   position: absolute;
   right: 59px;
 }

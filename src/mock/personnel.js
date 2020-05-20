@@ -297,20 +297,20 @@ export default ({ mock }) => {
 }
 
 // 制造转正管理接口
-Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
+Mock.mock(new RegExp('/user/v1/user/formal/list' + '.*'), 'post', () => {
   let list = []
   for (let i = 0; i < 12; i++) {
     list.push(
       Mock.mock({
-        id: '@increment',
+        userId: '@increment',
         name: '@cname',
         workNum: '@increment',
         status: `${i / 2 == 0 ? '已驳回' : '申请中'}`,
         workNo: 'GZ@increment',
         jobName: '测试员工@increment',
         orgName: '百利宏',
-        formalDate: '@date("yyyy y MM")',
-        companyDate: '@date("yyyy y MM")',
+        formalDate: Mock.Random.date(),
+        entryDate: Mock.Random.date(),
         probation: '3个月',
         adjustment: '调整时间'
       })
@@ -337,32 +337,24 @@ Mock.mock(new RegExp('/user/v1/user/formal/info' + '.*'), 'post', () => {
   return operationList
 })
 
-Mock.mock(new RegExp('/api/user/v1/staff/formalTime' + '.*'), 'post', () => {
+Mock.mock(new RegExp('/user/v1/user/formal/formalTime' + '.*'), 'post', () => {
   let newTime = new Date()
   let itsTime = dateFormat(newTime)
   const entryTime = {
     resCode: 200,
     resMsg: '描述',
     response: {
-      probationperiod: itsTime,
-      Endtime: itsTime
+      entryDate: itsTime,
+      formalDate: itsTime
     }
   }
   return entryTime
 })
-Mock.mock(new RegExp('/api/user/v1/staff/extend' + '.*'), 'get', () => {
-  const extendList = {
+Mock.mock(new RegExp('/user/v1/user/formal/probation' + '.*'), 'post', () => {
+  const probationList = {
     resCode: 200,
-    resMsg: '获取成功',
-    response: {
-      onmonth: '无试用期',
-      onemonth: '1月',
-      twomonth: '2月',
-      threemonth: '3月',
-      fourmonth: '4月',
-      fivemonth: '5月',
-      sixmonth: '6月'
-    }
+    resMsg: '申请成功',
+    response: {}
   }
-  return extendList
+  return probationList
 })
