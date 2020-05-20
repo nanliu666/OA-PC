@@ -147,14 +147,6 @@ export default {
       allInfo: {}
     }
   },
-
-  watch: {
-    $route(to, from) {
-      if (from.path == '/personnel/roster') {
-        this.getBasicInfo()
-      }
-    }
-  },
   created() {
     this.getBasicInfo()
     this.getCSS()
