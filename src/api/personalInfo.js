@@ -54,7 +54,7 @@ export const getCode = (params) => {
 //验证手机验证码
 export const checkPhoneCode = (params) => {
   return request({
-    url: '/api/user/v1/sms/check',
+    url: '/api/common/v1/sms/check',
     method: 'post',
     params: {
       ...params

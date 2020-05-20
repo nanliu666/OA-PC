@@ -191,7 +191,7 @@ export default {
 
     const validateCode = (rule, value, callback) => {
       if (!_this.identity.form.code) {
-        callback(new Error('请输入四位验证码'))
+        callback(new Error('请输入六位验证码'))
       } else if (_this.identity.form.code != code) {
         callback(new Error('验证码不正确'))
       } else {
@@ -298,8 +298,8 @@ export default {
           if (isPass && this.identity.form.code == code) {
             //验证手机验证码
             let params = {
-              phonenum: this.identity.form.phone,
-              smsCode: this.identity.form.code
+              phone: this.identity.form.phone,
+              value: this.identity.form.code
             }
             checkPhoneCode(params).then(() => {
               this.step++
@@ -335,7 +335,7 @@ export default {
             phone: this.identity.form.phone
           }
           getCode(params).then((res) => {
-            code = res
+            code = res.value
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
             this.identity.msgKey = true
