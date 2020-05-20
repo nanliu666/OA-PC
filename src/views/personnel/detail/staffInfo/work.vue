@@ -477,6 +477,8 @@ export default {
       })
     },
     editInfo(item, index) {
+      this.$set(item, 'monthRange', [item.beginWorkDate, item.endWorkDate])
+      this.$set(item, 'secretMonthRange', [item.beginSecretDate, item.endSecretDate])
       this.type = 'edit'
       this.editClick = true
       this.curItemIndex = index
