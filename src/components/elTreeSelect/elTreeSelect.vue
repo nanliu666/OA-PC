@@ -87,7 +87,7 @@
 .el-tree-select-popper {
   max-height: 400px;
   overflow: auto;
-  padding: 12px 0;
+  padding: 12px 2px;
 }
 </style>
 <style lang="scss" scoped>

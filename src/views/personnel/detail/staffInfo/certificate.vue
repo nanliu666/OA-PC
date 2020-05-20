@@ -7,6 +7,9 @@
       <span class="info-title">资格证书</span>
     </div>
     <div class="info-content-wrapper">
+      <div v-if="certificateInfo.length == 0">
+        <avue-empty />
+      </div>
       <div
         v-for="(item, index) in certificateInfo"
         :key="index"

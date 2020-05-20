@@ -341,6 +341,7 @@ export default {
                   this.options.currentId = it.categoryId // 没有设置默认的激活分类时，设置默认激活分类
                 }
                 return {
+                  groupId: item.groupId,
                   cateId: it.categoryId,
                   label: it.categoryName,
                   roleNum: it.roleNum

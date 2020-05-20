@@ -34,8 +34,7 @@
 
       <!-- 右侧锚点导航 -->
       <el-col
-        :span="2"
-        :offset="1"
+        :span="3"
         class="sidebar-erea"
       >
         <div class="sidebar-line">

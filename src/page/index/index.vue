@@ -29,10 +29,14 @@
           style="height:100%;overflow-y:auto;overflow-x:hidden;"
         >
           <keep-alive v-if="$route.meta.$keepAlive">
-            <router-view class="avue-view" />
+            <router-view
+              :key="$route.fullPath"
+              class="avue-view"
+            />
           </keep-alive>
           <router-view
             v-else
+            :key="$route.fullPath"
             class="avue-view"
           />
         </div>
@@ -111,9 +115,20 @@ export default {
       }
 
       this.$store.dispatch('SetMenu', item.children)
+      let path = this.getFirstPath(item.children, 0, true)
       this.$router.push({
-        path: item.children[0].path
+        path
       })
+    },
+    getFirstPath(children, index = 0) {
+      if (children[index].menuType !== 'Dir' && children[index].path) {
+        return children[index].path
+      }
+      if (children[0].children.length > 0) {
+        return this.getFirstPath(children[0].children)
+      } else {
+        return this.getFirstPath(children, index + 1)
+      }
     },
     // 定时检测token
     refreshToken() {

@@ -7,6 +7,9 @@
       <span class="info-title">紧急联系人</span>
     </div>
     <div class="info-content-wrapper">
+      <div v-if="emergencyInfo.length == 0">
+        <avue-empty />
+      </div>
       <div
         v-for="(item, index) in emergencyInfo"
         :key="index"

@@ -10,7 +10,7 @@
 
 * css动画库 [animate css](https://daneden.github.io/animate.css/)
 
-* MockJS [参考](https://juejin.im/post/5cf726b5e51d454fbf5409bc)
+* MockJS [参考](https://juejin.im/post/5cf726b5e51d454fbf5409bc),[官方示例](http://mockjs.com/examples.html)
 
 * vue-common-table 通用表格组件,封装了el-table、el-pagination，[文档](https://github.com/kingqi/vue-common-table/blob/master/README.md)
 
@@ -55,6 +55,8 @@
     │    ├──treeSelect // 下拉树选择
     │    ├──base-container // 通用容器组件
     │    └──searchPopover // 弹窗筛选组件
+    │    └──pageHeader // 通用页面头部
+    │    └──common-upload // 通用上传组件
     ├──directive // 自定义指令
     │    ├──loadmore.js //v-loadmore elementUI select选项滚动加载更多
     │    └──pcheck.js //v-p 权限校验，不通过则隐藏

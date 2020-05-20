@@ -7,6 +7,9 @@
       <span class="info-title">教育经历</span>
     </div>
     <div class="info-content-wrapper">
+      <div v-if="educationInfo.length == 0">
+        <avue-empty />
+      </div>
       <div
         v-for="(item, index) in educationInfo"
         :key="index"
