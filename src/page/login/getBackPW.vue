@@ -298,8 +298,8 @@ export default {
           if (isPass && this.identity.form.code == code) {
             //验证手机验证码
             let params = {
-              phonenum: this.identity.form.phone,
-              smsCode: this.identity.form.code
+              phone: this.identity.form.phone,
+              value: this.identity.form.code
             }
             checkPhoneCode(params).then(() => {
               this.step++
