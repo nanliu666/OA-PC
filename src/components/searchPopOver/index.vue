@@ -215,6 +215,14 @@
                       :options="item.options"
                     />
                     <el-date-picker
+                      v-if="item.type === 'yearPicker'"
+                      v-model="item.data"
+                      :options="item.options"
+                      type="date"
+                      placeholder="选择日期"
+                      style="width: 100%;"
+                    />
+                    <el-date-picker
                       v-if="item.type === 'dataPicker'"
                       v-model="item.data"
                       :type="item.config && item.config.type ? item.config.type : 'data'"

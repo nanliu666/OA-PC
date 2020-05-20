@@ -167,7 +167,7 @@ export default {
             config: { optionLabel: '请选择', optionValue: '' }
           },
           {
-            type: 'timePicker',
+            type: 'yearPicker',
             field: 'userEntry',
             data: '',
             label: '入职日期',
@@ -177,7 +177,7 @@ export default {
             pageNo: 2
           },
           {
-            type: 'timePicker',
+            type: 'yearPicker',
             field: 'userId',
             data: '',
             label: '转正日期',
