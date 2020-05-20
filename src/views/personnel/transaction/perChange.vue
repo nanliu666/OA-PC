@@ -1,12 +1,12 @@
 <template>
   <el-card>
-    <div
-      slot="header"
-      class="title"
-    >
+    <!-- <div class="title">
       <span class="title">人事异动</span>
-    </div>
-
+    </div>-->
+    <page-header
+      slot="header"
+      title="人事异动"
+    />
     <!-- table表格 -->
     <commonTable
       :data="tableData"
@@ -31,7 +31,7 @@
             <el-button
               icon="el-icon-refresh"
               size="medium"
-              @click="OnClickrefresh"
+              @click="getTableList()"
             />
           </div>
         </div>
@@ -66,10 +66,12 @@
 <script>
 import SearchPopover from '@/components/searchPopOver/index'
 import { getChangeList } from '@/api/personnel/transction.js'
+import pageHeader from '@/components/page-header/pageHeader.vue'
 export default {
   name: 'PerTransaction',
   components: {
-    SearchPopover
+    SearchPopover,
+    pageHeader
   },
   data() {
     return {
@@ -205,8 +207,6 @@ export default {
       tableConfig: {
         showIndexColumn: false,
         enableMultiSelect: true,
-        style: 'width: 100%',
-        height: '600px',
         enablePagination: true,
         uniqueKey: 'userId'
       },
@@ -298,19 +298,6 @@ export default {
         }
       })
       this.popoverOptions[1].options = targetArr
-    },
-    // 刷新界面
-    OnClickrefresh() {
-      (this.paramsInfo = {
-        pageNo: '1',
-        pageSize: '10',
-        search: '',
-        types: [],
-        reasons: [],
-        beginEffectDate: '',
-        endEffectDate: ''
-      }),
-        this.getTableList()
     }
   }
 }

@@ -407,7 +407,7 @@ const res = {
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
-            path: '/personnel/transaction/changeApply',
+            path: '/personnel/transaction/changeApply/:userId',
             icon: 'iconfont iconicon_compile'
           }
         ]

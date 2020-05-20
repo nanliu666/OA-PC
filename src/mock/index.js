@@ -11,6 +11,7 @@ import grade from './grade'
 import personalInfo from './personalInfo'
 // import personnel from './personnel'
 import org from './org'
+import transction from './transction'
 
 import menus from './menus'
 /**
@@ -23,7 +24,7 @@ const options = { mock: false }
 
 user(options)
 
-menu({ mock: false })
+menu({ mock: true })
 
 position(options)
 grade(options)
@@ -43,3 +44,4 @@ personalInfo(options)
 personnel(options)
 
 org(options)
+transction(options)
