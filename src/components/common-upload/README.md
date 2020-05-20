@@ -30,7 +30,13 @@ js
   data(){
     return {
       form:{
-        resume:[]
+        resume:[
+          {
+            fileUrl:"",//文件url
+            fileName:"",// 文件名
+            localName:"" // 原始文件名
+          }
+        ]
       }
     }
   }
