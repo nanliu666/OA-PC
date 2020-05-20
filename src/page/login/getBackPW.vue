@@ -102,10 +102,14 @@
               :model="password.form"
               label-width="0"
             >
-              <el-form-item
-                label="新密码"
-                prop="newPW"
-              >
+              <el-form-item prop="newPW">
+                <div>
+                  <span class="psw-label"> 新密码</span>
+                  <span
+                    class="psw-rule-tip"
+                  >(密码包含字母，符号或数字中至少两项且长度超过6位的密码)</span>
+                </div>
+
                 <el-input
                   v-model="password.form.newPW"
                   class="newPW-input"
@@ -499,6 +503,19 @@ export default {
   text-align: center;
   margin-top: 40px;
 }
-.count-down-time {
+.psw-label {
+  font-size: 14px;
+  color: #606266;
+  line-height: 80px;
+  margin-right: 5px;
+}
+.psw-label:before {
+  content: '*';
+  color: #f56c6c;
+  margin-right: 4px;
+}
+.psw-rule-tip {
+  font-size: 12px;
+  color: #a0a8ae;
 }
 </style>
