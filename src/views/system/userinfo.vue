@@ -151,7 +151,11 @@
                   label="手机号码:"
                   prop="phone"
                 >
-                  <el-input v-model="perosonnalInfo.phonenum" />
+                  <el-input
+                    v-model="perosonnalInfo.phonenum"
+                    :readonly="!readonly"
+                    :class="{ disabled: !readonly }"
+                  />
                 </el-form-item>
               </el-col>
               <el-col
@@ -643,6 +647,14 @@ li {
   .el-button {
     width: 80px;
     height: 42px;
+  }
+}
+.disabled {
+  /deep/.el-input__inner {
+    background: #cecece;
+  }
+  /deep/.el-input__inner:focus {
+    border-color: #cecece;
   }
 }
 .hidden {
