@@ -115,7 +115,7 @@ export default {
         requireOptions: [
           {
             type: 'input',
-            field: 'parentOrgId',
+            field: 'search',
             label: '',
             data: [],
             month: [],
