@@ -116,6 +116,13 @@
                 :push="4"
               >
                 <el-form-item
+                  v-show="readonly"
+                  label="性别:"
+                >
+                  <span>{{ getUserSex() }}</span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
                   label="性别:"
                   prop="sex"
                 >
@@ -395,6 +402,15 @@ export default {
   },
 
   methods: {
+    getUserSex() {
+      if (this.perosonnalInfo.sex == 1) {
+        return '男'
+      } else if (this.perosonnalInfo.sex == 0) {
+        return '女'
+      } else {
+        return ''
+      }
+    },
     getStatus() {
       if (this.perosonnalInfo.status == 'Try') {
         return '试用期'
@@ -439,6 +455,7 @@ export default {
               type: 'success',
               message: '修改成功'
             })
+            this.getUserAllInfo()
           })
         }
       })

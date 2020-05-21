@@ -134,7 +134,7 @@
 
 <script>
 import { isMobile } from '@/util/validate'
-import { deepClone, randomLenNum } from '@/util/util'
+import { deepClone } from '@/util/util'
 import {
   delStaffEmerInfo,
   editStaffEmerInfo,
@@ -219,6 +219,7 @@ export default {
               type: 'success',
               message: '删除成功!'
             })
+            this.getEmergencyList()
           })
         })
         .catch(() => {
@@ -254,6 +255,8 @@ export default {
               })
             })
           }
+
+          this.getEmergencyList()
         }
       })
     },
@@ -270,7 +273,6 @@ export default {
       this.type = 'add'
       this.editClick = true
       let memberInfo = {
-        id: randomLenNum(),
         name: '',
         phone: '',
         relationship: ''
