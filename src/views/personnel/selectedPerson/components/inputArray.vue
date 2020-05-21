@@ -162,6 +162,13 @@
                     @blur="blur(basic, basic.attrId === '1' ? true : false)"
                   />
                 </template>
+                <template v-if="basic.inType == 11">
+                  <treeSelect
+                    v-model="form[basic.props]"
+                    :option="scope.column"
+                    @fiter="fiter"
+                  />
+                </template>
               </el-form-item>
             </el-col>
           </el-row>
@@ -172,11 +179,14 @@
 </template>
 
 <script>
+import treeSelect from '@/components/treeSelect/treeSelect'
 import { provinceAndCityData } from 'element-china-area-data'
 const cityOptions = ['上海', '北京', '广州', '深圳']
 export default {
   name: 'InputArray',
-  components: {},
+  components: {
+    treeSelect
+  },
   props: {
     form: {
       type: Object
@@ -218,7 +228,7 @@ export default {
         return
       }
 
-      this.$emit('changeInfo', data)
+      // this.$emit('changeInfo', data)
     },
 
     submitForm() {
@@ -293,6 +303,6 @@ export default {
   margin-bottom: 5px;
 }
 /deep/ .el-form--label-top .el-form-item__label {
-  padding: 5px 0;
+  padding: 10px 0;
 }
 </style>

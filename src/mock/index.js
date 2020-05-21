@@ -13,6 +13,7 @@ import personalInfo from './personalInfo'
 import org from './org'
 
 import menus from './menus'
+import candidate from './candidate'
 /**
  * 模拟数据mock
  *
@@ -23,8 +24,8 @@ const options = { mock: false }
 
 user(options)
 
-menu({ mock: true })
-
+menu({ mock: false })
+candidate({ mock: true })
 position(options)
 grade(options)
 menus(options)

@@ -162,7 +162,7 @@ export default {
   },
   data() {
     return {
-      active: 0,
+      active: 1,
       personInfo,
       employment,
       salary,
@@ -172,6 +172,15 @@ export default {
       other,
       employmentform: {},
       Infoform: {
+        entryDate: '',
+        probation: '',
+        companyId: '',
+        orgId: '',
+        jobId: '',
+        positionId: '',
+        workProperty: '',
+        workAddressId: '',
+        city: [],
         risks: [],
         name: '张琪',
         six: 0,
@@ -186,31 +195,29 @@ export default {
     this.getJob()
     this.getposition()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.dataFilter(res, this.employment, 'workProperty', 'dictValue', 'id')
+    })
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'id')
+    })
+    // ContractType
+  },
+  methods: {
+    dataFilter(res, form, props, label, value) {
       let index = ''
       let dict = []
       res &&
         res.map((it) => {
-          dict.push({ label: it.dictValue, value: it.id })
+          dict.push({ label: it[label], value: it[value] })
         })
-      this.employment.basicAttrs.map((it, i) => {
-        if (it.props === 'workProperty') index = i
+      form.basicAttrs.map((it, i) => {
+        if (it.props === props) index = i
       })
-      this.employment.basicAttrs[index].value = dict
-    })
-  },
-  methods: {
+      form.basicAttrs[index].value = dict
+    },
     getposition() {
       getposition().then((res) => {
-        let index = ''
-        let dict = []
-        res &&
-          res.map((it) => {
-            dict.push({ label: it.name, value: it.id })
-          })
-        this.employment.basicAttrs.map((it, i) => {
-          if (it.props === 'positionId') index = i
-        })
-        this.employment.basicAttrs[index].value = dict
+        this.dataFilter(res, this.employment, 'positionId', 'name', 'id')
       })
     },
     getJob() {
@@ -219,16 +226,7 @@ export default {
         orgId: ''
       }
       getJob(params).then((res) => {
-        let index = ''
-        let dict = []
-        res &&
-          res.map((it) => {
-            dict.push({ label: it.jobName, value: it.jobId })
-          })
-        this.employment.basicAttrs.map((it, i) => {
-          if (it.props === 'jobId') index = i
-        })
-        this.employment.basicAttrs[index].value = dict
+        this.dataFilter(res, this.employment, 'jobId', 'jobName', 'jobId')
       })
     },
     getCompany() {
@@ -236,17 +234,7 @@ export default {
         parentOrgId: '0'
       }
       getCompany(params).then((res) => {
-        let index = ''
-        let dict = []
-        res &&
-          res.map((it) => {
-            dict.push({ label: it.orgName, value: it.orgId })
-          })
-
-        this.employment.basicAttrs.map((it, i) => {
-          if (it.props === 'companyId') index = i
-        })
-        this.employment.basicAttrs[index].value = dict
+        this.dataFilter(res, this.employment, 'companyId', 'orgName', 'orgId')
       })
     },
     getWorkAddress() {
@@ -255,16 +243,7 @@ export default {
         pageSize: 10000
       }
       getWorkAddress(params).then((res) => {
-        let address = []
-        res.data &&
-          res.data.map((it) => {
-            address.push({ label: it.address, value: it.id })
-          })
-        let index = ''
-        this.employment.basicAttrs.map((it, i) => {
-          if (it.props === 'workAddressId') index = i
-        })
-        this.employment.basicAttrs[index].value = address
+        this.dataFilter(res.data, this.employment, 'workAddressId', 'address', 'id')
       })
     },
     close() {

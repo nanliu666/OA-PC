@@ -742,6 +742,10 @@ export let personInfo = {
 }
 let probation = [
   {
+    value: 0,
+    label: '无试用期'
+  },
+  {
     value: 1,
     label: '一个月'
   },
@@ -890,7 +894,7 @@ export let employment = {
       dataType: 1, // 当inType=1时生效
       inType: 8, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '工作城市', // 提示必填提示
-      props: 'email'
+      props: 'city'
     }
   ]
 }
@@ -938,6 +942,56 @@ export let salary = {
     }
   ]
 }
+let years = [
+  {
+    value: '1',
+    label: '1年'
+  },
+  {
+    value: '2',
+    label: '2年'
+  },
+  {
+    value: '3',
+    label: '3年'
+  },
+  {
+    value: '4',
+    label: '4年'
+  },
+  {
+    value: '5',
+    label: '5年'
+  },
+  {
+    value: '6',
+    label: '6年'
+  },
+  {
+    value: '7',
+    label: '7年'
+  },
+  {
+    value: '8',
+    label: '8年'
+  },
+  {
+    value: '9',
+    label: '9年'
+  },
+  {
+    value: '10',
+    label: '10年'
+  },
+  {
+    value: '11',
+    label: '11年'
+  },
+  {
+    value: '12',
+    label: '12年'
+  }
+]
 export let labour = {
   basicAttrs: [
     {
@@ -987,7 +1041,7 @@ export let labour = {
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
+      value: years, // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '合同期限', // 提示必填提示
@@ -1009,7 +1063,7 @@ export let labour = {
       maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '合同开始日期', // 提示必填提示
       props: 'contractBeginDate',
       rules: [
@@ -1029,7 +1083,7 @@ export let labour = {
       maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '合同结束日期', // 提示必填提示
       props: 'contractEndDate',
       rules: [
@@ -1074,7 +1128,7 @@ export let fiveRisks = {
       dataType: 1, // 当inType=1时生效
       inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '缴纳社会保险', // 提示必填提示
-      props: 'contractEndDate',
+      props: 'isShbx',
       rules: [
         {
           required: true,
@@ -1094,7 +1148,7 @@ export let fiveRisks = {
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '社会保险基数', // 提示必填提示
-      props: 'contractEndDate',
+      props: 'baseMoney',
       rules: [
         {
           required: true,
@@ -1126,6 +1180,39 @@ export let fiveRisks = {
     }
   ]
 }
+let OfficeSpace = [
+  {
+    label: '无安排',
+    value: '无安排'
+  },
+  {
+    label: '办公室内',
+    value: '办公室内'
+  },
+  {
+    label: '办公大厅',
+    value: '办公大厅'
+  }
+]
+
+let phoneConfig = [
+  {
+    label: '无配备',
+    value: '无配备'
+  },
+  {
+    label: '直线',
+    value: '直线'
+  },
+  {
+    label: '分机带长途',
+    value: '分机带长途'
+  },
+  {
+    label: '分机不带长途',
+    value: '分机不带长途'
+  }
+]
 export let office = {
   basicAttrs: [
     {
@@ -1135,7 +1222,7 @@ export let office = {
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
-      value: orther, // 单选框多选框的potion的值
+      value: OfficeSpace, // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '办公位安排', // 提示必填提示
@@ -1148,7 +1235,7 @@ export let office = {
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
-      value: orther, // 单选框多选框的potion的值
+      value: phoneConfig, // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '电话配备', // 提示必填提示
