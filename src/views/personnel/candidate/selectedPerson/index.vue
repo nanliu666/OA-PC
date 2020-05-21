@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import arrange from './components/arrangeInterview'
-import eliminate from './components/eliminateDiaLog'
+import arrange from '../components/arrangeInterview'
+import eliminate from '../components/eliminateDiaLog'
 export default {
   name: 'Index',
   components: {

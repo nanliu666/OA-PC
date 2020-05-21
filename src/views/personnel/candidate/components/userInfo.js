@@ -782,13 +782,13 @@ export let employment = {
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '预计入职日期', // 提示必填提示
+      message: '请选择预计入职日期', // 提示必填提示
       props: 'entryDate',
       rules: [
         {
           required: true,
-          message: '预计入职日期',
-          trigger: 'blur'
+          message: '请选择预计入职日期',
+          trigger: 'change'
         }
       ]
     },
@@ -802,8 +802,15 @@ export let employment = {
       value: probation, // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '试用期', // 提示必填提示
-      props: 'probation'
+      message: '请选择试用期', // 提示必填提示
+      props: 'probation',
+      rules: [
+        {
+          required: true,
+          message: '请选择试用期',
+          trigger: 'change'
+        }
+      ]
     },
     {
       attrId: '3', // ：key唯一值
@@ -811,12 +818,20 @@ export let employment = {
       attrValue: '', // v-model绑定值
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
+      disabled: true,
       maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '入职公司', // 提示必填提示
-      props: 'companyId'
+      message: '请选择入职公司', // 提示必填提示
+      props: 'companyId',
+      rules: [
+        {
+          required: true,
+          message: '请选择入职公司',
+          trigger: 'change'
+        }
+      ]
     },
     {
       attrId: '4', // ：key唯一值
@@ -825,11 +840,19 @@ export let employment = {
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
+      value: [], // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '部门', // 提示必填提示
-      props: 'orgId'
+      inType: 11, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      message: '请选择部门', // 提示必填提示
+      disabled: true,
+      props: 'orgId',
+      rules: [
+        {
+          required: true,
+          message: '请选择部门',
+          trigger: 'blur'
+        }
+      ]
     },
     {
       attrId: '5', // ：key唯一值
@@ -838,11 +861,19 @@ export let employment = {
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
+      disabled: true,
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '职位', // 提示必填提示
-      props: 'jobId'
+      props: 'jobId',
+      rules: [
+        {
+          required: true,
+          message: '请选择职位',
+          trigger: 'change'
+        }
+      ]
     },
     {
       attrId: '6', // ：key唯一值
@@ -868,7 +899,14 @@ export let employment = {
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '工作性质', // 提示必填提示
-      props: 'workProperty'
+      props: 'workProperty',
+      rules: [
+        {
+          required: true,
+          message: '请选择工作性质',
+          trigger: 'change'
+        }
+      ]
     },
     {
       attrId: '8', // ：key唯一值
@@ -916,7 +954,7 @@ export let salary = {
         {
           required: true,
           message: '请输入试用期月薪',
-          trigger: 'blur'
+          trigger: 'change'
         }
       ]
     },
@@ -936,7 +974,7 @@ export let salary = {
         {
           required: true,
           message: '请输入转正月薪',
-          trigger: 'blur'
+          trigger: 'change'
         }
       ]
     }
@@ -1001,6 +1039,7 @@ export let labour = {
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
+      disabled: true,
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -1010,7 +1049,7 @@ export let labour = {
         {
           required: true,
           message: '请输入合同公司',
-          trigger: 'blur'
+          trigger: 'change'
         }
       ]
     },
@@ -1029,8 +1068,8 @@ export let labour = {
       rules: [
         {
           required: true,
-          message: '请输入合同类型',
-          trigger: 'blur'
+          message: '请选择合同类型',
+          trigger: 'change'
         }
       ]
     },
@@ -1045,14 +1084,7 @@ export let labour = {
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '合同期限', // 提示必填提示
-      props: 'contractPeriod',
-      rules: [
-        {
-          required: true,
-          message: '请输入合同期限',
-          trigger: 'blur'
-        }
-      ]
+      props: 'contractPeriod'
     },
     {
       attrId: '4', // ：key唯一值
@@ -1070,7 +1102,7 @@ export let labour = {
         {
           required: true,
           message: '请输入合同开始日期',
-          trigger: 'blur'
+          trigger: 'change'
         }
       ]
     },
@@ -1090,7 +1122,7 @@ export let labour = {
         {
           required: true,
           message: '请输入合同结束日期',
-          trigger: 'blur'
+          trigger: 'change'
         }
       ]
     }
@@ -1128,14 +1160,7 @@ export let fiveRisks = {
       dataType: 1, // 当inType=1时生效
       inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '缴纳社会保险', // 提示必填提示
-      props: 'isShbx',
-      rules: [
-        {
-          required: true,
-          message: '缴纳社会保险',
-          trigger: 'blur'
-        }
-      ]
+      props: 'isShbx'
     },
     {
       attrId: '2', // ：key唯一值
@@ -1148,14 +1173,7 @@ export let fiveRisks = {
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '社会保险基数', // 提示必填提示
-      props: 'baseMoney',
-      rules: [
-        {
-          required: true,
-          message: '请输入合同结束日期',
-          trigger: 'blur'
-        }
-      ]
+      props: 'baseMoney'
     },
     {
       attrId: '3', // ：key唯一值
@@ -1169,14 +1187,7 @@ export let fiveRisks = {
       inType: 9, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '其他', // 提示必填提示
       props: 'risks',
-      span: 24,
-      rules: [
-        {
-          required: true,
-          message: '其他',
-          trigger: 'blur'
-        }
-      ]
+      span: 24
     }
   ]
 }
@@ -1317,38 +1328,3 @@ export let other = {
     }
   ]
 }
-// "personId": "人员ID",
-//   "entryDate": "预计入职日期",
-//   "probation": "试用期，单位：月",
-//   "companyId": "入职公司ID",
-//   "orgId": "主部门ID",
-//   "jobId": "主职位ID",
-//   "positionId": "岗位ID",
-//   "workProperty": "工作性质，字典组：WorkProperty",
-//   "workAddressId": "工作地址ID",
-//   "workProvinceCode": "工作省份编码",
-//   "workProviceName": "工作省份名称",
-//   "workCityCode": "工作地市编码",
-//   "workCityName": "工作地市名称",
-//   "probationSalary": "试用期月薪，单位：元",
-//   "formalSalary": "转正月薪，单位：元",
-//   "contractType": "合同类型，字典组：ContractType",
-//   "contractBeginDate": "合同开始日期",
-//   "contractEndDate": "合同结束日期",
-//   "contractPeriod": "合同期限，单位：年",
-//   "isShbx": "是否缴纳社会保险，1-是，0-否",
-//   "baseMoney": "社会保险基数，单位：元",
-//   "isYangl": "是否缴纳养老保险，1-是，0-否",
-//   "isYil": "是否缴纳医疗保险，1-是，0-否",
-//   "isGs": "是否缴纳工伤保险，1-是，0-否",
-//   "isShiy": "是否缴纳失业保险，1-是，0-否",
-//   "isShengy": "是否缴纳生育保险，1-是，0-否",
-//   "isGjj": "是否缴纳住房公积金，1-是，0-否",
-//   "officeSpace": "办公位安排",
-//   "telphone": "电话配备",
-//   "isComputer": "是否电脑配备，1-是，0-否",
-//   "other": "其他",
-//   "isHouse": "是否安排住房，1-是，0-否",
-//   "houseStandard": "住房标准",
-//   "remark": "备注",
-//   "userId": "提交人ID"

@@ -11,7 +11,7 @@ export default {
         i18n: 'index'
       },
       component: () =>
-        import(/* webpackChunkName: "views" */ '@/views/personnel/selectedPerson/index')
+        import(/* webpackChunkName: "views" */ '@/views/personnel/candidate/selectedPerson/index')
     }
   ]
 }

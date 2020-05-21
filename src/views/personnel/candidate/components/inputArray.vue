@@ -129,6 +129,7 @@
                 </template>
                 <template v-if="basic.inType == 8">
                   <el-cascader
+                    ref="cascader"
                     v-model="form[basic.props]"
                     :placeholder="basic.message"
                     :disabled="basic.disabled || disabled"
@@ -136,7 +137,7 @@
                     size="medium"
                     :options="options"
                     class="widthSet select"
-                    @change="blur(basic)"
+                    @change="change"
                   />
                 </template>
                 <template v-if="basic.inType == 9">
@@ -163,10 +164,14 @@
                   />
                 </template>
                 <template v-if="basic.inType == 11">
-                  <treeSelect
+                  <el-tree-select
+                    ref="orgTree"
                     v-model="form[basic.props]"
-                    :option="scope.column"
-                    @fiter="fiter"
+                    style="width: 100%"
+                    :styles="orgOptions.styles"
+                    :disabled="basic.disabled"
+                    :select-params="orgOptions.config.selectParams"
+                    :tree-params="orgOptions.config.treeParams"
                   />
                 </template>
               </el-form-item>
@@ -179,13 +184,13 @@
 </template>
 
 <script>
-import treeSelect from '@/components/treeSelect/treeSelect'
+import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import { provinceAndCityData } from 'element-china-area-data'
 const cityOptions = ['上海', '北京', '广州', '深圳']
 export default {
   name: 'InputArray',
   components: {
-    treeSelect
+    ElTreeSelect
   },
   props: {
     form: {
@@ -203,6 +208,38 @@ export default {
   },
   data() {
     return {
+      orgOptions: {
+        props: {
+          label: 'orgName',
+          value: 'orgId'
+        },
+        placeholder: '请选择部门',
+        dicData: [],
+        styles: {
+          width: '100%'
+        },
+        config: {
+          selectParams: {
+            placeholder: '请输入内容',
+            multiple: false,
+            disabled: true
+          },
+          treeParams: {
+            data: [],
+            'check-strictly': true,
+            'default-expand-all': false,
+            'expand-on-click-node': false,
+            clickParent: true,
+            filterable: false,
+            props: {
+              children: 'children',
+              label: 'orgName',
+              disabled: 'disabled',
+              value: 'orgId'
+            }
+          }
+        }
+      },
       checkedCities: [],
       cities: cityOptions,
       options: provinceAndCityData,
@@ -214,7 +251,27 @@ export default {
       phonenum: null
     }
   },
-  watch: {},
+
+  watch: {
+    infoForm: {
+      handler(data) {
+        // if(data.inType == 11){
+        data.basicAttrs.map((it) => {
+          if (it.inType === 11) {
+            this.$nextTick(() => {
+              this.orgOptions.config.treeParams.data = it.value
+
+              this.$refs['orgTree'] && this.$refs['orgTree'][0].treeDataUpdateFun(it.value)
+            })
+          }
+        })
+
+        // }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   mounted() {},
   methods: {
     refsform() {},
@@ -223,6 +280,10 @@ export default {
       return obj
     },
     getInfoCheck() {},
+    change() {
+      let arr = this.$refs.cascader && this.$refs.cascader[0].getCheckedNodes()
+      this.form.pathLabels = arr[0].pathLabels
+    },
     blur(data) {
       if (data.attrValue === data.attrvalue) {
         return

@@ -203,15 +203,15 @@
     </div>
     <div />
     <div />
-    <edit />
+    <!--    <edit />-->
   </div>
 </template>
 
 <script>
-import edit from './registrationFormEdit'
+// import edit from './registrationFormEdit'
 export default {
   name: 'RegistrationForm',
-  components: { edit },
+  components: {},
   data() {
     return {
       personInfo: {
