@@ -144,57 +144,83 @@ export default {
         popoverOptions: [
           {
             type: 'select',
+            field: 'orgId',
             label: '部门',
             data: '',
             options: [
-              { value: 'Enterprise', label: '企业' },
-              { value: 'Company', label: '公司' },
-              { value: 'Department', label: '部门' },
-              { value: 'Group', label: '小组' }
+              { value: '企业', label: 'Enterprise' },
+              { value: '公司', label: 'Company' },
+              { value: '部门', label: 'Department' },
+              { value: '小组', label: 'Group' }
             ],
             config: { optionLabel: '请选择', optionValue: '' }
           },
           {
             type: 'select',
+            field: 'job',
             data: '',
             label: '职位',
             options: [
-              { value: 'Enterprise', label: 'java开发' },
-              { value: 'Company', label: 'web前端' },
-              { value: 'Department', label: '开发负责人' },
-              { value: 'Group', label: '地域总监' }
+              { value: 'java开发', label: 'Enterprise' },
+              { value: 'web前端', label: 'Company' },
+              { value: '开发负责人', label: 'Department' },
+              { value: '地域总监', label: 'Group' }
             ],
             config: { optionLabel: '请选择', optionValue: '' }
           },
           {
             type: 'yearPicker',
-            field: 'userEntry',
+            field: 'beginEntryDate',
             data: '',
-            label: '入职日期',
+            label: '开始入职日期',
             options: [],
-            config: { optionLabel: 'name', optionValue: 'userEntry' },
+            config: { optionLabel: 'name', optionValue: 'beginEntryDate' },
             loading: false,
             pageNo: 2
           },
           {
             type: 'yearPicker',
-            field: 'userId',
+            field: 'endEntryDate',
             data: '',
-            label: '转正日期',
+            label: '截止入职日期',
             options: [],
-            config: { optionLabel: 'name', optionValue: 'userId' },
+            config: { optionLabel: 'name', optionValue: 'endEntryDate' },
+            loading: false,
+            pageNo: 2
+          },
+          {
+            type: 'yearPicker',
+            field: 'beginFormalDate',
+            data: '',
+            label: '开始转正日期',
+            options: [],
+            config: { optionLabel: 'name', optionValue: 'beginFormalDate' },
+            loading: false,
+            pageNo: 2
+          },
+          {
+            type: 'yearPicker',
+            field: 'endFormalDate',
+            data: '',
+            label: '截止转正日期',
+            options: [],
+            config: { optionLabel: 'name', optionValue: 'endFormalDate' },
             loading: false,
             pageNo: 2
           },
           {
             type: 'select',
-            field: 'onTrial',
+            field: 'probation',
             data: '',
             label: '试用期',
             options: [
+              { value: '无试用期', label: 'null' },
               { value: '一个月', label: 'onemonth' },
               { value: '两个月', label: 'towmonth' },
-              { value: '三个月', label: 'threemonths' }
+              { value: '三个月', label: 'threemonths' },
+              { value: '四个月', label: 'fourmonths' },
+              { value: '五个月', label: 'fivemonths' },
+              { value: '六个月', label: 'sixmonths' }
             ],
             config: { optionLabel: '请选择', optionValue: '' }
           },
@@ -302,7 +328,7 @@ export default {
       })
     },
     getTableData(pageNo) {
-      const params = {
+      let params = {
         pageNo: pageNo || this.page.currentPage,
         pageSize: this.page.pageSize,
         ...this.searchParams
@@ -323,8 +349,31 @@ export default {
     currentChange() {
       this.getTableData()
     },
-    handleSubmit() {},
-    // 删除事件
+    handleSubmit(params) {
+      let request = {
+        search: params.search || '',
+        pageNo: 1,
+        pageSize: 10,
+        orgs: [params.orgId] || ' ',
+        jobs: [params.job] || ' ',
+        probations: [params.probation] || ' '
+      }
+      request.beginEntryDate = this.calcChinesestandard(params.beginEntryDate)
+      request.endEntryDate = this.calcChinesestandard(params.endEntryDate)
+      request.beginFormalDate = this.calcChinesestandard(params.beginFormalDate)
+      request.endFormalDate = this.calcChinesestandard(params.endFormalDate)
+      getStaffList(request).then((res) => {
+        if (res) this.$message({ showClose: true, message: '操作成功', type: 'success' })
+        this.data = res.data
+      })
+    },
+
+    calcChinesestandard(isStr) {
+      let chineseTime = new Date(isStr)
+      let youWant =
+        chineseTime.getFullYear() + '-' + (chineseTime.getMonth() + 1) + '-' + chineseTime.getDate()
+      return youWant
+    },
     handlerDeleteAll(selection) {
       // eslint-disable-next-line
       console.log('查看数据...............', selection)

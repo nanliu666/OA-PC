@@ -413,6 +413,8 @@ export default {
             item.field.split(',').forEach((it, idx) => {
               params[it] = item.data[idx]
             })
+          } else if (item.type === 'yearPicker') {
+            params[item.field] = item.data
           }
         }
       })
