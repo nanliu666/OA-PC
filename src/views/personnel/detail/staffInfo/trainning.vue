@@ -73,6 +73,7 @@
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
+                  unlink-panels="true"
                   @blur="monthChange(item)"
                 />
               </el-form-item>
@@ -296,6 +297,7 @@ export default {
       })
     },
     editInfo(item, index) {
+      this.$set(item, 'monthRange', [item.beginDate, item.endDate])
       this.type = 'edit'
       this.editClick = true
       this.curItemIndex = index
