@@ -125,7 +125,7 @@ export default {
             .then(() => {
               this.$message({
                 type: 'success',
-                message: '删除成功!'
+                message: '淘汰成功!'
               })
               this.loading = false
               Object.assign(this.$data.form, this.$options.data().form)
@@ -136,7 +136,7 @@ export default {
               this.loading = false
               this.$message({
                 type: 'info',
-                message: '已取消删除'
+                message: '已取消淘汰'
               })
             })
         } else {

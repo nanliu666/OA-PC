@@ -19,13 +19,7 @@
       <div class="right">
         <div class="btn">
           <template v-if="personInfo.status === '1'">
-            <el-button
-              type="primary"
-              size="medium"
-              @click="hadlePushAudit"
-            >
-              推送审核
-            </el-button>
+            <!-- <el-button type="primary" size="medium" @click="hadlePushAudit">推送审核</el-button> -->
             <el-button
               type="danger"
               size="medium"
@@ -446,9 +440,9 @@
                 <a
                   class="attachmentUrl"
                   :href="personInfo.attachmentUrl"
-                >{{
-                  personInfo.attachmentName
-                }}</a>
+                >
+                  {{ personInfo.attachmentName }}
+                </a>
               </el-col>
             </el-row>
           </div>
@@ -654,7 +648,7 @@ export default {
       font-size: 12px;
       color: #718199;
       line-height: 26px;
-      padding: 4px 10px;
+      padding: 2px 10px;
       background: rgba(113, 129, 153, 0.1);
     }
   }
@@ -714,10 +708,11 @@ export default {
         margin-bottom: 16px;
       }
       .info {
-        display: flex;
         .el-col {
-          height: 24px;
+          min-height: 24px;
           margin-bottom: 16px;
+          line-height: 24px;
+          word-break: keep-all;
         }
         .el-col-8 {
           text-align: right;
@@ -745,7 +740,7 @@ export default {
   }
   .right {
     flex: 3;
-    padding: 0 16px;
+    padding: 0 0 0 16px;
     display: flex;
     flex-direction: column;
     .title {

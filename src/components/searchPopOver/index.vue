@@ -26,6 +26,7 @@
           :placeholder="'请输入' + item.label"
           :multiple="item.config && item.config.multiple"
           :collapse-tags="item.config && item.config.multiple"
+          @visible-change="item.firstLoad && item.firstLoad($event, item)"
           @change="change"
         >
           <template v-if="item.config && item.config.group">
@@ -162,6 +163,7 @@
                       :placeholder="'请输入' + item.label"
                       :multiple="item.config && item.config.multiple"
                       :collapse-tags="item.config && item.config.multiple"
+                      @visible-change="item.firstLoad && item.firstLoad($event, item)"
                     >
                       <template v-if="item.config && item.config.group">
                         <el-option-group
