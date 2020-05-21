@@ -24,14 +24,19 @@
       <div class="on">
         <div
           class="onItem"
-          :class="tabStatus === 'all' ? 'current' : ''"
           @click="tabClick('all')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === 'all' ? 'current' : ''"
+              class="statusWork"
+            >
               全部
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === 'all' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('all') }}人
             </div>
           </div>
@@ -42,14 +47,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '1' ? 'current' : ''"
           @click="tabClick('1')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '1' ? 'current' : ''"
+              class="statusWork"
+            >
               待沟通
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '1' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('1') }}人
             </div>
           </div>
@@ -60,14 +70,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '2' ? 'current' : ''"
           @click="tabClick('2')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '2' ? 'current' : ''"
+              class="statusWork"
+            >
               初选通过
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '2' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('2') }}人
             </div>
           </div>
@@ -78,14 +93,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '3' ? 'current' : ''"
           @click="tabClick('3')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '3' ? 'current' : ''"
+              class="statusWork"
+            >
               面试中
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '3' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('3') }}人
             </div>
           </div>
@@ -97,14 +117,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '4' ? 'current' : ''"
           @click="tabClick('4')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '4' ? 'current' : ''"
+              class="statusWork"
+            >
               面试通过
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '4' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('4') }}人
             </div>
           </div>
@@ -116,14 +141,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '5' ? 'current' : ''"
           @click="tabClick('5')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '5' ? 'current' : ''"
+              class="statusWork"
+            >
               待发Offer
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '5' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('5') }}人
             </div>
           </div>
@@ -135,14 +165,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '6' ? 'current' : ''"
           @click="tabClick('6')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '6' ? 'current' : ''"
+              class="statusWork"
+            >
               已发Offer
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '6' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('6') }}人
             </div>
           </div>
@@ -155,15 +190,21 @@
       </div>
       <div class="left">
         <div
+          :id="tabStatus === '0' ? 'current' : ''"
           class="onItem"
-          :class="tabStatus === '0' ? 'current' : ''"
           @click="tabClick('0')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '0' ? 'current' : ''"
+              class="statusWork"
+            >
               已淘汰
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '0' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('0') }}人
             </div>
           </div>
@@ -245,22 +286,20 @@
             </div>
           </div>
         </template>
-        <template
-          slot="multiSelectMenu"
-          slot-scope="{ selection }"
-        >
+        <template slot="multiSelectMenu">
+          <!-- slot-scope="{ selection }" -->
           <!-- <el-button type="text" style="margin-bottom:0;" @click="handlerDeleteAll(selection)">
             <i class="el-icon-delete" />批量淘汰
           </el-button>-->
           <!-- 待沟通 -->
-          <el-button
+          <!-- <el-button
             v-show="tabStatus === '1'"
             type="text"
             style="margin-bottom:0;"
             @click="hadlePushAudit(selection)"
           >
             <i class="el-icon-coordinate" />批量推送审核
-          </el-button>
+          </el-button> -->
           <!-- 初选通过 -->
           <el-button
             v-show="tabStatus === '2'"
@@ -341,12 +380,12 @@
           <div class="handlerRow">
             <!-- 待沟通 -->
             <template v-if="row.status === '1'">
-              <el-button
+              <!-- <el-button
                 type="text"
                 @click="hadlePushAudit(row)"
               >
                 推送审核
-              </el-button>
+              </el-button> -->
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -842,11 +881,15 @@ export default {
           userId: this.$store.state.user.userInfo.user_id
         }
         const loading = this.$loading({ lock: true })
-        acceptCandidateOffer(params).then(() => {
-          this.$message.success('接受成功')
-          loading.close()
-          this.loadData(1)
-        })
+        acceptCandidateOffer(params)
+          .then(() => {
+            this.$message.success('接受成功')
+            loading.close()
+            this.loadData(1)
+          })
+          .catch(() => {
+            loading.close()
+          })
       })
     },
     handleWeedOut(item) {
@@ -874,7 +917,7 @@ export default {
       this.$refs.pushAuditDialog.pushAudit(data)
     },
     handleRefresh() {
-      this.loadData()
+      this.loadData(1)
     },
     columnChange() {
       this.columns = column.filter((item) => {
@@ -900,14 +943,20 @@ export default {
             userId: this.$store.state.user.userInfo.user_id
           }
           const loading = this.$loading({ lock: true })
-          changeCandidateOffer(params).then(() => {
-            this.$message.success('发起成功')
-            loading.close()
-            this.loadData(1)
-          })
+          changeCandidateOffer(params)
+            .then(() => {
+              this.$message.success('发起成功')
+              loading.close()
+              this.loadData(1)
+            })
+            .catch(() => {
+              loading.close()
+            })
         })
       } else if (command === 'edit') {
         this.$router.push('/personnel/editPerson?personId=' + data.personId)
+      } else if (command === 'add') {
+        this.$router.push('/personnel/editPerson')
       }
     },
     handleSubmit(params) {
@@ -1019,7 +1068,7 @@ export default {
     :last-of-type {
       border-right: 0;
     }
-    .current {
+    #current {
       color: #207efa;
     }
   }
@@ -1053,8 +1102,8 @@ export default {
         margin-top: 32px;
       }
     }
-    .current {
-      color: #207efa;
+    #current {
+      color: #207efa !important;
     }
   }
 }
