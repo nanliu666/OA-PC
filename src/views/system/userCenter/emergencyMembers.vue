@@ -8,116 +8,125 @@
         <span class="emergency-memb">紧急联系人</span>
       </div>
       <div class="emergency-info-content">
-        <div
-          v-for="(item, index) in emergency"
-          :key="index"
-          :class="[index == currentEdit ? 'back-style' : 'no-back-style']"
-        >
+        <div v-if="emergency.length == 0">
+          <avue-empty />
+        </div>
+        <div class="emergnecy-content-list">
           <div
-            v-show="index != currentEdit"
-            class="button-group"
+            v-for="(item, index) in emergency"
+            :key="index"
+            :class="[index == currentEdit ? 'back-style' : 'no-back-style']"
           >
-            <span
-              class="edit"
-              @click="edit(item, index)"
-            >编辑</span>
-            <span
-              class="delete"
-              @click="del(item, index)"
-            >删除</span>
-          </div>
-
-          <el-form
-            ref="emergency"
-            class="component-content info-form"
-            :model="item"
-            :rules="rules"
-            label-width="150px"
-            size="mini"
-            :label-position="'right'"
-          >
-            <el-row>
-              <el-col
-                :span="8"
-                :push="2"
-              >
-                <el-form-item
-                  v-show="index != currentEdit"
-                  label="紧急联系人姓名:"
-                >
-                  <span class="item-label-value">{{ item.name }}</span>
-                </el-form-item>
-                <el-form-item
-                  v-show="index == currentEdit"
-                  label="紧急联系人姓名:"
-                  prop="name"
-                >
-                  <el-input v-model="item.name" />
-                </el-form-item>
-              </el-col>
-              <el-col
-                :span="8"
-                :push="4"
-              >
-                <el-form-item
-                  v-show="index != currentEdit"
-                  label="紧急联系人电话:"
-                >
-                  <span calss="item-label-value">{{ item.phone }}</span>
-                </el-form-item>
-                <el-form-item
-                  v-show="index == currentEdit"
-                  label="紧急联系人电话:"
-                  prop="phone"
-                >
-                  <el-input v-model="item.phone" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col
-                :span="8"
-                :push="2"
-              >
-                <el-form-item
-                  v-show="index != currentEdit"
-                  label="紧急联系人关系:"
-                >
-                  <span calss="item-label-value">{{ item.relationship }}</span>
-                </el-form-item>
-                <el-form-item
-                  v-show="index == currentEdit"
-                  label="紧急联系人关系:"
-                >
-                  <el-input v-model="item.relationship" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item
-              v-show="index == currentEdit"
-              class="info-button-group"
-              :justify="'center'"
+            <div
+              v-show="index != currentEdit"
+              class="button-group"
             >
-              <el-button
-                type="primary"
-                @click="saveEmergencyInfo(item, index)"
+              <span
+                class="edit"
+                @click="edit(item, index)"
+              >编辑</span>
+              <span
+                class="delete"
+                @click="del(item, index)"
+              >删除</span>
+            </div>
+
+            <el-form
+              ref="emergency"
+              class="component-content info-form"
+              :model="item"
+              :rules="rules"
+              label-width="150px"
+              size="mini"
+              :label-position="'right'"
+            >
+              <el-row>
+                <el-col
+                  :span="8"
+                  :push="2"
+                >
+                  <el-form-item
+                    v-show="index != currentEdit"
+                    label="紧急联系人姓名:"
+                  >
+                    <span class="item-label-value">{{ item.name }}</span>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="index == currentEdit"
+                    label="紧急联系人姓名:"
+                    prop="name"
+                  >
+                    <el-input v-model="item.name" />
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="8"
+                  :push="4"
+                >
+                  <el-form-item
+                    v-show="index != currentEdit"
+                    label="紧急联系人电话:"
+                  >
+                    <span calss="item-label-value">{{ item.phone }}</span>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="index == currentEdit"
+                    label="紧急联系人电话:"
+                    prop="phone"
+                  >
+                    <el-input v-model="item.phone" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col
+                  :span="8"
+                  :push="2"
+                >
+                  <el-form-item
+                    v-show="index != currentEdit"
+                    label="紧急联系人关系:"
+                  >
+                    <span calss="item-label-value">{{ item.relationship }}</span>
+                  </el-form-item>
+                  <el-form-item
+                    v-show="index == currentEdit"
+                    label="紧急联系人关系:"
+                  >
+                    <el-input v-model="item.relationship" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-form-item
+                v-show="index == currentEdit"
+                class="info-button-group"
+                :justify="'center'"
               >
-                保存
-              </el-button>
-              <el-button @click="cancelEmergencyEdit(item, index)">
-                取消
-              </el-button>
-            </el-form-item>
-          </el-form>
+                <el-button
+                  type="primary"
+                  @click="saveEmergencyInfo(item, index)"
+                >
+                  保存
+                </el-button>
+                <el-button @click="cancelEmergencyEdit(item, index)">
+                  取消
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
       </div>
-      <div class="add-emergency-member">
-        <el-button
-          type="primary"
+      <div class="add-info-item">
+        <div
+          class="add-info-button"
           @click="addContact"
         >
-          添加
-        </el-button>
+          <i
+            class="el-icon-plus"
+            style="margin-right:6px;"
+          />
+          <span>添加紧急联系人</span>
+        </div>
       </div>
     </div>
   </div>
@@ -125,7 +134,7 @@
 
 <script>
 import { isMobile } from '@/util/validate'
-import { deepClone, randomLenNum } from '@/util/util'
+import { deepClone } from '@/util/util'
 import {
   delStaffEmerInfo,
   editStaffEmerInfo,
@@ -210,6 +219,7 @@ export default {
               type: 'success',
               message: '删除成功!'
             })
+            this.getEmergencyList()
           })
         })
         .catch(() => {
@@ -245,6 +255,8 @@ export default {
               })
             })
           }
+
+          this.getEmergencyList()
         }
       })
     },
@@ -261,7 +273,6 @@ export default {
       this.type = 'add'
       this.editClick = true
       let memberInfo = {
-        id: randomLenNum(),
         name: '',
         phone: '',
         relationship: ''
@@ -321,7 +332,6 @@ export default {
 .emergency-component {
   .component-content {
     padding: 20px 20px 0 20px;
-    border-bottom: 1px dashed #cecece;
     /deep/ input {
       height: 34px !important;
       color: #202940;
@@ -351,5 +361,29 @@ export default {
   /deep/.el-form-item__content {
     margin-left: 0 !important;
   }
+}
+.add-info-item {
+  padding: 10px 0 20px 0;
+  color: #757c85;
+  line-height: 34px;
+  cursor: pointer;
+}
+.add-info-button {
+  border: 1px dashed #cecece;
+  border-radius: 4px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.add-info-button:hover {
+  color: #207efa;
+  border-color: #bcd8fe;
+  background-color: #e9f2ff;
+}
+.emergnecy-content-list > div {
+  border-bottom: 1px solid #cecece;
+}
+.emergnecy-content-list > div:last-child {
+  border: none;
 }
 </style>
