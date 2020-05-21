@@ -764,30 +764,6 @@ let probation = [
   {
     value: 6,
     label: '六个月'
-  },
-  {
-    value: 7,
-    label: '七个月'
-  },
-  {
-    value: 8,
-    label: '八个月'
-  },
-  {
-    value: 9,
-    label: '九个月'
-  },
-  {
-    value: 10,
-    label: '十个月'
-  },
-  {
-    value: 11,
-    label: '十一个月'
-  },
-  {
-    value: 12,
-    label: '十二个月'
   }
 ]
 export let employment = {

@@ -153,6 +153,8 @@ import {
   other
 } from './components/userInfo'
 import inputArray from './components/inputArray'
+import { getWorkAddress, getCompany, getJob, getposition } from '@/api/personnel/selectedPerson'
+
 export default {
   name: 'Apply',
   components: {
@@ -178,7 +180,93 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getCompany()
+    this.getWorkAddress()
+    this.getJob()
+    this.getposition()
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      let index = ''
+      let dict = []
+      res &&
+        res.map((it) => {
+          dict.push({ label: it.dictValue, value: it.id })
+        })
+      this.employment.basicAttrs.map((it, i) => {
+        if (it.props === 'workProperty') index = i
+      })
+      this.employment.basicAttrs[index].value = dict
+    })
+  },
   methods: {
+    getposition() {
+      getposition().then((res) => {
+        let index = ''
+        let dict = []
+        res &&
+          res.map((it) => {
+            dict.push({ label: it.name, value: it.id })
+          })
+        this.employment.basicAttrs.map((it, i) => {
+          if (it.props === 'positionId') index = i
+        })
+        this.employment.basicAttrs[index].value = dict
+      })
+    },
+    getJob() {
+      let params = {
+        jobName: '',
+        orgId: ''
+      }
+      getJob(params).then((res) => {
+        let index = ''
+        let dict = []
+        res &&
+          res.map((it) => {
+            dict.push({ label: it.jobName, value: it.jobId })
+          })
+        this.employment.basicAttrs.map((it, i) => {
+          if (it.props === 'jobId') index = i
+        })
+        this.employment.basicAttrs[index].value = dict
+      })
+    },
+    getCompany() {
+      let params = {
+        parentOrgId: '0'
+      }
+      getCompany(params).then((res) => {
+        let index = ''
+        let dict = []
+        res &&
+          res.map((it) => {
+            dict.push({ label: it.orgName, value: it.orgId })
+          })
+
+        this.employment.basicAttrs.map((it, i) => {
+          if (it.props === 'companyId') index = i
+        })
+        this.employment.basicAttrs[index].value = dict
+      })
+    },
+    getWorkAddress() {
+      let params = {
+        pageNo: 1,
+        pageSize: 10000
+      }
+      getWorkAddress(params).then((res) => {
+        let address = []
+        res.data &&
+          res.data.map((it) => {
+            address.push({ label: it.address, value: it.id })
+          })
+        let index = ''
+        this.employment.basicAttrs.map((it, i) => {
+          if (it.props === 'workAddressId') index = i
+        })
+        this.employment.basicAttrs[index].value = address
+      })
+    },
     close() {
       this.$confirm('您有未保存的数据，直接离开将丢失数据，您确定要取消申请吗?', '确定取消申请？', {
         confirmButtonText: '确定',

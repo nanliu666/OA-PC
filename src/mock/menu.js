@@ -460,7 +460,7 @@ const res = {
       },
       {
         menuId: '12590729058103173131',
-        menuName: '人事管理',
+        menuName: '人事管理2',
         menuType: 'Dir',
         isOwn: 1,
         isShow: 1,
