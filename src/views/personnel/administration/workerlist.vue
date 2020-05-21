@@ -10,7 +10,6 @@
         style="width: 100%"
         :data="data"
         :page="page"
-        :loading="loading"
         :config="tableConfig"
         :columns="columns"
         @pageSizeChange="sizeChange"
@@ -100,6 +99,7 @@
 </template>
 
 <script>
+import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
 import { getStaffList, getUserStatusStat } from '@/api/personnel/roster'
 import AdjustEdit from './components/adjustEdit'
@@ -123,6 +123,20 @@ export default {
               selectParams: {
                 placeholder: '姓名/工号',
                 multiple: false
+              }
+            }
+          }
+        ],
+        popoverOptions: [
+          {
+            type: 'treeSelect',
+            field: 'parentOrgId',
+            label: '部门',
+            data: '',
+            config: {
+              selectParams: {
+                placeholder: '请输入内容',
+                multiple: false
               },
               treeParams: {
                 data: [],
@@ -139,21 +153,6 @@ export default {
                 }
               }
             }
-          }
-        ],
-        popoverOptions: [
-          {
-            type: 'select',
-            field: 'orgId',
-            label: '部门',
-            data: '',
-            options: [
-              { value: '企业', label: 'Enterprise' },
-              { value: '公司', label: 'Company' },
-              { value: '部门', label: 'Department' },
-              { value: '小组', label: 'Group' }
-            ],
-            config: { optionLabel: '请选择', optionValue: '' }
           },
           {
             type: 'select',
@@ -247,15 +246,6 @@ export default {
         WaitLeave: 0,
         Leaved: 0
       },
-      form: {
-        name: ''
-      },
-      loading: false,
-      isEdit: false,
-      categoryDialog: false,
-      dialogVisible: false,
-      isBatch: false,
-      show: true,
       number: 0,
       row: {},
       data: [],
@@ -263,7 +253,6 @@ export default {
         showHandler: true,
         enableMultiSelect: true
       },
-      month: [],
       columns: [
         {
           label: '姓名',
@@ -318,6 +307,11 @@ export default {
   created() {
     this.getTableData(1)
     this.getUserStatusStat()
+    getOrgTreeSimple({ orgId: 0 }).then((res) => {
+      this.searchConfig.requireOptions[0].config.treeParams.data = res
+      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
+      this.searchConfig.requireOptions[0].data = res[0].orgId
+    })
   },
   methods: {
     getUserStatusStat() {
