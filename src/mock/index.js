@@ -25,9 +25,9 @@ const options = { mock: false }
 
 user(options)
 
-menu({ mock: true })
-candidate({ mock: true })
-selectPerson({ mock: true })
+menu({ mock: false })
+candidate({ mock: false })
+selectPerson({ mock: false })
 position(options)
 grade(options)
 menus(options)

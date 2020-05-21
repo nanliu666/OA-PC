@@ -8,7 +8,7 @@ const normalData = {
 }
 const json = {
   ...normalData,
-  response: { code: 200, success: true, msg: '提交成功' }
+  response: {}
 }
 
 export default ({ mock }) => {
