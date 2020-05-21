@@ -356,7 +356,7 @@
                 :span="16"
                 class="value"
               >
-                {{ personInfo.proviceName + '/' + personInfo.cityName }}
+                {{ personInfo.provinceName + '/' + personInfo.cityName }}
               </el-col>
               <el-col
                 :span="8"
@@ -538,6 +538,10 @@ export default {
         this.recruitmentChannel[item.dictKey] = item.dictValue
       })
     })
+  },
+  activated() {
+    this.getPersonInfo()
+    this.getPersonRecord()
   },
   methods: {
     init() {

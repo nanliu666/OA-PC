@@ -371,7 +371,7 @@
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{ row.proviceName + row.cityName }}
+          {{ row.provinceName + row.cityName }}
         </template>
         <template
           slot="handler"
@@ -599,17 +599,17 @@
     <weed-out-dialog
       ref="weedOutgDialog"
       :visible.sync="weedOutgDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
     <push-audit-dialog
       ref="pushAuditDialog"
       :visible.sync="pushAuditDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
     <change-job-dialog
       ref="changeJobDialog"
       :visible.sync="changeJobDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
   </div>
 </template>
@@ -744,7 +744,15 @@ export default {
         'createTime'
       ],
       originColumn: column,
-      candidateStatus: {},
+      candidateStatus: {
+        '0': 0,
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0
+      },
       tabStatus: 'all',
       statusWord: {
         '0': '已淘汰',
@@ -891,7 +899,7 @@ export default {
           .then(() => {
             this.$message.success('接受成功')
             loading.close()
-            this.loadData(1)
+            this.loadAllData(1)
           })
           .catch(() => {
             loading.close()
@@ -953,7 +961,7 @@ export default {
             .then(() => {
               this.$message.success('发起成功')
               loading.close()
-              this.loadData(1)
+              this.loadAllData(1)
             })
             .catch(() => {
               loading.close()
@@ -968,6 +976,11 @@ export default {
     handleSubmit(params) {
       this.searchParams = params
       this.loadData()
+    },
+    loadAllData(pageNo) {
+      Object.assign(this.$data.candidateStatus, this.$options.data().candidateStatus)
+      this.getCandidateStatus()
+      this.loadData(pageNo)
     },
     loadData(pageNo) {
       let params = { ...this.searchParams }
