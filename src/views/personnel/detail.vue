@@ -165,8 +165,10 @@ export default {
         return '正式'
       } else if (this.allInfo.status == 'Leaved') {
         return '已离职'
-      } else {
+      } else if (this.perosonnalInfo.status == 'WaitLeave') {
         return '待离职'
+      } else {
+        return ''
       }
     },
     getBasicInfo() {
