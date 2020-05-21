@@ -165,7 +165,7 @@
             </el-col>
 
             <el-col
-              v-show="!readonlyBasicInfo && index > 0"
+              v-show="!readonlyBasicInfo && index > -1"
               class="delete-org-job"
               :span="1"
             >
@@ -182,7 +182,7 @@
           class="add-job-org"
         >
           <span @click="addJobOrg()">
-            <i class="el-icon-plus" />
+            <i class="el-icon-plus" /> 添加附属部门及职位
           </span>
         </div>
         <el-row>
@@ -248,13 +248,13 @@
                   <span style="float: left">{{ item.address }}</span>
                   <span
                     class="optionRight"
-                    @click="deleteAddress(item)"
+                    @click.stop="deleteAddress(item)"
                   >
                     <i class="el-icon-error" />
                   </span>
                   <span
                     class="optionRight"
-                    @click="editAddress(item)"
+                    @click.stop="editAddress(item)"
                   >
                     <i class="el-icon-edit-outline" />
                   </span>
@@ -531,13 +531,11 @@ export default {
   computed: {
     getRecruitment() {
       let dictValue = ''
-      for (let i = 0; i < this.recruitOptions.length; i++) {
-        let item = this.recruitOptions[i]
-        if (this.staffInfo.recruitment == item.dictKey) {
+      this.recruitOptions.forEach(item => {
+        if(item.dictKey === this.staffInfo.recruitment){
           dictValue = item.dictValue
-          return
         }
-      }
+      })
       return dictValue
     },
     getPosition() {
@@ -557,6 +555,7 @@ export default {
     this.initRegion()
     this.loadSelectData()
     this.getWorkAdressList()
+    this.dispatchSelect()
   },
   methods: {
     getCityDetail() {
@@ -606,6 +605,8 @@ export default {
     handleAddressClick(value) {
       this.workAdressList.forEach((item) => {
         if (item.id === value) {
+          console.log(item)
+          this.staffInfo.addresssId = item.id
           this.staffInfo.address = item.address
           this.workCity = [item.provinceCode, item.cityCode]
 
@@ -740,6 +741,7 @@ export default {
         countyCode: this.staffInfo.countyCode,
         countyName: this.staffInfo.countyName,
         address: this.staffInfo.address,
+        addresssId: this.staffInfo.addresssId,
         workProvinceCode: this.staffInfo.workProvinceCode,
         workProvinceName: this.staffInfo.workProvinceName,
         workCityCode: this.staffInfo.workCityCode,
@@ -790,16 +792,17 @@ export default {
     },
     deleteOrgjob(item) {
       let params = {
+        userId: this.$route.params.userId,
         subOrg: [
           {
             subOrgId: item.subOrgId,
-            operatorType: 'del'
+            operatorType: 'Del'
           }
         ],
         subJob: [
           {
             subJobId: item.subJobId,
-            operatorType: 'del'
+            operatorType: 'Del'
           }
         ]
       }
@@ -869,6 +872,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.optionRight {
+    float: right;
+    padding: 0 10px 0 0 !important;
+    // display: none;
+  }
 .selectOption.no-border-style {
   /deep/.el-input__inner {
     border: none !important;
