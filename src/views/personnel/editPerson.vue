@@ -478,7 +478,8 @@ export default {
           resumeUrl: form.resume[0] ? form.resume[0].fileUrl : null,
           attachmentUrl: form.attachment[0] ? form.attachment[0].fileUrl : null,
           provinceCode: form.addressArr[0],
-          cityCode: form.addressArr[1]
+          cityCode: form.addressArr[1],
+          personId: this.personId
         }
         if (this.$refs.address.inputValue) {
           inputValue = this.$refs.address.inputValue.split(' / ')
