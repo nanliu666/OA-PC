@@ -475,7 +475,7 @@ export default {
           let { jobName, categoryId, remark, parentId, orgId } = { ...this.form }
 
           let params = {
-            jobId: this.data.jobId || this.orgData.id,
+            jobId: this.row.jobId || this.orgData.id,
             jobName,
             categoryId,
             remark,
