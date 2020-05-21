@@ -349,7 +349,7 @@ Mock.mock(new RegExp('/user/v1/user/formal/formalTime' + '.*'), 'post', () => {
   }
   return entryTime
 })
-Mock.mock(new RegExp('/user/v1/user/formal/probation' + '.*'), 'post', () => {
+Mock.mock(new RegExp('/user/v1/user/formal/probation' + '.*'), 'put', () => {
   const probationList = {
     resCode: 200,
     resMsg: '申请成功',

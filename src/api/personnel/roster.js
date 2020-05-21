@@ -132,7 +132,7 @@ export const getFormalTime = (params) => {
 export const putProbation = (params) => {
   return request({
     url: '/user/v1/user/formal/probation',
-    method: 'post',
+    method: 'put',
     params: params
   })
 }

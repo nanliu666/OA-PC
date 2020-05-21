@@ -181,44 +181,18 @@ export default {
             }
           },
           {
-            type: 'yearPicker',
-            field: 'beginEntryDate',
+            type: 'dataPicker',
             data: '',
-            label: '开始入职日期',
-            options: [],
-            config: { optionLabel: 'name', optionValue: 'beginEntryDate' },
-            loading: false,
-            pageNo: 2
+            label: '入职日期',
+            field: 'beginEntryDate,endEntryDate',
+            config: { type: 'daterange', 'range-separator': '至' }
           },
           {
-            type: 'yearPicker',
-            field: 'endEntryDate',
+            type: 'dataPicker',
             data: '',
-            label: '截止入职日期',
-            options: [],
-            config: { optionLabel: 'name', optionValue: 'endEntryDate' },
-            loading: false,
-            pageNo: 2
-          },
-          {
-            type: 'yearPicker',
-            field: 'beginFormalDate',
-            data: '',
-            label: '开始转正日期',
-            options: [],
-            config: { optionLabel: 'name', optionValue: 'beginFormalDate' },
-            loading: false,
-            pageNo: 2
-          },
-          {
-            type: 'yearPicker',
-            field: 'endFormalDate',
-            data: '',
-            label: '截止转正日期',
-            options: [],
-            config: { optionLabel: 'name', optionValue: 'endFormalDate' },
-            loading: false,
-            pageNo: 2
+            label: '转正日期',
+            field: 'beginFormalDate,endFormalDate',
+            config: { type: 'daterange', 'range-separator': '至' }
           },
           {
             type: 'select',
@@ -363,26 +337,14 @@ export default {
         jobs: [params.job] || ' ',
         probations: [params.probation] || ' '
       }
-      request.beginEntryDate = this.calcChinesestandard(params.beginEntryDate)
-      request.endEntryDate = this.calcChinesestandard(params.endEntryDate)
-      request.beginFormalDate = this.calcChinesestandard(params.beginFormalDate)
-      request.endFormalDate = this.calcChinesestandard(params.endFormalDate)
+      request.beginEntryDate = params.beginEntryDate
+      request.endEntryDate = params.endEntryDate
+      request.beginFormalDate = params.beginFormalDate
+      request.endFormalDate = params.endFormalDate
       getStaffList(request).then((res) => {
         if (res) this.$message({ showClose: true, message: '操作成功', type: 'success' })
         this.data = res.data
       })
-    },
-
-    calcChinesestandard(isStr) {
-      let chineseTime = new Date(isStr)
-      let youWant =
-        chineseTime.getFullYear() + '-' + (chineseTime.getMonth() + 1) + '-' + chineseTime.getDate()
-      let isStringNaN = youWant.split('-')
-      for (let index = 0; index < isStringNaN.length; index++) {
-        if (isStringNaN[index] === 'NaN') youWant = ''
-        return youWant
-      }
-      return youWant
     },
     handlerDeleteAll(selection) {
       // eslint-disable-next-line
