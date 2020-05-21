@@ -455,6 +455,51 @@ const res = {
             alias: 'editPerson',
             path: '/personnel/administration/apply',
             icon: 'iconfont iconicon_doc'
+          },
+
+          {
+            menuId: '31212212454542',
+            menuName: '面试登记表',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_registrationForm',
+            alias: 'registrationForm',
+            path: '/personnel/candidate/registrationForm',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '312122124545422',
+            menuName: '面试登记表编辑',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_registrationFormEdit',
+            alias: 'registrationFormEdit',
+            path: '/personnel/candidate/registrationFormEdit',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '312122124545423',
+            menuName: '申请录用',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_apply',
+            alias: 'apply',
+            path: '/personnel/candidate/apply',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '312122124545424',
+            menuName: '申请录用详情',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_applyDetail',
+            alias: 'applyDetail',
+            path: '/personnel/candidate/applyDetail',
+            icon: 'iconfont iconicon_doc'
           }
         ]
       }
