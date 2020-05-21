@@ -42,9 +42,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -75,9 +75,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -110,9 +110,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -152,9 +152,9 @@
                 <el-dropdown-item command>
                   查看面试登记表
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -182,12 +182,12 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command>
+                <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -222,9 +222,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -246,9 +246,9 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>

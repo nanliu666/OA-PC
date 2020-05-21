@@ -137,7 +137,6 @@ export default {
   },
   data() {
     return {
-      userId: this.$route.params.userId,
       activeName: 'first',
       stretch: true,
       tabs: {
@@ -145,14 +144,6 @@ export default {
       },
       circleUrl: '',
       allInfo: {}
-    }
-  },
-
-  watch: {
-    $route(to, from) {
-      if (from.path == '/personnel/roster') {
-        this.getBasicInfo()
-      }
     }
   },
   created() {

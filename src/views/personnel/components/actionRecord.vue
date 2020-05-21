@@ -18,6 +18,9 @@
           </template>
         </el-timeline-item>
       </el-timeline>
+      <div v-if="stepsData.length == 0">
+        <avue-empty />
+      </div>
     </basic-container>
   </div>
 </template>
