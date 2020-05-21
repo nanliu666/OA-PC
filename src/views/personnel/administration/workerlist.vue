@@ -159,13 +159,26 @@ export default {
             field: 'job',
             data: '',
             label: '职位',
-            options: [
-              { value: 'java开发', label: 'Enterprise' },
-              { value: 'web前端', label: 'Company' },
-              { value: '开发负责人', label: 'Department' },
-              { value: '地域总监', label: 'Group' }
-            ],
-            config: { optionLabel: '请选择', optionValue: '' }
+            config: {
+              selectParams: {
+                placeholder: '请输入内容',
+                multiple: false
+              },
+              treeParams: {
+                data: [],
+                'check-strictly': true,
+                'default-expand-all': false,
+                'expand-on-click-node': false,
+                clickParent: true,
+                filterable: false,
+                props: {
+                  children: 'children',
+                  label: 'orgName',
+                  disabled: 'disabled',
+                  value: 'orgId'
+                }
+              }
+            }
           },
           {
             type: 'yearPicker',
@@ -229,9 +242,9 @@ export default {
             data: '',
             label: '申请状态',
             options: [
-              { value: '已通过', label: 'onemonth' },
-              { value: '已拒绝', label: 'towmonth' },
-              { value: '申请中', label: 'threemonths' }
+              { value: '未申请', label: 'notapplied' },
+              { value: '已驳回', label: 'rejected' },
+              { value: '申请中', label: 'applying' }
             ],
             config: { optionLabel: '请选择', optionValue: '' }
           }
@@ -307,10 +320,8 @@ export default {
   created() {
     this.getTableData(1)
     this.getUserStatusStat()
-    getOrgTreeSimple({ orgId: 0 }).then((res) => {
-      this.searchConfig.requireOptions[0].config.treeParams.data = res
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
-      this.searchConfig.requireOptions[0].data = res[0].orgId
+    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+      this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
     })
   },
   methods: {
@@ -348,7 +359,7 @@ export default {
         search: params.search || '',
         pageNo: 1,
         pageSize: 10,
-        orgs: [params.orgId] || ' ',
+        orgs: [params.parentOrgId] || ' ',
         jobs: [params.job] || ' ',
         probations: [params.probation] || ' '
       }
@@ -366,6 +377,11 @@ export default {
       let chineseTime = new Date(isStr)
       let youWant =
         chineseTime.getFullYear() + '-' + (chineseTime.getMonth() + 1) + '-' + chineseTime.getDate()
+      let isStringNaN = youWant.split('-')
+      for (let index = 0; index < isStringNaN.length; index++) {
+        if (isStringNaN[index] === 'NaN') youWant = ''
+        return youWant
+      }
       return youWant
     },
     handlerDeleteAll(selection) {
