@@ -49,6 +49,12 @@ a {
 .flex-justify {
   justify-content: center;
 }
+.flex-justify-around {
+  justify-content: space-around;
+}
+.flex-justify-between {
+  justify-content: space-between;
+}
 .flex-justify-start {
   justify-content: flex-start;
 }
