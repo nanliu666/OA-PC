@@ -16,7 +16,7 @@
           <el-dropdown-item command="add">
             单个添加候选人
           </el-dropdown-item>
-          <el-dropdown-item>Excel导入候选人</el-dropdown-item>
+          <!-- <el-dropdown-item>Excel导入候选人</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
     </div>

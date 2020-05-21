@@ -507,12 +507,12 @@ export default {
       workPropertyList: [],
       jobList: [],
       orgOptions: {
-        props: {
-          label: 'orgName',
-          value: 'orgId'
-        },
-        placeholder: '请选择部门',
-        dicData: [],
+        // props: {
+        //   label: 'orgName',
+        //   value: 'orgId'
+        // },
+        // placeholder: '请选择部门',
+        // dicData: [],
         config: {
           selectParams: {
             placeholder: '请输入内容',
