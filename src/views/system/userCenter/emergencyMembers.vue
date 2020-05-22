@@ -203,7 +203,7 @@ export default {
       this.currentEdit = index
       this.curItem = deepClone(item)
     },
-    del(item, index) {
+    del(item) {
       this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -214,12 +214,11 @@ export default {
             ids: item.id
           }
           delStaffEmerInfo(params).then(() => {
-            this.emergency.splice(index, 1)
+            this.getEmergencyList()
             this.$message({
               type: 'success',
               message: '删除成功!'
             })
-            this.getEmergencyList()
           })
         })
         .catch(() => {
