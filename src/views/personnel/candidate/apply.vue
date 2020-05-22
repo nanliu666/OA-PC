@@ -188,7 +188,10 @@
                 size="medium"
                 @click="back"
               >
-                <span style="width: 56px;display: inline-block">返回</span>
+                <span
+                  style="width: 56px;display: inline-block"
+                  @click="handleBack"
+                >返回</span>
               </el-button>
             </div>
           </div>
@@ -226,7 +229,7 @@ export default {
   data() {
     return {
       loading: false,
-      active: 2,
+      active: 0,
       personInfo,
       employment,
       salary,
@@ -285,6 +288,9 @@ export default {
     // ContractType
   },
   methods: {
+    handleBack() {
+      this.active = 1
+    },
     dataFilter(res, form, props, label, value) {
       let index = ''
       let dict = []
@@ -421,7 +427,12 @@ export default {
         this.active = 2
       })
     },
-    jumpDetail() {},
+    jumpDetail() {
+      this.$router.push({
+        path: '/personnel/candidate/applyDetail',
+        query: {}
+      })
+    },
     back() {
       this.$router.go(-1)
     }

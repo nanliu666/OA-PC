@@ -14,6 +14,16 @@
             v-model="form"
             :option="option"
           >
+            <template slot="userName">
+              <span class="name">{{ form.userName }}</span>
+            </template>
+            <template slot="time">
+              <el-date-picker
+                v-model="form.time"
+                type="date"
+                placeholder="请选择面试时间"
+              />
+            </template>
             <template slot="parentId">
               <el-select
                 v-model="form.parentId"
@@ -130,6 +140,12 @@ export default {
     newInterview
   },
   props: {
+    row: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
     visible: {
       type: Boolean,
       default: false
@@ -150,17 +166,28 @@ export default {
       loading: false,
       dialog: true,
       form: {
-        jobName: '', //职位名称
-        categoryId: '', //职位类别id
-        remark: '', // 描述
-        parentId: '', //所属职位
-        orgId: '' //所属组织
+        userName: '',
+        jobName: '',
+        time: '',
+        remark: '',
+        parentId: '',
+        orgId: ''
       },
       option: {
         menuBtn: false,
         labelPosition: 'top',
         size: 'medium',
         column: [
+          {
+            label: '已选择',
+            prop: 'userName',
+            type: 'select',
+            row: true,
+            span: 24,
+            formslot: true,
+            labelslot: true,
+            errorslot: true
+          },
           {
             label: '面试官',
             prop: 'jobName',
@@ -178,11 +205,14 @@ export default {
           },
           {
             label: '面试时间',
-            prop: 'categoryId',
+            prop: 'time',
             type: 'date',
             row: true,
             span: 24,
             placeholder: '请选择面试时间',
+            formslot: true,
+            labelslot: true,
+            errorslot: true,
             rules: [
               {
                 required: true,
@@ -267,6 +297,13 @@ export default {
         this.$emit('update:dialogVisible', this.dialog)
       },
       deep: true
+    },
+    row: {
+      handler: function(data) {
+        this.form.userName = data.userName
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -377,5 +414,11 @@ export default {
   .ADD {
     margin-right: 10px;
   }
+}
+.name {
+  background: rgba(113, 129, 153, 0.1);
+  border-radius: 4px;
+  border-radius: 4px;
+  padding: 10px 12px;
 }
 </style>

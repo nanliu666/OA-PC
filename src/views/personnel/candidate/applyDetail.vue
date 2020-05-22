@@ -10,7 +10,7 @@
     </div>
     <div class="person">
       <div class="name">
-        {{ personInfo.name }}
+        {{ personInfo.name }}提交的录用申请
       </div>
       <div class="flex flex-flow flex-justify-between nav">
         <div><span>审批编号：</span>{{ personInfo.department }}</div>
@@ -19,140 +19,152 @@
         <div><span>状态：</span> {{ personInfo.status }}</div>
       </div>
     </div>
-    <div class="basicInfo">
-      <div class="title_top">
-        基本信息
-      </div>
-      <div class="title">
-        候选人信息
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in basicInfo"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+    <div class="contain">
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="申请详情"
+          name="first"
+        >
+          <div class="basicInfo">
+            <div class="title_top">
+              基本信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        录用信息
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in applyInfo"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title">
+              候选人信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div />
-    </div>
-    <div
-      class="basicInfo"
-      style="margin-bottom: 50px"
-    >
-      <div class="title_top">
-        薪资福利信息
-      </div>
-      <div class="title">
-        薪资
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in salary"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in basicInfo"
+                  :key="index"
+                  class="attribute flex flex-flow"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        劳动合同
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in labour"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title">
+              录用信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        五险一金
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in fiveRisks"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in applyInfo"
+                  :key="index"
+                  class="attribute flex flex-flow"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
             </div>
-            <div>{{ basic[info.attribute] }}</div>
+            <div />
           </div>
-        </div>
-      </div>
-      <div class="title">
-        办公安排
-      </div>
-      <div class="basic">
-        <div class="flexs">
           <div
-            v-for="(info, index) in office"
-            :key="index"
-            class="attribute flex flex-flow"
+            class="basicInfo"
+            style="margin-bottom: 50px"
           >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title_top">
+              薪资福利信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        其他
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in office"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title">
+              薪资
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in salary"
+                  :key="index"
+                  class="attribute flex flex-flow"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              劳动合同
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in labour"
+                  :key="index"
+                  class="attribute flex flex-flow"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              五险一金
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in fiveRisks"
+                  :key="index"
+                  class="attribute flex flex-flow"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              办公安排
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in office"
+                  :key="index"
+                  class="attribute flex flex-flow"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              其他
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in office"
+                  :key="index"
+                  class="attribute flex flex-flow"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
 
-      <div />
+            <div />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -162,6 +174,7 @@ export default {
   name: 'ApplyDetail',
   data() {
     return {
+      activeName: 'first',
       personInfo: {
         name: '张琪',
         department: 'ucd部门',
@@ -357,6 +370,11 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    handleClick() {
+      // console.log(tab, event)
+    }
   }
 }
 </script>
@@ -376,13 +394,16 @@ export default {
   font-weight: bold;
   margin-top: 14px;
 }
+.contain {
+  background: #ffffff;
 
+  margin-top: 15px;
+}
 .person {
   background: #ffffff;
   border-radius: 4px;
   height: 102px;
-  padding: 24px;
-  margin-top: 15px;
+  padding: 0 24px 24px 24px;
   box-sizing: border-box;
 
   .name {
@@ -439,7 +460,7 @@ export default {
   margin-top: 16px;
   background: #ffffff;
   border-radius: 4px;
-  padding: 20px 24px 15px 24px;
+  padding: 0px 24px 15px 24px;
 
   .attribute {
     div {
@@ -503,5 +524,9 @@ export default {
     border-bottom: 1px solid #e3e7e9;
     margin-bottom: 20px;
   }
+}
+/deep/.el-tabs__nav {
+  margin-left: 20px;
+  font-size: 16px;
 }
 </style>
