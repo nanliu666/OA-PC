@@ -260,8 +260,8 @@ export default {
             }
             checkPswOrPhone(params).then(() => {
               this.step++
-              this.steps.secondStatus = 'success'
-              this.steps.finalStatus = 'success'
+              this.steps.firstStatus = 'success'
+              this.steps.secondStatus = 'finish'
             })
           }
         })
@@ -277,8 +277,8 @@ export default {
             }
             checkPswOrPhone(params).then(() => {
               this.step++
-              this.steps.firstStatus = 'success'
-              this.steps.secondStatus = 'finish'
+              this.steps.secondStatus = 'success'
+              this.steps.finalStatus = 'success'
             })
           }
         })
