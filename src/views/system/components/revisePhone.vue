@@ -179,15 +179,7 @@ export default {
       }
     }
 
-    const validatePSW = (rule, value, callback) => {
-      if (_this.isError) {
-        callback(new Error('密码错误'))
-      } else {
-        callback()
-      }
-    }
     return {
-      isError: false,
       step: 1,
       steps: {
         firstStatus: 'finish',
@@ -229,11 +221,6 @@ export default {
             {
               required: true,
               trigger: 'blur',
-              validator: validatePSW
-            },
-            {
-              required: true,
-              trigger: 'blur',
               message: '请输入密码'
             }
           ]
@@ -267,15 +254,11 @@ export default {
               userId: this.userInfo.user_id,
               password: this.password.form.psw
             }
-            checkPswOrPhone(params)
-              .then(() => {
-                this.step++
-                this.steps.secondStatus = 'success'
-                this.steps.finalStatus = 'success'
-              })
-              .catch(() => {
-                this.isError = true
-              })
+            checkPswOrPhone(params).then(() => {
+              this.step++
+              this.steps.secondStatus = 'success'
+              this.steps.finalStatus = 'success'
+            })
           }
         })
       } else if (this.step == 2) {

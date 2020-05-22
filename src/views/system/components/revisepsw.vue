@@ -99,15 +99,7 @@ export default {
         callback()
       }
     }
-    const validateOldPSW = function(rule, value, callback) {
-      if (this.isErrorPsw) {
-        callback(new Error('密码错误'))
-      } else {
-        callback()
-      }
-    }
     return {
-      isErrorPsw: false,
       active: 0,
       format: ['oldPassword', 'newPassword', 'confirmPassword'],
       form: {
@@ -116,10 +108,7 @@ export default {
         confirmPassword: ''
       },
       rules: {
-        oldPassword: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { required: true, validator: validateOldPSW, trigger: 'blur' }
-        ],
+        oldPassword: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         newPassword: [
           { required: true, validator: validateNewPSW, trigger: 'blur' },
           { required: true, message: '请输入新密码', trigger: 'blur' }
@@ -140,13 +129,9 @@ export default {
             newPassword: this.form.oldPassword,
             oldPassword: this.form.newPassword
           }
-          checkPassword(params)
-            .then(() => {
-              this.$message.success('修改成功')
-            })
-            .catch(() => {
-              this.isErrorPsw = true
-            })
+          checkPassword(params).then(() => {
+            this.$message.success('修改成功')
+          })
         }
       })
     },
