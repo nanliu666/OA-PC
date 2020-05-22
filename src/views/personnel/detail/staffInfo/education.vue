@@ -369,7 +369,7 @@ export default {
       this.curItemIndex = this.educationInfo.length - 1
       this.curItemId = item.id
     },
-    delInfo(item, index) {
+    delInfo(item) {
       this.$confirm('您确定要删除该教育经历吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -380,7 +380,7 @@ export default {
             ids: item.id
           }
           delStaffEducationInfo(params).then(() => {
-            this.educationInfo.splice(index, 1)
+            this.getBasicInfo()
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -404,7 +404,6 @@ export default {
             addStaffEducationInfo(item).then(() => {
               this.editClick = false
               this.curItemIndex = null
-              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
