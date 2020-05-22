@@ -13,7 +13,10 @@ import personalInfo from './personalInfo'
 import org from './org'
 import transction from './transction'
 
+import person from './person'
 import menus from './menus'
+import candidate from './candidate'
+import selectPerson from './selectPerson'
 /**
  * 模拟数据mock
  *
@@ -26,6 +29,8 @@ user(options)
 
 menu({ mock: true })
 
+candidate(options)
+selectPerson(options)
 position(options)
 grade(options)
 menus(options)
@@ -44,4 +49,6 @@ personalInfo(options)
 personnel(options)
 
 org(options)
-transction(options)
+transction({ mock: true })
+
+person(options.mock)

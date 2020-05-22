@@ -16,7 +16,7 @@
           <el-dropdown-item command="add">
             单个添加候选人
           </el-dropdown-item>
-          <el-dropdown-item>Excel导入候选人</el-dropdown-item>
+          <!-- <el-dropdown-item>Excel导入候选人</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -24,14 +24,19 @@
       <div class="on">
         <div
           class="onItem"
-          :class="tabStatus === 'all' ? 'current' : ''"
           @click="tabClick('all')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === 'all' ? 'current' : ''"
+              class="statusWork"
+            >
               全部
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === 'all' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('all') }}人
             </div>
           </div>
@@ -42,14 +47,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '1' ? 'current' : ''"
           @click="tabClick('1')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '1' ? 'current' : ''"
+              class="statusWork"
+            >
               待沟通
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '1' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('1') }}人
             </div>
           </div>
@@ -60,14 +70,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '2' ? 'current' : ''"
           @click="tabClick('2')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '2' ? 'current' : ''"
+              class="statusWork"
+            >
               初选通过
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '2' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('2') }}人
             </div>
           </div>
@@ -78,14 +93,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '3' ? 'current' : ''"
           @click="tabClick('3')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '3' ? 'current' : ''"
+              class="statusWork"
+            >
               面试中
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '3' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('3') }}人
             </div>
           </div>
@@ -97,14 +117,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '4' ? 'current' : ''"
           @click="tabClick('4')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '4' ? 'current' : ''"
+              class="statusWork"
+            >
               面试通过
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '4' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('4') }}人
             </div>
           </div>
@@ -116,14 +141,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '5' ? 'current' : ''"
           @click="tabClick('5')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '5' ? 'current' : ''"
+              class="statusWork"
+            >
               待发Offer
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '5' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('5') }}人
             </div>
           </div>
@@ -135,14 +165,19 @@
         </div>
         <div
           class="onItem"
-          :class="tabStatus === '6' ? 'current' : ''"
           @click="tabClick('6')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '6' ? 'current' : ''"
+              class="statusWork"
+            >
               已发Offer
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '6' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('6') }}人
             </div>
           </div>
@@ -155,15 +190,21 @@
       </div>
       <div class="left">
         <div
+          :id="tabStatus === '0' ? 'current' : ''"
           class="onItem"
-          :class="tabStatus === '0' ? 'current' : ''"
           @click="tabClick('0')"
         >
           <div class="status">
-            <div class="statusWork">
+            <div
+              :id="tabStatus === '0' ? 'current' : ''"
+              class="statusWork"
+            >
               已淘汰
             </div>
-            <div class="statusNum">
+            <div
+              :id="tabStatus === '0' ? 'current' : ''"
+              class="statusNum"
+            >
               {{ getCandidateNum('0') }}人
             </div>
           </div>
@@ -245,22 +286,20 @@
             </div>
           </div>
         </template>
-        <template
-          slot="multiSelectMenu"
-          slot-scope="{ selection }"
-        >
+        <template slot="multiSelectMenu">
+          <!-- slot-scope="{ selection }" -->
           <!-- <el-button type="text" style="margin-bottom:0;" @click="handlerDeleteAll(selection)">
             <i class="el-icon-delete" />批量淘汰
           </el-button>-->
           <!-- 待沟通 -->
-          <el-button
+          <!-- <el-button
             v-show="tabStatus === '1'"
             type="text"
             style="margin-bottom:0;"
             @click="hadlePushAudit(selection)"
           >
             <i class="el-icon-coordinate" />批量推送审核
-          </el-button>
+          </el-button> -->
           <!-- 初选通过 -->
           <el-button
             v-show="tabStatus === '2'"
@@ -332,7 +371,7 @@
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{ row.proviceName + row.cityName }}
+          {{ row.provinceName + row.cityName }}
         </template>
         <template
           slot="handler"
@@ -341,12 +380,12 @@
           <div class="handlerRow">
             <!-- 待沟通 -->
             <template v-if="row.status === '1'">
-              <el-button
+              <!-- <el-button
                 type="text"
                 @click="hadlePushAudit(row)"
               >
                 推送审核
-              </el-button>
+              </el-button> -->
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -367,9 +406,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -395,9 +434,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -423,17 +462,23 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
             <!-- 面试通过 -->
             <template v-if="row.status === '4'">
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleApplyEmploy(row)"
+              >
                 申请录用
               </el-button>
+              <!-- <el-button type="text" @click="handleCheckEmploy(row)">
+                查看申请
+              </el-button> -->
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -457,18 +502,21 @@
                   <el-dropdown-item command>
                     查看面试评价
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="toRegistrationForm">
                     查看面试登记表
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
             <!-- 待发Offer -->
             <template v-if="row.status === '5'">
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleSendOffer(row)"
+              >
                 发送Offer
               </el-button>
               <el-button
@@ -488,9 +536,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -522,9 +570,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -544,9 +592,9 @@
                   <i class="el-icon-arrow-down el-icon-more" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -557,17 +605,17 @@
     <weed-out-dialog
       ref="weedOutgDialog"
       :visible.sync="weedOutgDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
     <push-audit-dialog
       ref="pushAuditDialog"
       :visible.sync="pushAuditDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
     <change-job-dialog
       ref="changeJobDialog"
       :visible.sync="changeJobDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
   </div>
 </template>
@@ -581,7 +629,8 @@ const column = [
   },
   {
     label: '应聘职位',
-    prop: 'jobName'
+    prop: 'jobName',
+    width: 100
   },
   {
     label: '用人部门',
@@ -702,7 +751,15 @@ export default {
         'createTime'
       ],
       originColumn: column,
-      candidateStatus: {},
+      candidateStatus: {
+        '0': 0,
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0
+      },
       tabStatus: 'all',
       statusWord: {
         '0': '已淘汰',
@@ -722,6 +779,7 @@ export default {
         enablePagination: true,
         uniqueKey: 'personId',
         highlightSelect: true,
+        showIndexColumn: true,
         handlerColumn: {
           width: 250
         }
@@ -826,7 +884,16 @@ export default {
     this.loadData()
   },
   methods: {
+    handleCheckEmploy(row) {
+      this.$router.push('/personnel/candidate/applyDetail/' + row.personId)
+    },
+    handleApplyEmploy(row) {
+      this.$router.push('/personnel/candidate/apply/' + row.personId)
+    },
     handleExport() {},
+    handleSendOffer(row) {
+      this.$router.push('/personnel/candidate/editOffer?personId=' + row.personId)
+    },
     toDetail(row) {
       this.$router.push('/personnel/personDetail/' + row.personId)
     },
@@ -842,11 +909,15 @@ export default {
           userId: this.$store.state.user.userInfo.user_id
         }
         const loading = this.$loading({ lock: true })
-        acceptCandidateOffer(params).then(() => {
-          this.$message.success('接受成功')
-          loading.close()
-          this.loadData(1)
-        })
+        acceptCandidateOffer(params)
+          .then(() => {
+            this.$message.success('接受成功')
+            loading.close()
+            this.loadAllData(1)
+          })
+          .catch(() => {
+            loading.close()
+          })
       })
     },
     handleWeedOut(item) {
@@ -874,7 +945,7 @@ export default {
       this.$refs.pushAuditDialog.pushAudit(data)
     },
     handleRefresh() {
-      this.loadData()
+      this.loadData(1)
     },
     columnChange() {
       this.columns = column.filter((item) => {
@@ -900,19 +971,32 @@ export default {
             userId: this.$store.state.user.userInfo.user_id
           }
           const loading = this.$loading({ lock: true })
-          changeCandidateOffer(params).then(() => {
-            this.$message.success('发起成功')
-            loading.close()
-            this.loadData(1)
-          })
+          changeCandidateOffer(params)
+            .then(() => {
+              this.$message.success('发起成功')
+              loading.close()
+              this.loadAllData(1)
+            })
+            .catch(() => {
+              loading.close()
+            })
         })
       } else if (command === 'edit') {
         this.$router.push('/personnel/editPerson?personId=' + data.personId)
+      } else if (command === 'add') {
+        this.$router.push('/personnel/editPerson')
+      } else if (command === 'toRegistrationForm') {
+        this.$router.push('/personnel/candidate/registrationForm/', data.personId)
       }
     },
     handleSubmit(params) {
       this.searchParams = params
       this.loadData()
+    },
+    loadAllData(pageNo) {
+      Object.assign(this.$data.candidateStatus, this.$options.data().candidateStatus)
+      this.getCandidateStatus()
+      this.loadData(pageNo)
     },
     loadData(pageNo) {
       let params = { ...this.searchParams }
@@ -948,6 +1032,7 @@ export default {
     },
     tabClick(status) {
       this.tabStatus = status
+      this.$refs['searchPopover'].resetForm()
       this.$refs.commonTable.clearSelection()
       this.loadData()
     },
@@ -1019,7 +1104,7 @@ export default {
     :last-of-type {
       border-right: 0;
     }
-    .current {
+    #current {
       color: #207efa;
     }
   }
@@ -1053,8 +1138,8 @@ export default {
         margin-top: 32px;
       }
     }
-    .current {
-      color: #207efa;
+    #current {
+      color: #207efa !important;
     }
   }
 }
@@ -1082,6 +1167,7 @@ export default {
   justify-content: flex-start;
   .el-button--text {
     flex: 1;
+    text-align: left;
   }
 }
 </style>

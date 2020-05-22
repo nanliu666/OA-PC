@@ -75,6 +75,7 @@
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
+                  unlink-panels="true"
                   @blur="monthChange(item)"
                 />
               </el-form-item>
@@ -197,20 +198,20 @@
               >
                 <el-radio
                   v-model="item.isSecret"
-                  label="1"
+                  :label="1"
                 >
                   有
                 </el-radio>
                 <el-radio
                   v-model="item.isSecret"
-                  label="0"
+                  :label="0"
                 >
                   无
                 </el-radio>
               </el-form-item>
             </el-col>
             <el-col
-              v-show="item.isSecret == '1'"
+              v-if="item.isSecret == '1'"
               :span="8"
               :push="4"
             >
@@ -235,6 +236,7 @@
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
+                  unlink-panels="true"
                   @blur="secretMonthChange(item)"
                 />
               </el-form-item>
@@ -350,7 +352,13 @@ export default {
           {
             required: true,
             trigger: 'blur',
-            message: '时间不能为空'
+            validator: (rule, value, callback) => {
+              if (!value[0]) {
+                callback(new Error('时间不能为空'))
+              } else {
+                callback()
+              }
+            }
           }
         ],
         companyName: [
@@ -469,6 +477,8 @@ export default {
       })
     },
     editInfo(item, index) {
+      this.$set(item, 'monthRange', [item.beginWorkDate, item.endWorkDate])
+      this.$set(item, 'secretMonthRange', [item.beginSecretDate, item.endSecretDate])
       this.type = 'edit'
       this.editClick = true
       this.curItemIndex = index

@@ -26,6 +26,7 @@
           :placeholder="'请输入' + item.label"
           :multiple="item.config && item.config.multiple"
           :collapse-tags="item.config && item.config.multiple"
+          @visible-change="item.firstLoad && item.firstLoad($event, item)"
           @change="change"
         >
           <template v-if="item.config && item.config.group">
@@ -85,8 +86,15 @@
           v-if="item.type === 'dataPicker'"
           v-model="item.data"
           :type="item.config && item.config.type ? item.config.type : 'data'"
+          :value-format="
+            item.config && item.config['value-format'] ? item.config['value-format'] : 'yyyy-MM-dd'
+          "
+          :default-time="
+            item.config && item.config['default-time']
+              ? item.config['default-time']
+              : ['00:00:00', '23:59:59']
+          "
           placeholder="结束时间"
-          value-format="yyyy-MM-dd"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
           style="width:198px"
@@ -162,6 +170,7 @@
                       :placeholder="'请输入' + item.label"
                       :multiple="item.config && item.config.multiple"
                       :collapse-tags="item.config && item.config.multiple"
+                      @visible-change="item.firstLoad && item.firstLoad($event, item)"
                     >
                       <template v-if="item.config && item.config.group">
                         <el-option-group
@@ -217,9 +226,18 @@
                     <el-date-picker
                       v-if="item.type === 'dataPicker'"
                       v-model="item.data"
+                      :value-format="
+                        item.config && item.config['value-format']
+                          ? item.config['value-format']
+                          : 'yyyy-MM-dd'
+                      "
+                      :default-time="
+                        item.config && item.config['default-time']
+                          ? item.config['default-time']
+                          : ['00:00:00', '23:59:59']
+                      "
                       :type="item.config && item.config.type ? item.config.type : 'data'"
                       placeholder="结束时间"
-                      value-format="yyyy-MM-dd"
                       start-placeholder="开始时间"
                       end-placeholder="结束时间"
                     />
@@ -423,6 +441,7 @@ export default {
           item.data = ''
         }
       })
+      this.submitSearch()
     }
   }
 }

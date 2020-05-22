@@ -10,7 +10,7 @@
     <div class="personTitle">
       <div class="left">
         <div class="orgJob">
-          {{ personInfo.orgName + ' — ' + personInfo.jobName }}
+          {{ personInfo.orgName || '' }} — {{ personInfo.jobName || '' }}
         </div>
         <div class="status">
           {{ statusWord[personInfo.status] }}
@@ -19,13 +19,7 @@
       <div class="right">
         <div class="btn">
           <template v-if="personInfo.status === '1'">
-            <el-button
-              type="primary"
-              size="medium"
-              @click="hadlePushAudit"
-            >
-              推送审核
-            </el-button>
+            <!-- <el-button type="primary" size="medium" @click="hadlePushAudit">推送审核</el-button> -->
             <el-button
               type="danger"
               size="medium"
@@ -48,9 +42,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -81,9 +75,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -116,9 +110,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -155,12 +149,12 @@
                 <el-dropdown-item command>
                   查看面试评价
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <el-dropdown-item command="toRegistrationForm">
                   查看面试登记表
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -188,12 +182,12 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command>
+                <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -228,9 +222,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -252,9 +246,9 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -362,7 +356,7 @@
                 :span="16"
                 class="value"
               >
-                {{ personInfo.proviceName + '/' + personInfo.cityName }}
+                {{ personInfo.provinceName + '/' + personInfo.cityName }}
               </el-col>
               <el-col
                 :span="8"
@@ -446,9 +440,9 @@
                 <a
                   class="attachmentUrl"
                   :href="personInfo.attachmentUrl"
-                >{{
-                  personInfo.attachmentName
-                }}</a>
+                >
+                  {{ personInfo.attachmentName }}
+                </a>
               </el-col>
             </el-row>
           </div>
@@ -545,6 +539,10 @@ export default {
       })
     })
   },
+  activated() {
+    // this.getPersonInfo()
+    // this.getPersonRecord()
+  },
   methods: {
     init() {
       this.getPersonInfo()
@@ -590,6 +588,8 @@ export default {
         })
       } else if (command === 'edit') {
         this.$router.push('/personnel/editPerson?personId=' + this.personInfo.personId)
+      } else if (command === 'toRegistrationForm') {
+        this.$router.push('/personnel/candidate/registrationForm')
       }
     },
     handleAcceptOffer() {
@@ -654,7 +654,7 @@ export default {
       font-size: 12px;
       color: #718199;
       line-height: 26px;
-      padding: 4px 10px;
+      padding: 2px 10px;
       background: rgba(113, 129, 153, 0.1);
     }
   }
@@ -714,10 +714,11 @@ export default {
         margin-bottom: 16px;
       }
       .info {
-        display: flex;
         .el-col {
-          height: 24px;
+          min-height: 24px;
           margin-bottom: 16px;
+          line-height: 24px;
+          word-break: keep-all;
         }
         .el-col-8 {
           text-align: right;
@@ -745,7 +746,7 @@ export default {
   }
   .right {
     flex: 3;
-    padding: 0 16px;
+    padding: 0 0 0 16px;
     display: flex;
     flex-direction: column;
     .title {

@@ -169,7 +169,6 @@
                     :styles="subOrgOptions.styles"
                     :select-params="subOrgOptions.config.selectParams"
                     :tree-params="subOrgOptions.config.treeParams"
-                    @change="orgNameChange"
                   />
                 </el-form-item>
               </el-col>
@@ -498,11 +497,6 @@ export default {
       this.applyParams.newJobName = ''
     },
     // 清空选项
-    orgNameChange() {
-      // this.$nextTick(() => {
-      //   this.applyParams.newJobName = ''
-      // })
-    },
 
     // 获取异动原因
     getReasonList(index) {
@@ -596,9 +590,9 @@ export default {
     display: flex;
     justify-content: space-around;
     margin: 26px 0;
-    // div {
-    //   // margin: 0 35px;
-    // }
+    div {
+      margin: 0 30px;
+    }
   }
 }
 </style>

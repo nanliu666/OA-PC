@@ -22,6 +22,9 @@
           />
         </el-col>
       </el-row>
+      <div v-if="AttachmentType.length == 0">
+        <avue-empty />
+      </div>
     </basic-container>
   </div>
 </template>
