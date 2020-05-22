@@ -505,7 +505,7 @@ const res = {
           },
           {
             menuId: '312122124545424',
-            menuName: '申请录用详情',
+            menuName: '申请详情',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 0,

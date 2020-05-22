@@ -414,7 +414,10 @@
             </template>
             <!-- 初选通过 -->
             <template v-if="row.status === '2'">
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleArrange(row)"
+              >
                 安排面试
               </el-button>
               <el-button
@@ -442,10 +445,16 @@
             </template>
             <!-- 面试中 -->
             <template v-if="row.status === '3'">
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleArrange(row)"
+              >
                 重新安排面试
               </el-button>
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleSend"
+              >
                 发送面试登记表
               </el-button>
               <el-dropdown @command="handleCommand($event, row)">
@@ -462,9 +471,10 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
+                  <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>
+                  -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -493,7 +503,7 @@
                   <i class="el-icon-arrow-down el-icon-more" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="arrange">
                     安排复试
                   </el-dropdown-item>
                   <el-dropdown-item command="edit">
@@ -617,6 +627,11 @@
       :visible.sync="changeJobDialog"
       @refresh="loadAllData(1)"
     />
+    <arrange
+      v-if="arrangeDialog"
+      :dialog-visible.sync="arrangeDialog"
+      :row="row"
+    />
   </div>
 </template>
 
@@ -714,6 +729,7 @@ import SearchPopover from '@/components/searchPopOver/index'
 import WeedOutDialog from './components/weedOutDialog'
 import PushAuditDialog from './components/pushAuditDialog'
 import ChangeJobDialog from './components/changeJobDialog'
+
 import {
   getCandidateStatusStat,
   getCandidateList,
@@ -722,12 +738,15 @@ import {
 } from '@/api/personnel/candidate'
 import { getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
+import arrange from './components/arrangeInterview'
 
 export default {
   name: 'Candidate',
-  components: { SearchPopover, WeedOutDialog, PushAuditDialog, ChangeJobDialog },
+  components: { SearchPopover, WeedOutDialog, PushAuditDialog, ChangeJobDialog, arrange },
   data() {
     return {
+      arrangeDialog: false,
+      row: {},
       checkColumn: [
         'name',
         'jobName',
@@ -884,11 +903,38 @@ export default {
     this.loadData()
   },
   methods: {
+    handleSend() {
+      this.$message.success('发送成功')
+    },
     handleCheckEmploy(row) {
       this.$router.push('/personnel/candidate/applyDetail/' + row.personId)
     },
     handleApplyEmploy(row) {
-      this.$router.push('/personnel/candidate/apply/' + row.personId)
+      this.$router.push({
+        path: '/personnel/candidate/apply',
+        query: {
+          personId: row.personId,
+          userName: row.userName,
+          sex: row.sex,
+          email: row.email,
+          phonenum: row.phonenum,
+          recruitmentId: row.recruitmentId
+        }
+      })
+    },
+    handleRegistration() {
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm'
+      })
+    },
+    handleApply() {
+      this.$router.push({
+        path: '/personnel/candidate/apply'
+      })
+    },
+    handleArrange(row) {
+      this.arrangeDialog = true
+      this.row = JSON.parse(JSON.stringify(row))
     },
     handleExport() {},
     handleSendOffer(row) {
@@ -987,6 +1033,8 @@ export default {
         this.$router.push('/personnel/editPerson')
       } else if (command === 'toRegistrationForm') {
         this.$router.push('/personnel/candidate/registrationForm/', data.personId)
+      } else if (command === 'arrange') {
+        this.handleArrange(data)
       }
     },
     handleSubmit(params) {
