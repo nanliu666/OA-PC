@@ -120,14 +120,6 @@ export const getOperation = (params) => {
     params: { ...params }
   })
 }
-// 获取当前员工的入职以及转正时间
-export const getFormalTime = (params) => {
-  return request({
-    url: '/user/v1/user/formal/formalTime',
-    method: 'post',
-    params: { ...params }
-  })
-}
 // 提交当前用户的试用日期
 export const putProbation = (params) => {
   return request({

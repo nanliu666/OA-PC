@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { getOperation, getFormalTime } from '@/api/personnel/roster'
+import { getOperation } from '@/api/personnel/roster'
 export default {
   data() {
     return {
@@ -107,14 +107,7 @@ export default {
       }
     }
   },
-  mounted() {
-    let params = {}
-    params.userId = 'tonken'
-    getFormalTime(params).then((res) => {
-      this.apply.entryDate = res.entryDate
-      this.apply.formalDate = res.formalDate
-    })
-  },
+  mounted() {},
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {

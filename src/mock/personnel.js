@@ -305,7 +305,7 @@ Mock.mock(new RegExp('/user/v1/user/formal/list' + '.*'), 'post', () => {
         userId: 'GZ@increment',
         personId: 'GZ@increment',
         name: '@cname',
-        workNum: '@increment',
+        approvalNo: 'GZ@increment',
         status: `${i / 2 == 0 ? '已驳回' : '申请中'}`,
         workNo: 'GZ@increment',
         jobName: '测试员工@increment',

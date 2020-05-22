@@ -78,6 +78,18 @@
           </el-button>
         </template>
         <template
+          slot="approvalNo"
+          slot-scope="{ row }"
+        >
+          <el-button
+            type="text"
+            size="medium"
+            @click="jumpApproval(row.approvalNo)"
+          >
+            {{ row.approvalNo }}
+          </el-button>
+        </template>
+        <template
           slot="handler"
           slot-scope="{ row }"
         >
@@ -101,7 +113,7 @@
 <script>
 import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getStaffList, getUserStatusStat } from '@/api/personnel/roster'
+import { getStaffList, getUserStatusStat, getOrgJob } from '@/api/personnel/roster'
 import AdjustEdit from './components/adjustEdit'
 export default {
   name: 'EmployeeRoster',
@@ -149,35 +161,35 @@ export default {
                   children: 'children',
                   label: 'orgName',
                   disabled: 'disabled',
-                  value: 'orgId'
+                  value: 'parentOrgId'
                 }
               }
             }
           },
           {
             type: 'select',
-            field: 'job',
             data: '',
             label: '职位',
-            config: {
-              selectParams: {
-                placeholder: '请输入内容',
-                multiple: false
-              },
-              treeParams: {
-                data: [],
-                'check-strictly': true,
-                'default-expand-all': false,
-                'expand-on-click-node': false,
-                clickParent: true,
-                filterable: false,
-                props: {
-                  children: 'children',
-                  label: 'orgName',
-                  disabled: 'disabled',
-                  value: 'orgId'
-                }
+            field: 'jobs',
+            arrField: 'jobId',
+            config: { multiple: true, optionLabel: 'jobName', optionValue: 'jobId' },
+            options: [],
+            loading: false,
+            noMore: false,
+            firstLoad(flag, item) {
+              if (flag && item.options.length === 0) {
+                item.loadMoreFun(item)
               }
+            },
+            loadMoreFun(item) {
+              if (item.loading || item.noMore) return
+              item.loading = true
+              getOrgJob().then((res) => {
+                if (res.length > 0) {
+                  item.options.push(...res)
+                  item.noMore = true
+                }
+              })
             }
           },
           {
@@ -256,7 +268,8 @@ export default {
         },
         {
           label: '审批编号',
-          prop: 'workNum'
+          prop: 'approvalNo',
+          slot: true
         },
         {
           label: '部门',
@@ -334,7 +347,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         orgs: [params.parentOrgId] || ' ',
-        jobs: [params.job] || ' ',
+        jobs: [...params.jobs] || ' ',
         probations: [params.probation] || ' '
       }
       request.beginEntryDate = params.beginEntryDate
@@ -363,6 +376,13 @@ export default {
     },
     jumpToDetail(personId) {
       this.$router.push('/personnel/detail/' + personId)
+    },
+    jumpApproval(Approvalcode) {
+      return this.$message({
+        showClose: true,
+        message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
+        type: 'warning'
+      })
     },
     getData() {
       this.getTableData()
