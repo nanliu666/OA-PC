@@ -361,7 +361,14 @@ export default {
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-        ]
+        ],
+        addressArr: [{ required: true, message: '请选择所在地址', trigger: 'change' }],
+        educationalLevel: [{ required: true, message: '请选择学历', trigger: 'change' }],
+        university: [{ required: true, message: '请输入毕业学校', trigger: 'input' }],
+        major: [{ required: true, message: '请输入毕业专业', trigger: 'input' }],
+        workAge: [{ required: true, message: '请输入工作年限', trigger: 'input' }],
+        recruitment: [{ required: true, message: '请选择招聘渠道', trigger: 'change' }],
+        monthSalary: [{ required: true, message: '请输入期望月薪', trigger: 'input' }]
       },
       provinceAndCityData,
       educationalLevelOptions: [],
@@ -477,6 +484,7 @@ export default {
           ...this.form,
           resumeUrl: form.resume[0] ? form.resume[0].fileUrl : null,
           attachmentUrl: form.attachment[0] ? form.attachment[0].fileUrl : null,
+          attachmentName: form.attachment[0] ? form.attachment[0].localName : null,
           provinceCode: form.addressArr[0],
           cityCode: form.addressArr[1],
           personId: this.personId,
