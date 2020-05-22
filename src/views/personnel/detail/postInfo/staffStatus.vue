@@ -45,7 +45,7 @@
             :push="4"
           >
             <el-form-item label="试用期:">
-              <span class="info-item-value">{{ staffInfo.probation }}</span>
+              <span class="info-item-value">{{ staffInfo.probation + '个月' }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -121,8 +121,13 @@ export default {
         let year = Math.floor(totalDay / 365)
         let month = Math.floor((totalDay % 365) / 30)
         // let day = Math.floor(totalDay % 365 % 30)
-        workAge = '' + year + '年' + month + '月'
-        workAge = workAge.replace(/-/g, '')
+        workAge = year + '年' + month + '个月'
+        if (year == 0) {
+          workAge = month + '个月'
+        }
+        if (month == 0) {
+          workAge = ''
+        }
       }
       return workAge
     },
