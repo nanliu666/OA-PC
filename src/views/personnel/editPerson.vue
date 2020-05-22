@@ -497,14 +497,22 @@ export default {
         params.cityName = inputValue[1]
         submitFunc(params).then(() => {
           this.$message.success('提交成功')
-          if (shouldContinue) {
-            this.form = this.$options.data().form
-            setTimeout(() => {
-              this.$refs.form.clearValidate()
-            })
+          this.clear()
+          if (!shouldContinue) {
+            this.goBack()
           }
         })
       })
+    },
+    clear() {
+      this.form = this.$options.data().form
+      setTimeout(() => {
+        this.$refs.form.clearValidate()
+      })
+    },
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }
