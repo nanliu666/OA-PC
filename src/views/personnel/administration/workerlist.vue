@@ -36,12 +36,8 @@
             </div>
           </div>
         </template>
-        <template
-          slot="multiSelectMenu"
-          slot-scope="{ selection }"
-        >
+        <template slot="multiSelectMenu">
           <span class="all">
-            <span @click="handlerDeleteAll(selection)"><i class="el-icon-delete" /> 批量删除</span>
             <span><i class="el-icon-folder" /> 批量导出</span>
           </span>
         </template>
@@ -156,10 +152,7 @@ export default {
             data: [],
             month: [],
             config: {
-              selectParams: {
-                placeholder: '姓名/工号',
-                multiple: false
-              }
+              placeholder: '姓名/工号'
             }
           }
         ],
@@ -391,10 +384,6 @@ export default {
         if (res) this.$message({ showClose: true, message: '操作成功', type: 'success' })
         this.data = res.data
       })
-    },
-    handlerDeleteAll(selection) {
-      // eslint-disable-next-line
-      console.log('查看数据...............', selection)
     },
     handleEditRole(row) {
       let { status } = row

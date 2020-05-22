@@ -90,7 +90,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { getOperation } from '@/api/personnel/roster'
+import { getStaffBasicInfo } from '@/api/personalInfo'
 export default {
   data() {
     return {
@@ -107,13 +109,25 @@ export default {
       }
     }
   },
-  mounted() {},
+  computed: {
+    ...mapGetters(['userId'])
+  },
+  mounted() {
+    let params = {
+      userId: this.userId
+    }
+    getStaffBasicInfo(params).then((res) => {
+      let { formalDate, entryDate } = res
+      this.apply.entryDate = entryDate
+      this.apply.formalDate = formalDate
+    })
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let params = {}
-          params.userId = 'tonken'
+          params.userId = this.userId
           params.summary = this.apply.summary
           params.advise = this.apply.advise
           getOperation(params)
