@@ -78,6 +78,7 @@
 import { validatePW } from '@/util/validate'
 import { checkPassword } from '../../../api/personalInfo'
 import { mapGetters } from 'vuex'
+import md5 from 'js-md5'
 export default {
   name: 'SecuritySetting',
   data() {
@@ -126,8 +127,8 @@ export default {
         if (isPass) {
           let params = {
             userId: this.userInfo.user_id,
-            newPassword: this.form.oldPassword,
-            oldPassword: this.form.newPassword
+            newPassword: md5(this.form.oldPassword),
+            oldPassword: md5(this.form.newPassword)
           }
           checkPassword(params).then(() => {
             this.$message.success('修改成功')

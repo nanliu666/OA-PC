@@ -26,7 +26,10 @@
             </el-steps>
           </div>
 
-          <div class="reset-password">
+          <div
+            v-if="step == 1"
+            class="reset-password"
+          >
             <div class="identity-title">
               请完成以下登陆密码的填写
             </div>
@@ -154,6 +157,7 @@
 import { isMobile } from '@/util/validate'
 import { getCode, checkPswOrPhone } from '../../../api/personalInfo'
 import { mapGetters } from 'vuex'
+import md5 from 'js-md5'
 let code = null
 export default {
   components: {},
@@ -252,7 +256,7 @@ export default {
           if (isPass) {
             let params = {
               userId: this.userInfo.user_id,
-              password: this.password.form.psw
+              password: md5(this.password.form.psw)
             }
             checkPswOrPhone(params).then(() => {
               this.step++
@@ -267,7 +271,7 @@ export default {
             //验证手机
             let params = {
               userId: this.userInfo.user_id,
-              password: this.password.form.psw,
+              password: md5(this.password.form.psw),
               phonenum: this.identity.form.phone,
               smsCode: this.identity.form.code
             }
