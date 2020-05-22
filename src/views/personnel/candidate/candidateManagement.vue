@@ -470,9 +470,15 @@
             </template>
             <!-- 面试通过 -->
             <template v-if="row.status === '4'">
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleApplyEmploy(row)"
+              >
                 申请录用
               </el-button>
+              <!-- <el-button type="text" @click="handleCheckEmploy(row)">
+                查看申请
+              </el-button> -->
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -496,7 +502,7 @@
                   <el-dropdown-item command>
                     查看面试评价
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="toRegistrationForm">
                     查看面试登记表
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
@@ -876,6 +882,12 @@ export default {
     this.loadData()
   },
   methods: {
+    handleCheckEmploy(row) {
+      this.$router.push('/personnel/candidate/applyDetail/' + row.personId)
+    },
+    handleApplyEmploy(row) {
+      this.$router.push('/personnel/candidate/apply/' + row.personId)
+    },
     handleExport() {},
     handleSendOffer(row) {
       this.$router.push('/personnel/candidate/editOffer?personId=' + row.personId)
@@ -971,6 +983,8 @@ export default {
         this.$router.push('/personnel/editPerson?personId=' + data.personId)
       } else if (command === 'add') {
         this.$router.push('/personnel/editPerson')
+      } else if (command === 'toRegistrationForm') {
+        this.$router.push('/personnel/candidate/registrationForm/', data.personId)
       }
     },
     handleSubmit(params) {

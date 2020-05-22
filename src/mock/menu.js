@@ -465,7 +465,7 @@ const res = {
             isShow: 0,
             code: 'personnel_registrationForm',
             alias: 'registrationForm',
-            path: '/personnel/candidate/registrationForm',
+            path: '/personnel/candidate/registrationForm/:personId',
             icon: 'iconfont iconicon_doc'
           },
           {

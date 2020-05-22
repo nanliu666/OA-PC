@@ -149,7 +149,7 @@
                 <el-dropdown-item command>
                   查看面试评价
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <el-dropdown-item command="toRegistrationForm">
                   查看面试登记表
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command>
@@ -588,6 +588,8 @@ export default {
         })
       } else if (command === 'edit') {
         this.$router.push('/personnel/editPerson?personId=' + this.personInfo.personId)
+      } else if (command === 'toRegistrationForm') {
+        this.$router.push('/personnel/candidate/registrationForm')
       }
     },
     handleAcceptOffer() {
