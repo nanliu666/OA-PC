@@ -102,10 +102,14 @@
               :model="password.form"
               label-width="0"
             >
-              <el-form-item
-                label="新密码"
-                prop="newPW"
-              >
+              <el-form-item prop="newPW">
+                <div>
+                  <span class="psw-label"> 新密码</span>
+                  <span
+                    class="psw-rule-tip"
+                  >(密码包含字母，符号或数字中至少两项且长度超过6位的密码)</span>
+                </div>
+
                 <el-input
                   v-model="password.form.newPW"
                   class="newPW-input"
@@ -191,7 +195,7 @@ export default {
 
     const validateCode = (rule, value, callback) => {
       if (!_this.identity.form.code) {
-        callback(new Error('请输入四位验证码'))
+        callback(new Error('请输入六位验证码'))
       } else if (_this.identity.form.code != code) {
         callback(new Error('验证码不正确'))
       } else {
@@ -298,8 +302,8 @@ export default {
           if (isPass && this.identity.form.code == code) {
             //验证手机验证码
             let params = {
-              phonenum: this.identity.form.phone,
-              smsCode: this.identity.form.code
+              phone: this.identity.form.phone,
+              value: this.identity.form.code
             }
             checkPhoneCode(params).then(() => {
               this.step++
@@ -335,7 +339,7 @@ export default {
             phone: this.identity.form.phone
           }
           getCode(params).then((res) => {
-            code = res
+            code = res.value
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
             this.identity.msgKey = true
@@ -499,6 +503,19 @@ export default {
   text-align: center;
   margin-top: 40px;
 }
-.count-down-time {
+.psw-label {
+  font-size: 14px;
+  color: #606266;
+  line-height: 80px;
+  margin-right: 5px;
+}
+.psw-label:before {
+  content: '*';
+  color: #f56c6c;
+  margin-right: 4px;
+}
+.psw-rule-tip {
+  font-size: 12px;
+  color: #a0a8ae;
 }
 </style>

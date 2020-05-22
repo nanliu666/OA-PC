@@ -29,58 +29,60 @@
       @focus="_popoverShowFun"
     />
     <!-- 弹出框 -->
-    <el-popover
-      ref="popover"
-      v-model="visible"
-      :placement="placement"
-      :popper-class="popperClass"
-      :width="width"
-      trigger="click"
-      class="treepopover"
-    >
-      <!-- 是否显示搜索框 -->
-      <el-input
-        v-if="treeParams.filterable"
-        v-model="keywords"
-        size="medium"
-        class="input-with-select mb10"
-        @change="_searchFun"
+    <template v-if="!disabled">
+      <el-popover
+        ref="popover"
+        v-model="visible"
+        :placement="placement"
+        :popper-class="popperClass"
+        :width="width"
+        trigger="click"
+        class="treepopover"
       >
-        <el-button
-          slot="append"
-          icon="el-icon-search"
-        />
-      </el-input>
-      <el-scrollbar
-        tag="div"
-        wrap-class="el-select-dropdown__wrap"
-        view-class="el-select-dropdown__list"
-        class="is-empty"
-      >
-        <!-- 树列表 -->
-        <el-tree
-          v-show="data.length > 0"
-          ref="tree"
-          v-bind="treeParams"
-          :data="data"
-          :node-key="propsValue"
-          :draggable="false"
-          :current-node-key="ids.length > 0 ? ids[0] : ''"
-          :show-checkbox="selectParams.multiple"
-          :filter-node-method="_filterFun"
-          :render-content="treeRenderFun"
-          @node-click="_treeNodeClickFun"
-          @check="_treeCheckFun"
-        />
-        <!-- 暂无数据 -->
-        <div
-          v-if="data.length === 0"
-          class="no-data"
+        <!-- 是否显示搜索框 -->
+        <el-input
+          v-if="treeParams.filterable"
+          v-model="keywords"
+          size="medium"
+          class="input-with-select mb10"
+          @change="_searchFun"
         >
-          暂无数据
-        </div>
-      </el-scrollbar>
-    </el-popover>
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+          />
+        </el-input>
+        <el-scrollbar
+          tag="div"
+          wrap-class="el-select-dropdown__wrap"
+          view-class="el-select-dropdown__list"
+          class="is-empty"
+        >
+          <!-- 树列表 -->
+          <el-tree
+            v-show="data.length > 0"
+            ref="tree"
+            v-bind="treeParams"
+            :data="data"
+            :node-key="propsValue"
+            :draggable="false"
+            :current-node-key="ids.length > 0 ? ids[0] : ''"
+            :show-checkbox="selectParams.multiple"
+            :filter-node-method="_filterFun"
+            :render-content="treeRenderFun"
+            @node-click="_treeNodeClickFun"
+            @check="_treeCheckFun"
+          />
+          <!-- 暂无数据 -->
+          <div
+            v-if="data.length === 0"
+            class="no-data"
+          >
+            暂无数据
+          </div>
+        </el-scrollbar>
+      </el-popover>
+    </template>
   </div>
 </template>
 <style>
@@ -95,6 +97,9 @@
   height: 34px !important;
 }
 
+/deep/.el-select-dropdown {
+  display: none;
+}
 .el-tree-select .select-option {
   display: none !important;
 }

@@ -453,7 +453,7 @@
 
 <script>
 import { isMobile, validateName, isEmail } from '@/util/validate'
-import { editStaffBasicInfo } from '../../../../api/personalInfo.js'
+import { getStaffBasicInfo, editStaffBasicInfo } from '../../../../api/personalInfo.js'
 import { deepClone } from '@/util/util'
 import { provinceAndCityData } from 'element-china-area-data'
 
@@ -529,22 +529,29 @@ export default {
   },
   computed: {
     getAge() {
-      let curYear = new Date().getFullYear()
-      let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
-      return curYear - birthYear
+      let age = ''
+      if (this.staffInfo.birthDate) {
+        let curYear = new Date().getFullYear()
+        let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
+        age = curYear - birthYear
+      }
+      return age
     },
     formatNativePlace() {
       return this.staffInfo.nativeProvinceName + this.staffInfo.nativeCityName
     },
     calcWorkAge() {
-      let fomatToMS = new Date().getTime() - new Date(this.staffInfo.firstWorkDate).getTime()
-      let dayToMS = 1000 * 60 * 60 * 24
-      let totalDay = fomatToMS / dayToMS
-      let year = Math.floor(totalDay / 365)
-      let month = Math.floor((totalDay % 365) / 30)
-      // let day = Math.floor(totalDay % 365 % 30)
-      let workAge = '' + year + '年' + month + '月'
-      workAge = workAge.replace(/-/g, '')
+      let workAge = ''
+      if (this.staffInfo.firstWorkDate) {
+        let fomatToMS = new Date().getTime() - new Date(this.staffInfo.firstWorkDate).getTime()
+        let dayToMS = 1000 * 60 * 60 * 24
+        let totalDay = fomatToMS / dayToMS
+        let year = Math.floor(totalDay / 365)
+        let month = Math.floor((totalDay % 365) / 30)
+        // let day = Math.floor(totalDay % 365 % 30)
+        workAge = '' + year + '年' + month + '月'
+        workAge = workAge.replace(/-/g, '')
+      }
       return workAge
     },
     getHouseholdType() {
@@ -575,7 +582,7 @@ export default {
         let item = this.credentOptions[i]
         if (this.staffInfo.idType == item.dictKey) {
           dictValue = item.dictValue
-          return
+          return dictValue
         }
       }
       return dictValue
@@ -616,6 +623,14 @@ export default {
       staffInfo = deepClone(this.staffInfo)
       this.readonlyBasicInfo = false
     },
+    getBasicInfo() {
+      let params = {
+        userId: this.$route.params.userId
+      }
+      getStaffBasicInfo(params).then((res) => {
+        this.staffInfo = res
+      })
+    },
     saveInfo() {
       this.$refs['basicInfo'].validate((isPass) => {
         if (isPass) {
@@ -642,6 +657,7 @@ export default {
             userAddress: this.staffInfo.userAddress
           }
           editStaffBasicInfo(params).then(() => {
+            this.getBasicInfo()
             this.readonlyBasicInfo = true
             staffInfo = deepClone(this.staffInfo)
             this.$message({

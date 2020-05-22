@@ -479,7 +479,8 @@ export default {
           attachmentUrl: form.attachment[0] ? form.attachment[0].fileUrl : null,
           provinceCode: form.addressArr[0],
           cityCode: form.addressArr[1],
-          personId: this.personId
+          personId: this.personId,
+          userId: this.$store.state.user.userInfo.user_id
         }
         if (this.$refs.address.inputValue) {
           inputValue = this.$refs.address.inputValue.split(' / ')
