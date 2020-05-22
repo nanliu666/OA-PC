@@ -95,6 +95,8 @@ export default {
         callback(new Error('密码不能少于6个字符'))
       } else if (!validatePW(value)) {
         callback(new Error('密码必须包含字母，符号或数字中至少两项'))
+      } else {
+        callback()
       }
     }
     const validateOldPSW = function(rule, value, callback) {
