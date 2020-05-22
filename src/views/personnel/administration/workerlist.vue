@@ -13,7 +13,7 @@
         :config="tableConfig"
         :columns="columns"
         @pageSizeChange="sizeChange"
-        @currentPageChange="currentChange"
+        @currentPageChange="getTableData"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">
@@ -29,7 +29,7 @@
               <el-button
                 type="primary"
                 size="medium"
-                @click="getData"
+                @click="getTableData"
               >
                 <i class="el-icon-refresh" />
               </el-button>
@@ -229,15 +229,15 @@ export default {
             data: '',
             label: '试用期',
             options: [
-              { value: '无试用期', label: 'null' },
-              { value: '一个月', label: 'onemonth' },
-              { value: '两个月', label: 'towmonth' },
-              { value: '三个月', label: 'threemonths' },
-              { value: '四个月', label: 'fourmonths' },
-              { value: '五个月', label: 'fivemonths' },
-              { value: '六个月', label: 'sixmonths' }
+              { label: '无试用期', value: 0 },
+              { label: '一个月', value: 1 },
+              { label: '两个月', value: 2 },
+              { label: '三个月', value: 3 },
+              { label: '四个月', value: 4 },
+              { label: '五个月', value: 5 },
+              { label: '六个月', value: 6 }
             ],
-            config: { optionLabel: '请选择', optionValue: '' }
+            config: {}
           },
           {
             type: 'select',
@@ -245,11 +245,11 @@ export default {
             data: '',
             label: '申请状态',
             options: [
-              { value: '未申请', label: 'notapplied' },
-              { value: '已驳回', label: 'rejected' },
-              { value: '申请中', label: 'applying' }
+              { label: '未申请', value: 0 },
+              { label: '已驳回', value: 1 },
+              { label: '申请中', value: 2 }
             ],
-            config: { optionLabel: '请选择', optionValue: '' }
+            config: {}
           }
         ]
       },
@@ -265,8 +265,7 @@ export default {
       row: {},
       data: [],
       tableConfig: {
-        showHandler: true,
-        enableMultiSelect: true
+        showHandler: true
       },
       columns: [
         {
@@ -312,11 +311,6 @@ export default {
           slot: true
         }
       ],
-      page: {
-        pageSize: 10,
-        pagerCount: 1,
-        total: 10
-      },
       params: {
         pageNo: 1,
         pageSize: 10,
@@ -331,18 +325,13 @@ export default {
     })
   },
   methods: {
-    getTableData(pageNo) {
-      let params = {
-        pageNo: pageNo || this.page.currentPage,
-        pageSize: this.page.pageSize,
-        ...this.searchParams
-      }
+    getTableData(params) {
       let nowData = moment()
         .locale('zh-cn')
         .format('YYYY-MM-DD')
       getStaffList(params).then((res) => {
         let { data } = res
-        data.map((item, index) => {
+        data.forEach((item, index) => {
           let isOverdue = moment(nowData).isBefore(item.formalDate)
           if (isOverdue) {
             data[index].isOverdue = ''
@@ -354,7 +343,6 @@ export default {
         })
         this.data = res.data
         this.numberofpersonnel = res.totalNum
-        if (pageNo) this.page.currentPage = pageNo
       })
     },
     handleSearch(params) {
@@ -363,9 +351,6 @@ export default {
     },
     sizeChange() {
       this.getTableData(1)
-    },
-    currentChange() {
-      this.getTableData()
     },
     handleSubmit(params) {
       let request = {
@@ -380,20 +365,17 @@ export default {
       request.endEntryDate = params.endEntryDate
       request.beginFormalDate = params.beginFormalDate
       request.endFormalDate = params.endFormalDate
-      getStaffList(request).then((res) => {
-        if (res) this.$message({ showClose: true, message: '操作成功', type: 'success' })
-        this.data = res.data
-      })
+      return this.getTableData(request)
     },
     handleEditRole(row) {
-      let { status } = row
-      if (status == '申请中' || status == '已退回') {
-        return this.$message({
-          showClose: true,
-          message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
-          type: 'warning'
-        })
-      }
+      // let { status } = row
+      // if (status == '申请中' || status == '已退回') {
+      //   return this.$message({
+      //     showClose: true,
+      //     message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
+      //     type: 'warning'
+      //   })
+      // }
       this.$refs.adjustEdit.init(row)
     },
     jumpToDetail(personId) {
@@ -405,9 +387,6 @@ export default {
         message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
         type: 'warning'
       })
-    },
-    getData() {
-      this.getTableData()
     }
   }
 }

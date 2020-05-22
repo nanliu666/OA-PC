@@ -160,7 +160,7 @@ export default {
       if (monthCount === 0) {
         return this.setWheter()
       }
-      let isStr = this.oldProbationDate.split('-')
+      let isStr = this.oldProbationDate
       this.probationDate = moment(isStr)
         .add(monthCount, 'M')
         .format('YYYY-MM-DD')
