@@ -190,22 +190,10 @@ export default ({ mock }) => {
         address: 'xxx软件园', //工作的详细地址
         subOrg: [
           {
-            subJobId: 'asffd',
-            subOrgName: '设计小组'
-          },
-          {
-            subJobId: 'asd',
-            subOrgName: '设计小组'
-          }
-        ],
-        subJob: [
-          {
-            subJobId: 'sdfff',
-            subJobName: 'sdsdgfg'
-          },
-          {
-            subJobId: 'sdf',
-            subJobName: '产品经理'
+            subOrgId: '1257943561580855298',
+            subOrgName: '1257943561580855298',
+            subJobId: '1257966733176881154',
+            subJobName: '财务'
           }
         ],
         positionName: '岗位名称',

@@ -62,6 +62,7 @@
     </el-form>
     <span
       slot="footer"
+      ref="123"
       class="dialog-footer"
     >
       <el-button
