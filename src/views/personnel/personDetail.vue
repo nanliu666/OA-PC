@@ -42,9 +42,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -75,9 +75,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -110,9 +110,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -149,12 +149,12 @@
                 <el-dropdown-item command>
                   查看面试评价
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <el-dropdown-item command="toRegistrationForm">
                   查看面试登记表
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -182,12 +182,12 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command>
+                <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -222,9 +222,9 @@
                 <el-dropdown-item command="edit">
                   编辑
                 </el-dropdown-item>
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -246,9 +246,9 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command>
+                <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -356,7 +356,7 @@
                 :span="16"
                 class="value"
               >
-                {{ personInfo.proviceName + '/' + personInfo.cityName }}
+                {{ personInfo.provinceName + '/' + personInfo.cityName }}
               </el-col>
               <el-col
                 :span="8"
@@ -539,6 +539,10 @@ export default {
       })
     })
   },
+  activated() {
+    this.getPersonInfo()
+    this.getPersonRecord()
+  },
   methods: {
     init() {
       this.getPersonInfo()
@@ -584,6 +588,8 @@ export default {
         })
       } else if (command === 'edit') {
         this.$router.push('/personnel/editPerson?personId=' + this.personInfo.personId)
+      } else if (command === 'toRegistrationForm') {
+        this.$router.push('/personnel/candidate/registrationForm')
       }
     },
     handleAcceptOffer() {

@@ -163,7 +163,7 @@ export default {
           label: '目前所在地',
           prop: 'address',
           formatter: (record) => {
-            return `${record.proviceName}${record.cityName}`
+            return `${record.provinceName}${record.cityName}`
           }
         },
         {
