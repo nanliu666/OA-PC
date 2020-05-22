@@ -107,10 +107,7 @@
           slot="isOverdue"
           slot-scope="{ row }"
         >
-          <span
-            type="danger"
-            plain
-          >{{ row.isOverdue }}</span>
+          <span :class="row.isSelect">{{ row.isOverdue }}</span>
         </template>
 
         <template
@@ -365,11 +362,12 @@ export default {
           let isOverdue = moment(nowData).isBefore(item.formalDate)
           if (isOverdue) {
             data[index].isOverdue = ''
+            data[index].isSelect = ''
           } else {
             data[index].isOverdue = '已逾期'
+            data[index].isSelect = 'isSelect'
           }
         })
-        res.data.formalDate
         this.data = res.data
         this.numberofpersonnel = res.totalNum
         if (pageNo) this.page.currentPage = pageNo
@@ -515,13 +513,14 @@ export default {
 
 .isSelect {
   color: #fff;
+  padding: 10px;
   background-color: #f56c6c;
+  border: 1px solid #f56c6c;
   border-color: #f56c6c;
   display: inline-block;
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  padding: 12px 20px;
   font-size: 14px;
   border-radius: 4px;
 }
