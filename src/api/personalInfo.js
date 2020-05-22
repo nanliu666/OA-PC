@@ -1,5 +1,15 @@
 import request from '@/router/axios'
 
+// 校验登陆密码
+export const checkPswOrPhone = (params) => {
+  return request({
+    url: '/api/user/v1/user/phone',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
 export const getPositionInfo = (params) => {
   return request({
     url: '/api/org/v1/position/define',

@@ -433,6 +433,41 @@ const res = {
             icon: 'iconfont iconicon_doc'
           }
         ]
+      },
+      {
+        menuId: '1590112075698',
+        menuName: '个人中心',
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
+        code: 'system',
+        alias: 'system',
+        path: '',
+        icon: 'iconfont iconicon_setting',
+        children: [
+          {
+            menuId: '1590112075699',
+            menuName: '个人信息',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'userInfo_editPerson',
+            alias: 'editPerson',
+            path: '/system/userinfo',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '1590112075700',
+            menuName: '安全设置',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'userInfo_editPerson',
+            alias: 'editPerson',
+            path: '/system/securitySetting',
+            icon: 'iconfont iconicon_compile'
+          }
+        ]
       }
     ]
   },
