@@ -78,6 +78,19 @@
           </el-button>
         </template>
         <template
+          slot="name"
+          slot-scope="{ row }"
+        >
+          <el-button
+            type="text"
+            size="medium"
+            @click="jumpToDetail(row.personId)"
+          >
+            {{ row.name }}
+          </el-button>
+        </template>
+
+        <template
           slot="approvalNo"
           slot-scope="{ row }"
         >
@@ -89,6 +102,17 @@
             {{ row.approvalNo }}
           </el-button>
         </template>
+
+        <template
+          slot="isOverdue"
+          slot-scope="{ row }"
+        >
+          <span
+            type="danger"
+            plain
+          >{{ row.isOverdue }}</span>
+        </template>
+
         <template
           slot="handler"
           slot-scope="{ row }"
@@ -111,10 +135,13 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
 import { getStaffList, getUserStatusStat, getOrgJob } from '@/api/personnel/roster'
 import AdjustEdit from './components/adjustEdit'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 export default {
   name: 'EmployeeRoster',
   components: {
@@ -290,6 +317,10 @@ export default {
         {
           label: '试用期',
           prop: 'probation'
+        },
+        {
+          prop: 'isOverdue',
+          slot: true
         }
       ],
       page: {
@@ -325,7 +356,20 @@ export default {
         pageSize: this.page.pageSize,
         ...this.searchParams
       }
+      let nowData = moment()
+        .locale('zh-cn')
+        .format('YYYY-MM-DD')
       getStaffList(params).then((res) => {
+        let { data } = res
+        data.map((item, index) => {
+          let isOverdue = moment(nowData).isBefore(item.formalDate)
+          if (isOverdue) {
+            data[index].isOverdue = ''
+          } else {
+            data[index].isOverdue = '已逾期'
+          }
+        })
+        res.data.formalDate
         this.data = res.data
         this.numberofpersonnel = res.totalNum
         if (pageNo) this.page.currentPage = pageNo
@@ -467,5 +511,18 @@ export default {
 .beBverdue {
   position: absolute;
   right: 59px;
+}
+
+.isSelect {
+  color: #fff;
+  background-color: #f56c6c;
+  border-color: #f56c6c;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 12px 20px;
+  font-size: 14px;
+  border-radius: 4px;
 }
 </style>
