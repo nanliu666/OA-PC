@@ -1,7 +1,10 @@
 <template>
   <div style="height: 100%">
     <div class="header">
-      <div>
+      <div
+        class="back"
+        @click="handleBack"
+      >
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
@@ -25,12 +28,22 @@
         <div class="flex flex-items flex-flow">
           <div>
             <el-button
+              v-if="!isEdit"
               type="primary"
               size="medium"
               style="margin-right: 15px;"
               @click="handlerEdit"
             >
               帮他修改
+            </el-button>
+            <el-button
+              v-if="isEdit"
+              type="primary"
+              size="medium"
+              style="margin-right: 15px;"
+              @click="handlerEdit"
+            >
+              取消修改
             </el-button>
           </div>
           <div class="icon">
@@ -40,180 +53,176 @@
         </div>
       </div>
     </div>
-    <div class="basicInfo">
-      <div class="title">
-        基本信息
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in basicInfo"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+
+    <div v-if="!isEdit">
+      <div class="basicInfo">
+        <div class="title">
+          基本信息
+        </div>
+        <div class="basic">
+          <div class="flexs">
+            <div
+              v-for="(info, index) in basicInfo"
+              :key="index"
+              class="attribute flex flex-flow"
+            >
+              <div style="text-align: right">
+                {{ info.text }}：
+              </div>
+              <div>{{ basic[info.attribute] }}</div>
             </div>
-            <div>{{ basic[info.attribute] }}</div>
+          </div>
+        </div>
+        <div />
+      </div>
+      <div class="contacts">
+        <div class="title">
+          紧急联系人
+        </div>
+        <div>
+          <el-table
+            ref="table"
+            :data="contactsData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              v-for="(item, index) in contactsAttr"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            />
+          </el-table>
+        </div>
+      </div>
+      <div class="experience">
+        <div class="title">
+          教育经历
+        </div>
+        <div>
+          <el-table
+            ref="table"
+            :data="EducationalData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              v-for="(item, index) in attr"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            />
+          </el-table>
+        </div>
+      </div>
+      <div class="work">
+        <div class="title">
+          工作经历
+        </div>
+        <div>
+          <el-table
+            ref="table"
+            :data="EducationalData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              v-for="(item, index) in workAttr"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            />
+          </el-table>
+          <div class="tip">
+            与其它公司间有无守密义务或竞业禁止义务：无
           </div>
         </div>
       </div>
-      <div />
-    </div>
-    <div class="contacts">
-      <div class="title">
-        紧急联系人
+      <div class="train">
+        <div class="title">
+          培训经历
+        </div>
+        <div>
+          <el-table
+            ref="table"
+            :data="trainData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              v-for="(item, index) in trainAttr"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            />
+          </el-table>
+        </div>
       </div>
-      <div>
-        <el-table
-          ref="table"
-          :data="contactsData"
-          stripe
-          style="width: 100%"
-          @select="handleSelection"
-          @select-all="selectAll"
-        >
-          <el-table-column
-            v-for="(item, index) in contactsAttr"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width"
-          />
-        </el-table>
+      <div class="qualification">
+        <div class="title">
+          资格证书
+        </div>
+        <div>
+          <el-table
+            ref="table"
+            :data="qualificationData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              v-for="(item, index) in qualificationAttr"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            />
+          </el-table>
+        </div>
       </div>
-    </div>
-    <div class="experience">
-      <div class="title">
-        教育经历
-      </div>
-      <div>
-        <el-table
-          ref="table"
-          :data="EducationalData"
-          stripe
-          style="width: 100%"
-          @select="handleSelection"
-          @select-all="selectAll"
-        >
-          <el-table-column
-            v-for="(item, index) in attr"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width"
-          />
-        </el-table>
-      </div>
-    </div>
-    <div class="work">
-      <div class="title">
-        工作经历
-      </div>
-      <div>
-        <el-table
-          ref="table"
-          :data="EducationalData"
-          stripe
-          style="width: 100%"
-          @select="handleSelection"
-          @select-all="selectAll"
-        >
-          <el-table-column
-            v-for="(item, index) in workAttr"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width"
-          />
-        </el-table>
-        <div class="tip">
-          与其它公司间有无守密义务或竞业禁止义务：无
+      <div class="family">
+        <div class="title">
+          家庭信息
+        </div>
+        <div>
+          <el-table
+            ref="table"
+            :data="familyData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              v-for="(item, index) in familyAttr"
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            />
+          </el-table>
         </div>
       </div>
     </div>
-    <div class="train">
-      <div class="title">
-        培训经历
-      </div>
-      <div>
-        <el-table
-          ref="table"
-          :data="trainData"
-          stripe
-          style="width: 100%"
-          @select="handleSelection"
-          @select-all="selectAll"
-        >
-          <el-table-column
-            v-for="(item, index) in trainAttr"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width"
-          />
-        </el-table>
-      </div>
+    <div v-else>
+      <edit
+        :modity="modity"
+        @close="handleClose"
+      />
     </div>
-    <div class="qualification">
-      <div class="title">
-        资格证书
-      </div>
-      <div>
-        <el-table
-          ref="table"
-          :data="qualificationData"
-          stripe
-          style="width: 100%"
-          @select="handleSelection"
-          @select-all="selectAll"
-        >
-          <el-table-column
-            v-for="(item, index) in qualificationAttr"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width"
-          />
-        </el-table>
-      </div>
-    </div>
-    <div class="family">
-      <div class="title">
-        家庭信息
-      </div>
-      <div>
-        <el-table
-          ref="table"
-          :data="familyData"
-          stripe
-          style="width: 100%"
-          @select="handleSelection"
-          @select-all="selectAll"
-        >
-          <el-table-column
-            v-for="(item, index) in familyAttr"
-            :key="index"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width"
-          />
-        </el-table>
-      </div>
-    </div>
-    <div />
-    <div />
-    <!--    <edit />-->
   </div>
 </template>
 
 <script>
-// import edit from './registrationFormEdit'
+import edit from './registrationFormEdit'
 export default {
   name: 'RegistrationForm',
-  components: {},
+  components: { edit },
   data() {
     return {
+      modity: true,
+      isEdit: false,
       personInfo: {
         name: '张琪',
         department: 'ucd部门',
@@ -546,7 +555,15 @@ export default {
     }
   },
   methods: {
-    handlerEdit() {}
+    handleClose() {
+      this.isEdit = !this.isEdit
+    },
+    handlerEdit() {
+      this.isEdit = !this.isEdit
+    },
+    handleBack() {
+      this.$router.go(-1)
+    }
   }
 }
 </script>
@@ -689,5 +706,8 @@ export default {
   color: #a0a8ae;
   font-size: 14px;
   line-height: 46px;
+}
+.back {
+  cursor: pointer;
 }
 </style>

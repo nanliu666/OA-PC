@@ -1,7 +1,10 @@
 <template>
   <div style="height: 100%">
     <div class="header">
-      <div>
+      <div
+        class="back"
+        @click="back"
+      >
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
@@ -163,6 +166,7 @@
               <el-link
                 type="primary"
                 style="font-size: 17px;position: relative;top:-3px"
+                @click="jump"
               >
                 招聘管理-候选人管理-面试通过
               </el-link>
@@ -186,12 +190,9 @@
               <el-button
                 type="primary"
                 size="medium"
-                @click="back"
+                @click="handleBack"
               >
-                <span
-                  style="width: 56px;display: inline-block"
-                  @click="handleBack"
-                >返回</span>
+                <span style="width: 56px;display: inline-block">返回</span>
               </el-button>
             </div>
           </div>
@@ -218,7 +219,9 @@ import {
   getJob,
   getposition,
   getTree,
-  postOfferApply
+  postOfferApply,
+  getOfferApply,
+  getRecruitmentDetail
 } from '@/api/personnel/selectedPerson'
 
 export default {
@@ -228,6 +231,8 @@ export default {
   },
   data() {
     return {
+      recruitmentId: '',
+      personId: '',
       loading: false,
       active: 0,
       personInfo,
@@ -266,14 +271,23 @@ export default {
         workAddressId: '',
         city: [],
         risks: [],
-        name: '张琪',
-        six: 0,
-        telephone: '15089906928',
-        email: '12746782@qq.com'
+        userName: '',
+        sex: 0,
+        phonenum: '',
+        email: ''
       }
     }
   },
-  mounted() {
+  async mounted() {
+    let sex = parseInt(this.$route.query.sex)
+    this.personId = this.$route.query.personId
+    this.recruitmentId = this.$route.query.recruitmentId
+    this.infoForm = {
+      ...this.infoForm,
+      ...this.$route.query,
+      sex
+    }
+    // personId
     this.getCompany()
     this.getWorkAddress()
     this.getJob()
@@ -282,12 +296,53 @@ export default {
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       this.dataFilter(res, this.employment, 'workProperty', 'dictValue', 'id')
     })
-    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+    this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
       this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'id')
     })
+    await this.getData()
+    this.getRecruitment()
     // ContractType
   },
   methods: {
+    jump() {
+      this.$router.push({
+        path: '/personnel/candidate/candidateManagement'
+      })
+    },
+    getData() {
+      return new Promise((resolve, reject) => {
+        getOfferApply({ personId: this.personId })
+          .then((res) => {
+            if (res.companyId) {
+              this.infoForm = {
+                ...this.infoForm,
+                ...res
+              }
+              if (res.provinceCode && res.cityCode) {
+                this.infoForm.city = [res.provinceCode, res.cityCode]
+              }
+              res.isYangl === 1 && this.infoForm.risks.push('isYangl')
+              res.isYil === 1 && this.infoForm.risks.push('isYil')
+              res.isGs === 1 && this.infoForm.risks.push('isGs')
+              res.isShiy === 1 && this.infoForm.risks.push('isShiy')
+              res.isGjj === 1 && this.infoForm.risks.push('isGjj')
+              res.isShengy === 1 && this.infoForm.risks.push('isShengy')
+            }
+
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
+    getRecruitment() {
+      getRecruitmentDetail({ recruitmentId: this.recruitmentId }).then((res) => {
+        this.infoForm.companyId = res.companyId
+        this.infoForm.orgId = res.orgId
+        this.infoForm.jobId = res.jobId
+      })
+    },
     handleBack() {
       this.active = 1
     },
@@ -395,9 +450,9 @@ export default {
         if (res.includes(false)) return
 
         let workProvinceCode = this.infoForm.city[0],
-          workProviceName = this.infoForm.pathLabels[0],
+          workProvinceName = this.infoForm.pathLabels[0] || this.infoForm.workProvinceName,
           workCityCode = this.infoForm.city[1],
-          workCityName = this.infoForm.pathLabels[1],
+          workCityName = this.infoForm.pathLabels[1] || this.infoForm.workCityName,
           risks = this.infoForm.risks,
           isYangl = risks.includes('isYangl') ? 1 : 0,
           isYil = risks.includes('isYil') ? 1 : 0,
@@ -409,7 +464,7 @@ export default {
           ...this.infoForm,
           ...this.infoForm.risks,
           workProvinceCode,
-          workProviceName,
+          workProvinceName,
           workCityCode,
           workCityName,
           isYangl,
@@ -428,9 +483,16 @@ export default {
       })
     },
     jumpDetail() {
+      let params = {
+        ...this.$route.query
+      }
       this.$router.push({
         path: '/personnel/candidate/applyDetail',
-        query: {}
+        // sex: row.sex,
+        // email: row.email,
+        // phonenum:row.phonenum,
+        // recruitmentId: row.recruitmentId
+        query: params
       })
     },
     back() {
@@ -497,5 +559,8 @@ export default {
   height: 600px;
   width: 600px;
   margin: 0 auto;
+}
+.back {
+  cursor: pointer;
 }
 </style>

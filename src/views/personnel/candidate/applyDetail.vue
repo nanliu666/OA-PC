@@ -1,7 +1,7 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%;">
     <div class="header">
-      <div>
+      <div @click="back">
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
@@ -10,11 +10,11 @@
     </div>
     <div class="person">
       <div class="name">
-        {{ personInfo.name }}提交的录用申请
+        {{ personInfo.id }}提交的录用申请
       </div>
       <div class="flex flex-flow flex-justify-between nav">
-        <div><span>审批编号：</span>{{ personInfo.department }}</div>
-        <div><span>申请人：</span>{{ personInfo.position }}</div>
+        <div><span>审批编号：</span>{{ personInfo.id }}</div>
+        <div><span>申请人：</span>{{ personInfo.userName }}</div>
         <div><span>申请时间：</span> {{ personInfo.status }}</div>
         <div><span>状态：</span> {{ personInfo.status }}</div>
       </div>
@@ -40,7 +40,7 @@
                 <div
                   v-for="(info, index) in basicInfo"
                   :key="index"
-                  class="attribute flex flex-flow"
+                  class="attribute flex flex-flow flex-items"
                 >
                   <div style="text-align: right">
                     {{ info.text }}：
@@ -57,7 +57,7 @@
                 <div
                   v-for="(info, index) in applyInfo"
                   :key="index"
-                  class="attribute flex flex-flow"
+                  class="attribute flex flex-flow flex-items"
                 >
                   <div style="text-align: right">
                     {{ info.text }}：
@@ -83,7 +83,7 @@
                 <div
                   v-for="(info, index) in salary"
                   :key="index"
-                  class="attribute flex flex-flow"
+                  class="attribute flex flex-flow flex-items"
                 >
                   <div style="text-align: right">
                     {{ info.text }}：
@@ -100,7 +100,7 @@
                 <div
                   v-for="(info, index) in labour"
                   :key="index"
-                  class="attribute flex flex-flow"
+                  class="attribute flex flex-flow flex-items"
                 >
                   <div style="text-align: right">
                     {{ info.text }}：
@@ -117,12 +117,16 @@
                 <div
                   v-for="(info, index) in fiveRisks"
                   :key="index"
-                  class="attribute flex flex-flow"
+                  class="attribute flex flex-flow "
+                  :class="[info.attribute !== 'risks' ? 'flex-items' : '']"
                 >
                   <div style="text-align: right">
                     {{ info.text }}：
                   </div>
                   <div>{{ basic[info.attribute] }}</div>
+                  <!--                  <div v-else>-->
+                  <!--                    <span v-for="it in basic[info.attribute]">{{it}}</span>-->
+                  <!--                  </div>-->
                 </div>
               </div>
             </div>
@@ -134,7 +138,7 @@
                 <div
                   v-for="(info, index) in office"
                   :key="index"
-                  class="attribute flex flex-flow"
+                  class="attribute flex flex-flow flex-items"
                 >
                   <div style="text-align: right">
                     {{ info.text }}：
@@ -149,9 +153,9 @@
             <div class="basic">
               <div class="flexs">
                 <div
-                  v-for="(info, index) in office"
+                  v-for="(info, index) in other"
                   :key="index"
-                  class="attribute flex flex-flow"
+                  class="attribute flex flex-flow flex-items"
                 >
                   <div style="text-align: right">
                     {{ info.text }}：
@@ -170,16 +174,20 @@
 </template>
 
 <script>
+import { getOfferApply, getWorkAddress } from '@/api/personnel/selectedPerson'
+
 export default {
   name: 'ApplyDetail',
   data() {
     return {
+      personId: '',
+      recruitmentId: '',
       activeName: 'first',
       personInfo: {
-        name: '张琪',
-        department: 'ucd部门',
-        position: 'ue设计师',
-        status: '面试中'
+        userName: '',
+        department: '',
+        position: '',
+        status: ''
       },
       basic: {
         id: '申请ID',
@@ -233,11 +241,12 @@ export default {
         name: '姓名',
         sex: '性别',
         phonenum: '手机号码',
-        email: '123@com'
+        email: '123@com',
+        risks: ''
       },
       basicInfo: [
         {
-          attribute: 'name',
+          attribute: 'userName',
           text: '姓名'
         },
         {
@@ -287,7 +296,7 @@ export default {
           text: '工作地址'
         },
         {
-          attribute: 'cityCode',
+          attribute: 'city',
           text: '工作城市'
         }
       ],
@@ -333,7 +342,7 @@ export default {
           text: '社会保险基数'
         },
         {
-          attribute: 'isYil',
+          attribute: 'risks',
           text: '其他'
         }
       ],
@@ -371,9 +380,93 @@ export default {
       ]
     }
   },
+  async mounted() {
+    this.basic = {
+      ...this.basic,
+      ...this.$route.query
+    }
+    this.personId = this.$route.query.personId
+    this.recruitmentId = this.$route.query.recruitmentId
+    await this.getData()
+    this.getWorkAddress()
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      res.map((it) => {
+        if (it.id === this.basic.workProperty) {
+          this.basic.workProperty = it.dictValue
+        }
+      })
+    })
+    this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
+      res.map((it) => {
+        if (it.id === this.basic.contractType) {
+          this.basic.contractType = it.dictValue
+        }
+      })
+    })
+    // this.personInfo.userName =  this.basic.userName
+    // this.personInfo.id = this.basic.id
+  },
   methods: {
+    getWorkAddress() {
+      let params = {
+        pageNo: 1,
+        pageSize: 10000
+      }
+
+      getWorkAddress(params).then((res) => {
+        res.data.map((it) => {
+          if (it.id === this.basic.workAddressId) {
+            this.basic.workAddressId = it.address
+          }
+        })
+      })
+    },
+    getData() {
+      return new Promise((resolve, reject) => {
+        getOfferApply({ personId: this.personId })
+          .then((res) => {
+            if (res.companyId) {
+              this.basic = {
+                ...this.basic,
+                ...res
+              }
+              let istrue = ['isShbx', 'isHouse', 'isComputer', 'sex']
+              let risk = ''
+              let orther = [
+                { label: '养老保险', value: 'isYangl' },
+                { label: '医疗保险', value: 'isYil' },
+                { label: '失业保险', value: 'isGs' },
+                { label: '工伤保险', value: 'isShiy' },
+                { label: '生育保险', value: 'isShengy' },
+                { label: '住房公积金', value: 'isGjj' }
+              ]
+              orther.map((it) => {
+                if (this.basic[it.value] == 1) {
+                  risk += it.label + '；'
+                }
+              })
+              this.basic.risks = risk
+              for (let [key, val] of Object.entries(this.basic)) {
+                if (istrue.includes(key)) {
+                  this.basic[key] = val == 1 ? '是' : '否'
+                }
+              }
+              this.basic.contractPeriod = this.basic.contractPeriod + '年'
+              this.basic.city = this.basic.workProvinceName + this.basic.workCityName
+            }
+
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
     handleClick() {
       // console.log(tab, event)
+    },
+    back() {
+      this.$router.go(-1)
     }
   }
 }
@@ -398,13 +491,15 @@ export default {
   background: #ffffff;
 
   margin-top: 15px;
+  margin-bottom: 50px;
 }
 .person {
   background: #ffffff;
   border-radius: 4px;
   height: 102px;
-  padding: 0 24px 24px 24px;
+  padding: 24px 24px 24px 24px;
   box-sizing: border-box;
+  margin-top: 16px;
 
   .name {
     font-family: PingFangSC-Medium;

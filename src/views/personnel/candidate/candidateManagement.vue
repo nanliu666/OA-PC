@@ -445,10 +445,16 @@
             </template>
             <!-- 面试中 -->
             <template v-if="row.status === '3'">
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleArrange(row)"
+              >
                 重新安排面试
               </el-button>
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleSend"
+              >
                 发送面试登记表
               </el-button>
               <el-dropdown @command="handleCommand($event, row)">
@@ -895,11 +901,29 @@ export default {
     this.loadData()
   },
   methods: {
+    handleSend() {
+      this.$message.success('发送成功')
+    },
     handleCheckEmploy(row) {
       this.$router.push('/personnel/candidate/applyDetail/' + row.personId)
     },
     handleApplyEmploy(row) {
-      this.$router.push('/personnel/candidate/apply/' + row.personId)
+      this.$router.push({
+        path: '/personnel/candidate/apply',
+        query: {
+          personId: row.personId,
+          userName: row.userName,
+          sex: row.sex,
+          email: row.email,
+          phonenum: row.phonenum,
+          recruitmentId: row.recruitmentId
+        }
+      })
+    },
+    handleRegistration() {
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm'
+      })
     },
     handleApply() {
       this.$router.push({
@@ -1007,6 +1031,8 @@ export default {
         this.$router.push('/personnel/editPerson')
       } else if (command === 'toRegistrationForm') {
         this.$router.push('/personnel/candidate/registrationForm/', data.personId)
+      } else if (command === 'arrange') {
+        this.handleArrange(data)
       }
     },
     handleSubmit(params) {

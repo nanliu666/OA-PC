@@ -3,26 +3,28 @@
     v-loading="loading"
     style="height: 100%"
   >
-    <div class="header">
-      <div>
-        <i
-          class="el-icon-arrow-left"
-          style="font-weight: 800"
-        /> 登记表详情
+    <div v-if="!modity">
+      <div class="header">
+        <div>
+          <i
+            class="el-icon-arrow-left"
+            style="font-weight: 800"
+          /> 登记表详情
+        </div>
       </div>
-    </div>
-    <div class="person">
-      <div class="name">
-        {{ personInfo.name }}
-      </div>
-      <div class="flex flex-flow flex-justify-between">
-        <div class="person_position flex flex-items flex-flow">
-          <div>
-            {{ personInfo.department }}
-          </div>
-          <div>{{ personInfo.position }}</div>
-          <div>
-            {{ personInfo.status }}
+      <div class="person">
+        <div class="name">
+          {{ personInfo.name }}
+        </div>
+        <div class="flex flex-flow flex-justify-between">
+          <div class="person_position flex flex-items flex-flow">
+            <div>
+              {{ personInfo.department }}
+            </div>
+            <div>{{ personInfo.position }}</div>
+            <div>
+              {{ personInfo.status }}
+            </div>
           </div>
         </div>
       </div>
@@ -256,12 +258,14 @@
       <el-button
         type="primary"
         size="medium"
+        @click="handleSave"
       >
         保存
       </el-button>
       <el-button
         type="info"
         size="medium"
+        @click="close"
       >
         取消
       </el-button>
@@ -285,6 +289,11 @@ export default {
   name: 'RegistrationFormEdit',
   components: {
     inputArray
+  },
+  props: {
+    modity: {
+      type: Boolean
+    }
   },
   data() {
     return {
@@ -342,6 +351,12 @@ export default {
   },
   mounted() {},
   methods: {
+    handleSave() {
+      this.$emit('close')
+    },
+    close() {
+      this.$emit('close')
+    },
     handleDelete(data, i) {
       if (this.contactsform.length > 1) {
         this.contactsform.splice(i, 1)
