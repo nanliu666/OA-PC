@@ -333,6 +333,19 @@ const res = {
                     icon: 'iconfont iconicon_roundadd',
                     dataPrivileges: [],
                     children: []
+                  },
+                  {
+                    menuId: '12601176827880570',
+                    menuName: '发送Offer',
+                    menuType: 'menu',
+                    isOwn: 1,
+                    isShow: 0,
+                    code: 'candidate',
+                    alias: 'candidate',
+                    path: '/personnel/candidate/sendOffer',
+                    icon: 'iconfont iconicon_roundadd',
+                    dataPrivileges: [],
+                    children: []
                   }
                 ]
               },
@@ -431,7 +444,7 @@ const res = {
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
-            path: '/personnel/transaction/changeApply',
+            path: '/personnel/transaction/changeApply/:userId',
             icon: 'iconfont iconicon_compile'
           },
           {
@@ -492,7 +505,7 @@ const res = {
           },
           {
             menuId: '312122124545424',
-            menuName: '申请录用详情',
+            menuName: '申请详情',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 0,

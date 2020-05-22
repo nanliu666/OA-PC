@@ -38,3 +38,17 @@ export const getTree = (params) => get('/org/v1/organization/tree', params)
  *  @params params
  */
 export const postOfferApply = (params) => post('/user/v1/candidate/offer/apply', params)
+
+/***
+ *  @author guanfenda
+ *  @desc 录用申请查询接口
+ *  @params params
+ */
+export const getOfferApply = (params) => get('/user/v1/candidate/offer/apply', params)
+
+/***
+ *  @author guanfenda
+ *  @desc 招聘需求详情查询接口
+ *  @params params
+ */
+export const getRecruitmentDetail = (params) => get('/user/v1/recruitment/detail', params)

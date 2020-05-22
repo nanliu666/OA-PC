@@ -10,7 +10,7 @@
     <div class="personTitle">
       <div class="left">
         <div class="orgJob">
-          {{ personInfo.orgName + ' — ' + personInfo.jobName }}
+          {{ personInfo.orgName || '' }} — {{ personInfo.jobName || '' }}
         </div>
         <div class="status">
           {{ statusWord[personInfo.status] }}
@@ -540,8 +540,8 @@ export default {
     })
   },
   activated() {
-    this.getPersonInfo()
-    this.getPersonRecord()
+    // this.getPersonInfo()
+    // this.getPersonRecord()
   },
   methods: {
     init() {

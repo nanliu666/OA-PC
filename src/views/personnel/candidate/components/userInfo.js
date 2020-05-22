@@ -686,53 +686,34 @@ export let personInfo = {
       attrId: '1', // ：key唯一值
       attrName: '姓名：', // lable
       disabled: true,
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
-      props: 'name'
+      props: 'userName'
     },
     {
       attrId: '2', // ：key唯一值
       attrName: '性别：', // lable
       disabled: true,
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: sixList, // 单选框多选框的potion的值
+      value: sixList,
       dataType: 1, // 当inType=1时生效
       inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
-      props: 'six'
+      props: 'sex'
     },
     {
       attrId: '3', // ：key唯一值
       attrName: '手机号：', // lable
       disabled: true,
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '11', // 最大长度
-      value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
-      props: 'telephone'
+      props: 'phonenum'
     },
     {
       attrId: '4', // ：key唯一值
       attrName: '邮箱：', // lable
       disabled: true,
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
@@ -747,27 +728,27 @@ let probation = [
   },
   {
     value: 1,
-    label: '一个月'
+    label: '1个月'
   },
   {
     value: 2,
-    label: '二个月'
+    label: '2个月'
   },
   {
     value: 3,
-    label: '三个月'
+    label: '3个月'
   },
   {
     value: 4,
-    label: '四个月'
+    label: '4个月'
   },
   {
     value: 5,
-    label: '五个月'
+    label: '5个月'
   },
   {
     value: 6,
-    label: '六个月'
+    label: '6个月'
   }
 ]
 export let employment = {
@@ -775,12 +756,7 @@ export let employment = {
     {
       attrId: '1', // ：key唯一值
       attrName: '预计入职日期：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择预计入职日期', // 提示必填提示
       props: 'entryDate',
@@ -795,12 +771,7 @@ export let employment = {
     {
       attrId: '2', // ：key唯一值
       attrName: '试用期：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: probation, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择试用期', // 提示必填提示
       props: 'probation',
@@ -815,13 +786,7 @@ export let employment = {
     {
       attrId: '3', // ：key唯一值
       attrName: '入职公司：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
       disabled: true,
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择入职公司', // 提示必填提示
       props: 'companyId',
@@ -836,12 +801,7 @@ export let employment = {
     {
       attrId: '4', // ：key唯一值
       attrName: '部门：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: [], // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 11, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择部门', // 提示必填提示
       disabled: true,
@@ -857,13 +817,7 @@ export let employment = {
     {
       attrId: '5', // ：key唯一值
       attrName: '职位：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       disabled: true,
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '职位', // 提示必填提示
       props: 'jobId',
@@ -878,10 +832,6 @@ export let employment = {
     {
       attrId: '6', // ：key唯一值
       attrName: '岗位：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -891,12 +841,7 @@ export let employment = {
     {
       attrId: '7', // ：key唯一值
       attrName: '工作性质：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '工作性质', // 提示必填提示
       props: 'workProperty',
@@ -911,12 +856,7 @@ export let employment = {
     {
       attrId: '8', // ：key唯一值
       attrName: '工作地址：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '工作地址', // 提示必填提示
       props: 'workAddressId'
@@ -924,10 +864,6 @@ export let employment = {
     {
       attrId: '9', // ：key唯一值
       attrName: '工作城市：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 8, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -961,10 +897,6 @@ export let salary = {
     {
       attrId: '2', // ：key唯一值
       attrName: '转正月薪：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -982,51 +914,51 @@ export let salary = {
 }
 let years = [
   {
-    value: '1',
+    value: 1,
     label: '1年'
   },
   {
-    value: '2',
+    value: 2,
     label: '2年'
   },
   {
-    value: '3',
+    value: 3,
     label: '3年'
   },
   {
-    value: '4',
+    value: 4,
     label: '4年'
   },
   {
-    value: '5',
+    value: 5,
     label: '5年'
   },
   {
-    value: '6',
+    value: 6,
     label: '6年'
   },
   {
-    value: '7',
+    value: 7,
     label: '7年'
   },
   {
-    value: '8',
+    value: 8,
     label: '8年'
   },
   {
-    value: '9',
+    value: 9,
     label: '9年'
   },
   {
-    value: '10',
+    value: 10,
     label: '10年'
   },
   {
-    value: '11',
+    value: 11,
     label: '11年'
   },
   {
-    value: '12',
+    value: 12,
     label: '12年'
   }
 ]
@@ -1274,7 +1206,6 @@ export let office = {
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '其他', // 提示必填提示
       props: 'other',
@@ -1306,7 +1237,6 @@ export let other = {
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '住房标准', // 提示必填提示
       props: 'houseStandard',

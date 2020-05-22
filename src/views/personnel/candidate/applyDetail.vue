@@ -1,7 +1,7 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%;">
     <div class="header">
-      <div>
+      <div @click="back">
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
@@ -10,221 +10,243 @@
     </div>
     <div class="person">
       <div class="name">
-        {{ personInfo.name }}
+        {{ personInfo.id }}提交的录用申请
       </div>
       <div class="flex flex-flow flex-justify-between nav">
-        <div><span>审批编号：</span>{{ personInfo.department }}</div>
-        <div><span>申请人：</span>{{ personInfo.position }}</div>
+        <div><span>审批编号：</span>{{ personInfo.id }}</div>
+        <div><span>申请人：</span>{{ personInfo.userName }}</div>
         <div><span>申请时间：</span> {{ personInfo.status }}</div>
         <div><span>状态：</span> {{ personInfo.status }}</div>
       </div>
     </div>
-    <div class="basicInfo">
-      <div class="title_top">
-        基本信息
-      </div>
-      <div class="title">
-        候选人信息
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in basicInfo"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+    <div class="contain">
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="申请详情"
+          name="first"
+        >
+          <div class="basicInfo">
+            <div class="title_top">
+              基本信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        录用信息
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in applyInfo"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title">
+              候选人信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div />
-    </div>
-    <div
-      class="basicInfo"
-      style="margin-bottom: 50px"
-    >
-      <div class="title_top">
-        薪资福利信息
-      </div>
-      <div class="title">
-        薪资
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in salary"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in basicInfo"
+                  :key="index"
+                  class="attribute flex flex-flow flex-items"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        劳动合同
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in labour"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title">
+              录用信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        五险一金
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in fiveRisks"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in applyInfo"
+                  :key="index"
+                  class="attribute flex flex-flow flex-items"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
             </div>
-            <div>{{ basic[info.attribute] }}</div>
+            <div />
           </div>
-        </div>
-      </div>
-      <div class="title">
-        办公安排
-      </div>
-      <div class="basic">
-        <div class="flexs">
           <div
-            v-for="(info, index) in office"
-            :key="index"
-            class="attribute flex flex-flow"
+            class="basicInfo"
+            style="margin-bottom: 50px"
           >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title_top">
+              薪资福利信息
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="title">
-        其他
-      </div>
-      <div class="basic">
-        <div class="flexs">
-          <div
-            v-for="(info, index) in office"
-            :key="index"
-            class="attribute flex flex-flow"
-          >
-            <div style="text-align: right">
-              {{ info.text }}：
+            <div class="title">
+              薪资
             </div>
-            <div>{{ basic[info.attribute] }}</div>
-          </div>
-        </div>
-      </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in salary"
+                  :key="index"
+                  class="attribute flex flex-flow flex-items"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              劳动合同
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in labour"
+                  :key="index"
+                  class="attribute flex flex-flow flex-items"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              五险一金
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in fiveRisks"
+                  :key="index"
+                  class="attribute flex flex-flow "
+                  :class="[info.attribute !== 'risks' ? 'flex-items' : '']"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                  <!--                  <div v-else>-->
+                  <!--                    <span v-for="it in basic[info.attribute]">{{it}}</span>-->
+                  <!--                  </div>-->
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              办公安排
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in office"
+                  :key="index"
+                  class="attribute flex flex-flow flex-items"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              其他
+            </div>
+            <div class="basic">
+              <div class="flexs">
+                <div
+                  v-for="(info, index) in other"
+                  :key="index"
+                  class="attribute flex flex-flow flex-items"
+                >
+                  <div style="text-align: right">
+                    {{ info.text }}：
+                  </div>
+                  <div>{{ basic[info.attribute] }}</div>
+                </div>
+              </div>
+            </div>
 
-      <div />
+            <div />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
+import { getOfferApply, getWorkAddress } from '@/api/personnel/selectedPerson'
+
 export default {
   name: 'ApplyDetail',
   data() {
     return {
+      personId: '',
+      recruitmentId: '',
+      activeName: 'first',
       personInfo: {
-        name: '张琪',
-        department: 'ucd部门',
-        position: 'ue设计师',
-        status: '面试中'
+        userName: '',
+        department: '',
+        position: '',
+        status: ''
       },
       basic: {
-        id: '申请ID',
-        personI: '人员ID',
-        entryDate: '预计入职日期',
-        probation: '试用期，单位：月',
-        companyId: '入职公司ID',
-        companyName: '入职公司名称',
-        orgId: '主部门ID',
-        orgName: '部门名称',
-        jobId: '主职位ID\t',
-        jobName: '职位名称',
-        positionIdR: '岗位ID',
-        positionName: '岗位名称',
-        workProperty: '工作性质，字典组：WorkProperty',
-        workAddressId: '工作地址ID',
-        provinceCode: '省份编码',
-        provinceName: '省份名称',
-        cityCode: '地市编码',
-        cityName: '地市名称',
-        countyCode: '区县编码',
-        countyName: '区县名称',
-        address: '详细地址',
-        workProvinceCode: '工作省份编码',
-        workProviceName: '工作省份名称',
-        workCityCode: '工作地市编码',
-        workCityName: '工作地市名称',
-        probationSalary: '试用期月薪，单位：元',
-        formalSalary: '转正月薪，单位：元',
-        contractType: '合同类型，字典组：ContractType',
-        contractBeginDate: '合同开始日期',
-        contractEndDate: '合同结束日期',
-        contractPeriod: '合同期限，单位：年',
-        isShbx: '是否缴纳社会保险，1-是，0-否',
-        baseMoney: '社会保险基数，单位：元',
-        isYangl: '是否缴纳养老保险，1-是，0-否',
-        isYil: '是否缴纳医疗保险，1-是，0-否',
-        isGs: '是否缴纳工伤保险，1-是，0-否',
-        isShiy: '是否缴纳失业保险，1-是，0-否',
-        isShengy: '是否缴纳生育保险，1-是，0-否',
-        isGjj: '是否缴纳住房公积金，1-是，0-否',
-        officeSpace: '办公位安排',
-        telphone: '电话配备',
-        isComputer: '是否电脑配备，1-是，0-否',
-        other: '其他',
-        isHouse: '是否安排住房，1-是，0-否',
-        houseStandard: '住房标准',
-        remark: '备注',
-        userId: '提交人ID',
-        userName: '提交人姓名',
-        name: '姓名',
-        sex: '性别',
-        phonenum: '手机号码',
-        email: '123@com'
+        id: '',
+        personI: '',
+        entryDate: '',
+        probation: '',
+        companyId: '',
+        companyName: '',
+        orgId: '',
+        orgName: '',
+        jobId: '',
+        jobName: '',
+        positionIdR: '',
+        positionName: '',
+        workProperty: '',
+        workAddressId: '',
+        provinceCode: '',
+        provinceName: '',
+        cityCode: '',
+        cityName: '',
+        countyCode: '',
+        countyName: '',
+        address: '',
+        workProvinceCode: '',
+        workProviceName: '',
+        workCityCode: '',
+        workCityName: '',
+        probationSalary: '',
+        formalSalary: '',
+        contractType: '',
+        contractBeginDate: '',
+        contractEndDate: '',
+        contractPeriod: '',
+        isShbx: '',
+        baseMoney: '',
+        isYangl: '',
+        isYil: '',
+        isGs: '',
+        isShiy: '',
+        isShengy: '',
+        isGjj: '',
+        officeSpace: '',
+        telphone: '',
+        isComputer: '',
+        other: '',
+        isHouse: '',
+        houseStandard: '',
+        remark: '',
+        userId: '',
+        userName: '',
+        name: '',
+        sex: '',
+        phonenum: '',
+        email: '',
+        risks: ''
       },
       basicInfo: [
         {
-          attribute: 'name',
+          attribute: 'userName',
           text: '姓名'
         },
         {
@@ -274,7 +296,7 @@ export default {
           text: '工作地址'
         },
         {
-          attribute: 'cityCode',
+          attribute: 'city',
           text: '工作城市'
         }
       ],
@@ -320,7 +342,7 @@ export default {
           text: '社会保险基数'
         },
         {
-          attribute: 'isYil',
+          attribute: 'risks',
           text: '其他'
         }
       ],
@@ -357,6 +379,95 @@ export default {
         }
       ]
     }
+  },
+  async mounted() {
+    this.basic = {
+      ...this.basic,
+      ...this.$route.query
+    }
+    this.personId = this.$route.query.personId
+    this.recruitmentId = this.$route.query.recruitmentId
+    await this.getData()
+    this.getWorkAddress()
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      res.map((it) => {
+        if (it.id === this.basic.workProperty) {
+          this.basic.workProperty = it.dictValue
+        }
+      })
+    })
+    this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
+      res.map((it) => {
+        if (it.id === this.basic.contractType) {
+          this.basic.contractType = it.dictValue
+        }
+      })
+    })
+    // this.personInfo.userName =  this.basic.userName
+    // this.personInfo.id = this.basic.id
+  },
+  methods: {
+    getWorkAddress() {
+      let params = {
+        pageNo: 1,
+        pageSize: 10000
+      }
+
+      getWorkAddress(params).then((res) => {
+        res.data.map((it) => {
+          if (it.id === this.basic.workAddressId) {
+            this.basic.workAddressId = it.address
+          }
+        })
+      })
+    },
+    getData() {
+      return new Promise((resolve, reject) => {
+        getOfferApply({ personId: this.personId })
+          .then((res) => {
+            if (res.companyId) {
+              this.basic = {
+                ...this.basic,
+                ...res
+              }
+              let istrue = ['isShbx', 'isHouse', 'isComputer', 'sex']
+              let risk = ''
+              let orther = [
+                { label: '养老保险', value: 'isYangl' },
+                { label: '医疗保险', value: 'isYil' },
+                { label: '失业保险', value: 'isGs' },
+                { label: '工伤保险', value: 'isShiy' },
+                { label: '生育保险', value: 'isShengy' },
+                { label: '住房公积金', value: 'isGjj' }
+              ]
+              orther.map((it) => {
+                if (this.basic[it.value] == 1) {
+                  risk += it.label + '；'
+                }
+              })
+              this.basic.risks = risk
+              for (let [key, val] of Object.entries(this.basic)) {
+                if (istrue.includes(key)) {
+                  this.basic[key] = val == 1 ? '是' : '否'
+                }
+              }
+              this.basic.contractPeriod = this.basic.contractPeriod + '年'
+              this.basic.city = this.basic.workProvinceName + this.basic.workCityName
+            }
+
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
+    handleClick() {
+      // console.log(tab, event)
+    },
+    back() {
+      this.$router.go(-1)
+    }
   }
 }
 </script>
@@ -376,14 +487,19 @@ export default {
   font-weight: bold;
   margin-top: 14px;
 }
+.contain {
+  background: #ffffff;
 
+  margin-top: 15px;
+  margin-bottom: 50px;
+}
 .person {
   background: #ffffff;
   border-radius: 4px;
   height: 102px;
-  padding: 24px;
-  margin-top: 15px;
+  padding: 24px 24px 24px 24px;
   box-sizing: border-box;
+  margin-top: 16px;
 
   .name {
     font-family: PingFangSC-Medium;
@@ -439,7 +555,7 @@ export default {
   margin-top: 16px;
   background: #ffffff;
   border-radius: 4px;
-  padding: 20px 24px 15px 24px;
+  padding: 0px 24px 15px 24px;
 
   .attribute {
     div {
@@ -503,5 +619,9 @@ export default {
     border-bottom: 1px solid #e3e7e9;
     margin-bottom: 20px;
   }
+}
+/deep/.el-tabs__nav {
+  margin-left: 20px;
+  font-size: 16px;
 }
 </style>
