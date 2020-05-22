@@ -333,6 +333,19 @@ const res = {
                     icon: 'iconfont iconicon_roundadd',
                     dataPrivileges: [],
                     children: []
+                  },
+                  {
+                    menuId: '12601176827880570',
+                    menuName: '发送Offer',
+                    menuType: 'menu',
+                    isOwn: 1,
+                    isShow: 0,
+                    code: 'candidate',
+                    alias: 'candidate',
+                    path: '/personnel/candidate/sendOffer',
+                    icon: 'iconfont iconicon_roundadd',
+                    dataPrivileges: [],
+                    children: []
                   }
                 ]
               },
