@@ -226,7 +226,7 @@ export default {
   data() {
     return {
       loading: false,
-      active: 2,
+      active: 0,
       personInfo,
       employment,
       salary,

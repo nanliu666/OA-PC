@@ -629,7 +629,8 @@ const column = [
   },
   {
     label: '应聘职位',
-    prop: 'jobName'
+    prop: 'jobName',
+    width: 100
   },
   {
     label: '用人部门',
@@ -778,6 +779,7 @@ export default {
         enablePagination: true,
         uniqueKey: 'personId',
         highlightSelect: true,
+        showIndexColumn: true,
         handlerColumn: {
           width: 250
         }
@@ -1030,6 +1032,7 @@ export default {
     },
     tabClick(status) {
       this.tabStatus = status
+      this.$refs['searchPopover'].resetForm()
       this.$refs.commonTable.clearSelection()
       this.loadData()
     },
@@ -1164,6 +1167,7 @@ export default {
   justify-content: flex-start;
   .el-button--text {
     flex: 1;
+    text-align: left;
   }
 }
 </style>

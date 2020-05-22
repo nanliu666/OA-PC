@@ -29,7 +29,7 @@
       @focus="_popoverShowFun"
     />
     <!-- 弹出框 -->
-    <template v-if="!disabled">
+    <template v-show="!disabled">
       <el-popover
         ref="popover"
         v-model="visible"
@@ -38,6 +38,7 @@
         :width="width"
         trigger="click"
         class="treepopover"
+        :class="disabled ? 'popoverDisa' : ''"
       >
         <!-- 是否显示搜索框 -->
         <el-input

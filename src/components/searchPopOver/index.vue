@@ -441,6 +441,7 @@ export default {
           item.data = ''
         }
       })
+      this.submitSearch()
     }
   }
 }
