@@ -135,7 +135,7 @@
 import moment from 'moment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getStaffList, getUserStatusStat, getOrgJob } from '@/api/personnel/roster'
+import { getStaffList, getOrgJob } from '@/api/personnel/roster'
 import AdjustEdit from './components/adjustEdit'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
@@ -185,7 +185,7 @@ export default {
                   children: 'children',
                   label: 'orgName',
                   disabled: 'disabled',
-                  value: 'parentOrgId'
+                  value: 'orgId'
                 }
               }
             }
@@ -262,7 +262,6 @@ export default {
       },
       createOrgDailog: false,
       numberofpersonnel: 'xxx',
-      tabStatus: 'onJob',
       personStatistics: {
         Formal: 0,
         Try: 0,
@@ -334,19 +333,11 @@ export default {
   },
   created() {
     this.getTableData(1)
-    this.getUserStatusStat()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
     })
   },
   methods: {
-    getUserStatusStat() {
-      getUserStatusStat().then((res) => {
-        res.forEach((item) => {
-          this.personStatistics[item.status] = item.statusNum
-        })
-      })
-    },
     getTableData(pageNo) {
       let params = {
         pageNo: pageNo || this.page.currentPage,
@@ -364,7 +355,7 @@ export default {
             data[index].isOverdue = ''
             data[index].isSelect = ''
           } else {
-            data[index].isOverdue = '已逾期'
+            data[index].isOverdue = '逾期'
             data[index].isSelect = 'isSelect'
           }
         })
@@ -513,7 +504,7 @@ export default {
 
 .isSelect {
   color: #fff;
-  padding: 10px;
+  padding: 8px;
   background-color: #f56c6c;
   border: 1px solid #f56c6c;
   border-color: #f56c6c;
