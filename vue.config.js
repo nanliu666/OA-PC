@@ -9,6 +9,9 @@ module.exports = {
   lintOnSave: true,
   productionSourceMap: false,
   chainWebpack: (config) => {
+    const entry = config.entry('app')
+    entry.add('babel-polyfill').end()
+    entry.add('classlist-polyfill').end()
     //忽略的打包文件
     if (isProduction) {
       config.externals({
@@ -23,12 +26,9 @@ module.exports = {
       config.externals({
         gojs: 'go'
       })
+      entry.add('@/mock').end()
     }
 
-    const entry = config.entry('app')
-    entry.add('babel-polyfill').end()
-    entry.add('classlist-polyfill').end()
-    entry.add('@/mock').end()
     config.plugin('html').tap((args) => {
       args[0].isProduction = isProduction
       return args /* 传递给 html-webpack-plugin's 构造函数的新参数 */

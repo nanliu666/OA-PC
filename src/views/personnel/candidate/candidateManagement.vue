@@ -16,7 +16,7 @@
           <el-dropdown-item command="add">
             单个添加候选人
           </el-dropdown-item>
-          <el-dropdown-item>Excel导入候选人</el-dropdown-item>
+          <!-- <el-dropdown-item>Excel导入候选人</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -371,7 +371,7 @@
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{ row.proviceName + row.cityName }}
+          {{ row.provinceName + row.cityName }}
         </template>
         <template
           slot="handler"
@@ -406,9 +406,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -437,9 +437,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -468,6 +468,7 @@
                   <el-dropdown-item command>
                     下载简历
                   </el-dropdown-item>
+                  -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -475,10 +476,13 @@
             <template v-if="row.status === '4'">
               <el-button
                 type="text"
-                @click="handleApply"
+                @click="handleApplyEmploy(row)"
               >
                 申请录用
               </el-button>
+              <!-- <el-button type="text" @click="handleCheckEmploy(row)">
+                查看申请
+              </el-button> -->
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -502,18 +506,21 @@
                   <el-dropdown-item command>
                     查看面试评价
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="toRegistrationForm">
                     查看面试登记表
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
             <!-- 待发Offer -->
             <template v-if="row.status === '5'">
-              <el-button type="text">
+              <el-button
+                type="text"
+                @click="handleSendOffer(row)"
+              >
                 发送Offer
               </el-button>
               <el-button
@@ -533,9 +540,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -567,9 +574,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -589,9 +596,9 @@
                   <i class="el-icon-arrow-down el-icon-more" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command>
+                  <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -602,17 +609,17 @@
     <weed-out-dialog
       ref="weedOutgDialog"
       :visible.sync="weedOutgDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
     <push-audit-dialog
       ref="pushAuditDialog"
       :visible.sync="pushAuditDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
     <change-job-dialog
       ref="changeJobDialog"
       :visible.sync="changeJobDialog"
-      @refresh="loadData(1)"
+      @refresh="loadAllData(1)"
     />
     <arrange
       v-if="arrangeDialog"
@@ -756,7 +763,15 @@ export default {
         'createTime'
       ],
       originColumn: column,
-      candidateStatus: {},
+      candidateStatus: {
+        '0': 0,
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0
+      },
       tabStatus: 'all',
       statusWord: {
         '0': '已淘汰',
@@ -880,6 +895,12 @@ export default {
     this.loadData()
   },
   methods: {
+    handleCheckEmploy(row) {
+      this.$router.push('/personnel/candidate/applyDetail/' + row.personId)
+    },
+    handleApplyEmploy(row) {
+      this.$router.push('/personnel/candidate/apply/' + row.personId)
+    },
     handleApply() {
       this.$router.push({
         path: '/personnel/candidate/apply'
@@ -890,6 +911,9 @@ export default {
       this.row = JSON.parse(JSON.stringify(row))
     },
     handleExport() {},
+    handleSendOffer(row) {
+      this.$router.push('/personnel/candidate/editOffer?personId=' + row.personId)
+    },
     toDetail(row) {
       this.$router.push('/personnel/personDetail/' + row.personId)
     },
@@ -909,7 +933,7 @@ export default {
           .then(() => {
             this.$message.success('接受成功')
             loading.close()
-            this.loadData(1)
+            this.loadAllData(1)
           })
           .catch(() => {
             loading.close()
@@ -971,7 +995,7 @@ export default {
             .then(() => {
               this.$message.success('发起成功')
               loading.close()
-              this.loadData(1)
+              this.loadAllData(1)
             })
             .catch(() => {
               loading.close()
@@ -981,13 +1005,18 @@ export default {
         this.$router.push('/personnel/editPerson?personId=' + data.personId)
       } else if (command === 'add') {
         this.$router.push('/personnel/editPerson')
-      } else if (command === 'arrange') {
-        this.arrangeDialog = true
+      } else if (command === 'toRegistrationForm') {
+        this.$router.push('/personnel/candidate/registrationForm/', data.personId)
       }
     },
     handleSubmit(params) {
       this.searchParams = params
       this.loadData()
+    },
+    loadAllData(pageNo) {
+      Object.assign(this.$data.candidateStatus, this.$options.data().candidateStatus)
+      this.getCandidateStatus()
+      this.loadData(pageNo)
     },
     loadData(pageNo) {
       let params = { ...this.searchParams }

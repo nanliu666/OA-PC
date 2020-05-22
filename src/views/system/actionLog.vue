@@ -60,7 +60,11 @@ export default {
           field: 'beginTime,endTime',
           data: '',
           label: '操作时间',
-          config: { type: 'daterange', 'range-separator': '至' }
+          config: {
+            type: 'datetimerange',
+            'range-separator': '至',
+            'value-format': 'yyyy-MM-dd HH:mm:ss'
+          }
         },
         { type: 'input', field: 'userName', label: '操作人', config: {} }
       ],
