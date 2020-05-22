@@ -28,7 +28,11 @@ a {
   font-family: 'DIN Alternate', 'Helvetica', 'PingFang SC', 'Microsoft YaHei', 微软雅黑, Arial,
     sans-serif;
 }
-
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 //滚动条样式
 @include scrollBar;
 .flex {

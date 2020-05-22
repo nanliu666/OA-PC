@@ -11,7 +11,7 @@ import grade from './grade'
 import personalInfo from './personalInfo'
 // import personnel from './personnel'
 import org from './org'
-
+import person from './person'
 import menus from './menus'
 import candidate from './candidate'
 import selectPerson from './selectPerson'
@@ -25,9 +25,9 @@ const options = { mock: false }
 
 user(options)
 
-menu({ mock: false })
-candidate({ mock: false })
-selectPerson({ mock: false })
+menu({ mock: true })
+candidate(options)
+selectPerson(options)
 position(options)
 grade(options)
 menus(options)
@@ -46,3 +46,5 @@ personalInfo(options)
 personnel(options)
 
 org(options)
+
+person(options.mock)
