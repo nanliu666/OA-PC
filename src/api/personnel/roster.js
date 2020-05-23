@@ -103,28 +103,3 @@ export const createUser = (params) => {
     params: params
   })
 }
-// 获取管理员工转正数据
-export const getStaffList = (params) => {
-  return request({
-    url: '/user/v1/user/formal/list',
-    method: 'post',
-    params: { ...params }
-  })
-}
-
-// 转正申请接口
-export const getOperation = (params) => {
-  return request({
-    url: '/user/v1/user/formal/info',
-    method: 'post',
-    params: { ...params }
-  })
-}
-// 提交当前用户的试用日期
-export const putProbation = (params) => {
-  return request({
-    url: '/user/v1/user/formal/probation',
-    method: 'put',
-    params: params
-  })
-}
