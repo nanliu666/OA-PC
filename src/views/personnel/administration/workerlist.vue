@@ -86,6 +86,12 @@
           <span>{{ row.formalDate }}</span>
           <span :class="row.isSelect">{{ row.isOverdue }}</span>
         </template>
+        <template
+          slot="probation"
+          slot-scope="{ row }"
+        >
+          {{ row.probation === 0 ? '无试用期' : `${row.probation}个月` }}
+        </template>
 
         <template
           slot="handler"
@@ -261,7 +267,7 @@ export default {
           prop: 'workNo'
         },
         {
-          label: '转正状态申请',
+          label: '转正申请状态',
           prop: 'status'
         },
         {
@@ -283,7 +289,8 @@ export default {
         },
         {
           label: '试用期',
-          prop: 'probation'
+          prop: 'probation',
+          slot: true
         }
       ],
       params: {
@@ -306,7 +313,31 @@ export default {
         .format('YYYY-MM-DD')
       getStaffList(params).then((res) => {
         let { data } = res
+        const isStatusArr = [
+          {
+            status: 'Try',
+            real: '试用期'
+          },
+          {
+            status: 'Formal',
+            real: '正式'
+          },
+          {
+            status: 'Leaved',
+            real: '已离职'
+          },
+          {
+            status: 'WaitLeave',
+            real: '待离职'
+          }
+        ]
         data.forEach((item, index) => {
+          isStatusArr.forEach((StatusArr) => {
+            if (item.status === StatusArr.status) {
+              item.status = StatusArr.real
+            }
+          })
+
           let isOverdue = moment(nowData).isBefore(item.formalDate)
           if (isOverdue) {
             data[index].isOverdue = ''
