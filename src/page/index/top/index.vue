@@ -24,7 +24,7 @@
       </span>
     </div>
     <div class="top-bar__right">
-      <el-tooltip
+      <!-- <el-tooltip
         v-if="showColor"
         effect="dark"
         :content="$t('navbar.color')"
@@ -33,8 +33,8 @@
         <div class="top-bar__item">
           <top-color />
         </div>
-      </el-tooltip>
-      <el-tooltip
+      </el-tooltip> -->
+      <!-- <el-tooltip
         v-if="showDebug"
         effect="dark"
         :content="logsFlag ? $t('navbar.bug') : logsLen + $t('navbar.bugs')"
@@ -43,7 +43,7 @@
         <div class="top-bar__item">
           <top-logs />
         </div>
-      </el-tooltip>
+      </el-tooltip> -->
       <el-tooltip
         v-if="showLock"
         effect="dark"
@@ -64,7 +64,7 @@
           <top-theme />
         </div>
       </el-tooltip> -->
-      <el-tooltip
+      <!-- <el-tooltip
         effect="dark"
         :content="$t('navbar.notice')"
         placement="bottom"
@@ -72,8 +72,8 @@
         <div class="top-bar__item top-bar__item--show">
           <top-notice />
         </div>
-      </el-tooltip>
-      <el-tooltip
+      </el-tooltip> -->
+      <!-- <el-tooltip
         effect="dark"
         :content="$t('navbar.language')"
         placement="bottom"
@@ -81,7 +81,7 @@
         <div class="top-bar__item top-bar__item--show">
           <top-lang />
         </div>
-      </el-tooltip>
+      </el-tooltip> -->
       <el-tooltip
         v-if="showFullScren"
         effect="dark"
@@ -134,10 +134,10 @@ import topLock from './top-lock'
 import topMenu from './top-menu'
 import topSearch from './top-search'
 // import topTheme from './top-theme'
-import topLogs from './top-logs'
-import topColor from './top-color'
-import topNotice from './top-notice'
-import topLang from './top-lang'
+// import topLogs from './top-logs'
+// import topColor from './top-color'
+// import topNotice from './top-notice'
+// import topLang from './top-lang'
 // import logo from '../logo'
 
 export default {
@@ -145,12 +145,12 @@ export default {
   components: {
     topLock,
     topMenu,
-    topSearch,
+    topSearch
     // topTheme,
-    topLogs,
-    topColor,
-    topNotice,
-    topLang
+    // topLogs,
+    // topColor,
+    // topNotice,
+    // topLang
   },
   filters: {},
   data() {
