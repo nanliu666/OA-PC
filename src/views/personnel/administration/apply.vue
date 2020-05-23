@@ -1,12 +1,9 @@
 <template>
   <div>
-    <!-- <div class="roster-header">
-      <h4>新建转正申请</h4>
-    </div> -->
     <el-page-header
       content="新建转正申请"
       class="pageHeader"
-      @back="goBack"
+      show-back
     />
     <basic-container>
       <el-form
@@ -146,9 +143,6 @@ export default {
     resetForm() {
       this.apply.advise = ''
       this.apply.summary = ''
-    },
-    goBack() {
-      this.$router.push('/personnel/administration/workerlist')
     }
   }
 }
@@ -156,18 +150,9 @@ export default {
 <style lang="scss" scoped>
 .pageHeader {
   height: 48px;
-  // padding: 0 24px;
   line-height: 48px;
   font-size: 18px;
-}
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  h4 {
-    font-size: 18px;
-  }
+  font-weight: bold;
 }
 .state {
   display: flex;
@@ -226,18 +211,7 @@ export default {
     }
   }
 }
-.el-form-item__label {
-  padding: 0;
-}
 .el-form-item {
   width: 48%;
-}
-.bottomList {
-  box-shadow: 0px -10px 10px rgba(49, 48, 48, 0.274);
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  height: 70px;
-  width: 100%;
 }
 </style>

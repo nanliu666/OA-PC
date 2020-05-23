@@ -51,4 +51,4 @@ personnel(options)
 org(options)
 transction(options)
 
-person(options)
+person(options.mock)

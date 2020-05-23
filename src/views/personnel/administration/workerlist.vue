@@ -62,23 +62,12 @@
           <el-button
             type="text"
             size="medium"
-            @click="jumpToDetail(row.personId)"
+            @click="jumpToDetail(row.positionId)"
           >
             {{ row.name }}
           </el-button>
         </template>
-        <template
-          slot="name"
-          slot-scope="{ row }"
-        >
-          <el-button
-            type="text"
-            size="medium"
-            @click="jumpToDetail(row.personId)"
-          >
-            {{ row.name }}
-          </el-button>
-        </template>
+
         <template
           slot="formalDate"
           slot-scope="{ row }"
@@ -378,7 +367,8 @@ export default {
       this.$refs.adjustEdit.init(row)
     },
     jumpToDetail(personId) {
-      this.$router.push('/personnel/detail/:' + personId)
+      debugger
+      this.$router.push(`/personnel/detail/${personId}`)
     },
     jumpApproval(Approvalcode) {
       return this.$message({
