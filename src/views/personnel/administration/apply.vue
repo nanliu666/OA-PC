@@ -68,21 +68,22 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="24">
+            <el-button
+              size="medium"
+              @click="resetForm()"
+            >
+              取消
+            </el-button>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="submitForm('apply')"
+            >
+              提交
+            </el-button>
+          </el-col>
         </el-row>
-
-        <el-button
-          size="medium"
-          @click="resetForm()"
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          size="medium"
-          @click="submitForm('apply')"
-        >
-          提交
-        </el-button>
       </el-form>
     </basic-container>
   </div>
