@@ -143,9 +143,7 @@ export default {
         let params = {}
         params.userId = this.userId
         params.probationDate = this.probationDate
-        putProbation(params).then((res) => {
-          if (res) this.$message({ type: 'success', message: '申请成功!' })
-        })
+        putProbation(params)
         this.$emit('update:visible', false)
       })
     },
@@ -157,9 +155,6 @@ export default {
       this.$emit('update:visible', true)
     },
     calcDate(monthCount) {
-      if (monthCount === 0) {
-        return this.setWheter()
-      }
       let isStr = this.oldProbationDate
       this.probationDate = moment(isStr)
         .add(monthCount, 'M')
@@ -167,26 +162,6 @@ export default {
     },
     handleClose() {
       this.$emit('update:visible', false)
-    },
-    setWheter() {
-      this.$confirm('是否要将当前员工试用设置为无?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.probationDate = '无试用期'
-          this.$message({
-            type: 'success',
-            message: '已设置!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消设置'
-          })
-        })
     }
   }
 }
