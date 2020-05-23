@@ -175,7 +175,8 @@ export default {
         },
         {
           label: '手机号码',
-          prop: 'phonenum'
+          prop: 'phonenum',
+          width: '150px'
         },
         {
           label: '异动类型',
@@ -248,7 +249,7 @@ export default {
     },
     // 监听筛选事件
     handleSubmit(params) {
-      this.paramsInfo = { ...this.paramsInfo, ...params }
+      this.paramsInfo = params
       this.getTableList()
     },
 
@@ -296,12 +297,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  margin: 10px 0;
-  span {
-    font-weight: bolder;
-  }
-}
 .search-box {
   display: flex;
   justify-content: space-between;
