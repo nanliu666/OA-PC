@@ -236,7 +236,9 @@ export default {
         this.submitLoading = true
         submitFunc(data)
           .then((res) => {
-            this.offerInfo.id = res.id
+            if (res.id) {
+              this.offerInfo.id = res.id
+            }
             resolve()
           })
           .catch((err) => {
@@ -288,6 +290,5 @@ export default {
 .footer {
   display: flex;
   justify-content: center;
-  padding-bottom: 40px;
 }
 </style>
