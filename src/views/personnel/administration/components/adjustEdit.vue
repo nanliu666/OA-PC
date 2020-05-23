@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { putProbation } from '@/api/personnel/roster'
+import { putProbation } from '@/api/personnel/person'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
@@ -92,6 +92,7 @@ export default {
       form: {
         probation: null
       },
+      int: null,
       userId: null,
       probationDate: null,
       probationOptions: [
@@ -142,9 +143,12 @@ export default {
         }
         let params = {}
         params.userId = this.userId
-        params.probationDate = this.probationDate
-        putProbation(params)
-        this.$emit('update:visible', false)
+        params.probation = this.int
+        putProbation(params).then(() => {
+          this.$message({ type: 'success', message: '操作成功' })
+        })
+        this.$emit('getTableData')
+        return this.handleClose()
       })
     },
     init(row) {
@@ -155,12 +159,15 @@ export default {
       this.$emit('update:visible', true)
     },
     calcDate(monthCount) {
+      this.int = monthCount
       let isStr = this.oldProbationDate
       this.probationDate = moment(isStr)
         .add(monthCount, 'M')
         .format('YYYY-MM-DD')
     },
     handleClose() {
+      this.form.probation = ''
+      this.probationDate = ''
       this.$emit('update:visible', false)
     }
   }
