@@ -4,9 +4,6 @@
       <h4>新建转正申请</h4>
     </div>
     <basic-container>
-      <div class="roster-header">
-        <h4>转正信息</h4>
-      </div>
       <el-form
         ref="apply"
         label-position="top"
@@ -70,28 +67,28 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-button
+          size="medium"
+          @click="resetForm()"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="submitForm('apply')"
+        >
+          提交
+        </el-button>
       </el-form>
-    </basic-container>
-    <basic-container class="bottomList">
-      <el-button
-        size="medium"
-        @click="resetForm()"
-      >
-        取消
-      </el-button>
-      <el-button
-        size="medium"
-        @click="submitForm('apply')"
-      >
-        提交
-      </el-button>
     </basic-container>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { getOperation } from '@/api/personnel/roster'
+import { getOperation } from '@/api/personnel/person'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 export default {
   data() {
@@ -131,18 +128,10 @@ export default {
           params.summary = this.apply.summary
           params.advise = this.apply.advise
           getOperation(params)
-            .then((res) => {
-              if (res.restate) {
-                this.$message({ type: 'success', message: res.restate })
-              }
+            .then(() => {
+              this.$message({ type: 'success', message: '操作成功' })
             })
-            .catch((rej) => {
-              if (rej instanceof Object) {
-                this.$message({ type: 'success', message: '申请成功' })
-              } else {
-                this.$message({ message: '该功能暂不可用请联系相关管理员', type: 'warning' })
-              }
-            })
+            .catch()
           return this.resetForm()
         } else {
           return false

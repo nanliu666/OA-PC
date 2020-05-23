@@ -71,3 +71,27 @@ export const getTagList = (name, color) => {
 export const getRecruitment = () => {
   return get('/user/v1/candidate/recruitment/list')
 }
+
+/**
+ * 获取转正员工转正数据
+ * @param {String} pageNo - 请求页码
+ * @param {String} pageSize - 每页条数
+ * */
+export const getStaffList = (params) => {
+  return post('/user/v1/user/formal/list', params)
+}
+
+// 转正申请接口
+export const getOperation = (params) => {
+  return post('/user/v1/user/formal/info', params)
+}
+
+/**
+ *  人员试用期修改接口
+ * @param {String} personId - 人员ID
+ * @param {String} summary - 工作心得
+ * @param {String} advise - 对公司建议
+ * */
+export const putProbation = (params) => {
+  return put('/user/v1/user/formal/probation', params)
+}

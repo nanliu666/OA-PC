@@ -79,20 +79,6 @@
             {{ row.name }}
           </el-button>
         </template>
-
-        <template
-          slot="approvalNo"
-          slot-scope="{ row }"
-        >
-          <el-button
-            type="text"
-            size="medium"
-            @click="jumpApproval(row.approvalNo)"
-          >
-            {{ row.approvalNo }}
-          </el-button>
-        </template>
-
         <template
           slot="formalDate"
           slot-scope="{ row }"
@@ -118,6 +104,7 @@
     <adjust-edit
       ref="adjustEdit"
       :visible.sync="createOrgDailog"
+      @getTableData="getTableData"
     />
   </div>
 </template>
@@ -126,7 +113,8 @@
 import moment from 'moment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getStaffList, getOrgJob } from '@/api/personnel/roster'
+import { getStaffList } from '@/api/personnel/person'
+import { getOrgJob } from '@/api/personnel/roster'
 import AdjustEdit from './components/adjustEdit'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
@@ -277,11 +265,6 @@ export default {
           prop: 'status'
         },
         {
-          label: '审批编号',
-          prop: 'approvalNo',
-          slot: true
-        },
-        {
           label: '部门',
           prop: 'orgName'
         },
@@ -364,7 +347,7 @@ export default {
       this.$refs.adjustEdit.init(row)
     },
     jumpToDetail(personId) {
-      this.$router.push('/personnel/detail/' + personId)
+      this.$router.push('/personnel/detail/:' + personId)
     },
     jumpApproval(Approvalcode) {
       return this.$message({

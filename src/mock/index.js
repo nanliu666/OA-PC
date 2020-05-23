@@ -49,6 +49,6 @@ personalInfo(options)
 personnel(options)
 
 org(options)
-transction({ mock: true })
+transction(options)
 
-person(options.mock)
+person(options)

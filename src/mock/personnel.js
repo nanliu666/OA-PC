@@ -294,66 +294,55 @@ export default ({ mock }) => {
       response: {}
     }
   })
+
+  // 制造转正管理接口
+  Mock.mock(new RegExp('/user/v1/user/formal/list' + '.*'), 'post', () => {
+    let list = []
+    for (let i = 0; i < 12; i++) {
+      list.push(
+        Mock.mock({
+          userId: 'GZ@increment',
+          personId: 'GZ@increment',
+          name: '@cname',
+          approvalNo: 'GZ@increment',
+          status: `${i / 2 == 0 ? '已驳回' : '申请中'}`,
+          workNo: 'GZ@increment',
+          jobName: '测试员工@increment',
+          orgName: '百利宏',
+          formalDate: Mock.Random.date(),
+          entryDate: Mock.Random.date(),
+          probation: '3个月',
+          adjustment: '调整时间'
+        })
+      )
+    }
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        totalNum: 12,
+        totalPage: 12,
+        data: list
+      }
+    }
+  })
+
+  //转正申请接口
+  Mock.mock(new RegExp('/user/v1/user/formal/info' + '.*'), 'post', () => {
+    const operationList = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response: {}
+    }
+    return operationList
+  })
+
+  Mock.mock(new RegExp('/user/v1/user/formal/probation' + '.*'), 'put', () => {
+    const probationList = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response: {}
+    }
+    return probationList
+  })
 }
-
-// 制造转正管理接口
-Mock.mock(new RegExp('/user/v1/user/formal/list' + '.*'), 'post', () => {
-  let list = []
-  for (let i = 0; i < 12; i++) {
-    list.push(
-      Mock.mock({
-        userId: 'GZ@increment',
-        personId: 'GZ@increment',
-        name: '@cname',
-        approvalNo: 'GZ@increment',
-        status: `${i / 2 == 0 ? '已驳回' : '申请中'}`,
-        workNo: 'GZ@increment',
-        jobName: '测试员工@increment',
-        orgName: '百利宏',
-        formalDate: Mock.Random.date(),
-        entryDate: Mock.Random.date(),
-        probation: '3个月',
-        adjustment: '调整时间'
-      })
-    )
-  }
-  return {
-    resCode: 200,
-    resMsg: '',
-    response: {
-      totalNum: 12,
-      totalPage: 12,
-      data: list
-    }
-  }
-})
-
-//转正申请接口
-Mock.mock(new RegExp('/user/v1/user/formal/info' + '.*'), 'post', () => {
-  const operationList = {
-    resCode: 200,
-    resMsg: '申请成功',
-    response: {}
-  }
-  return operationList
-})
-
-Mock.mock(new RegExp('/user/v1/user/formal/formalTime' + '.*'), 'post', () => {
-  const entryTime = {
-    resCode: 200,
-    resMsg: '描述',
-    response: {
-      entryDate: Mock.Random.date(),
-      formalDate: Mock.Random.date()
-    }
-  }
-  return entryTime
-})
-Mock.mock(new RegExp('/user/v1/user/formal/probation' + '.*'), 'put', () => {
-  const probationList = {
-    resCode: 200,
-    resMsg: '申请成功',
-    response: {}
-  }
-  return probationList
-})
