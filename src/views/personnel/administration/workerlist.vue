@@ -367,7 +367,6 @@ export default {
       this.$refs.adjustEdit.init(row)
     },
     jumpToDetail(personId) {
-      debugger
       this.$router.push(`/personnel/detail/${personId}`)
     },
     jumpApproval(Approvalcode) {
