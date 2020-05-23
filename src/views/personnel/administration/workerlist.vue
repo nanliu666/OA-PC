@@ -12,7 +12,7 @@
         :page="page"
         :config="tableConfig"
         :columns="columns"
-        @pageSizeChange="sizeChange"
+        @pageSizeChange="getTableData"
         @currentPageChange="getTableData"
       >
         <template slot="topMenu">
@@ -311,19 +311,19 @@ export default {
       ],
       params: {
         pageNo: 1,
-        pageSize: 10,
-        name: ''
+        pageSize: 10
       }
     }
   },
   created() {
-    this.getTableData(1)
+    this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
     })
   },
   methods: {
     getTableData(params) {
+      if (typeof params === 'undefined') params = this.params
       let nowData = moment()
         .locale('zh-cn')
         .format('YYYY-MM-DD')
@@ -342,13 +342,6 @@ export default {
         this.data = res.data
         this.numberofpersonnel = res.totalNum
       })
-    },
-    handleSearch(params) {
-      this.searchParams = params
-      this.getTableData(1)
-    },
-    sizeChange() {
-      this.getTableData(1)
     },
     handleSubmit(params) {
       let request = {
