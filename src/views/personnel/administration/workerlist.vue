@@ -100,9 +100,10 @@
         </template>
 
         <template
-          slot="isOverdue"
+          slot="formalDate"
           slot-scope="{ row }"
         >
+          <span>{{ row.formalDate }}</span>
           <span :class="row.isSelect">{{ row.isOverdue }}</span>
         </template>
 
@@ -300,15 +301,12 @@ export default {
         },
         {
           label: '转正日期',
-          prop: 'formalDate'
+          prop: 'formalDate',
+          slot: true
         },
         {
           label: '试用期',
           prop: 'probation'
-        },
-        {
-          prop: 'isOverdue',
-          slot: true
         }
       ],
       params: {
@@ -471,9 +469,10 @@ export default {
 }
 
 .isSelect {
-  color: #fff;
-  padding: 8px;
-  background-color: #f56c6c;
+  color: #f56c6c;
+  margin-left: 4px;
+  padding: 4px;
+  background-color: #fff;
   border: 1px solid #f56c6c;
   border-color: #f56c6c;
   display: inline-block;
