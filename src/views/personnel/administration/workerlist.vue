@@ -9,7 +9,6 @@
       <common-table
         style="width: 100%"
         :data="data"
-        :page="page"
         :config="tableConfig"
         :columns="columns"
         @pageSizeChange="getTableData"
@@ -35,11 +34,6 @@
               </el-button>
             </div>
           </div>
-        </template>
-        <template slot="multiSelectMenu">
-          <span class="all">
-            <span><i class="el-icon-folder" /> 批量导出</span>
-          </span>
         </template>
         <template
           v-if="scope.row.isDefault === 0"
@@ -463,7 +457,7 @@ export default {
 
 .isSelect {
   color: #f56c6c;
-  margin-left: 4px;
+  margin-left: 6px;
   padding: 4px;
   background-color: #fff;
   border: 1px solid #f56c6c;
