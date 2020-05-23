@@ -60,6 +60,7 @@ export default {
           if (err.code === 614) {
             that.$message.error('上传失败，已存在相同文件')
           } else {
+            that.$message.error('上传失败，请联系管理员')
             // eslint-disable-next-line
             console.error('upload err:', err)
           }

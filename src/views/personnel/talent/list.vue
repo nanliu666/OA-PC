@@ -57,7 +57,7 @@
           <el-button
             type="text"
             size="medium"
-            @click="jumpToDetail(row.personId)"
+            @click="jumpToDetail(row)"
           >
             {{ row.name }}
           </el-button>
@@ -133,20 +133,24 @@ export default {
         {
           label: '姓名',
           prop: 'name',
-          slot: true
+          slot: true,
+          width: 100
         },
         {
           label: '招聘渠道',
           prop: 'recruitment',
+          width: 100,
           slot: true
         },
         {
           label: '期望薪资',
-          prop: 'monthSalary'
+          prop: 'monthSalary',
+          width: 80
         },
         {
           label: '性别',
           prop: 'sex',
+          width: 50,
           formatter(record) {
             return { '0': '女', '1': '男' }[record.sex] || ''
           }
@@ -169,7 +173,8 @@ export default {
         {
           label: '学历',
           prop: 'educationalLevel',
-          slot: true
+          slot: true,
+          width: 80
         },
         {
           label: '最近工作单位',
@@ -194,7 +199,7 @@ export default {
             label: '学历',
             data: '',
             options: [],
-            config: { optionLabel: '请选择', optionValue: '' }
+            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
           },
           {
             type: 'select',
@@ -211,12 +216,11 @@ export default {
             type: 'input',
             field: 'university',
             data: '',
-            label: '入职日期',
-            config: {}
+            label: '毕业院校'
           },
           {
             type: 'cascader',
-            field: 'address',
+            field: 'provinceCode,cityCode',
             data: [],
             label: '目前所在地区',
             options: provinceAndCityData,
@@ -237,6 +241,7 @@ export default {
   },
   async created() {
     this.educationalLevelOptions = await this.$store.dispatch('CommonDict', 'EducationalLevel')
+    this.searchConfig.popoverOptions[0].options = this.educationalLevelOptions
     this.recruitmentOptions = await this.$store.dispatch('CommonDict', 'RecruitmentChannel')
     this.loadData()
   },
@@ -253,8 +258,10 @@ export default {
         this.$router.push('/personnel/editPerson?isTalent=1')
       }
     },
-    jumpToDetail(personId) {
-      this.$router.push(`/personnel/personDetail/${personId}?isTalent=1`)
+    jumpToDetail({ personId, recruitmentId }) {
+      this.$router.push(
+        `/personnel/personDetail/${personId}?isTalent=1&recruitmentId=${recruitmentId}`
+      )
     },
     loadData() {
       this.loading = true

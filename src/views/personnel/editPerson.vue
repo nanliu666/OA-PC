@@ -316,7 +316,7 @@
 import { provinceAndCityData } from 'element-china-area-data'
 import {
   getPersonInfo,
-  getRecruitment,
+  getRecruitmentList,
   createTalent,
   createCandidate,
   modifyPerson
@@ -388,11 +388,6 @@ export default {
     }
   },
   watch: {
-    personId(val) {
-      if (val) {
-        this.getPersonInfo()
-      }
-    },
     'form.recruitmentId': function(val) {
       if (val) {
         this.form.orgName = this.recruitmentList.find((item) => item.id === val).orgName
@@ -413,6 +408,7 @@ export default {
   activated() {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
+    this.getPersonInfo()
   },
   methods: {
     inputNumber(value, key) {
@@ -434,11 +430,14 @@ export default {
       return true
     },
     getRecruitment() {
-      getRecruitment().then((res) => {
+      getRecruitmentList().then((res) => {
         this.recruitmentList = res
       })
     },
     getPersonInfo() {
+      if (!this.personId) {
+        return
+      }
       getPersonInfo(this.personId).then((data) => {
         this.form = {
           name: data.name,

@@ -20,8 +20,8 @@ export const getTalentList = (params) => {
  * @param {String} recruitmentId - 招聘需求ID
  * @param {String} userId - 添加候选人的员工ID
  * */
-export const addToCandidate = (personId, recruitmentId, userId) => {
-  return post('/user/v1/talent/to/candidate', { personId, recruitmentId, userId })
+export const addToCandidate = (params) => {
+  return post('/user/v1/talent/to/candidate', params)
 }
 
 /**
@@ -68,6 +68,6 @@ export const getTagList = (name, color) => {
 /**
  * 关联招聘需求查询接口
  * */
-export const getRecruitment = () => {
+export const getRecruitmentList = () => {
   return get('/user/v1/candidate/recruitment/list')
 }
