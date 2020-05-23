@@ -1,8 +1,13 @@
 <template>
   <div>
-    <div class="roster-header">
+    <!-- <div class="roster-header">
       <h4>新建转正申请</h4>
-    </div>
+    </div> -->
+    <el-page-header
+      content="新建转正申请"
+      class="pageHeader"
+      @back="goBack"
+    />
     <basic-container>
       <el-form
         ref="apply"
@@ -141,12 +146,20 @@ export default {
     resetForm() {
       this.apply.advise = ''
       this.apply.summary = ''
+    },
+    goBack() {
+      this.$router.push('/personnel/administration/workerlist')
     }
   }
 }
 </script>
-
 <style lang="scss" scoped>
+.pageHeader {
+  height: 48px;
+  // padding: 0 24px;
+  line-height: 48px;
+  font-size: 18px;
+}
 .roster-header {
   display: flex;
   justify-content: space-between;
