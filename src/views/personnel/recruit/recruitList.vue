@@ -1,9 +1,28 @@
 <template>
   <div>
     <div class="roster-header">
-      <h4>
-        转正管理 (试用期员工共计<i>{{ numberofpersonnel }}</i>人)
-      </h4>
+      <el-row
+        style="width:100%;"
+        type="flex"
+        justify="center"
+        :gutter="24"
+      >
+        <el-col :span="6">
+          <el-button type="text">
+            我提交的招聘需求
+          </el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="text">
+            全部招聘需求
+          </el-button>
+        </el-col>
+        <el-col :span="3">
+          <el-button type="text">
+            新建招聘需求
+          </el-button>
+        </el-col>
+      </el-row>
     </div>
     <basic-container>
       <common-table
@@ -96,11 +115,11 @@
         </template>
       </common-table>
     </basic-container>
-    <adjust-edit
+    <!-- <adjust-edit
       ref="adjustEdit"
       :visible.sync="createOrgDailog"
       @getTableData="getTableData"
-    />
+    /> -->
   </div>
 </template>
 
@@ -110,14 +129,13 @@ import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
 import { getStaffList } from '@/api/personnel/person'
 import { getOrgJob } from '@/api/personnel/roster'
-import AdjustEdit from './components/adjustEdit'
+// import AdjustEdit from './components/adjustEdit'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
 export default {
   name: 'EmployeeRoster',
   components: {
-    SearchPopover,
-    AdjustEdit
+    SearchPopover
   },
   data() {
     return {
@@ -233,12 +251,6 @@ export default {
       },
       createOrgDailog: false,
       numberofpersonnel: 'xxx',
-      personStatistics: {
-        Formal: 0,
-        Try: 0,
-        WaitLeave: 0,
-        Leaved: 0
-      },
       number: 0,
       row: {},
       data: [],
@@ -356,14 +368,6 @@ export default {
       return this.getTableData(request)
     },
     handleEditRole(row) {
-      // let { status } = row
-      // if (status == '申请中' || status == '已退回') {
-      //   return this.$message({
-      //     showClose: true,
-      //     message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
-      //     type: 'warning'
-      //   })
-      // }
       this.$refs.adjustEdit.init(row)
     },
     jumpToDetail(personId) {

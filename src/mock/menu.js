@@ -469,7 +469,17 @@ const res = {
             path: '/personnel/administration/workerlist',
             icon: 'iconfont iconicon_doc'
           },
-
+          {
+            menuId: '126131436966690997876',
+            menuName: '我提交的招聘需求管理',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/recruitList',
+            icon: 'iconfont iconicon_compile'
+          },
           {
             menuId: '31212212454542',
             menuName: '面试登记表',

@@ -27,7 +27,7 @@ const options = { mock: false }
 
 user(options)
 
-menu(options)
+menu({ mock: true })
 
 candidate(options)
 selectPerson(options)
@@ -39,14 +39,13 @@ system(options)
 
 oauth(options)
 
-personnel(options)
+personnel({ mock: true })
 
 dict(options)
 
 role(options)
 
 personalInfo(options)
-personnel(options)
 
 org(options)
 transction(options)
