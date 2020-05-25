@@ -14,6 +14,6 @@ export const changeApply = (params) => {
   return request({
     url: '/user/v1/user/change/info',
     method: 'post',
-    params: params
+    data: params
   })
 }

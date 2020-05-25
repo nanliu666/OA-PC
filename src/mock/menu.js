@@ -444,7 +444,7 @@ const res = {
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
-            path: '/personnel/transaction/changeApply/:userId',
+            path: '/personnel/transaction/changeApply',
             icon: 'iconfont iconicon_compile'
           },
           {
@@ -513,6 +513,19 @@ const res = {
             alias: 'applyDetail',
             path: '/personnel/candidate/applyDetail',
             icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '80',
+            menuName: '离职管理',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'org_management',
+            alias: 'orgManagement',
+            path: '/personnel/leave/leaveList',
+            icon: 'iconfont iconicon_subordinate',
+            dataPrivileges: [],
+            children: []
           }
         ]
       }

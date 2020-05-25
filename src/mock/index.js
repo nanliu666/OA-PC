@@ -17,6 +17,7 @@ import person from './person'
 import menus from './menus'
 import candidate from './candidate'
 import selectPerson from './selectPerson'
+import leave from './leave'
 /**
  * 模拟数据mock
  *
@@ -49,6 +50,7 @@ personalInfo(options)
 personnel(options)
 
 org(options)
-transction({ mock: true })
+transction(options)
 
 person(options.mock)
+leave(options)
