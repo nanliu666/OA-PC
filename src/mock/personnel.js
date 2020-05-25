@@ -349,10 +349,10 @@ export default ({ mock }) => {
   // 全部招聘需求筛选接口
   Mock.mock(new RegExp('/user/v1/recruitment/all/list' + '.*'), 'post', () => {
     let list = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 18; i++) {
       list.push(
         Mock.mock({
-          id: '@increment',
+          id: 'ZP-@increment',
           orgId: 'GZ@increment',
           orgName: '百利宏',
           jobId: 'SZ@increment',
@@ -368,9 +368,9 @@ export default ({ mock }) => {
           candidateNum: '@integer(1, 100)',
           joinDate: '@date()',
           // 调用字典组
-          workYear: 'WorkYear',
+          workYear: '年-@increment',
           // 调用字典组
-          educationalLevel: 'EducationalLevel',
+          educationalLevel: '本科',
           minSalary: 'integer(5000, 10000)',
           maxSalary: 'integer(8000, 13000)',
           requirement: '测试全职-@increment',
@@ -393,13 +393,12 @@ export default ({ mock }) => {
     return recruitList
   })
 
-  // 我提交的招聘需求筛选接口
   Mock.mock(new RegExp('/user/v1/recruitment/submit/list' + '.*'), 'post', () => {
     let list = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       list.push(
         Mock.mock({
-          id: '@increment',
+          id: 'ZP-@increment',
           orgId: 'GZ@increment',
           orgName: '百利宏',
           jobId: 'SZ@increment',
@@ -415,7 +414,7 @@ export default ({ mock }) => {
           candidateNum: '@integer(1, 100)',
           joinDate: '@date()',
           // 调用字典组
-          workYear: 'WorkYear',
+          workYear: '年-@increment',
           // 调用字典组
           educationalLevel: 'EducationalLevel',
           minSalary: 'integer(5000, 10000)',
@@ -446,10 +445,10 @@ export default ({ mock }) => {
   // 我提交的招聘需求筛选接口
   Mock.mock(new RegExp('/user/v1/recruitment/my/list' + '.*'), 'post', () => {
     let list = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       list.push(
         Mock.mock({
-          id: '@increment',
+          id: 'ZP-@increment',
           orgId: 'GZ@increment',
           orgName: '百利宏',
           jobId: 'SZ@increment',
@@ -465,7 +464,7 @@ export default ({ mock }) => {
           candidateNum: '@integer(1, 100)',
           joinDate: '@date()',
           // 调用字典组
-          workYear: 'WorkYear',
+          workYear: '年-@increment',
           // 调用字典组
           educationalLevel: 'EducationalLevel',
           minSalary: 'integer(5000, 10000)',

@@ -27,6 +27,7 @@
           <el-button
             type="text"
             class="bigText"
+            @click="jumpToDetail"
           >
             新建招聘需求
           </el-button>
@@ -34,15 +35,59 @@
       </el-row>
     </div>
     <basic-container>
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-      >
+      <el-tabs v-model="activeName">
         <el-tab-pane
           label="招聘中"
-          name="Inrecruitment"
+          name="inrecruitment"
         >
-          用户管理
+          <common-table
+            :data="data"
+            :columns="columns"
+            @pageSizeChange="getTableData"
+            @currentPageChange="getTableData"
+          >
+            <template slot="topMenu">
+              <div class="flex-flow flex justify-content align-items ">
+                <div>
+                  <search-popover
+                    ref="searchPopover"
+                    :require-options="searchConfig.requireOptions"
+                    :popover-options="searchConfig.popoverOptions"
+                    @submit="handleSubmit"
+                  />
+                </div>
+                <div class="edge">
+                  <el-button
+                    type="primary"
+                    size="medium"
+                    @click="getTableData"
+                  >
+                    <i class="el-icon-refresh" />
+                  </el-button>
+                </div>
+              </div>
+            </template>
+            <template
+              v-if="scope.row.isDefault === 0"
+              slot="handler"
+              slot-scope="scope"
+            >
+              <el-button
+                type="text"
+                size="medium"
+                @click.stop="handleEdit(scope.row, scope.index)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="text"
+                size="medium"
+                @click.stop="handleDelete(scope.row, scope.index)"
+              >
+                删除
+              </el-button>
+            </template>
+          </common-table>
         </el-tab-pane>
         <el-tab-pane
           label="已结束"
@@ -51,121 +96,23 @@
           配置管理
         </el-tab-pane>
       </el-tabs>
-
-      <common-table
-        style="width: 100%"
-        :data="data"
-        :config="tableConfig"
-        :columns="columns"
-        @pageSizeChange="getTableData"
-        @currentPageChange="getTableData"
-      >
-        <template slot="topMenu">
-          <div class="flex-flow flex justify-content align-items ">
-            <div>
-              <search-popover
-                ref="searchPopover"
-                :require-options="searchConfig.requireOptions"
-                :popover-options="searchConfig.popoverOptions"
-                @submit="handleSubmit"
-              />
-            </div>
-            <div class="edge">
-              <el-button
-                type="primary"
-                size="medium"
-                @click="getTableData"
-              >
-                <i class="el-icon-refresh" />
-              </el-button>
-            </div>
-          </div>
-        </template>
-        <template
-          v-if="scope.row.isDefault === 0"
-          slot="handler"
-          slot-scope="scope"
-        >
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleEdit(scope.row, scope.index)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleDelete(scope.row, scope.index)"
-          >
-            删除
-          </el-button>
-        </template>
-        <template
-          slot="name"
-          slot-scope="{ row }"
-        >
-          <el-button
-            type="text"
-            size="medium"
-            @click="jumpToDetail(row.positionId)"
-          >
-            {{ row.name }}
-          </el-button>
-        </template>
-
-        <template
-          slot="formalDate"
-          slot-scope="{ row }"
-        >
-          <span>{{ row.formalDate }}</span>
-          <span :class="row.isSelect">{{ row.isOverdue }}</span>
-        </template>
-        <template
-          slot="probation"
-          slot-scope="{ row }"
-        >
-          {{ row.probation === 0 ? '无试用期' : `${row.probation}个月` }}
-        </template>
-
-        <template
-          slot="handler"
-          slot-scope="{ row }"
-        >
-          <el-button
-            size="medium"
-            type="text"
-            @click="handleEditRole(row)"
-          >
-            调整试用期
-          </el-button>
-        </template>
-      </common-table>
     </basic-container>
-    <!-- <adjust-edit
-      ref="adjustEdit"
-      :visible.sync="createOrgDailog"
-      @getTableData="getTableData"
-    /> -->
   </div>
 </template>
 
 <script>
-import moment from 'moment'
-import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getStaffList } from '@/api/personnel/person'
+import { getMyRecruitment } from '@/api/personnel/recruitment'
 import { getOrgJob } from '@/api/personnel/roster'
-// import AdjustEdit from './components/adjustEdit'
-import 'moment/locale/zh-cn'
-moment.locale('zh-cn')
+
 export default {
-  name: 'EmployeeRoster',
+  name: 'RecruitList',
   components: {
     SearchPopover
   },
   data() {
     return {
+      activeName: 'inrecruitment',
       searchConfig: {
         requireOptions: [
           {
@@ -277,48 +224,58 @@ export default {
         ]
       },
       createOrgDailog: false,
-      numberofpersonnel: 'xxx',
+      numberofpersonnel: null,
       number: 0,
       row: {},
       data: [],
-      tableConfig: {
-        showHandler: true
-      },
       columns: [
         {
-          label: '姓名',
-          prop: 'name',
-          slot: true
+          label: '需求编号',
+          prop: 'id'
         },
         {
-          label: '工号',
-          prop: 'workNo'
-        },
-        {
-          label: '转正申请状态',
-          prop: 'status'
-        },
-        {
-          label: '部门',
+          label: '用人部门',
           prop: 'orgName'
         },
         {
-          label: '职务',
+          label: '职位',
           prop: 'jobName'
         },
         {
-          label: '入职时间',
-          prop: 'entryDate'
+          label: '岗位',
+          prop: 'positionName'
         },
         {
-          label: '转正日期',
-          prop: 'formalDate',
-          slot: true
+          label: '需求人数',
+          prop: 'needNum'
         },
         {
-          label: '试用期',
-          prop: 'probation',
-          slot: true
+          label: '已入职人数',
+          prop: 'entryNum'
+        },
+        {
+          label: '候选人数',
+          prop: 'candidateNum'
+        },
+        {
+          label: '到岗日期',
+          prop: 'joinDate'
+        },
+        {
+          label: '工作年限',
+          prop: 'workYear'
+        },
+        {
+          label: '学历要求',
+          prop: 'educationalLevel'
+        },
+        {
+          label: '最低薪资',
+          prop: 'minSalary'
+        },
+        {
+          label: '最高薪酬',
+          prop: 'maxSalary'
         }
       ],
       params: {
@@ -329,83 +286,39 @@ export default {
   },
   created() {
     this.getTableData()
-    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
-    })
   },
   methods: {
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
-      let nowData = moment()
-        .locale('zh-cn')
-        .format('YYYY-MM-DD')
-      getStaffList(params).then((res) => {
-        let { data } = res
-        const isStatusArr = [
-          {
-            status: 'Try',
-            real: '试用期'
-          },
-          {
-            status: 'Formal',
-            real: '正式'
-          },
-          {
-            status: 'Leaved',
-            real: '已离职'
-          },
-          {
-            status: 'WaitLeave',
-            real: '待离职'
-          }
-        ]
-        data.forEach((item, index) => {
-          isStatusArr.forEach((StatusArr) => {
-            if (item.status === StatusArr.status) {
-              item.status = StatusArr.real
-            }
-          })
-
-          let isOverdue = moment(nowData).isBefore(item.formalDate)
-          if (isOverdue) {
-            data[index].isOverdue = ''
-            data[index].isSelect = ''
-          } else {
-            data[index].isOverdue = '逾期'
-            data[index].isSelect = 'isSelect'
-          }
-        })
+      getMyRecruitment(params).then((res) => {
         this.data = res.data
         this.numberofpersonnel = res.totalNum
       })
     },
-    handleSubmit(params) {
+
+    Decorator(paramsData) {
       let request = {
-        search: params.search || '',
+        search: paramsData.search || '',
         pageNo: 1,
         pageSize: 10,
-        orgs: [params.parentOrgId] || ' ',
-        jobs: [...params.jobs] || ' ',
-        probations: [params.probation] || ' '
+        orgs: [paramsData.parentOrgId] || ' ',
+        jobs: [...paramsData.jobs] || ' ',
+        probations: [paramsData.probation] || ' '
       }
-      request.beginEntryDate = params.beginEntryDate
-      request.endEntryDate = params.endEntryDate
-      request.beginFormalDate = params.beginFormalDate
-      request.endFormalDate = params.endFormalDate
+      request.beginEntryDate = paramsData.beginEntryDate
+      request.endEntryDate = paramsData.endEntryDate
+      request.beginFormalDate = paramsData.beginFormalDate
+      request.endFormalDate = paramsData.endFormalDate
+
+      return request
+    },
+
+    handleSubmit(params) {
+      let request = this.Decorator(params)
       return this.getTableData(request)
     },
-    handleEditRole(row) {
-      this.$refs.adjustEdit.init(row)
-    },
-    jumpToDetail(personId) {
-      this.$router.push(`/personnel/detail/${personId}`)
-    },
-    jumpApproval(Approvalcode) {
-      return this.$message({
-        showClose: true,
-        message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
-        type: 'warning'
-      })
+    jumpToDetail() {
+      this.$router.push('/personnel/recruit/recruitmentNeeds')
     }
   }
 }

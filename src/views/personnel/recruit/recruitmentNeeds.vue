@@ -173,12 +173,6 @@
                 :span="12"
               >
                 <el-form-item :label="'部门' + (index + 1)">
-                  <!-- <tree-select
-                    v-model="form.subOrg[index]"
-                    :option="orgOptions"
-                    :is-search="false"
-                    :is-single="true"
-                  />-->
                   <el-tree-select
                     ref="orgTree"
                     v-model="form.subOrg[index]"
@@ -218,16 +212,7 @@
                 />
               </el-col>
             </template>
-            <!-- <el-col :span="24">
-              <div class="addSubOrg">
-                <div
-                  style="width: 200px"
-                  @click="addSubOrgJob"
-                >
-                  <i class="el-icon-plus" />添加附属部门及职位
-                </div>
-              </div>
-            </el-col> -->
+
             <el-col :span="12">
               <el-form-item label="岗位">
                 <el-select
