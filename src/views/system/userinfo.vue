@@ -134,7 +134,7 @@
                   </el-radio>
                   <el-radio
                     v-model="perosonnalInfo.sex"
-                    :label="2"
+                    :label="0"
                   >
                     女
                   </el-radio>
@@ -306,7 +306,7 @@
 
 <script>
 import emergencyMembers from './userCenter/emergencyMembers.vue'
-import { validateName, isEmail, validataBankCard } from '@/util/validate'
+import { validateName, isEmailReg, validataBankCard } from '@/util/validate'
 import { getStaffBasicInfo, editStaffBasicInfo } from '../../api/personalInfo'
 import { mapGetters } from 'vuex'
 import { regionData } from 'element-china-area-data'
@@ -355,7 +355,7 @@ export default {
               validator: (rule, value, callback) => {
                 if (!value) {
                   callback(new Error('请输入邮箱'))
-                } else if (value && !isEmail(value)) {
+                } else if (value && !isEmailReg(value)) {
                   callback(new Error('邮箱格式有误'))
                 } else {
                   callback()

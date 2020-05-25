@@ -241,6 +241,7 @@ export default {
               relationship: item.relationship
             }
             addStaffEmerInfo(params).then(() => {
+              this.getEmergencyList()
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -248,14 +249,13 @@ export default {
             })
           } else {
             editStaffEmerInfo(item).then(() => {
+              this.getEmergencyList()
               this.$message({
                 type: 'success',
                 message: '修改成功'
               })
             })
           }
-
-          this.getEmergencyList()
         }
       })
     },

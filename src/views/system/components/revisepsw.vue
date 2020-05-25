@@ -18,6 +18,7 @@
         >
           <el-form-item
             label="旧密码"
+            type="password"
             prop="oldPassword"
           >
             <span
@@ -28,6 +29,8 @@
             </span>
             <el-input
               v-model="form.oldPassword"
+              type="password"
+              show-password
               placeholder="请输入旧密码"
             />
           </el-form-item>
@@ -41,6 +44,7 @@
             <el-input
               v-model="form.newPassword"
               placeholder="请输入新密码"
+              type="password"
               show-password
               @input="inputPassword($event, format[1])"
             />
@@ -55,6 +59,7 @@
             <el-input
               v-model="form.confirmPassword"
               placeholder="请输入确认密码"
+              type="password"
               show-password
               @input="inputPassword($event, format[2])"
             />
