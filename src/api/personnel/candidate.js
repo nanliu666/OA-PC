@@ -47,5 +47,5 @@ export const getPersonInfo = (params) => {
 
 // 人员动态查询
 export const getPersonRecord = (params) => {
-  return get('/api/user/v1/person/record', params)
+  return get('/api/log/v1/person/record', params)
 }

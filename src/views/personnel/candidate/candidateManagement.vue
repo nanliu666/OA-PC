@@ -374,6 +374,30 @@
           {{ row.provinceName + row.cityName }}
         </template>
         <template
+          slot="educationalLevel"
+          slot-scope="{ row }"
+        >
+          {{ educationalDict[row.educationalLevel] }}
+        </template>
+        <template
+          slot="recruitment"
+          slot-scope="{ row }"
+        >
+          {{ recruitmentChannel[row.recruitment] }}
+        </template>
+        <template
+          slot="monthSalary"
+          slot-scope="{ row }"
+        >
+          {{ row.monthSalary / 1000 + 'K' }}
+        </template>
+        <template
+          slot="createTime"
+          slot-scope="{ row }"
+        >
+          {{ row.createTime.split(' ')[0] }}
+        </template>
+        <template
           slot="handler"
           slot-scope="{ row }"
         >
@@ -634,7 +658,8 @@ const column = [
   },
   {
     label: '用人部门',
-    prop: 'orgName'
+    prop: 'orgName',
+    width: 120
   },
   {
     label: '招聘负责人',
@@ -653,32 +678,39 @@ const column = [
   {
     label: '性别',
     prop: 'sex',
-    slot: true
+    slot: true,
+    width: 50
   },
   {
     label: '年龄',
-    prop: 'age'
+    prop: 'age',
+    width: 50
   },
   {
     label: '手机号',
-    prop: 'phonenum'
+    prop: 'phonenum',
+    width: 120
   },
   {
     label: '邮箱',
-    prop: 'email'
+    prop: 'email',
+    width: 180
   },
   {
     label: '目前所在地',
     prop: 'provinceCode',
-    slot: true
+    slot: true,
+    width: 150
   },
   {
     label: '最高学历',
-    prop: 'educationalLevel'
+    prop: 'educationalLevel',
+    slot: true
   },
   {
     label: '毕业学校',
-    prop: 'university'
+    prop: 'university',
+    width: 130
   },
   {
     label: '毕业专业',
@@ -690,23 +722,30 @@ const column = [
   },
   {
     label: '最近工作单位',
-    prop: 'lastCompany'
+    prop: 'lastCompany',
+    width: 150
   },
   {
     label: '应聘渠道',
-    prop: 'recruitment'
+    prop: 'recruitment',
+    slot: true,
+    width: 100
   },
   {
     label: '期望月薪',
-    prop: 'monthSalary'
+    prop: 'monthSalary',
+    slot: true
   },
   {
     label: '备注',
-    prop: 'remark'
+    prop: 'remark',
+    width: 200
   },
   {
     label: '候选人添加时间',
-    prop: 'createTime'
+    prop: 'createTime',
+    slot: true,
+    width: 100
   }
 ]
 
@@ -779,7 +818,7 @@ export default {
         enablePagination: true,
         uniqueKey: 'personId',
         highlightSelect: true,
-        showIndexColumn: true,
+        showIndexColumn: false,
         handlerColumn: {
           width: 250
         }
@@ -864,6 +903,8 @@ export default {
           }
         ]
       },
+      educationalDict: {},
+      recruitmentChannel: {},
       weedOutgDialog: false,
       pushAuditDialog: false,
       changeJobDialog: false
@@ -873,6 +914,14 @@ export default {
     this.getCandidateStatus()
     this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
       this.searchConfig.popoverOptions[2].options = res
+      res.forEach((item) => {
+        this.recruitmentChannel[item.dictKey] = item.dictValue
+      })
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      res.forEach((item) => {
+        this.educationalDict[item.dictKey] = item.dictValue
+      })
     })
     getOrgJob().then((res) => {
       this.searchConfig.popoverOptions[0].options = res
@@ -1032,6 +1081,7 @@ export default {
     },
     tabClick(status) {
       this.tabStatus = status
+      this.page.currentPage = 1
       this.$refs['searchPopover'].resetForm()
       this.$refs.commonTable.clearSelection()
       this.loadData()
