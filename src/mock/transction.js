@@ -36,12 +36,32 @@ export default ({ mock }) => {
       }
     }
   })
+  //人事筛选
   Mock.mock(new RegExp('/user/v1/user/change/info' + '.*'), 'post', () => {
     return {
       response: {
-        resCode: '状态码',
-        resMsg: '描述',
         response: 'ok'
+      }
+    }
+  })
+  // 获取员工信息
+  Mock.mock(new RegExp('/user/v1/user/info' + '.*'), 'get', () => {
+    return {
+      response: {
+        userId: '20200426',
+        name: '张无忌',
+        workNo: '123',
+        reason: '',
+        companyName: '易宝广州分公司',
+        orgName: '百利宏OA',
+        jobName: '开发工程师',
+        positionName: '前端开发工程师',
+        effectDate: '',
+        remark: '',
+        companyId: '1252523599903072259',
+        orgId: '1262951869450633218',
+        jobId: '1262996469389250561',
+        positionId: '1262997402550587393'
       }
     }
   })

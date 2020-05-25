@@ -316,7 +316,7 @@
 import { provinceAndCityData } from 'element-china-area-data'
 import {
   getPersonInfo,
-  getRecruitment,
+  getRecruitmentList,
   createTalent,
   createCandidate,
   modifyPerson
@@ -431,11 +431,14 @@ export default {
       return true
     },
     getRecruitment() {
-      getRecruitment().then((res) => {
+      getRecruitmentList().then((res) => {
         this.recruitmentList = res
       })
     },
     getPersonInfo() {
+      if (!this.personId) {
+        return
+      }
       getPersonInfo(this.personId).then((data) => {
         this.form = {
           orgName: this.form.orgName,
@@ -495,14 +498,22 @@ export default {
         params.cityName = inputValue[1]
         submitFunc(params).then(() => {
           this.$message.success('提交成功')
-          if (shouldContinue) {
-            this.form = this.$options.data().form
-            setTimeout(() => {
-              this.$refs.form.clearValidate()
-            })
+          this.clear()
+          if (!shouldContinue) {
+            this.goBack()
           }
         })
       })
+    },
+    clear() {
+      this.form = this.$options.data().form
+      setTimeout(() => {
+        this.$refs.form.clearValidate()
+      })
+    },
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }

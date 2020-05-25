@@ -1,4 +1,4 @@
-import { get, post } from '@/router/axios'
+import { get, post, put } from '@/router/axios'
 
 // 候选人统计
 export const getCandidateStatusStat = (params) => {
@@ -48,4 +48,43 @@ export const getPersonInfo = (params) => {
 // 人员动态查询
 export const getPersonRecord = (params) => {
   return get('/api/log/v1/person/record', params)
+}
+
+/**
+ * offer查询接口
+ * @param {String} personId - 人员ID
+ * */
+export const getOfferInfo = (personId) => {
+  return get('/user/v1/candidate/offer', { personId })
+}
+
+/**
+ * offer新建接口
+ * @param {Object} params
+ * */
+export const createOffer = (params) => {
+  return post('/user/v1/candidate/offer', params)
+}
+
+/**
+ * offer编辑接口
+ * @param {Object} params
+ * */
+export const modifyOffer = (params) => {
+  return put('/user/v1/candidate/offer', params)
+}
+
+/**
+ * offer发送接口
+ * @param {Object} params
+ * */
+export const sendOffer = (params) => {
+  return post('/user/v1/candidate/offer/send', params)
+}
+/**
+ * 录用申请查询接口
+ * @param {String} personId - 人员ID
+ * */
+export const getOfferApply = (personId) => {
+  return get('/user/v1/candidate/offer/apply', { personId })
 }

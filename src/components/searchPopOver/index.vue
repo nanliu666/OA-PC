@@ -418,7 +418,10 @@ export default {
               params[item.field] = item.data
             }
           } else if (item.type === 'cascader') {
-            params[item.field] = item.data[item.data.length - 1]
+            // params[item.field] = item.data[item.data.length - 1]
+            item.field.split(',').forEach((it, idx) => {
+              params[it] = item.data[idx]
+            })
           } else if (item.type === 'dataPicker') {
             item.field.split(',').forEach((it, idx) => {
               params[it] = item.data[idx]

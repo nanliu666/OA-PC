@@ -4,15 +4,19 @@
     class="detail-contain"
   >
     <page-header
-      title="候选人详情"
+      :title="isTalent ? '人才库详情' : '候选人详情'"
       :show-back="true"
     />
+    <!--人才库详情不展示招聘需求相关信息-->
     <div class="personTitle">
       <div class="left">
         <div class="orgJob">
           {{ personInfo.orgName || '' }} — {{ personInfo.jobName || '' }}
         </div>
-        <div class="status">
+        <div
+          v-if="!isTalent"
+          class="status"
+        >
           {{ statusWord[personInfo.status] }}
         </div>
       </div>
@@ -500,6 +504,7 @@ import {
   acceptCandidateOffer,
   changeCandidateOffer
 } from '@/api/personnel/candidate'
+import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 
 export default {
   name: 'Detail',
@@ -522,10 +527,13 @@ export default {
       weedOutgDialog: false,
       pushAuditDialog: false,
       changeJobDialog: false,
-      loading: false
+      loading: false,
+      personId: null,
+      isTalent: null
     }
   },
   created() {
+    this.personId = this.$route.params.personId
     this.getPersonInfo()
     this.getPersonRecord()
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
@@ -540,6 +548,8 @@ export default {
     })
   },
   activated() {
+    this.personId = this.$route.params.personId
+    this.isTalent = this.$route.query.isTalent
     // this.getPersonInfo()
     // this.getPersonRecord()
   },
@@ -549,13 +559,29 @@ export default {
       this.getPersonRecord()
     },
     getPersonInfo() {
-      getPersonInfo({ personId: this.$route.params.personId }).then((res) => {
+      getPersonInfo({ personId: this.personId }).then((res) => {
         this.personInfo = res
+        if (!res.recruitmentId) {
+          this.getRecruitmentDetail()
+        }
       })
     },
     getPersonRecord() {
-      getPersonRecord({ personId: this.$route.params.personId }).then((res) => {
+      getPersonRecord({ personId: this.personId }).then((res) => {
         this.stepsData = res
+      })
+    },
+    // 获取招聘需求
+    getRecruitmentDetail() {
+      if (!this.$route.query.recruitmentId) {
+        return
+      }
+      getRecruitmentDetail(this.$route.query.recruitmentId).then((res) => {
+        Object.assign(this.personId, {
+          recruitmentId: res.recruitmentId,
+          jobName: res.jobName,
+          orgName: res.orgName
+        })
       })
     },
     hadlePushAudit() {
@@ -576,7 +602,7 @@ export default {
           type: 'warning'
         }).then(() => {
           const params = {
-            personId: this.personInfo.personId,
+            personId: this.personId,
             userId: this.$store.state.user.userInfo.user_id
           }
           this.loading = true
@@ -587,7 +613,7 @@ export default {
           })
         })
       } else if (command === 'edit') {
-        this.$router.push('/personnel/editPerson?personId=' + this.personInfo.personId)
+        this.$router.push('/personnel/editPerson?personId=' + this.personId)
       } else if (command === 'toRegistrationForm') {
         this.$router.push('/personnel/candidate/registrationForm')
       }
@@ -600,7 +626,7 @@ export default {
       }).then(() => {
         const params = {
           recruitmentId: this.personInfo.recruitmentId,
-          personId: this.personInfo.personId,
+          personId: this.personId,
           userId: this.$store.state.user.userInfo.user_id
         }
         this.loading = true

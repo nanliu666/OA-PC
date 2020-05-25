@@ -48,7 +48,7 @@
                 prop="phonenum"
               >
                 <el-input
-                  v-model.number="form.phonenum"
+                  v-model="form.phonenum"
                   maxlength="11"
                 />
               </el-form-item>

@@ -9,12 +9,10 @@
       <common-table
         style="width: 100%"
         :data="data"
-        :page="page"
-        :loading="loading"
         :config="tableConfig"
         :columns="columns"
-        @pageSizeChange="sizeChange"
-        @currentPageChange="currentChange"
+        @pageSizeChange="getTableData"
+        @currentPageChange="getTableData"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">
@@ -30,28 +28,12 @@
               <el-button
                 type="primary"
                 size="medium"
-                @click="handleExport"
-              >
-                <i class="el-icon-upload2" /> 导出
-              </el-button>
-              <el-button
-                type="primary"
-                size="medium"
-                @click="getData"
+                @click="getTableData"
               >
                 <i class="el-icon-refresh" />
               </el-button>
             </div>
           </div>
-        </template>
-        <template
-          slot="multiSelectMenu"
-          slot-scope="{ selection }"
-        >
-          <span class="all">
-            <span @click="handlerDeleteAll(selection)"><i class="el-icon-delete" /> 批量删除</span>
-            <span><i class="el-icon-folder" /> 批量导出</span>
-          </span>
         </template>
         <template
           v-if="scope.row.isDefault === 0"
@@ -73,6 +55,32 @@
             删除
           </el-button>
         </template>
+        <template
+          slot="name"
+          slot-scope="{ row }"
+        >
+          <el-button
+            type="text"
+            size="medium"
+            @click="jumpToDetail(row.positionId)"
+          >
+            {{ row.name }}
+          </el-button>
+        </template>
+
+        <template
+          slot="formalDate"
+          slot-scope="{ row }"
+        >
+          <span>{{ row.formalDate }}</span>
+          <span :class="row.isSelect">{{ row.isOverdue }}</span>
+        </template>
+        <template
+          slot="probation"
+          slot-scope="{ row }"
+        >
+          {{ row.probation === 0 ? '无试用期' : `${row.probation}个月` }}
+        </template>
 
         <template
           slot="handler"
@@ -85,24 +93,31 @@
           >
             调整试用期
           </el-button>
-          <el-dropdown
-            style="float:right;"
-            @command="(command) => handleCommand(command, row)"
-          />
         </template>
       </common-table>
     </basic-container>
+    <adjust-edit
+      ref="adjustEdit"
+      :visible.sync="createOrgDailog"
+      @getTableData="getTableData"
+    />
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+import { getOrgTreeSimple } from '@/api/org/org'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getStaffList, getUserStatusStat } from '@/api/personnel/roster'
-
+import { getStaffList } from '@/api/personnel/person'
+import { getOrgJob } from '@/api/personnel/roster'
+import AdjustEdit from './components/adjustEdit'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 export default {
   name: 'EmployeeRoster',
   components: {
-    SearchPopover
+    SearchPopover,
+    AdjustEdit
   },
   data() {
     return {
@@ -110,12 +125,24 @@ export default {
         requireOptions: [
           {
             type: 'input',
-            field: 'parentOrgId',
+            field: 'search',
             label: '',
             data: [],
+            month: [],
+            config: {
+              placeholder: '姓名/工号'
+            }
+          }
+        ],
+        popoverOptions: [
+          {
+            type: 'treeSelect',
+            field: 'parentOrgId',
+            label: '部门',
+            data: '',
             config: {
               selectParams: {
-                placeholder: '姓名/工号',
+                placeholder: '请输入内容',
                 multiple: false
               },
               treeParams: {
@@ -133,66 +160,62 @@ export default {
                 }
               }
             }
-          }
-        ],
-        popoverOptions: [
-          {
-            type: 'select',
-            field: 'orgSelect',
-            label: '部门',
-            data: '',
-            options: [
-              { value: 'Enterprise', label: '企业' },
-              { value: 'Company', label: '公司' },
-              { value: 'Department', label: '部门' },
-              { value: 'Group', label: '小组' }
-            ],
-            config: { optionLabel: '请选择', optionValue: '' }
           },
           {
             type: 'select',
-            field: 'orgCompany',
             data: '',
             label: '职位',
-            options: [
-              { value: 'Enterprise', label: 'java开发' },
-              { value: 'Company', label: 'web前端' },
-              { value: 'Department', label: '开发负责人' },
-              { value: 'Group', label: '地域总监' }
-            ],
-            config: { optionLabel: '请选择', optionValue: '' }
+            field: 'jobs',
+            arrField: 'jobId',
+            config: { multiple: true, optionLabel: 'jobName', optionValue: 'jobId' },
+            options: [],
+            loading: false,
+            noMore: false,
+            firstLoad(flag, item) {
+              if (flag && item.options.length === 0) {
+                item.loadMoreFun(item)
+              }
+            },
+            loadMoreFun(item) {
+              if (item.loading || item.noMore) return
+              item.loading = true
+              getOrgJob().then((res) => {
+                if (res.length > 0) {
+                  item.options.push(...res)
+                  item.noMore = true
+                }
+              })
+            }
           },
           {
-            type: 'timePicker',
-            field: 'userEntry',
+            type: 'dataPicker',
             data: '',
             label: '入职日期',
-            options: [],
-            config: { optionLabel: 'name', optionValue: 'userEntry' },
-            loading: false,
-            pageNo: 2
+            field: 'beginEntryDate,endEntryDate',
+            config: { type: 'daterange', 'range-separator': '至' }
           },
           {
-            type: 'timePicker',
-            field: 'userId',
+            type: 'dataPicker',
             data: '',
             label: '转正日期',
-            options: [],
-            config: { optionLabel: 'name', optionValue: 'userId' },
-            loading: false,
-            pageNo: 2
+            field: 'beginFormalDate,endFormalDate',
+            config: { type: 'daterange', 'range-separator': '至' }
           },
           {
             type: 'select',
-            field: 'onTrial',
+            field: 'probation',
             data: '',
             label: '试用期',
             options: [
-              { value: '一个月', label: 'onemonth' },
-              { value: '两个月', label: 'towmonth' },
-              { value: '三个月', label: 'threemonths' }
+              { label: '无试用期', value: 0 },
+              { label: '一个月', value: 1 },
+              { label: '两个月', value: 2 },
+              { label: '三个月', value: 3 },
+              { label: '四个月', value: 4 },
+              { label: '五个月', value: 5 },
+              { label: '六个月', value: 6 }
             ],
-            config: { optionLabel: '请选择', optionValue: '' }
+            config: {}
           },
           {
             type: 'select',
@@ -200,62 +223,41 @@ export default {
             data: '',
             label: '申请状态',
             options: [
-              { value: '已通过', label: 'onemonth' },
-              { value: '已拒绝', label: 'towmonth' },
-              { value: '申请中', label: 'threemonths' }
+              { label: '未申请', value: 0 },
+              { label: '已驳回', value: 1 },
+              { label: '申请中', value: 2 }
             ],
-            config: { optionLabel: '请选择', optionValue: '' }
+            config: {}
           }
         ]
       },
+      createOrgDailog: false,
       numberofpersonnel: 'xxx',
-      tabStatus: 'onJob',
-      statusWord: {
-        onJob: '在职',
-        Formal: '正式',
-        Try: '试用期',
-        WaitLeave: '待离职',
-        Leaved: '已离职'
-      },
       personStatistics: {
         Formal: 0,
         Try: 0,
         WaitLeave: 0,
         Leaved: 0
       },
-      form: {
-        name: ''
-      },
-      loading: false,
-      isEdit: false,
-      title: '新建职位类别',
-      categoryDialog: false,
-      dialogVisible: false,
-      isBatch: false,
-      show: true,
       number: 0,
       row: {},
       data: [],
       tableConfig: {
-        showHandler: true,
-        enableMultiSelect: true
+        showHandler: true
       },
       columns: [
         {
           label: '姓名',
-          prop: 'name'
+          prop: 'name',
+          slot: true
         },
         {
           label: '工号',
           prop: 'workNo'
         },
         {
-          label: '转正状态申请',
+          label: '转正申请状态',
           prop: 'status'
-        },
-        {
-          label: '审批编号',
-          prop: 'workNum'
         },
         {
           label: '部门',
@@ -267,90 +269,112 @@ export default {
         },
         {
           label: '入职时间',
-          prop: 'companyDate'
+          prop: 'entryDate'
         },
         {
           label: '转正日期',
-          prop: 'formalDate'
+          prop: 'formalDate',
+          slot: true
         },
         {
           label: '试用期',
-          prop: 'probation'
+          prop: 'probation',
+          slot: true
         }
       ],
-      page: {
-        pageSize: 10,
-        pagerCount: 1,
-        total: 10
-      },
       params: {
         pageNo: 1,
-        pageSize: 10,
-        name: ''
+        pageSize: 10
       }
     }
   },
   created() {
-    this.getTableData(1)
-    this.getUserStatusStat()
+    this.getTableData()
+    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+      this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
+    })
   },
   methods: {
-    toUserDetail(row) {
-      this.$router.push('/personnel/detail/' + row.userId)
-    },
-    getUserStatusStat() {
-      getUserStatusStat().then((res) => {
-        res.forEach((item) => {
-          this.personStatistics[item.status] = item.statusNum
-        })
-      })
-    },
-    tabClick(status) {
-      this.tabStatus = status
-      this.$refs.searchComponent.resetForm()
-      this.searchParams = {}
-      this.getTableData(1)
-    },
-    handleCommand(command, row) {
-      if (command === 'add') {
-        this.$router.push('/personnel/addRoster')
-      }
-      // eslint-disable-next-line no-console
-      console.log(command, row)
-    },
-    getTableData(pageNo) {
-      const params = {
-        pageNo: pageNo || this.page.currentPage,
-        pageSize: this.page.pageSize,
-        ...this.searchParams
-      }
-
+    getTableData(params) {
+      if (typeof params === 'undefined') params = this.params
+      let nowData = moment()
+        .locale('zh-cn')
+        .format('YYYY-MM-DD')
       getStaffList(params).then((res) => {
+        let { data } = res
+        const isStatusArr = [
+          {
+            status: 'Try',
+            real: '试用期'
+          },
+          {
+            status: 'Formal',
+            real: '正式'
+          },
+          {
+            status: 'Leaved',
+            real: '已离职'
+          },
+          {
+            status: 'WaitLeave',
+            real: '待离职'
+          }
+        ]
+        data.forEach((item, index) => {
+          isStatusArr.forEach((StatusArr) => {
+            if (item.status === StatusArr.status) {
+              item.status = StatusArr.real
+            }
+          })
+
+          let isOverdue = moment(nowData).isBefore(item.formalDate)
+          if (isOverdue) {
+            data[index].isOverdue = ''
+            data[index].isSelect = ''
+          } else {
+            data[index].isOverdue = '逾期'
+            data[index].isSelect = 'isSelect'
+          }
+        })
         this.data = res.data
-        this.numberofpersonnel = res.data.length
-        if (pageNo) this.page.currentPage = pageNo
+        this.numberofpersonnel = res.totalNum
       })
     },
-    handleSearch(params) {
-      this.searchParams = params
-      this.getTableData(1)
+    handleSubmit(params) {
+      let request = {
+        search: params.search || '',
+        pageNo: 1,
+        pageSize: 10,
+        orgs: [params.parentOrgId] || ' ',
+        jobs: [...params.jobs] || ' ',
+        probations: [params.probation] || ' '
+      }
+      request.beginEntryDate = params.beginEntryDate
+      request.endEntryDate = params.endEntryDate
+      request.beginFormalDate = params.beginFormalDate
+      request.endFormalDate = params.endFormalDate
+      return this.getTableData(request)
     },
-    sizeChange() {
-      this.getTableData(1)
-    },
-    currentChange() {
-      this.getTableData()
-    },
-    // 导出事件
-    handleExport() {},
-    // 事件判定
-    handleSubmit() {},
-    // 删除事件
-    handlerDeleteAll() {},
-    // 调整员工试用时间
     handleEditRole(row) {
-      // eslint-disable-next-line no-console
-      console.log('查看引用..............', row)
+      // let { status } = row
+      // if (status == '申请中' || status == '已退回') {
+      //   return this.$message({
+      //     showClose: true,
+      //     message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
+      //     type: 'warning'
+      //   })
+      // }
+      this.$refs.adjustEdit.init(row)
+    },
+    jumpToDetail(personId) {
+      this.$router.push(`/personnel/detail/${personId}`)
+    },
+    jumpApproval(Approvalcode) {
+      return this.$message({
+        showClose: true,
+        message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
+        type: 'warning'
+      })
     }
   }
 }
@@ -427,5 +451,25 @@ export default {
 .edge {
   position: absolute;
   right: 59px;
+}
+
+.beBverdue {
+  position: absolute;
+  right: 59px;
+}
+
+.isSelect {
+  color: #f56c6c;
+  margin-left: 6px;
+  padding: 4px;
+  background-color: #fff;
+  border: 1px solid #f56c6c;
+  border-color: #f56c6c;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
 }
 </style>
