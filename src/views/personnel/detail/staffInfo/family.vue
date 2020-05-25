@@ -327,6 +327,7 @@ export default {
           if (this.type == 'add') {
             item.userId = this.$route.params.userId
             addStaffFamilyInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -339,6 +340,7 @@ export default {
               delete item.userId
             }
             editStaffFamilyInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -347,7 +349,6 @@ export default {
               })
             })
           }
-          this.getBasicInfo()
         }
       })
     },

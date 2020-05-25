@@ -402,6 +402,7 @@ export default {
           if (this.type == 'add') {
             item.userId = this.$route.params.userId
             addStaffEducationInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -414,6 +415,7 @@ export default {
               delete item.userId
             }
             editStaffEducationInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -422,8 +424,6 @@ export default {
               })
             })
           }
-
-          this.getBasicInfo()
         }
       })
     },

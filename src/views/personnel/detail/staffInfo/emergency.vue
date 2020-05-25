@@ -243,6 +243,7 @@ export default {
               relationship: item.relationship
             }
             addStaffEmerInfo(params).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -252,6 +253,7 @@ export default {
             })
           } else {
             editStaffEmerInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -260,7 +262,6 @@ export default {
               })
             })
           }
-          this.getBasicInfo()
         }
       })
     },
