@@ -125,3 +125,13 @@ export const getMyRecruitment = (params) => {
 export const getMyScreen = (params) => {
   return post('/user/v1/recruitment/my/list', params)
 }
+
+/**
+ *  招聘任务修改接口
+ * @param {String} recruitmentId -招聘需求ID
+ * @param {int} users.taskNum -指定招聘人员ID
+ * @param {String} users.operatorType -操作类型，Add-新增，Update-修改限
+ * */
+export const putTask = (params) => {
+  return put('/user/v1/recruitment/task', params)
+}

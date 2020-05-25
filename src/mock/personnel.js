@@ -431,7 +431,7 @@ export default ({ mock }) => {
         })
       )
     }
-    const recruitList = {
+    const submitList = {
       resCode: 200,
       resMsg: '申请成功',
       response: {
@@ -440,7 +440,7 @@ export default ({ mock }) => {
         data: list
       }
     }
-    return recruitList
+    return submitList
   })
 
   // 我提交的招聘需求筛选接口
@@ -482,7 +482,7 @@ export default ({ mock }) => {
         })
       )
     }
-    const recruitList = {
+    const myList = {
       resCode: 200,
       resMsg: '申请成功',
       response: {
@@ -491,11 +491,10 @@ export default ({ mock }) => {
         data: list
       }
     }
-    return recruitList
+    return myList
   })
 
   // 我提交的招聘需求筛选接口
-
   Mock.mock(new RegExp('/user/v1/recruitment/task' + '.*'), 'put', () => {
     const taskList = {
       resCode: 200,
