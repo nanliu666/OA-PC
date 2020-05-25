@@ -54,6 +54,7 @@
                   size="small"
                   auto-complete="off"
                   :placeholder="$t('login.phone')"
+                  @focus="resetIdentityFields('phone')"
                 />
               </el-form-item>
 
@@ -67,6 +68,7 @@
                   size="small"
                   auto-complete="off"
                   :placeholder="$t('login.code')"
+                  @focus="resetIdentityFields('code')"
                 />
                 <el-button
                   v-show="!identity.msgKey"
@@ -114,9 +116,10 @@
                   v-model="password.form.newPW"
                   class="newPW-input"
                   type="password"
-                  autofocus
-                  size="small"
+                  autofocus="true"
+                  show-password
                   auto-complete="off"
+                  @focus="resetPSWFields('newPW')"
                 />
               </el-form-item>
 
@@ -128,8 +131,10 @@
                   v-model="password.form.surePW"
                   class="surePW-input"
                   type="password"
-                  size="small"
+                  autofocus="true"
+                  show-password
                   auto-complete="off"
+                  @focus="resetPSWFields('surePW')"
                 />
               </el-form-item>
             </el-form>
@@ -177,6 +182,7 @@
 import { isMobile, validatePW } from '@/util/validate'
 import { getCode, checkPhoneCode, checkPassword } from '../../api/personalInfo.js'
 import { mapGetters } from 'vuex'
+import md5 from 'js-md5'
 let code = null
 
 export default {
@@ -204,10 +210,10 @@ export default {
     }
 
     const validateNewPW = (rule, value, callback) => {
-      if (!_this.password.form.newPW) {
-        callback(new Error('请按照个密码格式要求输入密码'))
+      if (value.length < 6) {
+        callback(new Error('密码不能少于6个字符'))
       } else if (_this.password.form.newPW && !validatePW(value)) {
-        callback(new Error('输入密码格式不正确'))
+        callback(new Error('密码必须包含字母，符号或数字中至少两项'))
       } else {
         callback()
       }
@@ -264,10 +270,20 @@ export default {
             {
               required: true,
               trigger: 'blur',
+              message: '请输入新密码'
+            },
+            {
+              required: true,
+              trigger: 'blur',
               validator: validateNewPW
             }
           ],
           surePW: [
+            {
+              required: true,
+              trigger: 'blur',
+              message: '请再次输入密码'
+            },
             {
               required: true,
               trigger: 'blur',
@@ -293,6 +309,12 @@ export default {
     this.identity.msgTime = this.config.MSGTIME
   },
   methods: {
+    resetIdentityFields(name) {
+      this.$refs['identity'].clearValidate([name])
+    },
+    resetPSWFields(name) {
+      this.$refs['password'].clearValidate([name])
+    },
     gobackLogin() {
       this.$router.push({ path: '/login' })
     },
@@ -315,9 +337,10 @@ export default {
       } else if (this.step == 2) {
         this.$refs['password'].validate((isPass) => {
           if (isPass && this.password.form.surePW == this.password.form.newPW) {
+            let newpsw = this.password.form.newPW
             let params = {
               userId: this.userInfo.user_id,
-              newPassword: this.password.form.newPW
+              newPassword: md5(newpsw)
             }
             checkPassword(params).then(() => {
               this.step++
