@@ -95,3 +95,33 @@ export const getOperation = (params) => {
 export const putProbation = (params) => {
   return put('/user/v1/user/formal/probation', params)
 }
+
+/**
+ *  全部招聘需求筛选接口
+ * @param {String} jobName - 	职位名称。模糊查询
+ * @param {String} orgId - 	用人部门ID
+ * @param {String} positionId - 岗位ID
+ * */
+export const getAllRecruitment = (params) => {
+  return post('/user/v1/recruitment/all/list', params)
+}
+
+/**
+ *  我提交的招聘需求筛选接口
+ * @param {String} jobName - 用人部门ID
+ * @param {String} progress -需求进度
+ * @param {String} userId - 	提交人ID
+ * */
+export const getMyRecruitment = (params) => {
+  return post('/user/v1/recruitment/submit/list', params)
+}
+
+/**
+ *  我的招聘需求筛选接口
+ * @param {String} jobName - 	职位名称。模糊查询
+ * @param {String} positionId - 		岗位ID
+ * @param {String} workYear -	工作年限
+ * */
+export const getMyScreen = (params) => {
+  return post('/user/v1/recruitment/my/list', params)
+}
