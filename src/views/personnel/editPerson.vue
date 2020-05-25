@@ -347,7 +347,7 @@ export default {
         resume: [],
         attachment: [],
         remark: '',
-        orgName: null
+        orgName: ''
       },
       rules: {
         recruitmentId: [{ required: true, message: '请选择招聘需求', trigger: 'change' }],
@@ -390,11 +390,11 @@ export default {
   watch: {
     'form.recruitmentId': function(val) {
       if (val) {
-        this.form.orgName = this.recruitmentList.find((item) => item.id === val).orgName
+        this.form.orgName = (this.recruitmentList.find((item) => item.id === val) || {}).orgName
       }
     }
   },
-  created() {
+  async created() {
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
       this.educationalLevelOptions = res
     })
@@ -403,12 +403,13 @@ export default {
     })
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
-    this.getRecruitment()
+    await this.getRecruitment()
+    this.personId && this.getPersonInfo()
   },
   activated() {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
-    this.getPersonInfo()
+    this.personId && this.getPersonInfo()
   },
   methods: {
     inputNumber(value, key) {
@@ -440,6 +441,7 @@ export default {
       }
       getPersonInfo(this.personId).then((data) => {
         this.form = {
+          orgName: this.form.orgName,
           name: data.name,
           phonenum: data.phonenum,
           sex: data.sex,
