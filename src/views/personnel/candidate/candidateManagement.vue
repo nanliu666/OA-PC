@@ -938,7 +938,7 @@ export default {
     },
     handleExport() {},
     handleSendOffer(row) {
-      this.$router.push('/personnel/candidate/editOffer?personId=' + row.personId)
+      this.$router.push('/personnel/candidate/sendOffer?personId=' + row.personId)
     },
     toDetail(row) {
       this.$router.push('/personnel/personDetail/' + row.personId)
