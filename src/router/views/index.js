@@ -94,4 +94,15 @@ export default [
       }
     ]
   }
+  // {
+  //   path: '/personnel/editPerson',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: '/personnel/editPerson',
+  //       name: '添加候选人',
+  //       component: () => import(/* webpackChunkName: "views" */ '@/views/personnel/editPerson')
+  //     }
+  //   ]
+  // }
 ]
