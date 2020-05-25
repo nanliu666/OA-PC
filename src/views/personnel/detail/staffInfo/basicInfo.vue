@@ -56,6 +56,13 @@
             :push="4"
           >
             <el-form-item
+              v-show="readonlyBasicInfo"
+              label="性别:"
+            >
+              <span>{{ getUserSex() }}</span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
               label="性别:"
               prop="sex"
             >
@@ -67,7 +74,7 @@
               </el-radio>
               <el-radio
                 v-model="staffInfo.sex"
-                :label="2"
+                :label="0"
               >
                 女
               </el-radio>
@@ -601,6 +608,15 @@ export default {
     this.dispatchSelect()
   },
   methods: {
+    getUserSex() {
+      if (this.staffInfo.sex == 1) {
+        return '男'
+      } else if (this.staffInfo.sex == 0) {
+        return '女'
+      } else {
+        return ''
+      }
+    },
     dispatchSelect() {
       this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
         this.politicalOptions = res

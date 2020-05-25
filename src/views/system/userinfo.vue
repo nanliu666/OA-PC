@@ -134,7 +134,7 @@
                   </el-radio>
                   <el-radio
                     v-model="perosonnalInfo.sex"
-                    :label="2"
+                    :label="0"
                   >
                     女
                   </el-radio>
