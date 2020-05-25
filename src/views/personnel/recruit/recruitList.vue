@@ -7,24 +7,51 @@
         justify="center"
         :gutter="24"
       >
-        <el-col :span="6">
-          <el-button type="text">
+        <el-col :span="3">
+          <el-button
+            type="text"
+            class="bigText"
+          >
             我提交的招聘需求
           </el-button>
         </el-col>
-        <el-col :span="12">
-          <el-button type="text">
+        <el-col :span="19">
+          <el-button
+            type="text"
+            class="bigText"
+          >
             全部招聘需求
           </el-button>
         </el-col>
-        <el-col :span="3">
-          <el-button type="text">
+        <el-col :span="2">
+          <el-button
+            type="text"
+            class="bigText"
+          >
             新建招聘需求
           </el-button>
         </el-col>
       </el-row>
     </div>
     <basic-container>
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="招聘中"
+          name="Inrecruitment"
+        >
+          用户管理
+        </el-tab-pane>
+        <el-tab-pane
+          label="已结束"
+          name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+        >
+          配置管理
+        </el-tab-pane>
+      </el-tabs>
+
       <common-table
         style="width: 100%"
         :data="data"
@@ -452,28 +479,8 @@ export default {
   }
 }
 
-.edge {
-  position: absolute;
-  right: 59px;
-}
-
-.beBverdue {
-  position: absolute;
-  right: 59px;
-}
-
-.isSelect {
-  color: #f56c6c;
-  margin-left: 6px;
-  padding: 4px;
-  background-color: #fff;
-  border: 1px solid #f56c6c;
-  border-color: #f56c6c;
-  display: inline-block;
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  font-size: 14px;
-  border-radius: 4px;
+.bigText {
+  font-weight: 500;
+  font-size: 18px;
 }
 </style>
