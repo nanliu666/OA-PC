@@ -209,7 +209,61 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item
+              v-show="readonlyBasicInfo"
+              label="最高学历:"
+            >
+              <span class="info-item-value">
+                {{ getEducationLevel }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
+              label="最高学历:"
+            >
+              <el-select
+                v-model="staffInfo.educationalLevel"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in educationOptions"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item
+              v-show="readonlyBasicInfo"
+              label="首次参加工作时间:"
+            >
+              <span class="info-item-value">{{ staffInfo.firstWorkDate }}</span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
+              label="首次参加工作时间:"
+            >
+              <el-date-picker
+                v-model="staffInfo.firstWorkDate"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col
             :span="8"
@@ -480,6 +534,7 @@ export default {
       householdOptions: [],
       politicalOptions: [],
       credentOptions: [],
+      educationOptions: [],
       rules: {
         phonenum: [
           {
@@ -556,8 +611,18 @@ export default {
         let year = Math.floor(totalDay / 365)
         let month = Math.floor((totalDay % 365) / 30)
         // let day = Math.floor(totalDay % 365 % 30)
-        workAge = '' + year + '年' + month + '月'
-        workAge = workAge.replace(/-/g, '')
+        if (year > 0 && month > 0) {
+          workAge = year + '年' + month + '个月'
+        }
+        if (year == 0 && month > 0) {
+          workAge = month + '个月'
+        }
+        if (year > 0 && month == 0) {
+          workAge = year + '年'
+        }
+        if (year == 0 && month == 0) {
+          workAge = '不满一个月'
+        }
       }
       return workAge
     },
@@ -577,6 +642,17 @@ export default {
       for (let i = 0; i < this.politicalOptions.length; i++) {
         let item = this.politicalOptions[i]
         if (this.staffInfo.politicalStatus == item.dictKey) {
+          dictValue = item.dictValue
+          return dictValue
+        }
+      }
+      return dictValue
+    },
+    getEducationLevel() {
+      let dictValue = ''
+      for (let i = 0; i < this.educationOptions.length; i++) {
+        let item = this.educationOptions[i]
+        if (this.staffInfo.educationalLevel == item.dictKey) {
           dictValue = item.dictValue
           return dictValue
         }
@@ -627,6 +703,10 @@ export default {
       this.$store.dispatch('CommonDict', 'IDType').then((res) => {
         this.credentOptions = res
       })
+
+      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+        this.educationOptions = res
+      })
     },
     regionChange(value) {
       let thsAreaCode = this.$refs['cascaderAddr'].getCheckedNodes()[0].pathLabels
@@ -670,7 +750,8 @@ export default {
             marriage: this.staffInfo.marriage,
             politicalStatus: this.staffInfo.politicalStatus,
             idAddress: this.staffInfo.idAddress,
-            userAddress: this.staffInfo.userAddress
+            userAddress: this.staffInfo.userAddress,
+            educationalLevel: this.staffInfo.educationalLevel
           }
           editStaffBasicInfo(params).then(() => {
             this.getBasicInfo()
