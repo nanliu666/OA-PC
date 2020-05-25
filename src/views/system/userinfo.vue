@@ -40,19 +40,19 @@
             <el-col :span="5">
               <div class="grid-content bg-purple">
                 <span>部门：</span>
-                <span>{{ perosonnalInfo.orgName }}</span>
+                <span class="info-item-value">{{ perosonnalInfo.orgName }}</span>
               </div>
             </el-col>
             <el-col :span="5">
               <div class="grid-content bg-purple-light">
                 <span>职位：</span>
-                <span>{{ perosonnalInfo.jobName }}</span>
+                <span class="info-item-value">{{ perosonnalInfo.jobName }}</span>
               </div>
             </el-col>
             <el-col :span="5">
               <div class="grid-content bg-purple">
                 <span>邮箱：</span>
-                <span>{{ perosonnalInfo.userEmail }}</span>
+                <span class="info-item-value">{{ perosonnalInfo.userEmail }}</span>
               </div>
             </el-col>
           </el-row>
@@ -540,6 +540,9 @@ li {
 .info-text {
   padding-left: 20px;
 }
+.info-item-value {
+  color: #202940;
+}
 .info-name {
   font-size: 24px;
   color: #333333;
@@ -556,7 +559,9 @@ li {
     font-size: 14px;
   }
   .el-button {
-    padding: 7px 5px !important;
+    padding: 0;
+    width: 56px;
+    height: 24px;
   }
 }
 .info-other {
