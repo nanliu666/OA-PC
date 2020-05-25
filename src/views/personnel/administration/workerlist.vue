@@ -243,7 +243,10 @@ export default {
       row: {},
       data: [],
       tableConfig: {
-        showHandler: true
+        showHandler: true,
+        showIndexColumn: false,
+        enableMultiSelect: false,
+        enablePagination: true
       },
       columns: [
         {
@@ -346,9 +349,9 @@ export default {
         pageNo: 1,
         pageSize: 10,
         orgs: [params.parentOrgId] || ' ',
-        jobs: [...params.jobs] || ' ',
         probations: [params.probation] || ' '
       }
+      request.jobs = params.jobs !== undefined ? [...params.jobs] : ''
       request.beginEntryDate = params.beginEntryDate
       request.endEntryDate = params.endEntryDate
       request.beginFormalDate = params.beginFormalDate

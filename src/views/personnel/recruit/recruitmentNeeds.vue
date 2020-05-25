@@ -1,7 +1,7 @@
 <template>
   <div style="height">
     <el-page-header
-      content="添加员工"
+      content="新建招聘需求"
       class="pageHeader"
       @back="goBack"
     />

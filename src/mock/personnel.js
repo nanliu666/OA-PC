@@ -371,8 +371,8 @@ export default ({ mock }) => {
           workYear: '年-@increment',
           // 调用字典组
           educationalLevel: '本科',
-          minSalary: 'integer(5000, 10000)',
-          maxSalary: 'integer(8000, 13000)',
+          minSalary: '@integer(5000, 10000)',
+          maxSalary: '@integer(8000, 13000)',
           requirement: '测试全职-@increment',
           duty: '测试开发项目-@increment',
           userId: 'kenko',
@@ -416,9 +416,9 @@ export default ({ mock }) => {
           // 调用字典组
           workYear: '年-@increment',
           // 调用字典组
-          educationalLevel: 'EducationalLevel',
-          minSalary: 'integer(5000, 10000)',
-          maxSalary: 'integer(8000, 13000)',
+          educationalLevel: '本科',
+          minSalary: '@integer(5000, 10000)',
+          maxSalary: '@integer(8000, 13000)',
           // 调用字典组 招聘原因
           reason: 'RecruitmentReason',
           reasonNote: '测试-详细招聘原因-@increment',

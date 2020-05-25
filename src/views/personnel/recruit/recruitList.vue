@@ -42,9 +42,12 @@
         >
           <common-table
             :data="data"
+            :page="page"
             :columns="columns"
-            @pageSizeChange="getTableData"
-            @currentPageChange="getTableData"
+            :page-config="pageConfig"
+            :config="tableConfig"
+            @current-page-change="currentPageChange"
+            @page-size-change="pageSizeChange"
           >
             <template slot="topMenu">
               <div class="flex-flow flex justify-content align-items ">
@@ -52,11 +55,10 @@
                   <search-popover
                     ref="searchPopover"
                     :require-options="searchConfig.requireOptions"
-                    :popover-options="searchConfig.popoverOptions"
                     @submit="handleSubmit"
                   />
                 </div>
-                <div class="edge">
+                <div class="resetEdge">
                   <el-button
                     type="primary"
                     size="medium"
@@ -66,26 +68,6 @@
                   </el-button>
                 </div>
               </div>
-            </template>
-            <template
-              v-if="scope.row.isDefault === 0"
-              slot="handler"
-              slot-scope="scope"
-            >
-              <el-button
-                type="text"
-                size="medium"
-                @click.stop="handleEdit(scope.row, scope.index)"
-              >
-                编辑
-              </el-button>
-              <el-button
-                type="text"
-                size="medium"
-                @click.stop="handleDelete(scope.row, scope.index)"
-              >
-                删除
-              </el-button>
             </template>
           </common-table>
         </el-tab-pane>
@@ -103,8 +85,6 @@
 <script>
 import SearchPopover from '@/components/searchPopOver/index'
 import { getMyRecruitment } from '@/api/personnel/recruitment'
-import { getOrgJob } from '@/api/personnel/roster'
-
 export default {
   name: 'RecruitList',
   components: {
@@ -117,116 +97,17 @@ export default {
         requireOptions: [
           {
             type: 'input',
-            field: 'search',
+            field: 'jobName',
             label: '',
             data: [],
             month: [],
+            value: [],
             config: {
-              placeholder: '姓名/工号'
+              placeholder: '职位名称'
             }
-          }
-        ],
-        popoverOptions: [
-          {
-            type: 'treeSelect',
-            field: 'parentOrgId',
-            label: '部门',
-            data: '',
-            config: {
-              selectParams: {
-                placeholder: '请输入内容',
-                multiple: false
-              },
-              treeParams: {
-                data: [],
-                'check-strictly': true,
-                'default-expand-all': false,
-                'expand-on-click-node': false,
-                clickParent: true,
-                filterable: false,
-                props: {
-                  children: 'children',
-                  label: 'orgName',
-                  disabled: 'disabled',
-                  value: 'orgId'
-                }
-              }
-            }
-          },
-          {
-            type: 'select',
-            data: '',
-            label: '职位',
-            field: 'jobs',
-            arrField: 'jobId',
-            config: {},
-            options: [],
-            loading: false,
-            noMore: false,
-            firstLoad(flag, item) {
-              if (flag && item.options.length === 0) {
-                item.loadMoreFun(item)
-              }
-            },
-            loadMoreFun(item) {
-              if (item.loading || item.noMore) return
-              item.loading = true
-              getOrgJob().then((res) => {
-                if (res.length > 0) {
-                  item.options.push(...res)
-                  item.noMore = true
-                }
-              })
-            }
-          },
-          {
-            type: 'dataPicker',
-            data: '',
-            label: '入职日期',
-            field: 'beginEntryDate,endEntryDate',
-            config: { type: 'daterange', 'range-separator': '至' }
-          },
-          {
-            type: 'dataPicker',
-            data: '',
-            label: '转正日期',
-            field: 'beginFormalDate,endFormalDate',
-            config: { type: 'daterange', 'range-separator': '至' }
-          },
-          {
-            type: 'select',
-            field: 'probation',
-            data: '',
-            label: '试用期',
-            options: [
-              { label: '无试用期', value: 0 },
-              { label: '一个月', value: 1 },
-              { label: '两个月', value: 2 },
-              { label: '三个月', value: 3 },
-              { label: '四个月', value: 4 },
-              { label: '五个月', value: 5 },
-              { label: '六个月', value: 6 }
-            ],
-            config: {}
-          },
-          {
-            type: 'select',
-            field: 'orgType',
-            data: '',
-            label: '申请状态',
-            options: [
-              { label: '未申请', value: 0 },
-              { label: '已驳回', value: 1 },
-              { label: '申请中', value: 2 }
-            ],
-            config: {}
           }
         ]
       },
-      createOrgDailog: false,
-      numberofpersonnel: null,
-      number: 0,
-      row: {},
       data: [],
       columns: [
         {
@@ -278,9 +159,18 @@ export default {
           prop: 'maxSalary'
         }
       ],
+
+      tableConfig: {
+        enablePagination: true
+      },
       params: {
         pageNo: 1,
         pageSize: 10
+      },
+      //   分页器配置
+      page: { currentPage: 1, size: 10, total: 0 },
+      pageConfig: {
+        pageSizes: [10, 20, 30, 40, 50]
       }
     }
   },
@@ -292,24 +182,15 @@ export default {
       if (typeof params === 'undefined') params = this.params
       getMyRecruitment(params).then((res) => {
         this.data = res.data
-        this.numberofpersonnel = res.totalNum
       })
     },
 
     Decorator(paramsData) {
       let request = {
-        search: paramsData.search || '',
-        pageNo: 1,
-        pageSize: 10,
-        orgs: [paramsData.parentOrgId] || ' ',
-        jobs: [...paramsData.jobs] || ' ',
-        probations: [paramsData.probation] || ' '
+        jobName: paramsData.jobName || '',
+        pageNo: paramsData.pageNo || 1,
+        pageSize: paramsData.pageSize || 10
       }
-      request.beginEntryDate = paramsData.beginEntryDate
-      request.endEntryDate = paramsData.endEntryDate
-      request.beginFormalDate = paramsData.beginFormalDate
-      request.endFormalDate = paramsData.endFormalDate
-
       return request
     },
 
@@ -319,6 +200,16 @@ export default {
     },
     jumpToDetail() {
       this.$router.push('/personnel/recruit/recruitmentNeeds')
+    },
+    pageSizeChange(param) {
+      let paramsInfo = {}
+      paramsInfo.pageSize = param
+      return this.getTableData(paramsInfo)
+    },
+    currentPageChange(param) {
+      let paramsInfo = {}
+      paramsInfo.pageNo = param
+      return this.getTableData(paramsInfo)
     }
   }
 }
@@ -395,5 +286,10 @@ export default {
 .bigText {
   font-weight: 500;
   font-size: 18px;
+}
+
+.resetEdge {
+  position: absolute;
+  right: 20px;
 }
 </style>
