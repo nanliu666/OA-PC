@@ -452,7 +452,7 @@
 </template>
 
 <script>
-import { isMobile, validateName, isEmail } from '@/util/validate'
+import { isMobile, validateName, isEmailReg } from '@/util/validate'
 import { getStaffBasicInfo, editStaffBasicInfo } from '../../../../api/personalInfo.js'
 import { deepClone } from '@/util/util'
 import { provinceAndCityData } from 'element-china-area-data'
@@ -509,7 +509,7 @@ export default {
             validator: (rule, value, callback) => {
               if (!value) {
                 callback(new Error('请输入邮箱'))
-              } else if (value && !isEmail(value)) {
+              } else if (value && !isEmailReg(value)) {
                 callback(new Error('邮箱格式有误'))
               } else {
                 callback()
