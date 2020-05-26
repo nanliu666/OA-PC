@@ -502,4 +502,55 @@ export default ({ mock }) => {
     }
     return taskList
   })
+
+  // 我提交的招聘需求筛选接口
+  Mock.mock(new RegExp('/user/v1/recruitment/detail' + '.*'), 'get', () => {
+    let list = []
+    for (let i = 0; i < 12; i++) {
+      list.push(
+        Mock.mock({
+          id: 'ZP-@increment',
+          orgId: 'GZ@increment',
+          orgNam: '百利宏',
+          jobId: 'SZ@increment',
+          jobName: '测试员工-@increment',
+          positionId: '岗位测试-@increment',
+          positionName: '经理-@increment',
+          // 调用字典组
+          workProperty: 'full-time',
+          // 调用字典组
+          emerType: 'urgent',
+          needNum: '@integer(1, 100)',
+          entryNum: '@integer(1, 100)',
+          candidateNum: '@integer(1, 100)',
+          joinDate: '@date()',
+          // 调用字典组
+          workYear: '年-@increment',
+          // 调用字典组
+          educationalLevel: 'EducationalLevel',
+          minSalary: 'integer(5000, 10000)',
+          maxSalary: 'integer(8000, 13000)',
+          // 调用字典组 招聘原因
+          reason: 'RecruitmentReason',
+          reasonNote: '测试-详细招聘原因-@increment',
+          remark: '测试-申请理由@increment',
+          requirement: '测试全职-@increment',
+          duty: '测试开发项目-@increment',
+          userId: 'kenko',
+          userName: '@cname',
+          createTime: '@date()'
+        })
+      )
+    }
+    const myList = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response: {
+        totalNum: 12,
+        totalPage: 12,
+        data: list
+      }
+    }
+    return myList
+  })
 }

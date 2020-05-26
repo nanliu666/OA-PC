@@ -255,7 +255,6 @@ export default {
   watch: {
     infoForm: {
       handler(data) {
-        // if(data.inType == 11){
         data.basicAttrs.map((it) => {
           if (it.inType === 11) {
             this.$nextTick(() => {
@@ -265,8 +264,6 @@ export default {
             })
           }
         })
-
-        // }
       },
       immediate: true,
       deep: true

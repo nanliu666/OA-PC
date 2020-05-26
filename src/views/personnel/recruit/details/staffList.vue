@@ -39,29 +39,18 @@
         <el-tab-pane
           label="招聘中"
           name="inrecruitment"
-        >
-          <finished />
-        </el-tab-pane>
+        />
         <el-tab-pane
           label="已结束"
           name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
-        >
-          <detailsList />
-        </el-tab-pane>
+        />
       </el-tabs>
     </basic-container>
   </div>
 </template>
 <script>
-import DetailsList from './components/recruitmentTasks/detailsList'
-import Finished from './components/recruitmentTasks/finished'
-
 export default {
   name: 'RecruitList',
-  components: {
-    DetailsList,
-    Finished
-  },
   data() {
     return {
       activeName: 'inrecruitment'
@@ -142,12 +131,6 @@ export default {
     }
   }
 }
-
-// .bigText {
-//   font-weight: 500;
-//   font-size: 18px;
-// }
-
 .resetEdge {
   position: absolute;
   right: 20px;
