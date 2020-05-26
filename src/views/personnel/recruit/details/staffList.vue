@@ -50,20 +50,31 @@
     <basic-container>
       <el-tabs v-model="activeName">
         <el-tab-pane
-          label="招聘中"
+          label="招聘进度"
           name="inrecruitment"
-        />
+        >
+          <staff-list />
+        </el-tab-pane>
+
         <el-tab-pane
-          label="已结束"
-          name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
-        />
+          label="招聘需求详情"
+          name="recruitmentdemand"
+        >
+          <staff-details />
+        </el-tab-pane>
       </el-tabs>
     </basic-container>
   </div>
 </template>
 <script>
+import StaffList from './paging/List'
+import StaffDetails from './paging/details'
 export default {
   name: 'RecruitList',
+  components: {
+    StaffList,
+    StaffDetails
+  },
   data() {
     return {
       name: 'xxx',
