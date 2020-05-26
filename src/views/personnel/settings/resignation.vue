@@ -274,7 +274,7 @@ export default {
 }
 /deep/ .el-collapse-item__arrow {
   position: absolute;
-  margin-left: 12px;
+  margin-left: 24px;
 }
 /deep/ .category-header {
   .el-collapse-item__header {
@@ -282,7 +282,7 @@ export default {
   }
   .el-collapse-item__content {
     border: 0;
-    padding-left: 32px;
+    padding-left: 56px;
   }
 }
 
@@ -299,7 +299,7 @@ export default {
     height: 32px;
     line-height: 32px;
     width: 100%;
-    padding-left: 32px;
+    padding-left: 56px;
     .name {
       width: 100px;
     }
@@ -323,7 +323,7 @@ export default {
   height: 32px;
   line-height: 32px;
   width: 100%;
-  padding-left: 32px;
+  padding-left: 56px;
   .buttons__wrap {
     display: flex;
     padding-right: 24px;
