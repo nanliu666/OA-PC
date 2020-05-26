@@ -8,7 +8,7 @@
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
-        /> 登记表详情
+        /> 录用申请
       </div>
     </div>
     <div

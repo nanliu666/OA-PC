@@ -1,5 +1,6 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
+import contract from '@/router/views/contract'
 export default [
   {
     path: '/wel',
@@ -93,5 +94,6 @@ export default [
         component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
       }
     ]
-  }
+  },
+  contract
 ]
