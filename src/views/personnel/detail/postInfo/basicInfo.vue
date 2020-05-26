@@ -296,15 +296,15 @@
               prop="leaderName"
             >
               <el-select
-                v-model="staffInfo.leaderName"
+                v-model="staffInfo.leaderId"
                 placeholder="请选择"
                 @change="leaderOptionChange"
               >
                 <el-option
-                  v-for="(leaderItem, index) in leaderOptions"
-                  :key="index"
+                  v-for="leaderItem in leaderOptions"
+                  :key="leaderItem.workNo"
                   :label="leaderItem.name"
-                  :value="leaderItem.orgId"
+                  :value="leaderItem.workNo"
                 />
               </el-select>
             </el-form-item>
@@ -742,7 +742,7 @@ export default {
     },
     leaderOptionChange(value) {
       this.leaderOptions.forEach((item) => {
-        if (item.orgId === value) {
+        if (item.workNo === value) {
           this.staffInfo.leaderName = item.name
         }
       })
@@ -828,7 +828,8 @@ export default {
         workProvinceCode: this.staffInfo.workProvinceCode,
         workProvinceName: this.staffInfo.workProvinceName,
         workCityCode: this.staffInfo.workCityCode,
-        workCityName: this.staffInfo.workCityName
+        workCityName: this.staffInfo.workCityName,
+        leaderId: this.staffInfo.leaderId
       }
       editStaffBasicInfo(params).then(() => {
         this.readonlyBasicInfo = true
@@ -853,6 +854,7 @@ export default {
     cancelEdit() {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
+      this.initSubJobOptions()
     },
     getJob(item, index) {
       if (item.subOrgId) {
@@ -925,22 +927,25 @@ export default {
       }
     },
     subOrgNodeChange(item, index) {
-      this.getJob(item, index)
-
-      if (staffInfo.subOrg.length > 0 && index < staffInfo.subOrg.length) {
-        let orgObj = {
-          subJobId: staffInfo.subOrg[index].subOrgId,
-          operatorType: 'Del'
-        }
-
-        if (item.subOrgId != staffInfo.subOrg[index].subOrgId) {
-          item.operatorType = 'Add'
-          if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) == -1) {
-            this.delSubOrgJob.subOrg.push(orgObj)
+      if (!this.readonlyBasicInfo) {
+        this.getJob(item, index)
+        this.$set(item, 'subJobId', '')
+        this.$set(item, 'subJobName', '')
+        if (staffInfo.subOrg.length > 0 && index < staffInfo.subOrg.length) {
+          let orgObj = {
+            subJobId: staffInfo.subOrg[index].subOrgId,
+            operatorType: 'Del'
           }
-        } else {
-          if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) != -1) {
-            this.delSubOrgJob.subOrg.pop(orgObj)
+
+          if (item.subOrgId != staffInfo.subOrg[index].subOrgId) {
+            item.operatorType = 'Add'
+            if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) == -1) {
+              this.delSubOrgJob.subOrg.push(orgObj)
+            }
+          } else {
+            if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) != -1) {
+              this.delSubOrgJob.subOrg.pop(orgObj)
+            }
           }
         }
       }

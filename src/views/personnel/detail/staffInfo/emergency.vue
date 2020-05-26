@@ -285,7 +285,7 @@ export default {
       if (this.type == 'add') {
         this.emergencyInfo.pop()
       } else {
-        this.emergencyInfo[index] = deepClone(curItem)
+        this.$set(this.emergencyInfo, index, deepClone(curItem))
       }
     }
   }

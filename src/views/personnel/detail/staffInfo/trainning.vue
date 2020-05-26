@@ -311,7 +311,7 @@ export default {
       if (this.type == 'add') {
         this.trainInfo.pop()
       } else {
-        this.trainInfo[index] = deepClone(curItem)
+        this.$set(this.trainInfo, index, deepClone(curItem))
       }
     },
     monthChange(item) {
