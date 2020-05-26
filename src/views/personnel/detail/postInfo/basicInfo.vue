@@ -853,6 +853,7 @@ export default {
     cancelEdit() {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
+      this.initSubJobOptions()
     },
     getJob(item, index) {
       if (item.subOrgId) {
@@ -925,22 +926,25 @@ export default {
       }
     },
     subOrgNodeChange(item, index) {
-      this.getJob(item, index)
-
-      if (staffInfo.subOrg.length > 0 && index < staffInfo.subOrg.length) {
-        let orgObj = {
-          subJobId: staffInfo.subOrg[index].subOrgId,
-          operatorType: 'Del'
-        }
-
-        if (item.subOrgId != staffInfo.subOrg[index].subOrgId) {
-          item.operatorType = 'Add'
-          if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) == -1) {
-            this.delSubOrgJob.subOrg.push(orgObj)
+      if (!this.readonlyBasicInfo) {
+        this.getJob(item, index)
+        this.$set(item, 'subJobId', '')
+        this.$set(item, 'subJobName', '')
+        if (staffInfo.subOrg.length > 0 && index < staffInfo.subOrg.length) {
+          let orgObj = {
+            subJobId: staffInfo.subOrg[index].subOrgId,
+            operatorType: 'Del'
           }
-        } else {
-          if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) != -1) {
-            this.delSubOrgJob.subOrg.pop(orgObj)
+
+          if (item.subOrgId != staffInfo.subOrg[index].subOrgId) {
+            item.operatorType = 'Add'
+            if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) == -1) {
+              this.delSubOrgJob.subOrg.push(orgObj)
+            }
+          } else {
+            if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) != -1) {
+              this.delSubOrgJob.subOrg.pop(orgObj)
+            }
           }
         }
       }
