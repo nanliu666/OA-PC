@@ -1,75 +1,73 @@
 <template>
-  <el-card>
-    <div
-      slot="header"
-      class="title"
-    >
-      <span class="title">人事异动</span>
-    </div>
-
-    <!-- table表格 -->
-    <commonTable
-      :data="tableData"
-      :columns="tableColumns"
-      :loading="loading"
-      :config="tableConfig"
-      :page="page"
-      :page-config="pageConfig"
-      @current-page-change="currentPageChange"
-      @page-size-change="pageSizeChange"
-    >
-      <template slot="topMenu">
-        <!-- 搜素框 -->
-        <div class="search-box">
-          <SearchPopover
-            :require-options="requireOptions"
-            :popover-options="popoverOptions"
-            @submit="handleSubmit"
-          />
-          <div>
-            <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
-            <el-button
-              icon="el-icon-refresh"
-              size="medium"
-              @click="OnClickrefresh"
+  <div>
+    <page-header title="人事异动" />
+    <basic-container>
+      <!-- table表格 -->
+      <commonTable
+        :data="tableData"
+        :columns="tableColumns"
+        :loading="loading"
+        :config="tableConfig"
+        :page="page"
+        :page-config="pageConfig"
+        @current-page-change="currentPageChange"
+        @page-size-change="pageSizeChange"
+      >
+        <template slot="topMenu">
+          <!-- 搜素框 -->
+          <div class="search-box">
+            <SearchPopover
+              :require-options="requireOptions"
+              :popover-options="popoverOptions"
+              @submit="handleSubmit"
             />
+            <div>
+              <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
+              <el-button
+                icon="el-icon-refresh"
+                size="medium"
+                @click="getTableList()"
+              />
+            </div>
           </div>
-        </div>
-      </template>
-      <!-- 选择导出 -->
-      <template
-        slot="multiSelectMenu"
-        slot-scope="{}"
-      >
-        <!-- <span @click="handleSelectionClick(selection)">
-          <i class="el-icon-upload2"></i>批量导出
-        </span>-->
-      </template>
-
-      <!-- 姓名列 -->
-      <template
-        slot="name"
-        slot-scope="{ row }"
-      >
-        <el-button
-          type="text"
-          size="medium"
-          @click="jumpInfo(row.userId)"
+        </template>
+        <!-- 选择导出 -->
+        <template
+          slot="multiSelectMenu"
+          slot-scope="{}"
         >
-          {{ row.name }}
-        </el-button>
-      </template>
-    </commonTable>
-  </el-card>
+          <!-- <span @click="handleSelectionClick(selection)">
+          <i class="el-icon-upload2"></i>批量导出
+          </span>-->
+        </template>
+
+        <!-- 姓名列 -->
+        <template
+          slot="name"
+          slot-scope="{ row }"
+        >
+          <el-button
+            type="text"
+            size="medium"
+            @click="jumpInfo(row.userId)"
+          >
+            {{ row.name }}
+          </el-button>
+        </template>
+      </commonTable>
+    </basic-container>
+  </div>
 </template>
 
 <script>
 import SearchPopover from '@/components/searchPopOver/index'
 import { getChangeList } from '@/api/personnel/transction.js'
+import pageHeader from '@/components/page-header/pageHeader.vue'
 export default {
   name: 'PerTransaction',
   components: {
-    SearchPopover
+    SearchPopover,
+    pageHeader
   },
   data() {
     return {
@@ -122,10 +120,6 @@ export default {
         {
           label: '序号',
           type: 'index'
-        },
-        {
-          label: '用户id',
-          prop: 'userId'
         },
         {
           label: '姓名',
@@ -205,8 +199,6 @@ export default {
       tableConfig: {
         showIndexColumn: false,
         enableMultiSelect: true,
-        style: 'width: 100%',
-        height: '600px',
         enablePagination: true,
         uniqueKey: 'userId'
       },
@@ -298,19 +290,6 @@ export default {
         }
       })
       this.popoverOptions[1].options = targetArr
-    },
-    // 刷新界面
-    OnClickrefresh() {
-      (this.paramsInfo = {
-        pageNo: '1',
-        pageSize: '10',
-        search: '',
-        types: [],
-        reasons: [],
-        beginEffectDate: '',
-        endEffectDate: ''
-      }),
-        this.getTableList()
     }
   }
 }

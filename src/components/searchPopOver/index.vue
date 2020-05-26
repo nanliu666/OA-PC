@@ -85,15 +85,11 @@
         <el-date-picker
           v-if="item.type === 'dataPicker'"
           v-model="item.data"
-          :type="item.config && item.config.type ? item.config.type : 'data'"
+          :type="item.config && item.config.type ? item.config.type : 'date'"
           :value-format="
             item.config && item.config['value-format'] ? item.config['value-format'] : 'yyyy-MM-dd'
           "
-          :default-time="
-            item.config && item.config['default-time']
-              ? item.config['default-time']
-              : ['00:00:00', '23:59:59']
-          "
+          :default-time="item.config && item.config['default-time']"
           placeholder="结束时间"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
@@ -231,12 +227,8 @@
                           ? item.config['value-format']
                           : 'yyyy-MM-dd'
                       "
-                      :default-time="
-                        item.config && item.config['default-time']
-                          ? item.config['default-time']
-                          : ['00:00:00', '23:59:59']
-                      "
-                      :type="item.config && item.config.type ? item.config.type : 'data'"
+                      :default-time="item.config && item.config['default-time']"
+                      :type="item.config && item.config.type ? item.config.type : 'date'"
                       placeholder="结束时间"
                       start-placeholder="开始时间"
                       end-placeholder="结束时间"
@@ -418,12 +410,20 @@ export default {
               params[item.field] = item.data
             }
           } else if (item.type === 'cascader') {
-            params[item.field] = item.data[item.data.length - 1]
-          } else if (item.type === 'dataPicker') {
+            // params[item.field] = item.data[item.data.length - 1]
+            item.field.split(',').forEach((it, idx) => {
+              params[it] = item.data[idx]
+            })
+          } else if (
+            item.type === 'dataPicker' &&
+            item.config &&
+            item.config.type.indexOf('range') > -1
+          ) {
             item.field.split(',').forEach((it, idx) => {
               params[it] = item.data[idx]
             })
           }
+          params[item.field] = item.data
         }
       })
       return params
