@@ -492,7 +492,7 @@ export default {
       if (this.type == 'add') {
         this.workInfo.pop()
       } else {
-        this.workInfo[index] = deepClone(curItem)
+        this.$set(this.workInfo, index, deepClone(curItem))
       }
     },
     monthChange(item) {

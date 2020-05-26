@@ -373,7 +373,7 @@ export default {
       if (this.type == 'add') {
         this.familyInfo.pop()
       } else {
-        this.familyInfo[index] = deepClone(curItem)
+        this.$set(this.familyInfo, index, deepClone(curItem))
       }
     }
   }

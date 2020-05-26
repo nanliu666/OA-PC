@@ -265,7 +265,7 @@ export default {
       if (this.type == 'add') {
         this.emergency.pop()
       } else {
-        this.emergency[index] = deepClone(this.curItem)
+        this.$set(this.emergency, index, deepClone(this.curItem))
       }
     },
     addContact() {

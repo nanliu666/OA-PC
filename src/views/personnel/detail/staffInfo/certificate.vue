@@ -286,7 +286,7 @@ export default {
       if (this.type == 'add') {
         this.certificateInfo.pop()
       } else {
-        this.certificateInfo[index] = deepClone(curItem)
+        this.$set(this.certificateInfo, index, deepClone(curItem))
       }
     },
     issueDateChange(value) {

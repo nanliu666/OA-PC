@@ -452,7 +452,7 @@ export default {
       if (this.type == 'add') {
         this.educationInfo.pop()
       } else {
-        this.educationInfo[index] = deepClone(curItem)
+        this.$set(this.educationInfo, index, deepClone(curItem))
       }
     },
     monthChange(item) {
