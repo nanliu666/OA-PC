@@ -526,6 +526,32 @@ const res = {
             icon: 'iconfont iconicon_subordinate',
             dataPrivileges: [],
             children: []
+          },
+          {
+            menuId: '81',
+            menuName: '离职申请',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'org_management',
+            alias: 'orgManagement',
+            path: '/personnel/leave/applyLeave',
+            icon: 'iconfont iconicon_subordinate',
+            dataPrivileges: [],
+            children: []
+          },
+          {
+            menuId: '9527',
+            menuName: '确认离职',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'org_management',
+            alias: 'orgManagement',
+            path: '/personnel/leave/confirmLeave',
+            icon: 'iconfont iconicon_subordinate',
+            dataPrivileges: [],
+            children: []
           }
         ]
       }
