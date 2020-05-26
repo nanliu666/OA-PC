@@ -1,36 +1,49 @@
 <template>
   <div>
+    <el-page-header
+      content="详情"
+      class="pageHeader"
+      show-back
+    />
     <div class="roster-header">
       <el-row
-        style="width:100%;"
+        style="width:100%; height:50px"
         type="flex"
         justify="center"
         :gutter="24"
       >
-        <el-col :span="3">
+        <el-col :span="23">
+          <span> {{ name }}分配的招聘需求（{{ department }}-{{ position }}）</span>
+        </el-col>
+        <el-col :span="1">
           <el-button
-            type="text"
-            class="bigText"
+            type="primary"
+            size="medium"
+            plain
           >
-            我提交的招聘需求
+            负责
           </el-button>
         </el-col>
-        <el-col :span="19">
-          <el-button
-            type="text"
-            class="bigText"
-          >
-            全部招聘需求
-          </el-button>
+      </el-row>
+    </div>
+    <div class="roster-header">
+      <el-row
+        style="width:100%; height:50px"
+        type="flex"
+        justify="center"
+        :gutter="24"
+      >
+        <el-col :span="6">
+          需求编号：RYZB0002
         </el-col>
-        <el-col :span="2">
-          <el-button
-            type="text"
-            class="bigText"
-            @click="opnDetails"
-          >
-            新建招聘需求
-          </el-button>
+        <el-col :span="6">
+          提交人：张琦
+        </el-col>
+        <el-col :span="6">
+          提交时间：2019-12-12 12:12:09
+        </el-col>
+        <el-col :span="6">
+          状态：已结束
         </el-col>
       </el-row>
     </div>
@@ -53,6 +66,9 @@ export default {
   name: 'RecruitList',
   data() {
     return {
+      name: 'xxx',
+      department: '部门',
+      position: '职位',
       activeName: 'inrecruitment'
     }
   },

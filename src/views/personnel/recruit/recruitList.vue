@@ -1,5 +1,10 @@
 <template>
   <div>
+    <el-page-header
+      content="详情"
+      show-back
+    />
+
     <div class="roster-header">
       <el-row
         style="width:100%;"
