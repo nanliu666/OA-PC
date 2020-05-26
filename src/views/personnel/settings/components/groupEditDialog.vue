@@ -60,7 +60,7 @@
           v-model="form.orgId"
           :select-params="orgOptions.selectParams"
           :tree-params="orgOptions.treeParams"
-          @change="handleOrgChange"
+          @node-click="handleOrgChange"
         />
       </el-form-item>
       <el-form-item
@@ -104,6 +104,8 @@
 import { getUserWorkList, getOrgTreeSimple } from '@/api/org/org'
 import { getOrgJob } from '@/api/personnel/roster'
 import { modifyResignGroup, createResignGroup } from '@/api/personnel/settings'
+import { mapGetters } from 'vuex'
+
 // Org-部门负责人，User-指定人员，Job-指定职位
 const typeDict = {
   Org: '部门负责人',
@@ -171,6 +173,9 @@ export default {
       jobList: []
     }
   },
+  computed: {
+    ...mapGetters(['companyId'])
+  },
   watch: {
     'form.type': {
       handler(val) {
@@ -190,6 +195,9 @@ export default {
     },
     handleOrgChange() {
       this.form.jobId = ''
+      this.getOrgJob()
+    },
+    getOrgJob() {
       getOrgJob({ orgId: this.form.orgId }).then((res) => {
         this.jobList = res
       })
@@ -210,23 +218,35 @@ export default {
     },
     init(data) {
       Object.assign(this.form, data)
+      if (data.orgId) {
+        this.getOrgJob()
+      }
       this.$emit('update:visible', true)
     },
     handleSubmit() {
-      let submitFunc = createResignGroup
-      if (this.form.id) {
-        submitFunc = modifyResignGroup
-      }
-      this.loading = true
-      submitFunc(this.form)
-        .then(() => {
-          this.$message.success('操作成功')
-          this.close()
-          this.$emit('submit')
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      this.$refs.form.validate((valid) => {
+        if (!valid) {
+          return
+        }
+        let submitFunc = createResignGroup
+        if (this.form.id) {
+          submitFunc = modifyResignGroup
+        }
+        this.loading = true
+        submitFunc({ ...this.form, companyId: this.companyId })
+          .then((res = {}) => {
+            this.$message.success('操作成功')
+            this.close()
+            if (!this.form.id && res.id) {
+              this.$emit('submit', res.id)
+            } else {
+              this.$emit('submit')
+            }
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      })
     }
   }
 }

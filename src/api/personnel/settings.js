@@ -29,7 +29,7 @@ export const modifyResignGroup = (params) => {
  * @param {String} categoryId - 分类ID
  * */
 export const delResignGroup = (id) => {
-  return del('/user/v1/leave/note/group', { id })
+  return del('/user/v1/leave/note/group', { ids: id })
 }
 
 /**
@@ -61,5 +61,5 @@ export const modifyResignCategory = (params) => {
  * @param {String} categoryId - 分类ID
  * */
 export const delResignCategory = (categoryId) => {
-  return del('/user/v1/leave/note/category', { categoryId })
+  return del('/user/v1/leave/note/category', { ids: categoryId })
 }

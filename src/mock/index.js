@@ -54,4 +54,4 @@ transction(options)
 
 person(options.mock)
 
-personnelSettings(true)
+personnelSettings(options.mock)

@@ -41,7 +41,10 @@
           @click="addGroup"
         />
       </el-form-item>
-      <el-form-item label="交接事项明细">
+      <el-form-item
+        label="交接事项明细"
+        prop="details"
+      >
         <div
           v-for="item in form.details"
           :key="item.detailId"
@@ -85,17 +88,14 @@
     <group-edit-dialog
       ref="groupEditDialog"
       :visible.sync="groupEditVisible"
-      @submit="getResignGroup"
+      @submit="handleSubmitGroup"
     />
   </el-dialog>
 </template>
 <script>
-import {
-  getResignGroup,
-  createResignCategory,
-  modifyResignCategory
-} from '@/api/personnel/settings'
+import { createResignCategory, modifyResignCategory } from '@/api/personnel/settings'
 import { createUniqueID } from '@/util/util'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'CategoryEditDialog',
@@ -104,6 +104,14 @@ export default {
   },
   props: {
     visible: {
+      type: Boolean,
+      default: false
+    },
+    groupList: {
+      type: Array,
+      default: () => []
+    },
+    groupLoading: {
       type: Boolean,
       default: false
     }
@@ -120,30 +128,33 @@ export default {
           { detailName: '', detailId: createUniqueID() }
         ]
       },
-      rules: {},
+      rules: {
+        categoryName: [{ required: true, message: '请输入分类名称', trigger: 'input' }],
+        groupId: [{ required: true, message: '请输入分组', trigger: 'change' }],
+        details: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.filterEmptyDetail(value).length === 0) {
+                callback(new Error('请至少输入一条交接事项明细'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'input'
+          }
+        ]
+      },
       oldDetails: [],
-      groupList: [],
       loading: false,
-      groupLoading: false,
       groupEditVisible: false
     }
   },
-  created() {
-    this.getResignGroup()
+  computed: {
+    ...mapGetters(['companyId'])
   },
   methods: {
     addGroup() {
       this.groupEditVisible = true
-    },
-    getResignGroup() {
-      this.groupLoading = true
-      getResignGroup()
-        .then((res) => {
-          this.groupList = res
-        })
-        .finally(() => {
-          this.groupLoading = false
-        })
     },
     close() {
       this.clear()
@@ -158,40 +169,50 @@ export default {
       data.details && (this.oldDetails = data.details.slice())
       this.$emit('update:visible', true)
     },
+    handleSubmitGroup(id) {
+      if (id) {
+        this.form.groupId = id
+      }
+      this.$emit('refresh-group')
+    },
     handleSubmit() {
       let submitFunc,
         params,
         form = this.form
-      if (form.categoryId) {
-        submitFunc = modifyResignCategory
-        params = {
-          categoryName: form.categoryName,
-          categoryId: form.categoryId,
-          groupId: form.groupId,
-          details: this.diff(
-            this.filterEmptyDetail(form.details),
-            this.filterEmptyDetail(this.oldDetails)
-          )
+      this.$refs.form.validate((valid) => {
+        if (!valid) {
+          return
         }
-      } else {
-        submitFunc = createResignCategory
-        params = {
-          name: form.categoryName,
-          groupId: form.groupId,
-          details: this.filterEmptyDetail(form.details).map((detail) => ({
-            name: detail.detailName
-          }))
+        if (form.categoryId) {
+          submitFunc = modifyResignCategory
+          params = {
+            categoryName: form.categoryName,
+            categoryId: form.categoryId,
+            groupId: form.groupId,
+            details: this.diff(
+              this.filterEmptyDetail(form.details),
+              this.filterEmptyDetail(this.oldDetails)
+            )
+          }
+        } else {
+          submitFunc = createResignCategory
+          params = {
+            name: form.categoryName,
+            groupId: form.groupId,
+            details: this.filterEmptyDetail(form.details).map((detail) => detail.detailName)
+          }
         }
-      }
-      this.loading = true
-      submitFunc(params)
-        .then(() => {
-          this.$message.success('提交成功')
-          this.close()
-        })
-        .finally(() => {
-          this.loading = false
-        })
+        this.loading = true
+        submitFunc(params)
+          .then(() => {
+            this.$message.success('提交成功')
+            this.$emit('submit', this.form.groupId)
+            this.close()
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      })
     },
     filterEmptyDetail(details = []) {
       return details.filter((item) => item.detailName !== '')

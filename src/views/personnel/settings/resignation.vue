@@ -115,6 +115,7 @@
       </el-collapse>
       <div
         v-else
+        v-loading="groupLoading"
         class="empty"
       >
         您还尚未添加任何离职交接事项
@@ -123,14 +124,20 @@
     <group-edit-dialog
       ref="groupEditDialog"
       :visible.sync="groupEditVisible"
+      @submit="getResignGroup"
     />
     <category-edit-dialog
       ref="categoryEditDialog"
       :visible.sync="categoryEditVisible"
+      :group-list="groupList"
+      :group-loading="groupLoading"
+      @submit="refreshCategory"
+      @refresh-group="getResignGroup"
     />
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import {
   getResignGroup,
   getResignCategory,
@@ -152,6 +159,9 @@ export default {
       categoryEditVisible: false
     }
   },
+  computed: {
+    ...mapGetters(['companyId'])
+  },
   watch: {
     activeGroupIDList(newVal, oldValue) {
       if (newVal.length > oldValue.length) {
@@ -168,7 +178,7 @@ export default {
   methods: {
     getResignGroup() {
       this.groupLoading = true
-      getResignGroup()
+      getResignGroup(this.companyId)
         .then((res) => {
           this.groupList = res
         })
@@ -186,6 +196,9 @@ export default {
       }
     },
     getResignCategory(group) {
+      if (!group) {
+        return
+      }
       this.$set(group, 'loading', true)
       getResignCategory(group.id)
         .then((categories) => {
@@ -199,21 +212,47 @@ export default {
           this.$set(group, 'loading', false)
         })
     },
+    refreshCategory(groupId) {
+      if (!groupId) {
+        return
+      }
+      this.getResignCategory(this.groupList.find((group) => group.id === groupId))
+    },
     editCategory(category) {
       this.$refs['categoryEditDialog'].init(category)
     },
     editGroup(group) {
       this.$refs['groupEditDialog'].init(group)
     },
-    delResignGroup(group) {
-      delResignGroup(group.id).then(() => {
-        this.getResignGroup()
+    delGroup(group) {
+      this.$confirm('您确定要删除该分组吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => delResignGroup(group.id))
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
+          this.getResignGroup()
+        })
     },
-    delResignCategory(category, group) {
-      delResignCategory(category.categoryId).then(() => {
-        this.getResignCategory(group)
+    delCategory(category, group) {
+      this.$confirm('您确定要删除该分类吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => delResignCategory(category.categoryId))
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
+          this.getResignCategory(group)
+        })
     }
   }
 }
@@ -250,7 +289,9 @@ export default {
 /deep/ .groups .el-button {
   padding: 0;
 }
-
+.groups {
+  min-height: 300px;
+}
 .group-header {
   .group-title {
     display: flex;
