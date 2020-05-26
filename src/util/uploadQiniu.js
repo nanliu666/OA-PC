@@ -18,19 +18,22 @@ export async function uploadQiniu(file, hooks) {
   const config = {
     useCdnDomain: true
   }
-
-  // 获取token
-  const { uploadToken, domain } = await getQiniuToken()
-  const observable = qiniu.upload(file, fileName, uploadToken, config, {
-    fname: fileName
-  })
-  // 注册上传监听
-  observable.subscribe(hooks.next, hooks.error, (res) => {
-    // 上传完成时触发
-    hooks.complete({
-      ...res,
-      url: domain + '/' + res.key,
-      fileName
+  try {
+    // 获取token
+    const { uploadToken, domain } = await getQiniuToken()
+    const observable = qiniu.upload(file, fileName, uploadToken, config, {
+      fname: fileName
     })
-  })
+    // 注册上传监听
+    observable.subscribe(hooks.next, hooks.error, (res) => {
+      // 上传完成时触发
+      hooks.complete({
+        ...res,
+        url: domain + '/' + res.key,
+        fileName
+      })
+    })
+  } catch (error) {
+    hooks.error('token获取失败')
+  }
 }

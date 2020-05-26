@@ -31,7 +31,10 @@
       />
       <div class="footer">
         <template v-if="active === 1">
-          <el-button size="medium">
+          <el-button
+            size="medium"
+            @click="goBack"
+          >
             取消
           </el-button>
           <el-button
@@ -121,21 +124,14 @@ export default {
       sending: false
     }
   },
-  watch: {
-    personId(val) {
-      if (val) {
-        this.getPersonInfo()
-        this.getOfferInfo()
-      }
-    }
-  },
   created() {
     this.personId = this.$route.query.personId
-    this.getPersonInfo()
   },
   activated() {
     this.clear()
     this.personId = this.$route.query.personId
+    this.getPersonInfo()
+    this.getOfferInfo()
     this.active = 1
   },
   methods: {
@@ -158,6 +154,7 @@ export default {
           title: data.title,
           ccEmail: data.ccEmail,
           validDay: data.validDay,
+          isFill: data.isFill,
           attachment: data.attachmentUrl
             ? [
                 {
@@ -191,7 +188,11 @@ export default {
       this.$refs['editOfferStepOne']
         .validate()
         .then((data) => {
-          Object.assign(this.offerInfo, data, { email: this.personInfo.email })
+          Object.assign(this.offerInfo, data, {
+            email: this.personInfo.email,
+            orgName: this.personInfo.orgName,
+            orgId: this.personInfo.orgId
+          })
           this.active += 1
         })
         .catch()
@@ -235,7 +236,9 @@ export default {
         this.submitLoading = true
         submitFunc(data)
           .then((res) => {
-            this.offerInfo.id = res.id
+            if (res.id) {
+              this.offerInfo.id = res.id
+            }
             resolve()
           })
           .catch((err) => {
@@ -287,6 +290,5 @@ export default {
 .footer {
   display: flex;
   justify-content: center;
-  padding-bottom: 40px;
 }
 </style>

@@ -37,6 +37,7 @@ router.beforeEach((to, from, next) => {
             label: label,
             value: value,
             params: to.params,
+            query: to.query,
             meta: (() => {
               if (!i18n) {
                 return meta
