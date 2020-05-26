@@ -296,15 +296,15 @@
               prop="leaderName"
             >
               <el-select
-                v-model="staffInfo.leaderName"
+                v-model="staffInfo.leaderId"
                 placeholder="请选择"
                 @change="leaderOptionChange"
               >
                 <el-option
-                  v-for="(leaderItem, index) in leaderOptions"
-                  :key="index"
+                  v-for="leaderItem in leaderOptions"
+                  :key="leaderItem.workNo"
                   :label="leaderItem.name"
-                  :value="leaderItem.orgId"
+                  :value="leaderItem.workNo"
                 />
               </el-select>
             </el-form-item>
@@ -742,7 +742,7 @@ export default {
     },
     leaderOptionChange(value) {
       this.leaderOptions.forEach((item) => {
-        if (item.orgId === value) {
+        if (item.workNo === value) {
           this.staffInfo.leaderName = item.name
         }
       })
@@ -828,7 +828,8 @@ export default {
         workProvinceCode: this.staffInfo.workProvinceCode,
         workProvinceName: this.staffInfo.workProvinceName,
         workCityCode: this.staffInfo.workCityCode,
-        workCityName: this.staffInfo.workCityName
+        workCityName: this.staffInfo.workCityName,
+        leaderId: this.staffInfo.leaderId
       }
       editStaffBasicInfo(params).then(() => {
         this.readonlyBasicInfo = true
