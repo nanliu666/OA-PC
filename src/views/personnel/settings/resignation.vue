@@ -274,7 +274,7 @@ export default {
 }
 /deep/ .el-collapse-item__arrow {
   position: absolute;
-  margin-left: 8px;
+  margin-left: 12px;
 }
 /deep/ .category-header {
   .el-collapse-item__header {
