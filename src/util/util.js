@@ -387,3 +387,13 @@ export const judgeRepeatedTime = (section1, section2) => {
     return false
   }
 }
+
+/**
+ * 生成唯一自增id
+ */
+export const createUniqueID = (() => {
+  var i = 0
+  return function() {
+    return i++
+  }
+})()

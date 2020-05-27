@@ -17,6 +17,7 @@ import person from './person'
 import menus from './menus'
 import candidate from './candidate'
 import selectPerson from './selectPerson'
+import personnelSettings from './personnel/settings'
 /**
  * 模拟数据mock
  *
@@ -51,3 +52,5 @@ org(options)
 transction(options)
 
 person(options.mock)
+
+personnelSettings(options.mock)
