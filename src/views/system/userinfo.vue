@@ -289,6 +289,7 @@
                     v-model="adress.curAdress"
                     :options="regionCascader.option"
                     :separator="'/'"
+                    @change="regionChange"
                   />
                   <el-input
                     v-model="adress.detailAdress"
@@ -422,6 +423,11 @@ export default {
   },
 
   methods: {
+    regionChange() {
+      let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
+      this.perosonnalInfo.userAddress =
+        thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
+    },
     getUserSex() {
       if (this.perosonnalInfo.sex == 1) {
         return '男'
@@ -465,9 +471,6 @@ export default {
     saveBasicInfo() {
       this.$refs['userInfo'].validate((isPass) => {
         if (isPass) {
-          let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
-          this.perosonnalInfo.userAddress =
-            thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
           editStaffBasicInfo(this.perosonnalInfo).then(() => {
             noEditInfo = this.deepCopy(this.perosonnalInfo)
             this.readonly = true
