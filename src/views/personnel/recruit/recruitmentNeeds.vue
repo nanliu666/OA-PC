@@ -1,11 +1,10 @@
 <template>
   <div style="height">
-    <el-page-header
-      content="新建招聘需求"
+    <page-header
+      title="新建招聘需求"
       class="pageHeader"
-      @back="goBack"
+      show-back
     />
-
     <basic-container v-loading="loading">
       <el-row
         type="flex"

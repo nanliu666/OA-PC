@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-page-header
+    <page-header
       content="详情"
       class="pageHeader"
       show-back
     />
-    <div class="roster-header">
+    <!-- <div class="roster-header">
       <el-row
         style="width:100%; height:50px"
         type="flex"
@@ -21,7 +21,7 @@
             size="medium"
             plain
           >
-            负责
+            复制
           </el-button>
         </el-col>
       </el-row>
@@ -46,7 +46,7 @@
           状态：已结束
         </el-col>
       </el-row>
-    </div>
+    </div> -->
     <basic-container>
       <el-tabs v-model="activeName">
         <el-tab-pane
@@ -86,22 +86,19 @@ export default {
   },
   methods: {
     opnDetails() {
-      this.$router.push('./recruitmentNeeds')
+      this.$router.push('personnel/recruit/components/recruitmentTasks/recruitmentNeeds')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  h4 {
-    font-size: 18px;
-  }
+.pageHeader {
+  height: 48px;
+  line-height: 48px;
+  font-size: 18px;
 }
+
 .state {
   display: flex;
   padding: 0 6px;

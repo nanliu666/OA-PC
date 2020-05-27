@@ -42,27 +42,15 @@
           {{ row.id }}
         </el-button>
       </template>
-
-      <template
-        slot="handler"
-        slot-scope="{}"
-      >
-        <el-button
-          size="medium"
-          type="text"
-          @click="handleChangeDemandPeople()"
-        >
-          更改需求人数
-        </el-button>
-      </template>
     </common-table>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
 import { getMyRecruitment } from '@/api/personnel/recruitment'
-
+import { getOrgTreeSimple } from '@/api/org/org'
 export default {
   name: 'RecruitList',
   components: {
@@ -75,12 +63,12 @@ export default {
         requireOptions: [
           {
             type: 'input',
-            field: 'search',
+            field: 'jobName',
             label: '',
             data: [],
             month: [],
             config: {
-              placeholder: '姓名/工号'
+              placeholder: '职位名称'
             }
           }
         ],
@@ -205,16 +193,17 @@ export default {
       ],
 
       tableConfig: {
-        showHandler: true,
+        showHandler: false,
         showIndexColumn: false,
         enableMultiSelect: false,
         enablePagination: true
       },
       params: {
         pageNo: 1,
-        pageSize: 10
+        pageSize: 10,
+        progress: 'Approved',
+        userId: this.userId
       },
-      //   分页器配置
       page: { currentPage: 1, size: 10, total: 0 },
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
@@ -222,12 +211,22 @@ export default {
       createOrgDailog: false
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   created() {
     this.getTableData()
+    getOrgTreeSimple({ orgId: 0 }).then((res) => {
+      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
+    })
   },
   methods: {
+    // init(row) {
+    //   console.log('查看数据...........', row)
+    // },
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
+      params.userId = this.userId
       getMyRecruitment(params).then((res) => {
         this.data = res.data
       })
@@ -237,17 +236,27 @@ export default {
       let request = {
         jobName: paramsData.jobName || '',
         pageNo: paramsData.pageNo || 1,
-        pageSize: paramsData.pageSize || 10
+        pageSize: paramsData.pageSize || 10,
+        progress: 'Approved',
+        userId: '',
+        positionId: paramsData.positionId || '',
+        workYear: paramsData.paramsData || '',
+        educationalLevel: paramsData.educationalLevel || '',
+        reason: paramsData.reason || '',
+        emerType: paramsData.emerType || '',
+        beginJoinDate: paramsData.beginJoinDate || '',
+        endJoinDate: paramsData.endJoinDate || ''
       }
       return request
     },
 
     handleSubmit(params) {
       let request = this.Decorator(params)
-      return this.getTableData(request)
+      this.getTableData(request).then(() => {
+        this.$message({ type: 'success', message: '操作成功!' })
+      })
     },
     jumpToDetail() {
-      //  页面跳转
       this.$router.push('/personnel/recruit/details/staffList')
     },
     pageSizeChange(param) {
@@ -259,10 +268,6 @@ export default {
       let paramsInfo = {}
       paramsInfo.pageNo = param
       return this.getTableData(paramsInfo)
-    },
-
-    handleChangeDemandPeople() {
-      this.$router.push('/personnel/recruit/components/recruitmentTasks/changeDemand/chang')
     }
   }
 }
