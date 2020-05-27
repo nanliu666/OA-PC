@@ -13,20 +13,20 @@
         :gutter="24"
       >
         <el-col :span="3">
-          <el-button
+          <!-- <el-button
             type="text"
             class="bigText"
           >
             我提交的招聘需求
-          </el-button>
+          </el-button> -->
         </el-col>
         <el-col :span="19">
-          <el-button
+          <!-- <el-button
             type="text"
             class="bigText"
           >
             全部招聘需求
-          </el-button>
+          </el-button> -->
         </el-col>
         <el-col :span="2">
           <el-button

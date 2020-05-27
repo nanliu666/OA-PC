@@ -13,7 +13,7 @@
         :gutter="24"
       >
         <el-col :span="23">
-          <span> {{ name }}分配的招聘需求（{{ department }}-{{ position }}）</span>
+          <span> {{ name }}分配的招聘需求({{ department }}-{{ position }})</span>
         </el-col>
         <el-col :span="1">
           <el-button
@@ -34,10 +34,10 @@
         :gutter="24"
       >
         <el-col :span="6">
-          需求编号：RYZB0002
+          需求编号：{{ id }}
         </el-col>
         <el-col :span="6">
-          提交人：张琦
+          提交人：{{ name }}
         </el-col>
         <el-col :span="6">
           提交时间：2019-12-12 12:12:09
@@ -77,6 +77,7 @@ export default {
   },
   data() {
     return {
+      id: 'xxx',
       name: 'xxx',
       department: '部门',
       position: '职位',

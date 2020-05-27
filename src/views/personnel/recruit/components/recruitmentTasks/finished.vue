@@ -272,7 +272,7 @@ export default {
     },
     jumpToDetail() {
       //  页面跳转
-      this.$router.push('/personnel/recruit/recruitmentNeeds')
+      this.$router.push('/personnel/recruit/details/staffList')
     },
     pageSizeChange(param) {
       let paramsInfo = {}
