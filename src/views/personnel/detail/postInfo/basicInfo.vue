@@ -973,6 +973,12 @@ export default {
             if (itemOrg.subOrgId == item.subOrgId && itemOrg.subJobId == item.subJobId) {
               subOrg.pop()
               subJob.pop()
+            } else if (itemOrg.subOrgId == item.subOrgId) {
+              subOrg.pop()
+            } else {
+              if (itemOrg.subJobId == item.subJobId) {
+                subJob.pop()
+              }
             }
           }
           //去掉重复的subOrgId项
