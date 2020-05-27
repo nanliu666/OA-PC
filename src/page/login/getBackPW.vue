@@ -1,179 +1,182 @@
 <template>
-  <div class="out-container">
-    <div class="brad-part">
-      <span>
-        <i class="el-icon-arrow-left" />
-      </span>
-      <span> 手机找回密码 </span>
+  <div>
+    <div class="logo">
+      <logo />
     </div>
-    <div class="getback-pw">
-      <keep-alive>
-        <div class="contens-wrapper">
-          <div class="progress-bar">
-            <el-steps :active="step">
-              <el-step
-                title="验证身份"
-                :status="steps.firstStatus"
-              />
-              <el-step
-                title="修改密码"
-                :status="steps.secondStatus"
-              />
-              <el-step
-                title="完成"
-                :status="steps.finalStatus"
-              />
-            </el-steps>
-          </div>
-
-          <div
-            v-if="step == 1"
-            class="identity-test"
-          >
-            <div class="identity-title">
-              请完成身份验证
+    <div class="out-container">
+      <pageHeader
+        :title="'手机找回密码'"
+        :show-back="true"
+      />
+      <div class="getback-pw">
+        <keep-alive>
+          <div class="contens-wrapper">
+            <div class="progress-bar">
+              <el-steps :active="step">
+                <el-step
+                  title="验证身份"
+                  :status="steps.firstStatus"
+                />
+                <el-step
+                  title="修改密码"
+                  :status="steps.secondStatus"
+                />
+                <el-step
+                  title="完成"
+                  :status="steps.finalStatus"
+                />
+              </el-steps>
             </div>
 
-            <el-form
-              ref="identity"
-              :label-position="labelPosition"
-              class="form-containner"
-              status-icon
-              :rules="identity.rules"
-              :model="identity.form"
-              label-width="0"
+            <div
+              v-if="step == 1"
+              class="identity-test"
             >
-              <el-form-item
-                label="手机号码"
-                prop="phone"
-              >
-                <el-input
-                  v-model="identity.form.phone"
-                  class="phone-input"
-                  autofocus="true"
-                  size="small"
-                  auto-complete="off"
-                  :placeholder="$t('login.phone')"
-                  @focus="resetIdentityFields('phone')"
-                />
-              </el-form-item>
+              <div class="identity-title">
+                请完成身份验证
+              </div>
 
-              <el-form-item
-                label="验证码"
-                prop="code"
+              <el-form
+                ref="identity"
+                :label-position="labelPosition"
+                class="form-containner"
+                status-icon
+                :rules="identity.rules"
+                :model="identity.form"
+                label-width="0"
               >
-                <el-input
-                  v-model="identity.form.code"
-                  class="test-code-input"
-                  size="small"
-                  auto-complete="off"
-                  :placeholder="$t('login.code')"
-                  @focus="resetIdentityFields('code')"
-                />
-                <el-button
-                  v-show="!identity.msgKey"
-                  class="get-test-code"
-                  @click="handleSend"
+                <el-form-item
+                  label="手机号码"
+                  prop="phone"
                 >
-                  <span>获取验证码</span>
-                </el-button>
-                <el-button
-                  v-show="identity.msgKey"
-                  class="count-down-time"
+                  <el-input
+                    v-model="identity.form.phone"
+                    class="phone-input"
+                    autofocus="true"
+                    size="small"
+                    auto-complete="off"
+                    :placeholder="$t('login.phone')"
+                    @focus="resetIdentityFields('phone')"
+                  />
+                </el-form-item>
+
+                <el-form-item
+                  label="验证码"
+                  prop="code"
                 >
-                  {{ identity.msgText }}
-                </el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-
-          <div
-            v-if="step == 2"
-            class="reset-password"
-          >
-            <div class="resetPW-title">
-              请完成密码设置
+                  <el-input
+                    v-model="identity.form.code"
+                    class="test-code-input"
+                    size="small"
+                    auto-complete="off"
+                    :placeholder="$t('login.code')"
+                    @focus="resetIdentityFields('code')"
+                  />
+                  <el-button
+                    v-show="!identity.msgKey"
+                    class="get-test-code"
+                    @click="handleSend"
+                  >
+                    <span>获取验证码</span>
+                  </el-button>
+                  <el-button
+                    v-show="identity.msgKey"
+                    class="count-down-time"
+                  >
+                    {{ identity.msgText }}
+                  </el-button>
+                </el-form-item>
+              </el-form>
             </div>
 
-            <el-form
-              ref="password"
-              :label-position="labelPosition"
-              class="form-containner"
-              status-icon
-              :rules="password.rules"
-              :model="password.form"
-              label-width="0"
+            <div
+              v-if="step == 2"
+              class="reset-password"
             >
-              <el-form-item prop="newPW">
-                <div>
-                  <span class="psw-label"> 新密码</span>
-                  <span
-                    class="psw-rule-tip"
-                  >(密码包含字母，符号或数字中至少两项且长度超过6位的密码)</span>
-                </div>
+              <div class="resetPW-title">
+                请完成密码设置
+              </div>
 
-                <el-input
-                  v-model="password.form.newPW"
-                  class="newPW-input"
-                  type="password"
-                  autofocus="true"
-                  show-password
-                  auto-complete="off"
-                  @focus="resetPSWFields('newPW')"
-                />
-              </el-form-item>
-
-              <el-form-item
-                label="确认密码"
-                prop="surePW"
+              <el-form
+                ref="password"
+                :label-position="labelPosition"
+                class="form-containner"
+                status-icon
+                :rules="password.rules"
+                :model="password.form"
+                label-width="0"
               >
-                <el-input
-                  v-model="password.form.surePW"
-                  class="surePW-input"
-                  type="password"
-                  autofocus="true"
-                  show-password
-                  auto-complete="off"
-                  @focus="resetPSWFields('surePW')"
-                />
-              </el-form-item>
-            </el-form>
-          </div>
+                <el-form-item prop="newPW">
+                  <div>
+                    <span class="psw-label"> 新密码</span>
+                    <span
+                      class="psw-rule-tip"
+                    >(密码包含字母，符号或数字中至少两项且长度超过6位的密码)</span>
+                  </div>
 
-          <div
-            v-if="step == 3"
-            class="test-success"
-          >
-            <div class="success-icon">
-              <i class="el-icon-success" />
-            </div>
-            <div class="success-text">
-              <span>您的密码已修改完成</span>
-            </div>
-            <div class="back-login" />
-          </div>
+                  <el-input
+                    v-model="password.form.newPW"
+                    class="newPW-input"
+                    type="password"
+                    autofocus="true"
+                    show-password
+                    auto-complete="off"
+                    @focus="resetPSWFields('newPW')"
+                  />
+                </el-form-item>
 
-          <div
-            v-if="step != 3"
-            class="next-button"
-          >
-            <el-button @click="next">
-              下一步
-            </el-button>
-          </div>
-          <div
-            v-if="step == 3"
-            class="goback-containner"
-          >
-            <el-button
-              class="goback-login"
-              @click="gobackLogin"
+                <el-form-item
+                  label="确认密码"
+                  prop="surePW"
+                >
+                  <el-input
+                    v-model="password.form.surePW"
+                    class="surePW-input"
+                    type="password"
+                    autofocus="true"
+                    show-password
+                    auto-complete="off"
+                    @focus="resetPSWFields('surePW')"
+                  />
+                </el-form-item>
+              </el-form>
+            </div>
+
+            <div
+              v-if="step == 3"
+              class="test-success"
             >
-              <span>返回登录页面</span>
-            </el-button>
+              <div class="success-icon">
+                <i class="el-icon-success" />
+              </div>
+              <div class="success-text">
+                <span>您的密码已修改完成</span>
+              </div>
+              <div class="back-login" />
+            </div>
+
+            <div
+              v-if="step != 3"
+              class="next-button"
+            >
+              <el-button @click="next">
+                下一步
+              </el-button>
+            </div>
+            <div
+              v-if="step == 3"
+              class="goback-containner"
+            >
+              <el-button
+                class="goback-login"
+                @click="gobackLogin"
+              >
+                <span>返回登录页面</span>
+              </el-button>
+            </div>
           </div>
-        </div>
-      </keep-alive>
+        </keep-alive>
+      </div>
     </div>
   </div>
 </template>
@@ -183,10 +186,15 @@ import { isMobile, validatePW } from '@/util/validate'
 import { getCode, checkPhoneCode, checkPassword } from '../../api/personalInfo.js'
 import { mapGetters } from 'vuex'
 import md5 from 'js-md5'
+import pageHeader from '@/components/page-header/pageHeader'
+import logo from '@/page/index/logo'
 let code = null
 
 export default {
-  components: {},
+  components: {
+    pageHeader,
+    logo
+  },
   data() {
     let _this = this
     const validatePhone = (rule, value, callback) => {
@@ -340,7 +348,9 @@ export default {
             let newpsw = this.password.form.newPW
             let params = {
               userId: this.userInfo.user_id,
-              newPassword: md5(newpsw)
+              newPassword: md5(newpsw),
+              phonenum: this.identity.form.phone,
+              smsCode: this.identity.form.code
             }
             checkPassword(params).then(() => {
               this.step++
@@ -385,10 +395,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.logo {
+  height: 56px;
+  background: #fff;
+}
 .out-container {
   height: calc(100vh);
   background: #f2f5f7;
-  padding: 68px 32px 0 32px !important;
+  padding: 0 32px 0 32px !important;
   position: relative;
 }
 .brad-part {
@@ -465,6 +479,7 @@ export default {
 .get-test-code {
   color: #207efa;
   border: 1px solid #207efa;
+  vertical-align: middle;
 }
 .count-down-time {
   width: 100px;

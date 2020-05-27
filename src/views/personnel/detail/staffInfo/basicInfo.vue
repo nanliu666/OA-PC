@@ -107,16 +107,16 @@
           >
             <el-form-item
               v-show="readonlyBasicInfo"
-              label="公司邮箱:"
+              label="邮箱:"
             >
-              <span class="info-item-value">{{ staffInfo.email }}</span>
+              <span class="info-item-value">{{ staffInfo.userEmail }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
-              label="公司邮箱:"
-              prop="email"
+              label="邮箱:"
+              prop="userEmail"
             >
-              <el-input v-model="staffInfo.email" />
+              <el-input v-model="staffInfo.userEmail" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -564,7 +564,7 @@ export default {
             }
           }
         ],
-        email: [
+        userEmail: [
           {
             required: true,
             trigger: 'blur',

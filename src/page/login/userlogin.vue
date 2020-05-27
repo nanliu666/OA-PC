@@ -203,7 +203,7 @@ export default {
       // })
     },
     forgetPW() {
-      this.$router.push({ path: '/setWel/getBackPW' })
+      this.$router.push({ path: '/getBackPW' })
     }
   }
 }
