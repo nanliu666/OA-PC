@@ -91,7 +91,9 @@
           slot="workProperty"
           slot-scope="{ row }"
         >
-          {{ workProperty[row.workProperty] }}
+          {{
+            workProperty[row.workProperty]
+          }}
         </template>
         <template
           slot="entryDate"
@@ -400,7 +402,6 @@ export default {
     loadSearchOption() {
       getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
         this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
-        this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
       })
       getOrgJob().then((res) => {
         this.searchConfig.popoverOptions[1].options = res
@@ -432,6 +433,9 @@ export default {
         if (params.jobId) params.jobs = [params.jobId]
         if (params.orgId) params.orgs = [params.orgId]
         if (params.workProperty) params.workProperties = [params.workProperty]
+        delete params.jobId
+        delete params.orgId
+        delete params.orgId
       } else {
         getDataFun = getCandidateAcceptList
         params.status = this.status
