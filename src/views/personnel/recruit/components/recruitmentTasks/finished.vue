@@ -87,8 +87,8 @@ export default {
         popoverOptions: [
           {
             type: 'treeSelect',
-            field: 'parentOrgId',
-            label: '部门',
+            field: 'orgId',
+            label: '用人部门',
             data: '',
             config: {
               selectParams: {
@@ -114,64 +114,40 @@ export default {
           {
             type: 'select',
             data: '',
-            label: '职位',
-            field: 'jobs',
-            arrField: 'jobId',
+            label: '岗位',
+            field: 'positionId',
+            arrField: 'positionId',
             config: {},
+            options: []
+          },
+          {
+            type: 'select',
+            data: '',
+            label: '工作年限',
+            field: 'workYear',
+            config: {}
+          },
+          {
+            type: 'select',
+            data: '',
+            label: '学历要求',
+            field: 'educationalLevel',
+            config: {}
+          },
+          {
+            type: 'select',
+            field: 'emerType',
+            data: '',
+            label: '紧急程度',
             options: [],
-            loading: false,
-            noMore: false,
-            firstLoad(flag, item) {
-              if (flag && item.options.length === 0) {
-                item.loadMoreFun(item)
-              }
-            },
-            loadMoreFun(item) {
-              if (item.loading || item.noMore) return
-              item.loading = true
-            }
+            config: {}
           },
           {
             type: 'dataPicker',
             data: '',
-            label: '入职日期',
-            field: 'beginEntryDate,endEntryDate',
+            label: '到岗日期',
+            field: 'beginJoinDate , endJoinDate',
             config: { type: 'daterange', 'range-separator': '至' }
-          },
-          {
-            type: 'dataPicker',
-            data: '',
-            label: '转正日期',
-            field: 'beginFormalDate,endFormalDate',
-            config: { type: 'daterange', 'range-separator': '至' }
-          },
-          {
-            type: 'select',
-            field: 'probation',
-            data: '',
-            label: '试用期',
-            options: [
-              { label: '无试用期', value: 0 },
-              { label: '一个月', value: 1 },
-              { label: '两个月', value: 2 },
-              { label: '三个月', value: 3 },
-              { label: '四个月', value: 4 },
-              { label: '五个月', value: 5 },
-              { label: '六个月', value: 6 }
-            ],
-            config: {}
-          },
-          {
-            type: 'select',
-            field: 'orgType',
-            data: '',
-            label: '申请状态',
-            options: [
-              { label: '未申请', value: 0 },
-              { label: '已驳回', value: 1 },
-              { label: '申请中', value: 2 }
-            ],
-            config: {}
           }
         ]
       },

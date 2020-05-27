@@ -134,7 +134,7 @@ export default {
             type: 'dataPicker',
             data: '',
             label: '到岗日期',
-            field: 'beginJoinDate,endJoinDate',
+            field: 'beginJoinDate , endJoinDate',
             config: { type: 'daterange', 'range-separator': '至' }
           }
         ]
@@ -201,15 +201,14 @@ export default {
       params: {
         pageNo: 1,
         pageSize: 10,
-        progress: this.progress,
+        progress: 'Approved',
         userId: this.userId
       },
       page: { currentPage: 1, size: 10, total: 0 },
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
       },
-      createOrgDailog: false,
-      progress: 'Approved'
+      createOrgDailog: false
     }
   },
   computed: {
@@ -224,6 +223,7 @@ export default {
   methods: {
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
+      this.params.userId = this.userId
       getMyRecruitment(params).then((res) => {
         this.data = res.data
       })
@@ -234,15 +234,24 @@ export default {
         jobName: paramsData.jobName || '',
         pageNo: paramsData.pageNo || 1,
         pageSize: paramsData.pageSize || 10,
-        progress: this.progress,
-        userId: this.userId
+        progress: this.params.progress,
+        userId: this.userId,
+        positionId: paramsData.positionId || '',
+        workYear: paramsData.paramsData || '',
+        educationalLevel: paramsData.educationalLevel || '',
+        reason: paramsData.reason || '',
+        emerType: paramsData.emerType || '',
+        beginJoinDate: paramsData.beginJoinDate || '',
+        endJoinDate: paramsData.endJoinDate || ''
       }
       return request
     },
 
     handleSubmit(params) {
       let request = this.Decorator(params)
-      return this.getTableData(request)
+      this.getTableData(request).then(() => {
+        this.$message({ type: 'success', message: '操作成功!' })
+      })
     },
     jumpToDetail() {
       this.$router.push('/personnel/recruit/details/staffList')
