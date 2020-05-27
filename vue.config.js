@@ -31,6 +31,8 @@ module.exports = {
 
     config.plugin('html').tap((args) => {
       args[0].isProduction = isProduction
+      // 指定打包的js注入到head标签
+      // args[0].inject = 'head'
       return args /* 传递给 html-webpack-plugin's 构造函数的新参数 */
     })
   },
