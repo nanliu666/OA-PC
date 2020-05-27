@@ -517,6 +517,9 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过 2MB!')
       }
+      if (!isJPG && !isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB且只能是 jpg、jpeg 格式!')
+      }
       return isJPG && isLt2M
     },
     handleAvatarSuccess() {
