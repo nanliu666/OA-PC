@@ -85,6 +85,7 @@ export default {
   navbar: {
     logOut: '退出登录',
     userinfo: '个人信息',
+    securitySetting: '安全设置',
     dashboard: '首页',
     lock: '锁屏',
     bug: '没有错误日志',
