@@ -29,35 +29,145 @@
                 :offset="4"
               >
                 <el-form-item label="申请时间">
-                  <span class="distance">{{}}</span>
+                  <span class="distance">{{ personnel.createTime }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="10">
-                <el-form-item label="原岗位" />
+                <el-form-item
+                  label="申请公司"
+                >
+                  <span class="distance">{{ personnel.company }}</span>
+                </el-form-item>
               </el-col>
               <el-col
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="变更为" />
+                <el-form-item label="用人部门">
+                  <span class="distance">{{ personnel.orgName }}</span>
+                </el-form-item>
               </el-col>
             </el-row>
-            <!-- 生效日期 -->
-            <el-row class="btn-box">
+
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="职位">
+                  <span class="distance">{{ personnel.name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="岗位">
+                  <span class="distance">{{ personnel.createTime }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="10">
                 <el-form-item
-                  label="生效日期"
-                  prop="effectDate"
-                />
+                  label="工作性质"
+                >
+                  <span class="distance">{{ personnel.company }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="需求人数">
+                  <span class="distance">{{ personnel.orgName }}</span>
+                </el-form-item>
               </el-col>
             </el-row>
-            <!-- 备注 -->
+
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="到岗日期">
+                  <span class="distance">{{ personnel.name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="薪酬范围">
+                  <span class="distance">{{ personnel.createTime }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <!-- <el-row>
+              <el-col :span="10">
+                <el-form-item label="学历要求" ><span class="distance">{{personnel.company}}</span> </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="需求人数">
+                      <span class="distance">{{personnel.orgName}}</span> 
+                </el-form-item>
+              </el-col>
+            </el-row> -->
+
             <el-row>
               <el-col :span="24">
-                <el-form-item label="备注" />
+                <el-form-item label="学历要求">
+                  <span class="distance">{{ personnel.createTime }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="职位要求">
+                  <li class="distance">
+                    {{ personnel.createTime }}
+                  </li>
+                  <li class="distance">
+                    {{ personnel.createTime }}
+                  </li>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="工作职责">
+                  <li class="distance">
+                    {{ personnel.createTime }}
+                  </li>
+                  <li class="distance">
+                    {{ personnel.createTime }}
+                  </li>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="招聘原因">
+                  <span class="distance">{{ personnel.createTime }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="工作职责">
+                  <li class="distance">
+                    {{ personnel.createTime }}
+                  </li>
+                  <li class="distance">
+                    {{ personnel.createTime }}
+                  </li>
+                </el-form-item>
               </el-col>
             </el-row>
           </el-form>
@@ -74,7 +184,11 @@ export default {
     return {
       // 请求数据params and 员工信息
       personnel: {
-        name: 'xxx'
+        name: 'xxx',
+        createTime: 'xxx',
+        company: 'xxx',
+        orgName: 'xxx',
+        jobId: 'xxx'
       }
     }
   }
