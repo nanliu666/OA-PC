@@ -9,8 +9,8 @@
         :config="tableConfig"
         :columns="columns"
         :loading="loading"
-        @pageSizeChange="sizeChange"
-        @currentPageChange="currentChange"
+        @page-size-change="sizeChange"
+        @current-page-change="currentChange"
       >
         <template slot="topMenu">
           <div class="topmenu lex-flow flex flex-justify-between flex-items">
@@ -30,15 +30,48 @@
               <slot name="screen" />
             </div>
             <div>
-              <el-button
-                type="primary"
-                size="medium"
-              >
-                <i class="el-icon-refresh" />
-              </el-button>
+              <slot name="refresh" />
             </div>
           </div>
         </template>
+        <template
+          slot="name"
+          slot-scope="scope"
+        >
+          <el-link
+            type="primary"
+            @click="handleJumpDetail(scope.row)"
+          >
+            {{
+              scope.row.name
+            }}
+          </el-link>
+        </template>
+        <template
+          slot="contractStatus"
+          slot-scope="scope"
+        >
+          {{ scope.row.contractStatus | contractStatus }}
+        </template>
+        <template
+          slot="status"
+          slot-scope="scope"
+        >
+          {{ scope.row.status | status }}
+        </template>
+        <template
+          slot="workProperty"
+          slot-scope="scope"
+        >
+          {{ workProperty(scope.row.workProperty) }}
+        </template>
+        <template
+          slot="contractType"
+          slot-scope="scope"
+        >
+          {{ contractType(scope.row.contractType) }}
+        </template>
+
         <template
           slot="handler"
           slot-scope="scope"
@@ -57,6 +90,28 @@
 import mixin from '@/views/personnel/contract/components/mixin'
 export default {
   name: 'Signed',
+  filters: {
+    contractStatus(data) {
+      let status = {
+        UnExecute: '未执行',
+        InExecute: '执行中',
+        Expired: '已到期',
+        UnSign: '未签订',
+        Relieve: '已解除'
+      }
+      return status[data] || ''
+    },
+    status(data) {
+      // Try-试用期，Formal-正式，Leaved-已离职，WaitLeave-待离职
+      let status = {
+        Try: '试用期',
+        Formal: '正式',
+        Leaved: '已离职',
+        WaitLeave: '待离职'
+      }
+      return status[data] || ''
+    }
+  },
   mixins: [mixin],
   props: {
     tableData: {
@@ -64,14 +119,66 @@ export default {
       default: function() {
         return []
       }
+    },
+    pages: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {
     return {
-      data: []
+      data: [],
+      WorkProperty: [],
+      ContractType: []
     }
   },
+  watch: {
+    pages: {
+      handler: function(val) {
+        this.page = val
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.WorkProperty = res
+    })
+    this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
+      this.ContractType = res
+    })
+  },
   methods: {
+    handleJumpDetail(row) {
+      this.$router.push('/personnel/detail/' + row.userId)
+    },
+    contractType(data) {
+      let value = ''
+      this.ContractType.map((it) => {
+        if (it.dictKey === data) {
+          value = it.dictValue
+        }
+      })
+      return value
+    },
+    workProperty(data) {
+      let value = ''
+      this.WorkProperty.map((it) => {
+        if (it.dictKey === data) {
+          value = it.dictValue
+        }
+      })
+      return value
+    },
+    sizeChange(size) {
+      this.$emit('sizeChange', size)
+    },
+    currentChange(current) {
+      this.$emit('currentChange', current)
+    },
     handleRenewal() {},
     handleEdit() {}
   }

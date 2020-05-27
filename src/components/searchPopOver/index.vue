@@ -371,8 +371,19 @@ export default {
           // })
         })
         this.tags.push(...tagsArr)
+        newVal.map((it) => {
+          if (it.type === 'treeSelect') {
+            this.$nextTick(() => {
+              setTimeout(() => {
+                this.$refs[it.field] &&
+                  this.$refs[it.field][0].treeDataUpdateFun(it.config.treeParams.data)
+              }, 300)
+            })
+          }
+        })
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -422,8 +433,9 @@ export default {
             item.field.split(',').forEach((it, idx) => {
               params[it] = item.data[idx]
             })
+          } else {
+            params[item.field] = item.data
           }
-          params[item.field] = item.data
         }
       })
       return params

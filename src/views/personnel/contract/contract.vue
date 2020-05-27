@@ -12,7 +12,10 @@
       <!--      </div>-->
     </div>
 
-    <div class="cntract">
+    <div
+      v-loading="loading"
+      class="cntract"
+    >
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
@@ -21,8 +24,16 @@
           label="已签订合同"
           name="1"
         >
-          <signed :table-data="signedData">
-            <template slot="nav">
+          <signed
+            :table-data="signedData"
+            :pages="page"
+            @sizeChange="sizeChangeAlready"
+            @currentChange="currentChangeAlready"
+          >
+            <template
+              v-if="signedtotalNum"
+              slot="nav"
+            >
               <nav
                 v-if="show"
                 class="nav"
@@ -39,10 +50,11 @@
                   <span class="flex flex-flow-column flex-items">
                     <span
                       class="flex flex-flow flex-items"
-                    >：近2个月内共有 8 名员工合同即将到期
+                    >：近2个月内共有 {{ signedtotalNum }} 名员工合同即将到期
                       <el-link
                         style="margin:0 10px;"
                         type="primary"
+                        @click="handleLook"
                       >查看</el-link></span>
                   </span>
                 </span>
@@ -61,6 +73,15 @@
                 @submit="handleSubmit"
               />
             </template>
+            <template slot="refresh">
+              <el-button
+                type="primary"
+                size="medium"
+                @click="refresh"
+              >
+                <i class="el-icon-refresh" />
+              </el-button>
+            </template>
             <template
               slot="operation"
               slot-scope="scope"
@@ -70,7 +91,7 @@
                 size="medium"
                 @click.stop="handleRenewal(scope.row, scope.index)"
               >
-                续签
+                续签合同
               </el-button>
               <el-button
                 type="text"
@@ -86,8 +107,16 @@
           label="待处理合同"
           name="2"
         >
-          <signed :table-data="signedData">
-            <template slot="nav">
+          <signed
+            :table-data="todoData"
+            :pages="pageT"
+            @sizeChange="sizeChangeTodo"
+            @currentChange="currentChangeTodo"
+          >
+            <template
+              v-if="signedtotalNum"
+              slot="nav"
+            >
               <nav
                 v-if="show"
                 class="nav"
@@ -104,11 +133,11 @@
                   <span class="flex flex-flow-column flex-items">
                     <span
                       class="flex flex-flow flex-items"
-                    >：近2个月内共有 8 名员工合同即将到期
+                    >：近2个月内共有 {{ signedTodoTotalNum }} 名员工合同即将到期
                       <el-link
                         style="margin:0 10px;"
                         type="primary"
-                        @click="handleLook"
+                        @click="handleLookTodo"
                       >查看</el-link></span>
                   </span>
                 </span>
@@ -117,28 +146,39 @@
             <template v-slot:screen>
               <SearchPopover
                 ref="searchPopover"
-                :require-options="searchConfig.requireOptions"
-                :popover-options="searchConfig.popoverOptions"
-                @submit="handleSubmit"
+                :require-options="searchConfigTodo.requireOptions"
+                :popover-options="searchConfigTodo.popoverOptions"
+                @submit="handleSubmitTodo"
               />
+            </template>
+            <template slot="refresh">
+              <el-button
+                type="primary"
+                size="medium"
+                @click="refreshTodo"
+              >
+                <i class="el-icon-refresh" />
+              </el-button>
             </template>
             <template
               slot="operation"
               slot-scope="scope"
             >
               <el-button
+                v-if="scope.row.contractStatus === contractStatus[2]"
                 type="text"
                 size="medium"
                 @click.stop="handleRenewal(scope.row, scope.index)"
               >
-                续签
+                续签合同
               </el-button>
               <el-button
+                v-if="scope.row.contractStatus === contractStatus[3]"
                 type="text"
                 size="medium"
                 @click.stop="handleEdit(scope.row, scope.index)"
               >
-                编辑
+                签订合同
               </el-button>
             </template>
           </signed>
@@ -147,14 +187,28 @@
           label="合同签订记录"
           name="3"
         >
-          <signed :table-data="signedData">
+          <signed
+            :table-data="recordData"
+            :pages="pageR"
+            @sizeChange="sizeChangeR"
+            @currentChange="currentChangeR"
+          >
             <template v-slot:screen>
               <SearchPopover
                 ref="searchPopover"
-                :require-options="searchConfig.requireOptions"
-                :popover-options="searchConfig.popoverOptions"
-                @submit="handleSubmit"
+                :require-options="searchConfigR.requireOptions"
+                :popover-options="searchConfigR.popoverOptions"
+                @submit="handleSubmitRecord"
               />
+            </template>
+            <template slot="refresh">
+              <el-button
+                type="primary"
+                size="medium"
+                @click="refreshR"
+              >
+                <i class="el-icon-refresh" />
+              </el-button>
             </template>
           </signed>
         </el-tab-pane>
@@ -167,8 +221,17 @@
 <script>
 import mixin from './components/mixin'
 import signed from '@/views/personnel/contract/components/signed'
-import { postSigned } from '@/api/personnel/contart'
+import { postSigned, postContractRecord, postContractTodo } from '@/api/personnel/contart'
 import SearchPopover from '@/components/searchPopOver/index'
+import {
+  searchConfig,
+  searchConfigTodo,
+  searchConfigRecord
+} from '@/views/personnel/contract/components/searchConfig'
+import { getJob, getTree } from '@/api/personnel/selectedPerson'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 export default {
   name: 'Cantract',
   components: {
@@ -178,130 +241,23 @@ export default {
   mixins: [mixin],
   data() {
     return {
+      signedtotalNum: 0,
+      signedTodoTotalNum: 0,
       activeName: '1',
       form: {
         name: ''
       },
-      searchConfig: {
-        requireOptions: [
-          {
-            type: 'input',
-            field: 'search',
-            label: '',
-            data: '',
-            options: [],
-            config: { placeholder: '姓名/邮箱/', 'suffix-icon': 'el-icon-search' }
-          }
-        ],
-        popoverOptions: [
-          {
-            type: 'input',
-            field: 'phonenum',
-            label: '手机号码',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', placeholder: '请输入手机号码' }
-          },
-          {
-            type: 'treeSelect',
-            field: 'orgId',
-            label: '部门',
-            data: '',
-            config: {
-              selectParams: {
-                placeholder: '请选择部门',
-                multiple: false
-              },
-              treeParams: {
-                data: [],
-                'check-strictly': true,
-                'default-expand-all': false,
-                'expand-on-click-node': false,
-                clickParent: true,
-                filterable: false,
-                props: {
-                  children: 'children',
-                  label: 'orgName',
-                  disabled: 'disabled',
-                  value: 'orgId'
-                }
-              }
-            }
-          },
-          {
-            type: 'select',
-            field: 'jobId',
-            label: '职位',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', optionValue: 'jobId' }
-          },
-          {
-            type: 'select',
-            field: 'workProperty',
-            label: '工作性质',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', optionValue: 'jobId' }
-          },
-          {
-            type: 'select',
-            field: 'status',
-            label: '员工状态',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', optionValue: 'jobId' }
-          },
-          {
-            type: 'dataPicker',
-            field: 'entryDate',
-            label: '入职日期',
-            data: '',
-            options: [],
-            config: { type: 'date' }
-          },
-          {
-            type: 'input',
-            field: 'contractCode',
-            label: '合同编号',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', placeholder: '请输入合同编号' }
-          },
-          {
-            type: 'select',
-            field: 'contractType',
-            label: '合同类型',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', optionValue: 'jobId' }
-          },
-          {
-            type: 'dataPicker',
-            field: 'beginContractDate',
-            label: '合同开始日期',
-            data: '',
-            options: [],
-            config: { type: 'date' }
-          },
-          {
-            type: 'dataPicker',
-            field: 'endContractDate',
-            label: '合同结束日期',
-            data: '',
-            options: [],
-            config: { type: 'date' }
-          },
-          {
-            type: 'input',
-            field: 'signNum',
-            label: '合同签订次数',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', placeholder: '请输入合同签订次数' }
-          }
-        ]
+      contractStatus: ['UnExecute', 'InExecute', 'Expired', 'UnSign', 'Relieve'],
+      Status: {
+        UnExecute: '未执行',
+        InExecute: '执行中',
+        Expired: '已到期',
+        UnSign: '未签订',
+        Relieve: '已解除'
       },
+      searchConfig: searchConfig,
+      searchConfigR: searchConfigRecord,
+      searchConfigTodo: searchConfigTodo,
       signedData: [],
       selectionList: [],
       loading: false,
@@ -315,76 +271,262 @@ export default {
       number: 0,
       row: {},
       data: [],
+      searchForm: {},
+      searchFormRecord: {},
+      searchFormTodo: {},
+      recordData: [],
+      todoData: [],
       params: {
         pageNo: 1,
-        pageSize: 100,
-        name: ''
-      }
+        pageSize: 10
+      },
+      paramsTodo: {
+        pageNo: 1,
+        pageSize: 10
+      },
+      paramsRecord: {
+        pageNo: 1,
+        pageSize: 10
+      },
+      pageT: {
+        pageSize: 2,
+        pagerCount: 1,
+        total: 10
+      },
+      pageR: {
+        pageSize: 2,
+        pagerCount: 1,
+        total: 10
+      },
+      endDate: '',
+      endDateTodo: ''
     }
   },
   mounted() {
     this.getData()
+    this.getRecordData()
+    this.getTodoData()
+    this.getTowData()
+    this.getTowTodoData()
+    this.getJob()
+    this.getTree()
+
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.searchConfig.popoverOptions[3].options = res
+      this.searchConfigR.popoverOptions[3].options = res
+      this.searchConfigTodo.popoverOptions[3].options = res
+    })
+    this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
+      this.searchConfig.popoverOptions[7].options = res
+      this.searchConfigR.popoverOptions[7].options = res
+    })
+  },
+  activated() {
+    this.getData()
+    this.getRecordData()
+    this.getTodoData()
   },
   methods: {
+    getTree() {
+      let params = {
+        parentOrgId: '0'
+      }
+      getTree(params).then((res) => {
+        this.searchConfig.popoverOptions[1].config.treeParams.data = res
+        this.searchConfigR.popoverOptions[1].config.treeParams.data = res
+        this.searchConfigTodo.popoverOptions[1].config.treeParams.data = res
+      })
+    },
+    /***
+     * @author 关芬达
+     * @desc 获取职位
+     * */
+    getJob() {
+      let params = {
+        jobName: '',
+        orgId: ''
+      }
+      getJob(params).then((res) => {
+        this.searchConfig.popoverOptions[2].options = res
+        this.searchConfigR.popoverOptions[2].options = res
+        this.searchConfigTodo.popoverOptions[2].options = res
+      })
+    },
     /***
      * @author 关芬达
      * @desc 差看最近两个月过期合同
      *
      */
-    handleLook() {},
-    handleSreen() {
-      this.isShow = !this.isShow
+    handleLook() {
+      this.endDate = moment()
+        .add(2, 'M')
+        .format('YYYY-MM-DD')
+      this.getData(this.endDate)
     },
-    getData() {
+    handleLookTodo() {
+      this.endDateTodo = moment()
+        .add(2, 'M')
+        .format('YYYY-MM-DD')
+      this.getTodoData(this.endDate)
+    },
+    refresh() {
+      this.getData()
+    },
+
+    getTowData() {
+      let endDate = moment()
+        .add(2, 'M')
+        .format('YYYY-MM-DD')
       let params = {
         pageNo: 1,
         pageSize: 10,
-        search: '',
-        phonenum: '',
-        orgs: [
-          {
-            orgId: ''
-          }
-        ],
-        jobs: [
-          {
-            jobId: ''
-          }
-        ],
-        workProperties: [
-          {
-            workProperty: ''
-          }
-        ],
-        statuses: [
-          {
-            status: ''
-          }
-        ],
-        beginEntryDate: '',
-        endEntryDate: '',
-        contractCode: '',
-        contracTypes: [
-          {
-            contracType: ''
-          }
-        ],
-        beginBeginDate: '',
-        endBeginDate: '',
-        beginEndDate: '',
-        endEndDate: '',
-        signNum: ''
+        endDate,
+        ...this.searchForm
       }
       postSigned(params).then((res) => {
         // console.log(res)
-        this.signedData = res.data
+        this.signedtotalNum = res.totalNum
       })
+    },
+
+    /***
+     * @author guanfenda
+     * @desc 获取table数据
+     *
+     */
+    getData(endDate) {
+      let params = {
+        ...this.params,
+        ...this.searchForm
+      }
+      if (endDate) {
+        params.endDate = endDate
+      }
+      this.loading = true
+      postSigned(params).then((res) => {
+        // console.log(res)
+        this.loading = false
+        this.signedData = res.data
+        this.page.total = res.totalNum
+      })
+    },
+    sizeChangeAlready(val) {
+      this.params.pageSize = val
+      this.getData()
+    },
+    currentChangeAlready(val) {
+      this.params.pageNo = val
+      this.getData()
+    },
+    getTowTodoData() {
+      let endDate = moment()
+        .add(2, 'M')
+        .format('YYYY-MM-DD')
+      let params = {
+        pageNo: 1,
+        pageSize: 10,
+        endDate,
+        ...this.searchFormTodo
+      }
+      postContractTodo(params).then((res) => {
+        this.signedTodoTotalNum = res.totalNum
+      })
+    },
+    getTodoData(endDate) {
+      let params = {
+        ...this.paramsTodo,
+        ...this.searchFormTodo
+      }
+      if (endDate) {
+        params.endDate = endDate
+      }
+      this.loading = true
+      postContractTodo(params).then((res) => {
+        this.loading = false
+        this.todoData = res.data
+        this.pageT.total = res.totalNum
+      })
+    },
+    refreshTodo() {
+      this.getTodoData()
+    },
+    handleSubmitTodo(data) {
+      this.searchFormTodo = data
+      this.getTodoData()
+    },
+    sizeChangeTodo(val) {
+      this.paramsTodo.pageSize = val
+      this.getTodoData()
+    },
+    currentChangeTodo(val) {
+      this.paramsTodo.pageNo = val
+      this.getTodoData()
+    },
+    getRecordData() {
+      let params = {
+        ...this.paramsRecord,
+        ...this.searchFormRecord
+      }
+      this.loading = true
+      postContractRecord(params).then((res) => {
+        this.loading = false
+        this.recordData = res.data
+        this.pageR.total = res.totalNum
+      })
+    },
+    sizeChangeR(val) {
+      this.paramsRecord.pageSize = val
+      this.getRecordData()
+    },
+    currentChangeR(val) {
+      this.paramsRecord.pageNo = val
+      this.getRecordData()
+    },
+    handleSubmitRecord(data) {
+      this.searchFormRecord = data
+      // this.contracTypes
+      this.getRecordData()
+    },
+    refreshR() {
+      this.getRecordData()
     },
     search() {},
     handleClick() {},
-    handleSubmit() {},
-    handleRenewal() {},
-    handleEdit() {}
+    handleSubmit(data) {
+      this.searchForm = data
+      // this.contracTypes
+      this.getData()
+    },
+    handleRenewal(row) {
+      let params = {
+        jobName: row.jobName,
+        orgName: row.orgName,
+        phonenum: row.phonenum,
+        workNo: row.workNo,
+        name: row.name,
+        userId: row.userId,
+        contractId: row.contractId
+      }
+      this.$router.push({
+        path: '/personnel/contract/renewal',
+        query: params
+      })
+    },
+    handleEdit(row) {
+      let params = {
+        jobName: row.jobName,
+        orgName: row.orgName,
+        phonenum: row.phonenum,
+        workNo: row.workNo,
+        name: row.name,
+        userId: row.userId,
+        contractId: row.contractId
+      }
+      this.$router.push({
+        path: '/personnel/contract/signedContract',
+        query: params
+      })
+    }
   }
 }
 </script>

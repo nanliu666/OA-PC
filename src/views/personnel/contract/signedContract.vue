@@ -1,24 +1,27 @@
 <template>
   <div style="height: 100%">
     <div class="header">
-      <div @click="back">
+      <div @click="handleBack">
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
-        /> 续签合同
+        /> 编辑合同
       </div>
     </div>
     <div class="person">
       <div class="name">
-        宋智孝（GZ00253)
+        {{ personInfo.name }}（{{ personInfo.workNo }})
       </div>
       <div class="flex flex-flow flex-justify-start nav">
-        <div><span>手机号码：</span>{{ personInfo.telephone }}</div>
+        <div><span>手机号码：</span>{{ personInfo.phonenum }}</div>
         <div><span>部门：</span>{{ personInfo.orgName }}</div>
-        <div><span>职位：</span> {{ personInfo.jodName }}</div>
+        <div><span>职位：</span> {{ personInfo.jobName }}</div>
       </div>
     </div>
-    <div class="contain">
+    <div
+      v-loading="loading"
+      class="contain"
+    >
       <div class="title">
         合同信息
       </div>
@@ -29,7 +32,10 @@
           :form.sync="infoForm"
         />
         <div class="footer flex flex-items flex-justify">
-          <el-button size="medium">
+          <el-button
+            size="medium"
+            @click="handleBack"
+          >
             取消
           </el-button>
           <el-button
@@ -49,7 +55,10 @@
 import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { signedData } from './components/contractData'
 import { getCompany } from '@/api/personnel/selectedPerson'
-import { putContractInfo } from '@/api/personnel/contart'
+import { putContractInfo, getContractInfo } from '@/api/personnel/contart'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 
 export default {
   name: 'Renewal',
@@ -63,6 +72,7 @@ export default {
         orgName: '行政部',
         jodName: '人力资源'
       },
+      loading: false,
       signedData,
       infoForm: {
         userId: '',
@@ -80,11 +90,48 @@ export default {
   mounted() {
     this.infoForm.userId = this.$route.query.userId
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
-      this.dataFilter(res, this.signedData, 'type', 'dictValue', 'id')
+      this.dataFilter(res, this.signedData, 'type', 'dictValue', 'dictKey')
     })
+    this.personInfo = {
+      ...this.$route.query
+    }
     this.getCompany()
+    this.getContractInfo()
+    // var day = moment("1995-12-25").valueOf()
+    // console.log(day)
   },
   methods: {
+    handleBack() {
+      this.$router.push({
+        path: '/personnel/contract/contract'
+      })
+    },
+    getContractInfo() {
+      let params = {
+        userId: this.$route.query.userId
+      }
+      getContractInfo(params).then((res) => {
+        if (res && res.length > 0) {
+          let item = Math.max.apply(
+            Math,
+            res.map(function(item) {
+              var time = moment(item.beginDate).valueOf()
+              return time
+            })
+          )
+          let newContart = {}
+          res.map((it) => {
+            let time = moment(it.beginDate).valueOf()
+            if (item === time) {
+              newContart = it
+            }
+          })
+          this.infoForm = {
+            ...newContart
+          }
+        }
+      })
+    },
     onsubmit() {
       return Promise.all(
         ['signedData'].map((it) => {
@@ -98,8 +145,15 @@ export default {
         let params = {
           ...this.infoForm
         }
+        this.loading = true
         putContractInfo(params).then(() => {
-          this.$message.success('提交成功')
+          this.loading = false
+          this.$message.success('修改成功')
+          setTimeout(() => {
+            this.$router.push({
+              path: '/personnel/contract/contract'
+            })
+          }, 2000)
         })
       })
     },
@@ -120,7 +174,7 @@ export default {
         parentOrgId: '0'
       }
       getCompany(params).then((res) => {
-        this.dataFilter(res, this.signedData, 'name', 'orgName', 'orgId')
+        this.dataFilter(res, this.signedData, 'name', 'orgName', 'orgName')
       })
     },
     back() {}

@@ -18,51 +18,73 @@ const mixin = {
       columns: [
         {
           label: '姓名',
-          prop: 'name'
+          width: 120,
+          prop: 'name',
+          slot: true
         },
         {
           label: '工号',
+          width: 120,
           prop: 'workNo'
         },
         {
           label: '部门',
-          prop: 'orgName'
+          prop: 'orgName',
+          width: 120
         },
         {
           label: '职位',
+          width: 120,
           prop: 'jobName'
         },
         {
           label: '岗位',
+          width: 120,
           prop: 'positionName'
         },
         {
           label: '工作性质',
-          prop: 'workProperty'
+          width: 120,
+          prop: 'workProperty',
+          slot: true
         },
         {
           label: '员工状态',
-          prop: 'status'
+          width: 120,
+          prop: 'status',
+          slot: true
         },
         {
           label: '入职日期',
+          width: 120,
           prop: 'entryDate'
         },
         {
           label: '手机号码',
-          prop: 'phonenum'
+          prop: 'phonenum',
+          width: 120
         },
         {
           label: '合同公司',
+          width: 120,
           prop: 'contractName'
         },
         {
           label: '合同编号',
+          width: 120,
           prop: 'contractCode'
         },
         {
           label: '合同类型',
-          prop: 'contractType'
+          width: 120,
+          prop: 'contractType',
+          slot: true
+        },
+        {
+          label: '合同状态',
+          prop: 'contractStatus',
+          width: 120,
+          slot: true
         },
         {
           label: '合同开始日期',
@@ -81,7 +103,7 @@ const mixin = {
         }
       ],
       page: {
-        pageSize: 100,
+        pageSize: 2,
         pagerCount: 1,
         total: 10
       }
