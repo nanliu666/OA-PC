@@ -57,7 +57,7 @@
               @submit="handleSubmit"
             />
             <div>
-              <el-button
+              <!-- <el-button
                 icon="el-icon-upload2"
                 size="medium"
                 class="topBtn"
@@ -65,7 +65,7 @@
                 @click="handleExport"
               >
                 导出
-              </el-button>
+              </el-button>-->
               <el-button
                 icon="el-icon-refresh-right"
                 size="medium"
@@ -91,9 +91,7 @@
           slot="workProperty"
           slot-scope="{ row }"
         >
-          {{
-            workProperty[row.workProperty]
-          }}
+          {{ workProperty[row.workProperty] }}
         </template>
         <template
           slot="entryDate"
@@ -105,54 +103,56 @@
           slot="handler"
           slot-scope="{ row }"
         >
-          <template v-if="status === '7'">
-            <el-button
-              type="text"
-              @click="confirmEntry(row)"
-            >
-              确认入职
-            </el-button>
-            <el-button type="text">
-              发送入职登记表
-            </el-button>
-            <el-dropdown @command="handleCommand($event, row)">
+          <div class="handlerRow">
+            <template v-if="status === '7'">
               <el-button
                 type="text"
-                style="margin-left: 10px"
+                @click="confirmEntry(row)"
               >
-                <i class="el-icon-arrow-down el-icon-more" />
+                确认入职
               </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="getOutEntry">
-                  放弃入职
-                </el-dropdown-item>
-                <!-- <el-dropdown-item command="edit">编辑</el-dropdown-item> -->
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
-
-          <template v-if="status === '8'">
-            <el-button
-              type="text"
-              @click="addWillEntry(row)"
-            >
-              添加到待入职
-            </el-button>
-            <el-button type="text">
+              <!-- <el-button type="text">
               发送入职登记表
-            </el-button>
-            <!-- <el-button type="text">
+              </el-button>-->
+              <el-dropdown @command="handleCommand($event, row)">
+                <el-button
+                  type="text"
+                  style="margin-left: 10px"
+                >
+                  <i class="el-icon-arrow-down el-icon-more" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="getOutEntry">
+                    放弃入职
+                  </el-dropdown-item>
+                  <!-- <el-dropdown-item command="edit">编辑</el-dropdown-item> -->
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+
+            <template v-if="status === '8'">
+              <el-button
+                type="text"
+                @click="addWillEntry(row)"
+              >
+                添加到待入职
+              </el-button>
+              <!-- <el-button type="text">
+              发送入职登记表
+              </el-button>-->
+              <!-- <el-button type="text">
             查看入职登记表
-            </el-button>-->
-          </template>
-          <template v-if="status === 'latelyEntry'">
-            <el-button
-              type="text"
-              @click="toEntryMatters(row)"
-            >
-              完善入职事项
-            </el-button>
-          </template>
+              </el-button>-->
+            </template>
+            <template v-if="status === 'latelyEntry'">
+              <el-button
+                type="text"
+                @click="toEntryMatters(row)"
+              >
+                完善入职事项
+              </el-button>
+            </template>
+          </div>
         </template>
       </common-table>
     </basic-container>
@@ -481,5 +481,14 @@ export default {
   border-radius: 4px;
   font-size: 14px;
   box-sizing: border-box;
+}
+
+/deep/ .handlerRow {
+  display: flex;
+  justify-content: flex-start;
+  .el-button--text {
+    flex: 1;
+    text-align: left;
+  }
 }
 </style>

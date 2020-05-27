@@ -31,9 +31,9 @@
             >
               确认入职
             </el-button>
-            <el-button size="medium">
+            <!-- <el-button size="medium">
               发送入职登记表
-            </el-button>
+            </el-button>-->
             <el-dropdown @command="handleCommand">
               <el-button
                 size="medium"
@@ -58,9 +58,9 @@
             >
               添加到待入职
             </el-button>
-            <el-button size="medium">
+            <!-- <el-button size="medium">
               发送入职登记表
-            </el-button>
+            </el-button>-->
             <!-- <el-button type="text">
             查看入职登记表
             </el-button>-->
@@ -197,9 +197,9 @@
                 :push="2"
               >
                 <el-form-item label="工作地址:">
-                  <span class="info-item-value">{{
-                    personInfo.workProviceName + personInfo.workCityName + personInfo.address
-                  }}</span>
+                  <span class="info-item-value">
+                    {{ personInfo.workProviceName + personInfo.workCityName + personInfo.address }}
+                  </span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -207,9 +207,9 @@
                 :push="2"
               >
                 <el-form-item label="工作城市:">
-                  <span class="info-item-value">{{
-                    personInfo.workProviceName + personInfo.workCityName
-                  }}</span>
+                  <span class="info-item-value">
+                    {{ personInfo.workProviceName + personInfo.workCityName }}
+                  </span>
                 </el-form-item>
               </el-col>
               <!-- <el-col :span="10" :push="2">
