@@ -103,3 +103,13 @@ export const createUser = (params) => {
     params: params
   })
 }
+
+// 人员操作记录
+export const getUserActionLog = (params) => {
+  return request({
+    // url: '/api/sys/log/v1/action/log',
+    url: '/api/log/v1/user/record',
+    method: 'get',
+    params
+  })
+}
