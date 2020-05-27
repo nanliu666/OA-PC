@@ -350,7 +350,7 @@
               label="民族:"
             >
               <span class="info-item-value">
-                {{ staffInfo.nation }}
+                {{ getNation }}
               </span>
             </el-form-item>
             <el-form-item
@@ -358,7 +358,17 @@
               label="民族:"
               prop="nation"
             >
-              <el-input v-model="staffInfo.nation" />
+              <el-select
+                v-model="staffInfo.nation"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in nationOptions"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -535,6 +545,7 @@ export default {
       politicalOptions: [],
       credentOptions: [],
       educationOptions: [],
+      nationOptions: [],
       rules: {
         phonenum: [
           {
@@ -659,6 +670,17 @@ export default {
       }
       return dictValue
     },
+    getNation() {
+      let dictValue = ''
+      for (let i = 0; i < this.nationOptions.length; i++) {
+        let item = this.nationOptions[i]
+        if (this.staffInfo.nation == item.dictKey) {
+          dictValue = item.dictValue
+          return dictValue
+        }
+      }
+      return dictValue
+    },
     getIdType() {
       let dictValue = ''
       for (let i = 0; i < this.credentOptions.length; i++) {
@@ -706,6 +728,9 @@ export default {
 
       this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
         this.educationOptions = res
+      })
+      this.$store.dispatch('CommonDict', 'Nation').then((res) => {
+        this.nationOptions = res
       })
     },
     regionChange(value) {
