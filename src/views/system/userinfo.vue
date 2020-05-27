@@ -13,11 +13,15 @@
         >
           <div class="info-image">
             <el-upload
+              action=""
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :http-request="uploadRequst"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess"
+              list-type="picture-card"
               :before-upload="beforeAvatarUpload"
+              :on-success="handleAvatarSuccess"
+              :multiple="true"
+              accept="image/jpeg, image/jpg"
             >
               <img
                 v-if="perosonnalInfo.avatarUrl"
@@ -29,6 +33,16 @@
                 class="el-icon-plus avatar-uploader-icon"
               />
             </el-upload>
+            <!-- 进度条 -->
+            <div
+              v-if="uploading"
+              class="action-upload"
+            >
+              <el-progress
+                :stroke-width="6"
+                :percentage="uploadPercent"
+              />
+            </div>
           </div>
         </el-aside>
         <el-main>
@@ -313,6 +327,7 @@ import { validateName, isEmailReg, validataBankCard } from '@/util/validate'
 import { getStaffBasicInfo, editStaffBasicInfo } from '../../api/personalInfo'
 import { mapGetters } from 'vuex'
 import { regionData } from 'element-china-area-data'
+import { uploadQiniu } from '@/util/uploadQiniu'
 let noEditInfo = {}
 export default {
   components: {
@@ -320,6 +335,8 @@ export default {
   },
   data() {
     return {
+      uploading: false,
+      uploadPercent: 0,
       adress: {
         curAdress: '',
         detailAdress: ''
@@ -467,21 +484,44 @@ export default {
       this.readonly = true
       this.perosonnalInfo = this.deepCopy(noEditInfo)
     },
-
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+    uploadRequst(file) {
+      const that = this
+      that.uploading = true
+      uploadQiniu(file.file, {
+        next({ total }) {
+          that.uploadPercent = parseInt(total.percent)
+        },
+        error(err) {
+          debugger
+          that.uploading = false
+          that.$message.error(err.message)
+        },
+        complete() {
+          that.uploading = false
+          that.$message.success('上传成功')
+          that.uploadPercent = 0
+        }
+      })
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
+      /* if (file.name.replace(/[\x00-\xff]/gi, '--').length > 64) {
+        this.$message.error('文件名过长,无法上传')
+        return false
+      } */
+      const isJPG = /^image\/(jpeg|png|jpg)$/.test(file.type)
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('上传图片只能是 jpg、jpeg 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+    },
+    handleAvatarSuccess() {
+      const self = this
+      self.$message.success('上传成功')
     }
   }
 }
@@ -530,14 +570,24 @@ li {
     transform: translate(0, -50%);
   }
 }
+.el-aside {
+  overflow: hidden;
+}
 .info-image {
   width: 64px;
   height: 64px;
-  border: 1px solid #ccc;
   border-radius: 32px;
   .avatar-uploader {
     text-align: center;
     line-height: 64px;
+    height: 64px;
+  }
+  /deep/.el-upload--picture-card {
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    border: none;
+    border-radius: 30px;
   }
 }
 .info-text {
