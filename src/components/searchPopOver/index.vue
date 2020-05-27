@@ -422,8 +422,9 @@ export default {
             item.field.split(',').forEach((it, idx) => {
               params[it] = item.data[idx]
             })
+          } else {
+            params[item.field] = item.data
           }
-          params[item.field] = item.data
         }
       })
       return params
@@ -441,7 +442,6 @@ export default {
           item.data = ''
         }
       })
-      this.submitSearch()
     }
   }
 }
