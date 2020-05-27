@@ -3,12 +3,16 @@
     v-loadmore="loadOptionData"
     :value="value"
     :placeholder="placeholder"
+    :filterable="searchable"
+    :remote="searchable"
+    :remote-method="remoteMethod"
     @change="handleChange"
+    @visible-change="visibleChange"
   >
     <el-option
-      v-for="(item, index) in optionList"
-      :key="optionProps.key ? item[optionProps.key] : index"
-      :label="item[optionProps.label]"
+      v-for="item in optionList"
+      :key="optionProps.key ? item[optionProps.key] : item[optionProps.value]"
+      :label="optionProps.formatter ? optionProps.formatter(item) : item[optionProps.label]"
       :value="item[optionProps.value]"
     />
     <div
@@ -18,8 +22,16 @@
       <i class="el-icon-loading" />
     </div>
     <div
+      v-if="loading"
+      slot="empty"
+    >
+      <div class="loading">
+        <i class="el-icon-loading" />
+      </div>
+    </div>
+    <div
       v-show="noMore"
-      style="text-align: center; font-size:14px;color: #606266;"
+      style="text-align:center;font-size:14px;color:#606266;line-height:34px;"
     >
       没有更多了
     </div>
@@ -55,6 +67,10 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    searchable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -62,32 +78,50 @@ export default {
       optionList: [],
       loading: false,
       noMore: false,
-      pageNo: 1
+      pageNo: 1,
+      search: ''
     }
   },
   created() {
     this.loadOptionData()
   },
   methods: {
+    visibleChange(visible) {
+      if (visible === false) {
+        this.search = ''
+        this.loadOptionData(true)
+      }
+    },
     handleChange(value) {
       this.$emit('change', value)
     },
-    loadOptionData() {
-      if (this.noMore) {
+    loadOptionData(refresh = false) {
+      if ((this.noMore && !refresh) || this.loading) {
         return
       }
+      if (refresh) {
+        this.optionList = []
+        this.pageNo = 1
+      }
       this.loading = true
-      this.load({ pageNo: this.pageNo, pageSize: this.pageSize })
+
+      this.load({ pageNo: this.pageNo, pageSize: this.pageSize, search: this.search })
         .then((res) => {
+          this.pageNo += 1
           this.optionList.push(...res.data)
           if (res.data.length < this.pageSize) {
             this.noMore = true
+          } else {
+            this.noMore = false
           }
-          this.pageNo += 1
         })
         .finally(() => {
           this.loading = false
         })
+    },
+    remoteMethod(search) {
+      this.search = search
+      this.loadOptionData(true)
     }
   }
 }
@@ -95,6 +129,7 @@ export default {
 
 <style lang="scss" scoped>
 .loading {
+  padding: 12px 0;
   text-align: center;
 }
 </style>

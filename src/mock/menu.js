@@ -14,9 +14,24 @@ const res = {
   success: true,
   response: {
     orgPrivileges: [
-      { orgId: '1252523599903072257', orgName: '百利宏12', orgType: 'Company', isOwn: 1 },
-      { orgId: '1252523599903072259', orgName: '广州易宝分公司', orgType: 'Company', isOwn: 1 },
-      { orgId: '1259787152448147458', orgName: '出差', orgType: 'Company', isOwn: 1 }
+      {
+        orgId: '1252523599903072257',
+        orgName: '百利宏12',
+        orgType: 'Company',
+        isOwn: 1
+      },
+      {
+        orgId: '1252523599903072259',
+        orgName: '广州易宝分公司',
+        orgType: 'Company',
+        isOwn: 1
+      },
+      {
+        orgId: '1259787152448147458',
+        orgName: '出差',
+        orgType: 'Company',
+        isOwn: 1
+      }
     ],
     menuPrivileges: [
       {
@@ -29,7 +44,13 @@ const res = {
         alias: 'system',
         path: '',
         icon: 'iconfont iconicon_setting',
-        dataPrivileges: [{ dataId: '1', scopeName: '个人可见', isOwn: 1 }],
+        dataPrivileges: [
+          {
+            dataId: '1',
+            scopeName: '个人可见',
+            isOwn: 1
+          }
+        ],
         children: [
           {
             menuId: '1259070994843471874',
@@ -522,36 +543,60 @@ const res = {
             isShow: 1,
             code: 'org_management',
             alias: 'orgManagement',
-            path: '/personnel/leave/leaveList',
+            path: '',
             icon: 'iconfont iconicon_subordinate',
             dataPrivileges: [],
-            children: []
+            children: [
+              {
+                menuId: '801',
+                menuName: '离职管理',
+                menuType: 'Dir',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/leaveList',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: []
+              },
+              {
+                menuId: '802',
+                menuName: '离职申请',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/applyLeave',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '803',
+                menuName: '确认离职',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/confirmLeave',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              }
+            ]
           },
+
           {
-            menuId: '81',
-            menuName: '离职申请',
-            menuType: 'Dir',
+            menuId: '31212212451',
+            menuName: '离职交接事项',
+            menuType: 'Menu',
             isOwn: 1,
             isShow: 1,
-            code: 'org_management',
-            alias: 'orgManagement',
-            path: '/personnel/leave/applyLeave',
-            icon: 'iconfont iconicon_subordinate',
-            dataPrivileges: [],
-            children: []
-          },
-          {
-            menuId: '9527',
-            menuName: '确认离职',
-            menuType: 'Dir',
-            isOwn: 1,
-            isShow: 1,
-            code: 'org_management',
-            alias: 'orgManagement',
-            path: '/personnel/leave/confirmLeave',
-            icon: 'iconfont iconicon_subordinate',
-            dataPrivileges: [],
-            children: []
+            code: '',
+            alias: '',
+            path: '/personnel/settings/resignation'
           }
         ]
       }
