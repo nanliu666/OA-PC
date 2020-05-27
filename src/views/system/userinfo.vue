@@ -495,7 +495,6 @@ export default {
           that.uploadPercent = parseInt(total.percent)
         },
         error(err) {
-          debugger
           that.uploading = false
           that.$message.error(err.message)
         },
@@ -525,8 +524,9 @@ export default {
       }
       return isJPG && isLt2M
     },
-    handleAvatarSuccess() {
-      const self = this
+    handleAvatarSuccess(res, file) {
+      this.perosonnalInfo.avatarUrl = URL.createObjectURL(file.raw)
+      this.getUserAllInfo()
       self.$message.success('上传成功')
     }
   }
