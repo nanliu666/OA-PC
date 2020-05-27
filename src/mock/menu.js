@@ -548,6 +548,16 @@ const res = {
             icon: 'iconfont iconicon_doc'
           },
           {
+            menuId: '31212212451',
+            menuName: '离职交接事项',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: '',
+            alias: '',
+            path: '/personnel/settings/resignation'
+          },
+          {
             menuId: '1260116127481413637',
             menuName: '员工管理',
             menuType: 'Dir',
