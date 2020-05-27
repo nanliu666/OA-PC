@@ -897,7 +897,6 @@ export default {
           ]
         }
         editStaffBasicInfo(params).then(() => {
-          this.readonlyBasicInfo = true
           staffInfo = deepClone(this.staffInfo)
           this.$message({
             type: 'success',
