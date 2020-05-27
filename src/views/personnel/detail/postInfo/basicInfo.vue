@@ -302,9 +302,9 @@
               >
                 <el-option
                   v-for="leaderItem in leaderOptions"
-                  :key="leaderItem.workNo"
+                  :key="leaderItem.userId"
                   :label="leaderItem.name"
-                  :value="leaderItem.workNo"
+                  :value="leaderItem.userId"
                 />
               </el-select>
             </el-form-item>
