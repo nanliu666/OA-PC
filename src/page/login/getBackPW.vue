@@ -348,7 +348,9 @@ export default {
             let newpsw = this.password.form.newPW
             let params = {
               userId: this.userInfo.user_id,
-              newPassword: md5(newpsw)
+              newPassword: md5(newpsw),
+              phonenum: this.identity.form.phone,
+              smsCode: this.identity.form.code
             }
             checkPassword(params).then(() => {
               this.step++

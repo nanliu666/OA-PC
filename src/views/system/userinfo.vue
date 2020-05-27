@@ -7,7 +7,10 @@
     <!-- 个人大概信息 -->
     <div class="info-survey">
       <el-container>
-        <el-aside width="90px">
+        <el-aside
+          width="90px"
+          height="60px"
+        >
           <div class="info-image">
             <el-upload
               class="avatar-uploader"
@@ -547,7 +550,7 @@ li {
   font-size: 24px;
   color: #333333;
   line-height: 30px;
-  padding-bottom: 6px;
+  padding-bottom: 20px;
   .staff-name {
     font-size: 24px;
     color: #333333;
@@ -557,11 +560,15 @@ li {
     padding: 0 15px;
     color: #202940;
     font-size: 14px;
+    vertical-align: text-bottom;
   }
   .el-button {
     padding: 0;
     width: 56px;
     height: 24px;
+    background: #7181991a;
+    border: none;
+    vertical-align: middle;
   }
 }
 .info-other {
