@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-page-header
-      content="更改需求人数"
+    <page-header
+      title="更改需求人数"
       class="pageHeader"
       show-back
     />
@@ -231,7 +231,6 @@ export default {
   margin-bottom: 10px;
   .on {
     flex: 4;
-    background: rgba(110, 110, 110, 0.678);
     border-radius: 4px;
     margin-right: 20px;
     display: flex;

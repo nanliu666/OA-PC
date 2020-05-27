@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-header
-      title="详情"
+      title="招聘需求"
       class="pageHeader"
       show-back
     />
@@ -21,13 +21,13 @@
           label="招聘中"
           name="Approved"
         >
-          <detailsList ref="Approved" />
+          <detailsList ref="demand" />
         </el-tab-pane>
         <el-tab-pane
           label="已结束"
           name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
         >
-          <detailsList ref="Finished" />
+          <detailsList />
         </el-tab-pane>
       </el-tabs>
     </basic-container>
@@ -47,20 +47,16 @@ export default {
   },
   methods: {
     opnDetails() {
-      this.$router.push('./recruitmentNeeds')
+      this.$router.push('/personnel/recruit/recruitmentNeeds')
     },
     handleClick(tab) {
-      //  console.log('查看数据............',this.$refs.Approved.init())
-
-      // // if(typeof tab.paneName !='undefined') {
-      //     if(tab.paneName==='Approved'){
-      //       this.$refs.Approved.init(tab.paneName)
-
-      // console.log('查看数据............', this.$refs.Approved)
-      //     }else if(tab.paneName==='Finished'){
-      this.$refs.Finished.init(tab.paneName)
-      // }
-      // }
+      let paneName = tab.paneName.trim()
+      if (paneName == 'Finished') {
+        this.$refs.demand.init(tab.paneName)
+      }
+      if (paneName == 'Approved') {
+        this.$refs.demand.init(tab.paneName)
+      }
     }
   }
 }

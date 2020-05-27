@@ -73,7 +73,6 @@
 </template>
 <script>
 import { getRecruitmentDetail } from '@/api/personnel/selectedPerson'
-
 export default {
   name: 'RecruitList',
   data() {
@@ -133,10 +132,6 @@ export default {
     })
   },
   methods: {
-    opnDetails() {
-      this.$router.push('./recruitmentNeeds')
-    },
-
     jumpToDetail(personId) {
       this.$router.push(`/personnel/detail/${personId}`)
     }

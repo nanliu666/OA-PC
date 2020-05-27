@@ -1,53 +1,54 @@
 <template>
   <div>
     <page-header
-      content="详情"
+      title="需求详情"
       class="pageHeader"
       show-back
     />
-    <!-- <div class="roster-header">
-      <el-row
-        style="width:100%; height:50px"
-        type="flex"
-        justify="center"
-        :gutter="24"
-      >
-        <el-col :span="23">
-          <span> {{ name }}分配的招聘需求({{ department }}-{{ position }})</span>
-        </el-col>
-        <el-col :span="1">
-          <el-button
-            type="primary"
-            size="medium"
-            plain
-          >
-            复制
-          </el-button>
-        </el-col>
-      </el-row>
-    </div>
-    <div class="roster-header">
-      <el-row
-        style="width:100%; height:50px"
-        type="flex"
-        justify="center"
-        :gutter="24"
-      >
-        <el-col :span="6">
-          需求编号：{{ id }}
-        </el-col>
-        <el-col :span="6">
-          提交人：{{ name }}
-        </el-col>
-        <el-col :span="6">
-          提交时间：2019-12-12 12:12:09
-        </el-col>
-        <el-col :span="6">
-          状态：已结束
-        </el-col>
-      </el-row>
-    </div> -->
+
     <basic-container>
+      <div class="roster-header">
+        <el-row
+          style="width:100%; height:50px"
+          type="flex"
+          justify="center"
+          :gutter="24"
+        >
+          <el-col :span="23">
+            <span> {{ name }}分配的招聘需求({{ department }}-{{ position }})</span>
+          </el-col>
+          <el-col :span="1">
+            <el-button
+              type="primary"
+              size="medium"
+              plain
+            >
+              复制
+            </el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="roster-header">
+        <el-row
+          style="width:100%; height:50px"
+          type="flex"
+          justify="center"
+          :gutter="24"
+        >
+          <el-col :span="6">
+            需求编号：{{ id }}
+          </el-col>
+          <el-col :span="6">
+            提交人：{{ name }}
+          </el-col>
+          <el-col :span="6">
+            提交时间：2019-12-12 12:12:09
+          </el-col>
+          <el-col :span="6">
+            状态：已结束
+          </el-col>
+        </el-row>
+      </div>
       <el-tabs v-model="activeName">
         <el-tab-pane
           label="招聘进度"

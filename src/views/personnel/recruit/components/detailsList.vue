@@ -37,7 +37,7 @@
         <el-button
           type="text"
           size="medium"
-          @click="jumpToDetail(row)"
+          @click="jumpToDetail(row.id)"
         >
           {{ row.id }}
         </el-button>
@@ -134,7 +134,7 @@ export default {
             type: 'dataPicker',
             data: '',
             label: '到岗日期',
-            field: 'beginJoinDate , endJoinDate',
+            field: 'beginJoinDate,endJoinDate',
             config: { type: 'daterange', 'range-separator': '至' }
           }
         ]
@@ -202,7 +202,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         progress: 'Approved',
-        userId: this.userId
+        userId: null
       },
       page: { currentPage: 1, size: 10, total: 0 },
       pageConfig: {
@@ -221,12 +221,14 @@ export default {
     })
   },
   methods: {
-    // init(row) {
-    //   console.log('查看数据...........', row)
-    // },
+    init(row) {
+      this.params.progress = row.trim()
+      this.getTableData()
+    },
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
       params.userId = this.userId
+      params.progress = this.params.progress
       getMyRecruitment(params).then((res) => {
         this.data = res.data
       })
@@ -237,8 +239,6 @@ export default {
         jobName: paramsData.jobName || '',
         pageNo: paramsData.pageNo || 1,
         pageSize: paramsData.pageSize || 10,
-        progress: 'Approved',
-        userId: '',
         positionId: paramsData.positionId || '',
         workYear: paramsData.paramsData || '',
         educationalLevel: paramsData.educationalLevel || '',
@@ -252,12 +252,15 @@ export default {
 
     handleSubmit(params) {
       let request = this.Decorator(params)
-      this.getTableData(request).then(() => {
-        this.$message({ type: 'success', message: '操作成功!' })
+      getMyRecruitment(request).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
       })
     },
-    jumpToDetail() {
-      this.$router.push('/personnel/recruit/details/staffList')
+    jumpToDetail(id) {
+      this.$router.push(`/personnel/recruit/details/staffList/${id}`)
     },
     pageSizeChange(param) {
       let paramsInfo = {}
