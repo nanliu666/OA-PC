@@ -11,7 +11,34 @@
         :info-form.sync="NewRequirement"
         :form.sync="infoForm"
       />
+
+      <template style="margin: 0 auto;">
+        <el-button
+          size="medium"
+          @click="dialogVisible = true"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="submitForm"
+        >
+          提交
+        </el-button>
+      </template>
     </basic-container>
+
+    <!-- <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -23,16 +50,18 @@ import { submitEewly } from '@/api/personnel/recruitment'
 import { mapGetters } from 'vuex'
 export default {
   name: 'AddRoster',
+  components: {
+    InputArray
+  },
   data() {
     return {
       NewRequirement,
       infoForm: {
         companyId: null,
+        companyName: null,
         department: null,
         position: null,
-        post: null,
-        entryDate: null,
-        probation: null,
+        userId: '',
         workProperty: null,
         needNum: 1,
         emerType: null,
@@ -45,14 +74,6 @@ export default {
         reasonNote: null,
         remark: null
       },
-      workProperty: [],
-      companyList: [],
-      workPropertyList: [],
-      emerTypeList: [],
-      workYearList: [],
-      recruitmentReasonList: [],
-      jobList: [],
-
       rules: {
         company: [],
         department: [{ required: true, message: '请输入用人部门', trigger: 'blur' }],
@@ -63,22 +84,32 @@ export default {
         workProperty: [{ required: true, message: '请输入工作性质', trigger: 'change' }],
         emerType: [{ required: true, message: '请选择部门', trigger: 'change' }]
       },
-      positionList: [],
-      workAddress: [],
-      dialogTableVisible: false,
-      loadAddress: false,
-      loading: false
+      dialogVisible: false
     }
   },
   computed: {
     ...mapGetters(['userId'])
   },
-  components: {
-    InputArray
-  },
   mounted() {
-    this.getDictionarygroup()
     this.getUseInformation()
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.dataFilter(res, this.NewRequirement, 'workProperty', 'dictValue', 'dictKey')
+    })
+
+    this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
+      this.dataFilter(res, this.NewRequirement, 'RecruitmentReason', 'dictValue', 'dictKey')
+    })
+
+    this.$store.dispatch('CommonDict', 'workYear').then((res) => {
+      this.dataFilter(res, this.NewRequirement, 'workYear', 'dictValue', 'dictKey')
+    })
+    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
+      this.dataFilter(res, this.NewRequirement, 'EmerType', 'dictValue', 'dictKey')
+    })
+
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.dataFilter(res, this.NewRequirement, 'EducationalLevel', 'dictValue', 'dictKey')
+    })
   },
   methods: {
     onSubmit() {
@@ -88,31 +119,34 @@ export default {
         }
       })
     },
-    getDictionarygroup() {
-      this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
-        this.workPropertyList = res
+    dataFilter(res, form, props, label, value) {
+      let index = ''
+      let dict = []
+      res &&
+        res.map((it) => {
+          dict.push({ label: it[label], value: it[value] })
+        })
+      form.basicAttrs.map((it, i) => {
+        if (it.props === props) index = i
       })
-
-      this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
-        this.emerTypeList = res
-      })
-
-      this.$store.dispatch('CommonDict', 'workYear').then((res) => {
-        this.workYearList = res
-      })
-
-      this.$store.dispatch('CommonDict', 'workYear').then((res) => {
-        this.workYearList = res
-      })
-      this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
-        this.recruitmentReasonList = res
-      })
+      form.basicAttrs[index].value = dict
     },
     getUseInformation() {
       let params = {
         userId: this.userId
       }
-      getStaffBasicInfo(params).then(() => {})
+      getStaffBasicInfo(params).then((res) => {
+        this.infoForm.companyName = res.companyName
+        this.infoForm.companyId = res.companyId
+      })
+    },
+    handleClose() {},
+    submitForm() {
+      this.infoForm.userId = this.userId
+      let parms = this.infoForm
+      submitEewly(parms).then(() => {
+        this.$message({ type: 'success', message: '操作成功!' })
+      })
     }
   }
 }
@@ -124,32 +158,11 @@ export default {
   line-height: 48px;
   font-size: 18px;
 }
-/deep/ .el-col {
-  .el-form-item {
-    .el-form-item__content {
-      width: 250px;
-      .el-select {
-        width: 250px;
-      }
-      .el-cascader {
-        width: 250px;
-      }
-      .el-input-group--append {
-        .el-input__inner {
-          border-top-right-radius: 4px;
-          border-bottom-right-radius: 4px;
-        }
-        .el-input-group__append {
-          background-color: #fff;
-          border: 0;
-          padding: 0 10px;
-          color: cornflowerblue;
-          cursor: pointer;
-        }
-      }
-    }
-  }
+
+/deep/ .el-card__body {
+  padding: 100px !important;
 }
+
 .dialogForm {
   .el-form-item {
     .el-form-item__content {
@@ -164,5 +177,9 @@ export default {
   height: 6px;
   border-radius: 100px;
   color: blue;
+}
+
+/deep/ .el-radio-group {
+  width: 100% !important;
 }
 </style>

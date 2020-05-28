@@ -158,6 +158,7 @@
                     :minlength="basic.minLen"
                     :maxlength="basic.maxLen"
                     class="widthSet"
+                    show-word-limit
                     :disabled="basic.disabled || disabled"
                     :placeholder="basic.message"
                     @blur="blur(basic, basic.attrId === '1' ? true : false)"
