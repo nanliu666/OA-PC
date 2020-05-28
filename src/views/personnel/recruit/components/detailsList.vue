@@ -7,7 +7,7 @@
       :page-config="pageConfig"
       :config="tableConfig"
       @current-page-change="currentPageChange"
-      @page-size-change="pageSizeChange"
+      @page-size-change="currentPageChange"
     >
       <template slot="topMenu">
         <div class="flex-flow flex justify-content align-items ">
@@ -113,7 +113,26 @@ export default {
             data: '',
             label: '工作年限',
             field: 'workYear',
-            config: {}
+            config: {
+              selectParams: {
+                placeholder: '请输入内容',
+                multiple: false
+              },
+              treeParams: {
+                data: [],
+                'check-strictly': true,
+                'default-expand-all': false,
+                'expand-on-click-node': false,
+                clickParent: true,
+                filterable: false,
+                props: {
+                  children: 'children',
+                  label: 'orgName',
+                  disabled: 'disabled',
+                  value: 'workYear'
+                }
+              }
+            }
           },
           {
             type: 'select',
@@ -219,6 +238,7 @@ export default {
     getOrgTreeSimple({ orgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
+    this.getDictionarygroup()
   },
   methods: {
     init(row) {
@@ -262,15 +282,32 @@ export default {
     jumpToDetail(id) {
       this.$router.push(`/personnel/recruit/details/staffList/${id}`)
     },
-    pageSizeChange(param) {
-      let paramsInfo = {}
-      paramsInfo.pageSize = param
-      return this.getTableData(paramsInfo)
-    },
     currentPageChange(param) {
       let paramsInfo = {}
       paramsInfo.pageNo = param
       return this.getTableData(paramsInfo)
+    },
+
+    getDictionarygroup() {
+      this.$store.dispatch('CommonDict', 'WorkYear').then((res) => {
+        this.$refs['searchPopover'].treeDataUpdateFun(res, 'WorkYear')
+        // this.workPropertyList = res
+      })
+
+      // this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
+      //   this.emerTypeList = res
+      // })
+
+      // this.$store.dispatch('CommonDict', 'workYear').then((res) => {
+      //   this.workYearList = res
+      // })
+
+      // this.$store.dispatch('CommonDict', 'workYear').then((res) => {
+      //   this.workYearList = res
+      // })
+      // this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
+      //   this.recruitmentReasonList = res
+      // })
     }
   }
 }
