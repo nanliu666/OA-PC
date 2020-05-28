@@ -6,13 +6,21 @@
       show-back
     />
     <basic-container>
-      <el-button
-        type="text"
-        class="bigText"
-        @click="opnDetails"
-      >
-        新建招聘需求
-      </el-button>
+      <el-row :gutter="24">
+        <el-col
+          :offset="20"
+          :span="3"
+        >
+          <el-button
+            size="medium"
+            type="primary"
+            class="bigText"
+            @click="opnDetails"
+          >
+            新建招聘需求
+          </el-button>
+        </el-col>
+      </el-row>
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
@@ -130,10 +138,10 @@ export default {
   }
 }
 
-// .bigText {
-//   font-weight: 500;
-//   font-size: 18px;
-// }
+.bigText {
+  position: relative;
+  left: 0px !important;
+}
 
 .resetEdge {
   position: absolute;

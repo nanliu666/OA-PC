@@ -49,7 +49,7 @@ export let NewRequirement = {
       maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择岗位', // 提示必填提示
       props: 'positionId'
     },

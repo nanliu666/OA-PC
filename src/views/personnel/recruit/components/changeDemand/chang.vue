@@ -6,6 +6,11 @@
       show-back
     />
     <basic-container>
+      <p class="introduceP">
+        <i
+          class="el-icon-warning-outline"
+        />更改需求人数将生成新的审批单进入「审批中」状态，现有招聘流程将不受影响
+      </p>
       <el-row
         :gutter="24"
         type="flex"
@@ -60,11 +65,6 @@
         :model="users"
         class="demo-form-inline"
       >
-        <p class="introduceP">
-          <i
-            class="el-icon-warning-outline"
-          />更改需求人数将生成新的审批单进入「审批中」状态，现有招聘流程将不受影响
-        </p>
         <el-row
           :gutter="24"
           style=" position: relative; left: 90px;"

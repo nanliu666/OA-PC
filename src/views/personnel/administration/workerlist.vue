@@ -127,8 +127,6 @@ export default {
             type: 'input',
             field: 'search',
             label: '',
-            data: [],
-            month: [],
             config: {
               placeholder: '姓名/工号'
             }

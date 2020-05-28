@@ -44,6 +44,7 @@
             style="float: right; margin-top: 5px;"
             size="medium"
             type="primary"
+            @click="jumpToDetail"
           >
             复制
           </el-button>
@@ -90,8 +91,9 @@ export default {
     }
   },
   methods: {
-    opnDetails() {
-      this.$router.push('personnel/recruit/components/recruitmentTasks/recruitmentNeeds')
+    jumpToDetail() {
+      let demand = this.$route.params.id
+      this.$router.push('personnel/recruit/components/recruitmentTasks/recruitmentNeeds' + demand)
     }
   }
 }

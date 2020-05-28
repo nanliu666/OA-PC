@@ -66,8 +66,6 @@ export default {
             type: 'input',
             field: 'jobName',
             label: '',
-            data: [],
-            month: [],
             config: {
               placeholder: '职位名称'
             }

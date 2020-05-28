@@ -46,8 +46,9 @@
 import InputArray from '@/views/personnel/candidate/components/inputArray'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
-import { submitEewly } from '@/api/personnel/recruitment'
+import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
 import { mapGetters } from 'vuex'
+import { getOrganizationCompany } from '@/api/personnel/roster'
 export default {
   name: 'AddRoster',
   components: {
@@ -57,6 +58,7 @@ export default {
     return {
       NewRequirement,
       infoForm: {
+        positionId: null,
         companyId: null,
         companyName: null,
         department: null,
@@ -139,11 +141,24 @@ export default {
         this.infoForm.companyName = res.companyName
         this.infoForm.companyId = res.companyId
       })
+      // 页面初始化
+      getOrganizationCompany({ parentOrgId: 0 }).then((res) => {
+        this.dataFilter(res, this.NewRequirement, 'orgId', 'orgName', 'orgId')
+      })
+      // 招聘职位
+      getJobInfo({}).then((res) => {
+        this.dataFilter(res, this.NewRequirement, 'jobId', 'jobName', 'jobId')
+      })
+
+      getPost().then((res) => {
+        this.dataFilter(res, this.NewRequirement, 'positionId', 'name', 'id')
+      })
     },
     handleClose() {},
     submitForm() {
       this.infoForm.userId = this.userId
       let parms = this.infoForm
+      parms.needNum = this.infoForm.needNum * 1
       submitEewly(parms).then(() => {
         this.$message({ type: 'success', message: '操作成功!' })
       })
