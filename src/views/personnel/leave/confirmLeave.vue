@@ -29,7 +29,10 @@
 
     <basic-container>
       <!-- 提醒 : "交接还没完成" -->
-      <div class="tag-wrap">
+      <div
+        v-if="isFinished === true ? true : false"
+        class="tag-wrap"
+      >
         <i class="el-icon-warning-outline icon-warning" />
         该员工离职交接事项尚未完成，请完成后再确认离职
       </div>
@@ -169,8 +172,10 @@
                       disabled
                     >
                       <el-option
-                        :label="confirmDataForm.reason"
-                        :value="confirmDataForm.reason"
+                        v-for="item in selectLeaveReason"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
                       />
                     </el-select>
                   </el-form-item>
@@ -291,8 +296,9 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
-      //   离职信息
+      },
+      //离职原因选择组
+      selectLeaveReason: []
     }
   },
   computed: {
@@ -313,14 +319,13 @@ export default {
     // 获取离职信息
     this.getLeave()
     // console.log(this.userId);
+    this.getLeaveReason()
   },
   methods: {
     //   获取页面基本信息
     async initInfo(params) {
       // 获取员工信息
-      let resInfo = await getStaffBasicInfo(params)
-      let { name, workNo, orgName, jobName, companyId } = resInfo
-      //   console.log(resInfo)
+      let { name, workNo, orgName, jobName, companyId } = await getStaffBasicInfo(params)
       this.companyId = companyId
       this.userInfo = {
         name,
@@ -345,11 +350,16 @@ export default {
     },
     // 获取员工离职信息
     async getLeave() {
-      let { applyDate, lastDate, reason, remark, lastDate: leaveDate } = await getLeaveInfo({
+      let { id, applyDate, lastDate, reason, remark, lastDate: leaveDate } = await getLeaveInfo({
         userId: this.userId
       })
+      // let res = await getLeaveInfo({
+      //     userId: this.userId
+      // })
+      // console.log(res);
 
       this.confirmDataForm = {
+        id,
         applyDate,
         lastDate,
         reason,
@@ -359,9 +369,26 @@ export default {
     },
     // 点击确认离职
     async handelConfirm() {
-      await confirmLeave(this.confirmDataForm)
+      await confirmLeave({
+        ...this.confirmDataForm,
+        userId: this.userId
+      })
       this.$message.success('确认离职成功', 1000, () => {
         this.$router.go(-1)
+      })
+    },
+    // 获取离职原因选择组
+    getLeaveReason() {
+      this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
+        // 离职原因下拉选择框
+        let selectLeaveReason = []
+        res.forEach((item) => {
+          selectLeaveReason.push({
+            label: item.dictValue,
+            value: item.dictKey
+          })
+        })
+        this.selectLeaveReason = selectLeaveReason
       })
     },
     // 点击取消

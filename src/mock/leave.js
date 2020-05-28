@@ -76,92 +76,104 @@ export default ({ mock }) => {
   })
   // 7.员工离职交接事项分组查询接口
   Mock.mock(new RegExp('/api/user/v1/user/leave/note/group' + '.*'), 'get', () => {
-    // let list = [];
-    // for (let i = 0; i < 5; i++) {
-    //   list.push(
-    //     Mock.mock({
-    //       id: '@integer(1, 100)',
-    //       name: '人事部',
-    //       isFinished: '1'
-    //     })
-    //   )
-    // }
+    let list = []
+    for (let i = 0; i < 5; i++) {
+      list.push(
+        Mock.mock({
+          id: '@integer(1, 100)',
+          name: '@ctitle(3,5)',
+          isFinished: '@natural(0, 1)'
+          // isFinished: '1'
+        })
+      )
+    }
 
     return {
-      response: [
-        {
-          id: '54654',
-          name: '人事部',
-          isFinished: '1'
-        },
-        {
-          id: '654654',
-          name: '行政部',
-          isFinished: '0'
-        },
-        {
-          id: '46546',
-          name: '离得区乜部',
-          isFinished: '1'
-        },
-        {
-          id: '4654',
-          name: '吴鸠知部',
-          isFinished: '0'
-        }
-      ]
+      // response: [
+      //   {
+      //     id: '54654',
+      //     name: '人事部',
+      //     isFinished: '1'
+      //   },
+      //   {
+      //     id: '654654',
+      //     name: '行政部',
+      //     isFinished: '0'
+      //   },
+      //   {
+      //     id: '46546',
+      //     name: '离得区乜部',
+      //     isFinished: '1'
+      //   },
+      //   {
+      //     id: '4654',
+      //     name: '吴鸠知部',
+      //     isFinished: '0'
+      //   }
+      // ]
+      response: list
     }
   })
   // 8.员工离职交接事项分类查询接口
   Mock.mock(new RegExp('/api/user/v1/user/leave/note/category' + '.*'), 'get', () => {
-    // let list = []
-    // for (let i = 0; i < 5; i++) {
-    //   list.push(
-    // Mock.mock({
-    //   detailId: '@natural(1, 100)',
-    //   detailName: '@cword(3, 5)'
-    // })
-    //   )
-    // }
-    // let { categoryId, categoryName } = Mock.mock({
-    //   categoryId: '@natural(1, 100)',
-    //   categoryName: '@cword(3, 5)'
-    // })
+    let arr = []
+    for (let i = 0; i < 5; i++) {
+      arr.push(
+        Mock.mock({
+          categoryId: '@natural(1, 100)',
+          categoryName: '@cword(3, 5)'
+        })
+      )
+    }
+    arr.forEach((item) => {
+      let list = []
+      for (let i = 0; i < 5; i++) {
+        list.push(
+          Mock.mock({
+            detailId: '@natural(1, 100)',
+            detailName: '@ctitle(3,5)'
+          })
+        )
+      }
+      item.details = list
+    })
+
     return {
-      response: [
-        {
-          categoryId: '00001',
-          categoryName: '考勤假期',
-          details: [
-            {
-              detailId: '4546546546487',
-              detailName: '离职月考勤结算'
-            },
-            {
-              detailId: '546541',
-              detailName: '年休假期结算'
-            }
-          ]
-        },
-        {
-          categoryId: '2134651',
-          categoryName: '薪资福利',
-          details: [
-            {
-              detailId: '654132165',
-              detailName: '工资结算'
-            },
-            {
-              detailId: '5465asdf41',
-              detailName: '社会保险、住房公积金办理'
-            },
-            {
-              detailId: '5641634657',
-              detailName: '劳动合同处理'
-            }
-          ]
-        }
-      ]
+      // response: [
+      //   {
+      //     categoryId: '00001',
+      //     categoryName: '考勤假期',
+      //     details: [
+      //       {
+      //         detailId: '4546546546487',
+      //         detailName: '离职月考勤结算'
+      //       },
+      //       {
+      //         detailId: '546541',
+      //         detailName: '年休假期结算'
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     categoryId: '2134651',
+      //     categoryName: '薪资福利',
+      //     details: [
+      //       {
+      //         detailId: '654132165',
+      //         detailName: '工资结算'
+      //       },
+      //       {
+      //         detailId: '5465asdf41',
+      //         detailName: '社会保险、住房公积金办理'
+      //       },
+      //       {
+      //         detailId: '5641634657',
+      //         detailName: '劳动合同处理'
+      //       }
+      //     ]
+      //   }
+      // ]
+      response: arr
     }
   })
   // 9.离职证明信息的查询

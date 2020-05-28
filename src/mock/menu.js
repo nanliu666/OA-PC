@@ -644,6 +644,19 @@ const res = {
                 icon: 'iconfont iconicon_subordinate',
                 dataPrivileges: [],
                 children: []
+              },
+              {
+                menuId: '804',
+                menuName: '离职证明预览',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/printProve',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
               }
             ]
           },

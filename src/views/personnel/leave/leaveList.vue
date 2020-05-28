@@ -195,16 +195,18 @@
             <el-row
               type="flex"
               justify="center"
+              class="row-item"
             >
               <el-col :span="16">
                 <el-form-item label="已选择">
-                  <span>{{ changeParams.name }}</span>
+                  <span class="choose-leave-name">{{ changeParams.name }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row
               type="flex"
               justify="center"
+              class="row-item"
             >
               <el-col :span="16">
                 <el-form-item
@@ -611,7 +613,6 @@ export default {
         ...params,
         status: this.paramsInfo.status
       }
-
       this.getDataList()
     },
 
@@ -628,10 +629,11 @@ export default {
     },
     // 放弃离职api
     async handelGiveLeave(userId) {
+      // 获取离职ID
+
       let { id } = await getLeaveInfo({
         userId
       })
-
       let result = await this.$confirm(
         '放弃离职后员工将恢复到正常在职状态，您确认要放弃离职吗？',
         '确认放弃离职？',
@@ -648,18 +650,27 @@ export default {
       // confirm 点击确定
       await giveupLeave({
         id
-      }).catch((error) => error)
-      // 提示放弃离职 刷新页面
-      this.$message.success('放弃离职成功', () => {
-        this.getDataList()
       })
+      // 提示放弃离职 刷新页面
+      this.$message.success('放弃离职成功')
+      this.getDataList()
     },
 
     // 显示调整离职模态框
     async showChangeDialog(params) {
       let { userId, name } = params
       // 获取员工的离职信息
-      let { id, lastDate } = await getLeaveInfo(userId)
+
+      let res = await getLeaveInfo({
+        userId
+      })
+      let {
+        id,
+        lastDate
+        // remark,
+        // reason,
+      } = res
+
       this.changeParams = {
         id,
         lastDate,
@@ -673,6 +684,7 @@ export default {
     async handelChangeLeave() {
       await changeLeaveInfo(this.changeParams)
       this.$message.success('保存成功', 2000)
+      this.getDataList()
       this.changeLeaveVisible = false
     },
 
@@ -683,9 +695,6 @@ export default {
         query: {
           userId: params.userId
         }
-        // query: {
-        //     userId: '1264805583983218689'
-        // }
       })
     },
 
@@ -693,7 +702,9 @@ export default {
     handelGetLeaveCert(userId) {
       this.$router.push({
         path: '/personnel/leave/proveLeave',
-        query: { userId }
+        query: {
+          userId
+        }
         // query: {
         //   userId: '1264805583983218689'
         // }
@@ -720,5 +731,22 @@ export default {
 // 已确认按钮
 .isConfirm {
   margin-left: 10px;
+}
+
+.el-dialog {
+  .row-item {
+    //   /deep/  .el-form-item__content{
+    //         height: 30px;
+    //         line-height: 30px;
+    //     }
+    .choose-leave-name {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      background: #e3e7e9;
+    }
+
+    height: 80px;
+  }
 }
 </style>
