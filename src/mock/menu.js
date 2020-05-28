@@ -437,6 +437,39 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
+            menuId: '322',
+            menuName: '合同管理',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_contract',
+            alias: 'contract',
+            path: '/personnel/contract/contract',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '232',
+            menuName: '续签合同',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_renewal',
+            alias: 'renewal',
+            path: '/personnel/contract/renewal',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '112',
+            menuName: '编辑合同',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_signedContract',
+            alias: 'signedContract',
+            path: '/personnel/contract/signedContract',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
             menuId: '33',
             menuName: '异动申请',
             menuType: 'Menu',
@@ -523,6 +556,58 @@ const res = {
             code: '',
             alias: '',
             path: '/personnel/settings/resignation'
+          },
+          {
+            menuId: '1260116127481413637',
+            menuName: '员工管理',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'roster',
+            alias: 'roster',
+            path: '',
+            icon: 'iconfont iconicon_group',
+            dataPrivileges: [],
+            children: [
+              {
+                menuId: '1260116127481413634',
+                menuName: '员工花名册',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_roster',
+                alias: 'personnelRoster',
+                path: '/personnel/roster',
+                icon: 'iconfont iconicon_group',
+                dataPrivileges: []
+              },
+              {
+                menuId: '1260116557917667329',
+                menuName: '员工信息',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'personnel_detail',
+                alias: 'personnel_detail',
+                path: '/personnel/detail/:userId',
+                icon: 'iconfont iconicon_namecard',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '1260117682788057089',
+                menuName: '添加员工',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'add_roster',
+                alias: 'add_roster',
+                path: '/personnel/addRoster',
+                icon: 'iconfont iconicon_roundadd',
+                dataPrivileges: [],
+                children: []
+              }
+            ]
           }
         ]
       }

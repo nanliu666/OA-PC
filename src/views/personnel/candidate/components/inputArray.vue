@@ -263,7 +263,6 @@ export default {
           if (it.inType === 11) {
             this.$nextTick(() => {
               this.orgOptions.config.treeParams.data = it.value
-
               this.$refs['orgTree'] && this.$refs['orgTree'][0].treeDataUpdateFun(it.value)
             })
           }

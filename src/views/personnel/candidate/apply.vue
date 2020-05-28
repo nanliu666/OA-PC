@@ -8,7 +8,7 @@
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
-        /> 登记表详情
+        /> 录用申请
       </div>
     </div>
     <div
@@ -294,10 +294,10 @@ export default {
     this.getposition()
     this.getTree()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
-      this.dataFilter(res, this.employment, 'workProperty', 'dictValue', 'id')
+      this.dataFilter(res, this.employment, 'workProperty', 'dictValue', 'dictKey')
     })
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
-      this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'id')
+      this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'dictKey')
     })
     await this.getData()
     this.getRecruitment()
@@ -496,7 +496,9 @@ export default {
       })
     },
     back() {
-      this.$router.go(-1)
+      this.$router.push({
+        path: '/personnel/candidate/candidateManagement'
+      })
     }
   }
 }

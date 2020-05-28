@@ -292,7 +292,6 @@ export default {
       this.show = false
     },
     sizeChange(val) {
-      alert(1)
       this.params.pageSize = val
       this.params.pageNo = 1
       this.page.pagerCount = 1
