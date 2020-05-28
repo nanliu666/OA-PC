@@ -48,7 +48,7 @@
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -57,6 +57,7 @@
             <el-button
               type="primary"
               size="medium"
+              @click="handleArrange"
             >
               安排面试
             </el-button>
@@ -81,7 +82,7 @@
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -90,12 +91,14 @@
             <el-button
               type="primary"
               size="medium"
+              @click="handleArrange"
             >
               重新安排面试
             </el-button>
             <el-button
               type="primary"
               size="medium"
+              @click="handleSend"
             >
               发送面试登记表
             </el-button>
@@ -116,7 +119,7 @@
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -125,6 +128,7 @@
             <el-button
               type="primary"
               size="medium"
+              @click="handleApplyEmploy(row)"
             >
               申请录用
             </el-button>
@@ -144,7 +148,7 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command>
+                <el-dropdown-item command="arrange">
                   安排复试
                 </el-dropdown-item>
                 <el-dropdown-item command="edit">
@@ -158,7 +162,7 @@
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -191,7 +195,7 @@
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -228,7 +232,7 @@
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -252,7 +256,7 @@
               <el-dropdown-menu slot="dropdown">
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -444,9 +448,9 @@
                 <a
                   class="attachmentUrl"
                   :href="personInfo.attachmentUrl"
-                >
-                  {{ personInfo.attachmentName }}
-                </a>
+                >{{
+                  personInfo.attachmentName
+                }}</a>
               </el-col>
             </el-row>
           </div>
@@ -498,6 +502,7 @@ import PageHeader from '@/components/page-header/pageHeader'
 import WeedOutDialog from './candidate/components/weedOutDialog'
 import PushAuditDialog from './candidate/components/pushAuditDialog'
 import ChangeJobDialog from './candidate/components/changeJobDialog'
+// import arrange from './candidate/components/arrangeInterview'
 import {
   getPersonInfo,
   getPersonRecord,
@@ -527,6 +532,8 @@ export default {
       weedOutgDialog: false,
       pushAuditDialog: false,
       changeJobDialog: false,
+      arrangeDialog: false,
+      row: {},
       loading: false,
       personId: null,
       isTalent: null
@@ -554,6 +561,36 @@ export default {
     // this.getPersonRecord()
   },
   methods: {
+    handleSend() {
+      this.$message.success('发送成功')
+    },
+    handleApplyEmploy(row) {
+      this.$router.push({
+        path: '/personnel/candidate/apply',
+        query: {
+          personId: row.personId,
+          userName: row.userName,
+          sex: row.sex,
+          email: row.email,
+          phonenum: row.phonenum,
+          recruitmentId: row.recruitmentId
+        }
+      })
+    },
+    handleRegistration() {
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm'
+      })
+    },
+    handleApply() {
+      this.$router.push({
+        path: '/personnel/candidate/apply'
+      })
+    },
+    handleArrange() {
+      this.arrangeDialog = true
+      this.row = JSON.parse(JSON.stringify(this.personInfo))
+    },
     init() {
       this.getPersonInfo()
       this.getPersonRecord()
@@ -616,6 +653,8 @@ export default {
         this.$router.push('/personnel/editPerson?personId=' + this.personId)
       } else if (command === 'toRegistrationForm') {
         this.$router.push('/personnel/candidate/registrationForm')
+      } else if (command === 'arrange') {
+        this.handleArrange(this.personInfo)
       }
     },
     handleAcceptOffer() {

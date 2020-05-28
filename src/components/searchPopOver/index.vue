@@ -335,47 +335,60 @@ export default {
   watch: {
     requireOptions: {
       handler(newVal) {
-        let tagsArr = []
         newVal.forEach((item) => {
           // items.forEach((item, idx) => {
-          if (item.data) {
-            if (Array.isArray(item.data) && item.data.length === 0) return
-            if (item.type === 'numInterval') {
-              if (!(item.data.min && item.data.max)) return
-              tagsArr.push(item)
-            } else {
-              tagsArr.push(item)
-            }
+          if (item.type === 'treeSelect') {
+            this.$refs[item.field] &&
+              this.$refs[item.field][0].treeDataUpdateFun(item.config.treeParams.data)
           }
           // })
         })
-        this.tags.push(...tagsArr)
       },
       deep: true
     },
     popoverOptions: {
       handler(newVal) {
-        let tagsArr = []
         newVal.forEach((item) => {
           // items.forEach((item, idx) => {
-          if (item.data) {
-            if (Array.isArray(item.data) && item.data.length === 0) return
-            if (item.type === 'numInterval') {
-              if (!(item.data.min && item.data.max)) return
-
-              tagsArr.push(item)
-            } else {
-              tagsArr.push(item)
-            }
+          if (item.type === 'treeSelect') {
+            this.$refs[item.field] &&
+              this.$refs[item.field][0].treeDataUpdateFun(item.config.treeParams.data)
           }
           // })
         })
-        this.tags.push(...tagsArr)
       },
       deep: true
     }
   },
   methods: {
+    screenValueArr(arr) {
+      this.requireOptions.forEach((item) => {
+        // items.forEach((item, idx) => {
+        if (item.data) {
+          if (Array.isArray(item.data) && item.data.length === 0) return
+          if (item.type === 'numInterval') {
+            if (!(item.data.min && item.data.max)) return
+            arr.push(item)
+          } else {
+            arr.push(item)
+          }
+        }
+        // })
+      })
+      this.popoverOptions.forEach((item) => {
+        // items.forEach((item, idx) => {
+        if (item.data) {
+          if (Array.isArray(item.data) && item.data.length === 0) return
+          if (item.type === 'numInterval') {
+            if (!(item.data.min && item.data.max)) return
+            arr.push(item)
+          } else {
+            arr.push(item)
+          }
+        }
+        // })
+      })
+    },
     treeDataUpdateFun(data, refKey) {
       this.$refs[refKey][0].treeDataUpdateFun(data)
     },
@@ -393,7 +406,9 @@ export default {
     },
     searchParams() {
       let params = {}
-      this.tags.forEach((item) => {
+      let tagsArr = []
+      this.screenValueArr(tagsArr)
+      tagsArr.forEach((item) => {
         if (item.data) {
           if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
             params[item.field] = item.data
@@ -422,8 +437,9 @@ export default {
             item.field.split(',').forEach((it, idx) => {
               params[it] = item.data[idx]
             })
+          } else {
+            params[item.field] = item.data
           }
-          params[item.field] = item.data
         }
       })
       return params
@@ -441,7 +457,6 @@ export default {
           item.data = ''
         }
       })
-      this.submitSearch()
     }
   }
 }
