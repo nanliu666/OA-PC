@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div>
     <common-table
@@ -113,33 +114,16 @@ export default {
             data: '',
             label: '工作年限',
             field: 'workYear',
-            config: {
-              selectParams: {
-                placeholder: '请输入内容',
-                multiple: false
-              },
-              treeParams: {
-                data: [],
-                'check-strictly': true,
-                'default-expand-all': false,
-                'expand-on-click-node': false,
-                clickParent: true,
-                filterable: false,
-                props: {
-                  children: 'children',
-                  label: 'orgName',
-                  disabled: 'disabled',
-                  value: 'workYear'
-                }
-              }
-            }
+            config: { optionLabel: 'dictValue', optionValue: 'dictKey' },
+            options: []
           },
           {
             type: 'select',
             data: '',
             label: '学历要求',
             field: 'educationalLevel',
-            config: {}
+            options: [],
+            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
           },
           {
             type: 'select',
@@ -147,7 +131,7 @@ export default {
             data: '',
             label: '紧急程度',
             options: [],
-            config: {}
+            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
           },
           {
             type: 'dataPicker',
@@ -227,7 +211,21 @@ export default {
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
       },
-      createOrgDailog: false
+      createOrgDailog: false,
+      setElement: [
+        {
+          choice: 'WorkYear',
+          target: 2
+        },
+        {
+          choice: 'EmerType',
+          target: 3
+        },
+        {
+          choice: 'EducationalLevel',
+          target: 4
+        }
+      ]
     }
   },
   computed: {
@@ -289,25 +287,11 @@ export default {
     },
 
     getDictionarygroup() {
-      this.$store.dispatch('CommonDict', 'WorkYear').then((res) => {
-        this.$refs['searchPopover'].treeDataUpdateFun(res, 'WorkYear')
-        // this.workPropertyList = res
+      this.setElement.forEach((item) => {
+        this.$store.dispatch('CommonDict', item.choice).then((res) => {
+          this.searchConfig.popoverOptions[item.target].options = res
+        })
       })
-
-      // this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
-      //   this.emerTypeList = res
-      // })
-
-      // this.$store.dispatch('CommonDict', 'workYear').then((res) => {
-      //   this.workYearList = res
-      // })
-
-      // this.$store.dispatch('CommonDict', 'workYear').then((res) => {
-      //   this.workYearList = res
-      // })
-      // this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
-      //   this.recruitmentReasonList = res
-      // })
     }
   }
 }

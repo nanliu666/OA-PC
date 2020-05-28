@@ -227,7 +227,7 @@
             <el-col :span="24">
               <el-form-item label="招聘原因">
                 <el-radio-group
-                  v-model="form.reasonNote"
+                  v-model="form.reason"
                   type="flex"
                 >
                   <el-radio
@@ -239,6 +239,10 @@
                     {{ item.dictValue }}
                   </el-radio>
                 </el-radio-group>
+                <el-input
+                  v-model="form.reasonNote"
+                  disabled
+                />
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -279,6 +283,7 @@
 
 <script>
 import { getStaffBasicInfo } from '@/api/personalInfo'
+import { submitEewly } from '@/api/personnel/recruitment'
 import { mapGetters } from 'vuex'
 export default {
   name: 'AddRoster',
@@ -349,29 +354,25 @@ export default {
       this.goBack()
     },
     onSubmit() {
-      return new Promise((resolve, reject) => {
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            // const params = { ...this.form }
-            // if (!params.probation) params.probation = 0
-            // let inputValue = []
-            // if (this.$refs.workProvinceArr.inputValue) {
-            //   inputValue = this.$refs.workProvinceArr.inputValue.split(' / ')
-            // }
-            // params.workProvinceName = inputValue[0]
-            // params.workCityName = inputValue[1]
-            // params.workCountyName = inputValue[1]
-            // params.workProvinceCode = params.workProvinceArr && params.workProvinceArr[0]
-            // params.workCityCode = params.workProvinceArr && params.workProvinceArr[1]
-            // params.workCountyCode = params.workProvinceArr && params.workProvinceArr[2]
-            // params.subOrg = Array.from(new Set(params.subOrg))
-            // params.subJob = Array.from(new Set(params.subJob))
-            // this.loading = true
-          } else {
-            this.$message.error('请完善信息')
-            reject()
-          }
-        })
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          submitEewly().then(this.$message({ type: 'success', message: '操作成功' }))
+        }
+        // const params = { ...this.form }
+        // if (!params.probation) params.probation = 0
+        // let inputValue = []
+        // if (this.$refs.workProvinceArr.inputValue) {
+        //   inputValue = this.$refs.workProvinceArr.inputValue.split(' / ')
+        // }
+        // params.workProvinceName = inputValue[0]
+        // params.workCityName = inputValue[1]
+        // params.workCountyName = inputValue[1]
+        // params.workProvinceCode = params.workProvinceArr && params.workProvinceArr[0]
+        // params.workCityCode = params.workProvinceArr && params.workProvinceArr[1]
+        // params.workCountyCode = params.workProvinceArr && params.workProvinceArr[2]
+        // params.subOrg = Array.from(new Set(params.subOrg))
+        // params.subJob = Array.from(new Set(params.subJob))
+        // this.loading = true
       })
     },
     getDictionarygroup() {
@@ -398,9 +399,7 @@ export default {
       let params = {
         userId: this.userId
       }
-      getStaffBasicInfo(params).then(() => {
-        this.$message({ type: 'success', message: '操作成功' })
-      })
+      getStaffBasicInfo(params).then(() => {})
     }
   }
 }

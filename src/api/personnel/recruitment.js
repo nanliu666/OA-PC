@@ -46,3 +46,13 @@ export const getMyScreen = (params) => {
 export const putTask = (params) => {
   return put('/user/v1/recruitment/task', params)
 }
+
+/**
+ *  招聘需求新增接口
+ * @param {String} userId - 	userId
+ * @param {String} companyId - 申请公司ID
+ * @param {String} orgId -		用人部门ID
+ * */
+export const submitEewly = (params) => {
+  return post('/user/v1/recruitment/info', params)
+}

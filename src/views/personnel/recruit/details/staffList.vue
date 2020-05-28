@@ -5,50 +5,53 @@
       class="pageHeader"
       show-back
     />
+    <basic-container style="margin-button: 5px">
+      <el-row :gutter="24">
+        <el-col class="fullName">
+          {{ name }}提交的招聘需求
+        </el-col>
+      </el-row>
+      <el-row
+        :gutter="24"
+        type="flex"
+        style="margin-top:20px"
+      >
+        <el-col :span="4">
+          <span class="nodetitle">需求编号:</span>
+          <span class="content">{{ number }}</span>
+        </el-col>
+
+        <el-col :span="4">
+          <span class="nodetitle">提交人:</span>
+          <span class="content">{{ name }}</span>
+        </el-col>
+
+        <el-col :span="4">
+          <span class="nodetitle">提交时间:</span>
+          <span class="content">{{ time }}</span>
+        </el-col>
+
+        <el-col :span="4">
+          <span class="nodetitle">状态:</span>
+          <span
+            class="content"
+            style="color: #207EFA"
+          >{{ status }}</span>
+        </el-col>
+
+        <el-col :span="8">
+          <el-button
+            style="float: right; margin-top: 5px;"
+            size="medium"
+            type="primary"
+          >
+            复制
+          </el-button>
+        </el-col>
+      </el-row>
+    </basic-container>
 
     <basic-container>
-      <div class="roster-header">
-        <el-row
-          style="width:100%; height:50px"
-          type="flex"
-          justify="center"
-          :gutter="24"
-        >
-          <el-col :span="23">
-            <span> {{ name }}分配的招聘需求({{ department }}-{{ position }})</span>
-          </el-col>
-          <el-col :span="1">
-            <el-button
-              type="primary"
-              size="medium"
-              plain
-            >
-              复制
-            </el-button>
-          </el-col>
-        </el-row>
-      </div>
-      <div class="roster-header">
-        <el-row
-          style="width:100%; height:50px"
-          type="flex"
-          justify="center"
-          :gutter="24"
-        >
-          <el-col :span="6">
-            需求编号：{{ id }}
-          </el-col>
-          <el-col :span="6">
-            提交人：{{ name }}
-          </el-col>
-          <el-col :span="6">
-            提交时间：2019-12-12 12:12:09
-          </el-col>
-          <el-col :span="6">
-            状态：已结束
-          </el-col>
-        </el-row>
-      </div>
       <el-tabs v-model="activeName">
         <el-tab-pane
           label="招聘进度"
@@ -78,11 +81,12 @@ export default {
   },
   data() {
     return {
-      id: 'xxx',
+      id: '暂无数据',
       name: 'xxx',
-      department: '部门',
-      position: '职位',
-      activeName: 'inrecruitment'
+      activeName: 'inrecruitment',
+      number: '暂无数据',
+      time: '暂无数据',
+      status: '暂无状态'
     }
   },
   methods: {
@@ -104,6 +108,7 @@ export default {
   display: flex;
   padding: 0 6px;
   margin-bottom: 10px;
+  background-color: #f7f8fa;
   .on {
     flex: 4;
     background: #ffffff;
@@ -160,5 +165,25 @@ export default {
 .resetEdge {
   position: absolute;
   right: 20px;
+}
+.fullName {
+  font-family: PingFangSC-Medium;
+  font-size: 16px;
+  color: #202940;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.nodetitle {
+  font-family: PingFangSC-Medium;
+  font-size: 12px;
+  color: #718199;
+  line-height: 18px;
+  display: block;
+}
+content {
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #202940;
 }
 </style>
