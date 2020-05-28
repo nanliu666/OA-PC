@@ -18,6 +18,7 @@ import menus from './menus'
 import candidate from './candidate'
 import selectPerson from './selectPerson'
 import personnelSettings from './personnel/settings'
+import contact from './contact'
 /**
  * 模拟数据mock
  *
@@ -27,7 +28,6 @@ import personnelSettings from './personnel/settings'
 const options = { mock: false }
 
 user(options)
-
 menu(options)
 
 candidate(options)
@@ -53,5 +53,6 @@ org(options)
 transction(options)
 
 person(options.mock)
+contact({ mock: false })
 
 personnelSettings(options.mock)

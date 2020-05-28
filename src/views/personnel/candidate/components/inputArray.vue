@@ -7,9 +7,9 @@
       label-position="top"
       size="medium"
     >
-      <el-row :gutter="100">
+      <el-row :gutter="elRowGutter || 100">
         <el-col :span="24">
-          <el-row :gutter="100">
+          <el-row :gutter="elRowGutter || 100">
             <el-col
               v-for="basic in infoForm.basicAttrs"
               :key="basic.attrId"
@@ -204,6 +204,9 @@ export default {
     },
     ispass: {
       type: Boolean
+    },
+    elRowGutter: {
+      type: Boolean
     }
   },
   data() {
@@ -260,7 +263,6 @@ export default {
           if (it.inType === 11) {
             this.$nextTick(() => {
               this.orgOptions.config.treeParams.data = it.value
-
               this.$refs['orgTree'] && this.$refs['orgTree'][0].treeDataUpdateFun(it.value)
             })
           }

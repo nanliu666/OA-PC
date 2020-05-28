@@ -245,7 +245,7 @@
                 @click="handleExport"
               >
                 导出
-              </el-button> -->
+              </el-button>-->
               <el-button
                 icon="el-icon-refresh-right"
                 size="medium"
@@ -299,7 +299,7 @@
             @click="hadlePushAudit(selection)"
           >
             <i class="el-icon-coordinate" />批量推送审核
-          </el-button> -->
+          </el-button>-->
           <!-- 初选通过 -->
           <el-button
             v-show="tabStatus === '2'"
@@ -409,7 +409,7 @@
                 @click="hadlePushAudit(row)"
               >
                 推送审核
-              </el-button> -->
+              </el-button>-->
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -432,7 +432,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -463,7 +463,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -497,8 +497,7 @@
                   </el-dropdown-item>
                   <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
-                  -->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -512,7 +511,7 @@
               </el-button>
               <!-- <el-button type="text" @click="handleCheckEmploy(row)">
                 查看申请
-              </el-button> -->
+              </el-button>-->
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -541,7 +540,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -572,7 +571,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -606,7 +605,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -628,7 +627,7 @@
                 <el-dropdown-menu slot="dropdown">
                   <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -1131,6 +1130,7 @@ export default {
       this.tabStatus = status
       this.page.currentPage = 1
       this.$refs['searchPopover'].resetForm()
+      this.searchParams = {}
       this.$refs.commonTable.clearSelection()
       this.loadData()
     },

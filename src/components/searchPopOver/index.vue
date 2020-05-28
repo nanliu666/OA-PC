@@ -146,7 +146,6 @@
                   v-for="item in popoverOptions"
                   :key="item.field"
                   :span="8"
-                  style="height: 95px"
                 >
                   <el-form-item :label="item.label">
                     <el-input
@@ -261,13 +260,13 @@
               <div class="popOver-footer">
                 <el-button
                   type="primary"
-                  size="small"
+                  size="medium"
                   @click="submitSearch"
                 >
                   搜索
                 </el-button>
                 <el-button
-                  size="small"
+                  size="medium"
                   @click="resetForm"
                 >
                   重置
@@ -335,65 +334,79 @@ export default {
   watch: {
     requireOptions: {
       handler(newVal) {
-        let tagsArr = []
         newVal.forEach((item) => {
           // items.forEach((item, idx) => {
-          if (item.data) {
-            if (Array.isArray(item.data) && item.data.length === 0) return
-            if (item.type === 'numInterval') {
-              if (!(item.data.min && item.data.max)) return
-              tagsArr.push(item)
-            } else {
-              tagsArr.push(item)
-            }
+          if (item.type === 'treeSelect') {
+            this.$refs[item.field] &&
+              this.$refs[item.field][0].treeDataUpdateFun(item.config.treeParams.data)
           }
           // })
         })
-        this.tags.push(...tagsArr)
       },
       deep: true
     },
     popoverOptions: {
       handler(newVal) {
-        let tagsArr = []
         newVal.forEach((item) => {
           // items.forEach((item, idx) => {
-          if (item.data) {
-            if (Array.isArray(item.data) && item.data.length === 0) return
-            if (item.type === 'numInterval') {
-              if (!(item.data.min && item.data.max)) return
-
-              tagsArr.push(item)
-            } else {
-              tagsArr.push(item)
-            }
+          if (item.type === 'treeSelect') {
+            this.$refs[item.field] &&
+              this.$refs[item.field][0].treeDataUpdateFun(item.config.treeParams.data)
           }
           // })
         })
-        this.tags.push(...tagsArr)
       },
       deep: true
     }
   },
   methods: {
+    // 筛选已有值的options
+    screenValueArr(arr) {
+      this.requireOptions.forEach((item) => {
+        // items.forEach((item, idx) => {
+        if (item.data) {
+          if (Array.isArray(item.data) && item.data.length === 0) return
+          if (item.type === 'numInterval') {
+            if (!(item.data.min && item.data.max)) return
+            arr.push(item)
+          } else {
+            arr.push(item)
+          }
+        }
+        // })
+      })
+      this.popoverOptions.forEach((item) => {
+        // items.forEach((item, idx) => {
+        if (item.data) {
+          if (Array.isArray(item.data) && item.data.length === 0) return
+          if (item.type === 'numInterval') {
+            if (!(item.data.min && item.data.max)) return
+            arr.push(item)
+          } else {
+            arr.push(item)
+          }
+        }
+        // })
+      })
+    },
     treeDataUpdateFun(data, refKey) {
       this.$refs[refKey][0].treeDataUpdateFun(data)
     },
+    // 触发搜索，往外提交已选参数
     submitSearch() {
-      this.$emit('submit', this.searchParams())
+      this.$emit('submit', this.produceSearchParams())
       this.popoverShow = false
-    },
-    handleOrgNodeClick(data, form, field, config) {
-      form[field] = data[config.nodeKey]
-      // form[field + 'Label'] = data[config.treeLabel]
-      this.change()
     },
     change() {
       this.submitSearch()
     },
-    searchParams() {
+    // 生成搜索参数
+    produceSearchParams() {
       let params = {}
-      this.tags.forEach((item) => {
+      let tagsArr = []
+      // 筛选出有值的选项
+      this.screenValueArr(tagsArr)
+      tagsArr.forEach((item) => {
         if (item.data) {
           if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
             params[item.field] = item.data
@@ -422,8 +435,9 @@ export default {
             item.field.split(',').forEach((it, idx) => {
               params[it] = item.data[idx]
             })
+          } else {
+            params[item.field] = item.data
           }
-          params[item.field] = item.data
         }
       })
       return params
@@ -441,7 +455,6 @@ export default {
           item.data = ''
         }
       })
-      this.submitSearch()
     }
   }
 }
@@ -449,15 +462,15 @@ export default {
 
 <style lang="scss">
 @media screen and (max-width: 990px) {
-  .popOver-footer {
-    left: 20px !important;
-    right: 26px;
+  .popover-class {
+    left: 30px !important;
+    right: 30px;
   }
 }
 @media screen and (min-width: 991px) {
   .popover-class {
-    left: 266px !important;
-    right: 26px;
+    left: 270px !important;
+    right: 30px;
   }
 }
 </style>
@@ -468,7 +481,11 @@ export default {
   text-align: right;
 }
 .el-form-item {
-  padding-right: 6px;
+  padding-right: 24px;
+}
+
+/deep/ .el-form-item__label {
+  line-height: 30px;
 }
 /deep/ .treeSelect {
   .el-form-item__content {
@@ -490,5 +507,7 @@ export default {
 }
 .el-col-8 {
   min-width: 280px;
+  margin-bottom: 16px;
+  height: 72px;
 }
 </style>

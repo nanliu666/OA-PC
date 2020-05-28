@@ -391,14 +391,14 @@ export default {
     this.getWorkAddress()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       res.map((it) => {
-        if (it.id === this.basic.workProperty) {
+        if (it.dictKey === this.basic.workProperty) {
           this.basic.workProperty = it.dictValue
         }
       })
     })
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
       res.map((it) => {
-        if (it.id === this.basic.contractType) {
+        if (it.dictKey === this.basic.contractType) {
           this.basic.contractType = it.dictValue
         }
       })
@@ -466,7 +466,9 @@ export default {
       // console.log(tab, event)
     },
     back() {
-      this.$router.go(-1)
+      this.$router.push({
+        path: '/personnel/candidate/candidateManagement'
+      })
     }
   }
 }
