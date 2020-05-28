@@ -73,6 +73,7 @@ export default {
       },
       signedData,
       infoForm: {
+        contractId: '',
         userId: '',
         id: '',
         code: '',
@@ -88,6 +89,7 @@ export default {
   },
   mounted() {
     this.infoForm.userId = this.$route.query.userId
+    this.infoForm.contractId = this.$route.query.contractId
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
       this.dataFilter(res, this.signedData, 'type', 'dictValue', 'dictKey')
     })
