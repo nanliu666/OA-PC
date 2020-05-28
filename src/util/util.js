@@ -361,18 +361,6 @@ export const openWindow = (url, title, w, h) => {
   }
 }
 
-export const formatDate = (value) => {
-  let fomatValue = new Date(value)
-  let year = fomatValue.getFullYear()
-  let month = fomatValue.getMonth() + 1
-  let day = fomatValue.getDay()
-  return {
-    year: year,
-    month: month,
-    day: day
-  }
-}
-
 /**
  * 判断两个日期时间段是否有交集
  */

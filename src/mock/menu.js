@@ -447,8 +447,41 @@ const res = {
             ]
           },
           {
-            menuId: '32',
-            menuName: '人事异动',
+            menuId: '322',
+            menuName: '合同管理',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_contract',
+            alias: 'contract',
+            path: '/personnel/contract/contract',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '232',
+            menuName: '续签合同',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_renewal',
+            alias: 'renewal',
+            path: '/personnel/contract/renewal',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '112',
+            menuName: '编辑合同',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_signedContract',
+            alias: 'signedContract',
+            path: '/personnel/contract/signedContract',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
+            menuId: '33',
+            menuName: '异动申请',
             menuType: 'Dir',
             isOwn: 1,
             isShow: 1,
@@ -624,6 +657,93 @@ const res = {
             code: '',
             alias: '',
             path: '/personnel/settings/resignation'
+          },
+          {
+            menuId: '1260116127481413637',
+            menuName: '员工管理',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'roster',
+            alias: 'roster',
+            path: '',
+            icon: 'iconfont iconicon_group',
+            dataPrivileges: [],
+            children: [
+              {
+                menuId: '1260116127481413634',
+                menuName: '员工花名册',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_roster',
+                alias: 'personnelRoster',
+                path: '/personnel/roster',
+                icon: 'iconfont iconicon_group',
+                dataPrivileges: []
+              },
+              {
+                menuId: '1260116557917667329',
+                menuName: '员工信息',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'personnel_detail',
+                alias: 'personnel_detail',
+                path: '/personnel/detail/:userId',
+                icon: 'iconfont iconicon_namecard',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '1260117682788057089',
+                menuName: '添加员工',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 0,
+                code: 'add_roster',
+                alias: 'add_roster',
+                path: '/personnel/addRoster',
+                icon: 'iconfont iconicon_roundadd',
+                dataPrivileges: [],
+                children: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        menuId: '1590112075698',
+        menuName: '个人中心',
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
+        code: 'system',
+        alias: 'system',
+        path: '',
+        icon: 'iconfont iconicon_setting',
+        children: [
+          {
+            menuId: '1590112075699',
+            menuName: '个人信息',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'userInfo_editPerson',
+            alias: 'editPerson',
+            path: '/system/userinfo',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '1590112075700',
+            menuName: '安全设置',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'userInfo_editPerson',
+            alias: 'editPerson',
+            path: '/system/securitySetting',
+            icon: 'iconfont iconicon_compile'
           }
         ]
       }

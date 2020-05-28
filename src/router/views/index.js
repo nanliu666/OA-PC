@@ -56,9 +56,6 @@ export default [
       {
         path: 'securitySetting',
         name: '安全设置',
-        meta: {
-          i18n: 'info'
-        },
         component: () => import(/* webpackChunkName: "views" */ '@/views/system/securitySetting')
       }
     ]
@@ -94,15 +91,4 @@ export default [
       }
     ]
   }
-  // {
-  //   path: '/personnel/editPerson',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: '/personnel/editPerson',
-  //       name: '添加候选人',
-  //       component: () => import(/* webpackChunkName: "views" */ '@/views/personnel/editPerson')
-  //     }
-  //   ]
-  // }
 ]

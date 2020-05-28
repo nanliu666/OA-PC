@@ -1,0 +1,196 @@
+/* eslint-disable */
+import Mock from 'mockjs'
+
+export default ({ mock }) => {
+  if (!mock) return
+  Mock.mock(new RegExp('/api/user/v1/candidate/accept/list' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    let data = []
+    for (let i = 0; i < JSON.parse(options.body).pageSize; i++) {
+      data.push(
+        Mock.mock({
+          personId: '@integer(10000000000, 20000000000)',
+          name: '@cname',
+          phonenum: '@integer(10000000000, 20000000000)',
+          sex: '@integer(0, 1)',
+          age: '@integer(1, 100)',
+          email: '@email',
+          provinceCode: 'Vm[Z',
+          proviceName: 'FmF',
+          cityCode: '1R2)@W',
+          cityName: 'F6z7tql',
+          educationalLevel: 'R1xtN0',
+          university: 'RH92',
+          major: 'X[RRQ',
+          workAge: '@integer(0, 45)',
+          lastCompany: '@cword(3, 5)',
+          recruitment: '@natural(1, 14)',
+          monthSalary: '@natural(4000, 100000)',
+          resumeUrl: '@url',
+          attachmentUrl: '@url',
+          attachmentName: '@cword(3, 5)',
+          remark: '@sentence(3, 5)',
+          recruitmentId: '@integer(1, 100)',
+          register: '@integer(0, 1)',
+          entryDate: "@date('yyyy-mm-dd')",
+          orgId: '@integer(1, 10000000)',
+          orgName: '@cword(3, 5)',
+          jobId: '@integer(1, 10000000)',
+          jobName: '@cword(3, 5)',
+          positionId: '@integer(1, 10000000)',
+          positionName: '@cword(3, 5)',
+          'workProperty|1': [
+            'FullTime',
+            'Labor',
+            'LaborOutsourcing',
+            'PartTime',
+            'Retirement',
+            'Trainee'
+          ]
+        })
+      )
+    }
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        totalNum: 12345,
+        data: data
+      }
+    }
+  })
+
+  Mock.mock(new RegExp('/api/user/v1/candidate/accept/out' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: ''
+    }
+  })
+
+  Mock.mock(new RegExp('/api/user/v1/candidate/out/to/accept' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: ''
+    }
+  })
+
+  Mock.mock(new RegExp('/api/user/v1/candidate/offer/apply' + '.*'), 'get', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: Mock.mock({
+        id: '@integer(10000000000, 20000000000)',
+        personId: '@integer(10000000000, 20000000000)',
+        probation: '@integer(0, 6)',
+        entryDate: '@date("yyyy-mm-dd")',
+        companyId: '@integer(10000000000, 20000000000)',
+        companyName: '@cword(3, 5)',
+        orgId: '@integer(1, 10000000)',
+        orgName: '@cword(3, 5)',
+        jobId: '@integer(1, 10000000)',
+        jobName: '@cword(3, 5)',
+        positionId: '@integer(1, 10000000)',
+        positionName: '@cword(3, 5)',
+        'workProperty|1': [
+          'FullTime',
+          'Labor',
+          'LaborOutsourcing',
+          'PartTime',
+          'Retirement',
+          'Trainee'
+        ],
+        workAddressId: '@integer(10000000000, 20000000000)',
+        provinceCode: 'Vm[Z',
+        proviceName: 'FmF',
+        cityCode: '1R2)@W',
+        cityName: 'F6z7tql',
+        countyCode: '1R2)@W',
+        countyName: 'F6z7tql',
+        workProvinceCode: 'Vm[Z',
+        workProviceName: 'FmF',
+        workCityCode: '1R2)@W',
+        workCityName: 'F6z7tql',
+        probationSalary: '@integer(2000, 1000000)',
+        formalSalary: '@integer(2000, 1000000)'
+      })
+    }
+  })
+
+  Mock.mock(new RegExp('/api/user/v1/person/info' + '.*'), 'get', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    let tags = []
+    for (let i = 0; i < 3; i++) {
+      tags.push(
+        Mock.mock({
+          tagId: '@integer(1, 100000000)',
+          name: '@cword(3, 5)',
+          color: '@color'
+        })
+      )
+    }
+    Mock.Random.extend({
+      constellation: function() {
+        const educationalLevel = [
+          'Primary',
+          'Juniormiddle',
+          'High',
+          'JuniorCollege',
+          'Undergraduate',
+          'Master',
+          'Doctor',
+          'PostDoctoral',
+          'VocationalHigh',
+          'SecondarySpecialized',
+          'Technical',
+          'SecondaryNormal',
+          'Other'
+        ]
+        return this.pick(educationalLevel)
+      }
+    })
+    let data = Mock.mock({
+      personId: '@integer(10000000000, 20000000000)',
+      name: '@cname',
+      phonenum: '@integer(10000000000, 20000000000)',
+      sex: '@integer(0, 1)',
+      age: '@integer(1, 100)',
+      email: '@email',
+      interview: '@integer(0, 1)',
+      provinceCode: 'Vm[Z',
+      proviceName: 'FmF',
+      cityCode: '1R2)@W',
+      cityName: 'F6z7tql',
+      educationalLevel: '@constellation',
+      university: 'RH92',
+      major: 'X[RRQ',
+      workAge: '@integer(0, 45)',
+      lastCompany: '@cword(3, 5)',
+      'recruitment|1': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
+      monthSalary: '@natural(4000, 100000)',
+      resumeUrl: '@url',
+      attachmentUrl: '@url',
+      attachmentName: '@cword(3, 5)',
+      remark: '@sentence(3, 5)',
+      status: /[7-8]/,
+      recruitmentId: '@integer(1, 100)',
+      userId: '@integer(1, 1000000)',
+      userName: '@cname',
+      createTime: "@date('yyyy-mm-dd')",
+      orgId: '@integer(1, 10000000)',
+      orgName: '@cword(3, 5)',
+      jobId: '@integer(1, 10000000)',
+      jobName: '@cword(3, 5)'
+    })
+    data.tags = tags
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: data
+    }
+  })
+}

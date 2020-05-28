@@ -207,7 +207,7 @@ export default {
       this.editClick = true
       this.curItemIndex = this.emergencyInfo.length - 1
     },
-    delInfo(item, index) {
+    delInfo(item) {
       this.$confirm('您确定要删除该紧急联系人吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -218,7 +218,7 @@ export default {
             ids: item.id
           }
           delStaffEmerInfo(params).then(() => {
-            this.emergencyInfo.splice(index, 1)
+            this.getBasicInfo()
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -243,9 +243,9 @@ export default {
               relationship: item.relationship
             }
             addStaffEmerInfo(params).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
-              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -253,6 +253,7 @@ export default {
             })
           } else {
             editStaffEmerInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -284,7 +285,7 @@ export default {
       if (this.type == 'add') {
         this.emergencyInfo.pop()
       } else {
-        this.emergencyInfo[index] = deepClone(curItem)
+        this.$set(this.emergencyInfo, index, deepClone(curItem))
       }
     }
   }
