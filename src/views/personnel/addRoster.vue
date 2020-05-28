@@ -544,7 +544,6 @@ export default {
         companyId: [{ required: true, message: '请选择入职公司', trigger: 'change' }],
         phonenum: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
-          { type: 'number', message: '必须为数字值' },
           { validator: checkPhonenum, trigger: 'blur' },
           { pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }
         ],
