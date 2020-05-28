@@ -51,9 +51,9 @@ personalInfo(options)
 personnel(options)
 
 org(options)
-transction({ mock: true })
+transction(options)
 
 person(options.mock)
 contact({ mock: false })
-
+leave(options)
 personnelSettings(options.mock)
