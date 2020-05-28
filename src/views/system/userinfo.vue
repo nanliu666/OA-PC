@@ -289,6 +289,7 @@
                     v-model="adress.curAdress"
                     :options="regionCascader.option"
                     :separator="'/'"
+                    @change="regionChange"
                   />
                   <el-input
                     v-model="adress.detailAdress"
@@ -422,6 +423,11 @@ export default {
   },
 
   methods: {
+    regionChange() {
+      let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
+      this.perosonnalInfo.userAddress =
+        thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
+    },
     getUserSex() {
       if (this.perosonnalInfo.sex == 1) {
         return '男'
@@ -465,9 +471,6 @@ export default {
     saveBasicInfo() {
       this.$refs['userInfo'].validate((isPass) => {
         if (isPass) {
-          let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
-          this.perosonnalInfo.userAddress =
-            thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
           editStaffBasicInfo(this.perosonnalInfo).then(() => {
             noEditInfo = this.deepCopy(this.perosonnalInfo)
             this.readonly = true
@@ -492,7 +495,6 @@ export default {
           that.uploadPercent = parseInt(total.percent)
         },
         error(err) {
-          debugger
           that.uploading = false
           that.$message.error(err.message)
         },
@@ -517,10 +519,14 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过 2MB!')
       }
+      if (!isJPG && !isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB且只能是 jpg、jpeg 格式!')
+      }
       return isJPG && isLt2M
     },
-    handleAvatarSuccess() {
-      const self = this
+    handleAvatarSuccess(res, file) {
+      this.perosonnalInfo.avatarUrl = URL.createObjectURL(file.raw)
+      this.getUserAllInfo()
       self.$message.success('上传成功')
     }
   }

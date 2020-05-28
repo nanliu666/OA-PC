@@ -184,7 +184,6 @@
 <script>
 import { isMobile, validatePW } from '@/util/validate'
 import { getCode, checkPhoneCode, checkPassword } from '../../api/personalInfo.js'
-import { mapGetters } from 'vuex'
 import md5 from 'js-md5'
 import pageHeader from '@/components/page-header/pageHeader'
 import logo from '@/page/index/logo'
@@ -235,6 +234,7 @@ export default {
       }
     }
     return {
+      userId: '',
       step: 1,
       steps: {
         firstStatus: 'finish',
@@ -309,8 +309,7 @@ export default {
         MSGSCUCCESS: this.$t('login.msgSuccess'),
         MSGTIME: 60
       }
-    },
-    ...mapGetters(['userInfo'])
+    }
   },
   created() {
     this.identity.msgText = this.config.MSGINIT
@@ -335,7 +334,8 @@ export default {
               phone: this.identity.form.phone,
               value: this.identity.form.code
             }
-            checkPhoneCode(params).then(() => {
+            checkPhoneCode(params).then((res) => {
+              this.userId = res.userId
               this.step++
               this.steps.firstStatus = 'success'
               this.steps.secondStatus = 'finish'
@@ -347,7 +347,7 @@ export default {
           if (isPass && this.password.form.surePW == this.password.form.newPW) {
             let newpsw = this.password.form.newPW
             let params = {
-              userId: this.userInfo.user_id,
+              userId: this.userId,
               newPassword: md5(newpsw),
               phonenum: this.identity.form.phone,
               smsCode: this.identity.form.code
