@@ -29,6 +29,7 @@ import contact from './contact'
 const options = { mock: false }
 
 user(options)
+
 menu({ mock: true })
 
 candidate(options)
@@ -56,4 +57,7 @@ transction(options)
 person(options.mock)
 contact({ mock: false })
 leave(options)
+
+contact({ mock: false })
+
 personnelSettings(options.mock)
