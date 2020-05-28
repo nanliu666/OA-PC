@@ -5,7 +5,6 @@
       show-back
     />
     <basic-container>
-      <!-- v-loading="loading" -->
       <el-row
         type="flex"
         justify="center"
@@ -25,14 +24,18 @@
             :rules="rules"
             inline
           >
+            <!-- 标题 -->
             <el-row
               type="flex"
               justify="center"
             >
               <el-col :span="14">
-                <h4>离职信息</h4>
+                <h4 class="title">
+                  离职信息
+                </h4>
               </el-col>
             </el-row>
+            <!-- 最后工作日期 -->
             <el-row
               type="flex"
               justify="center"
@@ -52,6 +55,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <!-- 离职原因 -->
             <el-row
               type="flex"
               justify="center"
@@ -77,6 +81,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <!-- 离职原因说明 -->
             <el-row
               type="flex"
               justify="center"
@@ -93,6 +98,8 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <!-- 审批下个版本做 -->
+            <!-- 按钮区 -->
             <el-row
               type="flex"
               justify="center"
@@ -128,8 +135,9 @@ import { applyLeaveInfo } from '@/api/leave/leave'
 export default {
   data() {
     return {
-      // 申请params
+      // 申请离职params
       queryInfo: {
+        // userId: "1263040438093533185",
         userId: this.$route.query.userId,
         lastDate: '',
         reason: '',
@@ -137,9 +145,22 @@ export default {
       },
       // rules 校验规则
       rules: {
-        lastDate: [{ required: true, message: '请选择最后工作日', trigger: 'blur' }],
-        reason: [{ required: true, message: '请选择离职原因', trigger: 'change' }]
+        lastDate: [
+          {
+            required: true,
+            message: '请选择最后工作日',
+            trigger: 'blur'
+          }
+        ],
+        reason: [
+          {
+            required: true,
+            message: '请选择离职原因',
+            trigger: 'change'
+          }
+        ]
       },
+      // 离职原因字典组
       LeaveReason: []
     }
   },
@@ -160,16 +181,18 @@ export default {
     // 提交申请
     handelSubmit() {
       this.$refs.form.validate((res) => {
+        // 校验不通过
         if (!res) {
           return this.$message.error('请填写必选项')
         }
-        applyLeaveInfo(this.queryInfo).then(() => {
-          this.$message
-            .success('提交成功', 2000, () => {
-              this.$router.push(-1)
+        // 检验通过
+        applyLeaveInfo(this.queryInfo)
+          .then(() => {
+            this.$message.success('提交成功', 2000, () => {
+              this.$router.go(-1)
             })
-            .catch(() => {})
-        })
+          })
+          .catch(() => {})
       })
     }
   }
@@ -177,6 +200,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.title {
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #202940;
+  line-height: 14px;
+}
+
 .btn-box {
   display: flex;
   justify-content: center;

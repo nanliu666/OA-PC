@@ -9,7 +9,7 @@
         <!-- 待离职 -->
         <el-tab-pane
           label="待离职"
-          name="first"
+          name="WaitLeave"
         >
           <commonTable
             :data="tableList"
@@ -21,8 +21,8 @@
             @current-page-change="currentPageChange"
             @page-size-change="pageSizeChange"
           >
-            <template slot="topMenu">
-              <!-- 搜素框 -->
+            <!-- 搜素框 -->
+            |<template slot="topMenu">
               <div class="search-box">
                 <SearchPopover
                   :require-options="requireOptions"
@@ -67,31 +67,116 @@
               <el-button
                 size="medium"
                 type="text"
-                @click="showChangeDialog(row)"
+                @click="handelGetLeaveCert(row.userId)"
               >
-                调整离职信息
+                开具离职证明
               </el-button>
               <el-button
                 size="medium"
                 type="text"
-                @click="handelGiveLeave(row.userId)"
+                @click="showChangeDialog(row)"
               >
-                放弃离职
+                调整离职信息
               </el-button>
+              <el-dropdown @command="handleCommand($event, row.userId)">
+                <el-button
+                  type="text"
+                  style="margin-left: 10px"
+                >
+                  <i class="el-icon-arrow-down el-icon-more" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="giveLeave">
+                    放弃离职
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <!-- 离职日期 -->
+            <template
+              slot="lastDate"
+              slot-scope="{ row }"
+            >
+              <div>
+                <span>{{ row.lastDate }}</span>
+                <el-tag
+                  type="info"
+                  size="small"
+                  class="isConfirm"
+                >
+                  已确认
+                </el-tag>
+              </div>
             </template>
           </commonTable>
         </el-tab-pane>
         <!-- 已离职 -->
         <el-tab-pane
           label="已离职"
-          name="second"
-        />
+          name="Leaved"
+        >
+          <commonTable
+            :data="tableList"
+            :columns="tableColumns"
+            :loading="loading"
+            :config="tableConfig"
+            :page="page"
+            :page-config="pageConfig"
+            @current-page-change="currentPageChange"
+            @page-size-change="pageSizeChange"
+          >
+            <!-- 搜素框 -->
+            |<template slot="topMenu">
+              <div class="search-box">
+                <SearchPopover
+                  :require-options="requireOptions"
+                  :popover-options="popoverOptions"
+                  @submit="handleSubmit"
+                />
+                <div>
+                  <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
+                  <el-button
+                    icon="el-icon-refresh"
+                    size="medium"
+                    @click="getDataList()"
+                  />
+                </div>
+              </div>
+            </template>
+            <!-- 姓名列 -->
+            <template
+              slot="name"
+              slot-scope="{ row }"
+            >
+              <el-button
+                type="text"
+                size="medium"
+                @click="jumpInfo(row.userId)"
+              >
+                {{ row.name }}
+              </el-button>
+            </template>
+            <!-- 操作列 -->
+            <template
+              slot="handler"
+              slot-scope="{ row }"
+            >
+              <el-button
+                size="medium"
+                type="text"
+                @click="handelGetLeaveCert(row.userId)"
+              >
+                开具离职证明
+              </el-button>
+            </template>
+          </commonTable>
+        </el-tab-pane>
       </el-tabs>
     </basic-container>
     <!-- 调整离职信息弹框 -->
     <el-dialog
       title="调整离职信息"
-      :visible.sync="dialogVisible"
+      :visible.sync="changeLeaveVisible"
       width="30%"
       :modal-append-to-body="false"
     >
@@ -105,12 +190,13 @@
             label-width="80px"
             :model="changeParams"
             :rules="changeRules"
+            class="confirm-form-wrap"
           >
             <el-row
               type="flex"
               justify="center"
             >
-              <el-col>
+              <el-col :span="16">
                 <el-form-item label="已选择">
                   <span>{{ changeParams.name }}</span>
                 </el-form-item>
@@ -120,7 +206,7 @@
               type="flex"
               justify="center"
             >
-              <el-col>
+              <el-col :span="16">
                 <el-form-item
                   label="离职日期"
                   prop="lastDate"
@@ -142,7 +228,7 @@
       >
         <el-button
           size="medium"
-          @click="dialogVisible = false"
+          @click="changeLeaveVisible = false"
         >取 消</el-button>
         <el-button
           type="primary"
@@ -156,6 +242,7 @@
 </template>
 
 <script>
+// 树结构转一维数组
 import { flatTree } from '@/util/util.js'
 import { getOrganizationTree } from '@/api/organize/grade.js'
 import SearchPopover from '@/components/searchPopOver/index'
@@ -168,7 +255,7 @@ export default {
   data() {
     return {
       // 控制显示待离职/已离职
-      activeName: 'first',
+      activeName: 'WaitLeave',
       // params参数
       paramsInfo: {
         pageNo: 1,
@@ -191,16 +278,17 @@ export default {
           type: 'index'
         },
         {
-          label: '工号',
-          prop: 'workNo',
-          width: '80px'
-        },
-        {
           label: '姓名',
           prop: 'name',
           width: '80px',
           slot: true
         },
+        {
+          label: '工号',
+          prop: 'workNo',
+          width: '80px'
+        },
+
         {
           label: '部门',
           prop: 'orgName',
@@ -222,6 +310,8 @@ export default {
           formatter(row) {
             if (row.status === 'WaitLeave') {
               return '待离职'
+            } else if (row.status === 'Leaved') {
+              return '已离职'
             }
           }
         },
@@ -246,6 +336,8 @@ export default {
               return '退休返聘'
             } else if (row.workProperty === 'LaborOutsourcing') {
               return '劳务外包'
+            } else {
+              return '其他'
             }
           }
         },
@@ -257,7 +349,8 @@ export default {
         {
           label: '离职日期',
           prop: 'lastDate',
-          width: '120px'
+          slot: true,
+          width: '150px'
         },
         {
           label: '离职原因',
@@ -315,7 +408,9 @@ export default {
         enablePagination: true,
         uniqueKey: 'userId',
         showHandler: true,
-        handlerColumn: { minWidth: 300 }
+        handlerColumn: {
+          minWidth: 300
+        }
       },
       // 搜索框配置
       requireOptions: [
@@ -325,7 +420,10 @@ export default {
           label: '',
           data: '',
           options: [],
-          config: { placeholder: '姓名/工号', 'suffix-icon': 'el-icon-search' }
+          config: {
+            placeholder: '姓名/工号',
+            'suffix-icon': 'el-icon-search'
+          }
         }
       ],
       popoverOptions: [
@@ -336,7 +434,9 @@ export default {
           label: '部门',
           data: '',
           options: [],
-          config: { multiple: true }
+          config: {
+            multiple: true
+          }
         },
         // 职位
         {
@@ -345,7 +445,9 @@ export default {
           label: '职位',
           data: '',
           options: [],
-          config: { multiple: true }
+          config: {
+            multiple: true
+          }
         },
         // 离职日期
         {
@@ -354,7 +456,10 @@ export default {
           label: '离职日期',
           data: '',
           options: [],
-          config: { type: 'daterange', 'range-separator': '至' }
+          config: {
+            type: 'daterange',
+            'range-separator': '至'
+          }
         },
         // 离职原因
         {
@@ -363,30 +468,41 @@ export default {
           label: '离职原因',
           data: '',
           options: [],
-          config: { multiple: true }
+          config: {
+            multiple: true
+          }
         }
       ],
       // 分页器配置
-      page: { currentPage: 1, size: 10, total: 0 },
+      page: {
+        currentPage: 1,
+        size: 10,
+        total: 0
+      },
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
       },
-      // 离职原因字典组
-      LeaveReasonList: [],
+
       // 控制调整离职信息弹框
-      dialogVisible: false,
+      changeLeaveVisible: false,
       // 调整离职信息提交参数
       changeParams: {
         id: '',
         lastDate: '',
         reason: '',
-        remark: '',
-        name: ''
+        // remark: '',
+        name: '张无忌'
       },
       // 调整信息确认框校验规则
       // rules 校验规则
       changeRules: {
-        lastDate: [{ required: true, message: '请选择最后工作日', trigger: 'blur' }]
+        lastDate: [
+          {
+            required: true,
+            message: '请选择最后工作日',
+            trigger: 'change'
+          }
+        ]
       }
     }
   },
@@ -408,14 +524,22 @@ export default {
     this.getJobList()
   },
   methods: {
-    //   监听切换tag
-    // handleClick(tab, event) {},
+    //监听切换tag
+    handleClick() {
+      // WaitLeave 为待离职  Leaved 为已离职
+      if (this.activeName == 'WaitLeave') {
+        this.paramsInfo.status = 'WaitLeave'
+        this.getDataList()
+      } else {
+        this.paramsInfo.status = 'Leaved'
+        this.getDataList()
+      }
+    },
     // 获取待离职list数据
     async getDataList() {
       this.loading = false
       let { data, totalNum } = await getLeaveList(this.paramsInfo)
-      await this.$store.dispatch('CommonDict', 'WorkProperty')
-
+      // await this.$store.dispatch('CommonDict', 'WorkProperty')
       this.tableList = data
       this.page.total = totalNum
       this.loading = false
@@ -431,70 +555,12 @@ export default {
       this.paramsInfo.pageSize = param
       this.getDataList()
     },
-    // 获取离职原因选择组
-    getLeaveReason() {
-      //
-      this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
-        // 离职原因下拉选择框
 
-        let selectLeaveReason = []
-        res.forEach((item) => {
-          selectLeaveReason.push({
-            label: item.dictValue,
-            value: item.dictKey
-          })
-        })
-        this.popoverOptions[3].options = selectLeaveReason
-      })
-    },
-    // 跳转到员工信息页
-    jumpInfo(userId) {
-      this.$router.push('/personnel/detail/' + userId)
-    },
-    // 点击确认离职
-    handelConfirmLeave() {
-      this.$router.push({
-        path: '/personnel/leave/confirmLeave',
-        // query: { userId: params.userId }
-        query: { userId: '1264805583983218689' }
-      })
-    },
-    // 放弃离职信息
-    async handelGiveLeave(userId) {
-      let { id } = await getLeaveInfo(userId)
-      let result = await this.$confirm(
-        '放弃离职后员工将恢复到正常在职状态，您确认要放弃离职吗？',
-        '确认放弃离职？',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).catch((error) => error)
-      // cancel点击取消
-      if (result !== 'confirm') {
-        return
-      }
-      // confirm 点击确定
-      await giveupLeave(id).catch((error) => error)
-      this.$message.success('放弃离职成功')
-    },
-    // 调整离职信息
-    async showChangeDialog(params) {
-      let { userId, name } = params
-      let { id, lastDate, remark, reason } = await getLeaveInfo(userId)
-      this.changeParams = { id, lastDate, remark, reason, name }
-      this.dialogVisible = true
-    },
-    // 调整离职信息
-    async handelChangeLeave() {
-      await changeLeaveInfo(this.changeParams)
-      this.$message.success('保存成功', 2000)
-      this.dialogVisible = false
-    },
     // 获取部门筛选选项
     getOrgNameList() {
-      getOrganizationTree({ parentOrgId: '0' })
+      getOrganizationTree({
+        parentOrgId: '0'
+      })
         // 将组织树状结构转为一维数组，取orgType: "Department"
         .then((res) => {
           let options = []
@@ -525,9 +591,113 @@ export default {
         this.popoverOptions[1].options = options
       })
     },
+    // 获取离职原因选择组
+    getLeaveReason() {
+      this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
+        // 离职原因下拉选择框
+        let selectLeaveReason = []
+        res.forEach((item) => {
+          selectLeaveReason.push({
+            label: item.dictValue,
+            value: item.dictKey
+          })
+        })
+        this.popoverOptions[3].options = selectLeaveReason
+      })
+    },
     // 刷选离职员工
     handleSubmit(params) {
-      this.getDataList({ ...params, status: 'WaitLeave' })
+      this.paramsInfo = {
+        ...params,
+        status: this.paramsInfo.status
+      }
+
+      this.getDataList()
+    },
+
+    // 跳转到员工信息页
+    jumpInfo(userId) {
+      this.$router.push('/personnel/detail/' + userId)
+    },
+    // 点击放弃离职
+    handleCommand(command, userId) {
+      // 点击离职
+      if (command === 'giveLeave') {
+        this.handelGiveLeave(userId)
+      }
+    },
+    // 放弃离职api
+    async handelGiveLeave(userId) {
+      let { id } = await getLeaveInfo({
+        userId
+      })
+
+      let result = await this.$confirm(
+        '放弃离职后员工将恢复到正常在职状态，您确认要放弃离职吗？',
+        '确认放弃离职？',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch((error) => error)
+      // cancel点击取消
+      if (result !== 'confirm') {
+        return
+      }
+      // confirm 点击确定
+      await giveupLeave({
+        id
+      }).catch((error) => error)
+      // 提示放弃离职 刷新页面
+      this.$message.success('放弃离职成功', () => {
+        this.getDataList()
+      })
+    },
+
+    // 显示调整离职模态框
+    async showChangeDialog(params) {
+      let { userId, name } = params
+      // 获取员工的离职信息
+      let { id, lastDate } = await getLeaveInfo(userId)
+      this.changeParams = {
+        id,
+        lastDate,
+        // remark,
+        // reason,
+        name
+      }
+      this.changeLeaveVisible = true
+    },
+    // 调整离职信息
+    async handelChangeLeave() {
+      await changeLeaveInfo(this.changeParams)
+      this.$message.success('保存成功', 2000)
+      this.changeLeaveVisible = false
+    },
+
+    // 点击确认离职
+    handelConfirmLeave(params) {
+      this.$router.push({
+        path: '/personnel/leave/confirmLeave',
+        query: {
+          userId: params.userId
+        }
+        // query: {
+        //     userId: '1264805583983218689'
+        // }
+      })
+    },
+
+    // 开具离职证明
+    handelGetLeaveCert(userId) {
+      this.$router.push({
+        path: '/personnel/leave/proveLeave',
+        query: { userId }
+        // query: {
+        //   userId: '1264805583983218689'
+        // }
+      })
     }
   }
 }
@@ -537,5 +707,18 @@ export default {
 .search-box {
   display: flex;
   justify-content: space-between;
+}
+
+.confirm-form-wrap {
+  .el-row {
+    /deep/.el-form-item__label {
+      padding-bottom: 0;
+    }
+  }
+}
+
+// 已确认按钮
+.isConfirm {
+  margin-left: 10px;
 }
 </style>

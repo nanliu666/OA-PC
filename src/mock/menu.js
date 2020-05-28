@@ -449,25 +449,39 @@ const res = {
           {
             menuId: '32',
             menuName: '人事异动',
-            menuType: 'Menu',
+            menuType: 'Dir',
             isOwn: 1,
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
-            path: '/personnel/transaction/perChange',
-            icon: 'iconfont iconicon_compile'
+            path: '',
+            icon: 'iconfont iconicon_compile',
+            children: [
+              {
+                menuId: '320',
+                menuName: '人事异动',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_editPerson',
+                alias: 'editPerson',
+                path: '/personnel/transaction/perChange',
+                icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '321',
+                menuName: '异动申请',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_editPerson',
+                alias: 'editPerson',
+                path: '/personnel/transaction/changeApply',
+                icon: 'iconfont iconicon_compile'
+              }
+            ]
           },
-          {
-            menuId: '33',
-            menuName: '异动申请',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'personnel_editPerson',
-            alias: 'editPerson',
-            path: '/personnel/transaction/changeApply',
-            icon: 'iconfont iconicon_compile'
-          },
+
           {
             menuId: '35',
             menuName: '转正申请',
@@ -581,6 +595,19 @@ const res = {
                 code: 'org_management',
                 alias: 'orgManagement',
                 path: '/personnel/leave/confirmLeave',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '80',
+                menuName: '离职证明',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/proveLeave',
                 icon: 'iconfont iconicon_subordinate',
                 dataPrivileges: [],
                 children: []

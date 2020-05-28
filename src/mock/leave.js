@@ -169,7 +169,7 @@ export default ({ mock }) => {
     let response = Mock.mock({
       userId: '@integer(1, 100)',
       workNo: '@integer(1, 100)',
-      name: '@name',
+      name: '@cname',
       idType: '',
       idNo: '@integer(1, 100)',
       companyId: '@integer(1, 100)',
