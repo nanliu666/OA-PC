@@ -296,7 +296,7 @@ export default {
       this.curItemIndex = this.familyInfo.length - 1
       this.curItemId = item.id
     },
-    delInfo(item, index) {
+    delInfo(item) {
       this.$confirm('您确定要删除该家庭信息吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -307,7 +307,7 @@ export default {
             ids: item.id
           }
           delStaffFamilyInfo(params).then(() => {
-            this.familyInfo.splice(index, 1)
+            this.getBasicInfo()
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -327,9 +327,9 @@ export default {
           if (this.type == 'add') {
             item.userId = this.$route.params.userId
             addStaffFamilyInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
-              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -340,6 +340,7 @@ export default {
               delete item.userId
             }
             editStaffFamilyInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -372,7 +373,7 @@ export default {
       if (this.type == 'add') {
         this.familyInfo.pop()
       } else {
-        this.familyInfo[index] = deepClone(curItem)
+        this.$set(this.familyInfo, index, deepClone(curItem))
       }
     }
   }

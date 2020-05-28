@@ -11,28 +11,18 @@ export default [
       isAuth: false
     }
   },
+
   {
-    path: '/setWel',
-    name: 'setWel',
-    component: () => import(/* webpackChunkName: "page" */ '@/page/index/layoutNoSidebar'),
     meta: {
       keepAlive: true,
       isTab: false,
       isAuth: false
     },
-    children: [
-      {
-        meta: {
-          keepAlive: true,
-          isTab: false,
-          isAuth: false
-        },
-        path: 'getBackPW',
-        name: '找回密码',
-        component: () => import(/* webpackChunkName: "views" */ '@/page/login/getBackPW')
-      }
-    ]
+    path: '/getBackPW',
+    name: '找回密码',
+    component: () => import(/* webpackChunkName: "views" */ '@/page/login/getBackPW')
   },
+
   {
     path: '/lock',
     name: '锁屏页',

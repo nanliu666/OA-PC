@@ -56,9 +56,6 @@ export default [
       {
         path: 'securitySetting',
         name: '安全设置',
-        meta: {
-          i18n: 'info'
-        },
         component: () => import(/* webpackChunkName: "views" */ '@/views/system/securitySetting')
       }
     ]

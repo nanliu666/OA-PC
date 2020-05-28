@@ -22,7 +22,7 @@
       :class="{ 'back-style': !readonlyBasicInfo }"
     >
       <el-form
-        ref="jobBasicInfo"
+        v-show="readonlyBasicInfo"
         :model="staffInfo"
         label-width="150px"
         class="info-form"
@@ -60,28 +60,8 @@
             :span="9"
             :push="2"
           >
-            <el-form-item
-              v-show="readonlyBasicInfo"
-              label="岗位:"
-            >
+            <el-form-item label="岗位:">
               <span class="info-item-value">{{ getPosition }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
-              label="岗位:"
-              prop="positionName"
-            >
-              <el-select
-                v-model="staffInfo.positionId"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="positionItem in positionOptions"
-                  :key="positionItem.id"
-                  :label="positionItem.name"
-                  :value="positionItem.id"
-                />
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -113,24 +93,135 @@
               :span="10"
               :push="2"
             >
-              <el-form-item
-                v-show="readonlyBasicInfo"
-                :label="`附属部门${index + 1}:`"
-              >
+              <el-form-item :label="`附属部门${index + 1}:`">
                 <span class="info-item-value">{{ item.subOrgName }}</span>
               </el-form-item>
-              <el-form-item
-                v-show="!readonlyBasicInfo"
-                :label="`附属部门${index + 1}:`"
-              >
+            </el-col>
+
+            <el-col
+              :span="9"
+              :push="2"
+            >
+              <el-form-item :label="`附属职位${index + 1}:`">
+                <span class="info-item-value">{{ item.subJobName }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
+
+        <el-row>
+          <el-col
+            :span="10"
+            :push="2"
+          >
+            <el-form-item label="上级领导:">
+              <span class="info-item-value">{{ staffInfo.leaderName }}</span>
+            </el-form-item>
+          </el-col>
+
+          <el-col
+            :span="9"
+            :push="2"
+          >
+            <el-form-item label="工作地址:">
+              <span class="info-item-value">{{ getWorkAdress() }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col
+            :span="10"
+            :push="2"
+          >
+            <el-form-item label="工作城市:">
+              <span class="info-item-value">{{ getCityDetail() }}</span>
+            </el-form-item>
+          </el-col>
+
+          <el-col
+            :span="9"
+            :push="2"
+          >
+            <el-form-item label="招聘渠道:">
+              <span class="info-item-value">{{ getRecruitment }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col
+            :span="10"
+            :push="2"
+          >
+            <el-form-item label="备注:">
+              <span class="info-item-value">{{ staffInfo.userRemark }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <el-form
+        v-show="!readonlyBasicInfo"
+        ref="jobBasicInfo"
+        :model="staffInfo"
+        label-width="150px"
+        class="info-form"
+        size="small"
+      >
+        <el-row :justify="'center'">
+          <el-col
+            :span="10"
+            :push="2"
+          >
+            <el-form-item label="工号:">
+              <span class="info-item-value">{{ staffInfo.workNo }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="9"
+            :push="2"
+          >
+            <el-form-item label="公司邮箱:">
+              <span class="info-item-value">{{ staffInfo.email }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col
+            :span="10"
+            :push="2"
+          >
+            <el-form-item label="部门:">
+              <span class="info-item-value">{{ staffInfo.orgName }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="10"
+            :push="2"
+          >
+            <el-form-item label="职位:">
+              <span class="info-item-value">{{ staffInfo.jobName }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <template>
+          <el-row
+            v-for="(item, index) in staffInfo.subOrg"
+            :key="index"
+          >
+            <el-col
+              :span="10"
+              :push="2"
+            >
+              <el-form-item :label="`附属部门${index + 1}:`">
                 <div />
                 <el-tree-select
                   ref="orgTree"
-                  v-model="staffInfo.subOrg[index].subOrgId"
+                  v-model="item.subOrgId"
                   :popover-class="subOrgOptions.config.fas"
                   :styles="subOrgOptions.styles"
                   :select-params="subOrgOptions.config.selectParams"
                   :tree-params="subOrgOptions.config.treeParams"
+                  @change="subOrgNodeChange(item, index)"
                 />
               </el-form-item>
             </el-col>
@@ -139,23 +230,14 @@
               :span="9"
               :push="2"
             >
-              <el-form-item
-                v-show="readonlyBasicInfo"
-                :label="`附属职位${index + 1}:`"
-              >
-                <span class="info-item-value">{{ item.subJobName }}</span>
-              </el-form-item>
-              <el-form-item
-                v-show="!readonlyBasicInfo"
-                :label="`附属职位${index + 1}:`"
-              >
+              <el-form-item :label="`附属职位${index + 1}:`">
                 <el-select
                   v-model="item.subJobId"
                   placeholder="请选择"
-                  @focus="getJob(item)"
+                  @change="subJobItemChange(item, index)"
                 >
                   <el-option
-                    v-for="subJobItem in subJobOptions"
+                    v-for="subJobItem in subJobOptions[index]"
                     :key="subJobItem.jobId"
                     :label="subJobItem.jobName"
                     :value="subJobItem.jobId"
@@ -165,11 +247,11 @@
             </el-col>
 
             <el-col
-              v-show="!readonlyBasicInfo && index > 0"
+              v-show="!readonlyBasicInfo && index > -1"
               class="delete-org-job"
               :span="1"
             >
-              <div @click="deleteOrgjob(item)">
+              <div @click="deleteOrgjob(item, index)">
                 <span>
                   <i class="el-icon-delete" />
                 </span>
@@ -181,9 +263,7 @@
           v-show="!readonlyBasicInfo"
           class="add-job-org"
         >
-          <span @click="addJobOrg()">
-            <i class="el-icon-plus" />
-          </span>
+          <span @click="addJobOrg()"> <i class="el-icon-plus" /> 添加附属部门及职位 </span>
         </div>
         <el-row>
           <el-col
@@ -191,44 +271,52 @@
             :push="2"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="上级领导:"
-            >
-              <span class="info-item-value">{{ staffInfo.leaderName }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
-              label="上级领导:"
-              prop="leaderName"
+              label="岗位:"
+              prop="positionName"
             >
               <el-select
-                v-model="staffInfo.leaderName"
+                v-model="staffInfo.positionId"
                 placeholder="请选择"
-                @change="leaderOptionChange"
               >
                 <el-option
-                  v-for="(leaderItem, index) in leaderOptions"
-                  :key="index"
-                  :label="leaderItem.name"
-                  :value="leaderItem.orgId"
+                  v-for="positionItem in positionOptions"
+                  :key="positionItem.id"
+                  :label="positionItem.name"
+                  :value="positionItem.id"
                 />
               </el-select>
             </el-form-item>
           </el-col>
-
           <el-col
-            :span="9"
+            :span="10"
             :push="2"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="工作地址:"
+              label="上级领导:"
+              prop="leaderName"
             >
-              <span class="info-item-value">{{ getWorkAdress() }}</span>
+              <el-select
+                v-model="staffInfo.leaderId"
+                placeholder="请选择"
+                @change="leaderOptionChange"
+              >
+                <el-option
+                  v-for="leaderItem in leaderOptions"
+                  :key="leaderItem.userId"
+                  :label="leaderItem.name"
+                  :value="leaderItem.userId"
+                />
+              </el-select>
             </el-form-item>
+          </el-col>
+        </el-row>
 
+        <el-row>
+          <el-col
+            :span="10"
+            :push="2"
+          >
             <el-form-item
-              v-show="!readonlyBasicInfo"
               label="工作地址:"
               prop="marriage"
             >
@@ -248,13 +336,13 @@
                   <span style="float: left">{{ item.address }}</span>
                   <span
                     class="optionRight"
-                    @click="deleteAddress(item)"
+                    @click.stop="deleteAddress(item)"
                   >
                     <i class="el-icon-error" />
                   </span>
                   <span
                     class="optionRight"
-                    @click="editAddress(item)"
+                    @click.stop="editAddress(item)"
                   >
                     <i class="el-icon-edit-outline" />
                   </span>
@@ -279,21 +367,11 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row>
           <el-col
             :span="10"
             :push="2"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="工作城市:"
-            >
-              <span class="info-item-value">{{ getCityDetail() }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
               label="工作城市:"
               prop="health"
             >
@@ -308,17 +386,10 @@
           </el-col>
 
           <el-col
-            :span="9"
+            :span="10"
             :push="2"
           >
             <el-form-item
-              v-show="readonlyBasicInfo"
-              label="招聘渠道:"
-            >
-              <span class="info-item-value">{{ getRecruitment }}</span>
-            </el-form-item>
-            <el-form-item
-              v-show="!readonlyBasicInfo"
               label="招聘渠道:"
               prop="recruitment"
             >
@@ -335,18 +406,10 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col
             :span="10"
             :push="2"
           >
-            <el-form-item
-              v-show="readonlyBasicInfo"
-              label="备注:"
-            >
-              <span class="info-item-value">{{ staffInfo.userRemark }}</span>
-            </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
               label="备注:"
@@ -359,6 +422,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+
         <div
           v-show="!readonlyBasicInfo"
           class="info-button-group"
@@ -461,6 +525,10 @@ export default {
   },
   data() {
     return {
+      delSubOrgJob: {
+        subOrg: [],
+        subJob: []
+      },
       workCity: [],
       formatSubJob: [],
       staffInfo: {},
@@ -531,13 +599,11 @@ export default {
   computed: {
     getRecruitment() {
       let dictValue = ''
-      for (let i = 0; i < this.recruitOptions.length; i++) {
-        let item = this.recruitOptions[i]
-        if (this.staffInfo.recruitment == item.dictKey) {
+      this.recruitOptions.forEach((item) => {
+        if (item.dictKey === this.staffInfo.recruitment) {
           dictValue = item.dictValue
-          return
         }
-      }
+      })
       return dictValue
     },
     getPosition() {
@@ -552,13 +618,29 @@ export default {
       return dictValue
     }
   },
+  watch: {
+    info: {
+      handler(val) {
+        this.staffInfo = val
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   created() {
     this.getStaffinfo()
-    this.initRegion()
     this.loadSelectData()
     this.getWorkAdressList()
+    this.dispatchSelect()
   },
   methods: {
+    initSubJobOptions() {
+      if (func.notEmpty(this.staffInfo) && this.staffInfo.subOrg.length > 0) {
+        this.staffInfo.subOrg.forEach((item, index) => {
+          this.getJob(item, index)
+        })
+      }
+    },
     getCityDetail() {
       return this.staffInfo.workProvinceName + this.staffInfo.workCityName
     },
@@ -606,6 +688,7 @@ export default {
     handleAddressClick(value) {
       this.workAdressList.forEach((item) => {
         if (item.id === value) {
+          this.staffInfo.addresssId = item.id
           this.staffInfo.address = item.address
           this.workCity = [item.provinceCode, item.cityCode]
 
@@ -659,7 +742,7 @@ export default {
     },
     leaderOptionChange(value) {
       this.leaderOptions.forEach((item) => {
-        if (item.orgId === value) {
+        if (item.workNo === value) {
           this.staffInfo.leaderName = item.name
         }
       })
@@ -672,7 +755,9 @@ export default {
     loadSelectData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
         this.subOrgOptions.config.treeParams.data = res
-        this.$refs['orgTree'].treeDataUpdateFun(res)
+        this.$refs['orgTree'].forEach((item) => {
+          item.treeDataUpdateFun(res)
+        })
       })
       getOrgPosition().then((res) => {
         this.positionOptions = res
@@ -703,10 +788,9 @@ export default {
       this.staffInfo.workCityCode = value[1]
     },
     editInfo() {
-      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.subOrgOptions.config.treeParams.data = res
-        this.$refs['orgTree'].treeDataUpdateFun(res)
-      })
+      this.$set(this.delSubOrgJob, 'subOrg', [])
+      this.$set(this.delSubOrgJob, 'subJob', [])
+
       staffInfo = deepClone(this.staffInfo)
       this.readonlyBasicInfo = false
     },
@@ -740,14 +824,15 @@ export default {
         countyCode: this.staffInfo.countyCode,
         countyName: this.staffInfo.countyName,
         address: this.staffInfo.address,
+        addresssId: this.staffInfo.addresssId,
         workProvinceCode: this.staffInfo.workProvinceCode,
         workProvinceName: this.staffInfo.workProvinceName,
         workCityCode: this.staffInfo.workCityCode,
-        workCityName: this.staffInfo.workCityName
+        workCityName: this.staffInfo.workCityName,
+        leaderId: this.staffInfo.leaderId
       }
       editStaffBasicInfo(params).then(() => {
         this.readonlyBasicInfo = true
-        staffInfo = deepClone(this.staffInfo)
         this.$message({
           type: 'success',
           message: '修改成功'
@@ -761,22 +846,26 @@ export default {
       }
       getStaffBasicInfo(params).then((res) => {
         this.staffInfo = res
+        staffInfo = deepClone(this.staffInfo)
+        this.initSubJobOptions()
+        this.initRegion()
       })
     },
     cancelEdit() {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
+      this.initSubJobOptions()
     },
-    getJob(item) {
+    getJob(item, index) {
       if (item.subOrgId) {
         let params = {
           orgId: item.subOrgId
         }
         getOrgJob(params).then((res) => {
-          this.subJobOptions = res
+          this.$set(this.subJobOptions, index, res)
         })
       } else {
-        this.subJobOptions = []
+        this.$set(this.subJobOptions, index, [])
       }
     },
     addJobOrg() {
@@ -788,30 +877,77 @@ export default {
         operatorType: 'Add'
       })
     },
-    deleteOrgjob(item) {
-      let params = {
-        subOrg: [
-          {
-            subOrgId: item.subOrgId,
-            operatorType: 'del'
-          }
-        ],
-        subJob: [
-          {
-            subJobId: item.subJobId,
-            operatorType: 'del'
-          }
-        ]
-      }
-      editStaffBasicInfo(params).then(() => {
-        this.readonlyBasicInfo = true
-        staffInfo = deepClone(this.staffInfo)
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+    deleteOrgjob(item, index) {
+      if (item.operatorType == 'Add') {
+        this.staffInfo.subOrg.splice(index, 1)
+      } else {
+        let params = {
+          userId: this.$route.params.userId,
+          subOrg: [
+            {
+              subOrgId: item.subOrgId,
+              operatorType: 'Del'
+            }
+          ],
+          subJob: [
+            {
+              subJobId: item.subJobId,
+              operatorType: 'Del'
+            }
+          ]
+        }
+        editStaffBasicInfo(params).then(() => {
+          staffInfo = deepClone(this.staffInfo)
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          this.getStaffinfo()
         })
-        this.getStaffinfo()
-      })
+      }
+    },
+    subJobItemChange(item, index) {
+      if (staffInfo.subOrg.length > 0 && index < staffInfo.subOrg.length) {
+        let jobObj = {
+          subJobId: staffInfo.subOrg[index].subJobId,
+          operatorType: 'Del'
+        }
+        if (item.subJobId != staffInfo.subOrg[index].subJobId) {
+          if (JSON.stringify(this.delSubOrgJob.subJob).indexOf(JSON.stringify(jobObj)) == -1) {
+            item.operatorType = 'Add'
+            this.delSubOrgJob.subJob.push(jobObj)
+          }
+        } else {
+          if (JSON.stringify(this.delSubOrgJob.subJob).indexOf(JSON.stringify(jobObj)) != -1) {
+            item.operatorType = ''
+            this.delSubOrgJob.subJob.pop(jobObj)
+          }
+        }
+      }
+    },
+    subOrgNodeChange(item, index) {
+      if (!this.readonlyBasicInfo) {
+        this.getJob(item, index)
+        this.$set(item, 'subJobId', '')
+        this.$set(item, 'subJobName', '')
+        if (staffInfo.subOrg.length > 0 && index < staffInfo.subOrg.length) {
+          let orgObj = {
+            subJobId: staffInfo.subOrg[index].subOrgId,
+            operatorType: 'Del'
+          }
+
+          if (item.subOrgId != staffInfo.subOrg[index].subOrgId) {
+            item.operatorType = 'Add'
+            if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) == -1) {
+              this.delSubOrgJob.subOrg.push(orgObj)
+            }
+          } else {
+            if (JSON.stringify(this.delSubOrgJob.subOrg).indexOf(JSON.stringify(orgObj)) != -1) {
+              this.delSubOrgJob.subOrg.pop(orgObj)
+            }
+          }
+        }
+      }
     },
     changeSubOrg() {
       let subOrg = []
@@ -830,17 +966,20 @@ export default {
           }
           subOrg.push(orgObj)
           subJob.push(jobObj)
-
           //删除已有且未编辑的数据
-          for (let i = 0; i < staffInfo.subOrg.length; i++) {
-            let itemOrg = staffInfo.subOrg[i]
+          if (index < staffInfo.subOrg.length) {
+            let itemOrg = staffInfo.subOrg[index]
             if (itemOrg.subOrgId == item.subOrgId && itemOrg.subJobId == item.subJobId) {
-              subOrg.splice(index, 1)
-              subJob.splice(index, 1)
-              break
+              subOrg.pop()
+              subJob.pop()
+            } else if (itemOrg.subOrgId == item.subOrgId) {
+              subOrg.pop()
+            } else {
+              if (itemOrg.subJobId == item.subJobId) {
+                subJob.pop()
+              }
             }
           }
-
           //去掉重复的subOrgId项
           let obj = {}
           subOrg = subOrg.reduce(function(item, next) {
@@ -853,11 +992,15 @@ export default {
           for (let i = 0; i < subJob.length; i++) {
             if (preItemId == subJob[i].subJobId) {
               repeatJobFlag = true
+              break
             }
             preItemId = subJob[i].subJobId
           }
         })
       }
+      subOrg.push(...this.delSubOrgJob.subOrg)
+      subJob.push(...this.delSubOrgJob.subJob)
+
       return {
         subOrg: subOrg,
         subJob: subJob,
@@ -869,6 +1012,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.optionRight {
+  float: right;
+  padding: 0 10px 0 0 !important;
+  // display: none;
+}
 .selectOption.no-border-style {
   /deep/.el-input__inner {
     border: none !important;

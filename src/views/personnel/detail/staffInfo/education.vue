@@ -369,7 +369,7 @@ export default {
       this.curItemIndex = this.educationInfo.length - 1
       this.curItemId = item.id
     },
-    delInfo(item, index) {
+    delInfo(item) {
       this.$confirm('您确定要删除该教育经历吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -380,7 +380,7 @@ export default {
             ids: item.id
           }
           delStaffEducationInfo(params).then(() => {
-            this.educationInfo.splice(index, 1)
+            this.getBasicInfo()
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -402,9 +402,9 @@ export default {
           if (this.type == 'add') {
             item.userId = this.$route.params.userId
             addStaffEducationInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
-              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -415,6 +415,7 @@ export default {
               delete item.userId
             }
             editStaffEducationInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -423,8 +424,6 @@ export default {
               })
             })
           }
-
-          this.getBasicInfo()
         }
       })
     },
@@ -453,7 +452,7 @@ export default {
       if (this.type == 'add') {
         this.educationInfo.pop()
       } else {
-        this.educationInfo[index] = deepClone(curItem)
+        this.$set(this.educationInfo, index, deepClone(curItem))
       }
     },
     monthChange(item) {

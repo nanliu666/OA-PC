@@ -115,6 +115,11 @@
               {{ $t('navbar.userinfo') }}
             </router-link>
           </el-dropdown-item>
+          <el-dropdown-item>
+            <router-link to="/info/securitySetting">
+              {{ $t('navbar.securitySetting') }}
+            </router-link>
+          </el-dropdown-item>
           <el-dropdown-item
             divided
             @click.native="logout"
