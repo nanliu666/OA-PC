@@ -174,6 +174,26 @@
                     :tree-params="orgOptions.config.treeParams"
                   />
                 </template>
+                <template v-if="basic.inType == 12">
+                  <div class="flex flex-flow flex-items ">
+                    <el-input
+                      v-model="form[basic.props]"
+                      :minlength="basic.minLen"
+                      :maxlength="basic.maxLen"
+                      class="widthSet"
+                      :disabled="basic.disabled || disabled"
+                      @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                    /><span style="margin: 0 12px">至</span>
+                    <el-input
+                      v-model="form[basic.props2]"
+                      :minlength="basic.minLen"
+                      :maxlength="basic.maxLen"
+                      class="widthSet"
+                      :disabled="basic.disabled || disabled"
+                      @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                    />
+                  </div>
+                </template>
               </el-form-item>
             </el-col>
           </el-row>
