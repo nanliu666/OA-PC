@@ -35,6 +35,7 @@
           </div>
         </template>
         <el-upload
+          v-show="!(limit === fileList.length)"
           action
           :http-request="uploadRequst"
           :show-file-list="false"
