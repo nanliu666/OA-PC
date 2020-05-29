@@ -110,13 +110,15 @@
           >
             <div>
               <span>{{ row.lastDate }}</span>
-              <el-tag
-                type="info"
-                size="small"
-                class="isConfirm"
-              >
-                已确认
-              </el-tag>
+              <span v-if="isWaitLeave">
+                <el-tag
+                  type="info"
+                  size="small"
+                  class="isConfirm"
+                >
+                  已确认
+                </el-tag>
+              </span>
             </div>
           </template>
         </commonTable>
