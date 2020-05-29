@@ -258,6 +258,10 @@ export default {
       this.tags.map((it) => {
         users.push(it.userId)
       })
+      if (users.length === 0) {
+        this.$message.warning('请选择用户')
+        return
+      }
       const params = {
         roleId: this.roleId,
         users: users

@@ -140,7 +140,7 @@ import roleEdit from './components/roleEdit'
 import roleAside from './components/roleAside'
 import roleLimits from './components/rolePermission'
 import userList from './components/roleUserList'
-import { getRoleList, getCate, getPositions, getJobs, delRole } from '../../api/system/role'
+import { getRoleList, getCate, getPositions, delRole } from '../../api/system/role'
 
 export default {
   name: 'Role',
@@ -154,6 +154,8 @@ export default {
     return {
       loading: false,
       JodOrg: [],
+      associated: [],
+      notassociated: [],
       editingRoleId: '',
       visible: false,
       configVisible: false,
@@ -244,7 +246,7 @@ export default {
     }
   },
   created() {
-    this.getJobsFunc()
+    // this.getJobsFunc()
     this.getPositionsFunc()
     this.onLoad()
   },
@@ -290,10 +292,15 @@ export default {
     },
     sizeChange() {},
     currentChange() {},
-    fiter(checked) {
-      let data = []
-      this.jobFilter(this.JodOrg, data, checked)
-      this.options.jobs = data
+    fiter() {
+      // let data = []
+      //    let data2= []
+      // this.jobFilter(this.JodOrg, data, data2,roleId)
+      // if(checked){
+      //   this.options.jobs =  data2
+      // }else{
+      //   this.options.jobs =  data
+      // }
     },
     // 加载页面全部数据（左侧分组树，右侧角色列表）
     async onLoad() {
@@ -380,17 +387,22 @@ export default {
     },
 
     //
-    getJobsFunc() {
-      let params = {
-        jobName: ''
-      }
-      getJobs(params).then((res) => {
-        let data = []
-        this.JodOrg = res
-        this.jobFilter(res, data)
-        this.options.jobs = data
-      })
-    },
+    // getJobsFunc() {
+    //   let params = {
+    //     jobName: ''
+    //   }
+    //   getJobs(params).then((res) => {
+    //     let data = []
+    //     let data2 =[]
+    //     this.JodOrg = res
+    //     // this.NotAssociated = ''
+    //     this.jobFilter(res, data,data2)
+    //     this.associated = data2
+    //     this.notassociated= data
+    //
+    //     this.options.jobs = data
+    //   })
+    // },
     // resolveTree(tree) {
     //   if (tree.length > 0) {
     //     tree.forEach((node) => {
@@ -414,35 +426,49 @@ export default {
     //     })
     //   }
     // },
-    jobFilter(arr, data, checked = false) {
-      arr.filter((item) => {
-        const obj = {
-          children: []
-        }
-        if (item.jobs && item.jobs.length > 0) {
-          item.jobs.forEach((item) => {
-            const job = {
-              label: item.jobName,
-              id: item.jobId
-            }
-            if (!(item.roles.length > 0 && checked)) {
-              obj.children.push(job)
-            }
-          })
-        }
-        if (item.orgType) {
-          obj.label = item.orgName
-          obj.id = item.orgId
-
-          if (item.children && item.children.length > 0) {
-            this.jobFilter(item.children, obj.children)
-          } else {
-            obj.disabled = true
-          }
-        }
-        data.push(obj)
-      })
-    },
+    // jobFilter(arr, data, data2,roleId = '') {
+    //   arr.filter((item) => {
+    //     const obj = {
+    //       children: []
+    //     }
+    //     const obj2 = {
+    //       children: []
+    //     }
+    //     if (item.jobs && item.jobs.length > 0) {
+    //       item.jobs.forEach((item) => {
+    //         const job = {
+    //           label: item.jobName,
+    //           id: item.jobId,
+    //           roles:item.roles
+    //         }
+    //         obj.children.push(job)
+    //         if (!(item.roles&&item.roles.length > 0 )) {
+    //           obj2.children.push(job)
+    //
+    //         }else{
+    //           job.disabled = true
+    //         }
+    //         // if(item.roles&& item.roles.length > 0&&item.roles[0].roleId ===roleId){
+    //         //   obj2.children.push(job)
+    //         // }
+    //
+    //       })
+    //     }
+    //     if (item.orgType) {
+    //       obj.label = item.orgName
+    //       obj.id = item.orgId
+    //       obj2.label = item.orgName
+    //       obj2.id = item.orgId
+    //       if (item.children && item.children.length > 0) {
+    //         this.jobFilter(item.children, obj.children,obj2.children,roleId)
+    //       } else {
+    //         obj.disabled = true
+    //       }
+    //     }
+    //     data.push(obj)
+    //     data2.push(obj2)
+    //   })
+    // },
 
     getPositionsFunc() {
       let params = {
@@ -537,6 +563,7 @@ export default {
 <style lang="scss" scoped>
 .role-wrap {
   margin-bottom: 150px;
+
   .oa-title_bar {
     padding: 14px 6px;
 
