@@ -17,6 +17,7 @@ import './styles/common.scss'
 import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
 import pageHeader from './components/page-header/pageHeader'
+import commonForm from './components/common-form/commonForm'
 import commonTable from 'vue-common-table'
 import website from '@/config/website'
 
@@ -41,6 +42,7 @@ Vue.component('basicContainer', basicContainer)
 Vue.component('basicBlock', basicBlock)
 Vue.component('commonTable', commonTable)
 Vue.component('pageHeader', pageHeader)
+Vue.component('commonForm', commonForm)
 // 加载相关url地址
 Object.keys(urls).forEach((key) => {
   Vue.prototype[key] = urls[key]

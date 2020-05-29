@@ -272,7 +272,7 @@ export default {
             label: '',
             data: '',
             options: [],
-            config: { placeholder: '组织名称' }
+            config: { placeholder: '组织名称', 'suffix-icon': 'el-icon-search' }
           }
         ],
         popoverOptions: [

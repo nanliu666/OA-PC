@@ -133,6 +133,8 @@
           type="textarea"
           :rows="2"
           placeholder="请输入描述"
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
     </el-form>
@@ -195,7 +197,7 @@ export default {
       rules: {
         orgName: [{ required: true, message: '请输入组织名称', trigger: 'blur' }],
         parentOrgId: [{ required: true, message: '请选择上级组织', trigger: 'blur' }],
-        orgType: [{ required: true, message: '请选择组织类型', trigger: 'change' }],
+        orgType: [{ required: true, message: '请选择组织类型', trigger: 'blur' }],
         orgCode: [{ required: true, message: '请输入组织编码', trigger: 'blur' }]
       },
       orgTree: [],
@@ -237,13 +239,19 @@ export default {
       this.$refs.ruleForm.validate((valid, obj) => {
         if (valid) {
           this.loading = true
-          createOrg(this.form).then(() => {
-            this.$message.success('创建成功')
-            this.form = { orgType: '' }
-            this.parentOrgIdLabel = ''
-            this.$emit('refresh')
-            this.loading = false
-          })
+          createOrg(this.form)
+            .then(() => {
+              this.$message.success('创建成功')
+              this.form = { orgType: '' }
+              this.$refs.ruleForm.clearValidate()
+              this.loadOrgTree()
+              this.parentOrgIdLabel = ''
+              this.$emit('refresh')
+              this.loading = false
+            })
+            .catch(() => {
+              this.loading = false
+            })
         } else {
           this.$message.error(obj[Object.keys(obj)[0]][0].message)
           return false
@@ -262,11 +270,15 @@ export default {
             })
           } else {
             this.loading = true
-            editOrg(this.form).then(() => {
-              this.$message.success('修改成功')
-              this.$emit('refresh')
-              this.loading = false
-            })
+            editOrg(this.form)
+              .then(() => {
+                this.$message.success('修改成功')
+                this.$emit('refresh')
+                this.loading = false
+              })
+              .catch(() => {
+                this.loading = false
+              })
           }
           this.$emit('update:visible', false)
         } else {
@@ -279,7 +291,7 @@ export default {
       this.type = 'create'
       this.parentOrgIdLabel = ''
       this.$emit('update:visible', true)
-      this.handleOrgNodeClick(this.orgTree[0])
+      this.orgTree[0] && this.handleOrgNodeClick(this.orgTree[0])
     },
     createChild(row) {
       this.type = 'createChild'
@@ -293,16 +305,18 @@ export default {
     edit(row) {
       this.type = 'edit'
       this.form = JSON.parse(JSON.stringify(row))
-      this.parentOrgIdLabel = this.findOrgName(row.parentOrgId)
+      this.parentOrgIdLabel = this.findOrg(row.parentOrgId).orgName
+      this.form.parentOrgType = this.findOrg(row.parentOrgId).orgType
+      this.loadRadio()
       this.$emit('update:visible', true)
       this.loadOrgTree()
     },
-    findOrgName(id) {
-      let name = ''
+    findOrg(id) {
+      let org = {}
       function deep(arr) {
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].orgId === id) {
-            name = arr[i].orgName
+            org = arr[i]
             return
           }
           if (arr[i].children && arr[i].children.length > 0) {
@@ -311,7 +325,7 @@ export default {
         }
       }
       deep(this.orgTree)
-      return name
+      return org
     },
     handleClose() {
       this.form = { orgType: '', parentOrgId: '' }
@@ -324,25 +338,26 @@ export default {
     },
     loadRadio() {
       // this.form.orgType = 'Company'
-      if (this.type === 'createChild') {
-        if (this.form.parentOrgType === 'Enterprise') {
-          this.form.orgType = 'Company'
-        } else if (this.form.parentOrgType === 'Company') {
-          this.form.orgType = 'Department'
-        } else if (this.form.parentOrgType === 'Department') {
-          this.radioDisable.Company = true
-          this.form.orgType = 'Department'
-        } else if (this.form.parentOrgType === 'Group') {
-          this.radioDisable.Company = true
-          this.radioDisable.Department = true
-          this.form.orgType = 'Group'
-        }
+      this.radioDisable = this.$options.data().radioDisable
+      if (this.form.parentOrgType === 'Enterprise') {
+        this.form.orgType = 'Company'
+      } else if (this.form.parentOrgType === 'Company') {
+        this.form.orgType = 'Department'
+      } else if (this.form.parentOrgType === 'Department') {
+        this.radioDisable.Company = true
+        this.form.orgType = 'Department'
+      } else if (this.form.parentOrgType === 'Group') {
+        this.radioDisable.Company = true
+        this.radioDisable.Department = true
+        this.form.orgType = 'Group'
       }
     },
     handleOrgNodeClick(data) {
       this.form.parentOrgId = data.orgId
       this.parentOrgIdLabel = data.orgName
-      if (this.type !== 'createChild') this.$refs.parentOrgId.blur()
+      this.form.parentOrgType = data.orgType
+      this.loadRadio()
+      if (this.type !== 'createChild') this.$refs.parentOrgId && this.$refs.parentOrgId.blur()
     }
   }
 }
