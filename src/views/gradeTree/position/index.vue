@@ -82,17 +82,17 @@
                       </el-input>
                     </div>
                     <div>
+                      <!--                      <el-button-->
+                      <!--                        type="primary"-->
+                      <!--                        size="medium"-->
+                      <!--                        @click="handleExport"-->
+                      <!--                      >-->
+                      <!--                        <i class="el-icon-upload2" /> 导出-->
+                      <!--                      </el-button>-->
                       <el-button
                         type="primary"
                         size="medium"
-                        @click="handleExport"
-                      >
-                        <i class="el-icon-upload2" /> 导出
-                      </el-button>
-                      <el-button
-                        type="primary"
-                        size="medium"
-                        @click="getJobData"
+                        @click="getJobData({ pageNo: params.pageNo })"
                       >
                         <i class="el-icon-refresh" />
                       </el-button>
@@ -225,8 +225,8 @@ export default {
       ],
       page: {
         pageSize: 10,
-        pagerCount: 1,
-        total: 0
+        currentPage: 2,
+        total: 100
       },
       params: {
         pageNo: 1,
@@ -297,6 +297,7 @@ export default {
     },
     positionOnsubmit() {
       this.getJobData()
+      this.getCategory()
     },
     close() {
       this.show = false
@@ -317,6 +318,7 @@ export default {
       gotV1Job(this.params).then((res) => {
         this.loading = false
         this.data = res.data
+        this.page.currentPage = this.params.pageNo
         this.page.total = res.totalNum
       })
     },

@@ -52,3 +52,9 @@ a {
 .flex-justify-start {
   justify-content: flex-start;
 }
+/deep/ .el-icon-circle-check {
+  display: none;
+}
+.el-form-item--feedback .el-input__validateIcon {
+  display: none;
+}

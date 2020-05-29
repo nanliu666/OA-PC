@@ -49,7 +49,7 @@
                 <div>
                   <el-input
                     v-model="form.name"
-                    placeholder="职位名称"
+                    placeholder="岗位名称"
                     size="medium"
                     class="input-with-select"
                   >
@@ -61,13 +61,6 @@
                   </el-input>
                 </div>
                 <div>
-                  <el-button
-                    type="primary"
-                    size="medium"
-                    @click="handleExport"
-                  >
-                    <i class="el-icon-upload2" /> 导出
-                  </el-button>
                   <el-button
                     type="primary"
                     size="medium"
@@ -142,7 +135,7 @@ export default {
       selectionList: [],
       loading: false,
       isEdit: false,
-      title: '新建职位类别',
+      title: '新建岗位类别',
       stationDialog: false,
       dialogVisible: false,
       isBatch: false,
@@ -285,7 +278,7 @@ export default {
     handlerAdd() {
       this.stationDialog = true
       this.isEdit = false
-      this.title = '新建职位类别'
+      this.title = '新建岗位类别'
       this.row = {}
     },
     close() {
@@ -306,7 +299,7 @@ export default {
     handleEdit(row) {
       this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = true
-      this.title = '编辑职位类别'
+      this.title = '编辑岗类别'
       this.stationDialog = true
     },
     handleExport() {
