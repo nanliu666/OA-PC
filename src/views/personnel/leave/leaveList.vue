@@ -533,7 +533,7 @@ export default {
       workPropertyList: [],
       // 离职原因
       leaveReason: [],
-      // 控制按钮是否点亮
+      // 控制保存按钮是否点亮
       isDisabled: true
     }
   },
