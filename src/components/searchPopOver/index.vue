@@ -94,6 +94,7 @@
           start-placeholder="开始时间"
           end-placeholder="结束时间"
           style="width:198px"
+          :unlink-panels="true"
           @change="change"
         />
         <num-interval
@@ -231,6 +232,7 @@
                       placeholder="结束时间"
                       start-placeholder="开始时间"
                       end-placeholder="结束时间"
+                      :unlink-panels="true"
                     />
                     <num-interval
                       v-if="item.type === 'numInterval'"
@@ -245,13 +247,6 @@
                       :select-params="item.config.selectParams"
                       :tree-params="item.config.treeParams"
                     />
-                    <!-- <tree-select
-                    v-if="item.type === 'treeSelect'"
-                    v-model="item.data"
-                    :option="item.options"
-                    :is-search="false"
-                    :is-single="item.isSingle || false"
-                    />-->
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -357,6 +352,9 @@ export default {
         })
       },
       deep: true
+    },
+    $route() {
+      this.popoverShow = false
     }
   },
   methods: {
