@@ -103,6 +103,7 @@ export default {
             label: '菜单名称',
             prop: 'name',
             search: true,
+            minWidth: '200',
             rules: [
               {
                 required: true,

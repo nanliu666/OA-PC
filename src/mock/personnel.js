@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import { dateFormat } from '@/util/date'
+
 const workAddress = {
   resCode: 200,
   resMsg: '',
@@ -64,7 +64,8 @@ export default ({ mock }) => {
           userId: '@increment',
           name: '@cname',
           'url|1': [
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+            `https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2
+            /thumbnail/360x360/format/webp/quality/100`,
             'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
           ],
           categoryId: '555',
@@ -293,60 +294,55 @@ export default ({ mock }) => {
       response: {}
     }
   })
+
+  // 制造转正管理接口
+  Mock.mock(new RegExp('/user/v1/user/formal/list' + '.*'), 'post', () => {
+    let list = []
+    for (let i = 0; i < 12; i++) {
+      list.push(
+        Mock.mock({
+          userId: 'GZ@increment',
+          personId: 'GZ@increment',
+          name: '@cname',
+          approvalNo: 'GZ@increment',
+          status: `${i / 2 == 0 ? '已驳回' : '申请中'}`,
+          workNo: 'GZ@increment',
+          jobName: '测试员工@increment',
+          orgName: '百利宏',
+          formalDate: Mock.Random.date(),
+          entryDate: Mock.Random.date(),
+          probation: '3个月',
+          adjustment: '调整时间'
+        })
+      )
+    }
+    return {
+      resCode: 200,
+      resMsg: '',
+      response: {
+        totalNum: 12,
+        totalPage: 12,
+        data: list
+      }
+    }
+  })
+
+  //转正申请接口
+  Mock.mock(new RegExp('/user/v1/user/formal/info' + '.*'), 'post', () => {
+    const operationList = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response: {}
+    }
+    return operationList
+  })
+
+  Mock.mock(new RegExp('/user/v1/user/formal/probation' + '.*'), 'put', () => {
+    const probationList = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response: {}
+    }
+    return probationList
+  })
 }
-
-// 制造转正管理接口
-Mock.mock(new RegExp('/api/user/v1/staff/list' + '.*'), 'post', () => {
-  let list = []
-  for (let i = 0; i < 12; i++) {
-    list.push(
-      Mock.mock({
-        id: '@increment',
-        name: '@cname',
-        workNum: '@increment',
-        status: '测试数据',
-        workNo: 'GZ@increment',
-        jobName: '测试员工@increment',
-        orgName: '百利宏',
-        formalDate: '@data',
-        companyDate: '@data',
-        probation: '3个月',
-        adjustment: '调整时间'
-      })
-    )
-  }
-  return {
-    resCode: 200,
-    resMsg: '',
-    response: {
-      totalNum: 12,
-      totalPage: 12,
-      data: list
-    }
-  }
-})
-
-//转正申请接口
-Mock.mock(new RegExp('/api/user/v1/staff/apply' + '.*'), 'post', () => {
-  const operationList = {
-    resCode: 200,
-    resMsg: '申请成功',
-    response: {}
-  }
-  return operationList
-})
-
-Mock.mock(new RegExp('/api/user/v1/staff/formalTime' + '.*'), 'post', () => {
-  let newTime = new Date()
-  let itsTime = dateFormat(newTime)
-
-  const entryTime = {
-    resCode: 200,
-    resMsg: '描述',
-    response: {
-      probationperiod: itsTime,
-      Endtime: itsTime
-    }
-  }
-  return entryTime
-})

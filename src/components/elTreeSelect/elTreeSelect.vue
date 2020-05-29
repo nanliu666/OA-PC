@@ -29,6 +29,7 @@
       @focus="_popoverShowFun"
     />
     <!-- 弹出框 -->
+
     <el-popover
       ref="popover"
       v-model="visible"
@@ -89,12 +90,18 @@
   overflow: auto;
   padding: 12px 2px;
 }
+.el-tree-select-popper.disabled {
+  display: none !important;
+}
 </style>
 <style lang="scss" scoped>
 /deep/.el-tree-select-input > .el-input--suffix > .el-input__inner {
   height: 34px !important;
 }
 
+/deep/.el-select-dropdown {
+  display: none;
+}
 .el-tree-select .select-option {
   display: none !important;
 }
@@ -105,9 +112,6 @@
   cursor: no-drop !important;
 }
 
-.el-tree-select-popper.disabled {
-  display: none !important;
-}
 .el-tree-select-popper .el-button--small {
   width: 25px !important;
   min-width: 25px !important;

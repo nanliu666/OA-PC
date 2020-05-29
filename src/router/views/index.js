@@ -1,8 +1,5 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
-// import personnel from './personnel'
-// import gradeTree from '@/router/views/gradeTree'
-// import orgs from './orgs'
 export default [
   {
     path: '/wel',
@@ -29,21 +26,6 @@ export default [
     ]
   },
   {
-    path: '/test',
-    component: Layout,
-    redirect: '/test/index',
-    children: [
-      {
-        path: 'index',
-        name: '测试页',
-        meta: {
-          i18n: 'test'
-        },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/util/test')
-      }
-    ]
-  },
-  {
     path: '/info',
     component: Layout,
     redirect: '/info/index',
@@ -59,9 +41,6 @@ export default [
       {
         path: 'securitySetting',
         name: '安全设置',
-        meta: {
-          i18n: 'info'
-        },
         component: () => import(/* webpackChunkName: "views" */ '@/views/system/securitySetting')
       }
     ]
@@ -96,23 +75,19 @@ export default [
         component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
       }
     ]
-  }
-  // {
-  //   path: '/system/role',
-  //   component: Layout,
-  //   redirect: '/system/menu',
-  //   children: [
-  //     {
-  //       path: '/system/role',
-  //       name: '角色管理',
-  //       meta: {
-  //         i18n: 'work'
-  //       },
-  //       component: () => import(/* webpackChunkName: "views" */ '@/views/system/role')
-  //     }
-  //   ]
-  // },
-  // gradeTree
-  // personnel
-  // orgs
+  },
+  process.env.NODE_ENV === 'development'
+    ? {
+        path: '/demo',
+        component: LayoutNoSidebar,
+        redirect: '/demo/form',
+        children: [
+          {
+            path: 'form',
+            name: '测试表单页',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/demo/demoForm')
+          }
+        ]
+      }
+    : null
 ]

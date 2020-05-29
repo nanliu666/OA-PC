@@ -75,6 +75,7 @@
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
+                  unlink-panels="true"
                   @blur="monthChange(item)"
                 />
               </el-form-item>
@@ -197,20 +198,20 @@
               >
                 <el-radio
                   v-model="item.isSecret"
-                  label="1"
+                  :label="1"
                 >
                   有
                 </el-radio>
                 <el-radio
                   v-model="item.isSecret"
-                  label="0"
+                  :label="0"
                 >
                   无
                 </el-radio>
               </el-form-item>
             </el-col>
             <el-col
-              v-show="item.isSecret == '1'"
+              v-if="item.isSecret == '1'"
               :span="8"
               :push="4"
             >
@@ -235,6 +236,7 @@
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
+                  unlink-panels="true"
                   @blur="secretMonthChange(item)"
                 />
               </el-form-item>
@@ -350,7 +352,13 @@ export default {
           {
             required: true,
             trigger: 'blur',
-            message: '时间不能为空'
+            validator: (rule, value, callback) => {
+              if (!value[0]) {
+                callback(new Error('时间不能为空'))
+              } else {
+                callback()
+              }
+            }
           }
         ],
         companyName: [
@@ -400,7 +408,7 @@ export default {
       this.curItemIndex = this.workInfo.length - 1
       this.curItemId = item.id
     },
-    delInfo(item, index) {
+    delInfo(item) {
       this.$confirm('您确定要删除该工作经历吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -411,7 +419,7 @@ export default {
             ids: item.id
           }
           delStaffWorkInfo(params).then(() => {
-            this.workInfo.splice(index, 1)
+            this.getBasicInfo()
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -432,9 +440,9 @@ export default {
           if (this.type == 'add') {
             item.userId = this.$route.params.userId
             addStaffworkInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
-              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -445,6 +453,7 @@ export default {
               delete item.userId
             }
             editStaffWorkInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -469,6 +478,8 @@ export default {
       })
     },
     editInfo(item, index) {
+      this.$set(item, 'monthRange', [item.beginWorkDate, item.endWorkDate])
+      this.$set(item, 'secretMonthRange', [item.beginSecretDate, item.endSecretDate])
       this.type = 'edit'
       this.editClick = true
       this.curItemIndex = index
@@ -481,7 +492,7 @@ export default {
       if (this.type == 'add') {
         this.workInfo.pop()
       } else {
-        this.workInfo[index] = deepClone(curItem)
+        this.$set(this.workInfo, index, deepClone(curItem))
       }
     },
     monthChange(item) {

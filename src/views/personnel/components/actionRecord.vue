@@ -10,19 +10,23 @@
         >
           <template slot>
             <div class="action-name">
-              {{ item.name }}
+              {{ item.operatorName }} {{ item.content }}
             </div>
-            <div class="action-content">
-              {{ item.content }}
-            </div>
+            <div
+              class="action-content"
+              v-html="item.remark"
+            />
           </template>
         </el-timeline-item>
       </el-timeline>
+      <div v-if="stepsData.length == 0">
+        <avue-empty />
+      </div>
     </basic-container>
   </div>
 </template>
 <script>
-import { getActionLog } from '@/api/system/user'
+import { getUserActionLog } from '@/api/personnel/roster'
 export default {
   name: 'ActionRecord',
   data() {
@@ -30,7 +34,7 @@ export default {
       stepsData: [],
       ajaxData: {
         pageNo: 1, //请求页码
-        pageSize: 10, //每页数据
+        pageSize: 1000, //每页数据
         model: '', //模糊搜索
         userName: '', //用户名
         beginTime: '', //查询开始时间
@@ -46,13 +50,13 @@ export default {
   },
   methods: {
     initData() {
-      getActionLog(this.ajaxData).then((res) => {
+      getUserActionLog(this.ajaxData).then((res) => {
         // this.stepsData = res.data.map((item) => ({
         //   createTime: this.formatDate(item.createTime),
         //   name: item.name,
         //   content: item.content
         // }))
-        this.stepsData = res.data
+        this.stepsData = res
       })
     },
     //时间戳转日期

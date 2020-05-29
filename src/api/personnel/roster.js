@@ -103,28 +103,13 @@ export const createUser = (params) => {
     params: params
   })
 }
-// 获取管理员工转正数据
-export const getStaffList = (params) => {
-  return request({
-    url: '/api/user/v1/staff/list',
-    method: 'post',
-    params: { ...params }
-  })
-}
 
-// 转正申请接口
-export const getOperation = (params) => {
+// 人员操作记录
+export const getUserActionLog = (params) => {
   return request({
-    url: '/api/user/v1/staff/apply',
-    method: 'post',
-    params: { ...params }
-  })
-}
-// 获取当前员工的入职以及转正时间
-export const getFormalTime = (params) => {
-  return request({
-    url: '/api/user/v1/staff/formalTime',
-    method: 'post',
-    params: { ...params }
+    // url: '/api/sys/log/v1/action/log',
+    url: '/api/log/v1/user/record',
+    method: 'get',
+    params
   })
 }

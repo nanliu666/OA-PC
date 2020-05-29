@@ -56,6 +56,13 @@
             :push="4"
           >
             <el-form-item
+              v-show="readonlyBasicInfo"
+              label="性别:"
+            >
+              <span>{{ getUserSex() }}</span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
               label="性别:"
               prop="sex"
             >
@@ -67,7 +74,7 @@
               </el-radio>
               <el-radio
                 v-model="staffInfo.sex"
-                :label="2"
+                :label="0"
               >
                 女
               </el-radio>
@@ -100,16 +107,16 @@
           >
             <el-form-item
               v-show="readonlyBasicInfo"
-              label="公司邮箱:"
+              label="邮箱:"
             >
-              <span class="info-item-value">{{ staffInfo.email }}</span>
+              <span class="info-item-value">{{ staffInfo.userEmail }}</span>
             </el-form-item>
             <el-form-item
               v-show="!readonlyBasicInfo"
-              label="公司邮箱:"
-              prop="email"
+              label="邮箱:"
+              prop="userEmail"
             >
-              <el-input v-model="staffInfo.email" />
+              <el-input v-model="staffInfo.userEmail" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -202,7 +209,61 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col
+            :span="8"
+            :push="2"
+          >
+            <el-form-item
+              v-show="readonlyBasicInfo"
+              label="最高学历:"
+            >
+              <span class="info-item-value">
+                {{ getEducationLevel }}
+              </span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
+              label="最高学历:"
+            >
+              <el-select
+                v-model="staffInfo.educationalLevel"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in educationOptions"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
+          <el-col
+            :span="8"
+            :push="4"
+          >
+            <el-form-item
+              v-show="readonlyBasicInfo"
+              label="首次参加工作时间:"
+            >
+              <span class="info-item-value">{{ staffInfo.firstWorkDate }}</span>
+            </el-form-item>
+            <el-form-item
+              v-show="!readonlyBasicInfo"
+              label="首次参加工作时间:"
+            >
+              <el-date-picker
+                v-model="staffInfo.firstWorkDate"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col
             :span="8"
@@ -289,7 +350,7 @@
               label="民族:"
             >
               <span class="info-item-value">
-                {{ staffInfo.nation }}
+                {{ getNation }}
               </span>
             </el-form-item>
             <el-form-item
@@ -297,7 +358,17 @@
               label="民族:"
               prop="nation"
             >
-              <el-input v-model="staffInfo.nation" />
+              <el-select
+                v-model="staffInfo.nation"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in nationOptions"
+                  :key="item.dictKey"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -452,8 +523,8 @@
 </template>
 
 <script>
-import { isMobile, validateName, isEmail } from '@/util/validate'
-import { editStaffBasicInfo } from '../../../../api/personalInfo.js'
+import { isMobile, validateName, isEmailReg } from '@/util/validate'
+import { getStaffBasicInfo, editStaffBasicInfo } from '../../../../api/personalInfo.js'
 import { deepClone } from '@/util/util'
 import { provinceAndCityData } from 'element-china-area-data'
 
@@ -473,6 +544,8 @@ export default {
       householdOptions: [],
       politicalOptions: [],
       credentOptions: [],
+      educationOptions: [],
+      nationOptions: [],
       rules: {
         phonenum: [
           {
@@ -502,14 +575,14 @@ export default {
             }
           }
         ],
-        email: [
+        userEmail: [
           {
             required: true,
             trigger: 'blur',
             validator: (rule, value, callback) => {
               if (!value) {
                 callback(new Error('请输入邮箱'))
-              } else if (value && !isEmail(value)) {
+              } else if (value && !isEmailReg(value)) {
                 callback(new Error('邮箱格式有误'))
               } else {
                 callback()
@@ -529,22 +602,39 @@ export default {
   },
   computed: {
     getAge() {
-      let curYear = new Date().getFullYear()
-      let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
-      return curYear - birthYear
+      let age = ''
+      if (this.staffInfo.birthDate) {
+        let curYear = new Date().getFullYear()
+        let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
+        age = curYear - birthYear
+      }
+      return age
     },
     formatNativePlace() {
       return this.staffInfo.nativeProvinceName + this.staffInfo.nativeCityName
     },
     calcWorkAge() {
-      let fomatToMS = new Date().getTime() - new Date(this.staffInfo.firstWorkDate).getTime()
-      let dayToMS = 1000 * 60 * 60 * 24
-      let totalDay = fomatToMS / dayToMS
-      let year = Math.floor(totalDay / 365)
-      let month = Math.floor((totalDay % 365) / 30)
-      // let day = Math.floor(totalDay % 365 % 30)
-      let workAge = '' + year + '年' + month + '月'
-      workAge = workAge.replace(/-/g, '')
+      let workAge = ''
+      if (this.staffInfo.firstWorkDate) {
+        let fomatToMS = new Date().getTime() - new Date(this.staffInfo.firstWorkDate).getTime()
+        let dayToMS = 1000 * 60 * 60 * 24
+        let totalDay = fomatToMS / dayToMS
+        let year = Math.floor(totalDay / 365)
+        let month = Math.floor((totalDay % 365) / 30)
+        // let day = Math.floor(totalDay % 365 % 30)
+        if (year > 0 && month > 0) {
+          workAge = year + '年' + month + '个月'
+        }
+        if (year == 0 && month > 0) {
+          workAge = month + '个月'
+        }
+        if (year > 0 && month == 0) {
+          workAge = year + '年'
+        }
+        if (year == 0 && month == 0) {
+          workAge = '不满一个月'
+        }
+      }
       return workAge
     },
     getHouseholdType() {
@@ -569,13 +659,35 @@ export default {
       }
       return dictValue
     },
+    getEducationLevel() {
+      let dictValue = ''
+      for (let i = 0; i < this.educationOptions.length; i++) {
+        let item = this.educationOptions[i]
+        if (this.staffInfo.educationalLevel == item.dictKey) {
+          dictValue = item.dictValue
+          return dictValue
+        }
+      }
+      return dictValue
+    },
+    getNation() {
+      let dictValue = ''
+      for (let i = 0; i < this.nationOptions.length; i++) {
+        let item = this.nationOptions[i]
+        if (this.staffInfo.nation == item.dictKey) {
+          dictValue = item.dictValue
+          return dictValue
+        }
+      }
+      return dictValue
+    },
     getIdType() {
       let dictValue = ''
       for (let i = 0; i < this.credentOptions.length; i++) {
         let item = this.credentOptions[i]
         if (this.staffInfo.idType == item.dictKey) {
           dictValue = item.dictValue
-          return
+          return dictValue
         }
       }
       return dictValue
@@ -594,6 +706,15 @@ export default {
     this.dispatchSelect()
   },
   methods: {
+    getUserSex() {
+      if (this.staffInfo.sex == 1) {
+        return '男'
+      } else if (this.staffInfo.sex == 0) {
+        return '女'
+      } else {
+        return ''
+      }
+    },
     dispatchSelect() {
       this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
         this.politicalOptions = res
@@ -603,6 +724,13 @@ export default {
       })
       this.$store.dispatch('CommonDict', 'IDType').then((res) => {
         this.credentOptions = res
+      })
+
+      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+        this.educationOptions = res
+      })
+      this.$store.dispatch('CommonDict', 'Nation').then((res) => {
+        this.nationOptions = res
       })
     },
     regionChange(value) {
@@ -615,6 +743,14 @@ export default {
     editInfo() {
       staffInfo = deepClone(this.staffInfo)
       this.readonlyBasicInfo = false
+    },
+    getBasicInfo() {
+      let params = {
+        userId: this.$route.params.userId
+      }
+      getStaffBasicInfo(params).then((res) => {
+        this.staffInfo = res
+      })
     },
     saveInfo() {
       this.$refs['basicInfo'].validate((isPass) => {
@@ -639,9 +775,11 @@ export default {
             marriage: this.staffInfo.marriage,
             politicalStatus: this.staffInfo.politicalStatus,
             idAddress: this.staffInfo.idAddress,
-            userAddress: this.staffInfo.userAddress
+            userAddress: this.staffInfo.userAddress,
+            educationalLevel: this.staffInfo.educationalLevel
           }
           editStaffBasicInfo(params).then(() => {
+            this.getBasicInfo()
             this.readonlyBasicInfo = true
             staffInfo = deepClone(this.staffInfo)
             this.$message({

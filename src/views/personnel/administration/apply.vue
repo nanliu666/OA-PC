@@ -1,12 +1,11 @@
 <template>
   <div>
-    <div class="roster-header">
-      <h4>新建转正申请</h4>
-    </div>
+    <el-page-header
+      content="新建转正申请"
+      class="pageHeader"
+      show-back
+    />
     <basic-container>
-      <div class="roster-header">
-        <h4>转正信息</h4>
-      </div>
       <el-form
         ref="apply"
         label-position="top"
@@ -22,9 +21,9 @@
           <el-col :span="12">
             <el-form-item label="入职时间">
               <el-input
-                v-model="apply.start"
+                :value="apply.entryDate"
                 size="medium"
-                :disabled="inputdisabled"
+                disabled
                 suffix-icon="el-icon-date"
               />
             </el-form-item>
@@ -32,9 +31,9 @@
           <el-col :span="12">
             <el-form-item label="预计转正时间">
               <el-input
-                v-model="apply.end"
+                :value="apply.formalDate"
                 size="medium"
-                :disabled="inputdisabled"
+                disabled
                 suffix-icon="el-icon-date"
               />
             </el-form-item>
@@ -57,10 +56,10 @@
           <el-col :span="24">
             <el-form-item
               label="对公司的意见和建议"
-              prop="proposal"
+              prop="advise"
             >
               <el-input
-                v-model="apply.proposal"
+                v-model="apply.advise"
                 size="medium"
                 style="width:156%"
                 type="textarea"
@@ -70,71 +69,71 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-button
+          size="medium"
+          @click="resetForm()"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="submitForm('apply')"
+        >
+          提交
+        </el-button>
       </el-form>
-    </basic-container>
-    <basic-container class="bottomList">
-      <el-button
-        size="medium"
-        @click="resetForm()"
-      >
-        取消
-      </el-button>
-      <el-button
-        size="medium"
-        @click="submitForm('apply')"
-      >
-        提交
-      </el-button>
     </basic-container>
   </div>
 </template>
 
 <script>
-import { getOperation, getFormalTime } from '@/api/personnel/roster'
+import { mapGetters } from 'vuex'
+import { getOperation } from '@/api/personnel/person'
+import { getStaffBasicInfo } from '@/api/personalInfo'
 export default {
   data() {
     return {
       inputdisabled: true,
       apply: {
-        start: '暂无数据',
-        end: '暂无数据',
-        proposal: '',
+        entryDate: '暂无数据',
+        formalDate: '暂无数据',
+        advise: '',
         summary: ''
       },
       rules: {
         summary: [{ required: true, message: '请简单说说您的工作心得', trigger: 'blur' }],
-        proposal: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }]
+        advise: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }]
       }
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   mounted() {
     let params = {
-      Employeeketon: 'tonken',
-      Employeename: '测试虚拟'
+      userId: this.userId
     }
-    getFormalTime(params).then((res) => {
-      this.apply.start = res.probationperiod
-      this.apply.end = res.Endtime
+    getStaffBasicInfo(params).then((res) => {
+      let { formalDate, entryDate } = res
+      this.apply.entryDate = entryDate
+      this.apply.formalDate = formalDate
     })
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let params = this.apply
+          let params = {}
+          params.userId = this.userId
+          params.summary = this.apply.summary
+          params.advise = this.apply.advise
           getOperation(params)
-            .then((res) => {
-              if (res.restate) {
-                this.$message({ type: 'success', message: res.restate })
-              }
+            .then(() => {
+              this.$message({ type: 'success', message: '操作成功' })
             })
-            .catch((rej) => {
-              if (rej instanceof Object) {
-                this.$message({ type: 'success', message: '申请成功' })
-              } else {
-                this.$message({ message: '该功能暂不可用请联系相关管理员', type: 'warning' })
-              }
-            })
+            .catch()
           return this.resetForm()
         } else {
           return false
@@ -142,22 +141,18 @@ export default {
       })
     },
     resetForm() {
-      this.apply.proposal = ''
+      this.apply.advise = ''
       this.apply.summary = ''
     }
   }
 }
 </script>
-
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  h4 {
-    font-size: 18px;
-  }
+.pageHeader {
+  height: 48px;
+  line-height: 48px;
+  font-size: 18px;
+  font-weight: bold;
 }
 .state {
   display: flex;
@@ -216,18 +211,7 @@ export default {
     }
   }
 }
-.el-form-item__label {
-  padding: 0;
-}
 .el-form-item {
   width: 48%;
-}
-.bottomList {
-  box-shadow: 0px -10px 10px rgba(49, 48, 48, 0.274);
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  height: 70px;
-  width: 100%;
 }
 </style>

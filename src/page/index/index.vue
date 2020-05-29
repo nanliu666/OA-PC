@@ -26,7 +26,7 @@
         <div
           v-show="!isSearch"
           id="avue-view"
-          style="height:100%;overflow-y:auto;overflow-x:hidden;"
+          style="height: calc(100% - 30px);overflow-y:auto;overflow-x:hidden;"
         >
           <keep-alive v-if="$route.meta.$keepAlive">
             <router-view
@@ -115,9 +115,20 @@ export default {
       }
 
       this.$store.dispatch('SetMenu', item.children)
+      let path = this.getFirstPath(item.children, 0, true)
       this.$router.push({
-        path: item.children[0].path
+        path
       })
+    },
+    getFirstPath(children, index = 0) {
+      if (children[index].menuType !== 'Dir' && children[index].path) {
+        return children[index].path
+      }
+      if (children[0].children.length > 0) {
+        return this.getFirstPath(children[0].children)
+      } else {
+        return this.getFirstPath(children, index + 1)
+      }
     },
     // 定时检测token
     refreshToken() {

@@ -102,3 +102,21 @@
   padding: 0;
   line-height: 42px;
 }
+.el-form--label-top {
+  .el-form-item--medium .el-form-item__label {
+    line-height: 20px;
+    padding-bottom: 8px;
+  }
+}
+.el-form-item--medium {
+  .el-input__inner {
+    line-height: 34px;
+    height: 34px;
+  }
+  .el-form-item__content {
+    line-height: 34px;
+  }
+}
+.el-cascader--medium {
+  line-height: 34px;
+}

@@ -137,7 +137,6 @@ export default {
   },
   data() {
     return {
-      userId: this.$route.params.userId,
       activeName: 'first',
       stretch: true,
       tabs: {
@@ -145,14 +144,6 @@ export default {
       },
       circleUrl: '',
       allInfo: {}
-    }
-  },
-
-  watch: {
-    $route(to, from) {
-      if (from.path == '/personnel/roster') {
-        this.getBasicInfo()
-      }
     }
   },
   created() {
@@ -173,8 +164,10 @@ export default {
         return '正式'
       } else if (this.allInfo.status == 'Leaved') {
         return '已离职'
-      } else {
+      } else if (this.allInfo.status == 'WaitLeave') {
         return '待离职'
+      } else {
+        return ''
       }
     },
     getBasicInfo() {

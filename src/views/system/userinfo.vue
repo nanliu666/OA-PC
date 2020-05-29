@@ -7,14 +7,21 @@
     <!-- 个人大概信息 -->
     <div class="info-survey">
       <el-container>
-        <el-aside width="90px">
+        <el-aside
+          width="90px"
+          height="60px"
+        >
           <div class="info-image">
             <el-upload
+              action=""
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :http-request="uploadRequst"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess"
+              list-type="picture-card"
               :before-upload="beforeAvatarUpload"
+              :on-success="handleAvatarSuccess"
+              :multiple="true"
+              accept="image/jpeg, image/jpg"
             >
               <img
                 v-if="perosonnalInfo.avatarUrl"
@@ -26,29 +33,43 @@
                 class="el-icon-plus avatar-uploader-icon"
               />
             </el-upload>
+            <!-- 进度条 -->
+            <div
+              v-if="uploading"
+              class="action-upload"
+            >
+              <el-progress
+                :stroke-width="6"
+                :percentage="uploadPercent"
+              />
+            </div>
           </div>
         </el-aside>
         <el-main>
           <p class="info-name">
-            {{ perosonnalInfo.name }}
+            <span class="staff-name">{{ perosonnalInfo.name }}</span>
+            <span class="workNo">({{ perosonnalInfo.workNo }})</span>
+            <el-button size="mini">
+              <span>{{ getStatus() }}</span>
+            </el-button>
           </p>
           <el-row>
             <el-col :span="5">
               <div class="grid-content bg-purple">
                 <span>部门：</span>
-                <span>{{ perosonnalInfo.orgName }}</span>
+                <span class="info-item-value">{{ perosonnalInfo.orgName }}</span>
               </div>
             </el-col>
             <el-col :span="5">
               <div class="grid-content bg-purple-light">
                 <span>职位：</span>
-                <span>{{ perosonnalInfo.jobName }}</span>
+                <span class="info-item-value">{{ perosonnalInfo.jobName }}</span>
               </div>
             </el-col>
             <el-col :span="5">
               <div class="grid-content bg-purple">
                 <span>邮箱：</span>
-                <span>{{ perosonnalInfo.userEmail }}</span>
+                <span class="info-item-value">{{ perosonnalInfo.userEmail }}</span>
               </div>
             </el-col>
           </el-row>
@@ -57,259 +78,257 @@
     </div>
 
     <div class="info-detail">
-      <el-tabs v-model="tabs.activeTab">
-        <!-- 个人详细信息（包括基本信息和紧急联系人信息） -->
-        <el-tab-pane
-          label="个人信息"
-          name="first"
+      <!-- 个人详细信息（包括基本信息和紧急联系人信息） -->
+      <div class="personal-basic-info no-back-style">
+        <div class="info-edit-button">
+          <span class="basic-info">基本信息</span>
+          <span
+            v-show="readonly"
+            style="padding:5px;"
+            @click="handleEdit"
+          >
+            <i class="el-icon-edit" />
+            <span
+              style="font-size: 14px;color: #757C85;"
+              class="edit-button-text"
+            > 编辑</span>
+          </span>
+        </div>
+        <div
+          class="basic-info-content"
+          :class="[readonly ? 'no-back-style' : 'back-style']"
         >
-          <div class="personal-basic-info no-back-style">
-            <div class="info-edit-button">
-              <span class="basic-info">基本信息</span>
-              <span
-                v-show="readonly"
-                style="padding:5px;"
-                @click="handleEdit"
+          <el-form
+            ref="userInfo"
+            :model="perosonnalInfo"
+            :rules="basicInfo.rules"
+            label-width="150px"
+            class="info-form"
+            size="mini"
+          >
+            <el-row :justify="'center'">
+              <el-col
+                :span="8"
+                :push="2"
               >
-                <i class="el-icon-edit" />
-                <span
-                  style="font-size: 14px;color: #757C85;"
-                  class="edit-button-text"
-                > 编辑</span>
-              </span>
-            </div>
-            <div
-              class="basic-info-content"
-              :class="[readonly ? 'no-back-style' : 'back-style']"
-            >
-              <el-form
-                ref="userInfo"
-                :model="perosonnalInfo"
-                :rules="basicInfo.rules"
-                label-width="150px"
-                class="info-form"
-                size="mini"
-              >
-                <el-row :justify="'center'">
-                  <el-col
-                    :span="8"
-                    :push="2"
-                  >
-                    <el-form-item
-                      v-show="readonly"
-                      label="姓名:"
-                    >
-                      <span>{{ perosonnalInfo.name }}</span>
-                    </el-form-item>
-                    <el-form-item
-                      v-show="!readonly"
-                      label="姓名:"
-                      prop="name"
-                    >
-                      <el-input
-                        v-model="perosonnalInfo.name"
-                        placeholder="请输入2-10位汉字、英文、空格和点号"
-                      />
-                    </el-form-item>
-                  </el-col>
-                  <el-col
-                    :span="8"
-                    :push="4"
-                  >
-                    <el-form-item
-                      label="性别:"
-                      prop="sex"
-                    >
-                      <el-radio
-                        v-model="perosonnalInfo.sex"
-                        :label="1"
-                      >
-                        男
-                      </el-radio>
-                      <el-radio
-                        v-model="perosonnalInfo.sex"
-                        :label="2"
-                      >
-                        女
-                      </el-radio>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <el-row>
-                  <el-col
-                    :span="8"
-                    :push="2"
-                  >
-                    <el-form-item
-                      v-show="readonly"
-                      label="手机号码:"
-                    >
-                      <span>{{ perosonnalInfo.phonenum }}</span>
-                    </el-form-item>
-                    <el-form-item
-                      v-show="!readonly"
-                      label="手机号码:"
-                      prop="phone"
-                    >
-                      <el-input v-model="perosonnalInfo.phonenum" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col
-                    :span="8"
-                    :push="4"
-                  >
-                    <el-form-item
-                      v-show="readonly"
-                      label="公司邮箱:"
-                    >
-                      <span>{{ perosonnalInfo.email }}</span>
-                    </el-form-item>
-                    <el-form-item
-                      v-show="!readonly"
-                      label="公司邮箱:"
-                      prop="email"
-                    >
-                      <el-input v-model="perosonnalInfo.email" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col
-                    :span="8"
-                    :push="2"
-                  >
-                    <el-form-item
-                      v-show="readonly"
-                      label="银行卡号:"
-                    >
-                      <span>{{ perosonnalInfo.bankNo }}</span>
-                    </el-form-item>
-                    <el-form-item
-                      v-show="!readonly"
-                      label="银行卡号:"
-                      prop="bankNo"
-                    >
-                      <el-input v-model="perosonnalInfo.bankNo" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col
-                    :span="8"
-                    :push="4"
-                  >
-                    <el-form-item
-                      v-show="readonly"
-                      label="开户行:"
-                    >
-                      <span>{{ perosonnalInfo.bankName }}</span>
-                    </el-form-item>
-                    <el-form-item
-                      v-show="!readonly"
-                      label="开户行:"
-                      prop="bankName"
-                    >
-                      <el-input v-model="perosonnalInfo.bankName" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <el-row>
-                  <el-col
-                    :span="8"
-                    :push="2"
-                  >
-                    <el-form-item
-                      v-show="readonly"
-                      label="婚姻状况:"
-                    >
-                      <span>{{ getMarrige() }}</span>
-                    </el-form-item>
-                    <el-form-item
-                      v-show="!readonly"
-                      label="婚姻状况:"
-                      prop="marriage"
-                    >
-                      <el-select v-model="perosonnalInfo.marriage">
-                        <el-option
-                          v-for="item in merrigeOptions"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-
-                  <el-col
-                    :span="8"
-                    :push="4"
-                  >
-                    <el-form-item
-                      v-show="readonly"
-                      label="目前住址:"
-                    >
-                      <span>
-                        {{ perosonnalInfo.userAddress }}
-                      </span>
-                    </el-form-item>
-                    <el-form-item
-                      v-show="!readonly"
-                      label="目前住址:"
-                      prop="updateUser"
-                    >
-                      <el-cascader
-                        ref="regionCascader"
-                        v-model="adress.curAdress"
-                        :options="regionCascader.option"
-                        :separator="'/'"
-                      />
-                      <el-input
-                        v-model="adress.detailAdress"
-                        class="detail-position"
-                      />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
+                <el-form-item
+                  v-show="readonly"
+                  label="姓名:"
+                >
+                  <span>{{ perosonnalInfo.name }}</span>
+                </el-form-item>
                 <el-form-item
                   v-show="!readonly"
-                  class="info-button-group"
-                  :justify="'center'"
+                  label="姓名:"
+                  prop="name"
                 >
-                  <el-button
-                    type="primary"
-                    @click="saveBasicInfo"
-                  >
-                    保存
-                  </el-button>
-                  <el-button @click="cancelBasicEdit">
-                    取消
-                  </el-button>
+                  <el-input
+                    v-model="perosonnalInfo.name"
+                    placeholder="请输入2-10位汉字、英文、空格和点号"
+                  />
                 </el-form-item>
-              </el-form>
-            </div>
-          </div>
-          <!-- 紧急联系人列表 -->
-          <emergency-members />
-        </el-tab-pane>
+              </el-col>
+              <el-col
+                :span="8"
+                :push="4"
+              >
+                <el-form-item
+                  v-show="readonly"
+                  label="性别:"
+                >
+                  <span>{{ getUserSex() }}</span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
+                  label="性别:"
+                  prop="sex"
+                >
+                  <el-radio
+                    v-model="perosonnalInfo.sex"
+                    :label="1"
+                  >
+                    男
+                  </el-radio>
+                  <el-radio
+                    v-model="perosonnalInfo.sex"
+                    :label="0"
+                  >
+                    女
+                  </el-radio>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-        <!-- 公司信息 -->
-        <el-tab-pane
-          label="公司信息"
-          name="second"
-        >
-          公司信息
-        </el-tab-pane>
-      </el-tabs>
+            <el-row>
+              <el-col
+                :span="8"
+                :push="2"
+              >
+                <el-form-item
+                  v-show="readonly"
+                  label="手机号码:"
+                >
+                  <span>{{ perosonnalInfo.phonenum }}</span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
+                  label="手机号码:"
+                  prop="phone"
+                >
+                  <el-input
+                    v-model="perosonnalInfo.phonenum"
+                    :readonly="!readonly"
+                    :class="{ disabled: !readonly }"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="8"
+                :push="4"
+              >
+                <el-form-item
+                  v-show="readonly"
+                  label="公司邮箱:"
+                >
+                  <span>{{ perosonnalInfo.email }}</span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
+                  label="公司邮箱:"
+                  prop="email"
+                >
+                  <el-input v-model="perosonnalInfo.email" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col
+                :span="8"
+                :push="2"
+              >
+                <el-form-item
+                  v-show="readonly"
+                  label="银行卡号:"
+                >
+                  <span>{{ perosonnalInfo.bankNo }}</span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
+                  label="银行卡号:"
+                  prop="bankNo"
+                >
+                  <el-input v-model="perosonnalInfo.bankNo" />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="8"
+                :push="4"
+              >
+                <el-form-item
+                  v-show="readonly"
+                  label="开户行:"
+                >
+                  <span>{{ perosonnalInfo.bankName }}</span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
+                  label="开户行:"
+                  prop="bankName"
+                >
+                  <el-input v-model="perosonnalInfo.bankName" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col
+                :span="8"
+                :push="2"
+              >
+                <el-form-item
+                  v-show="readonly"
+                  label="婚姻状况:"
+                >
+                  <span>{{ getMarrige() }}</span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
+                  label="婚姻状况:"
+                  prop="marriage"
+                >
+                  <el-select v-model="perosonnalInfo.marriage">
+                    <el-option
+                      v-for="item in merrigeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col
+                :span="8"
+                :push="4"
+              >
+                <el-form-item
+                  v-show="readonly"
+                  label="目前住址:"
+                >
+                  <span>
+                    {{ perosonnalInfo.userAddress }}
+                  </span>
+                </el-form-item>
+                <el-form-item
+                  v-show="!readonly"
+                  label="目前住址:"
+                  prop="updateUser"
+                >
+                  <el-cascader
+                    ref="regionCascader"
+                    v-model="adress.curAdress"
+                    :options="regionCascader.option"
+                    :separator="'/'"
+                    @change="regionChange"
+                  />
+                  <el-input
+                    v-model="adress.detailAdress"
+                    class="detail-position"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item
+              v-show="!readonly"
+              class="info-button-group"
+              :justify="'center'"
+            >
+              <el-button
+                type="primary"
+                @click="saveBasicInfo"
+              >
+                保存
+              </el-button>
+              <el-button @click="cancelBasicEdit">
+                取消
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <!-- 紧急联系人列表 -->
+      <emergency-members />
     </div>
   </div>
 </template>
 
 <script>
 import emergencyMembers from './userCenter/emergencyMembers.vue'
-import { validateName, isEmail, validataBankCard } from '@/util/validate'
+import { validateName, isEmailReg, validataBankCard } from '@/util/validate'
 import { getStaffBasicInfo, editStaffBasicInfo } from '../../api/personalInfo'
 import { mapGetters } from 'vuex'
 import { regionData } from 'element-china-area-data'
+import { uploadQiniu } from '@/util/uploadQiniu'
 let noEditInfo = {}
 export default {
   components: {
@@ -317,6 +336,8 @@ export default {
   },
   data() {
     return {
+      uploading: false,
+      uploadPercent: 0,
       adress: {
         curAdress: '',
         detailAdress: ''
@@ -355,7 +376,7 @@ export default {
               validator: (rule, value, callback) => {
                 if (!value) {
                   callback(new Error('请输入邮箱'))
-                } else if (value && !isEmail(value)) {
+                } else if (value && !isEmailReg(value)) {
                   callback(new Error('邮箱格式有误'))
                 } else {
                   callback()
@@ -402,6 +423,33 @@ export default {
   },
 
   methods: {
+    regionChange() {
+      let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
+      this.perosonnalInfo.userAddress =
+        thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
+    },
+    getUserSex() {
+      if (this.perosonnalInfo.sex == 1) {
+        return '男'
+      } else if (this.perosonnalInfo.sex == 0) {
+        return '女'
+      } else {
+        return ''
+      }
+    },
+    getStatus() {
+      if (this.perosonnalInfo.status == 'Try') {
+        return '试用期'
+      } else if (this.perosonnalInfo.status == 'Formal') {
+        return '正式'
+      } else if (this.perosonnalInfo.status == 'Leaved') {
+        return '已离职'
+      } else if (this.perosonnalInfo.status == 'WaitLeave') {
+        return '待离职'
+      } else {
+        return ''
+      }
+    },
     getMarrige() {
       return this.perosonnalInfo.marriage == 1 ? '已婚' : '未婚'
     },
@@ -423,9 +471,6 @@ export default {
     saveBasicInfo() {
       this.$refs['userInfo'].validate((isPass) => {
         if (isPass) {
-          let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
-          this.perosonnalInfo.userAddress =
-            thsAreaCode[0] + thsAreaCode[1] + thsAreaCode[2] + this.adress.detailAdress
           editStaffBasicInfo(this.perosonnalInfo).then(() => {
             noEditInfo = this.deepCopy(this.perosonnalInfo)
             this.readonly = true
@@ -433,6 +478,7 @@ export default {
               type: 'success',
               message: '修改成功'
             })
+            this.getUserAllInfo()
           })
         }
       })
@@ -441,21 +487,47 @@ export default {
       this.readonly = true
       this.perosonnalInfo = this.deepCopy(noEditInfo)
     },
-
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+    uploadRequst(file) {
+      const that = this
+      that.uploading = true
+      uploadQiniu(file.file, {
+        next({ total }) {
+          that.uploadPercent = parseInt(total.percent)
+        },
+        error(err) {
+          that.uploading = false
+          that.$message.error(err.message)
+        },
+        complete() {
+          that.uploading = false
+          that.$message.success('上传成功')
+          that.uploadPercent = 0
+        }
+      })
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
+      /* if (file.name.replace(/[\x00-\xff]/gi, '--').length > 64) {
+        this.$message.error('文件名过长,无法上传')
+        return false
+      } */
+      const isJPG = /^image\/(jpeg|png|jpg)$/.test(file.type)
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式或者!')
+        this.$message.error('上传图片只能是 jpg、jpeg 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传图片大小不能超过 2MB!')
+      }
+      if (!isJPG && !isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB且只能是 jpg、jpeg 格式!')
       }
       return isJPG && isLt2M
+    },
+    handleAvatarSuccess(res, file) {
+      this.perosonnalInfo.avatarUrl = URL.createObjectURL(file.raw)
+      this.getUserAllInfo()
+      self.$message.success('上传成功')
     }
   }
 }
@@ -504,24 +576,56 @@ li {
     transform: translate(0, -50%);
   }
 }
+.el-aside {
+  overflow: hidden;
+}
 .info-image {
   width: 64px;
   height: 64px;
-  border: 1px solid #ccc;
   border-radius: 32px;
   .avatar-uploader {
     text-align: center;
     line-height: 64px;
+    height: 64px;
+  }
+  /deep/.el-upload--picture-card {
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    border: none;
+    border-radius: 30px;
   }
 }
 .info-text {
   padding-left: 20px;
 }
+.info-item-value {
+  color: #202940;
+}
 .info-name {
   font-size: 24px;
   color: #333333;
   line-height: 30px;
-  padding-bottom: 6px;
+  padding-bottom: 20px;
+  .staff-name {
+    font-size: 24px;
+    color: #333333;
+  }
+  .workNo {
+    line-height: 24px;
+    padding: 0 15px;
+    color: #202940;
+    font-size: 14px;
+    vertical-align: text-bottom;
+  }
+  .el-button {
+    padding: 0;
+    width: 56px;
+    height: 24px;
+    background: #7181991a;
+    border: none;
+    vertical-align: middle;
+  }
 }
 .info-other {
   font-size: 14px;
@@ -591,6 +695,7 @@ li {
 
 .info-detail .basic-info-content {
   padding: 15px 0 0 20px;
+  border-bottom: 1px solid #cecece;
   /deep/ .el-cascader {
     width: 100%;
   }
@@ -627,6 +732,14 @@ li {
   .el-button {
     width: 80px;
     height: 42px;
+  }
+}
+.disabled {
+  /deep/.el-input__inner {
+    background: #cecece;
+  }
+  /deep/.el-input__inner:focus {
+    border-color: #cecece;
   }
 }
 .hidden {
