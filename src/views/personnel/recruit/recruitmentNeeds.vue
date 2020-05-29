@@ -15,7 +15,7 @@
       <template style="margin: 0 auto;">
         <el-button
           size="medium"
-          @click="dialogVisible = true"
+          @click="handleEditRole"
         >
           取消
         </el-button>
@@ -28,27 +28,16 @@
         </el-button>
       </template>
     </basic-container>
-    <el-dialog
-      title="提示"
+    <cancel-edit
+      ref="CancelEdit"
       :visible.sync="dialogVisible"
-      width="30%"
-    >
-      <span>这是一段信息</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="dialogVisible = false"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
+      @isDoNotSave="isDoNotSave"
+    />
   </div>
 </template>
 
 <script>
+import CancelEdit from '@/views/personnel/recruit/components/cancelEdit'
 import InputArray from '@/views/personnel/candidate/components/inputArray'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
@@ -58,13 +47,13 @@ import { getOrganizationCompany } from '@/api/personnel/roster'
 export default {
   name: 'AddRoster',
   components: {
-    InputArray
+    InputArray,
+    CancelEdit
   },
   data() {
     return {
       NewRequirement,
       infoForm: {
-        recruitmentReason: null,
         positionId: null,
         companyId: null,
         companyName: null,
@@ -90,16 +79,10 @@ export default {
   watch: {
     'infoForm.minSalary': function(newval, oldval) {
       if (newval != oldval) {
-        if (this.infoForm.maxSalary < newval) {
-          this.$message({
-            showClose: true,
-            message: '请注意! 最大薪资不可小于最小薪资范围',
-            type: 'error'
-          })
-        }
+        this.contrastMaxMin(newval)
       }
     },
-    'infoForm.recruitmentReason': function(newval) {
+    'infoForm.reason': function(newval) {
       if (newval === 'Other') {
         this.$refs.personInfo.explainshow = true
       } else {
@@ -112,9 +95,8 @@ export default {
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'workProperty', 'dictValue', 'dictKey')
     })
-
     this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'recruitmentReason', 'dictValue', 'dictKey')
+      this.dataFilter(res, this.NewRequirement, 'reason', 'dictValue', 'dictKey')
     })
 
     this.$store.dispatch('CommonDict', 'workYear').then((res) => {
@@ -123,7 +105,6 @@ export default {
     this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'emerType', 'dictValue', 'dictKey')
     })
-
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'educationalLevel', 'dictValue', 'dictKey')
     })
@@ -168,8 +149,17 @@ export default {
         this.dataFilter(res, this.NewRequirement, 'positionId', 'name', 'id')
       })
     },
-    handleClose() {},
-
+    contrastMaxMin(newval) {
+      if (this.infoForm.maxSalary === '' || this.infoForm.maxSalary !== null) {
+        if (this.infoForm.maxSalary < newval) {
+          return this.$message({
+            showClose: true,
+            message: '请注意! 最大薪资不可小于最小薪资范围',
+            type: 'error'
+          })
+        }
+      }
+    },
     handleTownext() {
       return Promise.all(
         ['personInfo'].map((it) => {
@@ -181,10 +171,22 @@ export default {
       ).then(() => {
         this.infoForm.userId = this.userId
         let params = this.infoForm
+        this.contrastMaxMin(this.infoForm.minSalary)
         submitEewly(params).then(() => {
           this.$message({ type: 'success', message: '操作成功!' })
         })
       })
+    },
+    handleEditRole() {
+      this.$refs.CancelEdit.init()
+    },
+    isDoNotSave() {
+      for (let key in this.infoForm) {
+        const allFruit = ['needNum', 'companyName']
+        if (allFruit.includes(!key)) {
+          this.infoForm[key] = null
+        }
+      }
     }
   }
 }
@@ -201,6 +203,9 @@ export default {
   padding: 100px !important;
 }
 
+/deep/ .v-modal {
+  z-index: 100 !important;
+}
 .dialogForm {
   .el-form-item {
     .el-form-item__content {
@@ -215,9 +220,5 @@ export default {
   height: 6px;
   border-radius: 100px;
   color: blue;
-}
-
-/deep/ .el-radio-group {
-  width: 100% !important;
 }
 </style>

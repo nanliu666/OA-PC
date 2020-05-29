@@ -13,7 +13,7 @@ export let NewRequirement = {
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '', // 提示必填提示
       props: 'companyName',
-      rules: [{ required: true, message: '', trigger: 'change' }]
+      rules: [{ required: true, message: '', trigger: 'blur' }]
     },
     {
       attrId: '2', // ：key唯一值
@@ -41,7 +41,7 @@ export let NewRequirement = {
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择工作性质', // 提示必填提示
       props: 'workProperty',
-      rules: [{ required: true, message: '请选择招聘单位', trigger: 'change' }]
+      rules: [{ required: true, message: '请选择招聘单位', trigger: 'blur' }]
     },
     {
       attrId: '6', // ：key唯一值
@@ -55,7 +55,7 @@ export let NewRequirement = {
       inType: 13, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '', // 提示必填提示
       props: 'needNum',
-      rules: [{ required: true, message: '请选择需求人数', trigger: 'change' }]
+      rules: [{ required: true, message: '请选择需求人数', trigger: 'blur' }]
     },
     {
       attrId: '3', // ：key唯一值
@@ -69,7 +69,7 @@ export let NewRequirement = {
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择职位', // 提示必填提示
       props: 'jobId',
-      rules: [{ required: true, message: '请选择输入需求人数', trigger: 'change' }]
+      rules: [{ required: true, message: '请选择输入需求人数', trigger: 'blur' }]
     },
     {
       attrId: '8', // ：key唯一值
@@ -178,8 +178,6 @@ export let NewRequirement = {
       span: 24
     },
     {
-      explain: 'reasonNote',
-      explainName: '请补充招聘理由',
       attrId: '16', // ：key唯一值
       attrName: '招聘原因:', // lable
       attrValue: '', // v-model绑定值
@@ -190,7 +188,9 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 14, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '', // 提示必填提示
-      props: 'recruitmentReason',
+      explainName: '请补充招聘理由',
+      props: 'reason',
+      explain: 'reasonNote',
       span: 24
     },
     {
@@ -204,7 +204,7 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 10, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '', // 提示必填提示
-      props: 'reason',
+      props: 'remark',
       span: 24
     }
   ]
