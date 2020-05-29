@@ -10,167 +10,116 @@
         <el-tab-pane
           label="待离职"
           name="WaitLeave"
-        >
-          <commonTable
-            :data="tableList"
-            :columns="tableColumns"
-            :loading="loading"
-            :config="tableConfig"
-            :page="page"
-            :page-config="pageConfig"
-            @current-page-change="currentPageChange"
-            @page-size-change="pageSizeChange"
-          >
-            <!-- 搜素框 -->
-            |<template slot="topMenu">
-              <div class="search-box">
-                <SearchPopover
-                  :require-options="requireOptions"
-                  :popover-options="popoverOptions"
-                  @submit="handleSubmit"
-                />
-                <div>
-                  <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
-                  <el-button
-                    icon="el-icon-refresh"
-                    size="medium"
-                    @click="getDataList()"
-                  />
-                </div>
-              </div>
-            </template>
-            <!-- 姓名列 -->
-            <template
-              slot="name"
-              slot-scope="{ row }"
-            >
-              <el-button
-                type="text"
-                size="medium"
-                @click="jumpInfo(row.userId)"
-              >
-                {{ row.name }}
-              </el-button>
-            </template>
-            <!-- 操作列 -->
-            <template
-              slot="handler"
-              slot-scope="{ row }"
-            >
-              <el-button
-                size="medium"
-                type="text"
-                @click="handelConfirmLeave(row)"
-              >
-                确认离职
-              </el-button>
-              <el-button
-                size="medium"
-                type="text"
-                @click="handelGetLeaveCert(row.userId)"
-              >
-                开具离职证明
-              </el-button>
-              <el-button
-                size="medium"
-                type="text"
-                @click="showChangeDialog(row)"
-              >
-                调整离职信息
-              </el-button>
-              <el-dropdown @command="handleCommand($event, row.userId)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down el-icon-more" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="giveLeave">
-                    放弃离职
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 离职日期 -->
-            <template
-              slot="lastDate"
-              slot-scope="{ row }"
-            >
-              <div>
-                <span>{{ row.lastDate }}</span>
-                <el-tag
-                  type="info"
-                  size="small"
-                  class="isConfirm"
-                >
-                  已确认
-                </el-tag>
-              </div>
-            </template>
-          </commonTable>
-        </el-tab-pane>
+        />
         <!-- 已离职 -->
         <el-tab-pane
           label="已离职"
           name="Leaved"
+        />
+        <commonTable
+          :data="tableList"
+          :columns="tableColumns"
+          :loading="loading"
+          :config="tableConfig"
+          :page="page"
+          :page-config="pageConfig"
+          @current-page-change="currentPageChange"
+          @page-size-change="pageSizeChange"
         >
-          <commonTable
-            :data="tableList"
-            :columns="tableColumns"
-            :loading="loading"
-            :config="tableConfig"
-            :page="page"
-            :page-config="pageConfig"
-            @current-page-change="currentPageChange"
-            @page-size-change="pageSizeChange"
-          >
-            <!-- 搜素框 -->
-            |<template slot="topMenu">
-              <div class="search-box">
-                <SearchPopover
-                  :require-options="requireOptions"
-                  :popover-options="popoverOptions"
-                  @submit="handleSubmit"
+          <!-- 搜素框 -->
+          |<template slot="topMenu">
+            <div class="search-box">
+              <SearchPopover
+                :require-options="requireOptions"
+                :popover-options="popoverOptions"
+                @submit="handleSubmit"
+              />
+              <div>
+                <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
+                <el-button
+                  icon="el-icon-refresh"
+                  size="medium"
+                  type="primary"
+                  @click="getDataList()"
                 />
-                <div>
-                  <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
-                  <el-button
-                    icon="el-icon-refresh"
-                    size="medium"
-                    @click="getDataList()"
-                  />
-                </div>
               </div>
-            </template>
-            <!-- 姓名列 -->
-            <template
-              slot="name"
-              slot-scope="{ row }"
+            </div>
+          </template>
+          <!-- 姓名列 -->
+          <template
+            slot="name"
+            slot-scope="{ row }"
+          >
+            <el-button
+              type="text"
+              size="medium"
+              @click="jumpInfo(row.userId)"
+            >
+              {{ row.name }}
+            </el-button>
+          </template>
+          <!-- 操作列 -->
+          <template
+            slot="handler"
+            slot-scope="{ row }"
+          >
+            <el-button
+              v-if="isWaitLeave"
+              size="medium"
+              type="text"
+              @click="handelConfirmLeave(row)"
+            >
+              确认离职
+            </el-button>
+            <el-button
+              size="medium"
+              type="text"
+              @click="handelGetLeaveCert(row.userId)"
+            >
+              开具离职证明
+            </el-button>
+            <el-button
+              v-if="isWaitLeave"
+              size="medium"
+              type="text"
+              @click="showChangeDialog(row)"
+            >
+              调整离职信息
+            </el-button>
+            <el-dropdown
+              v-if="isWaitLeave"
+              @command="handleCommand($event, row.userId)"
             >
               <el-button
                 type="text"
-                size="medium"
-                @click="jumpInfo(row.userId)"
+                style="margin-left: 10px"
               >
-                {{ row.name }}
+                <i class="el-icon-arrow-down el-icon-more" />
               </el-button>
-            </template>
-            <!-- 操作列 -->
-            <template
-              slot="handler"
-              slot-scope="{ row }"
-            >
-              <el-button
-                size="medium"
-                type="text"
-                @click="handelGetLeaveCert(row.userId)"
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="giveLeave">
+                  放弃离职
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+          <!-- 离职日期 -->
+          <template
+            slot="lastDate"
+            slot-scope="{ row }"
+          >
+            <div>
+              <span>{{ row.lastDate }}</span>
+              <el-tag
+                type="info"
+                size="small"
+                class="isConfirm"
               >
-                开具离职证明
-              </el-button>
-            </template>
-          </commonTable>
-        </el-tab-pane>
+                已确认
+              </el-tag>
+            </div>
+          </template>
+        </commonTable>
       </el-tabs>
     </basic-container>
     <!-- 调整离职信息弹框 -->
@@ -318,11 +267,6 @@ export default {
       loading: false,
       // 表格列配置
       tableColumns: [
-        {
-          label: '序号',
-          type: 'index',
-          align: 'center'
-        },
         {
           label: '姓名',
           align: 'center',
@@ -537,6 +481,13 @@ export default {
       isDisabled: true
     }
   },
+  computed: {
+    //
+    isWaitLeave() {
+      if (this.activeName === 'WaitLeave') return true
+      return false
+    }
+  },
   watch: {
     changeParams: {
       handler(newVal, oldVal) {
@@ -559,9 +510,12 @@ export default {
       // WaitLeave 为待离职  Leaved 为已离职
       if (this.activeName == 'WaitLeave') {
         this.paramsInfo.status = 'WaitLeave'
+        // 修改表格操作列的宽度
+        this.tableConfig.handlerColumn.minWidth = 300
         this.getDataList()
       } else {
         this.paramsInfo.status = 'Leaved'
+        this.tableConfig.handlerColumn.minWidth = 100
         this.getDataList()
       }
     },

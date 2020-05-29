@@ -26,6 +26,7 @@
               <el-button
                 icon="el-icon-refresh"
                 size="medium"
+                type="primary"
                 @click="getTableList()"
               />
             </div>
