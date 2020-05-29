@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div>
     <common-table
@@ -42,46 +43,19 @@
           {{ row.id }}
         </el-button>
       </template>
-      <template
-        slot="handler"
-        slot-scope="{ row }"
-      >
-        <el-button
-          size="medium"
-          type="text"
-          @click="handleEdit(row.status)"
-        >
-          {{ row.status == 'UnHandle' ? '分配' : '重新分配' }}
-        </el-button>
-      </template>
     </common-table>
-
-    <again
-      ref="adjustEdit"
-      :visible.sync="createOrgDailog"
-      @getTableData="getTableData"
-    />
-    <assigned
-      ref="adjustEdit"
-      :visible.sync="createOrgDailog"
-      @getTableData="getTableData"
-    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getAllRecruitment, getPost } from '@/api/personnel/recruitment'
+import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
-import Again from '@/views/personnel/recruit/details/distribution/again'
-import Assigned from '@/views/personnel/recruit/details/distribution/Assigned'
 export default {
-  name: 'AllList',
+  name: 'RecruitList',
   components: {
-    SearchPopover,
-    Again,
-    Assigned
+    SearchPopover
   },
   data() {
     return {
@@ -163,17 +137,6 @@ export default {
             label: '到岗日期',
             field: 'beginJoinDate,endJoinDate',
             config: { type: 'daterange', 'range-separator': '至' }
-          },
-          {
-            type: 'select',
-            field: 'status',
-            label: '需求状态',
-            data: '',
-            options: [
-              { value: 'UnHandle', label: '待分配' },
-              { value: 'Handled', label: '已分配' }
-            ],
-            config: { optionLabel: '', optionValue: '' }
           }
         ]
       },
@@ -229,8 +192,9 @@ export default {
           prop: 'maxSalary'
         }
       ],
+
       tableConfig: {
-        showHandler: true,
+        showHandler: false,
         showIndexColumn: false,
         enableMultiSelect: false,
         enablePagination: true
@@ -284,29 +248,30 @@ export default {
       if (typeof params === 'undefined') params = this.params
       params.userId = this.userId
       params.progress = this.params.progress
-      getAllRecruitment(params).then((res) => {
+      getMyRecruitment(params).then((res) => {
         this.data = res.data
       })
     },
+
     Decorator(paramsData) {
       let request = {
         jobName: paramsData.jobName || '',
         pageNo: paramsData.pageNo || 1,
         pageSize: paramsData.pageSize || 10,
         positionId: paramsData.positionId || '',
-        workYear: paramsData.workYear || '',
+        workYear: paramsData.paramsData || '',
         educationalLevel: paramsData.educationalLevel || '',
+        reason: paramsData.reason || '',
         emerType: paramsData.emerType || '',
         beginJoinDate: paramsData.beginJoinDate || '',
-        endJoinDate: paramsData.endJoinDate || '',
-        status: paramsData.status || ''
+        endJoinDate: paramsData.endJoinDate || ''
       }
       return request
     },
 
     handleSubmit(params) {
       let request = this.Decorator(params)
-      getAllRecruitment(request).then(() => {
+      getMyRecruitment(request).then(() => {
         this.$message({
           message: '操作成功',
           type: 'success'
@@ -314,24 +279,20 @@ export default {
       })
     },
     jumpToDetail(id) {
-      this.$router.push(`/personnel/recruit/staffList/${id}`)
+      this.$router.push(`/personnel/recruit/details/staffList/${id}`)
     },
     currentPageChange(param) {
       let paramsInfo = {}
       paramsInfo.pageNo = param
       return this.getTableData(paramsInfo)
     },
+
     getDictionarygroup() {
       this.setElement.forEach((item) => {
         this.$store.dispatch('CommonDict', item.choice).then((res) => {
           this.searchConfig.popoverOptions[item.target].options = res
         })
       })
-    },
-    handleEdit(status) {
-      if (status) {
-        this.searchConfig.popoverOptions
-      }
     }
   }
 }

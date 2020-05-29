@@ -38,7 +38,7 @@
 
 <script>
 import CancelEdit from '@/views/personnel/recruit/details/distribution/cancelEdit'
-import InputArray from '@/views/personnel/candidate/details/inputArray'
+import InputArray from '@/views/personnel/candidate/components/inputArray.vue'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'

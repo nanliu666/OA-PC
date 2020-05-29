@@ -72,10 +72,10 @@
   </div>
 </template>
 <script>
-import StaffList from './staffList'
-import StaffDetails from './details'
+import StaffList from './paging/List'
+import StaffDetails from './paging/details'
 export default {
-  name: 'StaffList',
+  name: 'RecruitList',
   components: {
     StaffList,
     StaffDetails
