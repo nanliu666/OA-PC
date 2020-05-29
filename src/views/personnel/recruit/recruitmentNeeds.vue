@@ -22,23 +22,29 @@
         <el-button
           type="primary"
           size="medium"
-          @click="submitForm"
+          @click="handleTownext"
         >
           提交
         </el-button>
       </template>
     </basic-container>
-
-    <!-- <el-dialog
+    <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="30%">
+      width="30%"
+    >
       <span>这是一段信息</span>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = false"
+        >确 定</el-button>
       </span>
-    </el-dialog> -->
+    </el-dialog>
   </div>
 </template>
 
@@ -58,11 +64,10 @@ export default {
     return {
       NewRequirement,
       infoForm: {
+        recruitmentReason: null,
         positionId: null,
         companyId: null,
         companyName: null,
-        department: null,
-        position: null,
         userId: '',
         workProperty: null,
         needNum: 1,
@@ -76,21 +81,31 @@ export default {
         reasonNote: null,
         remark: null
       },
-      rules: {
-        company: [],
-        department: [{ required: true, message: '请输入用人部门', trigger: 'blur' }],
-        companyId: [{ required: true, message: '请选择入职公司', trigger: 'change' }],
-        position: [{ required: true, message: '请选择职位', trigger: 'change' }],
-        needNum: [{ required: true, message: '请输入人数', trigger: 'change' }],
-        joinDate: [{ required: true, message: '请选择到岗日期', trigger: 'change' }],
-        workProperty: [{ required: true, message: '请输入工作性质', trigger: 'change' }],
-        emerType: [{ required: true, message: '请选择部门', trigger: 'change' }]
-      },
       dialogVisible: false
     }
   },
   computed: {
     ...mapGetters(['userId'])
+  },
+  watch: {
+    'infoForm.minSalary': function(newval, oldval) {
+      if (newval != oldval) {
+        if (this.infoForm.maxSalary < newval) {
+          this.$message({
+            showClose: true,
+            message: '请注意! 最大薪资不可小于最小薪资范围',
+            type: 'error'
+          })
+        }
+      }
+    },
+    'infoForm.recruitmentReason': function(newval) {
+      if (newval === 'Other') {
+        this.$refs.personInfo.explainshow = true
+      } else {
+        this.$refs.personInfo.explainshow = false
+      }
+    }
   },
   mounted() {
     this.getUseInformation()
@@ -99,18 +114,18 @@ export default {
     })
 
     this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'RecruitmentReason', 'dictValue', 'dictKey')
+      this.dataFilter(res, this.NewRequirement, 'recruitmentReason', 'dictValue', 'dictKey')
     })
 
     this.$store.dispatch('CommonDict', 'workYear').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'workYear', 'dictValue', 'dictKey')
     })
     this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'EmerType', 'dictValue', 'dictKey')
+      this.dataFilter(res, this.NewRequirement, 'emerType', 'dictValue', 'dictKey')
     })
 
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'EducationalLevel', 'dictValue', 'dictKey')
+      this.dataFilter(res, this.NewRequirement, 'educationalLevel', 'dictValue', 'dictKey')
     })
   },
   methods: {
@@ -149,18 +164,26 @@ export default {
       getJobInfo({}).then((res) => {
         this.dataFilter(res, this.NewRequirement, 'jobId', 'jobName', 'jobId')
       })
-
       getPost().then((res) => {
         this.dataFilter(res, this.NewRequirement, 'positionId', 'name', 'id')
       })
     },
     handleClose() {},
-    submitForm() {
-      this.infoForm.userId = this.userId
-      let parms = this.infoForm
-      parms.needNum = this.infoForm.needNum * 1
-      submitEewly(parms).then(() => {
-        this.$message({ type: 'success', message: '操作成功!' })
+
+    handleTownext() {
+      return Promise.all(
+        ['personInfo'].map((it) => {
+          return new Promise((resolve) => {
+            let form = this.$refs[it].submitForm()
+            resolve(form)
+          })
+        })
+      ).then(() => {
+        this.infoForm.userId = this.userId
+        let params = this.infoForm
+        submitEewly(params).then(() => {
+          this.$message({ type: 'success', message: '操作成功!' })
+        })
       })
     }
   }

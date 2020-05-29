@@ -12,7 +12,8 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '', // 提示必填提示
-      props: 'companyName'
+      props: 'companyName',
+      rules: [{ required: true, message: '', trigger: 'change' }]
     },
     {
       attrId: '2', // ：key唯一值
@@ -25,7 +26,36 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择部门', // 提示必填提示
-      props: 'orgId'
+      props: 'orgId',
+      rules: [{ required: true, message: '请选择用人部门', trigger: 'blur' }]
+    },
+    {
+      attrId: '5', // ：key唯一值
+      attrName: '工作性质：', // lable
+      attrValue: '', // v-model绑定值
+      attrvalue: '', // 后台返回值
+      minLen: '', // 最小长度
+      maxLen: '', // 最大长度
+      value: '', // 单选框多选框的potion的值
+      dataType: 1, // 当inType=1时生效
+      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      message: '请选择工作性质', // 提示必填提示
+      props: 'workProperty',
+      rules: [{ required: true, message: '请选择招聘单位', trigger: 'change' }]
+    },
+    {
+      attrId: '6', // ：key唯一值
+      attrName: '需求人数', // lable
+      attrValue: '', // v-model绑定值
+      attrvalue: '', // 后台返回值
+      minLen: '', // 最小长度
+      maxLen: '', // 最大长度
+      value: '', // 单选框多选框的potion的值
+      dataType: 1, // 当inType=1时生效
+      inType: 13, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      message: '', // 提示必填提示
+      props: 'needNum',
+      rules: [{ required: true, message: '请选择需求人数', trigger: 'change' }]
     },
     {
       attrId: '3', // ：key唯一值
@@ -38,7 +68,22 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择职位', // 提示必填提示
-      props: 'jobId'
+      props: 'jobId',
+      rules: [{ required: true, message: '请选择输入需求人数', trigger: 'change' }]
+    },
+    {
+      attrId: '8', // ：key唯一值
+      attrName: '到岗日期', // lable
+      attrValue: '', // v-model绑定值
+      attrvalue: '', // 后台返回值
+      minLen: '', // 最小长度
+      maxLen: '', // 最大长度
+      value: '', // 单选框多选框的potion的值
+      dataType: 1, // 当inType=1时生效
+      inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      message: '请选择发布时状态', // 提示必填提示
+      props: 'joinDate',
+      rules: [{ required: true, message: '请选择招聘单位', trigger: 'blur' }]
     },
     {
       attrId: '4', // ：key唯一值
@@ -54,45 +99,6 @@ export let NewRequirement = {
       props: 'positionId'
     },
     {
-      attrId: '5', // ：key唯一值
-      attrName: '工作性质：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请选择工作性质', // 提示必填提示
-      props: 'workProperty'
-    },
-    {
-      attrId: '6', // ：key唯一值
-      attrName: '需求人数', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请填写工号', // 提示必填提示
-      props: 'needNum'
-    },
-    {
-      attrId: '8', // ：key唯一值
-      attrName: '到岗日期', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请选择发布时状态', // 提示必填提示
-      props: 'joinDate'
-    },
-    {
       attrId: '9', // ：key唯一值
       attrName: '紧急程度', // lable
       attrValue: '', // v-model绑定值
@@ -103,7 +109,7 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
-      props: 'EmerType'
+      props: 'emerType'
     },
     {
       attrId: '10', // ：key唯一值
@@ -113,9 +119,9 @@ export let NewRequirement = {
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 12, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '最小值', // 提示必填提示
-      props: '',
-      props2: ''
+      message: '请输入', // 提示必填提示
+      props: 'maxSalary',
+      propscomplex: 'minSalary'
     },
     {
       attrId: '12', // ：key唯一值
@@ -141,7 +147,7 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择学历要求', // 提示必填提示
-      props: 'EducationalLevel'
+      props: 'educationalLevel'
     },
     {
       attrId: '14', // ：key唯一值
@@ -172,17 +178,19 @@ export let NewRequirement = {
       span: 24
     },
     {
+      explain: 'reasonNote',
+      explainName: '请补充招聘理由',
       attrId: '16', // ：key唯一值
       attrName: '招聘原因:', // lable
       attrValue: '', // v-model绑定值
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
-      maxLen: '', // 最大长度
+      maxLen: '200', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
-      inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      inType: 14, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '', // 提示必填提示
-      props: 'RecruitmentReason',
+      props: 'recruitmentReason',
       span: 24
     },
     {
