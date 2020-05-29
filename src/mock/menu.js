@@ -514,6 +514,39 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
+            menuId: '12613143696669077777777',
+            menuName: '更改需求人数',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/components/changeDemand/chang',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '1261314369666908888888888',
+            menuName: '新建需求',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/recruitmentNeeds/:personId',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '126131436966690999999999999999',
+            menuName: '需求详情页面',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/staffList/:id',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
             menuId: '31212212454542',
             menuName: '面试登记表',
             menuType: 'Menu',

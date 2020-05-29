@@ -377,7 +377,7 @@ export default ({ mock }) => {
           duty: '测试开发项目-@increment',
           userId: 'kenko',
           userName: '@cname',
-          status: 'UnHandle'
+          status: i / 2 == 0 ? 'Handled' : 'UnHandle'
         })
       )
     }

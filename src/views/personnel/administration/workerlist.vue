@@ -36,26 +36,6 @@
           </div>
         </template>
         <template
-          v-if="scope.row.isDefault === 0"
-          slot="handler"
-          slot-scope="scope"
-        >
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleEdit(scope.row, scope.index)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleDelete(scope.row, scope.index)"
-          >
-            删除
-          </el-button>
-        </template>
-        <template
           slot="name"
           slot-scope="{ row }"
         >

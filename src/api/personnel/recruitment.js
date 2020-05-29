@@ -1,7 +1,7 @@
 import { get, post, put } from '@/router/axios'
 
 /**
- * 关联招聘需求查询接口
+ * 关联招聘需求查询接口 复制流程使用借口
  * */
 export const getRecruitmentDetail = (recruitmentId) => {
   return get('/user/v1/recruitment/detail', { recruitmentId })
@@ -55,4 +55,13 @@ export const putTask = (params) => {
  * */
 export const submitEewly = (params) => {
   return post('/user/v1/recruitment/info', params)
+}
+// 查询项目中所有招聘职位
+export const getJobInfo = (params) => {
+  return get('/api/org/v1/job/list', params)
+}
+
+// 查询项目中所有岗位post
+export const getPost = () => {
+  return get('/org/v1/position/define')
 }

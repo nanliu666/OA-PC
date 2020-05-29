@@ -36,9 +36,7 @@
 
             <el-row>
               <el-col :span="10">
-                <el-form-item
-                  label="申请公司"
-                >
+                <el-form-item label="申请公司">
                   <span class="distance">{{ personnel.company }}</span>
                 </el-form-item>
               </el-col>
@@ -70,9 +68,7 @@
 
             <el-row>
               <el-col :span="10">
-                <el-form-item
-                  label="工作性质"
-                >
+                <el-form-item label="工作性质">
                   <span class="distance">{{ personnel.company }}</span>
                 </el-form-item>
               </el-col>

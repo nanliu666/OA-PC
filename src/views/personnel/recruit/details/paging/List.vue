@@ -52,8 +52,8 @@
         :columns="columns"
         :page-config="pageConfig"
         :config="tableConfig"
-        @current-page-change="currentPageChange"
-        @page-size-change="pageSizeChange"
+        @pageSizeChange="sizeChange"
+        @currentPageChange="currentChange"
       >
         <template
           slot="name"
@@ -123,17 +123,39 @@ export default {
       params: {
         pageNo: 1,
         pageSize: 10
+      },
+      page: {
+        pageSize: 100,
+        pagerCount: 1,
+        total: 10
+      },
+      pageConfig: {
+        pageSizes: [10, 20, 30, 40, 50]
       }
     }
   },
   mounted() {
-    getRecruitmentDetail().then((res) => {
-      this.data = res.data
-    })
+    this.getData()
   },
   methods: {
+    getData() {
+      getRecruitmentDetail().then((res) => {
+        this.data = res.data
+      })
+    },
     jumpToDetail(personId) {
       this.$router.push(`/personnel/detail/${personId}`)
+    },
+    currentChange(val) {
+      this.params.pageNo = val
+      this.page.pagerCount = val
+      this.getData()
+    },
+    sizeChange(val) {
+      this.params.pageSize = val
+      this.params.pageNo = 1
+      this.page.pagerCount = 1
+      this.getData()
     }
   }
 }

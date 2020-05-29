@@ -7,10 +7,20 @@
     />
     <basic-container>
       <el-row :gutter="24">
-        <el-col
-          :offset="20"
-          :span="3"
-        >
+        <el-col :span="20">
+          <el-radio-group
+            v-model="choice"
+            @change="changeTemp(choice)"
+          >
+            <el-radio-button label="my">
+              我提交的招聘需求
+            </el-radio-button>
+            <el-radio-button label="all">
+              全部招聘需求
+            </el-radio-button>
+          </el-radio-group>
+        </el-col>
+        <el-col :span="3">
           <el-button
             size="medium"
             type="primary"
@@ -21,35 +31,62 @@
           </el-button>
         </el-col>
       </el-row>
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          label="招聘中"
-          name="Approved"
+
+      <div v-show="Select">
+        <el-tabs
+          v-model="activeName"
+          @tab-click="handleClick"
         >
-          <detailsList ref="demand" />
-        </el-tab-pane>
-        <el-tab-pane
-          label="已结束"
-          name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+          <el-tab-pane
+            label="招聘中"
+            name="Approved"
+          >
+            <detailsList ref="demand" />
+          </el-tab-pane>
+          <el-tab-pane
+            label="已结束"
+            name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+          >
+            <detailsList />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <div v-show="doNotsave">
+        <el-tabs
+          v-model="activeName"
+          @tab-click="handleClick"
         >
-          <detailsList />
-        </el-tab-pane>
-      </el-tabs>
+          <el-tab-pane
+            label="招聘中"
+            name="Approved"
+          >
+            <All-list ref="all" />
+          </el-tab-pane>
+          <el-tab-pane
+            label="已结束"
+            name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+          >
+            <All-list />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </basic-container>
   </div>
 </template>
 <script>
-import DetailsList from './components/detailsList'
+import DetailsList from './detailsList'
+import AllList from './allList'
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList
+    DetailsList,
+    AllList
   },
   data() {
     return {
+      doNotsave: false,
+      Select: true,
+      choice: 'my',
       activeName: 'Approved'
     }
   },
@@ -65,20 +102,24 @@ export default {
       if (paneName == 'Approved') {
         this.$refs.demand.init(tab.paneName)
       }
+    },
+    changeTemp(value) {
+      if (value === 'all') {
+        this.Select = false
+        this.doNotsave = true
+      } else {
+        this.Select = true
+        this.doNotsave = false
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  h4 {
-    font-size: 18px;
-  }
+/deep/ .el-radio-button__inner {
+  margin: 0 20px !important;
+  border-radius: 4px !important;
 }
 .state {
   display: flex;

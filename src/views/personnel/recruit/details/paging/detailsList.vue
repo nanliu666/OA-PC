@@ -50,7 +50,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getMyRecruitment } from '@/api/personnel/recruitment'
+import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 export default {
   name: 'RecruitList',
@@ -104,7 +104,7 @@ export default {
             label: '岗位',
             field: 'positionId',
             arrField: 'positionId',
-            config: {},
+            config: { optionLabel: 'name', optionValue: 'id' },
             options: []
           },
           {
@@ -234,6 +234,9 @@ export default {
     getOrgTreeSimple({ orgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
+    getPost().then((res) => {
+      this.searchConfig.popoverOptions[1].options = res
+    })
     this.getDictionarygroup()
   },
   methods: {
@@ -276,7 +279,7 @@ export default {
       })
     },
     jumpToDetail(id) {
-      this.$router.push(`/personnel/recruit/details/staffList/${id}`)
+      this.$router.push(`/personnel/recruit/staffList/${id}`)
     },
     currentPageChange(param) {
       let paramsInfo = {}
