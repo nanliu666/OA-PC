@@ -12,6 +12,7 @@
         :offset="column.offset ? column.offset : 0"
       >
         <el-form-item
+          :label="`${column.label}${column.props && column.props.hideColon ? '' : '：'}`"
           v-bind="elFormItemAttrs(column)"
           :rules="getRules(column)"
         >
@@ -19,14 +20,14 @@
             v-if="column.itemType == 'input'"
             v-model="model[column.prop]"
             v-bind="itemAttrs(column)"
-            :placeholder="'请输入' + column.label"
+            :placeholder="column.placeholder ? column.placeholder : `请输入${column.label}`"
             @input="column.props && column.props.onlyNumber && inputNumber($event, column)"
           />
           <el-select
             v-if="column.itemType == 'select'"
             v-model="model[column.prop]"
             v-bind="itemAttrs(column)"
-            :placeholder="'请选择' + column.label"
+            :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
           >
             <el-option
               v-for="item in column.options"
@@ -44,7 +45,7 @@
             v-if="column.itemType == 'radio'"
             v-model="model[column.prop]"
             v-bind="itemAttrs(column)"
-            :placeholder="'请选择' + column.label"
+            :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
           >
             <el-radio
               v-for="item in column.options"
@@ -63,7 +64,7 @@
             v-if="column.itemType == 'checkbox'"
             v-model="model[column.prop]"
             v-bind="itemAttrs(column)"
-            :placeholder="'请选择' + column.label"
+            :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
           >
             <el-checkbox
               v-for="item in column.options"
@@ -83,16 +84,14 @@
             v-model="model[column.prop]"
             :options="column.options"
             v-bind="itemAttrs(column)"
-            :placeholder="'请选择' + column.label"
+            :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
           />
 
           <el-date-picker
             v-if="column.itemType == 'datePicker'"
             v-model="model[column.prop]"
-            type="date"
             v-bind="itemAttrs(column)"
-            value-format="yyyy-MM-dd"
-            :placeholder="'请选择' + column.label"
+            :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
           />
 
           <el-tree-select
@@ -101,7 +100,7 @@
             :select-params="column.props && column.props.selectParams"
             :tree-params="column.props && column.props.treeParams"
             v-bind="itemAttrs(column)"
-            :placeholder="'请选择' + column.label"
+            :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
           />
           <slot
             v-if="column.itemType == 'slot'"
@@ -115,7 +114,7 @@
 </template>
 
 <script>
-import { elFormAttrs, elFormItemAttrs, noneItemAttrs } from './config'
+import { elFormAttrs, elFormItemAttrs, noneItemAttrs, defaultAttrs } from './config'
 
 export default {
   name: 'CommonForm',
@@ -172,12 +171,13 @@ export default {
       return copy
     },
     itemAttrs(column) {
-      const copy = {}
+      const copy = { ...defaultAttrs[column.itemType] }
       for (const key in column) {
         if (!noneItemAttrs.includes(key)) {
           copy[key] = column[key]
         }
       }
+
       return copy
     },
     inputNumber(value, column) {
@@ -200,12 +200,12 @@ export default {
     },
     validate() {
       return new Promise((resolve, reject) => {
-        this.$refs['form'].validate((pass) => {
+        this.$refs['form'].validate((pass, error) => {
           if (pass) {
             resolve(this.model)
             return
           } else {
-            reject()
+            reject(error)
           }
         })
       })
@@ -230,5 +230,11 @@ export default {
 }
 /deep/ .el-select {
   width: 100%;
+}
+.el-form-item .el-input__inner {
+  width: 100%;
+}
+/deep/ .el-form-item__content {
+  min-height: 35px;
 }
 </style>

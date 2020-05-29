@@ -18,7 +18,7 @@ export const elFormAttrs = [
 ]
 
 export const elFormItemAttrs = [
-  'label',
+  // 'label',
   'labelWidth',
   'prop',
   // 'required',
@@ -55,3 +55,10 @@ export const noneItemAttrs = [
   'onlyNumber',
   'rules'
 ]
+
+// 表单组件默认属性
+export const defaultAttrs = {
+  datePicker: {
+    valueFormat: 'yyyy-MM-dd'
+  }
+}
