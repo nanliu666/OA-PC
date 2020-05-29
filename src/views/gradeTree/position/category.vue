@@ -47,7 +47,7 @@
                 <div>
                   <el-input
                     v-model="form.name"
-                    placeholder="职位名称"
+                    placeholder="职位类别名称"
                     size="medium"
                     class="input-with-select"
                   >

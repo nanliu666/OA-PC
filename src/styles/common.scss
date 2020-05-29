@@ -62,3 +62,6 @@ ul {
 .flex-justify-start {
   justify-content: flex-start;
 }
+.el-form-item--feedback .el-input__validateIcon {
+  display: none;
+}
