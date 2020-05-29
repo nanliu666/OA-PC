@@ -325,22 +325,14 @@ export default {
         {
           label: '工作性质',
           width: '80px',
-          formatter(row) {
-            if (row.workProperty === 'FullTime') {
-              return '全职'
-            } else if (row.workProperty === 'Trainee') {
-              return '实习生'
-            } else if (row.workProperty === 'PartTime') {
-              return '兼职'
-            } else if (row.workProperty === 'Labor') {
-              return '劳务派遣'
-            } else if (row.workProperty === 'Retirement') {
-              return '退休返聘'
-            } else if (row.workProperty === 'LaborOutsourcing') {
-              return '劳务外包'
-            } else {
-              return '其他'
-            }
+          formatter: (row) => {
+            let dictValue = ''
+            this.workPropertyList.forEach((item) => {
+              if (item.dictKey === row.workProperty) {
+                return (dictValue = item.dictValue)
+              }
+            })
+            return dictValue
           }
         },
         {
@@ -357,40 +349,14 @@ export default {
         {
           label: '离职原因',
           width: '80px',
-          formatter(row) {
-            if (row.leaveReason === 'A01') {
-              return '家庭原因'
-            } else if (row.leaveReason === 'A02') {
-              return '身体原因'
-            } else if (row.leaveReason === 'A03') {
-              return '薪资原因'
-            } else if (row.leaveReason === 'A04') {
-              return '交通不便'
-            } else if (row.leaveReason === 'A05') {
-              return '工作压力'
-            } else if (row.leaveReason === 'A06') {
-              return '管理问题'
-            } else if (row.leaveReason === 'A07') {
-              return '无晋升机会'
-            } else if (row.leaveReason === 'A08') {
-              return '职业规划'
-            } else if (row.leaveReason === 'A09') {
-              return '合同到期放弃续签'
-            } else if (row.leaveReason === 'A10') {
-              return '其他个人原因'
-            } else if (row.leaveReason === 'B01') {
-              return '试用期内辞退'
-            } else if (row.leaveReason === 'B02') {
-              return '违反公司条例'
-            } else if (row.leaveReason === 'B03') {
-              return '组织调整/裁员'
-            } else if (row.leaveReason === 'B04') {
-              return '绩效不达标辞退'
-            } else if (row.leaveReason === 'B05') {
-              return '合同到期不续签'
-            } else if (row.leaveReason === 'B06') {
-              return '其他原因被动离职'
-            }
+          formatter: (row) => {
+            let dictValue = ''
+            this.leaveReason.forEach((item) => {
+              if (item.dictKey === row.leaveReason) {
+                return (dictValue = item.dictValue)
+              }
+            })
+            return dictValue
           }
         },
         {
@@ -400,7 +366,8 @@ export default {
         },
         {
           label: '离职原因说明',
-          prop: 'leaveRemark'
+          prop: 'leaveRemark',
+          width: '120px'
         }
       ],
       // 表格配置
@@ -493,10 +460,9 @@ export default {
         lastDate: '',
         reason: '',
         // remark: '',
-        name: '张无忌'
+        name: ''
       },
       // 调整信息确认框校验规则
-      // rules 校验规则
       changeRules: {
         lastDate: [
           {
@@ -505,7 +471,11 @@ export default {
             trigger: 'change'
           }
         ]
-      }
+      },
+      // 工作性质字典组
+      workPropertyList: [],
+      // 离职原因
+      leaveReason: []
     }
   },
   computed: {
@@ -519,8 +489,8 @@ export default {
       }
     }
   },
-  created() {
-    this.getLeaveReason()
+  async created() {
+    await this.getCommonDict()
     this.getDataList()
     this.getOrgNameList()
     this.getJobList()
@@ -593,10 +563,10 @@ export default {
         this.popoverOptions[1].options = options
       })
     },
-    // 获取离职原因选择组
-    getLeaveReason() {
+    // 获取相关字典组
+    getCommonDict() {
+      // 离职原因
       this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
-        // 离职原因下拉选择框
         let selectLeaveReason = []
         res.forEach((item) => {
           selectLeaveReason.push({
@@ -605,6 +575,11 @@ export default {
           })
         })
         this.popoverOptions[3].options = selectLeaveReason
+        this.leaveReason = res
+      })
+      // 工作性质
+      this.$store.dispatch('CommonDict', 'workProperty').then((res) => {
+        this.workPropertyList = res
       })
     },
     // 刷选离职员工
@@ -634,6 +609,7 @@ export default {
       let { id } = await getLeaveInfo({
         userId
       })
+
       let result = await this.$confirm(
         '放弃离职后员工将恢复到正常在职状态，您确认要放弃离职吗？',
         '确认放弃离职？',
