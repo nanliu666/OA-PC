@@ -26,21 +26,6 @@ export default [
     ]
   },
   {
-    path: '/test',
-    component: Layout,
-    redirect: '/test/index',
-    children: [
-      {
-        path: 'index',
-        name: '测试页',
-        meta: {
-          i18n: 'test'
-        },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/util/test')
-      }
-    ]
-  },
-  {
     path: '/info',
     component: Layout,
     redirect: '/info/index',
@@ -90,5 +75,19 @@ export default [
         component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
       }
     ]
-  }
+  },
+  process.env.NODE_ENV === 'development'
+    ? {
+        path: '/demo',
+        component: LayoutNoSidebar,
+        redirect: '/demo/form',
+        children: [
+          {
+            path: 'form',
+            name: '测试表单页',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/demo/demoForm')
+          }
+        ]
+      }
+    : null
 ]
