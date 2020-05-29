@@ -298,9 +298,9 @@ export default {
           this.form = Object.assign(this.form, form)
           // }, 500)
         } else if (val.jobId && !this.isEdit) {
-          let { orgId, parentId } = { ...val }
+          let { orgId, jobId } = { ...val }
           let form = {
-            parentId,
+            parentId: jobId,
             orgId
           }
           // setTimeout(() => {
@@ -450,7 +450,7 @@ export default {
       })
     },
     reset() {
-      if (this.orgData.orgId || this.data.orgId) {
+      if (this.orgData.orgId || this.row.orgId) {
         let form = JSON.parse(JSON.stringify(this.form))
         let { orgId, parentId } = { ...form }
         this.$refs.form.resetFields()
