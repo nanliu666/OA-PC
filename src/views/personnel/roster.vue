@@ -109,7 +109,9 @@
             type="text"
             @click="toUserDetail(row)"
           >
-            {{ row.name }}
+            {{
+              row.name
+            }}
           </el-button>
         </template>
         <template
@@ -286,6 +288,9 @@ export default {
   created() {
     this.getTableData(1)
     this.getUserStatusStat()
+  },
+  activated() {
+    this.getTableData()
   },
   methods: {
     toUserDetail(row) {

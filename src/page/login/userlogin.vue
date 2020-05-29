@@ -132,7 +132,7 @@ export default {
         // tenantId: [
         //   { required: false, message: '请输入租户ID', trigger: 'blur' }
         // ],
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入工号', trigger: 'blur' }],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 1, message: '密码长度最少为6位', trigger: 'blur' }
