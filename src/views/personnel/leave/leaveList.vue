@@ -500,8 +500,8 @@ export default {
       deep: true
     }
   },
-  created() {
-    this.getCommonDict()
+  async created() {
+    await this.getCommonDict()
     this.getDataList()
     this.getOrgNameList()
     this.getJobList()
