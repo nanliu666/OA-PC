@@ -500,8 +500,8 @@ export default {
       deep: true
     }
   },
-  async created() {
-    await this.getCommonDict()
+  created() {
+    this.getCommonDict()
     this.getDataList()
     this.getOrgNameList()
     this.getJobList()
@@ -578,23 +578,21 @@ export default {
       })
     },
     // 获取相关字典组
-    getCommonDict() {
+    async getCommonDict() {
       // 离职原因
-      this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
-        let selectLeaveReason = []
-        res.forEach((item) => {
-          selectLeaveReason.push({
-            label: item.dictValue,
-            value: item.dictKey
-          })
+      let resReason = await this.$store.dispatch('CommonDict', 'LeaveReason')
+      let selectLeaveReason = []
+      resReason.forEach((item) => {
+        selectLeaveReason.push({
+          label: item.dictValue,
+          value: item.dictKey
         })
-        this.popoverOptions[3].options = selectLeaveReason
-        this.leaveReason = res
       })
+      this.popoverOptions[3].options = selectLeaveReason
+      this.leaveReason = resReason
       // 工作性质
-      this.$store.dispatch('CommonDict', 'workProperty').then((res) => {
-        this.workPropertyList = res
-      })
+      let resworkProperty = await this.$store.dispatch('CommonDict', 'workProperty')
+      this.workPropertyList = resworkProperty
     },
     // 刷选离职员工
     handleSubmit(params) {

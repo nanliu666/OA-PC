@@ -18,10 +18,21 @@
       </div>
     </div>
     <basic-container>
-      <div style="padding:0 24px 24px 24px;border:1px solid #ccc">
-        <h3 style="text-align:center;">
-          离 职 证 明
-        </h3>
+      <div
+        style="font-family: PingFangSC-Medium; font-size: 32px; color: #202940;letter-spacing: 6px;text-align: right;line-height: 40px;"
+      >
+        <div>
+          <h3 style="text-align:center;">
+            离 职 证 明
+          </h3>
+          <div
+            style="font-family: PingFangSC-Regular;font-size: 14px;color: #202940;line-height: 26px; text-align:center"
+          >
+            <p>
+              <span>{{ userInfo.name }}(身份证号码:{{ userInfo.idNo }})</span>
+            </p>
+          </div>
+        </div>
       </div>
     </basic-container>
   </div>
@@ -31,13 +42,21 @@
 export default {
   data() {
     return {
-      offerInfo: {
-        name: '宋智孝',
-        orgName: '3132165749872167',
-        jobName: '465',
-        entryDate: '4564',
-        probationSalary: '5454',
-        formalSalary: '54654'
+      userInfo: {
+        userId: '用户ID',
+        workNo: '工号',
+        name: '张三丰',
+        idType: '证件类型，字典组：IDType',
+        idNo: '445678913635816589723',
+        companyId: '入职公司ID',
+        companyName: '入职公司名称',
+        orgId: '部门ID',
+        orgName: '部门名称',
+        jobId: '职位Id',
+        jobName: '职位名称',
+        entryDate: '入职日期，YYYY-MM-DD',
+        leaveDate: '离职日期，YYYY-MM-DD',
+        relieveDate: '解除合同日期，YYYY-MM-DD'
       }
     }
   },
