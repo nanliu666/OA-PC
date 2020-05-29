@@ -421,7 +421,7 @@ import {
 } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
 // import TreeSelect from '@/components/treeSelect/treeSelect'
-import { regionData } from 'element-china-area-data'
+import { regionData, provinceAndCityData } from 'element-china-area-data'
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 
 export default {
@@ -539,9 +539,10 @@ export default {
         status: [{ required: true, message: '请选择员工状态', trigger: 'change' }]
       },
       workAddressRules: {
-        addressArr: [{ required: true, message: '请选择地址', trigger: 'change' }]
+        addressArr: [{ required: true, message: '请选择地址', trigger: 'change' }],
+        address: [{ required: true, message: '工作地址不允许为空', trigger: 'blur' }]
       },
-      provinceAndCityData: regionData,
+      provinceAndCityData: provinceAndCityData,
       regionData: regionData,
       workAddress: [],
       dialogTableVisible: false,
@@ -644,7 +645,7 @@ export default {
     handleAddressClick() {
       this.workAddress.forEach((item) => {
         if (item.id === this.form.workAddressId) {
-          this.form.workProvinceArr = [item.provinceCode, item.cityCode, item.countyCode]
+          this.form.workProvinceArr = [item.provinceCode, item.cityCode]
         }
       })
     },
@@ -680,10 +681,8 @@ export default {
             }
             params.workProvinceName = inputValue[0]
             params.workCityName = inputValue[1]
-            params.workCountyName = inputValue[1]
             params.workProvinceCode = params.workProvinceArr && params.workProvinceArr[0]
             params.workCityCode = params.workProvinceArr && params.workProvinceArr[1]
-            params.workCountyCode = params.workProvinceArr && params.workProvinceArr[2]
             // params.orgId = params.orgId[0]
             // params.subOrg = params.subOrg.map((item) => {
             //   return item[0]
