@@ -329,9 +329,7 @@ export default {
       })
     },
     handleEdit(status) {
-      if (status) {
-        this.searchConfig.popoverOptions
-      }
+      this.searchConfig.popoverOptions[status]
     }
   }
 }

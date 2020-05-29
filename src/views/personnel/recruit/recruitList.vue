@@ -31,7 +31,6 @@
           </el-button>
         </el-col>
       </el-row>
-
       <div v-show="Select">
         <el-tabs
           v-model="activeName"
@@ -51,20 +50,21 @@
           </el-tab-pane>
         </el-tabs>
       </div>
+
       <div v-show="doNotsave">
         <el-tabs
-          v-model="activeName"
-          @tab-click="handleClick"
+          v-model="allActiveName"
+          @tab-click="AllhandleClick"
         >
           <el-tab-pane
             label="招聘中"
-            name="Approved"
+            name="allApproved"
           >
             <All-list ref="all" />
           </el-tab-pane>
           <el-tab-pane
             label="已结束"
-            name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+            name="ending                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
           >
             <All-list />
           </el-tab-pane>
@@ -87,7 +87,8 @@ export default {
       doNotsave: false,
       Select: true,
       choice: 'my',
-      activeName: 'Approved'
+      activeName: 'Approved',
+      allActiveName: 'allApproved'
     }
   },
   methods: {
@@ -103,6 +104,15 @@ export default {
         this.$refs.demand.init(tab.paneName)
       }
     },
+    AllhandleClick(tab) {
+      let paneName = tab.paneName.trim()
+      if (paneName == 'Finished') {
+        this.$refs.all.init(tab.paneName)
+      }
+      if (paneName == 'Approved') {
+        this.$refs.all.init(tab.paneName)
+      }
+    },
     changeTemp(value) {
       if (value === 'all') {
         this.Select = false
@@ -115,10 +125,8 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 /deep/ .el-radio-button__inner {
-  margin: 0 20px !important;
   border-radius: 4px !important;
 }
 .state {

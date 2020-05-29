@@ -72,12 +72,10 @@
   </div>
 </template>
 <script>
-import StaffList from './staffList'
-import StaffDetails from './details'
+import StaffDetails from '@/views/personnel/recruit/details/paging/details'
 export default {
   name: 'StaffList',
   components: {
-    StaffList,
     StaffDetails
   },
   data() {
@@ -93,7 +91,7 @@ export default {
   methods: {
     jumpToDetail() {
       let demand = this.$route.params.id
-      this.$router.push(`personnel/recruit/components/recruitmentTasks/recruitmentNeeds/${demand}`)
+      this.$router.push(`personnel/recruit/recruitmentNeeds/${demand}`)
     }
   }
 }

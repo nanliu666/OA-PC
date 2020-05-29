@@ -1,12 +1,12 @@
 <template>
   <div>
-    <header
+    <!-- <header
       title="重新分配招聘需求"
       class="pageHeader"
       show-back
-    />
+    /> -->
     <basic-container>
-      <p class="introduceP">
+      <!-- <p class="introduceP">
         <i
           class="el-icon-warning-outline"
         />更改需求人数将生成新的审批单进入「审批中」状态，现有招聘流程将不受影响
@@ -122,7 +122,7 @@
             </el-button>
           </el-col>
         </el-row>
-      </el-form>
+      </el-form> -->
     </basic-container>
   </div>
 </template>

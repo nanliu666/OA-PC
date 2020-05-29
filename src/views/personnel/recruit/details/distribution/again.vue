@@ -1,11 +1,11 @@
 <template>
   <div>
-    <page-header
+    <!-- <page-header
       title="更改需求人数"
       class="pageHeader"
       show-back
-    />
-    <basic-container>
+    /> -->
+    <!-- <basic-container>
       <p class="introduceP">
         <i
           class="el-icon-warning-outline"
@@ -123,7 +123,7 @@
           </el-col>
         </el-row>
       </el-form>
-    </basic-container>
+    </basic-container> -->
   </div>
 </template>
 
