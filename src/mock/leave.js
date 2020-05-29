@@ -77,10 +77,10 @@ export default ({ mock }) => {
   // 7.员工离职交接事项分组查询接口
   Mock.mock(new RegExp('/api/user/v1/user/leave/note/group' + '.*'), 'get', () => {
     let list = []
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       list.push(
         Mock.mock({
-          id: '@integer(1, 100)',
+          id: '@integer(1, 1000000)',
           name: '@ctitle(3,5)',
           isFinished: '@natural(0, 1)'
           // isFinished: '1'
@@ -117,20 +117,20 @@ export default ({ mock }) => {
   // 8.员工离职交接事项分类查询接口
   Mock.mock(new RegExp('/api/user/v1/user/leave/note/category' + '.*'), 'get', () => {
     let arr = []
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       arr.push(
         Mock.mock({
-          categoryId: '@natural(1, 100)',
+          categoryId: '@natural(1, 10000000)',
           categoryName: '@cword(3, 5)'
         })
       )
     }
     arr.forEach((item) => {
       let list = []
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         list.push(
           Mock.mock({
-            detailId: '@natural(1, 100)',
+            detailId: '@natural(1, 100000000000)',
             detailName: '@ctitle(3,5)'
           })
         )

@@ -44,7 +44,7 @@
                 <el-form-item
                   label="最后工作日"
                   prop="lastDate"
-                  style="width:100%"
+                  style="width:80%"
                 >
                   <el-date-picker
                     v-model="queryInfo.lastDate"
@@ -64,7 +64,7 @@
                 <el-form-item
                   label="离职原因"
                   prop="reason"
-                  style="width:100%"
+                  style="width:80%"
                 >
                   <el-select
                     v-model="queryInfo.reason"
@@ -89,7 +89,7 @@
               <el-col :span="14">
                 <el-form-item
                   label="离职原因说明"
-                  style="width:100%"
+                  style="width:80%"
                 >
                   <el-input
                     v-model="queryInfo.remark"
@@ -109,17 +109,17 @@
                 class="btn-box"
               >
                 <el-button
-                  size="medium"
-                  @click="handelCancel"
-                >
-                  取消
-                </el-button>
-                <el-button
                   type="primary"
                   size="medium"
                   @click="handelSubmit"
                 >
                   提交
+                </el-button>
+                <el-button
+                  size="medium"
+                  @click="handelCancel"
+                >
+                  取消
                 </el-button>
               </el-col>
             </el-row>

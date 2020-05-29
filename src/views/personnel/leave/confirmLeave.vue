@@ -30,7 +30,7 @@
     <basic-container>
       <!-- 提醒 : "交接还没完成" -->
       <div
-        v-if="isFinished === true ? true : false"
+        v-if="!isFinished"
         class="tag-wrap"
       >
         <i class="el-icon-warning-outline icon-warning" />
@@ -47,8 +47,8 @@
                 <span class="title">离职交接事项</span>
               </div>
               <div class="isFinished-wrap">
-                <span v-if="isFinished">进行中</span>
-                <span v-else>已完成</span>
+                <span v-if="isFinished">已完成</span>
+                <span v-else>进行中</span>
               </div>
             </div>
           </template>
@@ -110,7 +110,7 @@
 
       <!-- 确认离职表单 -->
       <div
-        v-if="!isFinished"
+        v-if="isFinished"
         class="confirm-leave-wrap"
       >
         <div class="title">
@@ -183,17 +183,11 @@
                 <!-- 离职原因说明 -->
                 <el-col :span="10">
                   <el-form-item label="离职原因说明">
-                    <el-select
+                    <el-input
                       v-model="confirmDataForm.remark"
-                      placeholder="请选择"
                       style="width : 80%"
                       disabled
-                    >
-                      <el-option
-                        :label="confirmDataForm.remark"
-                        :value="confirmDataForm.remark"
-                      />
-                    </el-select>
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -308,7 +302,7 @@ export default {
         return item.isFinished == 0
       })
 
-      return res
+      return !res
     }
   },
   created() {
@@ -353,11 +347,6 @@ export default {
       let { id, applyDate, lastDate, reason, remark, lastDate: leaveDate } = await getLeaveInfo({
         userId: this.userId
       })
-      // let res = await getLeaveInfo({
-      //     userId: this.userId
-      // })
-      // console.log(res);
-
       this.confirmDataForm = {
         id,
         applyDate,
@@ -373,9 +362,7 @@ export default {
         ...this.confirmDataForm,
         userId: this.userId
       })
-      this.$message.success('确认离职成功', 1000, () => {
-        this.$router.go(-1)
-      })
+      this.$message.success('确认离职成功', 1000, this.$router.go(-1))
     },
     // 获取离职原因选择组
     getLeaveReason() {

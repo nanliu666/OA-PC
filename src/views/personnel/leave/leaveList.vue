@@ -197,8 +197,11 @@
               justify="center"
               class="row-item"
             >
-              <el-col :span="16">
-                <el-form-item label="已选择">
+              <el-col :span="14">
+                <el-form-item
+                  label="已选择"
+                  style="width:80%"
+                >
                   <span class="choose-leave-name">{{ changeParams.name }}</span>
                 </el-form-item>
               </el-col>
@@ -208,7 +211,7 @@
               justify="center"
               class="row-item"
             >
-              <el-col :span="16">
+              <el-col :span="14">
                 <el-form-item
                   label="离职日期"
                   prop="lastDate"
@@ -217,6 +220,46 @@
                     v-model="changeParams.lastDate"
                     type="date"
                     placeholder="选择日期"
+                    style="width:100%"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row
+              type="flex"
+              justify="center"
+              class="row-item"
+            >
+              <el-col :span="14">
+                <el-form-item label="离职原因">
+                  <el-select
+                    v-model="changeParams.reason"
+                    placeholder="请选择"
+                    style="width:100%"
+                  >
+                    <el-option
+                      v-for="item in leaveReason"
+                      :key="item.id"
+                      :label="item.dictValue"
+                      :value="item.dictKey"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row
+              type="flex"
+              justify="center"
+              class="row-item"
+            >
+              <el-col :span="14">
+                <el-form-item label="离职原因说明">
+                  <el-input
+                    v-model="changeParams.remark"
+                    type="textarea"
+                    :rows="2"
+                    placeholder="请输入内容"
+                    style="width:100%"
                   />
                 </el-form-item>
               </el-col>
@@ -277,37 +320,44 @@ export default {
       tableColumns: [
         {
           label: '序号',
-          type: 'index'
+          type: 'index',
+          align: 'center'
         },
         {
           label: '姓名',
+          align: 'center',
           prop: 'name',
           width: '80px',
           slot: true
         },
         {
           label: '工号',
+          align: 'center',
           prop: 'workNo',
           width: '80px'
         },
 
         {
           label: '部门',
+          align: 'center',
           prop: 'orgName',
-          width: '80px'
+          width: '100px'
         },
         {
           label: '职位',
+          align: 'center',
           prop: 'jobName',
-          width: '80px'
+          width: '100px'
         },
         {
           label: '岗位',
+          align: 'center',
           prop: 'positionName',
-          width: '80px'
+          width: '120px'
         },
         {
           label: '员工状态',
+          align: 'center',
           width: '80px',
           formatter(row) {
             if (row.status === 'WaitLeave') {
@@ -320,10 +370,12 @@ export default {
         {
           label: '手机号码',
           prop: 'phonenum',
-          width: '80px'
+          align: 'center',
+          width: '110px'
         },
         {
           label: '工作性质',
+          align: 'center',
           width: '80px',
           formatter: (row) => {
             let dictValue = ''
@@ -337,18 +389,21 @@ export default {
         },
         {
           label: '入职日期',
+          align: 'center',
           prop: 'entryDate',
           width: '120px'
         },
         {
           label: '离职日期',
+          align: 'center',
           prop: 'lastDate',
           slot: true,
           width: '150px'
         },
         {
           label: '离职原因',
-          width: '80px',
+          align: 'center',
+          width: '120px',
           formatter: (row) => {
             let dictValue = ''
             this.leaveReason.forEach((item) => {
@@ -361,11 +416,13 @@ export default {
         },
         {
           label: '离职申请时间',
+          align: 'center',
           prop: 'applyDate',
           width: '120px'
         },
         {
           label: '离职原因说明',
+          align: 'center',
           prop: 'leaveRemark',
           width: '120px'
         }
@@ -421,7 +478,7 @@ export default {
         // 离职日期
         {
           type: 'dataPicker',
-          field: 'beginEffectDate,endEffectDate',
+          field: 'beginLeaveDate,endLeaveDate',
           label: '离职日期',
           data: '',
           options: [],
@@ -459,7 +516,7 @@ export default {
         id: '',
         lastDate: '',
         reason: '',
-        // remark: '',
+        remark: '',
         name: ''
       },
       // 调整信息确认框校验规则
@@ -475,18 +532,19 @@ export default {
       // 工作性质字典组
       workPropertyList: [],
       // 离职原因
-      leaveReason: []
+      leaveReason: [],
+      // 控制按钮是否点亮
+      isDisabled: true
     }
   },
-  computed: {
-    // 调整离职信息保全按钮是否禁用
-    isDisabled() {
-      let changeParams = JSON.parse(JSON.stringify(this.changeParams))
-      if (changeParams.lastDate === this.changeParams.lastDate) {
-        return true
-      } else {
-        return false
-      }
+  watch: {
+    changeParams: {
+      handler(newVal, oldVal) {
+        if (oldVal.id != '') {
+          return (this.isDisabled = false)
+        }
+      },
+      deep: true
     }
   },
   async created() {
@@ -509,7 +567,7 @@ export default {
     },
     // 获取待离职list数据
     async getDataList() {
-      this.loading = false
+      this.loading = true
       let { data, totalNum } = await getLeaveList(this.paramsInfo)
       // await this.$store.dispatch('CommonDict', 'WorkProperty')
       this.tableList = data
@@ -605,7 +663,6 @@ export default {
     // 放弃离职api
     async handelGiveLeave(userId) {
       // 获取离职ID
-
       let { id } = await getLeaveInfo({
         userId
       })
@@ -640,18 +697,13 @@ export default {
       let res = await getLeaveInfo({
         userId
       })
-      let {
-        id,
-        lastDate
-        // remark,
-        // reason,
-      } = res
+      let { id, lastDate, remark, reason } = res
 
       this.changeParams = {
         id,
         lastDate,
-        // remark,
-        // reason,
+        remark,
+        reason,
         name
       }
       this.changeLeaveVisible = true
@@ -661,6 +713,13 @@ export default {
       await changeLeaveInfo(this.changeParams)
       this.$message.success('保存成功', 2000)
       this.getDataList()
+      this.changeParams = {
+        id: '',
+        lastDate: '',
+        reason: '',
+        remark: '',
+        name: ''
+      }
       this.changeLeaveVisible = false
     },
 
@@ -681,9 +740,6 @@ export default {
         query: {
           userId
         }
-        // query: {
-        //   userId: '1264805583983218689'
-        // }
       })
     }
   }
@@ -711,10 +767,6 @@ export default {
 
 .el-dialog {
   .row-item {
-    //   /deep/  .el-form-item__content{
-    //         height: 30px;
-    //         line-height: 30px;
-    //     }
     .choose-leave-name {
       padding: 5px 10px;
       border-radius: 5px;
@@ -722,7 +774,7 @@ export default {
       background: #e3e7e9;
     }
 
-    height: 80px;
+    height: 90px;
   }
 }
 </style>
