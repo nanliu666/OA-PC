@@ -58,6 +58,7 @@ instance.interceptors.request.use(
       !String.prototype.endsWith.call(config.url, '/oauth/token')
     ) {
       config.data = config.data || config.params
+      config.params = null
     }
     if (config.method.toLowerCase() === 'delete') config.params = config.data
     return config

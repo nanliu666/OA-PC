@@ -139,11 +139,17 @@ export default {
       this.$refs.viewPicture.init(tempImgList.concat(temp))
     },
     isDelete(index, id) {
-      this.deleteData.id = id
-      this.fileList.splice(index, 1)
-      deleteAttachmentInfo(this.deleteData).then(() => {
-        // this.fileList.splice(index, 1)
-        this.initData()
+      this.$confirm('您确认要删除该文件吗？', '删除文件？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteData.id = id
+        this.fileList.splice(index, 1)
+        deleteAttachmentInfo(this.deleteData).then(() => {
+          // this.fileList.splice(index, 1)
+          this.initData()
+        })
       })
     },
 
@@ -168,7 +174,7 @@ export default {
           const params = {
             userId: that.$route.params.userId,
             categoryId: that.id,
-            attachments: [{ name: data.fileName, url: data.url }]
+            attachments: [{ name: file.file.name, url: data.url }]
           }
           uploadAttachmentInfo(params).then(() => {
             that.$message.success('上传成功')

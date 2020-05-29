@@ -1,9 +1,8 @@
 <template>
   <div style="height: 100%">
-    <el-page-header
-      content="组织详情"
-      class="pageHeader"
-      @back="goBack"
+    <page-header
+      title="组织详情"
+      show-back
     />
     <basic-container :block="true">
       <div class="container">
@@ -70,25 +69,25 @@
                 组织编码
               </el-col>
               <el-col :span="20">
-                {{ orgData.orgCode }}
+                {{ orgData.orgCode || '暂无' }}
               </el-col>
               <el-col :span="4">
                 组织类型
               </el-col>
               <el-col :span="20">
-                {{ orgTypeObj[orgData.orgType] }}
+                {{ orgTypeObj[orgData.orgType] || '暂无' }}
               </el-col>
               <el-col :span="4">
                 组织负责人
               </el-col>
               <el-col :span="20">
-                {{ orgData.userName }}
+                {{ orgData.userName || '暂无' }}
               </el-col>
               <el-col :span="4">
                 备注
               </el-col>
               <el-col :span="20">
-                {{ orgData.remark }}
+                {{ orgData.remark || '暂无' }}
               </el-col>
             </el-row>
           </div>
@@ -161,12 +160,18 @@ export default {
         this.$message.error('顶级组织不可删除')
         return
       }
-      const params = {
-        ids: this.orgData.orgId
-      }
-      deleteOrg(params).then(() => {
-        this.$message.success('删除成功')
-        this.loadData()
+      this.$confirm('您确定要删除选中的组织么？', '提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const params = {
+          ids: this.orgData.orgId
+        }
+        deleteOrg(params).then(() => {
+          this.$message.success('删除成功')
+          this.loadData()
+        })
       })
     },
     handleOrgEdit(row) {

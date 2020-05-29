@@ -22,7 +22,6 @@
           <el-select
             v-model="form.positions"
             :no-data-text="column.noDataText"
-            multiple
             :placeholder="column.placeholder"
           >
             <el-option
@@ -76,7 +75,7 @@
 
 <script>
 import treeSelect from '../../../components/treeSelect/treeSelect'
-import { createRole, updateRole } from '../../../api/system/role'
+import { createRole, getJobs, updateRole } from '../../../api/system/role'
 
 export default {
   name: 'RoleEdit',
@@ -130,6 +129,8 @@ export default {
       }
     }
     return {
+      jobTree: [],
+      noJobRTree: [],
       loading: false,
       roleVisible: true,
       form: {
@@ -137,7 +138,7 @@ export default {
         roleName: '',
         type: 'Job',
         remark: '',
-        positions: [],
+        positions: '',
         jobs: []
       },
       option: {
@@ -319,6 +320,9 @@ export default {
     jobs: {
       handler(val) {
         const jobColumn = this.findObject(this.option.column, 'jobs')
+        if (this.row.roleId) {
+          this.recursion(val, this.row.roleId)
+        }
         jobColumn.dicData = val
       },
       immediate: true,
@@ -342,10 +346,99 @@ export default {
       deep: true
     }
   },
+  mounted() {
+    this.getJobsFunc()
+  },
   methods: {
-    fiter(data) {
-      this.$emit('fiter', data)
+    getJobsFunc() {
+      let params = {
+        jobName: ''
+      }
+      getJobs(params).then((res) => {
+        let allData = []
+        let relationData = []
+        this.jobFilter(res, allData, relationData)
+
+        const jobColumn = this.findObject(this.option.column, 'jobs')
+        this.noJobRTree = relationData
+        this.filterTree(this.noJobRTree)
+        this.jobTree = allData
+        jobColumn.dicData = allData
+      })
     },
+    filterTree(data) {
+      data.map((it) => {
+        if (!(it.children && it.children.length > 0) && it.orgType) {
+          it.disabled = true
+        }
+        if (it.children && it.children.length > 0) {
+          this.filterTree(it.children)
+        }
+      })
+    },
+    fiter(check) {
+      const jobColumn = this.findObject(this.option.column, 'jobs')
+      if (check) {
+        jobColumn.dicData = this.noJobRTree
+      } else {
+        jobColumn.dicData = this.jobTree
+      }
+      // this.$emit('fiter', check,this.row.roleId)
+    },
+    jobFilter(arr, data, data2) {
+      arr.filter((item) => {
+        const obj = {
+          children: []
+        }
+        const obj2 = {
+          children: []
+        }
+        if (item.jobs && item.jobs.length > 0) {
+          item.jobs.forEach((item) => {
+            const job = {
+              label: item.jobName,
+              id: item.jobId,
+              roles: item.roles
+            }
+            obj.children.push(job)
+            if (!(item.roles && item.roles.length > 0)) {
+              obj2.children.push(job)
+            } else {
+              job.disabled = true
+            }
+            if (item.roles && item.roles.length > 0 && item.roles[0].roleId === this.row.roleId) {
+              job.disabled = false
+              obj2.children.push(job)
+            }
+          })
+        }
+        if (item.orgType) {
+          obj.label = item.orgName
+          obj.id = item.orgId
+          obj2.label = item.orgName
+          obj2.id = item.orgId
+          obj2.orgType = item.orgType
+          if (item.children && item.children.length > 0) {
+            this.jobFilter(item.children, obj.children, obj2.children)
+          } else {
+            obj.disabled = true
+          }
+        }
+        data.push(obj)
+        data2.push(obj2)
+      })
+    },
+    recursion(data, roleId) {
+      data.map((it) => {
+        if (it.roles && it.roles.length > 0 && it.roles[0].roleId === roleId) {
+          it.disabled = false
+        }
+        if (it.children && it.children.length > 0) {
+          this.recursion(it.children, roleId)
+        }
+      })
+    },
+
     findObject(column, key) {
       return column.find((item) => item.prop === key)
     },
@@ -383,10 +476,7 @@ export default {
     },
     //新建角色
     createFunc(callback) {
-      let positions = []
-      this.form.positions.filter((it) => {
-        positions.push({ positionId: it })
-      })
+      let positions = [{ positionId: this.form.positions.length === 0 ? '' : this.form.positions }]
       let jobs = []
       this.form.jobs.filter((it) => {
         jobs.push({ jobId: it })
@@ -411,10 +501,7 @@ export default {
     },
     // 更新角色
     updateFunc() {
-      let positions = []
-      this.form.positions.filter((it) => {
-        positions.push({ positionId: it })
-      })
+      let positions = [{ positionId: this.form.positions.length === 0 ? '' : this.form.positions }]
       let jobs = []
       this.form.jobs.filter((it) => {
         jobs.push({ jobId: it })
