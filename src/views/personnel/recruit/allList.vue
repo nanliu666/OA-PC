@@ -49,7 +49,7 @@
         <el-button
           size="medium"
           type="text"
-          @click="handleEdit(row.status)"
+          @click="handleEdit(row)"
         >
           {{ row.status == 'UnHandle' ? '分配' : '重新分配' }}
         </el-button>
@@ -329,11 +329,11 @@ export default {
         })
       })
     },
-    handleEdit(status) {
-      if (status === 'Handled') {
-        this.$refs.Assigned.init()
+    handleEdit(row) {
+      if (row.status === 'Handled') {
+        this.$refs.Assigned.init(row)
       } else {
-        this.$refs.Again.init()
+        this.$refs.Again.init(row)
       }
     }
   }
