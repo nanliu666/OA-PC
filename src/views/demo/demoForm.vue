@@ -66,8 +66,6 @@ import { getOrgTreeSimple } from '@/api/org/org'
 export default {
   name: 'DemoForm',
   components: {
-    pageHeader: () => import('@/components/page-header/pageHeader'),
-    commonForm: () => import('@/components/common-form/commonForm'),
     commonUpload: () => import('@/components/common-upload/commonUpload')
   },
   data() {
@@ -83,7 +81,8 @@ export default {
         recruitment: null,
         resume: [],
         remark: '',
-        orgId: ''
+        orgId: '',
+        date: null
       },
       columns: [
         {
@@ -109,6 +108,7 @@ export default {
           label: '姓名',
           itemType: 'input',
           required: true
+          // placeholder:'test'
         },
         {
           prop: 'age',
@@ -153,10 +153,17 @@ export default {
           required: true
         },
         {
+          prop: 'date',
+          itemType: 'datePicker',
+          label: '入职日期',
+          required: true
+        },
+        {
           prop: 'recruitment',
           itemType: 'select',
           label: '招聘渠道',
           required: true,
+          offset: 4,
           props: {
             label: 'dictValue',
             value: 'dictKey'
@@ -165,7 +172,6 @@ export default {
         {
           prop: 'remark',
           itemType: 'input',
-          offset: 4,
           label: '备注',
           rows: 2,
           type: 'textarea'
@@ -174,6 +180,7 @@ export default {
           prop: 'orgId',
           itemType: 'treeSelect',
           label: '部门',
+          offset: 4,
           props: {
             selectParams: {
               placeholder: '请选择组织',
@@ -235,10 +242,16 @@ export default {
       })
     },
     handleSubmit() {
-      this.$refs.form.validate().then((res) => {
-        // eslint-disable-next-line
-        console.log('validate', res)
-      })
+      this.$refs.form
+        .validate()
+        .then((res) => {
+          // eslint-disable-next-line
+          console.log('validate', res)
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log('validate error:', error)
+        })
     },
     loadOrgData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {

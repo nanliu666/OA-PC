@@ -85,7 +85,7 @@ export default {
 /deep/ .el-timeline-item__tail {
   position: absolute;
   left: 7px;
-  top: 16px;
+  top: 21px;
   height: calc(100% - 20px);
   border-left: 1px solid #368afa;
 }
@@ -101,6 +101,7 @@ export default {
 }
 /deep/ .el-timeline-item__node--normal {
   left: 2px;
+  top: 5px;
 }
 .action-name {
   font-family: PingFangSC-Regular;

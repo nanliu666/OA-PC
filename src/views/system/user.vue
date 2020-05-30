@@ -22,7 +22,15 @@
               label="组织架构"
               name="orgTree"
             >
+              <el-input
+                v-model="treeSearch"
+                suffix-icon="el-icon-search"
+                placeholder="组织名称"
+                style="margin-bottom:10px;"
+              />
               <el-tree
+                ref="orgTree"
+                :filter-node-method="filterNode"
                 :data="treeData"
                 node-key="orgId"
                 :props="treeProps"
@@ -108,16 +116,26 @@ export default {
         children: 'children'
       },
       activeTag: null,
-      activeOrg: null
+      activeOrg: null,
+      treeSearch: ''
     }
   },
   computed: {
     ...mapGetters(['userInfo'])
   },
+  watch: {
+    treeSearch(val) {
+      this.$refs.orgTree.filter(val)
+    }
+  },
   mounted() {
     this.loadTree()
   },
   methods: {
+    filterNode(value, data) {
+      if (!value) return true
+      return data.orgName.indexOf(value) !== -1
+    },
     nodeClick(data) {
       this.activeOrg = data
     },
