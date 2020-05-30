@@ -532,7 +532,7 @@ const res = {
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'recruit',
-            path: '/personnel/recruit/components/changeDemand/chang',
+            path: '/personnel/recruit/components/chang',
             icon: 'iconfont iconicon_compile'
           },
           {

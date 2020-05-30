@@ -6,24 +6,20 @@
     :modal-append-to-body="false"
     @close="handleClose"
   >
-    <div>
-      <div />
-
-      <el-row
-        type="flex"
-        :gutter="52"
-      >
-        <el-col :span="8">
-          <span> 需求人数：{{ Totalnumberpeople }}</span>
-        </el-col>
-        <el-col :span="8">
-          <span> 已分配：{{ Assigned }}</span>
-        </el-col>
-        <el-col :span="8">
-          <span> 待分配：{{ Numberofpeople }}</span>
-        </el-col>
-      </el-row>
-    </div>
+    <el-row
+      type="flex"
+      :gutter="52"
+    >
+      <el-col :span="8">
+        <span> 需求人数：{{ Totalnumberpeople }}</span>
+      </el-col>
+      <el-col :span="8">
+        <span> 已分配：{{ Assigned }}</span>
+      </el-col>
+      <el-col :span="8">
+        <span> 待分配：{{ Numberofpeople }}</span>
+      </el-col>
+    </el-row>
     <el-form
       ref="dynamicValidateForm"
       :model="dynamicValidateForm"

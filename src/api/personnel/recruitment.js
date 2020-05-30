@@ -36,17 +36,6 @@ export const getMyRecruitment = (params) => {
 export const getMyScreen = (params) => {
   return post('/user/v1/recruitment/my/list', params)
 }
-
-/**
- *  招聘任务修改接口
- * @param {String} recruitmentId -招聘需求ID
- * @param {int} users.taskNum -指定招聘人员ID
- * @param {String} users.operatorType -操作类型，Add-新增，Update-修改
- * */
-export const putTask = (params) => {
-  return put('/user/v1/recruitment/task', params)
-}
-
 /**
  *  招聘需求新增接口
  * @param {String} userId - 	userId
@@ -75,4 +64,22 @@ export const getPost = () => {
  * */
 export const taskDistribution = (params) => {
   return post('/user/v1/recruitment/task', params)
+}
+
+/**
+ *  重新分配页面查询接口
+ * @param {String} recruitmentId - 招聘需求ID
+ * */
+export const queryDistribution = (params) => {
+  return get('/user/v1/recruitment/task', params)
+}
+/**
+ *  重新分配页面修改接口
+ * @param {String} recruitmentId - 招聘需求ID
+ * @param {array} users - 申请公司ID
+ * @param {String}users.userId -指定招聘人员ID
+ *  @param {String} users.taskNum -	招聘任务数
+ * */
+export const putDistribution = (params) => {
+  return put('/user/v1/recruitment/task', params)
 }
