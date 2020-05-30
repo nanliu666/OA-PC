@@ -215,11 +215,12 @@ export default {
               if (value && value !== '0') {
                 // orgList.filter(it)
                 let orgs = []
-                this.f(orgList, value, orgs)
+                this.filterOrg(orgList, value, orgs)
 
                 let selectIndex = this.allType.findIndex((value) => value === orgs[0].orgType)
                 let dataIndex = this.allType.findIndex((value) => value === this.orgData.type)
-                let type = selectIndex > dataIndex ? orgs[0].orgType : this.orgData.type
+                // let type = selectIndex > dataIndex ? orgs[0].orgType : this.orgData.type
+                let type = orgs[0].orgType
                 if (selectIndex > dataIndex) {
                   this.form.orgType = ''
                 }
@@ -377,14 +378,14 @@ export default {
   },
   created() {},
   methods: {
-    f(org, value, orgs) {
+    filterOrg(org, value, orgs) {
       org.filter((it) => {
         if (it.id === value) {
           orgs.push(it)
           // orgs = JSON.parse(JSON.stringify(it))
         }
         if (it.children && it.children.length > 0) {
-          this.f(it.children, value, orgs)
+          this.filterOrg(it.children, value, orgs)
         }
       })
     },
@@ -464,18 +465,22 @@ export default {
             remark
           }
           this.loading = true
-          postOrganization(params).then(() => {
-            this.$emit('onsubmit')
-            this.$message.success('添加成功')
-            this.loading = false
-            if (ishow) {
-              this.$emit('update:dialogVisible', false)
-            } else {
-              let parentOrgId = JSON.parse(JSON.stringify(this.form.parentOrgId))
-              this.$refs.form.resetFields()
-              this.form.parentOrgId = parentOrgId
-            }
-          })
+          postOrganization(params)
+            .then(() => {
+              this.$emit('onsubmit')
+              this.$message.success('添加成功')
+              this.loading = false
+              if (ishow) {
+                this.$emit('update:dialogVisible', false)
+              } else {
+                let parentOrgId = JSON.parse(JSON.stringify(this.form.parentOrgId))
+                this.$refs.form.resetFields()
+                this.form.parentOrgId = parentOrgId
+              }
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },
@@ -501,12 +506,16 @@ export default {
             remark
           }
           this.loading = true
-          putOrganization(params).then(() => {
-            this.$emit('onsubmit')
-            this.$message.success('修改成功')
-            this.loading = false
-            this.handleClose()
-          })
+          putOrganization(params)
+            .then(() => {
+              this.$emit('onsubmit')
+              this.$message.success('修改成功')
+              this.loading = false
+              this.handleClose()
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },

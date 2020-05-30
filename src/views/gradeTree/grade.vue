@@ -11,10 +11,12 @@
         <span style="width: 150px;display: inline-block;">
           组织架构图
           <el-tooltip
-            content="组织架构图"
-            placement="right-end"
+            placement="top"
             effect="dark"
           >
+            <div slot="content">
+              1.架构图是将企业组织、职位和员工以结构层级图呈现。<br>2.对架构图的编辑将同步更新到【组织管理】和【职位管理】。
+            </div>
             <i class="el-icon-question" /> </el-tooltip></span>
         <avue-form
           v-model="orgForm"
@@ -61,13 +63,13 @@
         </el-button>
       </div>
       <div v-else>
-        <div
-          id="download"
-          class="button"
+        <el-button
+          size="medium"
+          type="primary"
           @click="sort"
         >
-          保存视图
-        </div>
+          <span style="display: inline-block; width: 93px">保存视图</span>
+        </el-button>
       </div>
     </div>
     <div class="canvas">
@@ -211,6 +213,7 @@ export default {
   },
   data() {
     return {
+      firstLoad: false,
       zIndex: 999,
       loading: false,
       positionTitle: ['新建子职位', '编辑职位'],
@@ -271,20 +274,24 @@ export default {
       handler: function(newVal, oldVal) {
         if (newVal && oldVal) {
           (async () => {
-            await this.getOrgData()
-            this.load()
+            if (this.firstLoad) {
+              await this.getOrgData()
+              this.load()
+            } else {
+              this.firstLoad = true
+            }
           })()
         }
       },
       deep: true
     }
   },
-  created() {},
   async mounted() {
     this.getTree()
     await this.getOrgData()
     this.init()
   },
+  activated() {},
   methods: {
     f(res) {
       res.map((it) => {
@@ -301,6 +308,13 @@ export default {
       }
       getOrganizationTree(params).then((res) => {
         this.f(res)
+        setTimeout(() => {
+          if (!this.orgForm.orgId) {
+            this.orgForm.orgId = res[0].orgId
+            this.firstLoad = false
+          }
+        }, 500)
+
         this.option.column[0].dicData = res
       })
     },
@@ -841,7 +855,7 @@ export default {
         }
       })
       if (isChildren || !this.selData.parent) {
-        this.$confirm('很抱歉，您选中的组织或职位下存在组织或职位，请先将调整后在删除', {
+        this.$confirm('很抱歉，您选中的组织或职位下存在组织或职位，请先将调整后再删除', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -955,7 +969,7 @@ export default {
     },
     downloadImage() {
       let images = this.myDiagram.makeImage({
-        scale: 2,
+        scale: 1,
         padding: 50,
         type: 'image/jpeg',
         background: 'rgba(220, 239, 254, 1)'

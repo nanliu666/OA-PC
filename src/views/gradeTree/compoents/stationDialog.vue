@@ -44,7 +44,7 @@
         >
           <el-button
             size="medium"
-            @click="onContinue"
+            @click="handleClose"
           >
             取消
           </el-button>
