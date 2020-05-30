@@ -65,3 +65,14 @@ export const getJobInfo = (params) => {
 export const getPost = () => {
   return get('/org/v1/position/define')
 }
+
+/**
+ *  招聘任务分配接口
+ * @param {String} recruitmentId - 招聘需求ID
+ * @param {array} users - 申请公司ID
+ * @param {String}users.userId -指定招聘人员ID
+ *  @param {String} users.taskNum -	招聘任务数
+ * */
+export const taskDistribution = (params) => {
+  return post('/user/v1/recruitment/task', params)
+}

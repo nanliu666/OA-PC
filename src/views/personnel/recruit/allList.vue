@@ -57,13 +57,13 @@
     </common-table>
 
     <again
-      ref="adjustEdit"
-      :visible.sync="createOrgDailog"
+      ref="Again"
+      :visible.sync="createAgain"
       @getTableData="getTableData"
     />
     <assigned
-      ref="adjustEdit"
-      :visible.sync="createOrgDailog"
+      ref="Assigned"
+      :visible.sync="createAssigned"
       @getTableData="getTableData"
     />
   </div>
@@ -74,8 +74,8 @@ import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
 import { getAllRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
-import Again from '@/views/personnel/recruit/details/distribution/again'
-import Assigned from '@/views/personnel/recruit/details/distribution/Assigned'
+import Again from '@/views/personnel/recruit/details/again'
+import Assigned from '@/views/personnel/recruit/details/Assigned'
 export default {
   name: 'AllList',
   components: {
@@ -245,7 +245,8 @@ export default {
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
       },
-      createOrgDailog: false,
+      createAgain: false,
+      createAssigned: false,
       setElement: [
         {
           choice: 'WorkYear',
@@ -329,7 +330,11 @@ export default {
       })
     },
     handleEdit(status) {
-      this.searchConfig.popoverOptions[status]
+      if (status === 'Handled') {
+        this.$refs.Assigned.init()
+      } else {
+        this.$refs.Again.init()
+      }
     }
   }
 }

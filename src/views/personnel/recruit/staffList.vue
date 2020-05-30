@@ -58,25 +58,27 @@
           label="招聘进度"
           name="inrecruitment"
         >
-          <staff-list />
+          <details-list />
         </el-tab-pane>
 
         <el-tab-pane
           label="招聘需求详情"
           name="recruitmentdemand"
         >
-          <staff-details />
+          <details-details />
         </el-tab-pane>
       </el-tabs>
     </basic-container>
   </div>
 </template>
 <script>
-import StaffDetails from '@/views/personnel/recruit/details/paging/details'
+import DetailsList from './paging/List'
+import DetailsDetails from './paging/details'
 export default {
   name: 'StaffList',
   components: {
-    StaffDetails
+    DetailsList,
+    DetailsDetails
   },
   data() {
     return {
@@ -91,7 +93,7 @@ export default {
   methods: {
     jumpToDetail() {
       let demand = this.$route.params.id
-      this.$router.push(`personnel/recruit/recruitmentNeeds/${demand}`)
+      this.$router.push(`personnel/recruit/components/recruitmentTasks/recruitmentNeeds/${demand}`)
     }
   }
 }

@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import CancelEdit from '@/views/personnel/recruit/details/distribution/cancelEdit'
+import CancelEdit from '@/views/personnel/recruit/details/cancelEdit'
 import InputArray from '@/views/personnel/candidate/components/inputArray.vue'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
