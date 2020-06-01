@@ -64,6 +64,7 @@
       </div>
       <div v-else>
         <el-button
+          v-loading="sortLoading"
           size="medium"
           type="primary"
           @click="sort"
@@ -213,6 +214,7 @@ export default {
   },
   data() {
     return {
+      sortLoading: false,
       firstLoad: false,
       zIndex: 999,
       loading: false,
@@ -718,7 +720,7 @@ export default {
                 row: 0,
                 column: 0,
                 alignment: go.Spot.Center,
-                height: 36,
+                margin: 0,
                 width: 200
               },
               $(go.Shape, 'RoundedRectangle', {
@@ -727,11 +729,21 @@ export default {
                 name: 'SHAPE1',
                 stroke: null
               }),
+              // $(go.TextBlock, { text: "a Text Block that takes 4 lines",
+              //   font: '14pt sans-serif',
+              //   overflow: go.TextBlock.OverflowClip, /* 默认值是OverflowClip溢出剪裁 */
+              //   // 没有限制最大行数
+              //   margin: 2,
+              //   width: 90 }),
               $(
                 go.TextBlock,
                 {
                   name: 'Name',
-                  font: 'bold 12pt serif'
+                  font: 'bold 13pt sans-serif',
+                  overflow: go.TextBlock.OverflowClip /* 默认值是OverflowClip溢出剪裁 */,
+                  wrap: go.TextBlock.WrapFit,
+                  textAlign: 'center',
+                  margin: 8
                 },
                 new go.Binding('text', 'orgName').makeTwoWay()
               )
@@ -867,24 +879,24 @@ export default {
         })
         return
       } else {
+        if (this.selData.userNum > 0) {
+          this.$confirm('很抱歉，您选中的组织或该职位下存在员工，请先将员工调整后再删除', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'info',
+              message: '取消操作!'
+            })
+          })
+          return
+        }
         this.$confirm('您确定要删除该组织或该职位吗?', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          if (this.selData.userNum > 0) {
-            this.$confirm('很抱歉，您选中的职位下存在员工，请先将员工调整后再删除', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              this.$message({
-                type: 'info',
-                message: '取消操作!'
-              })
-            })
-            return
-          }
           if (this.selData.type !== this.type[4]) {
             let params = { ids: this.selData.id }
             deleteOrganization(params).then(() => {
@@ -937,6 +949,7 @@ export default {
     back() {
       this.editStatus = true
       this.zIndex = 999
+      this.myDiagram.isReadOnly = true
     },
     isEdit_() {
       this.editStatus = false
@@ -962,10 +975,16 @@ export default {
         data.sort = data.sort ? data.sort : 1
         params.push(data)
       })
-      postSort(params).then(() => {
-        this.$message.success('排序成功')
-        this.getTree()
-      })
+      this.sortLoading = true
+      postSort(params)
+        .then(() => {
+          this.sortLoading = false
+          this.$message.success('排序成功')
+          this.getTree()
+        })
+        .catch(() => {
+          this.sortLoading = false
+        })
     },
     downloadImage() {
       let images = this.myDiagram.makeImage({

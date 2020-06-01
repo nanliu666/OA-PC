@@ -31,10 +31,12 @@
           placeholder="姓名/工号"
           suffix-icon="el-icon-search"
           style="width:200px;margin-right:12px;"
+          @change="currentChange(1)"
         />
         <el-button
           type="primary"
           size="medium"
+          style="float:right;"
           plain
           @click="handleEditTagUser"
         >
@@ -92,6 +94,7 @@ export default {
       tableConfig: {
         showHandler: true,
         enableMultiSelect: true,
+        enablePagination: true,
         uniqueKey: 'userId'
       },
       columns: [
@@ -159,7 +162,7 @@ export default {
       this.page.pageSize = pageSize
     },
     handleDelete(data) {
-      let msg = '删除标签后，标签内的成员也会同步被清除，确定删除该标签么？'
+      let msg = '确定将用户移出该标签么？'
       let userId = data.userId
       if (Array.isArray(data)) {
         msg = `确定将选中的${data.length}个用户移出该标签么？`

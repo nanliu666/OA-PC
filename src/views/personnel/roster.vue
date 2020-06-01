@@ -27,12 +27,7 @@
           @click="tabClick('onJob')"
         >
           在职
-          {{
-            personStatistics.Formal +
-              personStatistics.Try +
-              personStatistics.WaitLeave +
-              personStatistics.Leaved
-          }}
+          {{ personStatistics.Formal + personStatistics.Try + personStatistics.WaitLeave }}
           人
           <div
             v-show="tabStatus === 'onJob'"
@@ -109,9 +104,7 @@
             type="text"
             @click="toUserDetail(row)"
           >
-            {{
-              row.name
-            }}
+            {{ row.name }}
           </el-button>
         </template>
         <template
@@ -318,7 +311,7 @@ export default {
     },
     getTableData(pageNo) {
       if (!this.searchParams.statuses && this.tabStatus === 'onJob') {
-        this.searchParams.statuses = ['Formal', 'Try', 'WaitLeave', 'Leaved']
+        this.searchParams.statuses = ['Formal', 'Try', 'WaitLeave']
       } else if (this.tabStatus !== 'onJob') {
         this.searchParams.statuses = [this.tabStatus]
       }

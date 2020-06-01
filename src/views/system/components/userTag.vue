@@ -1,5 +1,8 @@
 <template>
-  <div v-loading="loading">
+  <div
+    v-loading="loading"
+    style="height:100%"
+  >
     <el-input
       v-model="searchValue"
       placeholder="标签内容"
@@ -8,7 +11,7 @@
       class="search-input"
       @change="loadData"
     />
-    <ul>
+    <ul style="overflow: auto;max-height: calc(100% - 50px);">
       <li
         v-for="tag in tagList"
         :key="tag.id"
@@ -59,10 +62,11 @@
         </template>
       </li>
     </ul>
-    <div style="text-align: center;">
+    <div style="text-align: center;width:100%;position:absolute;bottom:0;background:white">
       <el-button
         icon="el-icon-plus"
         type="text"
+        style="padding:0;"
         @click="handleAdd"
       >
         新建标签
@@ -140,6 +144,10 @@ export default {
       this.loadData()
     },
     handleSubmit(tag) {
+      if (!tag.name) {
+        this.$message.error('标签名称不能为空')
+        return
+      }
       let func = createTag
       if (tag.id) {
         func = modifyTag

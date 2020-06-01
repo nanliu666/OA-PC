@@ -41,6 +41,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-image-viewer__mask {
+  opacity: 0.75;
+}
+
+/deep/ .el-icon-circle-close {
+  color: #fff;
+}
+
 .small-img {
   justify-content: center;
 
