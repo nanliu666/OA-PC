@@ -37,12 +37,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import CancelEdit from '@/views/personnel/recruit/details/cancelEdit'
 import InputArray from '@/views/personnel/candidate/components/inputArray.vue'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
-import { mapGetters } from 'vuex'
 import { getOrganizationCompany } from '@/api/personnel/roster'
 import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 export default {

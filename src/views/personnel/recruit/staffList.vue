@@ -38,17 +38,6 @@
             style="color: #207EFA"
           >{{ status }}</span>
         </el-col>
-        <!-- 
-        <el-col :span="8">
-          <el-button
-            style="float: right; margin-top: 5px;"
-            size="medium"
-            type="primary"
-            @click="jumpToDetail"
-          >
-            复制
-          </el-button>
-         </el-col> -->
       </el-row>
     </basic-container>
 
@@ -72,6 +61,8 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import { getEntryDetails } from '@/api/personnel/recruitment'
 import DetailsList from './paging/List'
 import DetailsDetails from './paging/details'
 export default {
@@ -90,10 +81,23 @@ export default {
       status: '暂无状态'
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
+  watch: {
+    '$route.query.id': function(newval) {
+      if (newval) {
+        this.ReplicationCache(newval)
+      }
+    }
+  },
+  mounted() {
+    this.ReplicationCache(this.$route.query.id)
+  },
   methods: {
-    jumpToDetail() {
-      let id = this.$route.params.id
-      this.$router.push(`personnel/recruit/components/recruitmentTasks/recruitmentNeeds/${id}`)
+    ReplicationCache(id) {
+      // 请求查看数据请求。
+      getEntryDetails({ userId: this.userId, recruitmentId: id }).then(() => {})
     }
   }
 }

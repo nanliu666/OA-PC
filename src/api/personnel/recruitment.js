@@ -83,3 +83,7 @@ export const queryDistribution = (params) => {
 export const putDistribution = (params) => {
   return put('/user/v1/recruitment/task', params)
 }
+
+export const getEntryDetails = (params) => {
+  return get('/user/v1/recruitment/user/list', { ...params })
+}

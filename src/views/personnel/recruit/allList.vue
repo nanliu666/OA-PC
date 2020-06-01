@@ -92,6 +92,7 @@ export default {
             type: 'input',
             field: 'jobName',
             label: '',
+            data: '',
             config: {
               placeholder: '职位名称'
             }
