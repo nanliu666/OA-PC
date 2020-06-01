@@ -241,12 +241,18 @@ export default {
               this.form.parentId = ''
               this.initOrgId = ''
             }
-
+            // conso.log(this.orgData.parentJobId)
             jod = jod.filter((it) => {
               if (this.row.id !== it.jobId) {
                 return it
               }
             })
+            jod = jod.filter((it) => {
+              if (this.orgData.id !== it.jobId) {
+                return it
+              }
+            })
+
             jod.map((it) => {
               (it.label = it.jobName), (it.value = it.jobId)
             })
@@ -319,6 +325,7 @@ export default {
         if (val.name) {
           await this.init()
         }
+        this.initOrgId = val.orgId
         if (this.isEdit && val.name) {
           let jobName = val.name
           let categoryId = val.categoryId
@@ -484,12 +491,16 @@ export default {
           }
           params.parentId = params.parentId ? params.parentId : '0'
           this.loading = true
-          putV1Job(params).then(() => {
-            this.loading = true
-            this.$message.success('修改成功')
-            this.$emit('onsubmit', params)
-            this.$emit('update:dialogVisible', false)
-          })
+          putV1Job(params)
+            .then(() => {
+              this.loading = false
+              this.$message.success('修改成功')
+              this.$emit('onsubmit', params)
+              this.$emit('update:dialogVisible', false)
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },
@@ -512,17 +523,21 @@ export default {
           }
           params.parentId = params.parentId ? params.parentId : '0'
           this.loading = true
-          postV1Job(params).then(() => {
-            this.loading = false
-            this.$message.success('保存成功')
-            this.$emit('onsubmit', params)
+          postV1Job(params)
+            .then(() => {
+              this.loading = false
+              this.$message.success('保存成功')
+              this.$emit('onsubmit', params)
 
-            if (!again) {
-              this.$emit('update:dialogVisible', false)
-            } else {
-              reset()
-            }
-          })
+              if (!again) {
+                this.$emit('update:dialogVisible', false)
+              } else {
+                reset()
+              }
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },

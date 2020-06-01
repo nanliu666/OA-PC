@@ -17,13 +17,11 @@
         <div class="search-input">
           <el-input
             v-model="searchInput"
+            suffix-icon="el-icon-search"
             size="medium"
+            clearable
             placeholder="请输入内容"
-          >
-            <template slot="append">
-              <i class="el-icon-search" />
-            </template>
-          </el-input>
+          />
         </div>
         <div
           v-if="!isSingle"
@@ -146,15 +144,17 @@ export default {
     }
   },
   watch: {
+    searchInput: {
+      handler: function(val) {
+        this.$refs.tree.filter(val)
+      }
+    },
     'option.dicData': {
       handler(val) {
         this.filterList = val
       },
       immediate: true,
       deep: true
-    },
-    searchInput(val) {
-      this.onClickSearch(val)
     },
     value: {
       handler(val) {
@@ -177,6 +177,9 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    search() {
+      this.$refs.tree.filter(this.searchInput)
+    },
     filterNode(value, data) {
       if (this.checked) {
         const index = this.value.findIndex((item) => data[this.keyID] === item)
@@ -337,5 +340,8 @@ export default {
 .flexheight {
   max-height: 350px;
   overflow-y: scroll;
+}
+/deep/ .el-input__validateIcon {
+  display: none;
 }
 </style>

@@ -210,7 +210,7 @@ export default {
         })
         if (name) {
           name = name.length > 18 ? name.substr(0, 18) + '...' : name
-          this.$confirm(`很抱歉，您选中的职位类别 ${name} 下存在员工，请先将员工调整后在删除`, {
+          this.$confirm(`很抱歉，您选中的职位类别 ${name} 下存在员工，请先将员工调整后再删除`, {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -253,7 +253,7 @@ export default {
         type: 'warning'
       }).then(() => {
         if (row.workNum > 0) {
-          this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后在删除', {
+          this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后再删除', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -339,7 +339,7 @@ export default {
     },
     handleCheck() {
       this.isEdit = true
-      this.title = '编辑子组织'
+      this.title = '编辑'
       this.positionDialog = true
     },
     handleCommand(event, row) {
@@ -350,7 +350,7 @@ export default {
       })
         .then(() => {
           if (row.workNum) {
-            this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后在删除', {
+            this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后再删除', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
