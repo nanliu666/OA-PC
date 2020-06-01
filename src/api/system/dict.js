@@ -12,12 +12,12 @@ export const getList = (pageNo, pageSize, params) => {
   })
 }
 
-export const remove = (id) => {
+export const remove = (ids) => {
   return request({
     url: '/api/sys/v1/dict',
     method: 'delete',
     params: {
-      id
+      ids
     }
   })
 }

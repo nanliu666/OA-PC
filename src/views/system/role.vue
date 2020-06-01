@@ -140,7 +140,7 @@ import roleEdit from './components/roleEdit'
 import roleAside from './components/roleAside'
 import roleLimits from './components/rolePermission'
 import userList from './components/roleUserList'
-import { getRoleList, getCate, getPositions, getJobs, delRole } from '../../api/system/role'
+import { getRoleList, getCate, getPositions, delRole } from '../../api/system/role'
 
 export default {
   name: 'Role',
@@ -154,6 +154,8 @@ export default {
     return {
       loading: false,
       JodOrg: [],
+      associated: [],
+      notassociated: [],
       editingRoleId: '',
       visible: false,
       configVisible: false,
@@ -244,7 +246,7 @@ export default {
     }
   },
   created() {
-    this.getJobsFunc()
+    // this.getJobsFunc()
     this.getPositionsFunc()
     this.onLoad()
   },
@@ -264,7 +266,7 @@ export default {
         })
         if (name) {
           name = name.length > 18 ? name.substr(0, 18) + '...' : name
-          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后在删除`, {
+          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后再删除`, {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -290,10 +292,15 @@ export default {
     },
     sizeChange() {},
     currentChange() {},
-    fiter(checked) {
-      let data = []
-      this.jobFilter(this.JodOrg, data, checked)
-      this.options.jobs = data
+    fiter() {
+      // let data = []
+      //    let data2= []
+      // this.jobFilter(this.JodOrg, data, data2,roleId)
+      // if(checked){
+      //   this.options.jobs =  data2
+      // }else{
+      //   this.options.jobs =  data
+      // }
     },
     // 加载页面全部数据（左侧分组树，右侧角色列表）
     async onLoad() {
@@ -377,71 +384,6 @@ export default {
         }
       }
       return str
-    },
-
-    //
-    getJobsFunc() {
-      let params = {
-        jobName: ''
-      }
-      getJobs(params).then((res) => {
-        let data = []
-        this.JodOrg = res
-        this.jobFilter(res, data)
-        this.options.jobs = data
-      })
-    },
-    // resolveTree(tree) {
-    //   if (tree.length > 0) {
-    //     tree.forEach((node) => {
-    //       let users
-    //       if (node.users) {
-    //         users = node.users.map((user) => ({
-    //           ...user,
-    //           id: user.userId,
-    //           type: 'user'
-    //         }))
-    //         if (node.children) {
-    //           node.children.push(...users)
-    //           this.resolveTree(node.children)
-    //         } else {
-    //           node.children = users
-    //         }
-    //         if (node.orgId) {
-    //           node.id = node.orgId
-    //         }
-    //       }
-    //     })
-    //   }
-    // },
-    jobFilter(arr, data, checked = false) {
-      arr.filter((item) => {
-        const obj = {
-          children: []
-        }
-        if (item.jobs && item.jobs.length > 0) {
-          item.jobs.forEach((item) => {
-            const job = {
-              label: item.jobName,
-              id: item.jobId
-            }
-            if (!(item.roles.length > 0 && checked)) {
-              obj.children.push(job)
-            }
-          })
-        }
-        if (item.orgType) {
-          obj.label = item.orgName
-          obj.id = item.orgId
-
-          if (item.children && item.children.length > 0) {
-            this.jobFilter(item.children, obj.children)
-          } else {
-            obj.disabled = true
-          }
-        }
-        data.push(obj)
-      })
     },
 
     getPositionsFunc() {
@@ -537,6 +479,7 @@ export default {
 <style lang="scss" scoped>
 .role-wrap {
   margin-bottom: 150px;
+
   .oa-title_bar {
     padding: 14px 6px;
 

@@ -66,15 +66,15 @@ export default {
     resetForm() {
       this.$refs.form.resetFields()
     },
-    handleMinChange(value) {
-      this.value.min = value.replace(/[^\d.]/g, '')
-      this.value.min = value.replace('.', '')
+    handleMinChange() {
+      this.value.min = this.value.min.replace(/[^\d.]/g, '')
+      this.value.min = this.value.min.replace('.', '')
       this.$refs.form.validateField('max')
       this.$emit('update:value', this.value)
     },
-    handleMaxChange(value) {
-      this.value.max = value.replace(/[^\d.]/g, '')
-      this.value.max = value.replace('.', '')
+    handleMaxChange() {
+      this.value.max = this.value.max.replace(/[^\d.]/g, '')
+      this.value.max = this.value.max.replace('.', '')
       this.$refs.form.validateField('min')
       this.$emit('update:value', this.value)
     },
