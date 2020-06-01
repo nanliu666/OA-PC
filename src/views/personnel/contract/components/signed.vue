@@ -42,9 +42,7 @@
             type="primary"
             @click="handleJumpDetail(scope.row)"
           >
-            {{
-              scope.row.name
-            }}
+            {{ scope.row.name }}
           </el-link>
         </template>
         <template

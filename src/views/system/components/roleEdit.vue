@@ -581,4 +581,7 @@ export default {
 /deep/ .el-radio {
   margin-right: 20px;
 }
+/deep/ .el-input__icon .el-input__validateIcon .el-icon-circle-close {
+  display: none;
+}
 </style>
