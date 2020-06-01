@@ -30,7 +30,7 @@ const options = { mock: false }
 
 user(options)
 
-menu({ mock: true })
+menu(options)
 
 candidate(options)
 selectPerson(options)
@@ -54,7 +54,7 @@ org(options)
 transction(options)
 
 person(options.mock)
-contact({ mock: false })
+contact(options)
 leave(options)
 
 contact({ mock: false })

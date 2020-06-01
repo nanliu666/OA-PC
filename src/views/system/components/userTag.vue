@@ -62,7 +62,11 @@
         </template>
       </li>
     </ul>
-    <div style="text-align: center;width:100%;position:absolute;bottom:0;background:white">
+    <!-- 有标签处于编辑状态时不显示新增按钮 -->
+    <div
+      v-if="!hasEditing"
+      class="button-add"
+    >
       <el-button
         icon="el-icon-plus"
         type="text"
@@ -91,6 +95,11 @@ export default {
       searchValue: '',
       tagList: [],
       loading: false
+    }
+  },
+  computed: {
+    hasEditing() {
+      return this.tagList.some((tag) => tag.editing)
     }
   },
   created() {
@@ -183,5 +192,12 @@ ul li {
 }
 .search-input {
   margin-bottom: 8px;
+}
+.button-add {
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background: white;
 }
 </style>
