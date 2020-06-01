@@ -97,21 +97,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
-            <!-- <el-row>
-              <el-col :span="10">
-                <el-form-item label="学历要求" ><span class="distance">{{personnel.company}}</span> </el-form-item>
-              </el-col>
-              <el-col
-                :span="10"
-                :offset="4"
-              >
-                <el-form-item label="需求人数">
-                      <span class="distance">{{personnel.orgName}}</span> 
-                </el-form-item>
-              </el-col>
-            </el-row> -->
-
             <el-row>
               <el-col :span="24">
                 <el-form-item label="学历要求">

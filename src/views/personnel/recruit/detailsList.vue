@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 <template>
   <div>
     <common-table
@@ -43,7 +42,18 @@
           {{ row.id }}
         </el-button>
       </template>
-
+      <template
+        slot="workYear"
+        slot-scope="{ row }"
+      >
+        {{ getWorkYear(row.workYear) }}
+      </template>
+      <template
+        slot="educationalLevel"
+        slot-scope="{ row }"
+      >
+        {{ getEducationalLevel(row.educationalLevel) }}
+      </template>
       <template
         slot="handler"
         slot-scope="{ row }"
@@ -190,11 +200,13 @@ export default {
         },
         {
           label: '工作年限',
-          prop: 'workYear'
+          prop: 'workYear',
+          slot: true
         },
         {
           label: '学历要求',
-          prop: 'educationalLevel'
+          prop: 'educationalLevel',
+          slot: true
         },
         {
           label: '最低薪资',
@@ -235,7 +247,9 @@ export default {
           choice: 'EducationalLevel',
           target: 4
         }
-      ]
+      ],
+      WorkYear: [],
+      getLevel: []
     }
   },
   computed: {
@@ -249,9 +263,33 @@ export default {
     getPost().then((res) => {
       this.searchConfig.popoverOptions[1].options = res
     })
+    this.$store.dispatch('CommonDict', 'WorkYear').then((res) => {
+      this.WorkYear = res
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.getLevel = res
+    })
     this.getDictionarygroup()
   },
   methods: {
+    getEducationalLevel(type) {
+      let typeWord
+      this.getLevel.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
+    getWorkYear(type) {
+      let typeWord
+      this.WorkYear.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
     init(row) {
       // 控制当前页面是否有操作面板。
       if (row === 'Finished') {

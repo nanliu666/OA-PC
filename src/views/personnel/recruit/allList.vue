@@ -277,6 +277,15 @@ export default {
     this.getDictionarygroup()
   },
   methods: {
+    getWorkProperty(type) {
+      let typeWord
+      this.WorkProperty.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
     init(row) {
       if (row === 'allApproved') {
         this.tableConfig.showHandler = true

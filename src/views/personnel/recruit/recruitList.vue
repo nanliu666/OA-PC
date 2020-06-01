@@ -12,10 +12,16 @@
             v-model="choice"
             @change="changeTemp(choice)"
           >
-            <el-radio-button label="my">
+            <el-radio-button
+              size="medium"
+              label="my"
+            >
               我提交的招聘需求
             </el-radio-button>
-            <el-radio-button label="all">
+            <el-radio-button
+              size="medium"
+              label="all"
+            >
               全部招聘需求
             </el-radio-button>
           </el-radio-group>
@@ -97,10 +103,10 @@ export default {
     },
     handleClick(tab) {
       let paneName = tab.paneName.trim()
-      if (paneName == 'Finished' || paneName == 'Approved') {
+      if (paneName === 'Finished' || paneName === 'Approved') {
         this.$refs.demand.init(tab.paneName)
       }
-      if (paneName == 'ending' || paneName == 'allApproved') {
+      if (paneName === 'ending' || paneName === 'allApproved') {
         this.$refs.all.init(tab.paneName)
       }
     },
