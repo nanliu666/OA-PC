@@ -54,7 +54,7 @@
       <div v-show="doNotsave">
         <el-tabs
           v-model="allActiveName"
-          @tab-click="AllhandleClick"
+          @tab-click="handleClick"
         >
           <el-tab-pane
             label="招聘中"
@@ -97,19 +97,10 @@ export default {
     },
     handleClick(tab) {
       let paneName = tab.paneName.trim()
-      if (paneName == 'Finished') {
+      if (paneName == 'Finished' || paneName == 'Approved') {
         this.$refs.demand.init(tab.paneName)
       }
-      if (paneName == 'Approved') {
-        this.$refs.demand.init(tab.paneName)
-      }
-    },
-    AllhandleClick(tab) {
-      let paneName = tab.paneName.trim()
-      if (paneName == 'Finished') {
-        this.$refs.all.init(tab.paneName)
-      }
-      if (paneName == 'Approved') {
+      if (paneName == 'ending' || paneName == 'allApproved') {
         this.$refs.all.init(tab.paneName)
       }
     },

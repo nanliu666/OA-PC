@@ -43,6 +43,19 @@
           {{ row.id }}
         </el-button>
       </template>
+
+      <template
+        slot="handler"
+        slot-scope="{ row }"
+      >
+        <el-button
+          size="medium"
+          type="text"
+          @click="JumpNewlybuild(row.id)"
+        >
+          复制
+        </el-button>
+      </template>
     </common-table>
   </div>
 </template>
@@ -192,9 +205,8 @@ export default {
           prop: 'maxSalary'
         }
       ],
-
       tableConfig: {
-        showHandler: false,
+        showHandler: true,
         showIndexColumn: false,
         enableMultiSelect: false,
         enablePagination: true
@@ -241,6 +253,12 @@ export default {
   },
   methods: {
     init(row) {
+      // 控制当前页面是否有操作面板。
+      if (row === 'Finished') {
+        this.tableConfig.showHandler = true
+      } else {
+        this.tableConfig.showHandler = false
+      }
       this.params.progress = row.trim()
       this.getTableData()
     },
@@ -252,7 +270,6 @@ export default {
         this.data = res.data
       })
     },
-
     Decorator(paramsData) {
       let request = {
         jobName: paramsData.jobName || '',
@@ -268,7 +285,6 @@ export default {
       }
       return request
     },
-
     handleSubmit(params) {
       let request = this.Decorator(params)
       getMyRecruitment(request).then(() => {
@@ -281,12 +297,14 @@ export default {
     jumpToDetail(id) {
       this.$router.push(`/personnel/recruit/staffList/${id}`)
     },
+    JumpNewlybuild(id) {
+      this.$router.push(`/personnel/recruit/recruitmentNeeds/${id}`)
+    },
     currentPageChange(param) {
       let paramsInfo = {}
       paramsInfo.pageNo = param
-      return this.getTableData(paramsInfo)
+      this.getTableData(paramsInfo)
     },
-
     getDictionarygroup() {
       this.setElement.forEach((item) => {
         this.$store.dispatch('CommonDict', item.choice).then((res) => {

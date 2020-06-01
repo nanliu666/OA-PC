@@ -71,7 +71,7 @@ export const taskDistribution = (params) => {
  * @param {String} recruitmentId - 招聘需求ID
  * */
 export const queryDistribution = (params) => {
-  return get('/user/v1/recruitment/task', params)
+  return get('/user/v1/recruitment/task', { ...params })
 }
 /**
  *  重新分配页面修改接口

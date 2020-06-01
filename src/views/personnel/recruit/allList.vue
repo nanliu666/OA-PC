@@ -230,7 +230,7 @@ export default {
         }
       ],
       tableConfig: {
-        showHandler: true,
+        showHandler: false,
         showIndexColumn: false,
         enableMultiSelect: false,
         enablePagination: true
@@ -278,6 +278,11 @@ export default {
   },
   methods: {
     init(row) {
+      if (row === 'allApproved') {
+        this.tableConfig.showHandler = true
+      } else if (row === 'ending') {
+        this.tableConfig.showHandler = false
+      }
       this.params.progress = row.trim()
       this.getTableData()
     },

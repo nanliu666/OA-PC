@@ -195,10 +195,6 @@ export default {
     handleClose() {
       this.$emit('update:visible', false)
     },
-    goBack() {
-      this.$router.go(-1)
-      this.handleClose()
-    },
     addDomain() {
       let accumulation = this.calWhetherBeyond()
       if (accumulation > this.Numberofpeople) return

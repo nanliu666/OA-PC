@@ -56,12 +56,32 @@
               :gutter="6"
               type="flex"
             >
-              <el-col :span="8">
+              <el-col
+                v-if="domain.Rendering === 'Rendering'"
+                :span="8"
+              >
+                <el-select
+                  v-model="domain.userId"
+                  placeholder="请选择"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.userId"
+                  />
+                </el-select>
+              </el-col>
+              <el-col
+                v-else
+                :span="8"
+              >
                 <el-input
                   v-model="domain.name"
-                  :disabled="domain.disabled"
+                  :disabled="domain.peopleDisabled"
                 />
               </el-col>
+
               <el-col :span="4">
                 <el-input
                   :value="domain.isTaskNum"
@@ -70,23 +90,23 @@
               </el-col>
               <el-col :span="4">
                 <el-input
-                  v-model="domain.entryNum"
+                  :value="domain.entryNum"
                   :disabled="domain.disabled"
                 />
               </el-col>
               <el-col :span="4">
                 <el-input
-                  v-model="domain.candidateNum"
+                  :value="domain.candidateNum"
                   :disabled="domain.disabled"
                 />
               </el-col>
               <el-col :span="4">
+                <!--     @change="handleChange" -->
                 <el-input-number
                   v-model="domain.taskNum"
                   controls-position="right"
                   :min="1"
-                  :max="10"
-                  @change="handleChange"
+                  :max="Numberofpeople"
                 />
               </el-col>
             </el-row>
@@ -119,6 +139,8 @@
 </template>
 
 <script>
+import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
+import { getUserWorkList } from '@/api/org/org'
 export default {
   name: 'Again',
   props: {
@@ -138,8 +160,8 @@ export default {
         users: [
           {
             name: '李嘉琪',
-            userId: null,
             isTaskNum: 1,
+            peopleDisabled: true,
             disabled: true,
             entryNum: 3,
             candidateNum: 4,
@@ -150,37 +172,46 @@ export default {
       options: []
     }
   },
-  // watch: {
-  //   'dynamicValidateForm.users.length': function(newval) {
-  //     if (newval > 1) {
-  //       this.isDelete = true
-  //     } else {
-  //       this.isDelete = false
-  //     }
-  //   }
-  // },
+  watch: {
+    recruitmentId: function(newval, oldval) {
+      if (newval !== oldval) {
+        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
+        itemArr[0].userId = null
+        this.dynamicValidateForm.users = itemArr
+      }
+    }
+  },
   methods: {
     doNotSave() {
       this.$emit('isDoNotSave')
       this.$router.go(-1)
       return this.handleClose()
     },
-    init(row) {
+    async init(row) {
       let { id } = row
       this.recruitmentId = id
       this.$emit('update:visible', true)
+      await getUserWorkList({ pageNo: 1, pageSize: 15 }).then((res) => {
+        this.options = res.data
+      })
+      this.queryData(this.recruitmentId)
     },
+    queryData(mentId) {
+      queryDistribution({ recruitmentId: mentId }).then((res) => {
+        this.dynamicValidateForm.users = res.response
+      })
+    },
+
     handleClose() {
       this.$emit('update:visible', false)
     },
-    goBack() {
-      this.$router.go(-1)
-      this.handleClose()
-    },
     addDomain() {
+      this.calWhetherBeyond()
       this.dynamicValidateForm.users.push({
         userId: '',
-        taskNum: 1
+        taskNum: 1,
+        disabled: true,
+        Rendering: 'Rendering'
       })
     },
     onSubmitted() {
@@ -195,10 +226,25 @@ export default {
         let parms = {}
         parms.recruitmentId = this.recruitmentId
         parms.users = this.dynamicValidateForm.users
-        // taskDistribution(parms).then(() => {
-        //   this.$message({ message: '操作成功', type: 'success' })
-        // })
+        putDistribution(parms).then(() => {
+          this.$message({ message: '操作成功', type: 'success' })
+        })
       }
+    },
+    calWhetherBeyond() {
+      var total = null
+      this.dynamicValidateForm.users.forEach((item, index) => {
+        this.dynamicValidateForm.users[index].operatorType = 'Update'
+        total += item.taskNum
+      })
+      if (total > this.Numberofpeople) {
+        this.$message({
+          showClose: true,
+          message: '请注意！ 需求总人数不能大于待分配人数',
+          type: 'error'
+        })
+      }
+      return total
     }
   }
 }
@@ -255,6 +301,10 @@ export default {
 }
 
 /deep/ .el-input__inner {
+  width: 100% !important;
+}
+
+/deep/ .el-select {
   width: 100% !important;
 }
 </style>

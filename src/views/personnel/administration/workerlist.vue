@@ -9,10 +9,13 @@
       <common-table
         style="width: 100%"
         :data="data"
+        :page="page"
         :config="tableConfig"
         :columns="columns"
-        @pageSizeChange="getTableData"
-        @currentPageChange="getTableData"
+        @pageSizeChange="sizeChange"
+        @currentPageChange="currentChange"
+        @current-page-change="currentPageChange"
+        @page-size-change="currentPageChange"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">
@@ -42,7 +45,7 @@
           <el-button
             type="text"
             size="medium"
-            @click="jumpToDetail(row.positionId)"
+            @click="jumpToDetail(row)"
           >
             {{ row.name }}
           </el-button>
@@ -266,6 +269,10 @@ export default {
       params: {
         pageNo: 1,
         pageSize: 10
+      },
+      page: { currentPage: 1, size: 10, total: 0 },
+      pageConfig: {
+        pageSizes: [10, 20, 30, 40, 50]
       }
     }
   },
@@ -347,8 +354,13 @@ export default {
       // }
       this.$refs.adjustEdit.init(row)
     },
-    jumpToDetail(personId) {
-      this.$router.push(`/personnel/detail/${personId}`)
+    currentPageChange(param) {
+      let paramsInfo = {}
+      paramsInfo.pageNo = param
+      this.getTableData(paramsInfo)
+    },
+    jumpToDetail(row) {
+      this.$router.push(`/personnel/detail/${row.userId}`)
     },
     jumpApproval(Approvalcode) {
       return this.$message({
@@ -356,6 +368,17 @@ export default {
         message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
         type: 'warning'
       })
+    },
+    sizeChange(val) {
+      this.params.pageSize = val
+      this.params.pageNo = 1
+      this.page.pagerCount = 1
+      this.getTableData()
+    },
+    currentChange(val) {
+      this.params.pageNo = val
+      this.page.pagerCount = val
+      this.getTableData()
     }
   }
 }

@@ -556,7 +556,7 @@ const res = {
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'recruit',
-            path: '/personnel/recruit/staffList',
+            path: '/personnel/recruit/staffList/:id',
             icon: 'iconfont iconicon_compile'
           },
           {
@@ -578,7 +578,7 @@ const res = {
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'recruit',
-            path: '/personnel/recruit/recruitmentNeeds/:personId',
+            path: '/personnel/recruit/recruitmentNeeds/:id',
             icon: 'iconfont iconicon_compile'
           },
           {
@@ -746,7 +746,7 @@ const res = {
                 isShow: 0,
                 code: 'personnel_detail',
                 alias: 'personnel_detail',
-                path: '/personnel/detail/:userId',
+                path: ':userId',
                 icon: 'iconfont iconicon_namecard',
                 dataPrivileges: [],
                 children: []

@@ -92,8 +92,8 @@ export default {
   },
   methods: {
     jumpToDetail() {
-      let demand = this.$route.params.id
-      this.$router.push(`personnel/recruit/components/recruitmentTasks/recruitmentNeeds/${demand}`)
+      let id = this.$route.params.id
+      this.$router.push(`personnel/recruit/components/recruitmentTasks/recruitmentNeeds/${id}`)
     }
   }
 }
