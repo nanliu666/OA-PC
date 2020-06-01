@@ -243,7 +243,7 @@ export default {
   },
   created() {
     this.getTableData()
-    getOrgTreeSimple({ orgId: 0 }).then((res) => {
+    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getPost().then((res) => {
@@ -281,7 +281,9 @@ export default {
         reason: paramsData.reason || '',
         emerType: paramsData.emerType || '',
         beginJoinDate: paramsData.beginJoinDate || '',
-        endJoinDate: paramsData.endJoinDate || ''
+        endJoinDate: paramsData.endJoinDate || '',
+        progress: this.params.progress,
+        userId: this.userId
       }
       return request
     },

@@ -268,7 +268,7 @@ export default {
   },
   created() {
     this.getTableData()
-    getOrgTreeSimple({ orgId: 0 }).then((res) => {
+    getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getPost().then((res) => {
@@ -290,6 +290,7 @@ export default {
       if (typeof params === 'undefined') params = this.params
       params.userId = this.userId
       params.progress = this.params.progress
+
       getAllRecruitment(params).then((res) => {
         this.data = res.data
       })
@@ -305,13 +306,16 @@ export default {
         emerType: paramsData.emerType || '',
         beginJoinDate: paramsData.beginJoinDate || '',
         endJoinDate: paramsData.endJoinDate || '',
-        status: paramsData.status || ''
+        status: paramsData.status || '',
+        progress: this.params.progress,
+        userId: this.userId
       }
       return request
     },
 
     handleSubmit(params) {
       let request = this.Decorator(params)
+
       getAllRecruitment(request).then(() => {
         this.$message({
           message: '操作成功',

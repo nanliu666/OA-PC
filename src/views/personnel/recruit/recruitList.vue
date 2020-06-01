@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     opnDetails() {
-      this.$router.push('/personnel/recruit/recruitmentNeeds')
+      this.$router.push('/personnel/recruit/recruitmentNeeds/')
     },
     handleClick(tab) {
       let paneName = tab.paneName.trim()

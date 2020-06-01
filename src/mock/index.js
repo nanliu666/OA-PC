@@ -30,7 +30,7 @@ const options = { mock: false }
 
 user(options)
 
-menu(options)
+menu({ mock: true })
 
 candidate(options)
 selectPerson(options)
