@@ -556,7 +556,7 @@ const res = {
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'recruit',
-            path: '/personnel/recruit/staffList/:id',
+            path: '/personnel/recruit/staffList',
             icon: 'iconfont iconicon_compile'
           },
           {
@@ -571,14 +571,14 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
-            menuId: '1261314369666908888888888',
+            menuId: '',
             menuName: '新建需求',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'recruit',
-            path: '/personnel/recruit/recruitmentNeeds/:id',
+            path: '/personnel/recruit/recruitmentNeeds',
             icon: 'iconfont iconicon_compile'
           },
           {

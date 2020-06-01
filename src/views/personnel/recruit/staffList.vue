@@ -38,7 +38,7 @@
             style="color: #207EFA"
           >{{ status }}</span>
         </el-col>
-
+        <!-- 
         <el-col :span="8">
           <el-button
             style="float: right; margin-top: 5px;"
@@ -48,7 +48,7 @@
           >
             复制
           </el-button>
-        </el-col>
+         </el-col> -->
       </el-row>
     </basic-container>
 

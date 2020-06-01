@@ -335,10 +335,13 @@ export default {
       })
     },
     jumpToDetail(id) {
-      this.$router.push(`/personnel/recruit/staffList/${id}`)
+      this.$router.push({ path: '/personnel/recruit/staffList', query: { id: id } })
     },
     JumpNewlybuild(id) {
-      this.$router.push(`/personnel/recruit/recruitmentNeeds/${id}`)
+      this.$router.push({
+        path: '/personnel/recruit/recruitmentNeeds',
+        query: { id: id }
+      })
     },
     currentPageChange(param) {
       let paramsInfo = {}

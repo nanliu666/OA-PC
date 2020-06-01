@@ -4,7 +4,7 @@ import { get, post, put } from '@/router/axios'
  * 关联招聘需求查询接口 复制流程使用借口
  * */
 export const getRecruitmentDetail = (recruitmentId) => {
-  return get('/user/v1/recruitment/detail', { recruitmentId })
+  return get('/user/v1/recruitment/detail', { ...recruitmentId })
 }
 
 /**

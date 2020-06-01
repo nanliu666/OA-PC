@@ -44,6 +44,7 @@ import { getStaffBasicInfo } from '@/api/personalInfo'
 import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
 import { mapGetters } from 'vuex'
 import { getOrganizationCompany } from '@/api/personnel/roster'
+import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 export default {
   name: 'AddRoster',
   components: {
@@ -88,9 +89,15 @@ export default {
       } else {
         this.$refs.personInfo.explainshow = false
       }
+    },
+    '$route.query.id': function(newval) {
+      if (newval) {
+        this.ReplicationCache(newval)
+      }
     }
   },
   mounted() {
+    this.ReplicationCache(this.$route.query.id)
     this.getUseInformation()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'workProperty', 'dictValue', 'dictKey')
@@ -187,6 +194,11 @@ export default {
           this.infoForm[key] = null
         }
       }
+    },
+    ReplicationCache(id) {
+      getRecruitmentDetail({ recruitmentId: id }).then((res) => {
+        this.infoForm = res
+      })
     }
   }
 }
