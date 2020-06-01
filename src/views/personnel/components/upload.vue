@@ -14,6 +14,7 @@
         class="isShow"
       >
         <span
+          v-show="showPreview"
           class="preview-box"
           @click="PictureCardPreview"
         >预览</span>
@@ -41,15 +42,20 @@
       <upload-img
         :id="id"
         :limit="limit"
+        :list-data="listData"
       />
       <div
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="openUpload = false">
+        <el-button
+          size="medium"
+          @click="openUpload = false"
+        >
           取 消
         </el-button>
         <el-button
+          size="medium"
           type="primary"
           @click="preserve"
         >
@@ -73,7 +79,13 @@ export default {
     typeName: { type: String, default: '' },
     typeIcon: { type: String, default: '' },
     limit: { type: Number, default: 15 },
-    id: { type: Number, default: 0 }
+    id: { type: Number, default: 0 },
+    listData: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    }
   },
   data() {
     return {
@@ -82,16 +94,26 @@ export default {
       lookUpData: {
         //查询接口
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 15,
         categoryId: this.id, //附件分类ID
         userId: this.$route.params.userId,
         name: '' //非必填
-      }
+      },
+      firstEnter: true,
+      showPreview: false
     }
   },
   mounted() {},
   methods: {
     visible() {
+      if (this.firstEnter) {
+        lookUpAttachmentInfo(this.lookUpData).then((res) => {
+          if (res.totalNum > 0) {
+            this.showPreview = true
+          }
+        })
+        this.firstEnter = false
+      }
       this.seen = true
     },
     invisible() {

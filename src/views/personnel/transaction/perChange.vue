@@ -26,6 +26,7 @@
               <el-button
                 icon="el-icon-refresh"
                 size="medium"
+                type="primary"
                 @click="getTableList()"
               />
             </div>
@@ -79,7 +80,10 @@ export default {
           label: '',
           data: '',
           options: [],
-          config: { placeholder: '请输入姓名/工号', 'suffix-icon': 'el-icon-search' }
+          config: {
+            placeholder: '请输入姓名/工号',
+            'suffix-icon': 'el-icon-search'
+          }
         }
       ],
       popoverOptions: [
@@ -90,11 +94,22 @@ export default {
           label: '异动类型',
           data: '',
           options: [
-            { value: 'Position', label: '调岗' },
-            { value: 'Up', label: '晋升' },
-            { value: 'Down', label: '降级' }
+            {
+              value: 'Position',
+              label: '调岗'
+            },
+            {
+              value: 'Up',
+              label: '晋升'
+            },
+            {
+              value: 'Down',
+              label: '降级'
+            }
           ],
-          config: { multiple: true }
+          config: {
+            multiple: true
+          }
         },
         // 异动原因
         {
@@ -103,7 +118,10 @@ export default {
           label: '异动原因',
           data: '',
           options: [],
-          config: { group: true, multiple: true }
+          config: {
+            group: true,
+            multiple: true
+          }
         },
         // 生效时间
         {
@@ -112,29 +130,36 @@ export default {
           label: '生效时间',
           data: '',
           options: [],
-          config: { type: 'daterange', 'range-separator': '至' }
+          config: {
+            type: 'daterange',
+            'range-separator': '至'
+          }
         }
       ],
       // tablecolumns
       tableColumns: [
         {
           label: '序号',
+          align: 'center',
           type: 'index'
         },
         {
           label: '姓名',
+          align: 'center',
           prop: 'name',
           width: '80px',
           slot: true
         },
         {
           label: '工号',
+          align: 'center',
           prop: 'workNo',
           width: '80px'
         },
         {
           label: '原公司/现公司',
           width: '200px',
+          align: 'center',
           formatter(row) {
             return row.newCompanyName
               ? `${row.companyName}/${row.newCompanyName}`
@@ -143,6 +168,7 @@ export default {
         },
         {
           label: '原部门职位/现部门职位',
+          align: 'center',
           width: '250px',
           formatter(row) {
             return row.newOrgName || row.newJobName
@@ -152,6 +178,7 @@ export default {
         },
         {
           label: '原岗位/现岗位',
+          align: 'center',
           width: '150px',
           formatter(row) {
             return row.newPositionName
@@ -161,11 +188,13 @@ export default {
         },
         {
           label: '生效日期',
+          align: 'center',
           prop: 'effectDate',
           width: '100px'
         },
         {
           label: '员工状态',
+          align: 'center',
           formatter(row) {
             if (row.status === 'Try') return '试用期'
             if (row.status === 'Formal') return '正式'
@@ -175,10 +204,13 @@ export default {
         },
         {
           label: '手机号码',
-          prop: 'phonenum'
+          align: 'center',
+          prop: 'phonenum',
+          width: '150px'
         },
         {
           label: '异动类型',
+          align: 'center',
           formatter(row) {
             if (row.type === 'Position') return '调岗'
             if (row.type === 'Up') return '晋升'
@@ -187,6 +219,7 @@ export default {
         },
         {
           label: '备注',
+          align: 'center',
           prop: 'remark',
           width: '200px'
         }
@@ -203,7 +236,11 @@ export default {
         uniqueKey: 'userId'
       },
       //   分页器配置
-      page: { currentPage: 1, size: 10, total: 0 },
+      page: {
+        currentPage: 1,
+        size: 10,
+        total: 0
+      },
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
       },
@@ -248,7 +285,7 @@ export default {
     },
     // 监听筛选事件
     handleSubmit(params) {
-      this.paramsInfo = { ...this.paramsInfo, ...params }
+      this.paramsInfo = params
       this.getTableList()
     },
 
@@ -267,9 +304,18 @@ export default {
     // 处理异动原因select框数据
     handelReason(data) {
       let targetArr = [
-        { label: '调岗', options: [] },
-        { label: '晋升', options: [] },
-        { label: '降级', options: [] }
+        {
+          label: '调岗',
+          options: []
+        },
+        {
+          label: '晋升',
+          options: []
+        },
+        {
+          label: '降级',
+          options: []
+        }
       ]
       data.forEach((item) => {
         if (item.dictKey.indexOf('Adjust') != '-1') {
@@ -296,12 +342,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  margin: 10px 0;
-  span {
-    font-weight: bolder;
-  }
-}
 .search-box {
   display: flex;
   justify-content: space-between;

@@ -5,25 +5,6 @@
       :show-back="true"
     />
     <basic-container>
-      <div class="header-wrap">
-        <div class="name-box">
-          <span>{{ applyParams.name }}</span>
-        </div>
-        <div class="info-row">
-          <div class="workNo-box">
-            <span>工号：</span>
-            <span>{{ applyParams.workNo }}</span>
-          </div>
-          <div class="orgName-box">
-            <span>部门:</span>
-            <span>{{ applyParams.orgName }}</span>
-          </div>
-          <div class="jobName-box">
-            <span>职位:</span>
-            <span>{{ applyParams.jobName }}</span>
-          </div>
-        </div>
-      </div>
       <el-row
         type="flex"
         justify="center"
@@ -36,6 +17,25 @@
           :sm="20"
           :xs="22"
         >
+          <div class="header-wrap">
+            <div class="name-box">
+              <span>{{ applyParams.name }}</span>
+            </div>
+            <div class="info-row">
+              <div class="workNo-box info-row-item">
+                <span>工号：</span>
+                <span>{{ applyParams.workNo }}</span>
+              </div>
+              <div class="orgName-box info-row-item">
+                <span>部门:</span>
+                <span>{{ applyParams.orgName }}</span>
+              </div>
+              <div class="jobName-box info-row-item">
+                <span>职位:</span>
+                <span>{{ applyParams.jobName }}</span>
+              </div>
+            </div>
+          </div>
           <el-form
             ref="applyForm"
             :model="applyParams"
@@ -325,24 +325,11 @@ export default {
         positionName: '',
         effectDate: '',
         remark: '',
-        companyId: '',
-        orgId: '',
-        jobId: '',
-        positionId: '',
         // 新公司信息
         newCompanyName: '',
         newOrgName: '',
         newJobName: '',
-        newPositionName: '',
-
-        // 新公司查部门
-        newCompanyOrgId: '',
-        // 新部门
-        newOrgId: '',
-        //新职位
-        newJobId: '',
-        // 新岗位
-        newPositionId: ''
+        newPositionName: ''
       },
 
       // 校验规则
@@ -424,7 +411,7 @@ export default {
     // 获取员工信息
     getPersonalInfo() {
       let params = {
-        userId: this.$route.params.userId
+        userId: this.$route.query.userId
       }
       getStaffBasicInfo(params)
         .then((res) => {
@@ -559,7 +546,9 @@ export default {
           jobName !== newJobName ||
           positionName !== newPositionName
         ) {
-          changeApply(this.applyParam)
+          let params = JSON.parse(JSON.stringify(this.applyParams))
+
+          changeApply(params)
             .then(() => {
               this.$message.success('提交成功', 3000, () => {
                 this.$router.go(-1)
@@ -588,10 +577,10 @@ export default {
   }
   .info-row {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     margin: 26px 0;
-    div {
-      margin: 0 30px;
+    .info-row-item {
+      margin: 0 50px;
     }
   }
 }
