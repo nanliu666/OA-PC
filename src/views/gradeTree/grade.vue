@@ -720,7 +720,7 @@ export default {
                 row: 0,
                 column: 0,
                 alignment: go.Spot.Center,
-                height: 36,
+                margin: 0,
                 width: 200
               },
               $(go.Shape, 'RoundedRectangle', {
@@ -729,11 +729,21 @@ export default {
                 name: 'SHAPE1',
                 stroke: null
               }),
+              // $(go.TextBlock, { text: "a Text Block that takes 4 lines",
+              //   font: '14pt sans-serif',
+              //   overflow: go.TextBlock.OverflowClip, /* 默认值是OverflowClip溢出剪裁 */
+              //   // 没有限制最大行数
+              //   margin: 2,
+              //   width: 90 }),
               $(
                 go.TextBlock,
                 {
                   name: 'Name',
-                  font: 'bold 12pt serif'
+                  font: 'bold 13pt sans-serif',
+                  overflow: go.TextBlock.OverflowClip /* 默认值是OverflowClip溢出剪裁 */,
+                  wrap: go.TextBlock.WrapFit,
+                  textAlign: 'center',
+                  margin: 8
                 },
                 new go.Binding('text', 'orgName').makeTwoWay()
               )
