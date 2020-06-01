@@ -9,27 +9,54 @@
     <el-row
       type="flex"
       :gutter="52"
+      class="displayBar"
+    >
+      <el-col
+        :span="8"
+        class="frame"
+      >
+        <span class="demandSize"> 职位名称</span>
+        <span class="content">{{ list.position }}</span>
+      </el-col>
+      <el-col
+        :span="8"
+        class="frame"
+      >
+        <span class="demandSize"> 紧急程度</span>
+        <span class="content">{{ list.level }}</span>
+      </el-col>
+      <el-col :span="8">
+        <span class="demandSize"> 到岗日期 </span>
+        <span class="content"> {{ list.date }}</span>
+      </el-col>
+    </el-row>
+    <el-row
+      type="flex"
+      :gutter="52"
     >
       <el-col :span="8">
-        <span> 需求人数：{{ Totalnumberpeople }}</span>
+        <span class="demandSize"> 需求人数: {{ Totalnumberpeople }}</span>
       </el-col>
       <el-col :span="8">
-        <span> 已分配：{{ Assigned }}</span>
+        <span class="demandSize">
+          已分配: <span id="assigned">{{ Assigned }}</span></span>
       </el-col>
       <el-col :span="8">
-        <span> 待分配：{{ Numberofpeople }}</span>
+        <span class="demandSize">
+          待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
       </el-col>
     </el-row>
     <el-form
       ref="dynamicValidateForm"
       :model="dynamicValidateForm"
+      class="textForm"
     >
       <el-row type="flex">
         <el-col :span="12">
-          指定招聘人员
+          <span class="department">指定招聘人员</span>
         </el-col>
         <el-col :span="12">
-          招聘任务
+          <span class="department">招聘任务</span>
         </el-col>
       </el-row>
       <el-row>
@@ -81,7 +108,7 @@
           type="text"
           @click="addDomain"
         >
-          <i class="el-icon-plus" />新增域名
+          <i class="el-icon-plus" />添加
         </el-button>
       </el-form-item>
     </el-form>
@@ -105,7 +132,7 @@
 import { taskDistribution } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
 export default {
-  name: 'OrgEdit',
+  name: 'Again',
   props: {
     visible: {
       type: Boolean,
@@ -119,6 +146,11 @@ export default {
       Totalnumberpeople: 25,
       Numberofpeople: 21,
       Assigned: 4,
+      list: {
+        position: '销售经理',
+        level: '特急',
+        date: '2020-02-02'
+      },
       dynamicValidateForm: {
         users: [
           {
@@ -136,6 +168,13 @@ export default {
         this.isDelete = true
       } else {
         this.isDelete = false
+      }
+    },
+    recruitmentId: function(newval, oldval) {
+      if (newval !== oldval) {
+        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
+        itemArr[0].userId = null
+        this.dynamicValidateForm.users = itemArr
       }
     }
   },
@@ -215,42 +254,47 @@ export default {
   line-height: 48px;
   font-size: 18px;
 }
-.newOrgDailog {
-  .el-select {
-    width: 100%;
-  }
-}
-.addressLoading {
-  text-align: center;
-}
-/deep/ .el-form-item__error {
-  padding-top: 0;
-}
-/deep/ .newOrgDailog {
-  .el-form--label-top {
-    .el-form-item__label {
-      padding: 0 0 0 0;
-    }
-  }
-}
+
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #ccc;
 }
 
-.riskSpan {
-  padding-bottom: 10px;
-}
-
 /deep/ .el-dialog__body {
   padding: 30px 35px;
-  color: #606266;
+}
+.textForm {
+  margin-top: 10px;
+}
+.demandSize {
+  display: block;
+  font-size: 12px;
+  color: #718199;
+  line-height: 18px;
+  text-align: center;
+}
+#assigned {
+  color: #1989fa;
+}
+
+.department {
   font-size: 14px;
-  word-break: break-all;
+  color: #212a3f;
+  text-align: right;
+  font-weight: 600;
 }
-/deep/ .el-form-item {
-  width: 100% !important;
+
+.frame {
+  border-right: 1px solid #ccc;
+  margin-bottom: 20px;
 }
-/deep/ .el-form-item__content {
-  width: 100% !important;
+
+.content {
+  display: block;
+  font-family: PingFangSC-Regular;
+  font-size: 16px;
+  color: #202940;
+  line-height: 24px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 </style>
