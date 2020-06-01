@@ -352,10 +352,11 @@
         </el-col>
       </el-row>
       <el-dialog
-        title="新建工作地址"
+        :title="workAddressForm.id ? '修改工作地址' : '新建工作地址'"
         :visible.sync="dialogTableVisible"
         :modal-append-to-body="false"
         custom-class="dialogClass"
+        @close="dialogTableVisible = false"
       >
         <el-form
           ref="workAddressForm"
@@ -376,7 +377,7 @@
             />
           </el-form-item>
           <el-form-item
-            label="工作地址"
+            label="详细地址"
             prop="address"
           >
             <el-input
@@ -483,15 +484,9 @@ export default {
       workPropertyList: [],
       jobList: [],
       orgOptions: {
-        // props: {
-        //   label: 'orgName',
-        //   value: 'orgId'
-        // },
-        // placeholder: '请选择部门',
-        // dicData: [],
         config: {
           selectParams: {
-            placeholder: '请输入内容',
+            placeholder: '请选择部门',
             multiple: false
           },
           treeParams: {
@@ -631,6 +626,7 @@ export default {
       ])
       this.$set(this.workAddressForm, 'address', item.address)
       this.dialogTableVisible = true
+      this.$refs.workAddressId.blur()
     },
     deleteAddress(item) {
       deleteWorkAddress({ ids: item.id }).then(() => {
