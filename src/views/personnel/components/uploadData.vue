@@ -19,6 +19,7 @@
             :type-name="i.name"
             :type-icon="i.iconUrl"
             :limit="Number(i.maxLimit)"
+            :list-data="listData"
           />
         </el-col>
       </el-row>
