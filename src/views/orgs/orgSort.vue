@@ -50,6 +50,9 @@ export default {
   created() {
     this.getOrgTree()
   },
+  activated() {
+    this.getOrgTree()
+  },
   methods: {
     allowDrop(draggingNode, dropNode, type) {
       if (type === 'prev' || type === 'next') {

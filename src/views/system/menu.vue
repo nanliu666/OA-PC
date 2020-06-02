@@ -1,60 +1,63 @@
 <template>
-  <basic-container>
-    <avue-crud
-      ref="crud"
-      v-model="form"
-      :option="option"
-      :table-loading="loading"
-      :data="data"
-      :before-open="beforeOpen"
-      :before-close="beforeClose"
-      @row-del="rowDel"
-      @row-update="rowUpdate"
-      @row-save="rowSave"
-      @search-change="searchChange"
-      @search-reset="searchReset"
-      @selection-change="selectionChange"
-      @current-change="currentChange"
-      @size-change="sizeChange"
-      @refresh-change="refreshChange"
-      @on-load="onLoad"
-      @tree-load="treeLoad"
-    >
-      <template slot="menuLeft">
-        <el-button
-          type="danger"
-          size="medium"
-          icon="el-icon-delete"
-          plain
-          @click="handleDelete"
-        >
-          删 除
-        </el-button>
-      </template>
+  <div>
+    <page-header title="菜单管理" />
+    <basic-container>
+      <avue-crud
+        ref="crud"
+        v-model="form"
+        :option="option"
+        :table-loading="loading"
+        :data="data"
+        :before-open="beforeOpen"
+        :before-close="beforeClose"
+        @row-del="rowDel"
+        @row-update="rowUpdate"
+        @row-save="rowSave"
+        @search-change="searchChange"
+        @search-reset="searchReset"
+        @selection-change="selectionChange"
+        @current-change="currentChange"
+        @size-change="sizeChange"
+        @refresh-change="refreshChange"
+        @on-load="onLoad"
+        @tree-load="treeLoad"
+      >
+        <template slot="menuLeft">
+          <el-button
+            type="danger"
+            size="medium"
+            icon="el-icon-delete"
+            plain
+            @click="handleDelete"
+          >
+            删 除
+          </el-button>
+        </template>
 
-      <template
-        slot="menu"
-        slot-scope="scope"
-      >
-        <el-button
-          type="text"
-          icon="el-icon-circle-plus-outline"
-          size="medium"
-          @click.stop="handleAddChild(scope.row, scope.index)"
+        <template
+          slot="menu"
+          slot-scope="scope"
         >
-          新增子项
-        </el-button>
-      </template>
-      <template
-        slot="icon"
-        slot-scope="{ row }"
-      >
-        <div style="text-align:center">
-          <i :class="row.icon" />
-        </div>
-      </template>
-    </avue-crud>
-  </basic-container>
+          <el-button
+            type="text"
+            icon="el-icon-circle-plus-outline"
+            size="medium"
+            @click.stop="handleAddChild(scope.row, scope.index)"
+          >
+            新增子项
+          </el-button>
+        </template>
+        <template
+          slot="icon"
+          slot-scope="{ row }"
+        >
+          <div style="text-align:center">
+            <i :class="row.icon" />
+          </div>
+        </template>
+      </avue-crud>
+    </basic-container>
+  </div>
 </template>
 
 <script>

@@ -466,6 +466,7 @@ export default {
       // console.log(tab, event)
     },
     back() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/candidate/candidateManagement'
       })

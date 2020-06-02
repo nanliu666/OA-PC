@@ -305,6 +305,7 @@ export default {
   },
   methods: {
     jump() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/candidate/candidateManagement'
       })
@@ -486,6 +487,7 @@ export default {
       let params = {
         ...this.$route.query
       }
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/candidate/applyDetail',
         // sex: row.sex,
@@ -496,6 +498,7 @@ export default {
       })
     },
     back() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/candidate/candidateManagement'
       })
