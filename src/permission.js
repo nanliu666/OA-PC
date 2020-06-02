@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
         })
       } else {
         const value = to.path
-        const label = to.query.name || to.name
+        const label = to.query.tagName || to.name
         const meta = to.meta || router.$avueRouter.meta || {}
         const i18n = to.query.i18n
         if (meta.isTab !== false && !validatenull(value) && !validatenull(label)) {
