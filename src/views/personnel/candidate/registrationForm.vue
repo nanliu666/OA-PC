@@ -562,6 +562,7 @@ export default {
       this.isEdit = !this.isEdit
     },
     handleBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }
   }

@@ -20,18 +20,6 @@
                 :rules="basicAttrsRules(basic)"
                 :prop="basic.props"
               >
-                <template v-if="basic.inType == 0">
-                  <el-input
-                    v-model="form[basic.props]"
-                    :minlength="basic.minLen"
-                    :maxlength="basic.maxLen"
-                    class="widthSet"
-                    :placeholder="basic.message"
-                    :class="[basic.attrId === '1' ? 'active' : '']"
-                    disabled
-                    @blur="blur(basic)"
-                  />
-                </template>
                 <template v-if="basic.inType == 1">
                   <el-input
                     v-model="form[basic.props]"

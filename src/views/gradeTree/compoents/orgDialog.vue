@@ -81,28 +81,7 @@
 
 <script>
 // import treeSelect from '../../../components/treeSelect/treeSelect'
-const options = [
-  {
-    value: '选项1',
-    label: '黄金糕'
-  },
-  {
-    value: '选项2',
-    label: '双皮奶'
-  },
-  {
-    value: '选项3',
-    label: '蚵仔煎'
-  },
-  {
-    value: '选项4',
-    label: '龙须面'
-  },
-  {
-    value: '选项5',
-    label: '北京烤鸭'
-  }
-]
+const options = []
 let orgList = []
 import { getOrganization, postOrganization, putOrganization } from '@/api/organize/grade'
 import { getUserWorkList } from '@/api/org/org'
@@ -152,6 +131,7 @@ export default {
     }
     return {
       allType: ['Enterprise', 'Company', 'Department', 'Group', 'Jod'],
+      key: ['orgName', 'code', 'parentOrgId', 'orgType', 'userId', 'remark'],
       loading: false,
       leaderList: [],
       totalPage: '',
@@ -242,11 +222,13 @@ export default {
                 if (selectIndex > dataIndex) {
                   this.form.orgType = ''
                 }
-                this.option.column[2].dicData.map((it, index) => {
+
+                let i = this.find_index(this.option.column, 'orgType')
+                this.option.column[i].dicData.map((it, index) => {
                   if (it.list.includes(type)) {
-                    if (selectIndex > dataIndex) {
-                      if (!this.form.orgType) this.form.orgType = index
-                    }
+                    // if (selectIndex > dataIndex) {
+                    if (!this.form.orgType) this.form.orgType = index
+                    // }
                     it.disabled = false
                   } else {
                     it.disabled = true
@@ -327,19 +309,7 @@ export default {
   },
   watch: {
     'form.parentOrgId': {
-      handler: function() {
-        // console.log()
-        // if (val.length > 0) {
-        //   this.option.column[3].placeholder = '请选择'
-        //   this.option.column[3].dicData = this.options
-        //   // this.option.column[3].placeholder = '请先选择所属组织'
-        //   // this.set()
-        // } else {
-        //   this.option.column[3].placeholder = '请先选择上级'
-        //   this.option.column[3].dicData = []
-        //   this.form.userId = ''
-        // }
-      },
+      handler: function() {},
       deep: true //对象内部的属性监听，也叫深度监听
     },
 
@@ -352,11 +322,15 @@ export default {
     isEdit: {
       handler(val) {
         if (val) {
-          this.option.column[1].display = true
-          if (this.orgData.type === 'Enterprise') {
-            this.option.column[2].display = false
+          let i = this.find_index(this.option.column, 'code')
+          this.option.column[i].display = true
+          if (this.orgData.type === 'Enterprise' && val) {
+            // key:['orgName','code','parentOrgId','orgType','userId','remark'],
+            let i = this.find_index(this.option.column, 'parentOrgId')
+            let index = this.find_index(this.option.column, 'orgType')
+            this.option.column[i].display = false
             // this.option.column[3].display =false
-            this.option.column[3].dicData = [
+            this.option.column[index].dicData = [
               {
                 label: '企业',
                 value: 3,
@@ -383,15 +357,20 @@ export default {
           this.form.remark = this.orgData.remark
           this.form.userId = this.orgData.userId
           if (val.parentId === '0') {
-            this.option.column[1].disabled = true
-            this.option.column[2].disabled = true
+            // key:['orgName','code','parentOrgId','orgType','userId','remark'],
+            // setTimeout(()=>{
+            let i = this.find_index(this.option.column, 'code')
+            let index = this.find_index(this.option.column, 'parentOrgId')
+            this.option.column[i].disabled = true
+            this.option.column[index].disabled = true
+            // },500)
           }
         } else {
-          // setTimeout(() => {
-
-          this.form.parentOrgId = this.orgData.id
-          this.option.column[1].disabled = true
-          // },500)
+          setTimeout(() => {
+            let i = this.find_index(this.option.column, 'parentOrgId')
+            this.form.parentOrgId = this.orgData.id
+            this.option.column[i].disabled = true
+          }, 500)
         }
         let types = {
           Enterprise: 0,
@@ -399,16 +378,18 @@ export default {
           Department: 1,
           Group: 2
         }
+        let i = this.find_index(this.option.column, 'orgType')
         this.form.orgType = types[this.orgData.type]
-        this.option.column[2].dicData.map((it) => {
+        this.option.column[i].dicData.map((it) => {
           if (it.list.includes(val.type)) {
             it.disabled = false
           } else {
             it.disabled = true
           }
         })
-        if (this.orgData.type === 'Enterprise') {
-          this.option.column[2].display = false
+        if (this.orgData.type === 'Enterprise' && this.isEdit) {
+          let i = this.find_index(this.option.column, 'parentOrgId')
+          this.option.column[i].display = false
           this.form.orgType = 3
         }
       },
@@ -434,7 +415,7 @@ export default {
     },
     getWordList() {
       return new Promise((resolve, reject) => {
-        getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 })
+        getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 1000 })
           .then((res) => {
             this.leaderList = res.data
             this.totalPage = res.totalPage
@@ -450,7 +431,7 @@ export default {
       if (this.loadLeader) return
       if (this.leaderPageNo > this.totalPage) return
       this.loadLeader = true
-      getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 100 }).then((res) => {
+      getUserWorkList({ pageNo: this.leaderPageNo, pageSize: 1000 }).then((res) => {
         if (res.data.length > 0) {
           this.leaderList.push(...res.data)
           this.leaderPageNo += 1
@@ -480,7 +461,8 @@ export default {
             })
           }
           maps(orgList)
-          this.option.column[1].dicData = orgList
+          let i = this.find_index(this.option.column, 'parentOrgId')
+          this.option.column[i].dicData = orgList
           resolve()
         })
       })
@@ -565,6 +547,15 @@ export default {
             })
         }
       })
+    },
+    find_index(data, key) {
+      let index = ''
+      data.map((it, i) => {
+        if (it.prop === key) {
+          index = i
+        }
+      })
+      return index
     },
     handleClose() {
       this.$emit('update:dialogVisible', false)

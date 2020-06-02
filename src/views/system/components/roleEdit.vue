@@ -266,7 +266,7 @@ export default {
     row: {
       handler: function(newVal) {
         let { roleId, roleName, type, remark, positions, jobs } = { ...newVal }
-
+        //
         let newpositions = []
         if (positions) {
           positions.map((it) => {
@@ -274,7 +274,7 @@ export default {
           })
         }
 
-        positions = newpositions
+        positions = newpositions[0]
         let newjobs = []
         if (jobs) {
           jobs.map((it) => {

@@ -29,10 +29,19 @@ export default {
     showBack: {
       type: Boolean,
       default: false
+    },
+    // 自定义返回方法
+    back: {
+      type: Function,
+      default: null
     }
   },
   methods: {
     goBack() {
+      if (this.back) {
+        this.back()
+        return
+      }
       this.$router.go(-1)
     }
   }
