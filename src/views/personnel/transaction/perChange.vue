@@ -139,11 +139,6 @@ export default {
       // tablecolumns
       tableColumns: [
         {
-          label: '序号',
-          align: 'center',
-          type: 'index'
-        },
-        {
           label: '姓名',
           align: 'center',
           prop: 'name',
@@ -161,9 +156,9 @@ export default {
           width: '200px',
           align: 'center',
           formatter(row) {
-            return row.newCompanyName
-              ? `${row.companyName}/${row.newCompanyName}`
-              : `${row.companyName}`
+            return `${row.companyName ? row.companyName : ' - '}/${
+              row.newCompanyName ? row.newCompanyName : ' - '
+            }`
           }
         },
         {
@@ -171,9 +166,9 @@ export default {
           align: 'center',
           width: '250px',
           formatter(row) {
-            return row.newOrgName || row.newJobName
-              ? `${row.orgName}-${row.jobName}/${row.newOrgName}-${row.newJobName}`
-              : `${row.orgName}-${row.jobName}`
+            return `${row.orgName ? row.orgName : '-'}-${row.jobName ? row.jobName : '-'}/${
+              row.newOrgName ? row.newOrgName : '-'
+            }-${row.newJobName ? row.newJobName : '-'}`
           }
         },
         {
@@ -181,9 +176,9 @@ export default {
           align: 'center',
           width: '150px',
           formatter(row) {
-            return row.newPositionName
-              ? `${row.positionName}/${row.newPositionName}`
-              : `${row.positionName}`
+            return `${row.positionName ? row.positionName : ' - '}/${
+              row.newPositionName ? row.newPositionName : ' - '
+            }`
           }
         },
         {

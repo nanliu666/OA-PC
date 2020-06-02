@@ -77,7 +77,7 @@ export default ({ mock }) => {
   // 7.员工离职交接事项分组查询接口
   Mock.mock(new RegExp('/api/user/v1/user/leave/note/group' + '.*'), 'get', () => {
     let list = []
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
       list.push(
         Mock.mock({
           id: '@integer(1, 1000000)',
