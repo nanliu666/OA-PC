@@ -26,7 +26,7 @@
           </el-aside>
           <el-main>
             <div
-              class="grid-content"
+              class="grid-content relative-box "
               style="line-height: 50px;"
             >
               <span class="staff-name">{{ allInfo.name }}</span>
@@ -36,6 +36,14 @@
                 plain
               >
                 <span>{{ getStatus() }}</span>
+              </el-button>
+              <el-button
+                plain
+                class="personnel-change-btn"
+                size="medium"
+                @click="jumpToApply(allInfo.userId)"
+              >
+                <span>人事异动</span>
               </el-button>
             </div>
             <el-row :gutter="20">
@@ -153,6 +161,7 @@ export default {
   activated() {
     this.getBasicInfo()
   },
+
   methods: {
     getCSS() {
       return require('./detail/staffInfo.scss')
@@ -170,6 +179,7 @@ export default {
         return ''
       }
     },
+
     getBasicInfo() {
       let params = {
         userId: this.$route.params.userId
@@ -183,6 +193,15 @@ export default {
     },
     handleClick(tab) {
       this.activeName = tab.name
+    },
+    // 跳去异动申请
+    jumpToApply(userId) {
+      this.$router.push({
+        path: '/personnel/transaction/changeApply',
+        query: {
+          userId
+        }
+      })
     }
   }
 }
@@ -267,6 +286,24 @@ export default {
         color: #545b66 !important;
       }
     }
+  }
+}
+// 人事异动按钮
+.relative-box {
+  position: relative;
+  .personnel-change-btn {
+    cursor: pointer;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    width: 70px !important;
+    height: 30px !important;
+    padding: 5px !important;
+    border: 1px solid #666 !important;
+    color: #666;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 50px;
   }
 }
 </style>
