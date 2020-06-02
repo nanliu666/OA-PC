@@ -41,7 +41,7 @@ export default {
   },
   data() {
     return {
-      dialogVisible: true,
+      dialogVisible: false,
       info: [
         {
           title: '招聘需求',
@@ -72,7 +72,14 @@ export default {
   },
   methods: {
     jump() {
-      this.dialogVisible = true
+      // this.dialogVisible = true
+      let params = {
+        userId: '01546546454'
+      }
+      this.$router.push({
+        path: '/approval/approvalDetail',
+        params: params
+      })
     }
   }
 }

@@ -8,7 +8,7 @@
         v-show="editStatus"
         class="nav"
       >
-        <span style="width: 150px;display: inline-block;">
+        <span style="width: 170px;display: inline-block;">
           组织架构图
           <el-tooltip
             placement="top"
