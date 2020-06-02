@@ -152,7 +152,6 @@ export default {
   data() {
     return {
       recruitmentId: '',
-      isDelete: false,
       Totalnumberpeople: 25,
       Numberofpeople: 21,
       Assigned: 4,

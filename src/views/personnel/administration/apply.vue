@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-page-header
-      content="新建转正申请"
+    <page-header
+      title="新建转正申请"
       class="pageHeader"
       show-back
     />

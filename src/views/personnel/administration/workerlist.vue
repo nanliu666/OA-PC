@@ -1,10 +1,15 @@
 <template>
   <div>
-    <div class="roster-header">
+    <!-- <div class="roster-header">
       <h4>
-        转正管理 (试用期员工共计<i>{{ numberofpersonnel }}</i>人)
+        转正管理 
       </h4>
-    </div>
+    </div> -->
+    <page-header
+      title="转正管理"
+      class="pageHeader"
+      show-back
+    />
     <basic-container>
       <common-table
         style="width: 100%"
@@ -325,6 +330,7 @@ export default {
           }
         })
         this.data = res.data
+        this.page.total = res.totalNum
         this.numberofpersonnel = res.totalNum
       })
     },
