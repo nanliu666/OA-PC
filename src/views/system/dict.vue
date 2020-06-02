@@ -1,5 +1,6 @@
 <template>
   <el-row :gutter="8">
+    <page-header title="系统字典" />
     <el-col :span="11">
       <basic-container>
         <el-card class="box-card">

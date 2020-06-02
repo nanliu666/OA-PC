@@ -1,5 +1,6 @@
 <template>
   <div>
+    <page-header title="操作日志" />
     <basic-container>
       <avue-crud
         ref="crud"
@@ -22,9 +23,7 @@
           slot="status"
           slot-scope="{ row }"
         >
-          {{
-            row.status === 'Success' ? '成功' : '失败'
-          }}
+          {{ row.status === 'Success' ? '成功' : '失败' }}
         </template>
       </avue-crud>
     </basic-container>
