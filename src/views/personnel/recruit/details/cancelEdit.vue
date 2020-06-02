@@ -34,7 +34,7 @@
 
 <script>
 export default {
-  name: 'OrgEdit',
+  name: 'CancelEdit',
   props: {
     visible: {
       type: Boolean,

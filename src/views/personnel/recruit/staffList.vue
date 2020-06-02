@@ -56,48 +56,51 @@
           label="招聘进度"
           name="inrecruitment"
         >
-          <div class="roster-header">
-            <div class="state">
-              <div class="on">
-                <div>
-                  销售经理
-                  <div class="bottomBox">
-                    职位名称
-                  </div>
-                </div>
-                <div>
-                  2020-02-12
-                  <div class="bottomBox">
-                    最迟到岗日期
-                  </div>
-                </div>
-                <div>
-                  特急
-                  <div class="bottomBox">
-                    紧急程度
-                  </div>
-                </div>
-                <div>
-                  20
-                  <div class="bottomBox">
-                    需求总数
-                  </div>
-                </div>
-                <div>
-                  10
-                  <div class="bottomBox">
-                    已入职
-                  </div>
-                </div>
-                <div>
-                  50%
-                  <div class="bottomBox">
-                    招聘进度
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <el-row
+            type="flex"
+            :gutter="52"
+            class="displayBar"
+          >
+            <el-col
+              :span="8"
+              class="frame"
+            >
+              <span class="demandSize"> 职位名称</span>
+              <span class="content">{{ user.positionName }}</span>
+            </el-col>
+            <el-col
+              :span="8"
+              class="frame"
+            >
+              <span class="demandSize"> 紧急程度</span>
+              <span class="content">{{ user.emerType }}</span>
+            </el-col>
+
+            <el-col
+              :span="8"
+              class="frame"
+            >
+              <span class="demandSize"> 需求总数</span>
+              <span class="content">{{ user.needNum }}</span>
+            </el-col>
+
+            <el-col
+              :span="8"
+              class="frame"
+            >
+              <span class="demandSize"> 已入职</span>
+              <span class="content">{{ user.entryNum }}</span>
+            </el-col>
+
+            <el-col
+              :span="8"
+              class="frame"
+            >
+              <span class="demandSize"> 招聘进度</span>
+              <span class="content">{{}}</span>
+            </el-col>
+          </el-row>
+
           <h3 class="Header">
             已入职员工
           </h3>
@@ -159,7 +162,7 @@ export default {
   },
   data() {
     return {
-      childData: null,
+      childData: [],
       user: {
         joinDate: null,
         userName: null,
@@ -325,65 +328,10 @@ export default {
   display: block;
 }
 content {
+  text-align: center;
   font-family: PingFangSC-Regular;
   font-size: 14px;
   color: #202940;
-}
-
-.state {
-  display: flex;
-  margin-bottom: 10px;
-  .on {
-    flex: 4;
-    background: #ffffff;
-    border-radius: 4px;
-    margin-right: 20px;
-    display: flex;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      border-right: 1px solid #e3e7e9;
-      .bottomBox {
-        font-size: 12px;
-        height: 2px;
-        width: 90px;
-        margin: 0 auto;
-        color: #ccc;
-      }
-    }
-    :last-of-type {
-      border-right: 0;
-    }
-    .current {
-      color: #207efa;
-    }
-  }
-  .left {
-    flex: 1;
-    background: #ffffff;
-    border-radius: 4px;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      cursor: pointer;
-      .bottomBox {
-        height: 2px;
-        width: 68px;
-        background: #207efa;
-        margin: 0 auto;
-        margin-top: 28px;
-      }
-    }
-    .current {
-      color: #207efa;
-    }
-  }
 }
 
 .Header {
@@ -401,5 +349,13 @@ content {
 
 /deep/ .basic-container {
   margin: 10px 0;
+}
+
+.demandSize {
+  display: block;
+  font-size: 12px;
+  color: #718199;
+  line-height: 18px;
+  text-align: center;
 }
 </style>

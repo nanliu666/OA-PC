@@ -141,9 +141,7 @@
 <script>
 export default {
   name: 'Details',
-  props: {
-    childData: Array
-  },
+  props: ['childData'],
   data() {
     return {
       personnel: {

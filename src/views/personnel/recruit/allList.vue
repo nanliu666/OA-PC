@@ -237,8 +237,6 @@ export default {
         enablePagination: true
       },
       params: {
-        pageNo: 1,
-        pageSize: 10,
         progress: 'Approved',
         userId: null
       },
@@ -287,46 +285,36 @@ export default {
       })
       return typeWord
     },
-    init(row) {
-      if (row === 'allApproved') {
-        this.tableConfig.showHandler = true
-      } else if (row === 'ending') {
+    init(progress) {
+      // 场景使用
+      if (progress === 'allApproved') {
         this.tableConfig.showHandler = false
+      } else {
+        this.tableConfig.showHandler = true
       }
-      this.params.progress = row.trim()
+      this.params.progress = progress.trim()
       this.getTableData()
     },
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
-      params.userId = this.userId
-      params.progress = this.params.progress
-
+      this.decorator(params)
       getAllRecruitment(params).then((res) => {
         this.data = res.data
+        this.page.total = res.totalPage
       })
     },
-    Decorator(paramsData) {
-      let request = {
-        jobName: paramsData.jobName || '',
-        pageNo: paramsData.pageNo || 1,
-        pageSize: paramsData.pageSize || 10,
-        positionId: paramsData.positionId || '',
-        workYear: paramsData.workYear || '',
-        educationalLevel: paramsData.educationalLevel || '',
-        emerType: paramsData.emerType || '',
-        beginJoinDate: paramsData.beginJoinDate || '',
-        endJoinDate: paramsData.endJoinDate || '',
-        status: paramsData.status || '',
-        progress: this.params.progress,
-        userId: this.userId
-      }
-      return request
+
+    decorator(params) {
+      params.pageNo = this.page.currentPage
+      params.pageSize = this.page.size
+      params.userId = this.userId
+      params.progress = this.params.progress
+      return params
     },
 
     handleSubmit(params) {
-      let request = this.Decorator(params)
-
-      getAllRecruitment(request).then(() => {
+      this.decorator()
+      getAllRecruitment(params).then(() => {
         this.$message({
           message: '操作成功',
           type: 'success'

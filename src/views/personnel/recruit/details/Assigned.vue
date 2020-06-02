@@ -142,7 +142,7 @@
 import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
 export default {
-  name: 'Again',
+  name: 'Assigned',
   props: {
     visible: {
       type: Boolean,

@@ -46,7 +46,7 @@ import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
 import { getOrganizationCompany } from '@/api/personnel/roster'
 import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 export default {
-  name: 'AddRoster',
+  name: 'RecruitmentNeeds',
   components: {
     InputArray,
     CancelEdit

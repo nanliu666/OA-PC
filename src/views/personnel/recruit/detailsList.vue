@@ -54,9 +54,11 @@
       >
         {{ getEducationalLevel(row.educationalLevel) }}
       </template>
+
       <template
         slot="handler"
         slot-scope="{ row }"
+        v
       >
         <el-button
           size="medium"
@@ -76,7 +78,7 @@ import SearchPopover from '@/components/searchPopOver/index'
 import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 export default {
-  name: 'RecruitList',
+  name: 'DetailsList',
   components: {
     SearchPopover
   },
@@ -89,6 +91,7 @@ export default {
             type: 'input',
             field: 'jobName',
             label: '',
+            data: '',
             config: {
               placeholder: '职位名称'
             }
@@ -99,7 +102,6 @@ export default {
             type: 'treeSelect',
             field: 'orgId',
             label: '用人部门',
-            data: '',
             config: {
               selectParams: {
                 placeholder: '请输入内容',
@@ -224,8 +226,6 @@ export default {
         enablePagination: true
       },
       params: {
-        pageNo: 1,
-        pageSize: 10,
         progress: 'Approved',
         userId: null
       },
@@ -255,7 +255,7 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  created() {
+  mounted() {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
@@ -290,44 +290,35 @@ export default {
       })
       return typeWord
     },
-    init(row) {
-      // 控制当前页面是否有操作面板。
-      if (row === 'Finished') {
-        this.tableConfig.showHandler = true
-      } else {
-        this.tableConfig.showHandler = false
-      }
-      this.params.progress = row.trim()
+    init(progress) {
+      // // 操作环境为：Finished   结束状态时出现面板
+      // if (progress === 'Finished') {
+      //   this.tableConfig.showHandler = true
+      // } else {
+      //   this.tableConfig.showHandler = false
+      // }
+      this.params.progress = progress.trim()
       this.getTableData()
     },
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
-      params.userId = this.userId
-      params.progress = this.params.progress
+      this.decorator(params)
       getMyRecruitment(params).then((res) => {
         this.data = res.data
+        this.page.total = res.totalPage
       })
     },
-    Decorator(paramsData) {
-      let request = {
-        jobName: paramsData.jobName || '',
-        pageNo: paramsData.pageNo || 1,
-        pageSize: paramsData.pageSize || 10,
-        positionId: paramsData.positionId || '',
-        workYear: paramsData.paramsData || '',
-        educationalLevel: paramsData.educationalLevel || '',
-        reason: paramsData.reason || '',
-        emerType: paramsData.emerType || '',
-        beginJoinDate: paramsData.beginJoinDate || '',
-        endJoinDate: paramsData.endJoinDate || '',
-        progress: this.params.progress,
-        userId: this.userId
-      }
-      return request
+    decorator(params) {
+      params.pageNo = this.page.currentPage
+      params.pageSize = this.page.size
+      params.userId = this.userId
+      params.progress = this.params.progress
+      return params
     },
+
     handleSubmit(params) {
-      let request = this.Decorator(params)
-      getMyRecruitment(request).then(() => {
+      this.decorator(params)
+      getMyRecruitment(params).then(() => {
         this.$message({
           message: '操作成功',
           type: 'success'

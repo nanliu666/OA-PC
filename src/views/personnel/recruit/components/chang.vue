@@ -132,6 +132,7 @@ import { mapGetters } from 'vuex'
 import { putTask } from '@/api/personnel/recruitment'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 export default {
+  name: 'Chang',
   data() {
     return {
       inputdisabled: true,
