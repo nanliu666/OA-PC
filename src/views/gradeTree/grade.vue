@@ -194,6 +194,7 @@
 <script>
 import go from 'gojs'
 const $ = go.GraphObject.make
+import html2canvas from 'html2canvas'
 import positionDialog from './compoents/positionDialog'
 import orgDialog from './compoents/orgDialog'
 import {
@@ -987,19 +988,25 @@ export default {
         })
     },
     downloadImage() {
-      let images = this.myDiagram.makeImage({
-        scale: 1,
-        padding: 50,
-        type: 'image/jpeg',
-        background: 'rgba(220, 239, 254, 1)'
-      })
-      let href = images.src
-      var a = document.createElement('a')
-      a.download = '组织机构图.png'
-      a.href = href
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
+      var d = this.myDiagram.documentBounds
+      let myDiaramDiv = document.getElementById('myDiagramDiv')
+      myDiaramDiv.style.width = d.width + 'px'
+      this.load()
+      this.loading = true
+      setTimeout(() => {
+        new html2canvas(document.getElementById('myDiagramDiv')).then((canvas) => {
+          const href = canvas.toDataURL('image/jpeg')
+          var a = document.createElement('a')
+          a.download = '组织机构图.png'
+          a.href = href
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          myDiaramDiv.style.width = '100%'
+          this.load()
+          this.loading = false
+        })
+      }, 1000)
     }
   }
 }
