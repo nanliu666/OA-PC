@@ -102,6 +102,7 @@ export default {
   },
   methods: {
     handleBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/contract/contract'
       })
@@ -150,6 +151,7 @@ export default {
           this.loading = false
           this.$message.success('修改成功')
           setTimeout(() => {
+            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
             this.$router.push({
               path: '/personnel/contract/contract'
             })
