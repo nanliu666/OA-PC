@@ -183,14 +183,14 @@ export default {
       })
     },
     getTenant() {
-      // let domain =
-      //   process.env.NODE_ENV === 'development'
-      //     ? 'www.bestgrand.com.cn'
-      //     : window.location.href.split('/#/')[0]
       let domain =
         process.env.NODE_ENV === 'development'
-          ? 'http://122.112.190.144'
+          ? 'www.bestgrand.com.cn'
           : window.location.href.split('/#/')[0]
+      // let domain =
+      //   process.env.NODE_ENV === 'development'
+      //     ? 'http://122.112.190.144'
+      //     : window.location.href.split('/#/')[0]
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
         this.$store.commit('SET_TENANT_ID', res.tenantId)
