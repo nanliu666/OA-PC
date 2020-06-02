@@ -84,6 +84,12 @@ export const putDistribution = (params) => {
   return put('/user/v1/recruitment/task', params)
 }
 
+/**
+ *  需求关联的入职员工查询接口 查询招聘任务已经入职员工列表
+ * @param {String} recruitmentId - 招聘需求ID
+ * @param {array} userId - 	招聘人员ID
+ * */
+
 export const getEntryDetails = (params) => {
   return get('/user/v1/recruitment/user/list', { ...params })
 }

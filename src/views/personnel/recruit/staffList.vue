@@ -8,7 +8,7 @@
     <basic-container style="margin-button: 40px">
       <el-row :gutter="24">
         <el-col class="fullName">
-          {{ name }}提交的招聘需求
+          {{ user.userName }}提交的招聘需求
         </el-col>
       </el-row>
       <el-row
@@ -18,17 +18,17 @@
       >
         <el-col :span="9">
           <span class="nodetitle">需求编号:</span>
-          <span class="content">{{ number }}</span>
+          <span class="content">{{ user.id }}</span>
         </el-col>
 
         <el-col :span="9">
           <span class="nodetitle">提交人:</span>
-          <span class="content">{{ name }}</span>
+          <span class="content">{{ user.userName }}</span>
         </el-col>
 
         <el-col :span="9">
-          <span class="nodetitle">提交时间:</span>
-          <span class="content">{{ time }}</span>
+          <span class="nodetitle">到岗时间:</span>
+          <span class="content">{{ user.joinDate }}</span>
         </el-col>
 
         <el-col :span="9">
@@ -40,16 +40,16 @@
         </el-col>
         <el-col>
           <el-button
-            style="float: right ;   margin-top: 8px ;"
+            style="float: right;margin-top: 8px ;"
             size="medium"
             type="primary"
+            @click="ChangeContent"
           >
             更改需求状态
           </el-button>
         </el-col>
       </el-row>
     </basic-container>
-
     <basic-container>
       <el-tabs v-model="activeName">
         <el-tab-pane
@@ -142,7 +142,7 @@
           label="招聘需求详情"
           name="recruitmentdemand"
         >
-          <details-details />
+          <details-details :child-data="childData" />
         </el-tab-pane>
       </el-tabs>
     </basic-container>
@@ -150,8 +150,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getRecruitmentDetail } from '@/api/personnel/selectedPerson'
-import { getEntryDetails } from '@/api/personnel/recruitment'
+import { getEntryDetails, getRecruitmentDetail } from '@/api/personnel/recruitment'
 import DetailsDetails from './paging/details'
 export default {
   name: 'StaffList',
@@ -160,12 +159,14 @@ export default {
   },
   data() {
     return {
-      id: '暂无数据',
-      name: 'xxx',
+      childData: null,
+      user: {
+        joinDate: null,
+        userName: null,
+        id: null
+      },
+      status: '招聘中',
       activeName: 'inrecruitment',
-      number: '暂无数据',
-      time: '暂无数据',
-      status: '暂无状态',
       row: {},
       data: [],
       tableConfig: {
@@ -219,7 +220,8 @@ export default {
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
       },
-      EducationalLevel: []
+      EducationalLevel: [],
+      progress: 'Approved'
     }
   },
   computed: {
@@ -240,14 +242,16 @@ export default {
     })
   },
   methods: {
+    jumpToDetail() {},
     ReplicationCache(id) {
       getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
         this.data = res.data
       })
     },
     getData() {
-      getRecruitmentDetail().then((res) => {
-        this.data = res.data
+      getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
+        this.user = res
+        this.childData = res
       })
     },
     calcSex(sex) {
@@ -270,7 +274,6 @@ export default {
           typeLevel = item.dictValue
         }
       })
-
       return typeLevel
     },
     currentChange(val) {
@@ -283,6 +286,13 @@ export default {
       this.params.pageNo = 1
       this.page.pagerCount = 1
       this.getData()
+    },
+    ChangeContent() {
+      this.$message({
+        showClose: true,
+        message: '审批页面正在开发请期待',
+        type: 'warning'
+      })
     }
   }
 }

@@ -231,7 +231,7 @@ export default {
         }
       ],
       tableConfig: {
-        showHandler: false,
+        showHandler: true,
         showIndexColumn: false,
         enableMultiSelect: false,
         enablePagination: true
@@ -334,7 +334,7 @@ export default {
       })
     },
     jumpToDetail(id) {
-      this.$router.push(`/personnel/recruit/staffList/${id}`)
+      this.$router.push({ path: '/personnel/recruit/staffList', query: { id: id } })
     },
     currentPageChange(param) {
       let paramsInfo = {}

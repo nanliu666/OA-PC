@@ -20,24 +20,8 @@
           >
             <el-row>
               <el-col :span="10">
-                <el-form-item label="原职位">
-                  <span class="distance">{{ personnel.name }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col
-                :span="10"
-                :offset="4"
-              >
-                <el-form-item label="申请时间">
-                  <span class="distance">{{ personnel.createTime }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="10">
                 <el-form-item label="申请公司">
-                  <span class="distance">{{ personnel.company }}</span>
+                  <span class="distance">{{ personnel.orgName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -53,7 +37,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="职位">
-                  <span class="distance">{{ personnel.name }}</span>
+                  <span class="distance">{{ personnel.jobName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -61,7 +45,7 @@
                 :offset="4"
               >
                 <el-form-item label="岗位">
-                  <span class="distance">{{ personnel.createTime }}</span>
+                  <span class="distance">{{ personnel.positionName }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -69,7 +53,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="工作性质">
-                  <span class="distance">{{ personnel.company }}</span>
+                  <span class="distance">{{ personnel.workProperty }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -77,15 +61,29 @@
                 :offset="4"
               >
                 <el-form-item label="需求人数">
-                  <span class="distance">{{ personnel.orgName }}</span>
+                  <span class="distance">{{ personnel.needNum }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
-
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="工作年限">
+                  <span class="distance">{{ personnel.workYear }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="学历要求">
+                  <span class="distance">{{ personnel.educationalLevel }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row>
               <el-col :span="10">
                 <el-form-item label="到岗日期">
-                  <span class="distance">{{ personnel.name }}</span>
+                  <span class="distance">{{ personnel.joinDate }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -93,40 +91,26 @@
                 :offset="4"
               >
                 <el-form-item label="薪酬范围">
-                  <span class="distance">{{ personnel.createTime }}</span>
+                  <span class="distance">
+                    ￥{{ personnel.maxSalary }} ~ ￥{{ personnel.minSalary }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="学历要求">
-                  <span class="distance">{{ personnel.createTime }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
             <el-row>
               <el-col :span="24">
                 <el-form-item label="职位要求">
-                  <li class="distance">
-                    {{ personnel.createTime }}
-                  </li>
-                  <li class="distance">
-                    {{ personnel.createTime }}
-                  </li>
+                  <span class="distance">
+                    {{ personnel.requirement }}
+                  </span>
                 </el-form-item>
               </el-col>
             </el-row>
-
             <el-row>
               <el-col :span="24">
                 <el-form-item label="工作职责">
-                  <li class="distance">
-                    {{ personnel.createTime }}
-                  </li>
-                  <li class="distance">
-                    {{ personnel.createTime }}
-                  </li>
+                  <span class="distance">
+                    {{ personnel.duty }}
+                  </span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -134,20 +118,16 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="招聘原因">
-                  <span class="distance">{{ personnel.createTime }}</span>
+                  <span class="distance">{{ personnel.reason }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
-
             <el-row>
               <el-col :span="24">
-                <el-form-item label="工作职责">
-                  <li class="distance">
-                    {{ personnel.createTime }}
-                  </li>
-                  <li class="distance">
-                    {{ personnel.createTime }}
-                  </li>
+                <el-form-item label="申请理由">
+                  <span class="distance">
+                    {{ personnel.remark }}
+                  </span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -161,16 +141,34 @@
 <script>
 export default {
   name: 'Details',
+  props: {
+    childData: Array
+  },
   data() {
     return {
-      // 请求数据params and 员工信息
       personnel: {
-        name: 'xxx',
-        createTime: 'xxx',
-        company: 'xxx',
-        orgName: 'xxx',
-        jobId: 'xxx'
-      }
+        name: '',
+        createTime: '',
+        company: '',
+        orgName: '',
+        jobId: ''
+      },
+      workProperty: []
+    }
+  },
+  watch: {
+    childData: function(newval) {
+      this.init(newval)
+    }
+  },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.workProperty = res
+    })
+  },
+  methods: {
+    init(newval) {
+      this.personnel = newval
     }
   }
 }
