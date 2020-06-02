@@ -523,6 +523,8 @@
 </template>
 
 <script>
+// 校验身份证，港澳通行证，台湾证方法
+import { cardid, HMCardValid, TWCardValid } from '@/util/validate'
 import { isMobile, validateName, isEmailReg } from '@/util/validate'
 import { getStaffBasicInfo, editStaffBasicInfo } from '../../../../api/personalInfo.js'
 import { deepClone } from '@/util/util'
@@ -537,6 +539,34 @@ export default {
     }
   },
   data() {
+    //  检验证件是否符合
+    let checkIdNo = (rule, value, callback) => {
+      let IdType = this.staffInfo.idType
+      switch (IdType) {
+        case 'IDCard':
+          if (cardid(value)[0]) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        case 'pass01':
+          if (!HMCardValid(value)) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        case 'pass02':
+          if (!TWCardValid(value)) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        default:
+      }
+    }
     return {
       staffInfo: {},
       region: [],
@@ -589,7 +619,9 @@ export default {
               }
             }
           }
-        ]
+        ],
+        // 校验证件号码
+        idNo: [{ validator: checkIdNo, trigger: 'blur' }]
       },
       regionCascader: {
         option: provinceAndCityData,
@@ -690,6 +722,7 @@ export default {
           return dictValue
         }
       }
+
       return dictValue
     }
   },
@@ -700,6 +733,13 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    // 证件类型的改变移除校验
+    'staffInfo.idType': {
+      deep: true,
+      handler: function() {
+        this.$refs.basicInfo.clearValidate('idNo')
+      }
     }
   },
   created() {
