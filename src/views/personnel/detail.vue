@@ -189,6 +189,7 @@ export default {
       })
     },
     goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     },
     handleClick(tab) {
