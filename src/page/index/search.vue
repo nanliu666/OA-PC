@@ -66,9 +66,7 @@ export default {
       return this.website.menu.props.icon || this.config.propsDefault.icon
     },
     childrenKey() {
-      return (
-        this.website.menu.props.children || this.config.propsDefault.children
-      )
+      return this.website.menu.props.children || this.config.propsDefault.children
     },
     ...mapGetters(['menu', 'website'])
   },
@@ -91,7 +89,7 @@ export default {
       const findMenu = (list) => {
         for (let i = 0; i < list.length; i++) {
           const ele = Object.assign({}, list[i])
-          if (this.validatenull(ele[this.childrenKey])) {
+          if (this.validatenull(ele[this.childrenKey]) && ele.isShow === 1) {
             this.menuList.push(ele)
           } else {
             findMenu(ele[this.childrenKey])
@@ -105,15 +103,11 @@ export default {
     querySearch() {
       var restaurants = this.menuList
       var queryString = this.value
-      this.menus = queryString
-        ? this.menuList.filter(this.createFilter(queryString))
-        : restaurants
+      this.menus = queryString ? this.menuList.filter(this.createFilter(queryString)) : restaurants
     },
     createFilter(queryString) {
       return (restaurant) => {
-        return (
-          restaurant.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        )
+        return restaurant[this.labelKey].toLowerCase().indexOf(queryString.toLowerCase()) === 0
       }
     },
     handleSelect(item) {

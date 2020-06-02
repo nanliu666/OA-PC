@@ -10,7 +10,7 @@
           type="primary"
           size="medium"
         >
-          打印预览
+          打印
         </el-button>
         <el-button size="medium">
           下载
@@ -19,7 +19,8 @@
     </div>
     <basic-container>
       <div
-        style="font-family: PingFangSC-Medium; font-size: 32px; color: #202940;letter-spacing: 6px;text-align: right;line-height: 40px;"
+        style="font-family: PingFangSC-Medium; font-size: 32px; color: #202940;letter-spacing: 6px;text-align: 
+        right;line-height: 40px;"
       >
         <div>
           <h3 style="text-align:center;">

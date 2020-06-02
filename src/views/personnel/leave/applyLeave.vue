@@ -8,6 +8,7 @@
       <el-row
         type="flex"
         justify="center"
+        class="container"
       >
         <el-col
           :xl="16"
@@ -23,6 +24,7 @@
             label-position="top"
             :rules="rules"
             inline
+            class="form-wrap"
           >
             <!-- 标题 -->
             <el-row
@@ -99,6 +101,7 @@
               </el-col>
             </el-row>
             <!-- 审批下个版本做 -->
+
             <!-- 按钮区 -->
             <el-row
               type="flex"
@@ -108,19 +111,21 @@
                 :span="14"
                 class="btn-box"
               >
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="handelSubmit"
-                >
-                  提交
-                </el-button>
-                <el-button
-                  size="medium"
-                  @click="handelCancel"
-                >
-                  取消
-                </el-button>
+                <el-form-item style="width:50%">
+                  <el-button
+                    type="primary"
+                    size="medium"
+                    @click="handelSubmit"
+                  >
+                    提交
+                  </el-button>
+                  <el-button
+                    size="medium"
+                    @click="handelCancel"
+                  >
+                    取消
+                  </el-button>
+                </el-form-item>
               </el-col>
             </el-row>
           </el-form>
@@ -188,9 +193,7 @@ export default {
         // 检验通过
         applyLeaveInfo(this.queryInfo)
           .then(() => {
-            this.$message.success('提交成功', 2000, () => {
-              this.$router.go(-1)
-            })
+            this.$message.success('提交成功', 2000, this.$router.go(-1))
           })
           .catch(() => {})
       })
@@ -200,11 +203,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.form-wrap {
+  /deep/.el-form-item__label {
+    padding: 0;
+  }
+
+  /deep/ .el-form-item {
+    margin: 0 0 10px 0;
+  }
+}
+
+.container {
+  /deep/.el-col {
+    margin-bottom: 0;
+  }
+}
+
 .title {
   font-family: PingFangSC-Regular;
   font-size: 14px;
   color: #202940;
   line-height: 14px;
+  margin: 0 0 10px 0;
 }
 
 .btn-box {

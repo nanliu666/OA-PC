@@ -128,7 +128,7 @@
     <el-dialog
       title="调整离职信息"
       :visible.sync="changeLeaveVisible"
-      width="30%"
+      width="600px"
       :modal-append-to-body="false"
     >
       <el-row
@@ -457,8 +457,16 @@ export default {
 
       // 控制调整离职信息弹框
       changeLeaveVisible: false,
-      // 调整离职信息提交参数
+      // 调整用户离职信息提交参数
       changeParams: {
+        id: '',
+        lastDate: '',
+        reason: '',
+        remark: '',
+        name: ''
+      },
+      // 用户信息最开始数据
+      oldLeaveInfo: {
         id: '',
         lastDate: '',
         reason: '',
@@ -478,28 +486,24 @@ export default {
       // 工作性质字典组
       workPropertyList: [],
       // 离职原因
-      leaveReason: [],
-      // 控制保存按钮是否点亮
-      isDisabled: true
+      leaveReason: []
     }
   },
   computed: {
-    //
     isWaitLeave() {
       if (this.activeName === 'WaitLeave') return true
       return false
+    },
+    // 控制保存按钮是否点亮
+    isDisabled() {
+      return (
+        this.changeParams.lastDate === this.oldLeaveInfo.lastDate &&
+        this.changeParams.reason === this.oldLeaveInfo.reason &&
+        this.changeParams.remark === this.oldLeaveInfo.remark
+      )
     }
   },
-  watch: {
-    changeParams: {
-      handler(newVal, oldVal) {
-        if (oldVal.id != '') {
-          return (this.isDisabled = false)
-        }
-      },
-      deep: true
-    }
-  },
+
   async created() {
     await this.getCommonDict()
     this.getDataList()
@@ -620,7 +624,6 @@ export default {
       let { id } = await getLeaveInfo({
         userId
       })
-
       let result = await this.$confirm(
         '放弃离职后员工将恢复到正常在职状态，您确认要放弃离职吗？',
         '确认放弃离职？',
@@ -634,11 +637,12 @@ export default {
       if (result !== 'confirm') {
         return
       }
+
       // confirm 点击确定
       await giveupLeave({
         id
       })
-      // 提示放弃离职 刷新页面
+      // // 提示放弃离职 刷新页面
       this.$message.success('放弃离职成功')
       this.getDataList()
     },
@@ -660,6 +664,9 @@ export default {
         reason,
         name
       }
+      this.oldLeaveInfo = {
+        ...this.changeParams
+      }
       this.changeLeaveVisible = true
     },
     // 调整离职信息
@@ -667,13 +674,7 @@ export default {
       await changeLeaveInfo(this.changeParams)
       this.$message.success('保存成功', 2000)
       this.getDataList()
-      this.changeParams = {
-        id: '',
-        lastDate: '',
-        reason: '',
-        remark: '',
-        name: ''
-      }
+
       this.changeLeaveVisible = false
     },
 

@@ -29,17 +29,24 @@
 
     <basic-container>
       <!-- 提醒 : "交接还没完成" -->
-      <div
+      <el-alert
         v-if="!isFinished"
-        class="tag-wrap"
-      >
-        <i class="el-icon-warning-outline icon-warning" />
-        该员工离职交接事项尚未完成，请完成后再确认离职
-      </div>
+        title="该员工离职交接事项尚未完成，请完成后再确认离职"
+        type="info"
+        show-icon
+        class="tip-wrap"
+      />
+      <!-- <div v-if="!isFinished" class="tag-wrap">
+				<i class="el-icon-warning-outline icon-warning" />
+				该员工离职交接事项尚未完成，请完成后再确认离职
+			</div> -->
       <!-- 折叠版 -->
       <!-- 一级折叠版 -->
-      <el-collapse v-model="activeNames">
-        <el-collapse-item>
+      <el-collapse
+        v-model="activeNames"
+        v-loading="groupLoading"
+      >
+        <el-collapse-item name="default-open">
           <!-- 离职事项标题 -->
           <template slot="title">
             <div class="leave-matter-header">
@@ -53,7 +60,6 @@
             </div>
           </template>
           <!-- 二级折叠版  -->
-
           <el-collapse-item
             v-for="(group, index) in noteGroup"
             :key="group.id"
@@ -66,8 +72,8 @@
                 <i
                   :class="
                     group.isFinished == '1'
-                      ? ' el-icon-warning-outline icon-warning'
-                      : ' el-icon-circle-check icon-success'
+                      ? ' el-icon-circle-check icon-success'
+                      : ' el-icon-warning-outline icon-warning'
                   "
                 />
                 <span>{{ group.name }}</span>
@@ -77,7 +83,7 @@
                     v-else
                     type="text"
                     size="medium"
-                    @click="handelUrging"
+                    @click.stop="handelUrging"
                   >
                     催办
                   </el-button>
@@ -103,7 +109,6 @@
               </div>
             </div>
           </el-collapse-item>
-
           <!-- </el-collapse> -->
         </el-collapse-item>
       </el-collapse>
@@ -113,20 +118,31 @@
         v-if="isFinished"
         class="confirm-leave-wrap"
       >
-        <div class="title">
-          确认离职
-        </div>
-        <p class="tips">
-          提示：离职日期为员工最后工作日，员工状态在离职日期次日变更为“已离职”
-        </p>
-        <el-row>
+        <el-row
+          type="flex"
+          justify="center"
+        >
           <el-col
             :xl="16"
             :lg="16"
             :md="18"
             :sm="20"
             :xs="22"
+            :span="24"
           >
+            <el-row>
+              <el-col :span="24">
+                <div class="title">
+                  确认离职
+                </div>
+                <el-alert
+                  title="提示：离职日期为员工最后工作日，员工状态在离职日期次日变更为“已离职"
+                  type="info"
+                  show-icon
+                  style="margin-top:20px"
+                />
+              </el-col>
+            </el-row>
             <el-form
               ref="confirmForm"
               :model="confirmDataForm"
@@ -142,19 +158,22 @@
                       v-model="confirmDataForm.lastDate"
                       type="date"
                       placeholder="选择日期"
-                      style="width : 80%"
+                      style="width : 100%"
                       disabled
                     />
                   </el-form-item>
                 </el-col>
                 <!-- 申请离职日期 -->
-                <el-col :span="10">
+                <el-col
+                  :span="10"
+                  :offset="4"
+                >
                   <el-form-item label="申请离职日期">
                     <el-date-picker
                       v-model="confirmDataForm.applyDate"
                       type="date"
                       placeholder="选择日期"
-                      style="width : 80%"
+                      style="width : 100%"
                       disabled
                     />
                   </el-form-item>
@@ -168,7 +187,7 @@
                     <el-select
                       v-model="confirmDataForm.reason"
                       placeholder="请选择"
-                      style="width : 80%"
+                      style="width : 100%"
                       disabled
                     >
                       <el-option
@@ -181,11 +200,14 @@
                   </el-form-item>
                 </el-col>
                 <!-- 离职原因说明 -->
-                <el-col :span="10">
+                <el-col
+                  :span="10"
+                  :offset="4"
+                >
                   <el-form-item label="离职原因说明">
                     <el-input
                       v-model="confirmDataForm.remark"
-                      style="width : 80%"
+                      style="width : 100%"
                       disabled
                     />
                   </el-form-item>
@@ -204,7 +226,7 @@
                       v-model="confirmDataForm.leaveDate"
                       type="date"
                       placeholder="选择日期"
-                      style="width : 80%"
+                      style="width : 100%"
                       prop="leaveDate"
                     />
                   </el-form-item>
@@ -222,23 +244,23 @@
                                 </el-col>
                             </el-row> -->
             </el-form>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="16">
-            <el-button
-              size="medium"
-              @click="handelCancel"
-            >
-              取消
-            </el-button>
-            <el-button
-              type="primary"
-              size="medium"
-              @click="handelConfirm"
-            >
-              确认离职
-            </el-button>
+            <el-row>
+              <el-col :span="16">
+                <el-button
+                  size="medium"
+                  @click="handelCancel"
+                >
+                  取消
+                </el-button>
+                <el-button
+                  type="primary"
+                  size="medium"
+                  @click="handelConfirm"
+                >
+                  确认离职
+                </el-button>
+              </el-col>
+            </el-row>
           </el-col>
         </el-row>
       </div>
@@ -269,7 +291,7 @@ export default {
         name: ''
       },
       //   折叠版
-      activeNames: [],
+      activeNames: ['default-open'],
       //   事项分组
       noteGroup: [],
       // 确认离职表单
@@ -328,11 +350,13 @@ export default {
         jobName
       }
       // 获取组离职事项分组数据
+      this.groupLoading = true
       let resLeaveNote = await getLeaveNoteGroup({
         companyId: this.companyId,
         userId: this.userId
       })
       //   获取离职事项分组明细
+
       resLeaveNote.forEach(async (item) => {
         let categoryres = await getLeaveNoteCategory({
           groupId: item.id,
@@ -340,7 +364,12 @@ export default {
         })
         item.categoryres = categoryres
       })
+      // 排序  已完成-未完成
+      resLeaveNote.sort((a, b) => {
+        return b.isFinished - a.isFinished
+      })
       this.noteGroup = resLeaveNote
+      this.groupLoading = false
     },
     // 获取员工离职信息
     async getLeave() {
@@ -384,7 +413,8 @@ export default {
     },
     // 点击催办
     handelUrging() {
-      alert('点击了催办')
+      this.$message.success('催办成功')
+      return
     }
   }
 }
@@ -432,36 +462,52 @@ export default {
 }
 
 // 提示框
-.tag-wrap {
-  font-family: PingFangSC-Regular;
-  font-size: 14px;
-  color: #202940;
-  margin: 10px 0;
-  background: #f7f8fa;
-  width: 100%;
-  height: 36px;
-  line-height: 36px;
+.tip-wrap {
+  margin-bottom: 16px;
+  /deep/ .el-alert__icon {
+    color: #207efa;
+    font-size: 16px;
+  }
+  /deep/ .el-alert__title {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #202940;
+  }
 }
+// .tag-wrap {
+// 	font-family: PingFangSC-Regular;
+// 	font-size: 14px;
+// 	color: #202940;
+// 	margin: 10px 0;
+// 	background: #f7f8fa;
+// 	width: 100%;
+// 	height: 36px;
+// 	line-height: 36px;
+
+// 	.icon-warning {
+// 		margin-left: 12px;
+// 	}
+// }
 
 // 没完成图标
 .icon-warning {
   color: #207efa;
-  width: 16px;
-  height: 16px;
+  font-size: 16px;
+  margin-right: 16px;
 }
 
 // 已完成图标
 .icon-success {
   color: #53c962;
-  width: 16px;
-  height: 16px;
+  font-size: 16px;
+  margin-right: 16px;
 }
 
 // 离职交接事项标题
 .leave-matter-header {
   position: relative;
   width: 100%;
-  margin-left: 20px;
+  margin-left: 56px;
 
   .title {
     font-family: PingFangSC-Medium;
@@ -471,7 +517,7 @@ export default {
 
   .isFinished-wrap {
     position: absolute;
-    right: 10px;
+    right: 20px;
     top: 0;
 
     span {
@@ -485,7 +531,7 @@ export default {
 .groups {
   /deep/ .el-collapse-item__arrow {
     position: absolute;
-    left: 24px;
+    left: 56px;
   }
 
   /deep/.el-collapse-item__header {
@@ -500,13 +546,14 @@ export default {
 
 /deep/ .el-collapse-item__arrow {
   position: absolute;
+  left: 24px;
 }
 
 // 分组名称  行政部 。。。。
 .leave-group-header {
   position: relative;
   width: 100%;
-  margin-left: 40px;
+  margin-left: 85px;
 
   span {
     font-family: PingFangSC-Regular;
@@ -516,7 +563,7 @@ export default {
 
   .isFinished-wrap {
     position: absolute;
-    right: 10px;
+    right: 20px;
     top: 0;
 
     span {
@@ -530,17 +577,18 @@ export default {
 // 事项分类  考勤假期。。。。
 .category-wrap {
   .title {
-    margin-left: 60px;
+    margin-left: 134px;
     font-family: PingFangSC-Regular;
-    font-size: 10px;
+    font-size: 14px;
     color: #202940;
   }
 
   .category-item {
-    margin-left: 80px;
+    margin-left: 148px;
     font-family: PingFangSC-Regular;
-    font-size: 10px;
+    font-size: 14px;
     color: #757c85;
+    margin-top: 2px;
   }
 }
 

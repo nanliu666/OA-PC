@@ -39,7 +39,7 @@ const navs = {
     ADD_TAG: (state, action) => {
       state.tag = action
       setStore({ name: 'tag', content: state.tag, type: 'session' })
-      if (state.tagList.some((ele) => diff(ele, action))) return
+      if (state.tagList.some((ele) => ele.value === action.value)) return
       state.tagList.push(action)
       setFistTag(state.tagList)
       setStore({ name: 'tagList', content: state.tagList, type: 'session' })

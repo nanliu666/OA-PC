@@ -293,6 +293,7 @@ export default {
   min-height: 300px;
 }
 .group-header {
+  margin-bottom: 24px;
   .group-title {
     display: flex;
     justify-content: space-between;
