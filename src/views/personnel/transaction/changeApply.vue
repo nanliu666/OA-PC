@@ -18,23 +18,60 @@
           :xs="22"
         >
           <div class="header-wrap">
-            <div class="name-box">
-              <span>{{ applyParams.name }}</span>
-            </div>
-            <div class="info-row">
-              <div class="workNo-box info-row-item">
-                <span>工号：</span>
-                <span>{{ applyParams.workNo }}</span>
-              </div>
-              <div class="orgName-box info-row-item">
-                <span>部门:</span>
-                <span>{{ applyParams.orgName }}</span>
-              </div>
-              <div class="jobName-box info-row-item">
-                <span>职位:</span>
-                <span>{{ applyParams.jobName }}</span>
-              </div>
-            </div>
+            <el-row>
+              <el-col
+                :span="24"
+                class="el-col-flex"
+              >
+                <div class="name-box">
+                  <span>{{ applyParams.name }}</span>
+                </div>
+              </el-col>
+            </el-row>
+            <el-row
+              type="flex"
+              justify="center"
+            >
+              <el-col :span="8">
+                <el-row
+                  type="flex"
+                  justify="center"
+                >
+                  <el-col class="el-col-flex">
+                    <div>
+                      <span>工号：</span>
+                      <span>{{ applyParams.workNo }}</span>
+                    </div>
+                  </el-col>
+                </el-row>
+              </el-col>
+              <el-col :span="8">
+                <el-row
+                  type="flex"
+                  justify="center"
+                >
+                  <el-col class="el-col-flex">
+                    <div>
+                      <span>部门:</span>
+                      <span>{{ applyParams.orgName }}</span>
+                    </div>
+                  </el-col>
+                </el-row>
+              </el-col>
+              <el-col :span="8">
+                <el-row
+                  type="flex"
+                  justify="center"
+                >
+                  <el-col class="el-col-flex">
+                    <div>
+                      <span>职位:</span>
+                      <span>{{ applyParams.jobName }}</span>
+                    </div>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
           </div>
           <el-form
             ref="applyForm"
@@ -546,13 +583,9 @@ export default {
           jobName !== newJobName ||
           positionName !== newPositionName
         ) {
-          let params = JSON.parse(JSON.stringify(this.applyParams))
-
-          changeApply(params)
+          changeApply(this.applyParams)
             .then(() => {
-              this.$message.success('提交成功', 3000, () => {
-                this.$router.go(-1)
-              })
+              this.$message.success('提交成功', 3000, this.$router.go(-1))
             })
             .catch()
         } else {
@@ -568,20 +601,25 @@ export default {
 .header-wrap {
   margin-top: 20px;
   .name-box {
-    display: flex;
-    justify-content: center;
-    margin-top: 36px;
+    margin: 36px 0 20px 0;
     span {
+      font-family: PingFangSC-Medium;
+      font-size: 24px;
+      color: #333333;
+      line-height: 30px;
       font-size: 30px;
     }
   }
-  .info-row {
-    display: flex;
-    justify-content: center;
-    margin: 26px 0;
-    .info-row-item {
-      margin: 0 50px;
-    }
+}
+.el-col-flex {
+  display: flex;
+  justify-content: center;
+
+  span {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #323436;
+    padding: 0 5px;
   }
 }
 </style>

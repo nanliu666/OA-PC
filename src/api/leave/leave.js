@@ -40,11 +40,11 @@ export const confirmLeave = (params) => {
   })
 }
 // 6、放弃离职，调用接口：员工放弃离职接口【POST /user/v1/user/leave/giveup】
-export const giveupLeave = (params) => {
+export const giveupLeave = ({ id }) => {
   return request({
-    url: '/api/user/v1/user/leave/giveup',
-    method: 'post',
-    params: params
+    url: `/api/user/v1/user/leave/giveup?id=${id}`,
+    method: 'post'
+    // params: params
   })
 }
 // 7、离职事项分组数据，调用接口：员工离职交接事项分组查询接口【GET /user/v1/user/leave/note/group】

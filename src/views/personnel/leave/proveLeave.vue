@@ -24,22 +24,25 @@
             label-width="100px"
             label-position="top"
           >
-            <el-row :gutter="20">
+            <el-row>
               <el-col :span="10">
                 <el-form-item label="姓名">
                   <el-input
                     v-model="proveData.name"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="10">
+              <el-col
+                :span="10"
+                :offset="4"
+              >
                 <el-form-item label="证件号码">
                   <el-input
                     v-model="proveData.idNo"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                   />
                 </el-form-item>
               </el-col>
@@ -48,16 +51,19 @@
                   <el-input
                     v-model="proveData.companyName"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="10">
+              <el-col
+                :span="10"
+                :offset="4"
+              >
                 <el-form-item label="部门">
                   <el-input
                     v-model="proveData.orgName"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                   />
                 </el-form-item>
               </el-col>
@@ -66,16 +72,19 @@
                   <el-input
                     v-model="proveData.jobName"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="10">
+              <el-col
+                :span="10"
+                :offset="4"
+              >
                 <el-form-item label="入职日期">
                   <el-date-picker
                     v-model="proveData.entryDate"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                     type="date"
                     placeholder="选择日期"
                   />
@@ -86,18 +95,21 @@
                   <el-date-picker
                     v-model="proveData.leaveDate"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                     type="date"
                     placeholder="选择日期"
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="10">
+              <el-col
+                :span="10"
+                :offset="4"
+              >
                 <el-form-item label="解除合同日期">
                   <el-date-picker
                     v-model="proveData.relieveDate"
                     disabled
-                    style="width : 80%"
+                    style="width : 100%"
                     type="date"
                     placeholder="选择日期"
                   />
@@ -111,24 +123,29 @@
                   <el-date-picker
                     v-model="proveData.nowData"
                     type="date"
-                    style="width : 80%"
+                    style="width : 100%"
                     placeholder="选择日期"
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="24">
-                <el-button
-                  size="medium"
-                  @click="handelCancel"
-                >
-                  取消
-                </el-button>
-                <el-button
-                  size="medium"
-                  type="primary"
-                >
-                  打印预览
-                </el-button>
+              <el-col
+                :span="24"
+                class="btn-wrap"
+              >
+                <div class="btn-box">
+                  <el-button
+                    size="medium"
+                    @click="handelCancel"
+                  >
+                    取消
+                  </el-button>
+                  <el-button
+                    size="medium"
+                    type="primary"
+                  >
+                    打印预览
+                  </el-button>
+                </div>
               </el-col>
             </el-row>
           </el-form>
@@ -190,4 +207,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.btn-wrap {
+  display: flex;
+  justify-content: center;
+}
+</style>
