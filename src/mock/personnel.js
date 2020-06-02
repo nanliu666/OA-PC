@@ -509,7 +509,7 @@ export default ({ mock }) => {
     for (let i = 0; i < 12; i++) {
       list.push(
         Mock.mock({
-          personId: '@integer(10000000000, 20000000000)',
+          userId: '@integer(10000000000, 20000000000)',
           name: '@cname',
           phonenum: '@integer(10000000000, 20000000000)',
           sex: '@integer(0, 1)',
@@ -520,7 +520,7 @@ export default ({ mock }) => {
           proviceName: 'FmF',
           cityCode: '1R2)@W',
           cityName: 'F6z7tql',
-          educationalLevel: 'R1xtN0',
+          educationalLevel: 'Primary',
           university: 'RH92',
           major: 'X[RRQ',
           workAge: '@integer(0, 45)',
@@ -533,7 +533,6 @@ export default ({ mock }) => {
           remark: '@sentence(3, 5)',
           status: /[0-6]/,
           recruitmentId: '@integer(1, 100)',
-          userId: '@integer(1, 1000000)',
           userName: '@cname'
         })
       )
