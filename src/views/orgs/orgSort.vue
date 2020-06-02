@@ -153,7 +153,7 @@ export default {
   border-bottom: 1px solid #f2f2f2;
 }
 /deep/ .basic-container {
-  height: calc(100% - 48px);
+  height: calc(100% - 58px);
   .el-card {
     height: 100%;
   }

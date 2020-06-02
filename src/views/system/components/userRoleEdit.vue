@@ -150,7 +150,11 @@ export default {
       this.$emit('update:visible', true)
     },
     showPreview() {
-      this.previewVisible = true
+      if (this.roleIds.length > 0) {
+        this.previewVisible = true
+      } else {
+        this.$message.error('请先选择角色')
+      }
     },
     filterNode(value, data) {
       if (!value) return true

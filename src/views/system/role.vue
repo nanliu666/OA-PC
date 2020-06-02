@@ -266,7 +266,7 @@ export default {
         })
         if (name) {
           name = name.length > 18 ? name.substr(0, 18) + '...' : name
-          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后在删除`, {
+          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后再删除`, {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -385,90 +385,6 @@ export default {
       }
       return str
     },
-
-    //
-    // getJobsFunc() {
-    //   let params = {
-    //     jobName: ''
-    //   }
-    //   getJobs(params).then((res) => {
-    //     let data = []
-    //     let data2 =[]
-    //     this.JodOrg = res
-    //     // this.NotAssociated = ''
-    //     this.jobFilter(res, data,data2)
-    //     this.associated = data2
-    //     this.notassociated= data
-    //
-    //     this.options.jobs = data
-    //   })
-    // },
-    // resolveTree(tree) {
-    //   if (tree.length > 0) {
-    //     tree.forEach((node) => {
-    //       let users
-    //       if (node.users) {
-    //         users = node.users.map((user) => ({
-    //           ...user,
-    //           id: user.userId,
-    //           type: 'user'
-    //         }))
-    //         if (node.children) {
-    //           node.children.push(...users)
-    //           this.resolveTree(node.children)
-    //         } else {
-    //           node.children = users
-    //         }
-    //         if (node.orgId) {
-    //           node.id = node.orgId
-    //         }
-    //       }
-    //     })
-    //   }
-    // },
-    // jobFilter(arr, data, data2,roleId = '') {
-    //   arr.filter((item) => {
-    //     const obj = {
-    //       children: []
-    //     }
-    //     const obj2 = {
-    //       children: []
-    //     }
-    //     if (item.jobs && item.jobs.length > 0) {
-    //       item.jobs.forEach((item) => {
-    //         const job = {
-    //           label: item.jobName,
-    //           id: item.jobId,
-    //           roles:item.roles
-    //         }
-    //         obj.children.push(job)
-    //         if (!(item.roles&&item.roles.length > 0 )) {
-    //           obj2.children.push(job)
-    //
-    //         }else{
-    //           job.disabled = true
-    //         }
-    //         // if(item.roles&& item.roles.length > 0&&item.roles[0].roleId ===roleId){
-    //         //   obj2.children.push(job)
-    //         // }
-    //
-    //       })
-    //     }
-    //     if (item.orgType) {
-    //       obj.label = item.orgName
-    //       obj.id = item.orgId
-    //       obj2.label = item.orgName
-    //       obj2.id = item.orgId
-    //       if (item.children && item.children.length > 0) {
-    //         this.jobFilter(item.children, obj.children,obj2.children,roleId)
-    //       } else {
-    //         obj.disabled = true
-    //       }
-    //     }
-    //     data.push(obj)
-    //     data2.push(obj2)
-    //   })
-    // },
 
     getPositionsFunc() {
       let params = {

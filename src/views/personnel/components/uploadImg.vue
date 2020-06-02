@@ -12,7 +12,6 @@
               <img
                 class="upload-img"
                 :src="item.url"
-                alt
               >
               <div class="upload-after">
                 <span
@@ -21,29 +20,50 @@
                 >
                   <i class="el-icon-view common-right" />
                 </span>
-                <span
-                  class="pictures"
-                  @click="isDelete(index, item.id)"
-                >
+                <!-- <span class="pictures" @click="isDelete(index, item.id)">
                   <i class="el-icon-delete common-left" />
-                </span>
+                </span>-->
               </div>
               <div class="upload-name">
-                {{ item.name }}
+                <div class="name">
+                  {{ item.name }}
+                </div>
+                <el-dropdown @command="handleCommand($event, index, item)">
+                  <span
+                    class="el-dropdown-link"
+                    style="cursor: pointer"
+                  >
+                    操作
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="changeName">
+                      修改名称
+                    </el-dropdown-item>
+                    <el-dropdown-item command="changeCategory">
+                      移动分类
+                    </el-dropdown-item>
+                    <el-dropdown-item command="delete">
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
               </div>
             </div>
           </div>
         </template>
         <el-upload
+          v-show="limit > fileList.length"
           action
           :http-request="uploadRequst"
           :show-file-list="false"
           list-type="picture-card"
-          :limit="limit"
+          :limit="limit - fileList.length"
           :before-upload="beforeAvatarUpload"
           :on-success="handleAvatarSuccess"
           :multiple="true"
           :on-error="onError"
+          :on-exceed="exceedFun"
           accept="image/jpeg, image/jpg, image/png"
         >
           <i
@@ -64,10 +84,17 @@
       </div>
     </div>
     <view-pictures ref="viewPicture" />
+    <change-attachment-dialog
+      ref="changeAttachmentDialog"
+      :visible.sync="changeAttachmentDialog"
+      :list-data="listData"
+      @refresh="initData"
+    />
   </div>
 </template>
 <script>
 import viewPictures from './viewPictures'
+import ChangeAttachmentDialog from './changeAttachmentDialog'
 import {
   lookUpAttachmentInfo,
   deleteAttachmentInfo,
@@ -77,9 +104,19 @@ import { uploadQiniu } from '@/util/uploadQiniu'
 export default {
   name: 'UploadImg',
   components: {
-    viewPictures
+    viewPictures,
+    ChangeAttachmentDialog
   },
-  props: { limit: { type: Number, default: 15 }, id: { type: Number, default: 0 } },
+  props: {
+    limit: { type: Number, default: 15 },
+    id: { type: Number, default: 0 },
+    listData: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    }
+  },
   data() {
     return {
       noFile: true,
@@ -111,7 +148,8 @@ export default {
       },
       fileList: [],
       pictureList: [],
-      uploadItem: {}
+      uploadItem: {},
+      changeAttachmentDialog: false
     }
   },
   watch: {
@@ -130,6 +168,15 @@ export default {
     this.initData()
   },
   methods: {
+    handleCommand(command, index, item) {
+      if (command === 'delete') {
+        this.isDelete(index, item.id)
+      } else if (command === 'changeName') {
+        this.$refs.changeAttachmentDialog.changeName(item)
+      } else if (command === 'changeCategory') {
+        this.$refs.changeAttachmentDialog.changeCategory(item)
+      }
+    },
     isPictures(index) {
       let tempImgList = [...this.fileList]
       let temp = []
@@ -145,7 +192,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.deleteData.id = id
-        this.fileList.splice(index, 1)
         deleteAttachmentInfo(this.deleteData).then(() => {
           // this.fileList.splice(index, 1)
           this.initData()
@@ -219,6 +265,9 @@ export default {
       const self = this
       self.$message.success('上传成功')
       // this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    exceedFun() {
+      this.$message.error('上传附件数量超过限制')
     },
     onError() {
       this.isonError = true
@@ -388,8 +437,19 @@ export default {
   overflow: hidden;
   height: 36px;
   width: 189px;
+  display: flex;
   border: 1px solid #e3e7e9;
   border-radius: 0 0 4px 4px;
+  padding-right: 4px;
+  .name {
+    flex: 1;
+  }
+  .el-dropdown-link {
+    color: #207efa;
+  }
+  .el-icon--right {
+    margin-left: 0;
+  }
 }
 /deep/ .el-progress {
   line-height: 9;

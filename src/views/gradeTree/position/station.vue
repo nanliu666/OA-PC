@@ -202,7 +202,7 @@ export default {
         })
         if (name) {
           name = name.length > 18 ? name.substr(0, 18) + '...' : name
-          this.$confirm(`很抱歉，您选中的岗位 ${name} 下存在员工，请先将员工调整后在删除`, {
+          this.$confirm(`很抱歉，您选中的岗位 ${name} 下存在员工，请先将员工调整后再删除`, {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -238,24 +238,24 @@ export default {
       this.getData()
     },
     handleDelete(row) {
+      if (row.workNum) {
+        this.$confirm('很抱歉，您选中的岗位下存在员工，请先将员工调整后再删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'info',
+            message: '取消操作!'
+          })
+        })
+        return
+      }
       this.$confirm('您确定要删除该岗位吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if (row.workNum) {
-          this.$confirm('很抱歉，您选中的岗位下存在员工，请先将员工调整后在删除', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.$message({
-              type: 'info',
-              message: '取消操作!'
-            })
-          })
-          return
-        }
         let params = {
           ids: row.id
         }
@@ -298,7 +298,7 @@ export default {
     handleEdit(row) {
       this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = true
-      this.title = '编辑岗类别'
+      this.title = '编辑岗位类别'
       this.stationDialog = true
     },
     handleExport() {

@@ -36,6 +36,7 @@
         <el-button
           type="primary"
           size="medium"
+          style="float:right;"
           plain
           @click="jumpAddUser"
         >

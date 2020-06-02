@@ -4,7 +4,7 @@
       用户管理
     </div>
     <el-row
-      style="height: calc(100% - 100px);"
+      style="height: calc(100% - 80px);"
       :gutter="8"
     >
       <el-col
@@ -17,12 +17,23 @@
           block
           style="padding-left:0;"
         >
-          <el-tabs v-model="activeTabName">
+          <el-tabs
+            v-model="activeTabName"
+            style="height:100%;"
+          >
             <el-tab-pane
               label="组织架构"
               name="orgTree"
             >
+              <el-input
+                v-model="treeSearch"
+                suffix-icon="el-icon-search"
+                placeholder="组织名称"
+                style="margin-bottom:10px;"
+              />
               <el-tree
+                ref="orgTree"
+                :filter-node-method="filterNode"
                 :data="treeData"
                 node-key="orgId"
                 :props="treeProps"
@@ -38,7 +49,10 @@
                 </span>
               </el-tree>
             </el-tab-pane>
-            <el-tab-pane name="tags">
+            <el-tab-pane
+              name="tags"
+              style="height:100%"
+            >
               <span slot="label">
                 标签
                 <el-tooltip
@@ -108,16 +122,26 @@ export default {
         children: 'children'
       },
       activeTag: null,
-      activeOrg: null
+      activeOrg: null,
+      treeSearch: ''
     }
   },
   computed: {
     ...mapGetters(['userInfo'])
   },
+  watch: {
+    treeSearch(val) {
+      this.$refs.orgTree.filter(val)
+    }
+  },
   mounted() {
     this.loadTree()
   },
   methods: {
+    filterNode(value, data) {
+      if (!value) return true
+      return data.orgName.indexOf(value) !== -1
+    },
     nodeClick(data) {
       this.activeOrg = data
     },
@@ -141,5 +165,8 @@ export default {
   font-weight: bold;
   font-size: 18px;
   padding: 14px 0 16px;
+}
+/deep/ .el-tabs__content {
+  height: calc(100% - 55px);
 }
 </style>
