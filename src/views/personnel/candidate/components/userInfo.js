@@ -3,10 +3,6 @@ export let infoForm = {
     {
       attrId: '1', // ：key唯一值
       attrName: '姓名：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       status: false, // 是否设置规则
       dataType: 1, // 当inType=1时生效
@@ -24,10 +20,6 @@ export let infoForm = {
     {
       attrId: '2', // ：key唯一值
       attrName: '性别：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       status: false, // 是否设置规则
       dataType: 1, // 当inType=1时生效
@@ -38,10 +30,6 @@ export let infoForm = {
     {
       attrId: '3', // ：key唯一值
       attrName: '手机号码：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       status: true, // 是否设置规则
       dataType: 1, // 当inType=1时生效
@@ -52,10 +40,6 @@ export let infoForm = {
     {
       attrId: '4', // ：key唯一值
       attrName: '邮箱：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       status: true, // 是否设置规则
       dataType: 1, // 当inType=1时生效
@@ -73,10 +57,6 @@ export let infoForm = {
     {
       attrId: '5', // ：key唯一值
       attrName: '出生日期：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -86,10 +66,6 @@ export let infoForm = {
     {
       attrId: '6', // ：key唯一值
       attrName: '年龄：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -99,10 +75,6 @@ export let infoForm = {
     {
       attrId: '7', // ：key唯一值
       attrName: '最高学历：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -112,9 +84,6 @@ export let infoForm = {
     {
       attrId: '8', // ：key唯一值
       attrName: '首次参加工作时间：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
@@ -123,8 +92,6 @@ export let infoForm = {
     {
       attrId: '9', // ：key唯一值
       attrName: '工龄：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -134,10 +101,6 @@ export let infoForm = {
     {
       attrId: '10', // ：key唯一值
       attrName: '婚姻状况：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -147,10 +110,6 @@ export let infoForm = {
     {
       attrId: '11', // ：key唯一值
       attrName: '健康状况：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -160,10 +119,6 @@ export let infoForm = {
     {
       attrId: '12', // ：key唯一值
       attrName: '民族：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -173,10 +128,6 @@ export let infoForm = {
     {
       attrId: '13', // ：key唯一值
       attrName: '政治面貌：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -186,10 +137,6 @@ export let infoForm = {
     {
       attrId: '14', // ：key唯一值
       attrName: '籍贯：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 8, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -199,10 +146,6 @@ export let infoForm = {
     {
       attrId: '15', // ：key唯一值
       attrName: '户籍类型：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -212,10 +155,6 @@ export let infoForm = {
     {
       attrId: '16', // ：key唯一值
       attrName: '身份证地址：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -225,10 +164,6 @@ export let infoForm = {
     {
       attrId: '17', // ：key唯一值
       attrName: '现住址：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -259,10 +194,6 @@ export let contacts = {
     {
       attrId: '2', // ：key唯一值
       attrName: '紧急联系人关系：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       status: false, // 是否设置规则
       dataType: 1, // 当inType=1时生效
@@ -280,10 +211,6 @@ export let contacts = {
     {
       attrId: '3', // ：key唯一值
       attrName: '紧急联系人电话：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -304,10 +231,6 @@ export let education = {
     {
       attrId: '1', // ：key唯一值
       attrName: '受教育时间：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -317,10 +240,6 @@ export let education = {
     {
       attrId: '2', // ：key唯一值
       attrName: '学历：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -330,10 +249,6 @@ export let education = {
     {
       attrId: '3', // ：key唯一值
       attrName: '教育类型：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -343,10 +258,6 @@ export let education = {
     {
       attrId: '4', // ：key唯一值
       attrName: '学校名称：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -356,10 +267,6 @@ export let education = {
     {
       attrId: '5', // ：key唯一值
       attrName: '学校名称：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -373,10 +280,6 @@ export let family = {
     {
       attrId: '1', // ：key唯一值
       attrName: '姓名：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -386,10 +289,6 @@ export let family = {
     {
       attrId: '2', // ：key唯一值
       attrName: '关系：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -399,10 +298,6 @@ export let family = {
     {
       attrId: '3', // ：key唯一值
       attrName: '年龄：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -412,10 +307,6 @@ export let family = {
     {
       attrId: '4', // ：key唯一值
       attrName: '工作单位：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -425,10 +316,6 @@ export let family = {
     {
       attrId: '5', // ：key唯一值
       attrName: '职位：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -438,10 +325,6 @@ export let family = {
     {
       attrId: '6', // ：key唯一值
       attrName: '联系电话：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -455,12 +338,6 @@ export let work = {
     {
       attrId: '1', // ：key唯一值
       attrName: '在职时间：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
       props: 'workTime'
@@ -468,10 +345,6 @@ export let work = {
     {
       attrId: '2', // ：key唯一值
       attrName: '单位名称：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -481,10 +354,6 @@ export let work = {
     {
       attrId: '3', // ：key唯一值
       attrName: '职位名称：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -494,10 +363,6 @@ export let work = {
     {
       attrId: '4', // ：key唯一值
       attrName: '离职薪资：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -507,10 +372,6 @@ export let work = {
     {
       attrId: '5', // ：key唯一值
       attrName: '证明人：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -520,10 +381,6 @@ export let work = {
     {
       attrId: '6', // ：key唯一值
       attrName: '证明人联系电话：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -533,10 +390,6 @@ export let work = {
     {
       attrId: '7', // ：key唯一值
       attrName: '有无守密义务或竞业禁止义务：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -546,10 +399,6 @@ export let work = {
     {
       attrId: '8', // ：key唯一值
       attrName: '遵守义务时间：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -559,10 +408,6 @@ export let work = {
     {
       attrId: '9', // ：key唯一值
       attrName: '具体内容：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -576,12 +421,6 @@ export let train = {
     {
       attrId: '1', // ：key唯一值
       attrName: '培训时间：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
       props: 'trainTime'
@@ -589,12 +428,6 @@ export let train = {
     {
       attrId: '2', // ：key唯一值
       attrName: '培训课程：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
       props: 'trainClass'
@@ -602,10 +435,6 @@ export let train = {
     {
       attrId: '3', // ：key唯一值
       attrName: '培训机构：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -619,12 +448,6 @@ export let certificate = {
     {
       attrId: '1', // ：key唯一值
       attrName: '证书名称：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
       props: 'name'
@@ -632,12 +455,6 @@ export let certificate = {
     {
       attrId: '2', // ：key唯一值
       attrName: '证书编号：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
       props: 'code'
@@ -645,12 +462,6 @@ export let certificate = {
     {
       attrId: '3', // ：key唯一值
       attrName: '发证机构：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
       props: 'organ'
@@ -658,11 +469,6 @@ export let certificate = {
     {
       attrId: '4', // ：key唯一值
       attrName: '发证日期：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请填写工号', // 提示必填提示
@@ -787,6 +593,7 @@ export let employment = {
       attrId: '3', // ：key唯一值
       attrName: '入职公司：', // lable
       disabled: true,
+      value: '',
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择入职公司', // 提示必填提示
       props: 'companyId',
@@ -818,6 +625,7 @@ export let employment = {
       attrId: '5', // ：key唯一值
       attrName: '职位：', // lable
       disabled: true,
+      value: '',
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '职位', // 提示必填提示
       props: 'jobId',
@@ -833,7 +641,6 @@ export let employment = {
       attrId: '6', // ：key唯一值
       attrName: '岗位：', // lable
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '岗位', // 提示必填提示
       props: 'positionId'
@@ -865,7 +672,6 @@ export let employment = {
       attrId: '9', // ：key唯一值
       attrName: '工作城市：', // lable
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 8, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '工作城市', // 提示必填提示
       props: 'city'
@@ -877,11 +683,6 @@ export let salary = {
     {
       attrId: '1', // ：key唯一值
       attrName: '试用期月薪：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '试用期月薪', // 提示必填提示
@@ -897,7 +698,6 @@ export let salary = {
     {
       attrId: '2', // ：key唯一值
       attrName: '转正月薪：', // lable
-      value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '转正月薪', // 提示必填提示
@@ -967,13 +767,8 @@ export let labour = {
     {
       attrId: '1', // ：key唯一值
       attrName: '合同公司：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       disabled: true,
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '合同公司', // 提示必填提示
       props: 'companyId',
@@ -988,10 +783,6 @@ export let labour = {
     {
       attrId: '2', // ：key唯一值
       attrName: '合同类型：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -1008,10 +799,6 @@ export let labour = {
     {
       attrId: '3', // ：key唯一值
       attrName: '合同期限：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: years, // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -1021,10 +808,6 @@ export let labour = {
     {
       attrId: '4', // ：key唯一值
       attrName: '合同开始日期：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -1041,12 +824,7 @@ export let labour = {
     {
       attrId: '5', // ：key唯一值
       attrName: '合同结束日期：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '合同结束日期', // 提示必填提示
       props: 'contractEndDate',
@@ -1084,10 +862,6 @@ export let fiveRisks = {
     {
       attrId: '1', // ：key唯一值
       attrName: '是否缴纳社会保险：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: isRisks, // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -1097,10 +871,6 @@ export let fiveRisks = {
     {
       attrId: '2', // ：key唯一值
       attrName: '社会保险基数：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -1110,10 +880,6 @@ export let fiveRisks = {
     {
       attrId: '3', // ：key唯一值
       attrName: '其他：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: orther, // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
       inType: 9, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -1161,12 +927,7 @@ export let office = {
     {
       attrId: '1', // ：key唯一值
       attrName: '办公位安排：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: OfficeSpace, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '办公位安排', // 提示必填提示
       props: 'officeSpace'
@@ -1174,12 +935,7 @@ export let office = {
     {
       attrId: '2', // ：key唯一值
       attrName: '电话配备：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: phoneConfig, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '电话配备', // 提示必填提示
       props: 'telphone'
@@ -1187,12 +943,7 @@ export let office = {
     {
       attrId: '3', // ：key唯一值
       attrName: '是否电脑配置：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: isRisks, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '是否电脑配置', // 提示必填提示
       props: 'isComputer',
@@ -1201,11 +952,6 @@ export let office = {
     {
       attrId: '4', // ：key唯一值
       attrName: '其他：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '其他', // 提示必填提示
       props: 'other',
@@ -1218,12 +964,7 @@ export let other = {
     {
       attrId: '1', // ：key唯一值
       attrName: '是否安排住房：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: isRisks, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '是否安排住房', // 提示必填提示
       props: 'isHouse',
@@ -1232,10 +973,6 @@ export let other = {
     {
       attrId: '2', // ：key唯一值
       attrName: '住房标准：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
       value: '', // 单选框多选框的potion的值
       inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '住房标准', // 提示必填提示
@@ -1245,12 +982,6 @@ export let other = {
     {
       attrId: '3', // ：key唯一值
       attrName: '备注：', // lable
-      attrValue: '', // v-model绑定值
-      attrvalue: '', // 后台返回值
-      minLen: '', // 最小长度
-      maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
       inType: 10, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '备注', // 提示必填提示
       props: 'remark',
