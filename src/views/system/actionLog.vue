@@ -163,6 +163,7 @@ export default {
     },
     onLoad() {},
     submit(params) {
+      this.ajaxData.pageNo = 1
       let { pageNo, pageSize } = this.ajaxData
       this.ajaxData = { pageNo, pageSize, ...params }
       this.initData()
