@@ -14,9 +14,24 @@ const res = {
   success: true,
   response: {
     orgPrivileges: [
-      { orgId: '1252523599903072257', orgName: '百利宏12', orgType: 'Company', isOwn: 1 },
-      { orgId: '1252523599903072259', orgName: '广州易宝分公司', orgType: 'Company', isOwn: 1 },
-      { orgId: '1259787152448147458', orgName: '出差', orgType: 'Company', isOwn: 1 }
+      {
+        orgId: '1252523599903072257',
+        orgName: '百利宏12',
+        orgType: 'Company',
+        isOwn: 1
+      },
+      {
+        orgId: '1252523599903072259',
+        orgName: '广州易宝分公司',
+        orgType: 'Company',
+        isOwn: 1
+      },
+      {
+        orgId: '1259787152448147458',
+        orgName: '出差',
+        orgType: 'Company',
+        isOwn: 1
+      }
     ],
     menuPrivileges: [
       {
@@ -29,7 +44,13 @@ const res = {
         alias: 'system',
         path: '',
         icon: 'iconfont iconicon_setting',
-        dataPrivileges: [{ dataId: '1', scopeName: '个人可见', isOwn: 1 }],
+        dataPrivileges: [
+          {
+            dataId: '1',
+            scopeName: '个人可见',
+            isOwn: 1
+          }
+        ],
         children: [
           {
             menuId: '1259070994843471874',
@@ -426,17 +447,6 @@ const res = {
             ]
           },
           {
-            menuId: '32',
-            menuName: '人事异动',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'personnel_editPerson',
-            alias: 'editPerson',
-            path: '/personnel/transaction/perChange',
-            icon: 'iconfont iconicon_compile'
-          },
-          {
             menuId: '322',
             menuName: '合同管理',
             menuType: 'Menu',
@@ -472,14 +482,39 @@ const res = {
           {
             menuId: '33',
             menuName: '异动申请',
-            menuType: 'Menu',
+            menuType: 'Dir',
             isOwn: 1,
             isShow: 1,
             code: 'personnel_editPerson',
             alias: 'editPerson',
-            path: '/personnel/transaction/changeApply/:userId',
-            icon: 'iconfont iconicon_compile'
+            path: '',
+            icon: 'iconfont iconicon_compile',
+            children: [
+              {
+                menuId: '320',
+                menuName: '人事异动',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_editPerson',
+                alias: 'editPerson',
+                path: '/personnel/transaction/perChange',
+                icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '321',
+                menuName: '异动申请',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_editPerson',
+                alias: 'editPerson',
+                path: '/personnel/transaction/changeApply',
+                icon: 'iconfont iconicon_compile'
+              }
+            ]
           },
+
           {
             menuId: '35',
             menuName: '转正申请',
@@ -548,6 +583,85 @@ const res = {
             icon: 'iconfont iconicon_doc'
           },
           {
+            menuId: '80',
+            menuName: '离职管理',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'org_management',
+            alias: 'orgManagement',
+            path: '',
+            icon: 'iconfont iconicon_subordinate',
+            dataPrivileges: [],
+            children: [
+              {
+                menuId: '801',
+                menuName: '离职管理',
+                menuType: 'Dir',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/leaveList',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: []
+              },
+              {
+                menuId: '802',
+                menuName: '离职申请',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/applyLeave',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '803',
+                menuName: '确认离职',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/confirmLeave',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '80',
+                menuName: '离职证明',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/proveLeave',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              },
+              {
+                menuId: '804',
+                menuName: '离职证明预览',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'org_management',
+                alias: 'orgManagement',
+                path: '/personnel/leave/printProve',
+                icon: 'iconfont iconicon_subordinate',
+                dataPrivileges: [],
+                children: []
+              }
+            ]
+          },
+
+          {
             menuId: '31212212451',
             menuName: '离职交接事项',
             menuType: 'Menu',
@@ -608,6 +722,41 @@ const res = {
                 children: []
               }
             ]
+          }
+        ]
+      },
+      {
+        menuId: '1590112075698',
+        menuName: '个人中心',
+        menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
+        isOwn: 1, // 是否拥有 0：否，1：是
+        isShow: 1, // 是否显示在菜单栏 0：否，1：是
+        code: 'system',
+        alias: 'system',
+        path: '',
+        icon: 'iconfont iconicon_setting',
+        children: [
+          {
+            menuId: '1590112075699',
+            menuName: '个人信息',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'userInfo_editPerson',
+            alias: 'editPerson',
+            path: '/system/userinfo',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '1590112075700',
+            menuName: '安全设置',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'userInfo_editPerson',
+            alias: 'editPerson',
+            path: '/system/securitySetting',
+            icon: 'iconfont iconicon_compile'
           }
         ]
       }

@@ -196,6 +196,11 @@ export default {
             type: 'radio',
             row: true,
             span: 24,
+            change: (val) => {
+              if (val.value == 1 && !this.groupForm.groupName) {
+                this.groupForm.groupName = this.preTreeList[0].orgName
+              }
+            },
             rules: [
               {
                 required: true,

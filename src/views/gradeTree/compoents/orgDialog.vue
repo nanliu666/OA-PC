@@ -165,7 +165,8 @@ export default {
         remark: '',
         orgType: '',
         userId: '',
-        parentOrgId: ''
+        parentOrgId: '',
+        code: ''
       },
       option: {
         menuBtn: false,
@@ -183,6 +184,23 @@ export default {
               {
                 required: true,
                 message: '请输入职位名称',
+                trigger: 'blur'
+              }
+            ]
+          },
+          {
+            label: '组织编码',
+            prop: 'code',
+            type: 'input',
+            row: true,
+            display: false,
+            span: 24,
+            placeholder: '请输入组织编码',
+            disabled: true,
+            rules: [
+              {
+                required: true,
+                message: '请输入组织编码',
                 trigger: 'blur'
               }
             ]
@@ -215,11 +233,12 @@ export default {
               if (value && value !== '0') {
                 // orgList.filter(it)
                 let orgs = []
-                this.f(orgList, value, orgs)
+                this.filterOrg(orgList, value, orgs)
 
                 let selectIndex = this.allType.findIndex((value) => value === orgs[0].orgType)
                 let dataIndex = this.allType.findIndex((value) => value === this.orgData.type)
-                let type = selectIndex > dataIndex ? orgs[0].orgType : this.orgData.type
+                // let type = selectIndex > dataIndex ? orgs[0].orgType : this.orgData.type
+                let type = orgs[0].orgType
                 if (selectIndex > dataIndex) {
                   this.form.orgType = ''
                 }
@@ -330,6 +349,26 @@ export default {
       },
       deep: true //对象内部的属性监听，也叫深度监听
     },
+    isEdit: {
+      handler(val) {
+        if (val) {
+          this.option.column[1].display = true
+          if (this.orgData.type === 'Enterprise') {
+            this.option.column[2].display = false
+            // this.option.column[3].display =false
+            this.option.column[3].dicData = [
+              {
+                label: '企业',
+                value: 3,
+                list: ['Enterprise', 'Company'],
+                disabled: false
+              }
+            ]
+          }
+        }
+      },
+      immediate: true
+    },
     orgData: {
       handler: async function(val) {
         // console.log(val)
@@ -339,6 +378,7 @@ export default {
         this.loading = false
         if (this.isEdit) {
           this.form.orgName = this.orgData.name
+          this.form.code = this.orgData.code
           this.form.parentOrgId = this.orgData.parentId
           this.form.remark = this.orgData.remark
           this.form.userId = this.orgData.userId
@@ -367,6 +407,10 @@ export default {
             it.disabled = true
           }
         })
+        if (this.orgData.type === 'Enterprise') {
+          this.option.column[2].display = false
+          this.form.orgType = 3
+        }
       },
       immediate: true,
       deep: true
@@ -377,14 +421,14 @@ export default {
   },
   created() {},
   methods: {
-    f(org, value, orgs) {
+    filterOrg(org, value, orgs) {
       org.filter((it) => {
         if (it.id === value) {
           orgs.push(it)
           // orgs = JSON.parse(JSON.stringify(it))
         }
         if (it.children && it.children.length > 0) {
-          this.f(it.children, value, orgs)
+          this.filterOrg(it.children, value, orgs)
         }
       })
     },
@@ -448,12 +492,13 @@ export default {
     onClickAdd({ ishow = true }) {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
-          let { orgName, parentOrgId, orgType, userId, remark } = { ...this.form }
+          let { orgName, parentOrgId, orgType, userId, remark, code } = { ...this.form }
           // userId = userId.join(',')
           let type = {
             0: 'Company',
             1: 'Department',
-            2: 'Group'
+            2: 'Group',
+            3: 'Enterprise'
           }
           orgType = type[orgType]
           let params = {
@@ -461,21 +506,26 @@ export default {
             parentOrgId,
             orgType,
             userId,
+            code,
             remark
           }
           this.loading = true
-          postOrganization(params).then(() => {
-            this.$emit('onsubmit')
-            this.$message.success('添加成功')
-            this.loading = false
-            if (ishow) {
-              this.$emit('update:dialogVisible', false)
-            } else {
-              let parentOrgId = JSON.parse(JSON.stringify(this.form.parentOrgId))
-              this.$refs.form.resetFields()
-              this.form.parentOrgId = parentOrgId
-            }
-          })
+          postOrganization(params)
+            .then(() => {
+              this.$emit('onsubmit')
+              this.$message.success('添加成功')
+              this.loading = false
+              if (ishow) {
+                this.$emit('update:dialogVisible', false)
+              } else {
+                let parentOrgId = JSON.parse(JSON.stringify(this.form.parentOrgId))
+                this.$refs.form.resetFields()
+                this.form.parentOrgId = parentOrgId
+              }
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },
@@ -485,11 +535,12 @@ export default {
     onClickSave() {
       this.$refs.form.validate((vaild) => {
         if (vaild) {
-          let { orgName, parentOrgId, orgType, userId, remark } = { ...this.form }
+          let { orgName, parentOrgId, orgType, userId, remark, code } = { ...this.form }
           let type = {
             0: 'Company',
             1: 'Department',
-            2: 'Group'
+            2: 'Group',
+            3: 'Enterprise'
           }
           orgType = type[orgType]
           let params = {
@@ -498,15 +549,20 @@ export default {
             parentOrgId,
             orgType,
             userId,
-            remark
+            remark,
+            code
           }
           this.loading = true
-          putOrganization(params).then(() => {
-            this.$emit('onsubmit')
-            this.$message.success('修改成功')
-            this.loading = false
-            this.handleClose()
-          })
+          putOrganization(params)
+            .then(() => {
+              this.$emit('onsubmit')
+              this.$message.success('修改成功')
+              this.loading = false
+              this.handleClose()
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },

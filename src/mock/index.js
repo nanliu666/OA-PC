@@ -17,6 +17,7 @@ import person from './person'
 import menus from './menus'
 import candidate from './candidate'
 import selectPerson from './selectPerson'
+import leave from './leave'
 import personnelSettings from './personnel/settings'
 import contact from './contact'
 /**
@@ -28,6 +29,7 @@ import contact from './contact'
 const options = { mock: false }
 
 user(options)
+
 menu(options)
 
 candidate(options)
@@ -53,6 +55,9 @@ org(options)
 transction(options)
 
 person(options.mock)
+contact(options)
+leave(options)
+
 contact({ mock: false })
 
 personnelSettings(options.mock)

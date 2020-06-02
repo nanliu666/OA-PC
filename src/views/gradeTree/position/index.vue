@@ -32,10 +32,20 @@
           >
             <div class="aside_header">
               <span>职位类别</span>
-              <span
-                class="el-icon-setting"
-                @click="jump"
-              />
+              <el-tooltip
+                content="职位类别设置"
+                placement="right-end"
+                effect="dark"
+              >
+                <i
+                  class="el-icon-setting"
+                  @click="jump"
+                />
+              </el-tooltip>
+              <!--              <span-->
+              <!--                class="el-icon-setting"-->
+              <!--                @click="jump"-->
+              <!--              />-->
             </div>
             <div>
               <ul>
@@ -85,14 +95,7 @@
                       <el-button
                         type="primary"
                         size="medium"
-                        @click="handleExport"
-                      >
-                        <i class="el-icon-upload2" /> 导出
-                      </el-button>
-                      <el-button
-                        type="primary"
-                        size="medium"
-                        @click="getJobData"
+                        @click="getJobData({ pageNo: params.pageNo })"
                       >
                         <i class="el-icon-refresh" />
                       </el-button>
@@ -225,8 +228,8 @@ export default {
       ],
       page: {
         pageSize: 10,
-        pagerCount: 1,
-        total: 0
+        currentPage: 2,
+        total: 100
       },
       params: {
         pageNo: 1,
@@ -247,32 +250,33 @@ export default {
       this.$router.push({ path: `/gradeTree/position/category` })
     },
     handlerDeleteAll(list) {
-      debugger
-      this.$confirm('您确定要删除你所选中的职位吗?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        let name = ''
-        this.selectionList.map((item) => {
-          if (item.workNum > 0) {
-            name += ' ' + item.jobName
-          }
+      let name = ''
+      list.map((item) => {
+        if (item.workNum > 0) {
+          name += ' ' + item.jobName
+        }
+      })
+      if (name) {
+        name = name.length > 18 ? name.substr(0, 18) + '...' : name
+        this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后再删除`, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
-        if (name) {
-          name = name.length > 18 ? name.substr(0, 18) + '...' : name
-          this.$confirm(`很抱歉，您选中的职位 ${name} 下存在员工，请先将员工调整后在删除`, {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
+          .then(() => {
             this.$message({
               type: 'info',
               message: '取消操作!'
             })
           })
-          return
-        }
+          .catch(() => {})
+        return
+      }
+      this.$confirm('您确定要删除你所选中的职位吗?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         let params = {
           ids: list.map((i) => i.id).join(',')
         }
@@ -297,6 +301,7 @@ export default {
     },
     positionOnsubmit() {
       this.getJobData()
+      this.getCategory()
     },
     close() {
       this.show = false
@@ -317,6 +322,7 @@ export default {
       gotV1Job(this.params).then((res) => {
         this.loading = false
         this.data = res.data
+        this.page.currentPage = this.params.pageNo
         this.page.total = res.totalNum
       })
     },
@@ -384,29 +390,29 @@ export default {
     handleCheck(row) {
       this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = true
-      this.title = '编辑子组织'
+      this.title = '编辑职位'
       this.positionDialog = true
     },
     handleCommand(event, row) {
+      if (row.workNum) {
+        this.$confirm('很抱歉，您选中的职位下存在员工，请先将员工调整后再删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'info',
+            message: '取消操作!'
+          })
+        })
+        return
+      }
       this.$confirm('您确定要删除该职位吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          if (row.workNum) {
-            this.$confirm('很抱歉，您选中的职位下存在员工，请先将员工调整后在删除', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              this.$message({
-                type: 'info',
-                message: '取消操作!'
-              })
-            })
-            return
-          }
           let params = {
             ids: row.jobId
           }

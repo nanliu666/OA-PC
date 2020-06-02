@@ -3,7 +3,7 @@ export default ({ mock }) => {
   if (!mock) return
 
   //人事异动员工筛选接口
-  Mock.mock(new RegExp('/user/v1/user/change/list' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/change/list' + '.*'), 'post', () => {
     let list = []
     for (let i = 0; i < 10; i++) {
       list.push(
@@ -37,7 +37,7 @@ export default ({ mock }) => {
     }
   })
   //人事筛选
-  Mock.mock(new RegExp('/user/v1/user/change/info' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/change/info' + '.*'), 'post', () => {
     return {
       response: {
         response: 'ok'
@@ -45,7 +45,7 @@ export default ({ mock }) => {
     }
   })
   // 获取员工信息
-  Mock.mock(new RegExp('/user/v1/user/info' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/user/v1/user/info' + '.*'), 'get', () => {
     return {
       response: {
         userId: '20200426',

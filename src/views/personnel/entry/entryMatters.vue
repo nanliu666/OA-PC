@@ -92,11 +92,10 @@
         v-loading="loading"
         class="dialogContain"
       >
-        <inputArray
-          ref="signedData"
-          :el-row-gutter="25"
-          :info-form.sync="signedData"
-          :form.sync="infoForm"
+        <common-form
+          ref="form"
+          :model="form"
+          :columns="columns"
         />
       </div>
       <div
@@ -173,14 +172,15 @@ const years = [
 ]
 
 import PageHeader from '@/components/page-header/pageHeader'
-import inputArray from '@/views/personnel/candidate/components/inputArray'
+import CommonForm from '@/components/common-form/commonForm'
+// import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { getStaffBasicInfo, getConpactInfo } from '@/api/personalInfo'
 import { getCompany } from '@/api/personnel/selectedPerson'
 import { createContract } from '@/api/personnel/entry'
 
 export default {
   name: 'EntryPersonDetail',
-  components: { PageHeader, inputArray },
+  components: { PageHeader, CommonForm },
   data() {
     return {
       loading: false,
@@ -194,7 +194,7 @@ export default {
       statusWord: { Try: '试用期', Formal: '正式', Leaved: '已离职', WaitLeave: '待离职	' },
       contractStatus: false,
       contractDialog: false,
-      infoForm: {
+      form: {
         userId: '',
         code: '',
         name: '',
@@ -205,149 +205,116 @@ export default {
         period: '',
         remark: ''
       },
-      signedData: {
-        basicAttrs: [
-          {
-            attrId: '1', // ：key唯一值
-            attrName: '合同编号：', // lable
-            inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '请输入合同编号', // 提示必填提示
-            props: 'code',
-            span: 12
+
+      columns: [
+        {
+          label: '合同编号', // lable
+          itemType: 'input', // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+          prop: 'code',
+          span: 11
+        },
+        {
+          label: '合同公司',
+          itemType: 'select',
+          prop: 'name',
+          options: [],
+          props: {
+            label: 'orgName',
+            value: 'orgId'
           },
-          {
-            attrId: '2', // ：key唯一值
-            attrName: '合同公司：', // lable
-            value: '', // 单选框多选框的potion的值
-            inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '请选择合同公司', // 提示必填提示
-            props: 'name',
-            span: 12,
-            rules: [
-              {
-                required: true,
-                message: '请选择合同公司',
-                trigger: 'change'
-              }
-            ]
+          span: 11,
+          offset: 2,
+          required: true
+        },
+        {
+          label: '合同类型',
+          itemType: 'select',
+          prop: 'type',
+          options: [],
+          props: {
+            label: 'dictValue',
+            value: 'dictKey'
           },
-          {
-            attrId: '3', // ：key唯一值
-            attrName: '合同类型：', // lable
-            value: '', // 单选框多选框的potion的值
-            inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '请选择合同类型', // 提示必填提示
-            props: 'type',
-            span: 12,
-            rules: [
-              {
-                required: true,
-                message: '请选择合同类型',
-                trigger: 'change'
-              }
-            ]
+          span: 11,
+          required: true
+        },
+        {
+          label: '合同期限',
+          itemType: 'select',
+          prop: 'period',
+          options: years,
+          props: {
+            label: 'label',
+            value: 'value'
           },
-          {
-            attrId: '4', // ：key唯一值
-            attrName: '合同期限：', // lable
-            value: years, // 单选框多选框的potion的值
-            inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '请选择合同期限', // 提示必填提示
-            props: 'period',
-            span: 12
-          },
-          {
-            attrId: '5', // ：key唯一值
-            attrName: '合同起止日期：', // lable
-            inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '请选择合同起止日期', // 提示必填提示
-            props: 'beginDate',
-            span: 12,
-            rules: [
-              {
-                required: true,
-                message: '请选择合同起止日期',
-                trigger: 'change'
-              }
-            ]
-          },
-          {
-            attrId: '6', // ：key唯一值
-            attrName: '合同结束日期：', // lable
-            inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '请选择合同结束日期', // 提示必填提示
-            props: 'endDate',
-            span: 12,
-            rules: [
-              {
-                required: true,
-                message: '请选择合同起止日期',
-                trigger: 'change'
-              }
-            ]
-          },
-          {
-            attrId: '7', // ：key唯一值
-            attrName: '合同签订日期：', // lable
-            inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '请选择合同签订日期', // 提示必填提示
-            props: 'signDate',
-            span: 12,
-            rules: [
-              {
-                required: true,
-                message: '请选择合同起止日期',
-                trigger: 'change'
-              }
-            ]
-          },
-          {
-            attrId: '8', // ：key唯一值
-            attrName: '备注：', // lable
-            inType: 10, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-            message: '备注', // 提示必填提示
-            props: 'remark',
-            span: 24
-          }
-        ]
-      }
+          span: 11,
+          offset: 2
+        },
+        {
+          label: '合同起止日期', // lable
+          itemType: 'datePicker',
+          prop: 'beginDate',
+          required: true,
+          span: 11
+        },
+        {
+          label: '合同结束日期', // lable
+          itemType: 'datePicker',
+          prop: 'endDate',
+          required: true,
+          offset: 2,
+          span: 11
+        },
+        {
+          label: '合同签订日期', // lable
+          itemType: 'datePicker',
+          prop: 'signDate',
+          span: 11
+        },
+        {
+          prop: 'remark',
+          itemType: 'input',
+          label: '备注',
+          rows: 2,
+          span: 24,
+          type: 'textarea'
+        }
+      ]
     }
   },
   created() {
     this.getPersonInfo()
   },
   mounted() {
-    this.infoForm.userId = this.$route.params.userId
+    this.form.userId = this.$route.params.userId
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
-      this.dataFilter(res, this.signedData, 'type', 'dictValue', 'id')
+      this.columns[2].options = res
     })
     this.getCompany()
-    this.getContractInfo()
     // var day = moment("1995-12-25").valueOf()
     // console.log(day)
   },
   methods: {
     handleSubmit() {
-      return Promise.all(
-        ['signedData'].map((it) => {
-          return new Promise((resolve) => {
-            let form = this.$refs[it].submitForm()
-            resolve(form)
+      this.$refs.form
+        .validate()
+        .then(() => {
+          let params = {
+            ...this.form
+          }
+          this.loading = true
+          createContract(params).then(() => {
+            this.$message.success('签订成功')
+            this.loading = false
+            this.contractDialog = false
+            this.getPersonInfo()
           })
         })
-      ).then((res) => {
-        if (res.includes(false)) return
-        let params = {
-          ...this.infoForm
-        }
-        this.loading = true
-        createContract(params).then(() => {
-          this.$message.success('签订成功')
+        .catch(() => {
+          this.$message.error('请完善信息')
           this.loading = false
-          this.contractDialog = false
-          this.getPersonInfo()
+          this.contractStatus = false
         })
-      })
     },
     toDetail() {
       this.$router.push('/personnel/detail/' + this.$route.params.userId)
@@ -365,24 +332,12 @@ export default {
         }
       })
     },
-    dataFilter(res, form, props, label, value) {
-      let index = ''
-      let dict = []
-      res &&
-        res.map((it) => {
-          dict.push({ label: it[label], value: it[value] })
-        })
-      form.basicAttrs.map((it, i) => {
-        if (it.props === props) index = i
-      })
-      form.basicAttrs[index].value = dict
-    },
     getCompany() {
       let params = {
         parentOrgId: '0'
       }
       getCompany(params).then((res) => {
-        this.dataFilter(res, this.signedData, 'name', 'orgName', 'orgId')
+        this.columns[1].options = res
       })
     }
   }

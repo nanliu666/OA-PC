@@ -47,7 +47,7 @@
                 <div>
                   <el-input
                     v-model="form.name"
-                    placeholder="职位名称"
+                    placeholder="职位类别名称"
                     size="medium"
                     class="input-with-select"
                   >
@@ -197,31 +197,31 @@ export default {
   mounted() {},
   methods: {
     handlerDeleteAll(list) {
+      let name = ''
+      list.map((item) => {
+        if (item.workNum > 0) {
+          name += ' ' + item.name
+        }
+      })
+      if (name) {
+        name = name.length > 18 ? name.substr(0, 18) + '...' : name
+        this.$confirm(`很抱歉，您选中的职位类别 ${name} 下存在员工，请先将员工调整后再删除`, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'info',
+            message: '取消操作!'
+          })
+        })
+        return
+      }
       this.$confirm('您确定要删除你所选中的职位类别吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let name = ''
-        this.selectionList.map((item) => {
-          if (item.workNum > 0) {
-            name += ' ' + item.name
-          }
-        })
-        if (name) {
-          name = name.length > 18 ? name.substr(0, 18) + '...' : name
-          this.$confirm(`很抱歉，您选中的职位类别 ${name} 下存在员工，请先将员工调整后在删除`, {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.$message({
-              type: 'info',
-              message: '取消操作!'
-            })
-          })
-          return
-        }
         let params = {
           ids: list.map((i) => i.id).join(',')
         }
@@ -247,24 +247,24 @@ export default {
       this.getData()
     },
     handleDelete(row) {
+      if (row.workNum > 0) {
+        this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后再删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'info',
+            message: '取消操作!'
+          })
+        })
+        return
+      }
       this.$confirm('您确定要删除该职位类别吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if (row.workNum > 0) {
-          this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后在删除', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.$message({
-              type: 'info',
-              message: '取消操作!'
-            })
-          })
-          return
-        }
         let params = {
           ids: row.id
         }
@@ -339,29 +339,29 @@ export default {
     },
     handleCheck() {
       this.isEdit = true
-      this.title = '编辑子组织'
+      this.title = '编辑'
       this.positionDialog = true
     },
     handleCommand(event, row) {
+      if (row.workNum) {
+        this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后再删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'info',
+            message: '取消操作!'
+          })
+        })
+        return
+      }
       this.$confirm('您确定要删除该职位类别吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          if (row.workNum) {
-            this.$confirm('很抱歉，您选中的类别下存在员工，请先将员工调整后在删除', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              this.$message({
-                type: 'info',
-                message: '取消操作!'
-              })
-            })
-            return
-          }
           let params = {
             jobId: row.jobId
           }

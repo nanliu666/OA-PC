@@ -105,15 +105,15 @@
           <i class="el-icon-arrow-down el-icon--right" />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>
+          <!-- <el-dropdown-item>
             <router-link to="/">
               {{ $t('navbar.dashboard') }}
             </router-link>
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item>
-            <router-link to="/info/index">
-              {{ $t('navbar.userinfo') }}
-            </router-link>
+            <div @click="showUserCenter">
+              个人中心
+            </div>
           </el-dropdown-item>
           <el-dropdown-item
             divided
@@ -139,7 +139,29 @@ import topSearch from './top-search'
 // import topNotice from './top-notice'
 // import topLang from './top-lang'
 // import logo from '../logo'
-
+const userCenterMenu = [
+  {
+    menuId: '312122',
+    menuName: '个人信息',
+    menuType: 'Menu',
+    isOwn: 1,
+    isShow: 1,
+    code: 'userinfo',
+    alias: 'userInfo',
+    path: '/info/index',
+    children: []
+  },
+  {
+    menuId: '312123',
+    menuName: '安全设置',
+    isOwn: 1,
+    isShow: 1,
+    code: 'user_securitySetting',
+    alias: 'securitySetting',
+    path: '/info/securitySetting',
+    children: []
+  }
+]
 export default {
   name: 'Top',
   components: {
@@ -183,6 +205,10 @@ export default {
     listenfullscreen(this.setScreen)
   },
   methods: {
+    showUserCenter() {
+      this.$store.dispatch('SetMenu', userCenterMenu)
+      this.$router.push('/info/index')
+    },
     handleScreen() {
       fullscreenToggel()
     },

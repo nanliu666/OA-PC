@@ -187,6 +187,10 @@ export default {
         .then((res) => {
           this.originData = JSON.parse(JSON.stringify(res)) // 保存一份原数据，保存的时候用作对比
           this.orgPrivileges = res.orgPrivileges || []
+          let index = this.orgPrivileges.findIndex((it) => it.isOwn == 1)
+          if (index === -1 && this.orgPrivileges.length > 0) {
+            this.orgPrivileges[0].isOwn = 1
+          }
           this.menuPrivileges = this.menuFilter(res.menuPrivileges)
           if (this.menuPrivileges[0]) {
             this.dataPrivileges = this.menuPrivileges[0].dataPrivileges || []
@@ -231,9 +235,21 @@ export default {
     // 点击保存
     onClickSave() {
       let save = this.$refs.privilege.getCheck()
+      if (save.length === 0) {
+        this.$message.warning('选择角色菜单权限')
+        return
+      }
+      let isselectOrg = this.orgPrivileges.findIndex((it) => it.isOwn === true)
+      if (isselectOrg === -1) {
+        this.$message.warning('选择角色组织权限')
+        return
+      }
+      this.orgPrivileges.map((it) => {
+        it.operatorType = it.isOwn ? 'Add' : 'Del'
+      })
       this.getButtonPrivilege(this.menuPrivileges)
-      this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
-      this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
+      // this.diff(this.orgPrivileges, this.originData.orgPrivileges, 'isOwn') // 判断权限数据是否有修改
+      // this.diff(this.menuPrivileges, this.originData.menuPrivileges, 'isOwn')
 
       let menu = []
       let menuPrivileges = JSON.parse(JSON.stringify(this.menuPrivileges))
@@ -254,8 +270,14 @@ export default {
         save.map((item) => {
           if (it.menuId === item) {
             it.isOwn = true
+            it.operatorType = 'Add'
+          } else {
+            it.operatorType = 'Del'
           }
         })
+      })
+      menu.map((it) => {
+        it.operatorType = it.isOwn ? 'Add' : 'Del'
       })
       const params = {
         roleId: this.roleId,

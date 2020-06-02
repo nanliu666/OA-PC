@@ -299,15 +299,15 @@ export default {
         row.parentId = '0'
       }
       postMenuInfo(row).then(
-        (res) => {
+        () => {
           // 获取新增数据的相关字段
-          row.menuId = res.menuId
+          // row.menuId = res.menuId
           this.$message({
             type: 'success',
             message: '操作成功!'
           })
           // 数据回调进行刷新
-          // this.refreshChange()
+          this.refreshChange()
           done(row)
         },
         (error) => {

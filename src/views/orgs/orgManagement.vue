@@ -139,7 +139,7 @@
           slot="menu"
           slot-scope="{ row }"
         >
-          <div>
+          <div class="menuClass">
             <el-button
               type="text"
               @click="handleCreateChild(row)"
@@ -198,10 +198,11 @@ const column = [
   },
   {
     label: '组织编码',
-    prop: 'orgCode'
+    prop: 'orgCode',
+    align: 'right'
   },
   {
-    label: '负责人姓名',
+    label: '组织负责人',
     prop: 'userName'
   },
   {
@@ -272,7 +273,7 @@ export default {
             label: '',
             data: '',
             options: [],
-            config: { placeholder: '组织名称' }
+            config: { placeholder: '组织名称', 'suffix-icon': 'el-icon-search' }
           }
         ],
         popoverOptions: [
@@ -330,6 +331,7 @@ export default {
         headerAlign: 'center',
         align: 'center',
         border: false,
+        menuWidth: 180,
         defaultExpandAll: true,
         selection: true,
         formHeight: 20,
@@ -519,7 +521,7 @@ export default {
 }
 .transitionBox {
   position: relative;
-  height: 62px;
+  height: 50px;
 }
 .searchBox {
   position: absolute;
@@ -560,5 +562,8 @@ export default {
   .el-select {
     width: 100%;
   }
+}
+/deep/ .avue-crud__pagination {
+  display: none;
 }
 </style>

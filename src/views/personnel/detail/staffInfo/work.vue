@@ -408,7 +408,7 @@ export default {
       this.curItemIndex = this.workInfo.length - 1
       this.curItemId = item.id
     },
-    delInfo(item, index) {
+    delInfo(item) {
       this.$confirm('您确定要删除该工作经历吗?', '确认删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -419,7 +419,7 @@ export default {
             ids: item.id
           }
           delStaffWorkInfo(params).then(() => {
-            this.workInfo.splice(index, 1)
+            this.getBasicInfo()
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -440,9 +440,9 @@ export default {
           if (this.type == 'add') {
             item.userId = this.$route.params.userId
             addStaffworkInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
-              this.getBasicInfo()
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -453,6 +453,7 @@ export default {
               delete item.userId
             }
             editStaffWorkInfo(item).then(() => {
+              this.getBasicInfo()
               this.editClick = false
               this.curItemIndex = null
               this.$message({
@@ -491,7 +492,7 @@ export default {
       if (this.type == 'add') {
         this.workInfo.pop()
       } else {
-        this.workInfo[index] = deepClone(curItem)
+        this.$set(this.workInfo, index, deepClone(curItem))
       }
     },
     monthChange(item) {
