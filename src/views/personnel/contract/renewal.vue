@@ -129,6 +129,7 @@ export default {
       })
     },
     handleBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/contract/contract'
       })
@@ -150,6 +151,7 @@ export default {
           putContractInfo(params).then(() => {
             this.$message.success('修改成功')
             setTimeout(() => {
+              this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
               this.$router.push({
                 path: '/personnel/contract/contract'
               })
@@ -162,6 +164,7 @@ export default {
           this.loading = false
           this.$message.success('提交成功')
           setTimeout(() => {
+            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
             this.$router.go(-1)
           }, 2000)
         })
