@@ -243,12 +243,12 @@ export default {
             }
             // conso.log(this.orgData.parentJobId)
             jod = jod.filter((it) => {
-              if (this.row.id !== it.jobId) {
+              if (this.row.id !== it.jobId && this.isEdit) {
                 return it
               }
             })
             jod = jod.filter((it) => {
-              if (this.orgData.id !== it.jobId) {
+              if (this.orgData.id !== it.jobId && this.isEdit) {
                 return it
               }
             })
@@ -308,13 +308,11 @@ export default {
             parentId: jobId,
             orgId
           }
-          setTimeout(() => {
-            this.option.column[3].disabled = true
-            this.option.column[2].disabled = true
-            this.form = Object.assign(this.form, form)
-          }, 500)
-        } else {
-          // alert(23)
+          // setTimeout(() => {
+          this.option.column[3].disabled = true
+          this.option.column[2].disabled = true
+          this.form = Object.assign(this.form, form)
+          // }, 500)
         }
       },
       immediate: true
