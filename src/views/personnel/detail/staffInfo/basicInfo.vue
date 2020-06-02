@@ -541,23 +541,23 @@ export default {
   data() {
     //  检验证件是否符合
     let checkIdNo = (rule, value, callback) => {
-      let IdType = this.getIdType
+      let IdType = this.staffInfo.idType
       switch (IdType) {
-        case '身份证':
+        case 'IDCard':
           if (cardid(value)[0]) {
             callback(new Error('证件号码格式有误'))
           } else {
             callback()
           }
           break
-        case '港澳居民来往内地通行证':
+        case 'pass01':
           if (!HMCardValid(value)) {
             callback(new Error('证件号码格式有误'))
           } else {
             callback()
           }
           break
-        case '台湾居民来往大陆通行证':
+        case 'pass02':
           if (!TWCardValid(value)) {
             callback(new Error('证件号码格式有误'))
           } else {
