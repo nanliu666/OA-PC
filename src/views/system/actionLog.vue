@@ -22,9 +22,7 @@
           slot="status"
           slot-scope="{ row }"
         >
-          {{
-            row.status === 'Success' ? '成功' : '失败'
-          }}
+          {{ row.status === 'Success' ? '成功' : '失败' }}
         </template>
       </avue-crud>
     </basic-container>
@@ -164,6 +162,7 @@ export default {
     },
     onLoad() {},
     submit(params) {
+      this.ajaxData.pageNo = 1
       let { pageNo, pageSize } = this.ajaxData
       this.ajaxData = { pageNo, pageSize, ...params }
       this.initData()

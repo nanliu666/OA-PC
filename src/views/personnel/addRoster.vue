@@ -594,6 +594,7 @@ export default {
               this.dialogTableVisible = false
               this.workAddress = []
               this.addressPageNo = 1
+              this.noMoreAddress = false
               this.loadWorkAddress()
             })
           } else {
@@ -603,6 +604,7 @@ export default {
               this.dialogTableVisible = false
               this.workAddress = []
               this.addressPageNo = 1
+              this.noMoreAddress = false
               this.loadWorkAddress()
             })
           }
@@ -629,13 +631,21 @@ export default {
       this.$refs.workAddressId.blur()
     },
     deleteAddress(item) {
-      deleteWorkAddress({ ids: item.id }).then(() => {
-        this.$message.success('删除成功')
-        this.form.workAddressId = ''
-        this.form.workProvinceArr = []
-        this.workAddress = []
-        this.addressPageNo = 1
-        this.loadWorkAddress()
+      this.$refs.workAddressId.blur()
+      this.$confirm('此操作将删除该工作地址, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteWorkAddress({ ids: item.id }).then(() => {
+          this.$message.success('删除成功')
+          this.form.workAddressId = ''
+          this.form.workProvinceArr = []
+          this.workAddress = []
+          this.noMoreAddress = false
+          this.addressPageNo = 1
+          this.loadWorkAddress()
+        })
       })
     },
     handleAddressClick() {
@@ -709,7 +719,11 @@ export default {
       this.loadAddress = true
       getWorkAddressList({ pageNo: this.addressPageNo, pageSize: 50 }).then((res) => {
         if (res.data.length > 0) {
-          this.workAddress.push(...res.data)
+          if (this.addressPageNo === 1) {
+            this.workAddress = res.data
+          } else {
+            this.workAddress.push(...res.data)
+          }
           this.addressPageNo += 1
           this.loadAddress = false
         } else {
