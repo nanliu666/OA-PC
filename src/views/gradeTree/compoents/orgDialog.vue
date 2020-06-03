@@ -288,7 +288,7 @@ export default {
             rules: [
               {
                 required: true,
-                message: '请选择关联岗位',
+                message: '请选择组织负责人',
                 trigger: 'blur'
               }
             ]
