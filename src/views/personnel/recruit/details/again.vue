@@ -23,7 +23,7 @@
         class="frame"
       >
         <span class="demandSize"> 紧急程度</span>
-        <span class="content">{{ list.emerType }}</span>
+        <span class="content">{{ getWorkYear(list.emerType) }}</span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize"> 到岗日期 </span>
@@ -157,6 +157,7 @@ export default {
       Totalnumberpeople: 25,
       Numberofpeople: null,
       Assigned: 4,
+      EmerType: [],
       list: {
         jobName: '销售经理',
         emerType: '特急',
@@ -184,11 +185,14 @@ export default {
     },
     recruitmentId: function(newval, oldval) {
       if (newval !== oldval) {
-        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
-        itemArr[0].userId = null
-        this.dynamicValidateForm.users = itemArr
+        this.handleClose()
       }
     }
+  },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
+      this.EmerType = res
+    })
   },
   methods: {
     doNotSave() {
@@ -211,6 +215,9 @@ export default {
       })
     },
     handleClose() {
+      let itemArr = this.dynamicValidateForm.users.splice(0, 1)
+      itemArr[0].userId = null
+      this.dynamicValidateForm.users = itemArr
       this.$emit('update:visible', false)
     },
     addDomain() {
@@ -256,8 +263,18 @@ export default {
         taskDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
+        this.$emit('update:visible', false)
         this.$emit('getTableData')
       }
+    },
+    getWorkYear(type) {
+      let typeWord
+      this.EmerType.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
     }
   }
 }

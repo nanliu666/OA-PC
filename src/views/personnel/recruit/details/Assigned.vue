@@ -65,7 +65,7 @@
                   placeholder="请选择"
                 >
                   <el-input
-                    v-model="domain.userId"
+                    v-model="domain.personnel"
                     placeholder="姓名/工号"
                     @change="requeWorkList(5)"
                   >
@@ -112,12 +112,12 @@
                 />
               </el-col>
               <el-col :span="4">
-                <!--     @change="handleChange" -->
                 <el-input-number
                   v-model="domain.taskNum"
                   controls-position="right"
                   :min="1"
                   :max="Numberofpeople"
+                  @change="calWhetherBeyond"
                 />
               </el-col>
             </el-row>
@@ -169,7 +169,8 @@ export default {
       dynamicValidateForm: {
         users: [
           {
-            name: '李嘉琪',
+            personnel: '',
+            name: '',
             isTaskNum: 1,
             peopleDisabled: true,
             disabled: true,
@@ -195,7 +196,7 @@ export default {
     doNotSave() {
       this.$emit('isDoNotSave')
       this.$router.go(-1)
-      return this.handleClose()
+      this.handleClose()
     },
     async init(row) {
       let { id, entryNum, needNum } = row
@@ -217,8 +218,10 @@ export default {
         this.dynamicValidateForm.users = res.response
       })
     },
-
     handleClose() {
+      let itemArr = this.dynamicValidateForm.users.splice(0, 1)
+      itemArr[0].userId = null
+      this.dynamicValidateForm.users = itemArr
       this.$emit('update:visible', false)
     },
     addDomain() {
@@ -245,6 +248,7 @@ export default {
         putDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
+        this.$emit('update:visible', false)
         this.$emit('getTableData')
       }
     },
