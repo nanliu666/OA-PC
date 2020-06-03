@@ -247,7 +247,7 @@ export default {
   }
 }
 .staff-info-wrapper {
-  padding: 0 25px 25px 25px;
+  // padding: 0 25px 25px 25px;
   background: #f0f2f5;
   // .staff-info-brad {
   //   font-size: 18px;
