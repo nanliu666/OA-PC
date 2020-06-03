@@ -2,7 +2,7 @@
   <el-dialog
     title="离开页面提醒"
     :visible="visible"
-    width="30%"
+    width="600px"
     :modal-append-to-body="false"
     @close="handleClose"
   >

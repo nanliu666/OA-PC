@@ -16,18 +16,18 @@
         class="frame"
       >
         <span class="demandSize"> 职位名称</span>
-        <span class="content">{{ list.position }}</span>
+        <span class="content">{{ list.jobName }}</span>
       </el-col>
       <el-col
         :span="8"
         class="frame"
       >
         <span class="demandSize"> 紧急程度</span>
-        <span class="content">{{ list.level }}</span>
+        <span class="content">{{ list.emerType }}</span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize"> 到岗日期 </span>
-        <span class="content"> {{ list.date }}</span>
+        <span class="content"> {{ list.joinDate }}</span>
       </el-col>
     </el-row>
     <el-row
@@ -74,6 +74,17 @@
                   v-model="domain.userId"
                   placeholder="请选择"
                 >
+                  <el-input
+                    v-model="domain.personnel"
+                    placeholder="姓名/工号"
+                    @change="requeWorkList(3)"
+                  >
+                    <i
+                      slot="prefix"
+                      class="el-input__icon el-icon-search"
+                      @click="requeWorkList(3)"
+                    />
+                  </el-input>
                   <el-option
                     v-for="item in options"
                     :key="item.name"
@@ -144,16 +155,17 @@ export default {
       recruitmentId: '',
       isDelete: false,
       Totalnumberpeople: 25,
-      Numberofpeople: 21,
+      Numberofpeople: null,
       Assigned: 4,
       list: {
-        position: '销售经理',
-        level: '特急',
-        date: '2020-02-02'
+        jobName: '销售经理',
+        emerType: '特急',
+        joinDate: '2020-02-02'
       },
       dynamicValidateForm: {
         users: [
           {
+            personnel: null,
             userId: null,
             taskNum: 1
           }
@@ -185,12 +197,18 @@ export default {
       this.handleClose()
     },
     async init(row) {
-      let { id } = row
-      this.recruitmentId = id
-      await getUserWorkList({ pageNo: 1, pageSize: 15 }).then((res) => {
+      this.list = row
+      let { entryNum, needNum } = row
+      this.Totalnumberpeople = needNum
+      this.Assigned = entryNum
+      this.Numberofpeople = needNum - entryNum
+      await this.requeWorkList(15)
+      this.$emit('update:visible', true)
+    },
+    requeWorkList(page) {
+      getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
         this.options = res.data
       })
-      this.$emit('update:visible', true)
     },
     handleClose() {
       this.$emit('update:visible', false)
@@ -238,6 +256,7 @@ export default {
         taskDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
+        this.$emit('getTableData')
       }
     }
   }

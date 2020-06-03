@@ -64,6 +64,17 @@
                   v-model="domain.userId"
                   placeholder="请选择"
                 >
+                  <el-input
+                    v-model="domain.userId"
+                    placeholder="姓名/工号"
+                    @change="requeWorkList(5)"
+                  >
+                    <i
+                      slot="prefix"
+                      class="el-input__icon el-icon-search"
+                      @click="requeWorkList(3)"
+                    />
+                  </el-input>
                   <el-option
                     v-for="item in options"
                     :key="item.name"
@@ -187,13 +198,19 @@ export default {
       return this.handleClose()
     },
     async init(row) {
-      let { id } = row
+      let { id, entryNum, needNum } = row
       this.recruitmentId = id
+      this.Totalnumberpeople = needNum
+      this.Assigned = entryNum
+      this.Numberofpeople = needNum - entryNum
       this.$emit('update:visible', true)
-      await getUserWorkList({ pageNo: 1, pageSize: 15 }).then((res) => {
+      await this.requeWorkList()
+      await this.queryData(this.recruitmentId)
+    },
+    requeWorkList(page) {
+      getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
         this.options = res.data
       })
-      this.queryData(this.recruitmentId)
     },
     queryData(mentId) {
       queryDistribution({ recruitmentId: mentId }).then((res) => {
@@ -228,6 +245,7 @@ export default {
         putDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
+        this.$emit('getTableData')
       }
     },
     calWhetherBeyond() {

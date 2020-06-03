@@ -539,7 +539,7 @@ const res = {
           },
           {
             menuId: '126131436966690997876',
-            menuName: '我提交的招聘需求管理',
+            menuName: '需求管理',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,

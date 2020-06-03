@@ -45,16 +45,13 @@
           <el-tab-pane
             label="招聘中"
             name="Approved"
-          >
-            <detailsList ref="demand" />
-          </el-tab-pane>
+          />
           <el-tab-pane
             label="已结束"
             name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
-          >
-            <detailsList />
-          </el-tab-pane>
+          />
         </el-tabs>
+        <detailsList ref="demand" />
       </div>
 
       <div v-show="doNotsave">
@@ -65,16 +62,13 @@
           <el-tab-pane
             label="招聘中"
             name="allApproved"
-          >
-            <All-list ref="all" />
-          </el-tab-pane>
+          />
           <el-tab-pane
             label="已结束"
             name="ending                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
-          >
-            <All-list />
-          </el-tab-pane>
+          />
         </el-tabs>
+        <All-list ref="all" />
       </div>
     </basic-container>
   </div>

@@ -17,7 +17,7 @@
         type="flex"
         class="introduce"
       >
-        <div class="state">
+        <!-- <div class="state">
           <div class="on">
             <div>
               销售经理
@@ -56,7 +56,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </el-row>
       <el-form
         ref="users"
@@ -71,16 +71,9 @@
           style=" position: relative; left: 90px;"
         >
           <el-col :span="24">
-            <el-form-item
-              label="您想将剩余需求总数更改为"
-              prop="taskNum"
-            >
+            <el-form-item label="您想将剩余需求总数更改为">
               <el-input-number
                 v-model="users.taskNum"
-                size="medium"
-                type="textarea"
-                :rows="2"
-                placeholder="请输入"
                 controls-position="right"
                 :min="1"
               />
@@ -130,7 +123,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { putTask } from '@/api/personnel/recruitment'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 export default {
   name: 'Chang',
@@ -142,8 +134,7 @@ export default {
         operatorType: ''
       },
       rules: {
-        operatorType: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }],
-        taskNum: [{ required: true, message: '请您输入更改原因', trigger: 'blur' }]
+        operatorType: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }]
       },
       operatorTypeList: [
         {
@@ -174,16 +165,19 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let params = {}
-          params.userId = this.userId
-          params.operatorType = this.users.operatorType
-          params.taskNum = this.users.taskNum
-          putTask(params).then(() => {
-            this.$message({ type: 'success', message: '操作成功' })
+          this.$message({
+            showClose: true,
+            message: '功能暂时没有支持请期待',
+            type: 'warning'
           })
-          return this.resetForm()
-        } else {
-          return false
+          // let params = {}
+          // params.userId = this.userId
+          // params.operatorType = this.users.operatorType
+          // params.taskNum = this.users.taskNum
+          // putTask(params).then(() => {
+          //   this.$message({ type: 'success', message: '操作成功' })
+          // })
+          // return this.resetForm()
         }
       })
     },

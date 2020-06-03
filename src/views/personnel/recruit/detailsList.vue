@@ -60,6 +60,15 @@
         slot-scope="{ row }"
       >
         <el-button
+          v-if="params.progress === 'Approved'"
+          size="medium"
+          type="text"
+          @click="JumpChange(row)"
+        >
+          更改需求人数
+        </el-button>
+        <el-button
+          v-else
           size="medium"
           type="text"
           @click="JumpNewlybuild(row.id)"
@@ -83,6 +92,8 @@ export default {
   },
   data() {
     return {
+      recruit: false,
+      change: true,
       activeName: 'inrecruitment',
       searchConfig: {
         requireOptions: [
@@ -254,16 +265,6 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  watch: {
-    'params.progress': function(newval) {
-      if (newval === 'Finished') {
-        this.display = true
-      } else {
-        this.display = false
-      }
-      this.getTableData()
-    }
-  },
   mounted() {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
@@ -347,6 +348,11 @@ export default {
         this.$store.dispatch('CommonDict', item.choice).then((res) => {
           this.searchConfig.popoverOptions[item.target].options = res
         })
+      })
+    },
+    JumpChange() {
+      this.$router.push({
+        path: '/personnel/recruit/components/chang'
       })
     }
   }

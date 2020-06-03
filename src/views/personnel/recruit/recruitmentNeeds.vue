@@ -90,14 +90,13 @@ export default {
         this.$refs.personInfo.explainshow = false
       }
     },
-    '$route.query.id': function(newval) {
-      if (newval) {
+    '$route.query.id': function(newval, oldval) {
+      if (newval || oldval) {
         this.ReplicationCache(newval)
       }
     }
   },
   mounted() {
-    this.ReplicationCache(this.$route.query.id)
     this.getUseInformation()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'workProperty', 'dictValue', 'dictKey')

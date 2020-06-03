@@ -18,25 +18,22 @@
       >
         <el-col :span="9">
           <span class="nodetitle">需求编号:</span>
-          <span class="content">{{ user.id }}</span>
+          <span>{{ user.id }}</span>
         </el-col>
 
         <el-col :span="9">
           <span class="nodetitle">提交人:</span>
-          <span class="content">{{ user.userName }}</span>
+          <span>{{ user.userName }}</span>
         </el-col>
 
         <el-col :span="9">
           <span class="nodetitle">到岗时间:</span>
-          <span class="content">{{ user.joinDate }}</span>
+          <span>{{ user.joinDate }}</span>
         </el-col>
 
         <el-col :span="9">
           <span class="nodetitle">状态:</span>
-          <span
-            class="content"
-            style="color: #207EFA"
-          >{{ status }}</span>
+          <span style="color: #207EFA">{{ status }}</span>
         </el-col>
         <el-col>
           <el-button
@@ -291,10 +288,8 @@ export default {
       this.getData()
     },
     ChangeContent() {
-      this.$message({
-        showClose: true,
-        message: '审批页面正在开发请期待',
-        type: 'warning'
+      this.$router.push({
+        path: '/personnel/recruit/components/chang'
       })
     }
   }
@@ -321,13 +316,15 @@ export default {
 }
 
 .nodetitle {
+  margin-bottom: 8px;
   font-family: PingFangSC-Medium;
   font-size: 12px;
   color: #718199;
   line-height: 18px;
   display: block;
 }
-content {
+.content {
+  display: block;
   text-align: center;
   font-family: PingFangSC-Regular;
   font-size: 14px;
@@ -357,5 +354,9 @@ content {
   color: #718199;
   line-height: 18px;
   text-align: center;
+}
+
+.frame {
+  border-right: solid 1px #ccc;
 }
 </style>

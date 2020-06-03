@@ -54,6 +54,27 @@
           {{ row.status == 'UnHandle' ? '分配' : '重新分配' }}
         </el-button>
       </template>
+      <template
+        slot="status"
+        slot-scope="{ row }"
+      >
+        <el-button
+          v-if="row.status === 'Handled'"
+          size="medium"
+          type="primary"
+          plain
+        >
+          {{ isStatus(row.status) }}
+        </el-button>
+        <el-button
+          v-else
+          size="medium"
+          type="danger"
+          plain
+        >
+          {{ isStatus(row.status) }}
+        </el-button>
+      </template>
     </common-table>
 
     <again
@@ -210,6 +231,11 @@ export default {
           prop: 'candidateNum'
         },
         {
+          label: '需求状态',
+          prop: 'status',
+          slot: true
+        },
+        {
           label: '到岗日期',
           prop: 'joinDate'
         },
@@ -287,11 +313,6 @@ export default {
     },
     init(progress) {
       // 场景使用
-      if (progress === 'allApproved') {
-        this.tableConfig.showHandler = false
-      } else {
-        this.tableConfig.showHandler = true
-      }
       this.params.progress = progress.trim()
       this.getTableData()
     },
@@ -327,7 +348,7 @@ export default {
     currentPageChange(param) {
       let paramsInfo = {}
       paramsInfo.pageNo = param
-      return this.getTableData(paramsInfo)
+      this.getTableData(paramsInfo)
     },
     getDictionarygroup() {
       this.setElement.forEach((item) => {
@@ -342,6 +363,25 @@ export default {
       } else {
         this.$refs.Again.init(row)
       }
+    },
+    isStatus(status) {
+      let typeStatus
+      let calcStatus = [
+        {
+          label: '待分配',
+          value: 'UnHandle'
+        },
+        {
+          label: '已分配',
+          value: 'Handled'
+        }
+      ]
+      calcStatus.forEach((item) => {
+        if (item.value === status) {
+          typeStatus = item.label
+        }
+      })
+      return typeStatus
     }
   }
 }
