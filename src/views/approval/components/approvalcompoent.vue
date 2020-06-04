@@ -15,7 +15,7 @@
               class="edit_staff"
             />
             <span
-              v-if="!node.users.id"
+              v-if="!node.users.length > 0"
               class="tip"
             >请选择审批人</span>
             <span
@@ -66,7 +66,7 @@
                   <i class="el-icon-edit-outline" />
                 </el-link>
                 <span
-                  v-if="!node.users.id"
+                  v-if="!node.users.length > 0"
                   class="tip"
                 >请选择审批人</span>
                 <span
@@ -108,7 +108,7 @@
         </div>
         <div class="line flex flex-items">
           <div
-            v-if="!node.users.id"
+            v-if="!node.users.length > 0"
             class="img_icon"
             @click="handleAdduser(node, index)"
           >
@@ -136,7 +136,7 @@
                 </div>
               </el-image>
               <div class="userName">
-                {{ node.users.name }}
+                {{ node.users && node.users[0].name }}
               </div>
             </div>
           </div>
@@ -199,9 +199,7 @@ export default {
         name: list.name,
         workNo: list.workNo
       }
-      this.approvalList[this.index].users = {
-        ...params
-      }
+      this.approvalList[this.index].users.push(params)
     },
 
     /**
@@ -252,7 +250,7 @@ export default {
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: []
       }
       if (i == 1) {
         index += 1
@@ -271,7 +269,7 @@ export default {
      * @desc 删除节点用户
      * */
     deleteNode(node, index) {
-      this.approvalList[index].users = {}
+      this.approvalList[index].users = []
     },
     /**
      *  @author guanfenda

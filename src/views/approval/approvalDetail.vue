@@ -1,7 +1,12 @@
 <template>
   <div style="height:100%;width: 100% ">
     <div class="header">
-      <div><i class="icon el-icon-arrow-left" /> 审批流程</div>
+      <div>
+        <i
+          class="icon el-icon-arrow-left"
+          @click="back"
+        /> 审批流程
+      </div>
     </div>
     <div class="view-case approval">
       <div class="flex flex-justify-start flex-items title">
@@ -9,6 +14,7 @@
         <el-link
           type="primary"
           class="hellp"
+          @click="handleNote"
         >
           审批流程帮助
         </el-link>
@@ -22,66 +28,76 @@
         >
           保存
         </el-button>
-        <el-button size="medium">
+        <el-button
+          size="medium"
+          @click="back"
+        >
           取消
         </el-button>
       </div>
     </div>
+    <noteDialog
+      v-if="dialogVisible"
+      :note.sync="note"
+      :dialog-visible.sync="dialogVisible"
+    />
   </div>
 </template>
 
 <script>
 import approvalcompoent from '@/views/approval/components/approvalcompoent'
-import { getAppProcess } from '@/api/approval/approval'
+import { getAppProcess, putAppProcess, postAppProcess } from '@/api/approval/approval'
+import noteDialog from '@/views/approval/components/noteDialog'
 
 export default {
   name: 'ApprovalDetail',
-  components: { approvalcompoent },
+  components: { approvalcompoent, noteDialog },
   data() {
     return {
+      dialogVisible: false,
       input: '',
       note: '',
       initData: {},
       approvalList: [
         {
-          id: '1',
+          id: '',
           name: '部门主管',
-          isStart: '0',
-          isEnd: '0',
+          isStart: 0,
+          isEnd: 0,
           parentId: '',
           childId: '',
           isEdit: false,
-          users: {}
+          users: []
         },
         {
-          id: '2',
+          id: '',
           name: '综合管理部',
-          isStart: '0',
-          isEnd: '0',
+          isStart: 0,
+          isEnd: 0,
           parentId: '',
           childId: '',
           isEdit: false,
-          users: {}
+          users: []
         },
         {
-          id: '3',
+          id: '',
           name: '控股负责人',
-          isStart: '0',
-          isEnd: '0',
+          isStart: 0,
+          isEnd: 0,
           parentId: '',
           childId: '',
           isEdit: false,
-          users: {}
+          users: []
         },
         {
-          id: '4',
+          id: '',
           name: '总裁',
-          isStart: '0',
-          isEnd: '0',
+          isStart: 0,
+          isEnd: 0,
           parentId: '',
           childId: '',
           isEdit: false,
-          users: {}
+          users: []
         }
       ]
     }
@@ -90,6 +106,19 @@ export default {
     this.getData()
   },
   methods: {
+    back() {
+      this.$router.push({
+        path: '/approval/approvalProcess'
+      })
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理显示帮助弹框
+     *
+     * */
+    handleNote() {
+      this.dialogVisible = true
+    },
     /**
      * @author guanfenda
      * @desc 获取流程节点
@@ -100,6 +129,7 @@ export default {
       }
       getAppProcess(params).then((res) => {
         this.initData = res
+        this.note = res.note
         if (!res.id) {
           return
         }
@@ -112,20 +142,51 @@ export default {
      * */
     onsubmit() {
       let isUser = this.approvalList.find((it) => {
-        if (!it.users.id) {
+        if (!(it.users[0] && it.users[0].id)) {
           //如果存在没有选择审批人给提示
           this.$message.warning('请选择节点  ' + it.name + ' 负责人')
           return it
         }
       })
       if (isUser) return //不给提交
+
       if (this.initData.id) {
-        // let params = {
-        //   id:this.initData.id,
-        //   note:this.note,
-        //   version:this.initData.version,
-        // }
+        let params = {
+          id: this.initData.id,
+          note: this.note
+        }
+        putAppProcess(params).then(() => {})
       }
+      let params = {
+        formKey: this.$route.query.formKey,
+        note: this.note,
+        nodes: []
+      }
+      this.approvalList.map((it, index) => {
+        //给节点赋节点id
+        it.id = index + 1
+      })
+      this.approvalList.reduce((prev, cur) => {
+        // 处理前后
+        if (prev.id === 1) {
+          //开始节点
+          prev.isStart = 1
+        }
+        if (cur.id === this.approvalList.length) {
+          //结束节点
+          cur.isEnd = 1
+        }
+        cur.parentId = prev.id
+        prev.childId = cur.id
+        return cur
+      })
+      params.nodes = this.approvalList
+      postAppProcess(params).then(() => {
+        this.$message.success('提交成功')
+        setTimeout(() => {
+          this.back()
+        }, 1000)
+      })
     }
   }
 }
