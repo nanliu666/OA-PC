@@ -537,7 +537,50 @@ const res = {
             path: '/personnel/administration/workerlist',
             icon: 'iconfont iconicon_doc'
           },
-
+          {
+            menuId: '126131436966690997876',
+            menuName: '需求管理',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/recruitList',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '12613143696669094444444444',
+            menuName: '需求详情',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/staffList',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '12613143696669077777777',
+            menuName: '更改需求人数',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/components/chang',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '',
+            menuName: '新建需求',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_editPerson',
+            alias: 'recruit',
+            path: '/personnel/recruit/recruitmentNeeds',
+            icon: 'iconfont iconicon_compile'
+          },
           {
             menuId: '31212212454542',
             menuName: '面试登记表',
@@ -703,7 +746,7 @@ const res = {
                 isShow: 0,
                 code: 'personnel_detail',
                 alias: 'personnel_detail',
-                path: '/personnel/detail/:userId',
+                path: ':userId',
                 icon: 'iconfont iconicon_namecard',
                 dataPrivileges: [],
                 children: []

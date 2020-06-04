@@ -7,8 +7,9 @@
         style="margin-right:12px;cursor: pointer;"
         @click="goBack"
       />
-      <span>{{ title }}</span>
-      <slot name="subTitle" />
+      <slot name="title">
+        <span>{{ title }}</span>
+      </slot>
     </span>
     <div class="button--wr">
       <slot name="rightMenu" />
