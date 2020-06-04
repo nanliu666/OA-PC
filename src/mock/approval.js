@@ -74,7 +74,7 @@ const approvalList = {
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: []
       },
       {
         id: '2',
@@ -84,7 +84,7 @@ const approvalList = {
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: []
       },
       {
         id: '3',
@@ -94,7 +94,7 @@ const approvalList = {
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: []
       },
       {
         id: '4',
@@ -104,10 +104,14 @@ const approvalList = {
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: []
       }
     ]
   }
+}
+const success = {
+  ...normalData,
+  response: {}
 }
 export default ({ mock }) => {
   if (!mock) return
@@ -116,6 +120,12 @@ export default ({ mock }) => {
   })
   Mock.mock(new RegExp('/appr/v1/appr/process' + '.*'), 'get', () => {
     return approvalList
+  })
+  Mock.mock(new RegExp('/appr/v1/appr/process' + '.*'), 'post', () => {
+    return success
+  })
+  Mock.mock(new RegExp('/appr/v1/appr/process' + '.*'), 'put', () => {
+    return success
   })
 }
 // /appr/v1/appr/process
