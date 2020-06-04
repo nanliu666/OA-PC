@@ -1,18 +1,26 @@
 <template>
   <div>
-    <div class="roster-header">
+    <!-- <div class="roster-header">
       <h4>
-        转正管理 (试用期员工共计<i>{{ numberofpersonnel }}</i>人)
+        转正管理 
       </h4>
-    </div>
+    </div> -->
+    <page-header
+      title="转正管理"
+      class="pageHeader"
+      show-back
+    />
     <basic-container>
       <common-table
         style="width: 100%"
         :data="data"
+        :page="page"
         :config="tableConfig"
         :columns="columns"
-        @pageSizeChange="getTableData"
-        @currentPageChange="getTableData"
+        @pageSizeChange="sizeChange"
+        @currentPageChange="currentChange"
+        @current-page-change="currentPageChange"
+        @page-size-change="currentPageChange"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">
@@ -26,34 +34,14 @@
             </div>
             <div class="edge">
               <el-button
-                type="primary"
+                icon="el-icon-refresh-right"
                 size="medium"
+                class="topBtn"
+                type="text"
                 @click="getTableData"
-              >
-                <i class="el-icon-refresh" />
-              </el-button>
+              />
             </div>
           </div>
-        </template>
-        <template
-          v-if="scope.row.isDefault === 0"
-          slot="handler"
-          slot-scope="scope"
-        >
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleEdit(scope.row, scope.index)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleDelete(scope.row, scope.index)"
-          >
-            删除
-          </el-button>
         </template>
         <template
           slot="name"
@@ -62,7 +50,7 @@
           <el-button
             type="text"
             size="medium"
-            @click="jumpToDetail(row.positionId)"
+            @click="jumpToDetail(row)"
           >
             {{ row.name }}
           </el-button>
@@ -127,8 +115,6 @@ export default {
             type: 'input',
             field: 'search',
             label: '',
-            data: [],
-            month: [],
             config: {
               placeholder: '姓名/工号'
             }
@@ -167,7 +153,7 @@ export default {
             label: '职位',
             field: 'jobs',
             arrField: 'jobId',
-            config: { multiple: true, optionLabel: 'jobName', optionValue: 'jobId' },
+            config: {},
             options: [],
             loading: false,
             noMore: false,
@@ -243,7 +229,10 @@ export default {
       row: {},
       data: [],
       tableConfig: {
-        showHandler: true
+        showHandler: true,
+        showIndexColumn: false,
+        enableMultiSelect: false,
+        enablePagination: true
       },
       columns: [
         {
@@ -285,6 +274,10 @@ export default {
       params: {
         pageNo: 1,
         pageSize: 10
+      },
+      page: { currentPage: 1, size: 10, total: 0 },
+      pageConfig: {
+        pageSizes: [10, 20, 30, 40, 50]
       }
     }
   },
@@ -337,6 +330,7 @@ export default {
           }
         })
         this.data = res.data
+        this.page.total = res.totalNum
         this.numberofpersonnel = res.totalNum
       })
     },
@@ -346,9 +340,9 @@ export default {
         pageNo: 1,
         pageSize: 10,
         orgs: [params.parentOrgId] || ' ',
-        jobs: [...params.jobs] || ' ',
         probations: [params.probation] || ' '
       }
+      request.jobs = params.jobs !== undefined ? [...params.jobs] : ''
       request.beginEntryDate = params.beginEntryDate
       request.endEntryDate = params.endEntryDate
       request.beginFormalDate = params.beginFormalDate
@@ -366,8 +360,13 @@ export default {
       // }
       this.$refs.adjustEdit.init(row)
     },
-    jumpToDetail(personId) {
-      this.$router.push(`/personnel/detail/${personId}`)
+    currentPageChange(param) {
+      let paramsInfo = {}
+      paramsInfo.pageNo = param
+      this.getTableData(paramsInfo)
+    },
+    jumpToDetail(row) {
+      this.$router.push(`/personnel/detail/${row.userId}`)
     },
     jumpApproval(Approvalcode) {
       return this.$message({
@@ -375,6 +374,17 @@ export default {
         message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
         type: 'warning'
       })
+    },
+    sizeChange(val) {
+      this.params.pageSize = val
+      this.params.pageNo = 1
+      this.page.pagerCount = 1
+      this.getTableData()
+    },
+    currentChange(val) {
+      this.params.pageNo = val
+      this.page.pagerCount = val
+      this.getTableData()
     }
   }
 }
