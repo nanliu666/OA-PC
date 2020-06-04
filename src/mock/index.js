@@ -33,8 +33,6 @@ user(options)
 approval({ mock: true })
 menu({ mock: true })
 
-menu(options)
-
 candidate(options)
 selectPerson(options)
 position(options)

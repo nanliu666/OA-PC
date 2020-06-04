@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import approvalDialog from '@/views/Approval/components/approvalDialog'
+import approvalDialog from '@/views/approval/components/approvalDialog'
 
 export default {
   name: 'Approvalcompoent',
@@ -164,6 +164,11 @@ export default {
     }
   },
   methods: {
+    /**
+     * @author guanfenda
+     * @desc 给节点添加用户
+     *
+     * */
     adduser(list) {
       let params = {
         id: list.id,

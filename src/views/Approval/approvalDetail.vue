@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import approvalcompoent from '@/views/Approval/components/approvalcompoent'
+import approvalcompoent from '@/views/approval/components/approvalcompoent'
 import { getAppProcess } from '@/api/approval/approval'
 export default {
   name: 'ApprovalDetail',

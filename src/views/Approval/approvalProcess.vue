@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import approvalDialog from '@/views/Approval/components/approvalDialog'
+import approvalDialog from '@/views/approval/components/approvalDialog'
 import { getApprForm } from '@/api/approval/approval'
 export default {
   name: 'ApprovalProcess',

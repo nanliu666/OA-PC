@@ -1,6 +1,5 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
-import Approval from '@/router/views/Approval'
 import demoRoutes from './demo'
 export default [
   {
@@ -78,20 +77,5 @@ export default [
       }
     ]
   },
-  Approval,
-  process.env.NODE_ENV === 'development'
-    ? {
-        path: '/demo',
-        component: LayoutNoSidebar,
-        redirect: '/demo/form',
-        children: [
-          {
-            path: 'form',
-            name: '测试表单页',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/demo/demoForm')
-          }
-        ]
-      }
-    : null,
   ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
 ]
