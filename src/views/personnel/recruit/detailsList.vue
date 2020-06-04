@@ -268,6 +268,7 @@ export default {
   mounted() {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+      this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getPost().then((res) => {

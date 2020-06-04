@@ -165,9 +165,7 @@
             :span="4"
             class="taskInformation   isBlue  noborder"
           >
-            {{
-              getPercent(item.taskNum, item.entryNum)
-            }}
+            {{ getPercent(item.taskNum, item.entryNum) }}
           </el-col>
         </el-row>
       </template>
@@ -397,11 +395,15 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  mounted() {
-    this.getTableData()
+  created() {
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+      this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
+  },
+  mounted() {
+    this.getTableData()
+
     getPost().then((res) => {
       this.searchConfig.popoverOptions[1].options = res
     })
