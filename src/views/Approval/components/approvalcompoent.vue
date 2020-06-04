@@ -15,7 +15,7 @@
               class="edit_staff"
             />
             <span
-              v-if="!node.id"
+              v-if="!node.users.id"
               class="tip"
             >请选择审批人</span>
             <span
@@ -25,7 +25,10 @@
           </div>
           <div class="flex-flow flex flex-items edit_row">
             <div>
-              <div class="flex flex-flow-column flex-items edit_icon">
+              <div
+                v-if="!node.isEdit"
+                class="flex flex-flow-column flex-items edit_icon"
+              >
                 <div
                   class="el-icon-circle-plus-outline"
                   @click="handleAdd(0, index)"
@@ -45,6 +48,12 @@
                 />
                 <div />
               </div>
+              <div
+                v-else
+                class="flex flex-flow-column flex-items edit_icon"
+              >
+                <div class="spot_icon" />
+              </div>
             </div>
             <div class="flex-flow flex flex-items edit_row">
               <div v-if="!node.isEdit">
@@ -57,7 +66,7 @@
                   <i class="el-icon-edit-outline" />
                 </el-link>
                 <span
-                  v-if="!node.id"
+                  v-if="!node.users.id"
                   class="tip"
                 >请选择审批人</span>
                 <span
@@ -71,9 +80,11 @@
               class="isEdit"
             >
               <el-input
+                ref="inputVal"
                 v-model="name"
                 placeholder="请输入"
                 style="width:200px"
+                @input="(value) => limitInput(value)"
               />
               <span><el-button
                 type="success"
@@ -163,7 +174,20 @@ export default {
       index: ''
     }
   },
+  watch: {
+    approvalList: {
+      handler() {
+        this.$emit('update:approvalList', this.approvalList)
+      },
+      deep: true
+    }
+  },
   methods: {
+    limitInput(data) {
+      if (data.length > 20) {
+        this.name = data.substr(0, 20)
+      }
+    },
     /**
      * @author guanfenda
      * @desc 给节点添加用户
@@ -223,7 +247,7 @@ export default {
       let params = {
         id: '',
         name: '审批人',
-        isStart: '1',
+        isStart: '0',
         isEnd: '0',
         parentId: '',
         childId: '',
@@ -267,6 +291,9 @@ export default {
     handleEdit(node) {
       node.isEdit = true
       this.name = node.name
+      this.$nextTick(() => {
+        this.$refs.inputVal[0].focus()
+      })
     }
   }
 }
@@ -274,6 +301,7 @@ export default {
 
 <style lang="scss" scoped>
 .flow {
+  margin-bottom: 100px;
   margin-top: 30px;
   .line {
     border-left: 1px solid #1e9fff;
