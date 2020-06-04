@@ -50,7 +50,6 @@ dict(options)
 role(options)
 
 personalInfo(options)
-personnel(options)
 
 org(options)
 transction(options)

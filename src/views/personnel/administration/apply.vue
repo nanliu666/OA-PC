@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-page-header
-      content="新建转正申请"
+    <page-header
+      title="新建转正申请"
       class="pageHeader"
       show-back
     />
@@ -68,21 +68,22 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="24">
+            <el-button
+              size="medium"
+              @click="resetForm()"
+            >
+              取消
+            </el-button>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="submitForm('apply')"
+            >
+              提交
+            </el-button>
+          </el-col>
         </el-row>
-
-        <el-button
-          size="medium"
-          @click="resetForm()"
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          size="medium"
-          @click="submitForm('apply')"
-        >
-          提交
-        </el-button>
       </el-form>
     </basic-container>
   </div>
@@ -154,63 +155,7 @@ export default {
   font-size: 18px;
   font-weight: bold;
 }
-.state {
-  display: flex;
-  padding: 0 6px;
-  margin-bottom: 10px;
-  .on {
-    flex: 4;
-    background: #ffffff;
-    border-radius: 4px;
-    margin-right: 20px;
-    display: flex;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      border-right: 1px solid #e3e7e9;
-      cursor: pointer;
-      .bottomBox {
-        height: 2px;
-        width: 68px;
-        background: #207efa;
-        margin: 0 auto;
-        margin-top: 28px;
-      }
-    }
-    :last-of-type {
-      border-right: 0;
-    }
-    .current {
-      color: #207efa;
-    }
-  }
-  .left {
-    flex: 1;
-    background: #ffffff;
-    border-radius: 4px;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      cursor: pointer;
-      .bottomBox {
-        height: 2px;
-        width: 68px;
-        background: #207efa;
-        margin: 0 auto;
-        margin-top: 28px;
-      }
-    }
-    .current {
-      color: #207efa;
-    }
-  }
-}
+
 .el-form-item {
   width: 48%;
 }

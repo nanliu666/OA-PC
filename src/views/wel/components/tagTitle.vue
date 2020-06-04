@@ -1,51 +1,32 @@
 <template>
   <div class="header">
     <span class="title">
+      <span>{{ title }}</span>
       <i
-        v-if="showBack"
-        class="el-icon-arrow-left"
+        v-if="icon"
+        class="el-icon-arrow-right"
         style="margin-right:12px;cursor: pointer;"
-        @click="goBack"
       />
-      <slot name="title">
-        <span>{{ title }}</span>
-      </slot>
     </span>
-    <div class="button--wr">
-      <slot name="rightMenu" />
-    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'PageHeader',
+  name: 'TagTitle',
   props: {
     // 标题
     title: {
       type: String,
       default: ''
     },
-    // 是否展示返回按钮
-    showBack: {
+    // 图标
+    icon: {
       type: Boolean,
-      default: false
-    },
-    // 自定义返回方法
-    back: {
-      type: Function,
-      default: null
+      default: true
     }
   },
-  methods: {
-    goBack() {
-      if (this.back) {
-        this.back()
-        return
-      }
-      this.$router.go(-1)
-    }
-  }
+  methods: {}
 }
 </script>
 

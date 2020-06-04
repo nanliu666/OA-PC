@@ -1,133 +1,139 @@
 <template>
-  <basic-container class="staff-info-container">
-    <div class="staff-info-wrapper">
-      <div class="staff-info-brad">
-        <span>
-          <i
-            class="el-icon-arrow-left"
-            @click="goBack"
-          />
-        </span>
-        <span>个人信息</span>
-      </div>
-      <div class="staff-survey">
-        <el-container class="survey-inner-container">
-          <el-aside width="100px">
-            <div class="detail-box">
-              <div class="demo-basic--circle">
-                <div class="block">
-                  <el-avatar
-                    :size="80"
-                    :src="allInfo.circleUrl"
-                  />
+  <div>
+    <page-header
+      title="个人信息"
+      :back="goBack"
+      show-back
+    />
+    <basic-container class="staff-info-container">
+      <div class="staff-info-wrapper">
+        <!-- <div class="staff-info-brad">
+					<span>
+						<i class="el-icon-arrow-left" @click="goBack" />
+					</span>
+					<span>个人信息</span>
+				</div> -->
+        <div class="staff-survey">
+          <el-container class="survey-inner-container">
+            <el-aside width="100px">
+              <div class="detail-box">
+                <div class="demo-basic--circle">
+                  <div class="block">
+                    <el-avatar
+                      :size="80"
+                      :src="allInfo.circleUrl"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </el-aside>
-          <el-main>
-            <div
-              class="grid-content relative-box "
-              style="line-height: 50px;"
+            </el-aside>
+            <el-main>
+              <div
+                class="grid-content relative-box "
+                style="line-height: 50px;"
+              >
+                <span class="staff-name">{{ allInfo.name }}</span>
+                <span class="workNo">({{ allInfo.workNo }})</span>
+                <el-button
+                  size="mini"
+                  plain
+                >
+                  <span>{{ getStatus() }}</span>
+                </el-button>
+                <el-button
+                  plain
+                  class="personnel-change-btn"
+                  size="medium"
+                  @click="jumpToApply(allInfo.userId)"
+                >
+                  <span>人事异动</span>
+                </el-button>
+              </div>
+              <el-row :gutter="20">
+                <el-col :span="6">
+                  <div class="grid-content">
+                    <span>手机号码:</span>
+                    <span class="survey-value">{{ allInfo.phonenum }}</span>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="grid-content">
+                    <span>部门:</span>
+                    <span class="survey-value">{{ allInfo.orgName }}</span>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="grid-content">
+                    <span>职位：</span>
+                    <span class="survey-value">{{ allInfo.jobName }}</span>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="grid-content">
+                    <span>上级领导：</span>
+                    <span style="color: #368AFA;">{{ allInfo.leaderName }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <div class="grid-content bg-purple">
+                    <span>标签：</span>
+                    <span
+                      v-for="(item, index) in allInfo.tags"
+                      :key="index"
+                    >{{
+                      item.tagName
+                    }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-main>
+          </el-container>
+        </div>
+
+        <div class="staff-diff-info">
+          <el-tabs
+            v-model="tabs.activeTab"
+            :stretch="stretch"
+            @tab-click="handleClick"
+          >
+            <el-tab-pane
+              label="在职信息"
+              name="first"
             >
-              <span class="staff-name">{{ allInfo.name }}</span>
-              <span class="workNo">({{ allInfo.workNo }})</span>
-              <el-button
-                size="mini"
-                plain
-              >
-                <span>{{ getStatus() }}</span>
-              </el-button>
-              <el-button
-                plain
-                class="personnel-change-btn"
-                size="medium"
-                @click="jumpToApply(allInfo.userId)"
-              >
-                <span>人事异动</span>
-              </el-button>
-            </div>
-            <el-row :gutter="20">
-              <el-col :span="6">
-                <div class="grid-content">
-                  <span>手机号码:</span>
-                  <span class="survey-value">{{ allInfo.phonenum }}</span>
-                </div>
-              </el-col>
-              <el-col :span="4">
-                <div class="grid-content">
-                  <span>部门:</span>
-                  <span class="survey-value">{{ allInfo.orgName }}</span>
-                </div>
-              </el-col>
-              <el-col :span="4">
-                <div class="grid-content">
-                  <span>职位：</span>
-                  <span class="survey-value">{{ allInfo.jobName }}</span>
-                </div>
-              </el-col>
-              <el-col :span="4">
-                <div class="grid-content">
-                  <span>上级领导：</span>
-                  <span style="color: #368AFA;">{{ allInfo.leaderName }}</span>
-                </div>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :span="24">
-                <div class="grid-content bg-purple">
-                  <span>标签：</span>
-                  <span
-                    v-for="(item, index) in allInfo.tags"
-                    :key="index"
-                  >{{ item.tagName }}</span>
-                </div>
-              </el-col>
-            </el-row>
-          </el-main>
-        </el-container>
-      </div>
+              <postInfo
+                v-if="activeName == 'first'"
+                :info.sync="allInfo"
+              />
+            </el-tab-pane>
+            <el-tab-pane
+              label="个人信息"
+              name="second"
+            >
+              <personalInfo
+                v-if="activeName == 'second'"
+                :info.sync="allInfo"
+              />
+            </el-tab-pane>
 
-      <div class="staff-diff-info">
-        <el-tabs
-          v-model="tabs.activeTab"
-          :stretch="stretch"
-          @tab-click="handleClick"
-        >
-          <el-tab-pane
-            label="在职信息"
-            name="first"
-          >
-            <postInfo
-              v-if="activeName == 'first'"
-              :info.sync="allInfo"
-            />
-          </el-tab-pane>
-          <el-tab-pane
-            label="个人信息"
-            name="second"
-          >
-            <personalInfo
-              v-if="activeName == 'second'"
-              :info.sync="allInfo"
-            />
-          </el-tab-pane>
-
-          <el-tab-pane
-            label="材料附件"
-            name="third"
-          >
-            <upload-Data v-if="activeName == 'third'" />
-          </el-tab-pane>
-          <el-tab-pane
-            label="操作记录"
-            name="fourth"
-          >
-            <action-record v-if="activeName == 'fourth'" />
-          </el-tab-pane>
-        </el-tabs>
+            <el-tab-pane
+              label="材料附件"
+              name="third"
+            >
+              <upload-Data v-if="activeName == 'third'" />
+            </el-tab-pane>
+            <el-tab-pane
+              label="操作记录"
+              name="fourth"
+            >
+              <action-record v-if="activeName == 'fourth'" />
+            </el-tab-pane>
+          </el-tabs>
+        </div>
       </div>
-    </div>
-  </basic-container>
+    </basic-container>
+  </div>
 </template>
 <script>
 import { getStaffBasicInfo } from '../../api/personalInfo.js'
@@ -179,7 +185,6 @@ export default {
         return ''
       }
     },
-
     getBasicInfo() {
       let params = {
         userId: this.$route.params.userId
@@ -242,13 +247,13 @@ export default {
   }
 }
 .staff-info-wrapper {
-  padding: 0 25px 25px 25px;
+  // padding: 0 25px 25px 25px;
   background: #f0f2f5;
-  .staff-info-brad {
-    font-size: 18px;
-    color: #202940;
-    padding: 10px 0 20px 0;
-  }
+  // .staff-info-brad {
+  //   font-size: 18px;
+  //   color: #202940;
+  //   padding: 10px 0 20px 0;
+  // }
   .staff-survey {
     margin-bottom: 15px;
     .survey-inner-container {

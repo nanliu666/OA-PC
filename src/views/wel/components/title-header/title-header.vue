@@ -1,25 +1,19 @@
 <template>
   <div class="header">
     <span class="title">
+      <span>{{ title }}</span>
       <i
-        v-if="showBack"
-        class="el-icon-arrow-left"
+        v-if="showIcon"
+        class="el-icon-arrow-right"
         style="margin-right:12px;cursor: pointer;"
-        @click="goBack"
       />
-      <slot name="title">
-        <span>{{ title }}</span>
-      </slot>
     </span>
-    <div class="button--wr">
-      <slot name="rightMenu" />
-    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'PageHeader',
+  name: 'TitleHeader',
   props: {
     // 标题
     title: {
@@ -27,25 +21,12 @@ export default {
       default: ''
     },
     // 是否展示返回按钮
-    showBack: {
+    showIcon: {
       type: Boolean,
       default: false
-    },
-    // 自定义返回方法
-    back: {
-      type: Function,
-      default: null
     }
   },
-  methods: {
-    goBack() {
-      if (this.back) {
-        this.back()
-        return
-      }
-      this.$router.go(-1)
-    }
-  }
+  methods: {}
 }
 </script>
 
@@ -55,13 +36,11 @@ export default {
   justify-content: space-between;
 }
 .title {
+  font-family: PingFangSC-Medium;
   font-weight: bold;
   font-size: 18px;
   padding: 14px 0 16px;
   line-height: 28px;
-}
-.button--wr {
-  padding-bottom: 18px;
-  padding-top: 6px;
+  color: #202940;
 }
 </style>
