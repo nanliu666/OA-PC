@@ -123,13 +123,20 @@ export default {
     })
   },
   methods: {
+    configurationData(params) {
+      params.userId = this.userId
+      params.summary = this.apply.summary
+      params.advise = this.apply.advise
+      params.entryDate = this.apply.entryDate
+      params.formalDate = this.apply.formalDate
+      return params
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let params = {}
-          params.userId = this.userId
-          params.summary = this.apply.summary
-          params.advise = this.apply.advise
+
+          this.configurationData(params)
           getOperation(params)
             .then(() => {
               this.$message({ type: 'success', message: '操作成功' })

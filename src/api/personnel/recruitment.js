@@ -93,3 +93,14 @@ export const putDistribution = (params) => {
 export const getEntryDetails = (params) => {
   return get('/user/v1/recruitment/user/list', { ...params })
 }
+
+/***************************我的招聘需求查询接口*******************************************/
+
+/**
+ *  我的招聘需求筛选接口
+ * @param {String} recruitmentId - 招聘需求ID
+ * @param {array} userId - 	招聘人员ID
+ * */
+export const setRecruitment = (params) => {
+  return post('/user/v1/recruitment/my/list', params)
+}
