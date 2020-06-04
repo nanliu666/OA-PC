@@ -301,7 +301,8 @@ export default {
       color: #000000;
       line-height: 43px;
       display: inline-block;
-      width: 80px;
+
+      min-width: 80px;
     }
   }
   .new-item {
@@ -333,7 +334,7 @@ export default {
       line-height: 43px;
       display: inline-block;
       margin-left: 24px;
-      // width: 80px;
+      min-width: 80px;
     }
   }
   .item-row {
