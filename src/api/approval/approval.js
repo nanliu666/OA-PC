@@ -24,3 +24,18 @@ export const putAppProcess = (params) => put('/appr/v1/appr/process', params)
  *
  */
 export const getApprForm = (params) => get('/appr/v1/appr/form', params)
+
+/****************************************************************************************
+ * @author guanfenda
+ * @desc我发起的审批查询接口
+ * @params params
+ *
+ */
+export const getMyApprList = (params) => get('/appr/v1/appr/my/approve/list', params)
+/*
+ * @author guanfenda
+ * @desc申请信息查询
+ * @params params
+ *
+ */
+export const getApplyDetail = (params) => get(' /appr/v1/appr/apply/user', params)

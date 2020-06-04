@@ -127,5 +127,119 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/appr/v1/appr/process' + '.*'), 'put', () => {
     return success
   })
+  // *********************************************************************
+  // 查询及筛选，调用接口：我发起的审批查询接口【GET /appr/v1/appr/my/approve/list】
+  Mock.mock(new RegExp('/appr/v1/appr/my/approve/list' + '.*'), 'get', () => {
+    let list = Mock.mock([
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'Recruitment',
+        formId: '@integer(1, 100)',
+        orgId: '@integer(1, 100)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(1, 100)',
+        userName: '@cname',
+        jobId: '@integer(1, 100)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(1, 100)',
+        status: 'Approve',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(1, 100)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'Recruitment',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Pass',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'Recruitment',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Reject',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'Recruitment',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Cancel',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      }
+    ])
+
+    return {
+      response: {
+        totalNum: 50,
+        totalPage: 10,
+        data: list
+      }
+    }
+  })
+
+  // 申请信息查询，调用接口：用户申请查询接口【GET /appr/v1/appr/apply/user】
+  Mock.mock(new RegExp('/appr/v1/appr/apply/user' + '.*'), 'get', () => {
+    let response = Mock.mock({
+      id: '@integer(100000, 10000000000)',
+      apprNo: '@integer(100000, 10000000000)',
+      title: '@cparagraph(1, 2)',
+      formKey: 'Recruitment',
+      formId: '@integer(1, 100)',
+      orgId: '@integer(1, 100)',
+      processId: '@integer(1, 100)',
+      // orgName: '@ctitle(1,3)',
+      // processId: '@integer(1, 100)',
+      status: 'Approve',
+      userId: '@integer(1, 100)',
+      userName: '@cname',
+      jobId: '@integer(1, 100)',
+      jobName: '@ctitle(1,3)',
+
+      applyTime: '@date()',
+      completeTime: '@date()',
+      approveUser: '@integer(1, 100)',
+      approveName: '@cname'
+    })
+
+    return {
+      response
+    }
+  })
 }
-// /appr/v1/appr/process

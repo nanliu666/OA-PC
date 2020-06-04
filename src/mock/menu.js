@@ -762,7 +762,7 @@ const res = {
       },
       {
         menuId: '1590112075691',
-        menuName: '审批流程',
+        menuName: '审批管理',
         menuType: 'Dir', // 菜单类型，Dir：目录，Menu：菜单；Button：按钮
         isOwn: 1, // 是否拥有 0：否，1：是
         isShow: 1, // 是否显示在菜单栏 0：否，1：是
@@ -792,6 +792,41 @@ const res = {
             alias: 'approval',
             path: '/approval/approvalDetail',
             icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '000000',
+            menuName: '我的审批',
+            menuType: 'Dir',
+            isOwn: 1,
+            isShow: 1,
+            code: 'approval_approval',
+            alias: 'approval',
+            path: '',
+            icon: 'iconfont iconicon_compile',
+            children: [
+              {
+                menuId: '0000001',
+                menuName: '我发起的',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'approval_approval',
+                alias: 'approval',
+                path: '/approval/appr/apprByMe',
+                icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '0000002',
+                menuName: '审批详情',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'approval_approval',
+                alias: 'approval',
+                path: '/approval/appr/apprDetail',
+                icon: 'iconfont iconicon_compile'
+              }
+            ]
           }
         ]
       }
