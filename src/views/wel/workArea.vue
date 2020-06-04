@@ -190,6 +190,7 @@ export default {
   }
   /deep/.header {
     padding-left: 24px;
+    margin-top: 0;
   }
   /deep/.el-tabs__nav {
     padding-left: 24px;

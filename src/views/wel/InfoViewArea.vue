@@ -224,19 +224,19 @@ export default {
   border-radius: 100%;
 }
 .tips {
-  background: rgb(2, 179, 46);
+  background: rgb(31, 245, 85);
 }
 .apply {
   background: rgb(5, 201, 207);
 }
 .arrange {
-  background: rgb(126, 3, 89);
+  background: rgb(250, 45, 189);
 }
 .book {
-  background: rgb(2, 179, 46);
+  background: rgb(235, 70, 70);
 }
 .add {
-  background: rgb(2, 179, 46);
+  background: rgb(252, 255, 58);
 }
 
 // 工作概览
