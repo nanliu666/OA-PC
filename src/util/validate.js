@@ -316,3 +316,31 @@ export function validataEpt(no) {
 export function isEmailReg(s) {
   return /^([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-]+)*@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(s)
 }
+/**
+ * 判断港澳居民来往内地通行证   H/M+8位数字
+ * @param {Object} no
+ */
+export function HMCardValid(data) {
+  var reg = /^[H|h|M|m](\d{8})$/
+  let pass = true
+  if (!data) {
+    pass = false
+  } else if (!reg.test(data.trim())) {
+    pass = false
+  }
+  return pass
+}
+/**
+ * 台湾居民来往大陆通行证 1个英文字+7位数字或于8位数字
+ * @param {Object} no
+ */
+export function TWCardValid(data) {
+  var reg = /^[a-zA-Z](\d{7}|\d{8})$/
+  let pass = true
+  if (!data) {
+    pass = false
+  } else if (!reg.test(data.trim())) {
+    pass = false
+  }
+  return pass
+}

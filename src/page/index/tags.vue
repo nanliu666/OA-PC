@@ -56,9 +56,9 @@
           <i class="el-icon-arrow-down el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="$parent.isSearch = true">
+          <!-- <el-dropdown-item @click.native="$parent.isSearch = true">
             {{ $t('tagsView.search') }}
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item @click.native="closeOthersTags">
             {{ $t('tagsView.closeOthers') }}
           </el-dropdown-item>
@@ -157,16 +157,18 @@ export default {
       } else {
         tag = item
       }
-      this.$router.push({
-        path: this.$router.$avueRouter.getPath(
-          {
-            name: tag.label,
-            src: tag.value
-          },
-          tag.meta
-        ),
-        query: tag.query
-      })
+      if (tag.value !== this.tag.value) {
+        this.$router.push({
+          path: this.$router.$avueRouter.getPath(
+            {
+              name: tag.label,
+              src: tag.value
+            },
+            tag.meta
+          ),
+          query: tag.query
+        })
+      }
     },
     closeOthersTags() {
       this.contextmenuFlag = false

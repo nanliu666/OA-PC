@@ -4,7 +4,7 @@
       用户管理
     </div>
     <el-row
-      style="height: calc(100% - 100px);"
+      style="height: calc(100% - 80px);"
       :gutter="8"
     >
       <el-col
@@ -17,7 +17,10 @@
           block
           style="padding-left:0;"
         >
-          <el-tabs v-model="activeTabName">
+          <el-tabs
+            v-model="activeTabName"
+            style="height:100%;"
+          >
             <el-tab-pane
               label="组织架构"
               name="orgTree"
@@ -46,7 +49,10 @@
                 </span>
               </el-tree>
             </el-tab-pane>
-            <el-tab-pane name="tags">
+            <el-tab-pane
+              name="tags"
+              style="height:100%"
+            >
               <span slot="label">
                 标签
                 <el-tooltip
@@ -159,5 +165,8 @@ export default {
   font-weight: bold;
   font-size: 18px;
   padding: 14px 0 16px;
+}
+/deep/ .el-tabs__content {
+  height: calc(100% - 55px);
 }
 </style>

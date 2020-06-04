@@ -1,6 +1,7 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
 import Approval from '@/router/views/Approval'
+import demoRoutes from './demo'
 export default [
   {
     path: '/wel',
@@ -91,5 +92,6 @@ export default [
           }
         ]
       }
-    : null
+    : null,
+  ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
 ]

@@ -45,6 +45,10 @@ export default {
     .el-card {
       height: 100%;
     }
+    .el-card__body {
+      height: 100%;
+      box-sizing: border-box;
+    }
   }
   .el-card {
     width: 100%;
