@@ -104,8 +104,8 @@ export default {
         this.$refs.personInfo.explainshow = false
       }
     },
-    '$route.query.id': function(newval, oldval) {
-      if (newval || oldval) {
+    '$route.query.id': function(newval) {
+      if (newval) {
         this.ReplicationCache(newval)
       }
     }
@@ -128,8 +128,15 @@ export default {
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'educationalLevel', 'dictValue', 'dictKey')
     })
+
+    this.SaveState()
   },
   methods: {
+    SaveState() {
+      if (typeof this.$route.query.id !== 'undefined') {
+        this.ReplicationCache(this.$route.query.id)
+      }
+    },
     onSubmit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
