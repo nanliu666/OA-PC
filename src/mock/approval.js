@@ -61,36 +61,53 @@ const json = {
 }
 const approvalList = {
   ...normalData,
-  response: [
-    {
-      id: '1',
-      name: '部门主管',
-      isStart: '1',
-      isEnd: '0',
-      parentId: '',
-      childId: '',
-      isEdit: false,
-      users: {
-        id: '12',
-        name: '张三',
-        workNo: '001'
+  response: {
+    id: '150165',
+    note: '合同流程',
+    version: '1.0.0',
+    nodes: [
+      {
+        id: '1',
+        name: '部门主管',
+        isStart: '0',
+        isEnd: '0',
+        parentId: '',
+        childId: '',
+        isEdit: false,
+        users: {}
+      },
+      {
+        id: '2',
+        name: '综合管理部',
+        isStart: '0',
+        isEnd: '0',
+        parentId: '',
+        childId: '',
+        isEdit: false,
+        users: {}
+      },
+      {
+        id: '3',
+        name: '控股负责人',
+        isStart: '0',
+        isEnd: '0',
+        parentId: '',
+        childId: '',
+        isEdit: false,
+        users: {}
+      },
+      {
+        id: '4',
+        name: '总裁',
+        isStart: '0',
+        isEnd: '0',
+        parentId: '',
+        childId: '',
+        isEdit: false,
+        users: {}
       }
-    },
-    {
-      id: '2',
-      name: '部门主管',
-      isStart: '1',
-      isEnd: '0',
-      parentId: '',
-      childId: '',
-      isEdit: false,
-      users: {
-        id: '123',
-        name: '富士达',
-        workNo: '002'
-      }
-    }
-  ]
+    ]
+  }
 }
 export default ({ mock }) => {
   if (!mock) return
