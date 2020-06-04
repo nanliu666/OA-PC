@@ -7,7 +7,8 @@
       :page-config="pageConfig"
       :config="tableConfig"
       @current-page-change="currentPageChange"
-      @page-size-change="currentPageChange"
+      @page-size-change="sizeChange"
+      @expand-change="recruitmentSituation"
     >
       <template slot="topMenu">
         <div class="flex-flow flex justify-content align-items ">
@@ -89,6 +90,87 @@
           {{ isStatus(row.status) }}
         </el-button>
       </template>
+
+      <template
+        v-if="row.status === 'Handled'"
+        slot="expand"
+        slot-scope="{ row }"
+      >
+        <el-row
+          :gutter="20"
+          type="flex"
+        >
+          <el-col
+            :span="5"
+            class="internalDetails"
+          >
+            招聘人员
+          </el-col>
+          <el-col
+            :span="5"
+            class="internalDetails"
+          >
+            任务数
+          </el-col>
+          <el-col
+            :span="5"
+            class="internalDetails"
+          >
+            入职数
+          </el-col>
+          <el-col
+            :span="5"
+            class="internalDetails"
+          >
+            候选人数
+          </el-col>
+          <el-col
+            :span="4"
+            class="internalDetails noborder "
+          >
+            招聘进度
+          </el-col>
+        </el-row>
+        <el-row
+          v-for="item in management"
+          :key="item.userId"
+          :gutter="20"
+          type="flex"
+        >
+          <el-col
+            :span="5"
+            class="taskInformation"
+          >
+            {{ item.name }}
+          </el-col>
+          <el-col
+            :span="5"
+            class="taskInformation"
+          >
+            {{ item.taskNum }}
+          </el-col>
+          <el-col
+            :span="5"
+            class="taskInformation"
+          >
+            {{ item.entryNum }}
+          </el-col>
+          <el-col
+            :span="5"
+            class="taskInformation"
+          >
+            {{ item.candidateNum }}
+          </el-col>
+          <el-col
+            :span="4"
+            class="taskInformation   isBlue  noborder"
+          >
+            {{
+              getPercent(item.taskNum, item.entryNum)
+            }}
+          </el-col>
+        </el-row>
+      </template>
     </common-table>
 
     <again
@@ -107,7 +189,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getAllRecruitment, getPost } from '@/api/personnel/recruitment'
+import { getAllRecruitment, getPost, queryDistribution } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import Again from '@/views/personnel/recruit/details/again'
 import Assigned from '@/views/personnel/recruit/details/Assigned'
@@ -216,6 +298,11 @@ export default {
       data: [],
       columns: [
         {
+          prop: 'expand',
+          type: 'expand',
+          slot: true
+        },
+        {
           label: '需求编号',
           prop: 'id',
           slot: true
@@ -303,7 +390,8 @@ export default {
         }
       ],
       WorkYear: [],
-      getLevel: []
+      getLevel: [],
+      management: []
     }
   },
   computed: {
@@ -398,6 +486,10 @@ export default {
         {
           label: '已分配',
           value: 'Handled'
+        },
+        {
+          label: '审批中',
+          value: 'Approve'
         }
       ]
       calcStatus.forEach((item) => {
@@ -424,6 +516,23 @@ export default {
         }
       })
       return typeWord
+    },
+    recruitmentSituation(row) {
+      queryDistribution({ recruitmentId: row.id }).then((res) => {
+        this.management = res
+      })
+    },
+    sizeChange(pageSize) {
+      this.page.size = pageSize
+      this.getTableData()
+    },
+    getPercent(curNum, totalNum) {
+      curNum = parseFloat(curNum)
+      totalNum = parseFloat(totalNum)
+      if (isNaN(curNum) || isNaN(totalNum)) {
+        return '-'
+      }
+      return Math.round((totalNum / curNum) * 10000) / 100 + '%'
     }
   }
 }
@@ -497,6 +606,10 @@ export default {
   }
 }
 
+.isBlue {
+  color: #207efa !important;
+}
+
 .bigText {
   font-weight: 500;
   font-size: 18px;
@@ -506,5 +619,30 @@ export default {
   position: absolute;
   right: 62px;
   margin-top: 3px;
+}
+
+/deep/ .el-table__expanded-cell[class*='cell'] {
+  padding: 8px 50px !important;
+}
+.noborder {
+  border: none !important;
+}
+
+.internalDetails {
+  font-family: PingFangSC-Medium;
+  font-size: 12px;
+  color: #a0a8ae;
+  padding-left: 23px !important;
+  border-right: 1px solid #ccc;
+  margin: 0;
+}
+
+.taskInformation {
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #202940;
+  line-height: 20px;
+  padding-left: 23px !important;
+  border-right: 1px solid #ccc;
 }
 </style>

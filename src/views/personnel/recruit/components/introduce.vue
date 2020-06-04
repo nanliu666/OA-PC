@@ -92,7 +92,6 @@ export default {
       if (isNaN(curNum) || isNaN(totalNum)) {
         return '-'
       }
-
       this.user.progress = Math.round((totalNum / curNum) * 10000) / 100 + '%'
     }
   }
@@ -101,7 +100,11 @@ export default {
 
 <style lang="scss" scoped>
 .displayBar {
-  height: 50px;
+  flex: 7;
+  border-radius: 4px;
+  margin-right: 20px;
+  display: flex;
+  padding: 20px 0;
 }
 .content {
   display: block;
@@ -116,6 +119,7 @@ export default {
   color: #718199;
   line-height: 18px;
   text-align: center;
+  margin-bottom: 10px;
 }
 
 .frame {
