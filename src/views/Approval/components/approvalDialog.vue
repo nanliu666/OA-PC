@@ -83,7 +83,7 @@
   </el-dialog>
 </template>
 <script>
-import { getOrgUserTree, createTagUser } from '@/api/system/user'
+import { getOrgUserTree } from '@/api/system/user'
 
 export default {
   name: 'UserTagedEdit',
@@ -197,20 +197,8 @@ export default {
       return result
     },
     handleSubmit() {
-      createTagUser(
-        this.tagId,
-        this.diff(
-          this.selectList.map((i) => i.userId),
-          this.oldSelectList.map((i) => i.userId)
-        )
-      ).then(() => {
-        this.$message({
-          type: 'success',
-          message: '操作成功!'
-        })
-        this.close()
-        this.$emit('after-submit')
-      })
+      this.$emit('addUser', this.selectList[0])
+      this.close()
     },
     resolveTree(tree) {
       if (tree.length > 0) {

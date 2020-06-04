@@ -9,17 +9,20 @@
           v-for="(it, i) in info"
           :key="i"
           class="todo flex flex-justify-start "
-          @click="jump"
+          @click="jump(it)"
         >
           <div class="images">
-            <el-image class="imgs" />
+            <el-image
+              :src="it.iconUrl"
+              class="imgs"
+            />
           </div>
           <div class="info">
             <div class="info-title">
-              {{ it.title }}
+              {{ it.name }}
             </div>
             <div class="info-explain">
-              {{ it.text }}
+              {{ it.remark }}
             </div>
           </div>
         </div>
@@ -34,6 +37,7 @@
 
 <script>
 import approvalDialog from '@/views/Approval/components/approvalDialog'
+import { getApprForm } from '@/api/approval/approval'
 export default {
   name: 'ApprovalProcess',
   components: {
@@ -42,43 +46,26 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      info: [
-        {
-          title: '招聘需求',
-          text: '在中台产品的研发过程中，会出现不同的设计规范和实现方式...'
-        },
-        {
-          title: '招聘需求',
-          text: '在中台产品的研发过程中，会出现不同的设计规范和实现方式...'
-        },
-        {
-          title: '招聘需求',
-          text: '在中台产品的研发过程中，会出现不同的设计规范和实现方式...'
-        },
-        {
-          title: '招聘需求',
-          text: '在中台产品的研发过程中，会出现不同的设计规范和实现方式...'
-        },
-        {
-          title: '招聘需求',
-          text: '在中台产品的研发过程中，会出现不同的设计规范和实现方式...'
-        },
-        {
-          title: '招聘需求',
-          text: '在中台产品的研发过程中，会出现不同的设计规范和实现方式...'
-        }
-      ]
+      info: []
     }
   },
+  mounted() {
+    this.getData()
+  },
   methods: {
-    jump() {
+    getData() {
+      getApprForm().then((res) => {
+        this.info = res
+      })
+    },
+    jump(it) {
       // this.dialogVisible = true
       let params = {
-        userId: '01546546454'
+        formKey: it.formKey
       }
       this.$router.push({
         path: '/approval/approvalDetail',
-        params: params
+        query: params
       })
     }
   }

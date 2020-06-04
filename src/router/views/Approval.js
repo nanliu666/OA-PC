@@ -13,7 +13,7 @@ export default {
       component: () => import('@/views/Approval/ApprovalProcess')
     },
     {
-      path: 'approvalDetail/:userId',
+      path: 'approvalDetail',
       name: '配置流程',
       meta: {
         i18n: 'index'
