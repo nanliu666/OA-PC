@@ -1,42 +1,28 @@
 <template>
   <div>
-    <page-header
-      title="招聘需求"
-      class="pageHeader"
-      show-back
-    />
+    <page-header class="pageHeader">
+      <div slot="title">
+        <span
+          :class="{ active: Select }"
+          @click="changeTemp"
+        >我提交的招聘需求</span>
+        <span style=" margin: 0 20px">|</span>
+        <span
+          :class="{ active: doNotsave }"
+          @click="changeTemp('all')"
+        >全部招聘需求</span>
+      </div>
+      <el-button
+        slot="rightMenu"
+        class="newlyDemand"
+        size="medium"
+        type="primary"
+        @click="opnDetails"
+      >
+        新建招聘需求
+      </el-button>
+    </page-header>
     <basic-container>
-      <el-row :gutter="24">
-        <el-col :span="20">
-          <el-radio-group
-            v-model="choice"
-            @change="changeTemp(choice)"
-          >
-            <el-radio-button
-              size="medium"
-              label="my"
-            >
-              我提交的招聘需求
-            </el-radio-button>
-            <el-radio-button
-              size="medium"
-              label="all"
-            >
-              全部招聘需求
-            </el-radio-button>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="3">
-          <el-button
-            size="medium"
-            type="primary"
-            class="bigText"
-            @click="opnDetails"
-          >
-            新建招聘需求
-          </el-button>
-        </el-col>
-      </el-row>
       <div v-show="Select">
         <el-tabs
           v-model="activeName"
@@ -184,14 +170,10 @@ export default {
   }
 }
 
-.bigText {
-  position: relative;
-  left: 0px !important;
+.active {
+  color: rgba(54, 138, 250, 1);
 }
-
-.resetEdge {
-  position: absolute;
-  right: 62px;
-  margin-top: 3px;
+.newlyDemand {
+  float: right;
 }
 </style>

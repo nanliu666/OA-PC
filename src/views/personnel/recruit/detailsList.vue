@@ -21,12 +21,12 @@
           </div>
           <div class="resetEdge">
             <el-button
-              type="primary"
+              icon="el-icon-refresh-right"
               size="medium"
+              class="topBtn"
+              type="text"
               @click="getTableData"
-            >
-              <i class="el-icon-refresh" />
-            </el-button>
+            />
           </div>
         </div>
       </template>

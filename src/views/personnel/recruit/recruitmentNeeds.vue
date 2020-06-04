@@ -6,27 +6,41 @@
       show-back
     />
     <basic-container>
-      <inputArray
-        ref="personInfo"
-        :info-form.sync="NewRequirement"
-        :form.sync="infoForm"
-      />
+      <el-row
+        type="flex"
+        justify="center"
+        style="padding-top:40px;"
+      >
+        <el-col
+          :xl="16"
+          :lg="16"
+          :md="18"
+          :sm="20"
+          :xs="22"
+        >
+          <inputArray
+            ref="personInfo"
+            :info-form.sync="NewRequirement"
+            :form.sync="infoForm"
+          />
 
-      <template style="margin: 0 auto;">
-        <el-button
-          size="medium"
-          @click="handleEditRole"
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          size="medium"
-          @click="handleTownext"
-        >
-          提交
-        </el-button>
-      </template>
+          <template style="margin: 0 auto;">
+            <el-button
+              size="medium"
+              @click="handleEditRole"
+            >
+              取消
+            </el-button>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="handleTownext"
+            >
+              提交
+            </el-button>
+          </template>
+        </el-col>
+      </el-row>
     </basic-container>
     <cancel-edit
       ref="CancelEdit"
@@ -208,14 +222,6 @@ export default {
   height: 48px;
   line-height: 48px;
   font-size: 18px;
-}
-
-/deep/ .el-card__body {
-  padding: 100px !important;
-}
-
-/deep/ .v-modal {
-  z-index: 100 !important;
 }
 .dialogForm {
   .el-form-item {

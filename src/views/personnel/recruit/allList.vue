@@ -21,13 +21,21 @@
             />
           </div>
           <div class="resetEdge">
-            <el-button
+            <!-- <el-button
               type="primary"
               size="medium"
               @click="getTableData"
             >
               <i class="el-icon-refresh" />
-            </el-button>
+            </el-button>  -->
+
+            <el-button
+              icon="el-icon-refresh-right"
+              size="medium"
+              class="topBtn"
+              type="text"
+              @click="getTableData"
+            />
           </div>
         </div>
       </template>
@@ -96,78 +104,86 @@
         slot="expand"
         slot-scope="{ row }"
       >
-        <el-row
-          :gutter="20"
-          type="flex"
-        >
-          <el-col
-            :span="5"
-            class="internalDetails"
+        <div v-loading="loading">
+          <el-row
+            :gutter="20"
+            type="flex"
           >
-            招聘人员
-          </el-col>
-          <el-col
-            :span="5"
-            class="internalDetails"
+            <el-col
+              :span="5"
+              class="internalDetails"
+            >
+              招聘人员
+            </el-col>
+            <el-col
+              :span="5"
+              class="internalDetails"
+            >
+              任务数
+            </el-col>
+            <el-col
+              :span="5"
+              class="internalDetails"
+            >
+              入职数
+            </el-col>
+            <el-col
+              :span="5"
+              class="internalDetails"
+            >
+              候选人数
+            </el-col>
+            <el-col
+              :span="4"
+              class="internalDetails noborder "
+            >
+              招聘进度
+            </el-col>
+          </el-row>
+          <el-row v-if="management === 'noAvailable'">
+            <el-col class="taskInformation">
+              {{ '暂无数据' }}
+            </el-col>
+          </el-row>
+
+          <el-row
+            v-for="item in management"
+            :key="item.userId"
+            :gutter="20"
+            type="flex"
           >
-            任务数
-          </el-col>
-          <el-col
-            :span="5"
-            class="internalDetails"
-          >
-            入职数
-          </el-col>
-          <el-col
-            :span="5"
-            class="internalDetails"
-          >
-            候选人数
-          </el-col>
-          <el-col
-            :span="4"
-            class="internalDetails noborder "
-          >
-            招聘进度
-          </el-col>
-        </el-row>
-        <el-row
-          v-for="item in management"
-          :key="item.userId"
-          :gutter="20"
-          type="flex"
-        >
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.name }}
-          </el-col>
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.taskNum }}
-          </el-col>
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.entryNum }}
-          </el-col>
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.candidateNum }}
-          </el-col>
-          <el-col
-            :span="4"
-            class="taskInformation   isBlue  noborder"
-          >
-            {{ getPercent(item.taskNum, item.entryNum) }}
-          </el-col>
-        </el-row>
+            <el-col
+              :span="5"
+              class="taskInformation"
+            >
+              {{ item.name }}
+            </el-col>
+            <el-col
+              :span="5"
+              class="taskInformation"
+            >
+              {{ item.taskNum }}
+            </el-col>
+            <el-col
+              :span="5"
+              class="taskInformation"
+            >
+              {{ item.entryNum }}
+            </el-col>
+            <el-col
+              :span="5"
+              class="taskInformation"
+            >
+              {{ item.candidateNum }}
+            </el-col>
+            <el-col
+              :span="4"
+              class="taskInformation   isBlue  noborder"
+            >
+              {{ getPercent(item.taskNum, item.entryNum) }}
+            </el-col>
+          </el-row>
+        </div>
       </template>
     </common-table>
 
@@ -389,7 +405,8 @@ export default {
       ],
       WorkYear: [],
       getLevel: [],
-      management: []
+      management: [],
+      loading: true
     }
   },
   computed: {
@@ -521,7 +538,13 @@ export default {
     },
     recruitmentSituation(row) {
       queryDistribution({ recruitmentId: row.id }).then((res) => {
-        this.management = res
+        this.loading = false
+        // 判断当前数组是否为空
+        if (res == null || res.length == 0) {
+          this.management = 'noAvailable'
+        } else {
+          this.management = res
+        }
       })
     },
     sizeChange(pageSize) {

@@ -216,28 +216,40 @@ export default {
     queryData(mentId) {
       queryDistribution({ recruitmentId: mentId }).then((res) => {
         if (res.length !== 0) {
-          this.dynamicValidateForm.users = res.response
+          res.forEach((item) => {
+            item.peopleDisabled = true
+            item.disabled = true
+          })
+          this.dynamicValidateForm.users = res
         }
       })
     },
     handleClose() {
-      try {
+      if (typeof this.dynamicValidateForm.users !== 'undefined') {
         let itemArr = this.dynamicValidateForm.users.splice(0, 1)
         itemArr[0].userId = null
         this.dynamicValidateForm.users = itemArr
-        this.$emit('update:visible', false)
-      } catch (error) {
-        return error
       }
+      this.$emit('update:visible', false)
     },
     addDomain() {
       this.calWhetherBeyond()
-      this.dynamicValidateForm.users.push({
-        userId: '',
-        taskNum: 1,
-        disabled: true,
-        Rendering: 'Rendering'
-      })
+      // 判断当前请求返回数据是否有意义
+      if (typeof this.dynamicValidateForm.users !== 'undefined') {
+        this.dynamicValidateForm.users.push({
+          userId: '',
+          taskNum: 1,
+          disabled: true,
+          Rendering: 'Rendering'
+        })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '当前需求暂无可用员工, 请关闭重试',
+          type: 'warning'
+        })
+        this.$emit('update:visible', false)
+      }
     },
     onSubmitted() {
       let accumulation = this.calWhetherBeyond()
@@ -260,7 +272,7 @@ export default {
     },
     calWhetherBeyond() {
       var total = null
-      try {
+      if (typeof this.dynamicValidateForm.users !== 'undefined') {
         this.dynamicValidateForm.users.forEach((item, index) => {
           this.dynamicValidateForm.users[index].operatorType = 'Update'
           total += item.taskNum
@@ -273,8 +285,6 @@ export default {
           })
         }
         return total
-      } catch (error) {
-        return error
       }
     }
   }
