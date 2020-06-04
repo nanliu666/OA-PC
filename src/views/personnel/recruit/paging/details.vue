@@ -20,6 +20,23 @@
           >
             <el-row>
               <el-col :span="10">
+                <el-form-item label="申请人">
+                  <span class="distance">{{ personnel.userName }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="职位要求">
+                  <span class="distance">
+                    {{ personnel.requirement }}
+                  </span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="10">
                 <el-form-item label="申请公司">
                   <span class="distance">{{ personnel.orgName }}</span>
                 </el-form-item>
@@ -53,7 +70,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="工作性质">
-                  <span class="distance">{{ personnel.workProperty }}</span>
+                  <span class="distance">{{ calWorkProperty(personnel.workProperty) }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -68,7 +85,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="工作年限">
-                  <span class="distance">{{ personnel.workYear }}</span>
+                  <span class="distance">{{ calWorkYear(personnel.workYear) }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -76,7 +93,9 @@
                 :offset="4"
               >
                 <el-form-item label="学历要求">
-                  <span class="distance">{{ personnel.educationalLevel }}</span>
+                  <span class="distance">{{
+                    calEducationalLevel(personnel.educationalLevel)
+                  }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -98,15 +117,6 @@
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item label="职位要求">
-                  <span class="distance">
-                    {{ personnel.requirement }}
-                  </span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="24">
                 <el-form-item label="工作职责">
                   <span class="distance">
                     {{ personnel.duty }}
@@ -118,7 +128,7 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="招聘原因">
-                  <span class="distance">{{ personnel.reason }}</span>
+                  <span class="distance">{{ calReason(personnel.reason) }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -149,9 +159,13 @@ export default {
         createTime: '',
         company: '',
         orgName: '',
-        jobId: ''
+        jobId: '',
+        userName: ''
       },
-      workProperty: []
+      workProperty: [],
+      workYear: [],
+      reason: [],
+      educationalLevel: []
     }
   },
   watch: {
@@ -163,10 +177,68 @@ export default {
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       this.workProperty = res
     })
+    this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
+      this.reason = res
+    })
+
+    this.$store.dispatch('CommonDict', 'workYear').then((res) => {
+      this.workYear = res
+    })
+    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
+      this.emerType = res
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.educationalLevel = res
+    })
   },
   methods: {
     init(newval) {
       this.personnel = newval
+    },
+    calWorkProperty(type) {
+      let typeWord
+      this.workProperty.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
+    calWorkYear(type) {
+      let typeWord
+      this.workYear.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
+    calReason(type) {
+      let typeWord
+      this.reason.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
+    calEducationalLevel(type) {
+      let typeWord
+      this.educationalLevel.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
+    calEmerType(type) {
+      let typeWord
+      this.emerType.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
     }
   }
 }

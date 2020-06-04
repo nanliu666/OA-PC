@@ -50,54 +50,18 @@
     <basic-container>
       <el-tabs v-model="activeName">
         <el-tab-pane
+          v-if="$route.query.status === 'UnHandle'"
+          label="分配信息"
+          name="inrecruitment"
+        >
+          <Unassignedfrom :child-data="childData" />
+        </el-tab-pane>
+        <el-tab-pane
+          v-else
           label="招聘进度"
           name="inrecruitment"
         >
-          <el-row
-            type="flex"
-            :gutter="52"
-            class="displayBar"
-          >
-            <el-col
-              :span="8"
-              class="frame"
-            >
-              <span class="demandSize"> 职位名称</span>
-              <span class="content">{{ user.positionName }}</span>
-            </el-col>
-            <el-col
-              :span="8"
-              class="frame"
-            >
-              <span class="demandSize"> 紧急程度</span>
-              <span class="content">{{ user.emerType }}</span>
-            </el-col>
-
-            <el-col
-              :span="8"
-              class="frame"
-            >
-              <span class="demandSize"> 需求总数</span>
-              <span class="content">{{ user.needNum }}</span>
-            </el-col>
-
-            <el-col
-              :span="8"
-              class="frame"
-            >
-              <span class="demandSize"> 已入职</span>
-              <span class="content">{{ user.entryNum }}</span>
-            </el-col>
-
-            <el-col
-              :span="8"
-              class="frame"
-            >
-              <span class="demandSize"> 招聘进度</span>
-              <span class="content">{{}}</span>
-            </el-col>
-          </el-row>
-
+          <Introduce :status="childData" />
           <h3 class="Header">
             已入职员工
           </h3>
@@ -138,6 +102,7 @@
             </common-table>
           </basic-container>
         </el-tab-pane>
+
         <el-tab-pane
           label="招聘需求详情"
           name="recruitmentdemand"
@@ -152,10 +117,14 @@
 import { mapGetters } from 'vuex'
 import { getEntryDetails, getRecruitmentDetail } from '@/api/personnel/recruitment'
 import DetailsDetails from './paging/details'
+import Unassignedfrom from './components/unassigned'
+import Introduce from './components/introduce'
 export default {
   name: 'StaffList',
   components: {
-    DetailsDetails
+    DetailsDetails,
+    Unassignedfrom,
+    Introduce
   },
   data() {
     return {
@@ -305,7 +274,8 @@ export default {
 
 .resetEdge {
   position: absolute;
-  right: 20px;
+  right: 62px;
+  margin-top: 3px;
 }
 .fullName {
   font-family: PingFangSC-Medium;

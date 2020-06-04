@@ -301,7 +301,7 @@ export default {
       return typeWord
     },
     init(progress) {
-      this.params.progress = progress.trim()
+      this.params.progress = progress
       this.getTableData()
     },
     getTableData(params) {
@@ -376,6 +376,7 @@ export default {
 
 .resetEdge {
   position: absolute;
-  right: 20px;
+  right: 62px;
+  margin-top: 3px;
 }
 </style>

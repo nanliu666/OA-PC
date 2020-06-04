@@ -23,7 +23,7 @@
         class="frame"
       >
         <span class="demandSize"> 紧急程度</span>
-        <span class="content">{{ getWorkYear(list.emerType) }}</span>
+        <span class="content">{{ calWorkYear(list.emerType) }}</span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize"> 到岗日期 </span>
@@ -35,7 +35,7 @@
       :gutter="52"
     >
       <el-col :span="8">
-        <span class="demandSize"> 需求人数: {{ Totalnumberpeople }}</span>
+        <span class="demandSize">需求人数:{{ Totalnumberpeople }}</span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
@@ -75,16 +75,17 @@
                   placeholder="请选择"
                 >
                   <el-input
-                    v-model="domain.personnel"
+                    v-model="plens"
                     placeholder="姓名/工号"
-                    @change="requeWorkList(3)"
+                    @change="requeWorkList(15)"
                   >
                     <i
                       slot="prefix"
                       class="el-input__icon el-icon-search"
-                      @click="requeWorkList(3)"
+                      @click="requeWorkList(15)"
                     />
                   </el-input>
+
                   <el-option
                     v-for="item in options"
                     :key="item.name"
@@ -152,6 +153,7 @@ export default {
   },
   data() {
     return {
+      plens: '',
       recruitmentId: '',
       isDelete: false,
       Totalnumberpeople: 25,
@@ -166,7 +168,6 @@ export default {
       dynamicValidateForm: {
         users: [
           {
-            personnel: null,
             userId: null,
             taskNum: 1
           }
@@ -185,7 +186,9 @@ export default {
     },
     recruitmentId: function(newval, oldval) {
       if (newval !== oldval) {
-        this.handleClose()
+        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
+        itemArr[0].userId = null
+        this.dynamicValidateForm.users = itemArr
       }
     }
   },
@@ -202,23 +205,21 @@ export default {
     },
     async init(row) {
       this.list = row
-      let { entryNum, needNum } = row
+      let { id, entryNum, needNum } = row
+      this.recruitmentId = id
       this.Totalnumberpeople = needNum
       this.Assigned = entryNum
       this.Numberofpeople = needNum - entryNum
       await this.requeWorkList(15)
       this.$emit('update:visible', true)
     },
+    handleClose() {
+      this.$emit('update:visible', false)
+    },
     requeWorkList(page) {
       getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
         this.options = res.data
       })
-    },
-    handleClose() {
-      let itemArr = this.dynamicValidateForm.users.splice(0, 1)
-      itemArr[0].userId = null
-      this.dynamicValidateForm.users = itemArr
-      this.$emit('update:visible', false)
     },
     addDomain() {
       let accumulation = this.calWhetherBeyond()
@@ -267,7 +268,7 @@ export default {
         this.$emit('getTableData')
       }
     },
-    getWorkYear(type) {
+    calWorkYear(type) {
       let typeWord
       this.EmerType.forEach((item) => {
         if (item.dictKey === type) {

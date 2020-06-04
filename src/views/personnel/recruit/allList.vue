@@ -37,12 +37,13 @@
         <el-button
           type="text"
           size="medium"
-          @click="jumpToDetail(row.id)"
+          @click="jumpToDetail(row)"
         >
           {{ row.id }}
         </el-button>
       </template>
       <template
+        v-if="params.progress === 'Approved'"
         slot="handler"
         slot-scope="{ row }"
       >
@@ -54,6 +55,19 @@
           {{ row.status == 'UnHandle' ? '分配' : '重新分配' }}
         </el-button>
       </template>
+      <template
+        slot="workYear"
+        slot-scope="{ row }"
+      >
+        {{ getWorkYear(row.workYear) }}
+      </template>
+      <template
+        slot="educationalLevel"
+        slot-scope="{ row }"
+      >
+        {{ getEducationalLevel(row.educationalLevel) }}
+      </template>
+
       <template
         slot="status"
         slot-scope="{ row }"
@@ -241,11 +255,13 @@ export default {
         },
         {
           label: '工作年限',
-          prop: 'workYear'
+          prop: 'workYear',
+          slot: true
         },
         {
           label: '学历要求',
-          prop: 'educationalLevel'
+          prop: 'educationalLevel',
+          slot: true
         },
         {
           label: '最低薪资',
@@ -285,19 +301,27 @@ export default {
           choice: 'EducationalLevel',
           target: 4
         }
-      ]
+      ],
+      WorkYear: [],
+      getLevel: []
     }
   },
   computed: {
     ...mapGetters(['userId'])
   },
-  created() {
+  mounted() {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getPost().then((res) => {
       this.searchConfig.popoverOptions[1].options = res
+    })
+    this.$store.dispatch('CommonDict', 'WorkYear').then((res) => {
+      this.WorkYear = res
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.getLevel = res
     })
     this.getDictionarygroup()
   },
@@ -312,8 +336,7 @@ export default {
       return typeWord
     },
     init(progress) {
-      // 场景使用
-      this.params.progress = progress.trim()
+      this.params.progress = progress
       this.getTableData()
     },
     getTableData(params) {
@@ -342,8 +365,9 @@ export default {
         })
       })
     },
-    jumpToDetail(id) {
-      this.$router.push({ path: '/personnel/recruit/staffList', query: { id: id } })
+    jumpToDetail(row) {
+      let { id, status } = row
+      this.$router.push({ path: '/personnel/recruit/staffList', query: { id: id, status: status } })
     },
     currentPageChange(param) {
       let paramsInfo = {}
@@ -382,6 +406,24 @@ export default {
         }
       })
       return typeStatus
+    },
+    getWorkYear(type) {
+      let typeWord
+      this.WorkYear.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
+    getEducationalLevel(type) {
+      let typeWord
+      this.getLevel.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
     }
   }
 }
@@ -462,6 +504,7 @@ export default {
 
 .resetEdge {
   position: absolute;
-  right: 20px;
+  right: 62px;
+  margin-top: 3px;
 }
 </style>

@@ -57,7 +57,7 @@
       <div v-show="doNotsave">
         <el-tabs
           v-model="allActiveName"
-          @tab-click="handleClick"
+          @tab-click="allHandleClick"
         >
           <el-tab-pane
             label="招聘中"
@@ -65,7 +65,7 @@
           />
           <el-tab-pane
             label="已结束"
-            name="ending                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+            name="allFinished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
           />
         </el-tabs>
         <All-list ref="all" />
@@ -98,10 +98,16 @@ export default {
     handleClick(tab) {
       let paneName = tab.paneName.trim()
       if (paneName === 'Finished' || paneName === 'Approved') {
-        this.$refs.demand.init(tab.paneName)
+        this.$refs.demand.init(paneName)
       }
-      if (paneName === 'ending' || paneName === 'allApproved') {
-        this.$refs.all.init(tab.paneName)
+    },
+    allHandleClick(tab) {
+      // 特殊情况 API接送固定值  Approved Finished 特殊判定
+      let allPaneName = tab.paneName.trim()
+      if (allPaneName === 'allApproved') {
+        this.$refs.all.init('Approved')
+      } else {
+        this.$refs.all.init('Finished')
       }
     },
     changeTemp(value) {
@@ -185,6 +191,7 @@ export default {
 
 .resetEdge {
   position: absolute;
-  right: 20px;
+  right: 62px;
+  margin-top: 3px;
 }
 </style>

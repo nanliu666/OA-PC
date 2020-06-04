@@ -215,14 +215,20 @@ export default {
     },
     queryData(mentId) {
       queryDistribution({ recruitmentId: mentId }).then((res) => {
-        this.dynamicValidateForm.users = res.response
+        if (res.length !== 0) {
+          this.dynamicValidateForm.users = res.response
+        }
       })
     },
     handleClose() {
-      let itemArr = this.dynamicValidateForm.users.splice(0, 1)
-      itemArr[0].userId = null
-      this.dynamicValidateForm.users = itemArr
-      this.$emit('update:visible', false)
+      try {
+        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
+        itemArr[0].userId = null
+        this.dynamicValidateForm.users = itemArr
+        this.$emit('update:visible', false)
+      } catch (error) {
+        return error
+      }
     },
     addDomain() {
       this.calWhetherBeyond()
@@ -254,18 +260,22 @@ export default {
     },
     calWhetherBeyond() {
       var total = null
-      this.dynamicValidateForm.users.forEach((item, index) => {
-        this.dynamicValidateForm.users[index].operatorType = 'Update'
-        total += item.taskNum
-      })
-      if (total > this.Numberofpeople) {
-        this.$message({
-          showClose: true,
-          message: '请注意！ 需求总人数不能大于待分配人数',
-          type: 'error'
+      try {
+        this.dynamicValidateForm.users.forEach((item, index) => {
+          this.dynamicValidateForm.users[index].operatorType = 'Update'
+          total += item.taskNum
         })
+        if (total > this.Numberofpeople) {
+          this.$message({
+            showClose: true,
+            message: '请注意！ 需求总人数不能大于待分配人数',
+            type: 'error'
+          })
+        }
+        return total
+      } catch (error) {
+        return error
       }
-      return total
     }
   }
 }
