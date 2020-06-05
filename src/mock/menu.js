@@ -842,9 +842,9 @@ const res = {
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,
-            code: 'approval_apply',
-            alias: 'apply',
-            path: '/approval/apply',
+            code: 'approval_launchApply',
+            alias: 'launchApply',
+            path: '/approval/launchApply',
             icon: 'iconfont iconicon_compile'
           }
         ]

@@ -11,7 +11,7 @@
           v-for="(it, i) in info"
           :key="i"
           class="todo flex flex-justify-start "
-          @click="jump(it)"
+          @click="jump(it.formKey)"
         >
           <div class="images">
             <!--              <el-image-->
@@ -49,6 +49,18 @@ export default {
     this.getData()
   },
   methods: {
+    jump(formKey) {
+      if (formKey === this.showData[0]) {
+        this.$router.push({
+          path: '/personnel/administration/apply'
+        })
+      } else if (formKey === this.showData[1]) {
+        this.$router.push({
+          path: '/personnel/leave/applyLeave'
+        })
+      }
+      // /personnel/administration/apply
+    },
     getData() {
       getApprForm().then((res) => {
         // this.info = res
