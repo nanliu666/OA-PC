@@ -405,11 +405,13 @@ export default {
     this.isTalent = this.$route.query.isTalent
     await this.getRecruitment()
     this.personId && this.getPersonInfo()
+    this.$route.query.recruitmentId && (this.form.recruitmentId = this.$route.query.recruitmentId)
   },
   activated() {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
     this.personId && this.getPersonInfo()
+    this.$route.query.recruitmentId && (this.form.recruitmentId = this.$route.query.recruitmentId)
   },
   methods: {
     inputNumber(value, key) {
