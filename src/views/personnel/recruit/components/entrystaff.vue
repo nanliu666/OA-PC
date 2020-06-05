@@ -40,10 +40,9 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getRelationDemand } from '@/api/personnel/recruitment'
+import { getEntryDetails, getRecruitmentDetail } from '@/api/personnel/recruitment'
 export default {
-  name: 'Unassigned',
-  props: [],
+  name: 'Entrystaff',
   data() {
     return {
       childData: [],
@@ -115,26 +114,34 @@ export default {
     ...mapGetters(['userId'])
   },
   watch: {
-    childData: function(newval) {
-      this.status = newval
+    '$route.query.id': function(newval) {
+      if (newval) {
+        this.ReplicationCache(newval)
+      }
     }
   },
   mounted() {
-    this.getDemand()
+    if (typeof this.$route.query.id !== 'undefined') {
+      this.getData()
+      this.ReplicationCache(this.$route.query.id)
+    }
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
       this.EducationalLevel = res
     })
   },
   methods: {
-    handleEdit() {
-      this.$refs.Again.init(this.status)
+    jumpToDetail() {},
+    ReplicationCache(id) {
+      getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
+        this.data = res.data
+        this.page.total = res.totalPage
+      })
     },
-    getDemand() {
-      getRelationDemand({ recruitmentId: this.$route.query.id, userId: this.userId }).then(
-        (res) => {
-          this.data = res
-        }
-      )
+    getData() {
+      getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
+        this.user = res
+        this.childData = res
+      })
     },
     calcSex(sex) {
       let typeWord
@@ -168,11 +175,15 @@ export default {
       this.params.pageNo = 1
       this.page.pagerCount = 1
       this.getData()
+    },
+    ChangeContent() {
+      this.$router.push({
+        path: '/personnel/recruit/components/chang'
+      })
     }
   }
 }
 </script>
-
 <style lang="scss" scoped>
 /deep/ .top-menu {
   height: 0px;

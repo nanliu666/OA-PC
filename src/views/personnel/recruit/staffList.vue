@@ -57,6 +57,22 @@
           <Unassignedfrom :child-data="childData" />
         </el-tab-pane>
         <el-tab-pane
+          v-else-if="$route.query.status === 'Handled'"
+          label="分配信息"
+          name="inrecruitment"
+        >
+          <Introduce :status="childData" />
+          <h3 class="Header">
+            分配详情
+          </h3>
+          <distri-buteall />
+          <h3 class="Header">
+            已入职员工
+          </h3>
+          <Entrystaff />
+        </el-tab-pane>
+
+        <el-tab-pane
           v-else
           label="招聘进度"
           name="inrecruitment"
@@ -66,47 +82,18 @@
             <h3 class="Header">
               关联候选人
             </h3>
+            <el-button
+              size="medium"
+              @click="JumpCandidate(row)"
+            >
+              添加候选人
+            </el-button>
             <candidatepeople />
           </div>
           <h3 class="Header">
             已入职员工
           </h3>
-          <basic-container>
-            <common-table
-              :data="data"
-              :page="page"
-              :columns="columns"
-              :page-config="pageConfig"
-              :config="tableConfig"
-              @pageSizeChange="sizeChange"
-              @currentPageChange="currentChange"
-            >
-              <template
-                slot="name"
-                slot-scope="{ row }"
-              >
-                <el-button
-                  type="text"
-                  size="medium"
-                  @click="jumpToDetail(row.personId)"
-                >
-                  {{ row.name }}
-                </el-button>
-              </template>
-              <template
-                slot="sex"
-                slot-scope="{ row }"
-              >
-                {{ calcSex(row.sex) }}
-              </template>
-              <template
-                slot="educationalLevel"
-                slot-scope="{ row }"
-              >
-                {{ calcEducation(row.educationalLevel) }}
-              </template>
-            </common-table>
-          </basic-container>
+          <Entrystaff />
         </el-tab-pane>
 
         <el-tab-pane
@@ -121,18 +108,22 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getEntryDetails, getRecruitmentDetail } from '@/api/personnel/recruitment'
+import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 import Candidatepeople from './components/candidatepeople'
 import Introduce from './components/introduce'
 import Unassignedfrom from './components/unassigned'
 import DetailsDetails from './paging/details'
+import Entrystaff from './components/entrystaff'
+import DistriButeall from './components/Distributeall'
 export default {
   name: 'StaffList',
   components: {
     DetailsDetails,
     Unassignedfrom,
     Introduce,
-    Candidatepeople
+    Candidatepeople,
+    Entrystaff,
+    DistriButeall
   },
   data() {
     return {
@@ -151,119 +142,23 @@ export default {
         enableMultiSelect: false,
         enablePagination: true
       },
-      columns: [
-        {
-          label: '姓名',
-          prop: 'name',
-          slot: true
-        },
-        {
-          label: '性别',
-          prop: 'sex',
-          slot: true
-        },
-        {
-          label: '手机号码',
-          prop: 'phonenum'
-        },
-        {
-          label: '个人邮箱',
-          prop: 'email'
-        },
-
-        {
-          label: '毕业学校',
-          prop: 'university'
-        },
-        {
-          label: '工作年限',
-          prop: 'workAge'
-        },
-        {
-          label: '学历要求',
-          prop: 'educationalLevel',
-          slot: true
-        }
-      ],
-      params: {
-        pageNo: 1,
-        pageSize: 10
-      },
-      page: {
-        pageSize: 100,
-        pagerCount: 1,
-        total: 10
-      },
-      pageConfig: {
-        pageSizes: [10, 20, 30, 40, 50]
-      },
-      EducationalLevel: [],
       progress: 'Approved'
     }
   },
   computed: {
     ...mapGetters(['userId'])
   },
-  watch: {
-    '$route.query.id': function(newval) {
-      if (newval) {
-        this.ReplicationCache(newval)
-      }
+  mounted() {
+    if (typeof this.$route.query.id !== 'undefined') {
+      this.getData()
     }
   },
-  mounted() {
-    this.getData()
-    this.ReplicationCache(this.$route.query.id)
-    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
-      this.EducationalLevel = res
-    })
-  },
   methods: {
-    jumpToDetail() {},
-    ReplicationCache(id) {
-      getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
-        this.data = res.data
-        this.page.total = res.totalPage
-      })
-    },
     getData() {
       getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
         this.user = res
         this.childData = res
       })
-    },
-    calcSex(sex) {
-      let typeWord
-      let whoSex = [
-        { sex: 1, result: '男' },
-        { sex: 0, result: '女' }
-      ]
-      whoSex.forEach((item) => {
-        if (item.sex === sex) {
-          typeWord = item.result
-        }
-      })
-      return typeWord
-    },
-    calcEducation(educationalLevel) {
-      let typeLevel
-      this.EducationalLevel.forEach((item) => {
-        if (item.dictKey === educationalLevel) {
-          typeLevel = item.dictValue
-        }
-      })
-      return typeLevel
-    },
-    currentChange(val) {
-      this.params.pageNo = val
-      this.page.pagerCount = val
-      this.getData()
-    },
-    sizeChange(val) {
-      this.params.pageSize = val
-      this.params.pageNo = 1
-      this.page.pagerCount = 1
-      this.getData()
     },
     ChangeContent() {
       this.$router.push({
