@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import Mock from 'mockjs'
 
 const normalData = {
@@ -59,7 +61,7 @@ const json = {
     }
   ]
 }
-const approvalList = {
+const approvalList = Mock.mock({
   ...normalData,
   response: {
     id: '150165',
@@ -67,47 +69,79 @@ const approvalList = {
     version: '1.0.0',
     nodes: [
       {
-        id: '1',
+        id: '@increment',
         name: '部门主管',
         isStart: '0',
         isEnd: '0',
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: []
       },
       {
-        id: '2',
+        id: '@increment',
         name: '综合管理部',
         isStart: '0',
         isEnd: '0',
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: [
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          }
+        ]
       },
       {
-        id: '3',
+        id: '@increment',
         name: '控股负责人',
         isStart: '0',
         isEnd: '0',
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: [
+          {
+            id: '1',
+            name: '@cname',
+            workNo: '001'
+          }
+        ]
       },
       {
-        id: '4',
+        id: '@increment',
         name: '总裁',
         isStart: '0',
         isEnd: '0',
         parentId: '',
         childId: '',
         isEdit: false,
-        users: {}
+        users: []
       }
     ]
   }
+})
+
+const success = {
+  ...normalData,
+  response: {}
 }
 export default ({ mock }) => {
   if (!mock) return
@@ -116,6 +150,16 @@ export default ({ mock }) => {
   })
   Mock.mock(new RegExp('/appr/v1/appr/process' + '.*'), 'get', () => {
     return approvalList
+  })
+  Mock.mock(new RegExp('/appr/v1/appr/process' + '.*'), 'post', () => {
+    return success
+  })
+  Mock.mock(new RegExp('/appr/v1/appr/process' + '.*'), 'put', () => {
+    return success
+  })
+  Mock.mock(new RegExp('/appr/v1/appr/apply/submit' + '.*'), 'post', (options) => {
+    console.log('提交审批：', options.url, JSON.parse(options.body))
+    return success
   })
 }
 // /appr/v1/appr/process

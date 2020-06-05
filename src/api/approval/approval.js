@@ -24,3 +24,11 @@ export const putAppProcess = (params) => put('/appr/v1/appr/process', params)
  *
  */
 export const getApprForm = (params) => get('/appr/v1/appr/form', params)
+
+/**
+ * 审批申请提交接口
+ * @param {String} params
+ * */
+export const createApprApply = (params) => {
+  return post('/appr/v1/appr/apply/submit', params)
+}
