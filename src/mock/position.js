@@ -7,40 +7,6 @@ const normalData = {
   response: ''
 }
 
-const data = {
-  ...normalData,
-  response: {
-    totalNum: 20,
-    totalPage: 1,
-    data: [
-      {
-        categoryId: '1',
-        categoryName: '未分类',
-        jobNum: 5
-      },
-      {
-        categoryId: '2',
-        categoryName: '设计类',
-        jobNum: 4
-      },
-      {
-        categoryId: '3',
-        categoryName: '家具类',
-        jobNum: 4
-      },
-      {
-        categoryId: '4',
-        categoryName: '测试类',
-        jobNum: 4
-      },
-      {
-        id: '5',
-        categoryName: '前端类',
-        jobNum: 4
-      }
-    ]
-  }
-}
 let jod = {
   ...normalData,
   response: {
@@ -201,9 +167,6 @@ const station = {
 
 export default ({ mock }) => {
   if (!mock) return
-  Mock.mock(new RegExp('/api' + '.*'), 'get', () => {
-    return data
-  })
   Mock.mock(new RegExp('/api/org/v1/job/category/define' + '.*'), 'get', () => {
     return define
   })
