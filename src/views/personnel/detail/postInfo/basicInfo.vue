@@ -986,11 +986,11 @@ export default {
             obj[next.subOrgId] ? '' : (obj[next.subOrgId] = true && item.push(next))
             return item
           }, [])
-
+          debugger
           //判断subJob是否有重复的subJobId
           let preItemId = ''
           for (let i = 0; i < subJob.length; i++) {
-            if (preItemId == subJob[i].subJobId) {
+            if (subJob[i].subJobId && preItemId == subJob[i].subJobId) {
               repeatJobFlag = true
               break
             }

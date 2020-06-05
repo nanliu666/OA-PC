@@ -294,6 +294,7 @@
                   <el-input
                     v-model="adress.detailAdress"
                     class="detail-position"
+                    @blur="regionChange"
                   />
                 </el-form-item>
               </el-col>
