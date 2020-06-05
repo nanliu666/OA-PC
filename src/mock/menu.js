@@ -556,7 +556,7 @@ const res = {
             isShow: 0,
             code: 'personnel_editPerson',
             alias: 'recruit',
-            path: '/personnel/recruit/staffList',
+            path: '/personnel/recruit/specificPage',
             icon: 'iconfont iconicon_compile'
           },
           {

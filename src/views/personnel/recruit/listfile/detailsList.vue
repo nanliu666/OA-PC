@@ -337,7 +337,7 @@ export default {
         rotate = 'myUnHandle'
       }
       this.$router.push({
-        path: '/personnel/recruit/staffList',
+        path: '/personnel/recruit/specificPage',
         query: { id: row.id, rotate: rotate }
       })
     },

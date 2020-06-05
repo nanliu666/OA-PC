@@ -113,12 +113,8 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  watch: {
-    '$route.query.id': function(newval) {
-      if (newval) {
-        this.ReplicationCache(newval)
-      }
-    }
+  activated() {
+    this.ReplicationCache(this.$route.query.id)
   },
   mounted() {
     if (typeof this.$route.query.id !== 'undefined') {

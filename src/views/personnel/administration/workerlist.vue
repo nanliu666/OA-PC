@@ -356,9 +356,8 @@ export default {
       this.$refs.adjustEdit.init(row)
     },
     currentPageChange(param) {
-      let paramsInfo = {}
-      paramsInfo.pageNo = param
-      this.getTableData(paramsInfo)
+      this.page.currentPage = param
+      this.getTableData()
     },
     jumpToDetail(row) {
       this.$router.push({ path: '/personnel/detail', query: { userId: row.userId } })

@@ -101,12 +101,10 @@ export default {
       } else {
         this.$refs.personInfo.explainshow = false
       }
-    },
-    '$route.query.id': function(newval) {
-      if (newval) {
-        this.ReplicationCache(newval)
-      }
     }
+  },
+  activated() {
+    this.ReplicationCache(this.$route.query.id)
   },
   mounted() {
     this.getUseInformation()

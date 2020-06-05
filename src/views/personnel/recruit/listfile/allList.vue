@@ -454,7 +454,6 @@ export default {
       params.progress = this.params.progress
       return params
     },
-
     handleSubmit(params) {
       this.decorator()
       getAllRecruitment(params).then(() => {
@@ -473,7 +472,7 @@ export default {
         rotate = 'allUnHandle'
       }
       this.$router.push({
-        path: '/personnel/recruit/staffList',
+        path: '/personnel/recruit/specificPage',
         query: { id: id, status: status, rotate: rotate }
       })
     },

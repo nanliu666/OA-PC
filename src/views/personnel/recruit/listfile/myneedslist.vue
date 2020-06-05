@@ -327,7 +327,7 @@ export default {
         myneeds = 'end'
       }
       this.$router.push({
-        path: '/personnel/recruit/staffList',
+        path: '/personnel/recruit/specificPage',
         query: { id: id, myneeds: myneeds }
       })
     },
