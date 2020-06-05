@@ -17,10 +17,8 @@
         :page="page"
         :config="tableConfig"
         :columns="columns"
-        @pageSizeChange="sizeChange"
-        @currentPageChange="currentChange"
+        @page-size-change="sizeChange"
         @current-page-change="currentPageChange"
-        @page-size-change="currentPageChange"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">
@@ -271,10 +269,6 @@ export default {
           slot: true
         }
       ],
-      params: {
-        pageNo: 1,
-        pageSize: 10
-      },
       page: { currentPage: 1, size: 10, total: 0 },
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
@@ -289,7 +283,8 @@ export default {
   },
   methods: {
     getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+      if (typeof params === 'undefined') this.decorator(params)
+
       let nowData = moment()
         .locale('zh-cn')
         .format('YYYY-MM-DD')
@@ -360,13 +355,9 @@ export default {
       // }
       this.$refs.adjustEdit.init(row)
     },
-    currentPageChange(param) {
-      let paramsInfo = {}
-      paramsInfo.pageNo = param
-      this.getTableData(paramsInfo)
-    },
+
     jumpToDetail(row) {
-      this.$router.push(`/personnel/detail/${row.userId}`)
+      this.$router.push({ path: '/personnel/detail', query: { userId: row.userId } })
     },
     jumpApproval(Approvalcode) {
       return this.$message({
@@ -375,15 +366,19 @@ export default {
         type: 'warning'
       })
     },
-    sizeChange(val) {
-      this.params.pageSize = val
-      this.params.pageNo = 1
-      this.page.pagerCount = 1
+    decorator(params) {
+      params.pageNo = this.page.currentPage
+      params.pageSize = this.page.size
+      params.userId = this.userId
+      return params
+    },
+
+    currentPageChange(param) {
+      this.page.currentPage = param
       this.getTableData()
     },
-    currentChange(val) {
-      this.params.pageNo = val
-      this.page.pagerCount = val
+    sizeChange(pageSize) {
+      this.page.size = pageSize
       this.getTableData()
     }
   }

@@ -7,7 +7,7 @@
       :page-config="pageConfig"
       :config="tableConfig"
       @current-page-change="currentPageChange"
-      @page-size-change="currentPageChange"
+      @page-size-change="sizeChange"
     >
       <template slot="topMenu">
         <div class="flex-flow flex justify-content align-items ">
@@ -37,7 +37,7 @@
         <el-button
           type="text"
           size="medium"
-          @click="jumpToDetail(row.id)"
+          @click="jumpToDetail(row)"
         >
           {{ row.id }}
         </el-button>
@@ -82,13 +82,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import SearchPopover from '@/components/searchPopOver/index'
 import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 export default {
   name: 'DetailsList',
   components: {
-    SearchPopover
+    SearchPopover: () => import('@/components/searchPopOver/index')
   },
   data() {
     return {
@@ -330,8 +329,17 @@ export default {
         })
       })
     },
-    jumpToDetail(id) {
-      this.$router.push({ path: '/personnel/recruit/staffList', query: { id: id } })
+    jumpToDetail(row) {
+      let rotate
+      if (row.status === 'Handled') {
+        rotate = 'myHandled'
+      } else {
+        rotate = 'myUnHandle'
+      }
+      this.$router.push({
+        path: '/personnel/recruit/specificPage',
+        query: { id: row.id, rotate: rotate }
+      })
     },
     JumpNewlybuild(id) {
       this.$router.push({
@@ -339,11 +347,16 @@ export default {
         query: { id: id }
       })
     },
+
     currentPageChange(param) {
-      let paramsInfo = {}
-      paramsInfo.pageNo = param
-      this.getTableData(paramsInfo)
+      this.page.currentPage = param
+      this.getTableData()
     },
+    sizeChange(pageSize) {
+      this.page.size = pageSize
+      this.getTableData()
+    },
+
     getDictionarygroup() {
       this.setElement.forEach((item) => {
         this.$store.dispatch('CommonDict', item.choice).then((res) => {

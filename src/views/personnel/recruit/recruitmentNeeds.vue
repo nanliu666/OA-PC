@@ -52,8 +52,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CancelEdit from '@/views/personnel/recruit/details/cancelEdit'
-import InputArray from '@/views/personnel/candidate/components/inputArray.vue'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
@@ -62,8 +60,8 @@ import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 export default {
   name: 'RecruitmentNeeds',
   components: {
-    InputArray,
-    CancelEdit
+    CancelEdit: () => import('@/views/personnel/recruit/details/cancelEdit'),
+    InputArray: () => import('@/views/personnel/candidate/components/inputArray')
   },
   data() {
     return {
@@ -103,12 +101,10 @@ export default {
       } else {
         this.$refs.personInfo.explainshow = false
       }
-    },
-    '$route.query.id': function(newval, oldval) {
-      if (newval || oldval) {
-        this.ReplicationCache(newval)
-      }
     }
+  },
+  activated() {
+    this.ReplicationCache(this.$route.query.id)
   },
   mounted() {
     this.getUseInformation()
@@ -128,8 +124,15 @@ export default {
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
       this.dataFilter(res, this.NewRequirement, 'educationalLevel', 'dictValue', 'dictKey')
     })
+
+    this.SaveState()
   },
   methods: {
+    SaveState() {
+      if (typeof this.$route.query.id !== 'undefined') {
+        this.ReplicationCache(this.$route.query.id)
+      }
+    },
     onSubmit() {
       this.$refs.form.validate((valid) => {
         if (valid) {

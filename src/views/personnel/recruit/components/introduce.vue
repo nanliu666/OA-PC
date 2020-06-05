@@ -11,8 +11,17 @@
         class="frame"
       >
         <span class="demandSize"> 职位名称</span>
-        <span class="content">{{ user.positionName }}</span>
+        <span class="content">{{ user.jobName }}</span>
       </el-col>
+
+      <el-col
+        :span="8"
+        class="frame"
+      >
+        <span class="demandSize"> 到岗日期</span>
+        <span class="content">{{ user.joinDate }}</span>
+      </el-col>
+
       <el-col
         :span="8"
         class="frame"
@@ -44,6 +53,14 @@
         <span class="demandSize"> 招聘进度</span>
         <span class="content isBurl">{{ user.progress }}</span>
       </el-col>
+
+      <el-col
+        :span="8"
+        class="frame"
+      >
+        <span class="demandSize"> 候选人数</span>
+        <span class="content isBurl">{{ user.candidateNum }}</span>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -55,10 +72,12 @@ export default {
   data() {
     return {
       user: {
+        jobName: null,
         joinDate: null,
         userName: null,
         progress: null,
-        entryNum: null
+        entryNum: null,
+        candidateNum: null
       },
       emerType: []
     }
