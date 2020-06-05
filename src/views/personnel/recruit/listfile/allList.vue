@@ -477,9 +477,12 @@ export default {
       })
     },
     currentPageChange(param) {
-      let paramsInfo = {}
-      paramsInfo.pageNo = param
-      this.getTableData(paramsInfo)
+      this.page.currentPage = param
+      this.getTableData()
+    },
+    sizeChange(pageSize) {
+      this.page.size = pageSize
+      this.getTableData()
     },
     getDictionarygroup() {
       this.setElement.forEach((item) => {
@@ -546,10 +549,6 @@ export default {
           this.management = res
         }
       })
-    },
-    sizeChange(pageSize) {
-      this.page.size = pageSize
-      this.getTableData()
     },
     getPercent(curNum, totalNum) {
       curNum = parseFloat(curNum)

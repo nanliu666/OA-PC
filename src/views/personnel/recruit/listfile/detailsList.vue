@@ -7,7 +7,7 @@
       :page-config="pageConfig"
       :config="tableConfig"
       @current-page-change="currentPageChange"
-      @page-size-change="currentPageChange"
+      @page-size-change="sizeChange"
     >
       <template slot="topMenu">
         <div class="flex-flow flex justify-content align-items ">
@@ -347,11 +347,16 @@ export default {
         query: { id: id }
       })
     },
+
     currentPageChange(param) {
-      let paramsInfo = {}
-      paramsInfo.pageNo = param
-      this.getTableData(paramsInfo)
+      this.page.currentPage = param
+      this.getTableData()
     },
+    sizeChange(pageSize) {
+      this.page.size = pageSize
+      this.getTableData()
+    },
+
     getDictionarygroup() {
       this.setElement.forEach((item) => {
         this.$store.dispatch('CommonDict', item.choice).then((res) => {

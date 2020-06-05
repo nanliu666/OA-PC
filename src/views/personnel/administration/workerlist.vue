@@ -18,7 +18,7 @@
         :config="tableConfig"
         :columns="columns"
         @page-size-change="sizeChange"
-        @expand-change="recruitmentSituation"
+        @current-page-change="currentPageChange"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">
@@ -355,10 +355,7 @@ export default {
       // }
       this.$refs.adjustEdit.init(row)
     },
-    currentPageChange(param) {
-      this.page.currentPage = param
-      this.getTableData()
-    },
+
     jumpToDetail(row) {
       this.$router.push({ path: '/personnel/detail', query: { userId: row.userId } })
     },
@@ -376,15 +373,12 @@ export default {
       return params
     },
 
-    sizeChange(val) {
-      this.params.pageSize = val
-      this.params.pageNo = 1
-      this.page.pagerCount = 1
+    currentPageChange(param) {
+      this.page.currentPage = param
       this.getTableData()
     },
-    currentChange(val) {
-      this.params.pageNo = val
-      this.page.pagerCount = val
+    sizeChange(pageSize) {
+      this.page.size = pageSize
       this.getTableData()
     }
   }
