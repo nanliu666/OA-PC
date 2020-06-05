@@ -375,9 +375,7 @@ export default {
               required: false,
               trigger: 'blur',
               validator: (rule, value, callback) => {
-                if (!value) {
-                  callback(new Error('请输入邮箱'))
-                } else if (value && !isEmailReg(value)) {
+                if (value && !isEmailReg(value)) {
                   callback(new Error('邮箱格式有误'))
                 } else {
                   callback()
@@ -390,9 +388,7 @@ export default {
               required: false,
               trigger: 'blur',
               validator: (rule, value, callback) => {
-                if (!value) {
-                  callback(new Error('请输入银行卡号'))
-                } else if (value && !validataBankCard(value)) {
+                if (value && !validataBankCard(value)) {
                   callback(new Error('银行卡号格式有误'))
                 } else {
                   callback()
