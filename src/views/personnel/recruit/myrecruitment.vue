@@ -20,16 +20,17 @@
             name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
           />
         </el-tabs>
-        <detailsList ref="demand" />
+        <myneeds-list ref="demand" />
       </div>
     </basic-container>
   </div>
 </template>
 <script>
+import MyneedsList from './listfile/myneedslist'
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList: () => import('./listfile/myneedslist')
+    MyneedsList
   },
   data() {
     return {
@@ -41,7 +42,9 @@ export default {
   },
   methods: {
     opnDetails() {
-      this.$router.push({ path: '/personnel/recruit/recruitmentNeed' })
+      this.$router.push({
+        path: '/personnel/recruit/recruitmentNeeds'
+      })
     },
     handleClick(tab) {
       let paneName = tab.paneName.trim()
@@ -55,63 +58,6 @@ export default {
 <style lang="scss" scoped>
 /deep/ .el-radio-button__inner {
   border-radius: 4px !important;
-}
-.state {
-  display: flex;
-  padding: 0 6px;
-  margin-bottom: 10px;
-  .on {
-    flex: 4;
-    background: #ffffff;
-    border-radius: 4px;
-    margin-right: 20px;
-    display: flex;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      border-right: 1px solid #e3e7e9;
-      cursor: pointer;
-      .bottomBox {
-        height: 2px;
-        width: 68px;
-        background: #207efa;
-        margin: 0 auto;
-        margin-top: 28px;
-      }
-    }
-    :last-of-type {
-      border-right: 0;
-    }
-    .current {
-      color: #207efa;
-    }
-  }
-  .left {
-    flex: 1;
-    background: #ffffff;
-    border-radius: 4px;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      cursor: pointer;
-      .bottomBox {
-        height: 2px;
-        width: 68px;
-        background: #207efa;
-        margin: 0 auto;
-        margin-top: 28px;
-      }
-    }
-    .current {
-      color: #207efa;
-    }
-  }
 }
 
 .active {

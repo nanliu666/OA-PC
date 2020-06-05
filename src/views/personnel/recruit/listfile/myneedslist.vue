@@ -83,8 +83,6 @@ export default {
   },
   data() {
     return {
-      recruit: false,
-      change: true,
       searchConfig: {
         requireOptions: [
           {
@@ -321,9 +319,16 @@ export default {
       })
     },
     jumpToDetail(id) {
+      let myneeds
+      //  应用场景 ：如果是招聘中（Approved）打开候选人模块
+      if (this.params.progress === 'Approved') {
+        myneeds = 'myneeds'
+      } else {
+        myneeds = 'end'
+      }
       this.$router.push({
         path: '/personnel/recruit/staffList',
-        query: { id: id, myneeds: 'myneeds' }
+        query: { id: id, myneeds: myneeds }
       })
     },
 

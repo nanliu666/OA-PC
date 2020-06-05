@@ -62,10 +62,11 @@
           name="inrecruitment"
         >
           <Introduce :status="childData" />
-          <div>
+          <div v-if="$route.query.myneeds === 'myneeds'">
             <h3 class="Header">
               关联候选人
             </h3>
+            <candidatepeople />
           </div>
 
           <h3 class="Header">
@@ -122,15 +123,20 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getEntryDetails, getRecruitmentDetail } from '@/api/personnel/recruitment'
-import DetailsDetails from './paging/details'
-import Unassignedfrom from './components/unassigned'
+
+import Candidatepeople from './components/candidatepeople'
 import Introduce from './components/introduce'
 export default {
   name: 'StaffList',
   components: {
-    DetailsDetails,
-    Unassignedfrom,
-    Introduce
+    DetailsDetails: () => {
+      './paging/details'
+    },
+    Unassignedfrom: () => {
+      './components/unassigned'
+    },
+    Introduce,
+    Candidatepeople
   },
   data() {
     return {
@@ -221,6 +227,7 @@ export default {
     ReplicationCache(id) {
       getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
         this.data = res.data
+        this.page.total = res.totalPage
       })
     },
     getData() {
