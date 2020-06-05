@@ -68,7 +68,6 @@
             </h3>
             <candidatepeople />
           </div>
-
           <h3 class="Header">
             已入职员工
           </h3>
@@ -123,18 +122,15 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getEntryDetails, getRecruitmentDetail } from '@/api/personnel/recruitment'
-
 import Candidatepeople from './components/candidatepeople'
 import Introduce from './components/introduce'
+import Unassignedfrom from './components/unassigned'
+import DetailsDetails from './paging/details'
 export default {
   name: 'StaffList',
   components: {
-    DetailsDetails: () => {
-      './paging/details'
-    },
-    Unassignedfrom: () => {
-      './components/unassigned'
-    },
+    DetailsDetails,
+    Unassignedfrom,
     Introduce,
     Candidatepeople
   },
