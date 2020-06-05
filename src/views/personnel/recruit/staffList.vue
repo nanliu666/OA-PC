@@ -30,21 +30,7 @@
           <span class="nodetitle">到岗时间:</span>
           <span>{{ user.joinDate }}</span>
         </el-col>
-
-        <el-col :span="9">
-          <span class="nodetitle">状态:</span>
-          <span style="color: #207EFA">{{ status }}</span>
-        </el-col>
-        <el-col>
-          <el-button
-            style="float: right;margin-top: 8px ;"
-            size="medium"
-            type="primary"
-            @click="ChangeContent"
-          >
-            更改需求状态
-          </el-button>
-        </el-col>
+        <Buttongroup-from :child-data="childData" />
       </el-row>
     </basic-container>
     <basic-container>
@@ -81,13 +67,16 @@
           <div v-if="$route.query.myneeds === 'myneeds'">
             <h3 class="Header">
               关联候选人
+              <el-button
+                class="buttonPrimary"
+                type="primary"
+                size="medium"
+                @click="JumpCandidate(row)"
+              >
+                添加候选人
+              </el-button>
             </h3>
-            <el-button
-              size="medium"
-              @click="JumpCandidate(row)"
-            >
-              添加候选人
-            </el-button>
+
             <candidatepeople />
           </div>
           <h3 class="Header">
@@ -115,6 +104,7 @@ import Unassignedfrom from './components/unassigned'
 import DetailsDetails from './paging/details'
 import Entrystaff from './components/entrystaff'
 import DistriButeall from './components/Distributeall'
+import ButtongroupFrom from './components/buttongroup'
 export default {
   name: 'StaffList',
   components: {
@@ -123,7 +113,8 @@ export default {
     Introduce,
     Candidatepeople,
     Entrystaff,
-    DistriButeall
+    DistriButeall,
+    ButtongroupFrom
   },
   data() {
     return {
@@ -160,9 +151,10 @@ export default {
         this.childData = res
       })
     },
-    ChangeContent() {
+    JumpCandidate() {
       this.$router.push({
-        path: '/personnel/recruit/components/chang'
+        path: '/personnel/editPerson',
+        query: { recruitmentId: this.$route.query.id }
       })
     }
   }
@@ -176,11 +168,6 @@ export default {
   font-size: 18px;
 }
 
-.resetEdge {
-  position: absolute;
-  right: 62px;
-  margin-top: 3px;
-}
 .fullName {
   font-family: PingFangSC-Medium;
   font-size: 16px;
@@ -213,15 +200,6 @@ export default {
   color: #212a3f;
 }
 
-/deep/ .top-menu {
-  height: 0px;
-  margin-bottom: 0px;
-}
-
-/deep/ .basic-container {
-  margin: 10px 0;
-}
-
 .demandSize {
   display: block;
   font-size: 12px;
@@ -232,5 +210,9 @@ export default {
 
 .frame {
   border-right: solid 1px #ccc;
+}
+
+.buttonPrimary {
+  float: right;
 }
 </style>

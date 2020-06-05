@@ -75,7 +75,7 @@
           </el-col>
           <el-col
             :span="4"
-            class="taskInformation   isBlue  noborder"
+            class="taskInformation isBlue  noborder"
           >
             {{ getPercent(item.taskNum, item.entryNum) }}
           </el-col>
@@ -93,6 +93,7 @@ export default {
   props: [],
   data() {
     return {
+      loading: true,
       management: [],
       childData: [],
       user: {
@@ -167,5 +168,9 @@ export default {
   line-height: 20px;
   padding-left: 23px !important;
   border-right: 1px solid #ccc;
+}
+
+.isBlue {
+  color: #207efa !important;
 }
 </style>

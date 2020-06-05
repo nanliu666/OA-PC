@@ -11,7 +11,7 @@
         class="frame"
       >
         <span class="demandSize"> 职位名称</span>
-        <span class="content">{{ user.positionName }}</span>
+        <span class="content">{{ user.jobName }}</span>
       </el-col>
 
       <el-col
@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       user: {
+        jobName: null,
         joinDate: null,
         userName: null,
         progress: null,

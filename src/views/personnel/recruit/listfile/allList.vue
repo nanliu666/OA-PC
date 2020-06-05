@@ -466,7 +466,16 @@ export default {
     },
     jumpToDetail(row) {
       let { id, status } = row
-      this.$router.push({ path: '/personnel/recruit/staffList', query: { id: id, status: status } })
+      let rotate
+      if (row.status === 'Handled') {
+        rotate = 'allHandled'
+      } else {
+        rotate = 'allUnHandle'
+      }
+      this.$router.push({
+        path: '/personnel/recruit/staffList',
+        query: { id: id, status: status, rotate: rotate }
+      })
     },
     currentPageChange(param) {
       let paramsInfo = {}

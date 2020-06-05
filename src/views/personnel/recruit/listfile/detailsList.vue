@@ -37,7 +37,7 @@
         <el-button
           type="text"
           size="medium"
-          @click="jumpToDetail(row.id)"
+          @click="jumpToDetail(row)"
         >
           {{ row.id }}
         </el-button>
@@ -329,8 +329,17 @@ export default {
         })
       })
     },
-    jumpToDetail(id) {
-      this.$router.push({ path: '/personnel/recruit/staffList', query: { id: id } })
+    jumpToDetail(row) {
+      let rotate
+      if (row.status === 'Handled') {
+        rotate = 'myHandled'
+      } else {
+        rotate = 'myUnHandle'
+      }
+      this.$router.push({
+        path: '/personnel/recruit/staffList',
+        query: { id: row.id, rotate: rotate }
+      })
     },
     JumpNewlybuild(id) {
       this.$router.push({
