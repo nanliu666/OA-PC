@@ -7,8 +7,8 @@
         :columns="columns"
         :page-config="pageConfig"
         :config="tableConfig"
-        @pageSizeChange="sizeChange"
-        @currentPageChange="currentChange"
+        @page-size-change="sizeChange"
+        @current-page-change="currentPageChange"
       >
         <template
           slot="name"

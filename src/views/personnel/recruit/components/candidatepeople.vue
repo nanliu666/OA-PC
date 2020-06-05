@@ -7,8 +7,8 @@
         :columns="columns"
         :page-config="pageConfig"
         :config="tableConfig"
-        @pageSizeChange="sizeChange"
-        @currentPageChange="currentChange"
+        @page-size-change="sizeChange"
+        @expand-change="recruitmentSituation"
       >
         <template
           slot="name"
@@ -42,7 +42,7 @@
 import { mapGetters } from 'vuex'
 import { getRelationDemand } from '@/api/personnel/recruitment'
 export default {
-  name: 'Unassigned',
+  name: 'Candidatepeople',
   props: [],
   data() {
     return {

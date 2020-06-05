@@ -60,7 +60,7 @@
 <script>
 import Again from '@/views/personnel/recruit/details/again'
 export default {
-  name: 'Unassigned',
+  name: 'Buttongroup',
   components: {
     Again
   },

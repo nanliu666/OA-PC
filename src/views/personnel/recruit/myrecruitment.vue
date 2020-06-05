@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-import MyneedsList from './listfile/myneedslist'
+import MyneedsList from './listfile/myneedsList'
 export default {
   name: 'RecruitList',
   components: {

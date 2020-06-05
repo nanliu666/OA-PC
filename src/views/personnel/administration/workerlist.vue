@@ -17,8 +17,8 @@
         :page="page"
         :config="tableConfig"
         :columns="columns"
-        @pageSizeChange="sizeChange"
-        @currentPageChange="currentChange"
+        @page-size-change="sizeChange"
+        @expand-change="recruitmentSituation"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">

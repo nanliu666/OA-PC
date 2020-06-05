@@ -89,7 +89,7 @@ import { mapGetters } from 'vuex'
 
 import { queryDistribution } from '@/api/personnel/recruitment'
 export default {
-  name: 'Unassigned',
+  name: 'Distributeall',
   props: [],
   data() {
     return {
