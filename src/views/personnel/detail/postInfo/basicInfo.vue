@@ -796,6 +796,13 @@ export default {
     },
     saveInfo() {
       let jobOrg = this.changeSubOrg()
+      if (jobOrg.emptyJob) {
+        this.$message({
+          type: 'warn',
+          message: '附属职位不能为空'
+        })
+        return
+      }
       if (jobOrg.repeatJobFlag) {
         this.$message({
           type: 'warn',
@@ -958,19 +965,22 @@ export default {
       let subOrg = []
       let subJob = []
       let repeatJobFlag = false
+      let emptyJob = false
       if (func.notEmpty(this.staffInfo.subOrg)) {
         this.staffInfo.subOrg.forEach((item, index) => {
           //重构数据结构
-          let orgObj = {
-            subOrgId: item.subOrgId,
-            operatorType: item.operatorType ? item.operatorType : ''
+          if (item.subOrgId) {
+            let orgObj = {
+              subOrgId: item.subOrgId,
+              operatorType: item.operatorType ? item.operatorType : ''
+            }
+            let jobObj = {
+              subJobId: item.subJobId,
+              operatorType: item.operatorType ? item.operatorType : ''
+            }
+            subOrg.push(orgObj)
+            subJob.push(jobObj)
           }
-          let jobObj = {
-            subJobId: item.subJobId,
-            operatorType: item.operatorType ? item.operatorType : ''
-          }
-          subOrg.push(orgObj)
-          subJob.push(jobObj)
           //删除已有且未编辑的数据
           if (index < staffInfo.subOrg.length) {
             let itemOrg = staffInfo.subOrg[index]
@@ -994,6 +1004,10 @@ export default {
           //判断subJob是否有重复的subJobId
           let preItemId = ''
           for (let i = 0; i < subJob.length; i++) {
+            if (!subJob[i].subJobId) {
+              emptyJob = true
+              break
+            }
             if (subJob[i].subJobId && preItemId == subJob[i].subJobId) {
               repeatJobFlag = true
               break
@@ -1008,7 +1022,8 @@ export default {
       return {
         subOrg: subOrg,
         subJob: subJob,
-        repeatJobFlag: repeatJobFlag
+        repeatJobFlag: repeatJobFlag,
+        emptyJob: emptyJob
       }
     }
   }
