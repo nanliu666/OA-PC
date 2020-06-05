@@ -194,7 +194,7 @@ export default {
 
 <style lang="scss" scoped>
 .approval {
-  padding-left: 400px !important;
+  padding-left: 200px !important;
   position: relative;
 }
 

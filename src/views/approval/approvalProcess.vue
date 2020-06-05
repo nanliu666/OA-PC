@@ -12,10 +12,7 @@
           @click="jump(it)"
         >
           <div class="images">
-            <el-image
-              :src="it.iconUrl"
-              class="imgs"
-            />
+            <i class="imgs iconfont  icon-approval-checkin-bicolor" />
           </div>
           <div class="info">
             <div class="info-title">
@@ -132,9 +129,15 @@ export default {
     padding: 24px;
     .images {
       .imgs {
+        text-align: center;
+        line-height: 48px;
         height: 48px;
         width: 48px;
         border-radius: 50%;
+        display: inline-block;
+        font-size: 30px;
+        color: #fff;
+        background: #7ad683;
       }
       margin-right: 16px;
     }

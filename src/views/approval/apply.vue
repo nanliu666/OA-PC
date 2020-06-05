@@ -18,10 +18,7 @@
             <!--                :src="it.iconUrl"-->
             <!--                class="imgs"-->
             <!--              />-->
-            <i
-              class="imgs iconfont  menu-user-filled"
-              style="color:red"
-            />
+            <i class="imgs iconfont  icon-approval-checkin-bicolor" />
           </div>
           <div class="info">
             <div class="info-title">
@@ -57,7 +54,9 @@ export default {
         // this.info = res
         this.info = []
         res.map((it) => {
-          if (this.showData.includes(it.formKey)) this.info.push(it)
+          if (this.showData.includes(it.formKey)) {
+            this.info.push(it)
+          }
         })
       })
     }
@@ -82,13 +81,22 @@ export default {
     margin-bottom: 24px;
     padding: 24px;
     .images {
+      text-align: center;
+      display: inline-block;
+
+      /*overflow: hidden;*/
+      margin-right: 16px;
       .imgs {
+        text-align: center;
+        line-height: 48px;
         height: 48px;
         width: 48px;
         border-radius: 50%;
         display: inline-block;
+        font-size: 30px;
+        color: #fff;
+        background: #7ad683;
       }
-      margin-right: 16px;
     }
     .info {
       max-width: 232px;

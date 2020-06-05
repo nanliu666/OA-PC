@@ -20,6 +20,7 @@
             default-expand-all
             node-key="id"
             :props="props"
+            :default-checked-keys="checked"
             check-strictly
             :filter-node-method="filterNode"
             :check-on-click-node="true"
@@ -52,12 +53,14 @@
           class="info flex flex-justify-between flex-items"
         >
           <div class="flex flex-justify-between flex-items">
-            <el-image class="imgs" /> {{ item.name }}
+            <!--            <el-image class="imgs" />-->
+            <i class="iconfont  icon-approval-checkin-bicolor imgs" />
+            {{ item.name }}
           </div>
           <div class="icon">
             <i
               class="el-icon-error"
-              @click="handleUnselectAll()"
+              @click="handleUnselect(item)"
             />
           </div>
         </div>
@@ -91,6 +94,12 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    users: {
+      type: Array,
+      default: function() {
+        return []
+      }
     }
   },
   data() {
@@ -106,10 +115,18 @@ export default {
       selectList: [],
       oldSelectList: [],
       orgTree: [],
-      tagId: null
+      tagId: null,
+      checked: []
     }
   },
   watch: {
+    users: {
+      handler(val) {
+        val.map((it) => this.checked.push(it.id))
+        this.selectList = val
+      },
+      immediate: true
+    },
     filterText(val) {
       this.$refs.tree.filter(val)
     }
@@ -123,22 +140,12 @@ export default {
       return data.name && data.name.indexOf(value) !== -1
     },
     handleCheckChange(data, checked) {
-      if (checked) {
-        this.node = this.node === data ? {} : data
-        this.$refs.tree.setCheckedNodes([data])
-        this.selectList = [data]
-      } else {
-        if (this.node === data) {
-          this.node = {}
-          this.$refs.tree.setCheckedNodes([this.node])
-          this.selectList = [data]
-        }
-      }
-      // this.selectList = checked.checkedNodes.filter((i) => !i.children)
+      this.selectList = checked.checkedNodes.filter((i) => !i.children)
     },
     handleUnselect(item) {
       this.selectList = this.selectList.filter((i) => i.id != item.id)
       this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
+      // this.selectList
     },
     handleUnselectAll() {
       this.selectList = []
@@ -197,7 +204,7 @@ export default {
       return result
     },
     handleSubmit() {
-      this.$emit('addUser', this.selectList[0])
+      this.$emit('addUser', this.selectList)
       this.close()
     },
     resolveTree(tree) {
@@ -242,6 +249,8 @@ export default {
     border-left: 1px solid #f2f2f2;
     width: 40%;
     padding-left: 20px;
+    height: 470px;
+    overflow-y: auto;
     .title {
       line-height: 40px;
     }
@@ -258,6 +267,7 @@ export default {
 }
 .info {
   width: 98%;
+  margin: 10px 0;
   .icon:hover {
     color: #207efa;
   }
@@ -265,7 +275,13 @@ export default {
 .imgs {
   height: 30px;
   width: 30px;
+  display: inline-block;
   border-radius: 48px;
   margin-right: 10px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 18px;
+  background: #207efa;
+  color: #fff;
 }
 </style>
