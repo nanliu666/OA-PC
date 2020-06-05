@@ -62,6 +62,12 @@
           name="inrecruitment"
         >
           <Introduce :status="childData" />
+          <div>
+            <h3 class="Header">
+              关联候选人
+            </h3>
+          </div>
+
           <h3 class="Header">
             已入职员工
           </h3>

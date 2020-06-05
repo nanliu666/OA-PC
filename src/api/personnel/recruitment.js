@@ -54,7 +54,6 @@ export const getJobInfo = (params) => {
 export const getPost = () => {
   return get('/org/v1/position/define')
 }
-
 /**
  *  招聘任务分配接口
  * @param {String} recruitmentId - 招聘需求ID
@@ -84,6 +83,7 @@ export const putDistribution = (params) => {
   return put('/user/v1/recruitment/task', params)
 }
 
+/*************  入职员工多个状态都需要用到 ***************** */
 /**
  *  需求关联的入职员工查询接口 查询招聘任务已经入职员工列表
  * @param {String} recruitmentId - 招聘需求ID
@@ -99,8 +99,19 @@ export const getEntryDetails = (params) => {
 /**
  *  我的招聘需求筛选接口
  * @param {String} recruitmentId - 招聘需求ID
- * @param {array} userId - 	招聘人员ID
+ * @param {array} users - 申请公司ID
+ * @param {String}users.userId -指定招聘人员ID
+ *  @param {String} users.taskNum -	招聘任务数
  * */
 export const setRecruitment = (params) => {
   return post('/user/v1/recruitment/my/list', params)
+}
+
+/**
+ *  需求关联的候选人查询接口  进入页面时关联招聘需求
+ * @param {String} recruitmentId - 招聘需求ID
+ * @param {array} userId - 指定招聘人员ID
+ */
+export const getCandidate = (params) => {
+  return post('/user/v1/recruitment/candidate/list', { ...params })
 }

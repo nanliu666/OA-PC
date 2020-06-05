@@ -2,25 +2,8 @@
   <div>
     <page-header class="pageHeader">
       <div slot="title">
-        <span
-          :class="{ active: Select }"
-          @click="changeTemp"
-        >我提交的招聘需求</span>
-        <span style=" margin: 0 20px">|</span>
-        <span
-          :class="{ active: doNotsave }"
-          @click="changeTemp('all')"
-        >全部招聘需求</span>
+        <span>我的招聘需求</span>
       </div>
-      <el-button
-        slot="rightMenu"
-        class="newlyDemand"
-        size="medium"
-        type="primary"
-        @click="opnDetails"
-      >
-        新建招聘需求
-      </el-button>
     </page-header>
     <basic-container>
       <div v-show="Select">
@@ -39,38 +22,18 @@
         </el-tabs>
         <detailsList ref="demand" />
       </div>
-
-      <div v-show="doNotsave">
-        <el-tabs
-          v-model="allActiveName"
-          @tab-click="allHandleClick"
-        >
-          <el-tab-pane
-            label="招聘中"
-            name="allApproved"
-          />
-          <el-tab-pane
-            label="已结束"
-            name="allFinished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
-          />
-        </el-tabs>
-        <All-list ref="all" />
-      </div>
     </basic-container>
   </div>
 </template>
 <script>
-import DetailsList from './listfile/detailsList'
-import AllList from './listfile/allList'
+import DetailsList from './listfile/myneedslist'
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList,
-    AllList
+    DetailsList
   },
   data() {
     return {
-      doNotsave: false,
       Select: true,
       choice: 'my',
       activeName: 'Approved',
@@ -94,15 +57,6 @@ export default {
         this.$refs.all.init('Approved')
       } else {
         this.$refs.all.init('Finished')
-      }
-    },
-    changeTemp(value) {
-      if (value === 'all') {
-        this.Select = false
-        this.doNotsave = true
-      } else {
-        this.Select = true
-        this.doNotsave = false
       }
     }
   }
