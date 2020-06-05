@@ -69,7 +69,7 @@ const user = {
               .filter((node) => node.isOwn === 1 && node.menuType === 'Button')
               .map((item) => item.path)
           )
-          resolve()
+          resolve(menuAll)
         })
       })
     },
