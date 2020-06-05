@@ -502,6 +502,7 @@ export default {
         complete() {
           that.uploading = false
           that.$message.success('上传成功')
+          this.getUserAllInfo()
           that.uploadPercent = 0
         }
       })

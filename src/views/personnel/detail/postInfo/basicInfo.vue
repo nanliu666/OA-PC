@@ -881,7 +881,7 @@ export default {
       if (item.operatorType == 'Add') {
         this.staffInfo.subOrg.splice(index, 1)
       } else {
-        let params = {
+        /* let params = {
           userId: this.$route.params.userId,
           subOrg: [
             {
@@ -898,11 +898,16 @@ export default {
         }
         editStaffBasicInfo(params).then(() => {
           staffInfo = deepClone(this.staffInfo)
-          this.$message({
-            type: 'success',
-            message: '删除成功'
-          })
           this.getStaffinfo()
+        }) */
+        this.staffInfo.subOrg.splice(index, 1)
+        this.delSubOrgJob.subOrg.push({
+          subOrgId: item.subOrgId,
+          operatorType: 'Del'
+        })
+        this.delSubOrgJob.subJob.push({
+          subJobId: item.subJobId,
+          operatorType: 'Del'
         })
       }
     },
@@ -986,7 +991,6 @@ export default {
             obj[next.subOrgId] ? '' : (obj[next.subOrgId] = true && item.push(next))
             return item
           }, [])
-          debugger
           //判断subJob是否有重复的subJobId
           let preItemId = ''
           for (let i = 0; i < subJob.length; i++) {
