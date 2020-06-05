@@ -74,13 +74,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import SearchPopover from '@/components/searchPopOver/index'
-import { getAllRecruitment, getPost } from '@/api/personnel/recruitment'
+import { setRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 export default {
   name: 'DetailsList',
   components: {
-    SearchPopover
+    SearchPopover: () => import('@/components/searchPopOver/index')
   },
   data() {
     return {
@@ -299,7 +298,7 @@ export default {
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
       this.decorator(params)
-      getAllRecruitment(params).then((res) => {
+      setRecruitment(params).then((res) => {
         this.data = res.data
         this.page.total = res.totalPage
       })
@@ -314,7 +313,7 @@ export default {
 
     handleSubmit(params) {
       this.decorator(params)
-      getAllRecruitment(params).then(() => {
+      setRecruitment(params).then(() => {
         this.$message({
           message: '操作成功',
           type: 'success'
@@ -343,7 +342,7 @@ export default {
     JumpCandidate(row) {
       this.$router.push({
         path: '/personnel/editPerson',
-        query: { recruitmentId: row.id, userId: this.userId }
+        query: { recruitmentId: row.id }
       })
     }
   }

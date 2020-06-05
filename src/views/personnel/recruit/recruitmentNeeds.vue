@@ -52,8 +52,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CancelEdit from '@/views/personnel/recruit/details/cancelEdit'
-import InputArray from '@/views/personnel/candidate/components/inputArray.vue'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
@@ -62,8 +60,8 @@ import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 export default {
   name: 'RecruitmentNeeds',
   components: {
-    InputArray,
-    CancelEdit
+    CancelEdit: () => import('@/views/personnel/recruit/details/cancelEdit'),
+    InputArray: () => import('@/views/personnel/candidate/components/inputArray')
   },
   data() {
     return {

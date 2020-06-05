@@ -26,11 +26,10 @@
   </div>
 </template>
 <script>
-import DetailsList from './listfile/myneedslist'
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList
+    DetailsList: () => import('./listfile/myneedslist')
   },
   data() {
     return {
@@ -42,21 +41,12 @@ export default {
   },
   methods: {
     opnDetails() {
-      this.$router.push('/personnel/recruit/recruitmentNeeds')
+      this.$router.push({ path: '/personnel/recruit/recruitmentNeed' })
     },
     handleClick(tab) {
       let paneName = tab.paneName.trim()
       if (paneName === 'Finished' || paneName === 'Approved') {
         this.$refs.demand.init(paneName)
-      }
-    },
-    allHandleClick(tab) {
-      // 特殊情况 API接送固定值  Approved Finished 特殊判定
-      let allPaneName = tab.paneName.trim()
-      if (allPaneName === 'allApproved') {
-        this.$refs.all.init('Approved')
-      } else {
-        this.$refs.all.init('Finished')
       }
     }
   }

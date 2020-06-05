@@ -82,13 +82,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import SearchPopover from '@/components/searchPopOver/index'
 import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 export default {
   name: 'DetailsList',
   components: {
-    SearchPopover
+    SearchPopover: () => import('@/components/searchPopOver/index')
   },
   data() {
     return {

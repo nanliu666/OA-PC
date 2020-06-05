@@ -106,12 +106,3 @@ export const getEntryDetails = (params) => {
 export const setRecruitment = (params) => {
   return post('/user/v1/recruitment/my/list', params)
 }
-
-/**
- *  需求关联的候选人查询接口  进入页面时关联招聘需求
- * @param {String} recruitmentId - 招聘需求ID
- * @param {array} userId - 指定招聘人员ID
- */
-export const getCandidate = (params) => {
-  return post('/user/v1/recruitment/candidate/list', { ...params })
-}

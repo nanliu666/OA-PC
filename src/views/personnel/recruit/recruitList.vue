@@ -60,13 +60,11 @@
   </div>
 </template>
 <script>
-import DetailsList from './listfile/detailsList'
-import AllList from './listfile/allList'
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList,
-    AllList
+    DetailsList: () => import('./listfile/detailsList'),
+    AllList: () => import('./listfile/allList')
   },
   data() {
     return {
