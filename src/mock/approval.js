@@ -76,7 +76,28 @@ const approvalList = Mock.mock({
         parentId: '',
         childId: '',
         isEdit: false,
-        users: []
+        users: [
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          }
+        ]
       },
       {
         id: '@increment',
@@ -133,7 +154,28 @@ const approvalList = Mock.mock({
         parentId: '',
         childId: '',
         isEdit: false,
-        users: []
+        users: [
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          },
+          {
+            id: '@increment',
+            name: '@cname',
+            workNo: '@increment'
+          }
+        ]
       }
     ]
   }

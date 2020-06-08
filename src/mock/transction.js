@@ -36,11 +36,11 @@ export default ({ mock }) => {
       }
     }
   })
-  //人事筛选
+  //人事异动申请提交
   Mock.mock(new RegExp('/api/user/v1/user/change/info' + '.*'), 'post', () => {
     return {
       response: {
-        response: 'ok'
+        id: 1233
       }
     }
   })
