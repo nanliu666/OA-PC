@@ -9,29 +9,37 @@
       <!-- 申请信息 -->
       <div class="apply-info-wrap">
         <div class="title">
-          黄浩提交的录用申请
+          {{ ApplyInfo.userName }}提交的{{ title }}
         </div>
         <div class="info">
           <div class="num-box">
-            <div>审批编号：</div>
-            <div>{{ ApplyInfo.apprNo }}</div>
+            <div>
+              <div>审批编号：</div>
+              <div>{{ ApplyInfo.apprNo }}</div>
+            </div>
           </div>
           <div class="apply-user-box">
-            <div>申请人：</div>
-            <div>{{ ApplyInfo.userName }}</div>
+            <div>
+              <div>申请人：</div>
+              <div>{{ ApplyInfo.userName }}</div>
+            </div>
           </div>
           <div class="apply-time">
-            <div>申请时间：</div>
-            <div>{{ ApplyInfo.applyTime }}</div>
+            <div>
+              <div>申请时间：</div>
+              <div>{{ ApplyInfo.applyTime }}</div>
+            </div>
           </div>
           <div class="apply-status">
-            <div>状态</div>
-            <div>{{ ApplyInfo.status | filterstatus }}</div>
+            <div>
+              <div>状态</div>
+              <div>{{ ApplyInfo.status | filterstatus }}</div>
+            </div>
           </div>
         </div>
       </div>
     </basic-container>
-    <!-- 申请详情标题 -->
+    <!-- 审批详情标题 -->
     <basic-container class="apply-detail-title">
       <div
         class="title-box"
@@ -40,33 +48,641 @@
         <div class="title">
           审批详情
         </div>
-        <div class="btn-box">
+        <div
+          v-if="show"
+          class="btn-box"
+        >
           <i
-            class="el-icon-arrow-up"
+            class="el-icon-arrow-up icon"
             style="margin-right:12px"
           /> 收起
         </div>
+        <div
+          v-else
+          class="btn-box"
+        >
+          <i
+            class="el-icon-arrow-down icon"
+            style="margin-right:12px"
+          /> 打开
+        </div>
       </div>
     </basic-container>
-    <!-- 申请详情 -->
+    <!-- 审批详情 -->
     <transition name="show">
       <basic-container
         v-show="show"
         class="apply-detail"
       >
-        <!-- 基础信息 -->
-        <div class="Basics-box" />
+        <!-- 招聘审批详情 -->
+        <div
+          v-if="apprInfo.formKey === 'Recruitment'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>部门名称 :</div>
+            <div>{{ applyData.orgName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>职位名称 :</div>
+            <div>{{ applyData.jobName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>岗位名称 :</div>
+            <div>{{ applyData.positionName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作性质 :</div>
+            <div>{{ applyData.workProperty | CommonDictType(WorkProperty) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>紧急程度 :</div>
+            <div>{{ applyData.emerType | CommonDictType(EmerType) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>需求人数 :</div>
+            <div>{{ applyData.needNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>已入职人数 :</div>
+            <div>{{ applyData.entryNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>候选人数 :</div>
+            <div>{{ applyData.candidateNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>到岗日期 :</div>
+            <div>{{ applyData.joinDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作年限 :</div>
+            <div>{{ applyData.workYear | CommonDictType(WorkYear) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>学历要求 :</div>
+            <div>{{ applyData.educationalLevel | CommonDictType(EducationalLevel) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>最低薪酬 :</div>
+            <div>{{ applyData.minSalary }} 元</div>
+          </div>
+          <div class="detail-item">
+            <div>最高薪酬 :</div>
+            <div>{{ applyData.maxSalary }} 元</div>
+          </div>
+          <div class="detail-item">
+            <div>职位要求 :</div>
+            <div>{{ applyData.requirement }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作职责 :</div>
+            <div>{{ applyData.duty }}</div>
+          </div>
+          <div class="detail-item">
+            <div>招聘原因 :</div>
+            <div>{{ applyData.reason | CommonDictType(RecruitmentReason) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>原因补充说明 :</div>
+            <div>{{ applyData.reasonNote }}</div>
+          </div>
+
+          <div class="detail-item">
+            <div>申请理由 :</div>
+            <div>{{ applyData.remark }}</div>
+          </div>
+          <div class="detail-item">
+            <div>提交人姓名 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>公司名称 :</div>
+            <div>{{ applyData.companyName }}</div>
+          </div>
+        </div>
+
+        <!-- 录用审批详情 -->
+        <div
+          v-else-if="apprInfo.formKey === 'PersonOfferApply'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>预计入职日期 :</div>
+            <div>{{ applyData.entryDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>试用期 :</div>
+            <div>{{ applyData.probation }} 月</div>
+          </div>
+          <div class="detail-item">
+            <div>入职公司名称 :</div>
+            <div>{{ applyData.companyName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>部门名称 :</div>
+            <div>{{ applyData.orgName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>职位名称 :</div>
+            <div>{{ applyData.jobName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>岗位名称 :</div>
+            <div>{{ applyData.positionName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作性质 :</div>
+            <div>{{ applyData.workProperty | CommonDictType(WorkProperty) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>省份编码 :</div>
+            <div>{{ applyData.provinceCode }}</div>
+          </div>
+          <div class="detail-item">
+            <div>省份名称 :</div>
+            <div>{{ applyData.provinceName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>地市编码 :</div>
+            <div>{{ applyData.cityCode }}</div>
+          </div>
+          <div class="detail-item">
+            <div>地市名称 :</div>
+            <div>{{ applyData.cityName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>区县编码 :</div>
+            <div>{{ applyData.countyCode }}</div>
+          </div>
+          <div class="detail-item">
+            <div>区县名称 :</div>
+            <div>{{ applyData.countyName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>详细地址 :</div>
+            <div>{{ applyData.address }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作省份编码 :</div>
+            <div>{{ applyData.workProvinceCode }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作省份名称 :</div>
+            <div>{{ applyData.workProviceName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作地市编码 :</div>
+            <div>{{ applyData.workCityCode }}</div>
+          </div>
+          <div class="detail-item">
+            <div>工作地市名称 :</div>
+            <div>{{ applyData.workCityName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>试用期月薪 :</div>
+            <div>{{ applyData.probationSalary }} 元</div>
+          </div>
+          <div class="detail-item">
+            <div>转正月薪 :</div>
+            <div>{{ applyData.formalSalary }} 元</div>
+          </div>
+          <div class="detail-item">
+            <div>合同类型 :</div>
+            <div>{{ applyData.contractType | CommonDictType(ContractType) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同开始日期 :</div>
+            <div>{{ applyData.contractBeginDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同结束日期 :</div>
+            <div>{{ applyData.contractEndDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同期限 :</div>
+            <div>{{ applyData.contractPeriod }} 年</div>
+          </div>
+          <div class="detail-item">
+            <div>是否缴纳社会保险 :</div>
+            <div>{{ applyData.isShbx | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>社会保险基数 :</div>
+            <div>{{ applyData.baseMoney }} 元</div>
+          </div>
+          <div class="detail-item">
+            <div>是否缴纳养老保险 :</div>
+            <div>{{ applyData.isYangl | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>是否缴纳医疗保险 :</div>
+            <div>{{ applyData.isYil | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>是否缴纳工伤保险 :</div>
+            <div>{{ applyData.isGs | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>是否缴纳失业保险 :</div>
+            <div>{{ applyData.isShiy | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>是否缴纳生育保险 :</div>
+            <div>{{ applyData.isShengy | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>是否缴纳住房公积金 :</div>
+            <div>{{ applyData.isGjj | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>办公位安排 :</div>
+            <div>{{ applyData.officeSpace }}</div>
+          </div>
+          <div class="detail-item">
+            <div>电话配备 :</div>
+            <div>{{ applyData.telphone }}</div>
+          </div>
+          <div class="detail-item">
+            <div>是否电脑配备 :</div>
+            <div>{{ applyData.isComputer | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>其他 :</div>
+            <div>{{ applyData.other }}</div>
+          </div>
+          <div class="detail-item">
+            <div>是否安排住房 :</div>
+            <div>{{ applyData.isHouse | isOrNo }}</div>
+          </div>
+          <div class="detail-item">
+            <div>住房标准 :</div>
+            <div>{{ applyData.houseStandard }}</div>
+          </div>
+          <div class="detail-item">
+            <div>备注 :</div>
+            <div>{{ applyData.remark }}</div>
+          </div>
+          <div class="detail-item">
+            <div>提交人姓名 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+        </div>
+
+        <!-- 转正审批详情 -->
+        <div
+          v-else-if="apprInfo.formKey === 'UserFormalInfo'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>用户 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>试用期工作总结 :</div>
+            <div>{{ applyData.summary }}</div>
+          </div>
+          <div class="detail-item">
+            <div>对公司的意见和建议 :</div>
+            <div>{{ applyData.advise }}</div>
+          </div>
+          <div class="detail-item">
+            <div>入职日期 :</div>
+            <div>{{ applyData.entryDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>转正日期 :</div>
+            <div>{{ applyData.formalDate }}</div>
+          </div>
+          <div class="detail-item" />
+        </div>
+        <!-- 员工合同续签审批详情 -->
+        <div
+          v-else-if="apprInfo.formKey === 'UserContractInfo'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>用户名称 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同编号 :</div>
+            <div>{{ applyData.code }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同公司 :</div>
+            <div>{{ applyData.name }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同类型 :</div>
+            <div>{{ applyData.type | CommonDictType(ContractType) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同开始日期 :</div>
+            <div>{{ applyData.beginDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同结束日期 :</div>
+            <div>{{ applyData.endDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>签订合同日期 :</div>
+            <div>{{ applyData.signDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>合同期限 :</div>
+            <div>{{ applyData.period }} 年</div>
+          </div>
+          <div class="detail-item">
+            <div>备注 :</div>
+            <div>{{ applyData.remark }}</div>
+          </div>
+          <div class="detail-item" />
+        </div>
+
+        <!-- 员工离职信息审批详情 -->
+        <div
+          v-else-if="apprInfo.formKey === 'UserLeaveInfo'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>用户名称 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>最后工作日期 :</div>
+            <div>{{ applyData.lastDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>申请离职日期 :</div>
+            <div>{{ applyData.applyDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>实际离职日期 :</div>
+            <div>{{ applyData.leaveDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>离职原因 :</div>
+            <div>{{ applyData.reason | CommonDictType(LeaveReason) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>离职原因说明 :</div>
+            <div>{{ applyData.remark }}</div>
+          </div>
+
+          <div class="detail-item" />
+        </div>
+
+        <!-- 人事异动申请审批详情 -->
+        <div
+          v-else-if="apprInfo.formKey === 'UserChangeInfo'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>用户名称 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>异动类型 :</div>
+            <div>{{ applyData.type | changeType }}</div>
+          </div>
+          <div class="detail-item">
+            <div>异动原因 :</div>
+            <div>{{ applyData.reason | CommonDictType(ChangeReason) }}</div>
+          </div>
+          <div class="detail-item">
+            <div>原公司名称 :</div>
+            <div>{{ applyData.companyName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>原部门名称 :</div>
+            <div>{{ applyData.orgName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>原职位名称 :</div>
+            <div>{{ applyData.jobName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>原岗位名称 :</div>
+            <div>{{ applyData.positionName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>新公司名称 :</div>
+            <div>{{ applyData.newCompanyName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>新部门名称 :</div>
+            <div>{{ applyData.newOrgName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>新职位名称 :</div>
+            <div>{{ applyData.newJobName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>新岗位名称 :</div>
+            <div>{{ applyData.newPositionName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>生效日期 :</div>
+            <div>{{ applyData.effectDate }}</div>
+          </div>
+          <div class="detail-item">
+            <div>备注 :</div>
+            <div>{{ applyData.remark }}</div>
+          </div>
+
+          <div class="detail-item" />
+        </div>
       </basic-container>
     </transition>
+
+    <basic-container>
+      <!-- 流程进度 -->
+      <div class="progress-wrap">
+        <div class="progress-wrap-title">
+          流程进度
+        </div>
+        <div>
+          <el-steps
+            :active="activeStep"
+            align-center
+          >
+            <!-- <el-step>
+							自定义图标
+							<template slot="icon">
+								<div class="icon active"></div>
+							</template>
+							自定义标题
+							<template slot="title">
+								<div class="title">提交用户申请</div>
+							</template>
+							自定义内容
+							<template slot="description">
+								<div class="description-box">
+									<div>王浩</div>
+									<div>2008-0808</div>
+									<div class="isUrge">催一下 <i class="el-icon-bell"></i></div>
+								</div>
+							</template>
+						</el-step> -->
+            <el-step
+              v-for="(item, index) in progressList"
+              :key="item.id"
+            >
+              <!-- 自定义图标 -->
+              <template slot="icon">
+                <div
+                  class="icon "
+                  :class="{ active: index >= activeStep ? false : true }"
+                />
+              </template>
+              <!-- 自定义标题 -->
+              <template slot="title">
+                <div class="title">
+                  {{ item.name }}
+                </div>
+              </template>
+              <!-- 自定义内容 -->
+              <template slot="description">
+                <div class="description-box">
+                  <div>{{ item.userName }}</div>
+                  <div>{{ item.approveTime }}</div>
+                  <div
+                    v-if="item.isUrge"
+                    class="isUrge"
+                  >
+                    催一下 <i class="el-icon-bell" />
+                  </div>
+                </div>
+              </template>
+            </el-step>
+          </el-steps>
+        </div>
+      </div>
+
+      <!-- 审批记录 -->
+      <div class="record-wrap">
+        <div class="record-wrap-title">
+          审批记录
+        </div>
+        <div>
+          <el-steps
+            direction="vertical"
+            align-center
+          >
+            <!-- <el-step>
+							自定义图标
+							<template slot="icon">
+								<div class="icon active"></div>
+							</template>
+							自定义标题
+							<template slot="title">
+								<div class="title">部门主管 一人审批</div>
+							</template>
+							自定义内容
+							<template slot="description">
+								<div class="description-box">
+									<div class="img-box">
+										<img
+											src=""
+											alt=""
+										/>
+									</div>
+
+									<div class="detail-box">
+										<div>权育 <span>审批中</span></div>
+										<div>部门主管</div>
+									</div>
+								</div>
+							</template>
+						</el-step> -->
+            <el-step
+              v-for="(item, index) in recordList"
+              :key="item.id"
+            >
+              <!-- 自定义图标 -->
+              <template slot="icon">
+                <div class="icon active" />
+              </template>
+              <!-- 自定义标题 -->
+              <template slot="title">
+                <div class="title">
+                  {{ item.name }}
+                </div>
+              </template>
+              <!-- 自定义内容 -->
+              <template slot="description">
+                <div class="description-box">
+                  <div class="img-box">
+                    <img
+                      src=""
+                      alt=""
+                    >
+                  </div>
+
+                  <div class="detail-box">
+                    <div>
+                      {{ item.userName
+                      }}<span
+                        v-if="index == recordList.length - 1"
+                        class="initiateAppl"
+                      >发起审批</span>
+                      <span
+                        v-else-if="item.result === 'Pass'"
+                        class="isPass"
+                      >通过</span><span
+                        v-else-if="item.result === 'Reject'"
+                        class="isReject"
+                      >拒绝</span>
+                      <span
+                        v-else
+                        class="appring"
+                      >审批中</span>
+                    </div>
+                    <div>{{ item.jobName }}</div>
+                  </div>
+                </div>
+              </template>
+            </el-step>
+          </el-steps>
+        </div>
+      </div>
+
+      <div class="cancel-btn-box">
+        <el-button
+          type="primary"
+          size="medium"
+          @click="handelcancel"
+        >
+          撤回
+        </el-button>
+      </div>
+    </basic-container>
   </div>
 </template>
 
 <script>
-import { getApplyDetail } from '@/api/approval/approval'
+import {
+  getApplyDetail,
+
+  // 审批详情
+  getRecruitmentApply,
+  getOfferApply,
+  getOperationApply,
+  getContractApply,
+  getLeaveApply,
+  getChangeApply,
+  // 流程进度和审批记录
+  getApplyRecord,
+  // 撤回
+  cancelApply
+} from '@/api/approval/approval'
+
 export default {
   filters: {
     // 过滤审批状态
     filterstatus: (status) => {
+      if (!status) return ''
       if (status === 'Approve') {
         return '审批中'
       } else if (status === 'Pass') {
@@ -75,6 +691,37 @@ export default {
         return '已拒绝'
       } else if (status === 'Cancel') {
         return '已撤回'
+      }
+    },
+    // 字典组过滤 根据 dictKey =》 dictValue
+    // CommonDictarr字典组数组
+    CommonDictType: (value, CommonDictarr) => {
+      if (!value) return ''
+      let result = ''
+      CommonDictarr.forEach((item) => {
+        if (item.dictKey == value.trim()) {
+          result = item.dictValue
+          return
+        }
+      })
+
+      return result
+    },
+    // 根据0  1 显示 是否
+    isOrNo(value) {
+      if (!value) return ''
+      if (value == '1') return '是'
+      return '否'
+    },
+    // 过滤异动类型
+    changeType(value) {
+      if (!value) return ''
+      if (value == 'Position') {
+        return '调岗'
+      } else if (value == 'Up') {
+        return '晋升'
+      } else if (value == 'Down') {
+        return '降级'
       }
     }
   },
@@ -90,7 +737,24 @@ export default {
       },
       // 申请详情
       // 控制申请详情是否显示
-      show: true
+      show: false,
+      // 审批详情
+      applyData: {},
+
+      // 字典组
+      EmerType: [],
+      WorkYear: [],
+      EducationalLevel: [],
+      RecruitmentReason: [],
+      WorkProperty: [],
+      ContractType: [],
+      LeaveReason: [],
+      ChangeReason: [],
+      // 流程审批记录List
+      progressList: [],
+      recordList: [],
+      // 流程进度
+      activeStep: 2
     }
   },
   computed: {
@@ -98,22 +762,26 @@ export default {
     title() {
       let title = ''
       if (this.apprInfo.formKey === 'Recruitment') {
-        return (title = '招聘需求申请')
+        title = '招聘需求申请'
       } else if (this.apprInfo.formKey === 'PersonOfferApply') {
-        return '录用申请'
+        title = '录用申请'
       } else if (this.apprInfo.formKey === 'UserFormalInfo') {
-        return (title = '转正申请')
+        title = '转正申请'
       } else if (this.apprInfo.formKey === 'UserContractInfo') {
-        return (title = '续签合同申请')
+        title = '续签合同申请'
       } else if (this.apprInfo.formKey === 'UserLeaveInfo') {
-        return (title = '离职申请')
+        title = '离职申请'
       } else if (this.apprInfo.formKey === 'UserChangeInfo') {
-        return (title = '人事异动申请')
+        title = '人事异动申请'
       }
+      return title
     }
   },
   created() {
+    this.getCommonDict()
     this.getApplyInfo()
+    this.getApprDetail()
+    this.getApprProgress()
   },
   methods: {
     // 获取用户申请详情
@@ -121,6 +789,89 @@ export default {
       let res = await getApplyDetail(this.apprInfo)
       this.ApplyInfo = res
       // console.log(res)
+    },
+
+    // 获取审批详情信息
+    async getApprDetail() {
+      let { formId, formKey } = this.$route.query
+      // 根据不同的formKey 调用不同申请详情查询接口
+      let res = ''
+      if (formKey === 'Recruitment') {
+        res = await getRecruitmentApply({ recruitmentId: formId })
+      } else if (formKey === 'PersonOfferApply') {
+        res = await getOfferApply({ id: formId })
+      } else if (formKey === 'UserFormalInfo') {
+        res = await getOperationApply({ id: formId })
+      } else if (formKey === 'UserContractInfo') {
+        res = await getContractApply({ id: formId })
+      } else if (formKey === 'UserLeaveInfo') {
+        res = await getLeaveApply({ id: formId })
+      } else if (formKey === 'UserChangeInfo') {
+        res = await getChangeApply({ id: formId })
+      }
+      this.applyData = res
+      // console.log(res)
+    },
+
+    // 获取相关字典组
+    getCommonDict() {
+      let commonDictNameArr = [
+        'EmerType',
+        'WorkYear',
+        'EducationalLevel',
+        'RecruitmentReason',
+        'WorkProperty',
+        'ContractType',
+        'LeaveReason',
+        'ChangeReason'
+      ]
+      commonDictNameArr.forEach((item) => {
+        this.$store.dispatch('CommonDict', item).then((res) => {
+          // this.workPropertyList = res
+          // 将res =》 [{dictKey:"",dictValue:"",id:""},{dictKey:"",dictValue:"",id:""}]
+          let targetArr = []
+          res.forEach((el) => {
+            targetArr.push({ dictKey: el.dictKey, dictValue: el.dictValue, id: el.id })
+          })
+          this[item] = targetArr
+        })
+      })
+    },
+    // 流程进度和审批记录
+    async getApprProgress() {
+      let { apprNo } = this.$route.query
+      let res = await getApplyRecord({ apprNo })
+      let arr = []
+      res.forEach((item) => {
+        if (item.isApprove == '0') {
+          arr.push(item)
+        }
+      })
+      this.sordByChildId(arr, res)
+      this.progressList = arr
+
+      let newArr = JSON.parse(JSON.stringify(arr))
+      newArr.reverse()
+      this.recordList = newArr
+    },
+    // 根据子节点Id排序
+    sordByChildId(resList, dataList) {
+      if (resList.length == dataList.length) {
+        return
+      }
+      dataList.forEach((item) => {
+        if (item.id == resList[resList.length - 1].childId) {
+          resList.push(item)
+        }
+      })
+      this.sordByChildId(resList, dataList)
+    },
+    // 撤回申请
+    async handelcancel() {
+      let { apprNo } = this.$route.query
+      await cancelApply({ apprNo })
+      this.$message.success('撤回成功')
+      this.$router.go(-1)
     }
   }
 }
@@ -160,12 +911,22 @@ export default {
     .apply-user-box {
       text-align: center;
       flex: 1;
+      display: flex;
+      justify-content: center;
+      > div {
+        text-align: start;
+      }
       border-left: 1px solid #e3e7e9;
     }
     .apply-time {
       text-align: center;
       flex: 1.5;
       border-left: 1px solid #e3e7e9;
+      display: flex;
+      justify-content: center;
+      > div {
+        text-align: start;
+      }
     }
     .apply-status {
       text-align: end;
@@ -204,11 +965,174 @@ export default {
   }
 }
 
-.show-enter-active,
-.show-leave-active {
-  transition: opacity 0.5s;
+// 收起动画
+
+// 审批详情
+.apply-detail {
+  .detail-box {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    .detail-item {
+      width: 50%;
+      display: flex;
+      margin-bottom: 30px;
+      font-size: 14px;
+      :first-child {
+        margin-right: 15px;
+        font-family: PingFangSC-Regular;
+        color: #718199;
+        text-align: right;
+        width: 246px;
+        vertical-align: middle;
+      }
+    }
+  }
 }
-.show-enter, .show-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+// 流程进度
+.progress-wrap {
+  .progress-wrap-title {
+    font-family: PingFangSC-Medium;
+    font-size: 18px;
+    color: #202940;
+    line-height: 25px;
+    font-weight: bold;
+    margin-bottom: 24px;
+  }
+  /deep/ .el-step__icon.is-text {
+    border: 0px;
+  }
+  /deep/ .el-step__title.is-wait .title {
+    color: #738399;
+  }
+  /deep/ .el-step__title.is-wait .title {
+    color: #738399;
+  }
+  /deep/.el-step__title.is-process .title {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #212a3f;
+  }
+  /deep/.el-step__title.is-finish .title {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #212a3f;
+  }
+  // 小圆圈
+  .icon {
+    width: 9px;
+    height: 9px;
+    background: #a0a8ae;
+    border-radius: 100%;
+  }
+
+  .description-box {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #738399;
+  }
+  // 催一下
+  .isUrge {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #368afa;
+  }
+  .active {
+    background: #368afa;
+  }
+}
+// <!-- 审批记录 -->
+.record-wrap {
+  margin-top: 43px;
+  /deep/ .el-step__icon.is-text {
+    border: 0px;
+  }
+  // /deep/.l-step__title.title {
+  // 	font-family: PingFangSC-Regular;
+  // 	font-size: 14px;
+  // 	color: #212a3f;
+  // 	line-height: 24px;
+  // }
+  .record-wrap-title {
+    font-family: PingFangSC-Medium;
+    font-size: 18px;
+    color: #202940;
+    line-height: 25px;
+    font-weight: bold;
+    margin-bottom: 24px;
+  }
+  // 小圆圈
+  .icon {
+    width: 9px;
+    height: 9px;
+    background: #368afa;
+    border-radius: 100%;
+  }
+  .title {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #212a3f;
+    line-height: 24px;
+  }
+  .description-box {
+    margin-top: 5px;
+    background: #f7f8fa;
+    display: flex;
+    margin-bottom: 50px;
+    .img-box {
+      img {
+        width: 48px;
+        height: 48px;
+        border-radius: 100%;
+      }
+    }
+    .detail-box {
+      margin-left: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      :first-child {
+        font-family: PingFangSC-Medium;
+        font-size: 14px;
+        color: #333333;
+        line-height: 30px;
+        span {
+          margin: 6px 0 0 8px;
+          display: inline-block;
+          font-family: PingFangSC-Medium;
+          font-size: 12px;
+          line-height: 14px;
+          padding: 5px 10px;
+        }
+        .isPass {
+          background-color: #f2fbf3;
+          color: #7ad683;
+        }
+        .isReject {
+          color: #ff8b8a;
+          background-color: #fff3f3;
+        }
+        .appring {
+          color: #6aafff;
+          background: #edf8ff;
+        }
+        .initiateAppl {
+          color: #7ad683;
+          background: #f0fff0;
+        }
+      }
+      :nth-child(2) {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #757c85;
+      }
+    }
+  }
+}
+
+// 撤回
+.cancel-btn-box {
+  display: flex;
+  justify-content: center;
 }
 </style>

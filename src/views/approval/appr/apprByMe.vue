@@ -133,7 +133,22 @@ export default {
         },
         {
           label: '审批类型',
-          prop: 'formKey'
+
+          formatter: (row) => {
+            if (row.formKey === 'Recruitment') {
+              return '招聘需求申请'
+            } else if (row.formKey === 'PersonOfferApply') {
+              return '录用申请'
+            } else if (row.formKey === 'UserFormalInfo') {
+              return '转正申请'
+            } else if (row.formKey === 'UserContractInfo') {
+              return '续签合同申请'
+            } else if (row.formKey === 'UserLeaveInfo') {
+              return '离职申请'
+            } else if (row.formKey === 'UserChangeInfo') {
+              return '人事异动申请'
+            }
+          }
         },
         {
           label: '申请部门',
@@ -180,8 +195,8 @@ export default {
   },
   methods: {
     // 点击筛选
-    handleSearch(e) {
-      // console.log(e)
+    handleSearch(params) {
+      this.getTableList(params)
     },
     // 获取表单数据
     async getTableList() {
