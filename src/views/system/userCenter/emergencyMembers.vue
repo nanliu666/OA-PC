@@ -231,8 +231,6 @@ export default {
     saveEmergencyInfo(item, index) {
       this.$refs['emergency'][index].validate((isPass) => {
         if (isPass) {
-          this.editClick = false
-          this.currentEdit = null
           if (this.type == 'add') {
             let params = {
               userId: this.userInfo.user_id,
@@ -241,6 +239,8 @@ export default {
               relationship: item.relationship
             }
             addStaffEmerInfo(params).then(() => {
+              this.editClick = false
+              this.currentEdit = null
               this.getEmergencyList()
               this.$message({
                 type: 'success',
@@ -249,6 +249,8 @@ export default {
             })
           } else {
             editStaffEmerInfo(item).then(() => {
+              this.editClick = false
+              this.currentEdit = null
               this.getEmergencyList()
               this.$message({
                 type: 'success',
