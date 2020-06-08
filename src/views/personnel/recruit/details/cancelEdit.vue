@@ -21,7 +21,7 @@
       >不保存</el-button>
       <el-button
         size="medium"
-        @close="handleClose"
+        @click="handleClose"
       >取消</el-button>
       <el-button
         type="primary"
@@ -51,6 +51,7 @@ export default {
       this.$emit('update:visible', true)
     },
     handleClose() {
+      debugger
       this.$emit('update:visible', false)
     },
     goBack() {

@@ -73,22 +73,22 @@
         slot="status"
         slot-scope="{ row }"
       >
-        <el-button
+        <el-tag
           v-if="row.status === 'Handled'"
           size="medium"
           type="primary"
           plain
         >
           {{ isStatus(row.status) }}
-        </el-button>
-        <el-button
+        </el-tag>
+        <el-tag
           v-else
           size="medium"
           type="danger"
           plain
         >
           {{ isStatus(row.status) }}
-        </el-button>
+        </el-tag>
       </template>
       <template
         slot="expand"
