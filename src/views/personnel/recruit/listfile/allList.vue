@@ -388,10 +388,6 @@ export default {
         },
         {
           choice: 'EmerType',
-          target: 3
-        },
-        {
-          choice: 'EducationalLevel',
           target: 4
         }
       ],
@@ -490,6 +486,9 @@ export default {
           this.searchConfig.popoverOptions[item.target].options = res
         })
       })
+      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+        this.searchConfig.popoverOptions[3].options = res
+      })
     },
     handleEdit(row) {
       if (row.status === 'Handled') {
@@ -540,13 +539,21 @@ export default {
       return typeWord
     },
     recruitmentSituation(row) {
-      queryDistribution({ recruitmentId: row.id }).then((res) => {
-        this.loading = false
-        // 判断当前数组是否为空
-        if (res == null || res.length == 0) {
-          this.management = 'noAvailable'
-        } else {
-          this.management = res
+      let requestid = row.id
+      let { id } = row
+      let Sendornot = new Set([])
+      Sendornot.push(id)
+      Sendornot.forEach((item) => {
+        if (item !== requestid) {
+          queryDistribution({ recruitmentId: requestid }).then((res) => {
+            this.loading = false
+            // 判断当前数组是否为空
+            if (res == null || res.length == 0) {
+              this.management = 'noAvailable'
+            } else {
+              this.management = res
+            }
+          })
         }
       })
     },

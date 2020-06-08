@@ -240,10 +240,6 @@ export default {
         {
           choice: 'EmerType',
           target: 3
-        },
-        {
-          choice: 'EducationalLevel',
-          target: 4
         }
       ],
       WorkYear: [],
@@ -345,6 +341,9 @@ export default {
         this.$store.dispatch('CommonDict', item.choice).then((res) => {
           this.searchConfig.popoverOptions[item.target].options = res
         })
+      })
+      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+        this.searchConfig.popoverOptions[3].options = res
       })
     },
     JumpCandidate(row) {

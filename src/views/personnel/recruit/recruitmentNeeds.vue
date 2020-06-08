@@ -18,12 +18,18 @@
           :sm="20"
           :xs="22"
         >
+          <h4>招聘信息</h4>
           <inputArray
             ref="personInfo"
             :info-form.sync="NewRequirement"
             :form.sync="infoForm"
           />
+          <h4>审批流程</h4>
 
+          <appr-progress
+            ref="apprProgress"
+            form-key="UserFormalInfo"
+          />
           <template style="margin: 0 auto;">
             <el-button
               size="medium"
@@ -61,7 +67,8 @@ export default {
   name: 'RecruitmentNeeds',
   components: {
     CancelEdit: () => import('@/views/personnel/recruit/details/cancelEdit'),
-    InputArray: () => import('@/views/personnel/candidate/components/inputArray')
+    InputArray: () => import('@/views/personnel/candidate/components/inputArray'),
+    apprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   data() {
     return {
@@ -104,7 +111,9 @@ export default {
     }
   },
   activated() {
-    this.ReplicationCache(this.$route.query.id)
+    if (typeof this.$route.query.id !== 'undefined') {
+      this.ReplicationCache(this.$route.query.id)
+    }
   },
   mounted() {
     this.getUseInformation()

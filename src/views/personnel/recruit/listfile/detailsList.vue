@@ -363,6 +363,9 @@ export default {
           this.searchConfig.popoverOptions[item.target].options = res
         })
       })
+      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+        this.searchConfig.popoverOptions[3].options = res
+      })
     },
     JumpChange() {
       this.$router.push({
