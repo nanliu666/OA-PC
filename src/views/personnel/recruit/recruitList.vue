@@ -3,11 +3,13 @@
     <page-header class="pageHeader">
       <div slot="title">
         <span
+          style="cursor:pointer"
           :class="{ active: Select }"
           @click="changeTemp"
         >我提交的招聘需求</span>
         <span style=" margin: 0 20px">|</span>
         <span
+          style="cursor:pointer"
           :class="{ active: doNotsave }"
           @click="changeTemp('all')"
         >全部招聘需求</span>

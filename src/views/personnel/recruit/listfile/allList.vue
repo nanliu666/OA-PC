@@ -535,7 +535,7 @@ export default {
         row.loading = true
 
         queryDistribution({ recruitmentId: row.id }).then((res) => {
-          this.$set(row, 'detail', res)
+          row.detail = res
           row.loading = false
         })
       }
