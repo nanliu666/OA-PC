@@ -795,6 +795,7 @@ export default {
             idType: this.staffInfo.idType,
             phonenum: this.staffInfo.phonenum,
             email: this.staffInfo.email,
+            userEmail: this.staffInfo.userEmail,
             firstWorkDate: this.staffInfo.firstWorkDate,
             marriage: this.staffInfo.marriage,
             politicalStatus: this.staffInfo.politicalStatus,
