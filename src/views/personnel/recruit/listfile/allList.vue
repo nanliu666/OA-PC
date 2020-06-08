@@ -443,7 +443,7 @@ export default {
       return params
     },
     handleSubmit(params) {
-      this.decorator()
+      this.decorator(params)
       getAllRecruitment(params).then(() => {
         this.$message({
           message: '操作成功',
@@ -591,5 +591,6 @@ export default {
   line-height: 20px;
   padding-left: 23px !important;
   border-right: 1px solid #ccc;
+  margin: 0;
 }
 </style>

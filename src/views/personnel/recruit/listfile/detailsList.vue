@@ -250,10 +250,6 @@ export default {
         },
         {
           choice: 'EmerType',
-          target: 3
-        },
-        {
-          choice: 'EducationalLevel',
           target: 4
         }
       ],
