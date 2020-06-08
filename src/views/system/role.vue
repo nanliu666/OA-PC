@@ -248,7 +248,6 @@ export default {
   },
   methods: {
     handlerDeleteAll(list) {
-      debugger
       this.$confirm('您确定要删除你所选中的角色吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
