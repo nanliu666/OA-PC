@@ -90,13 +90,11 @@
           {{ isStatus(row.status) }}
         </el-button>
       </template>
-
       <template
-        v-if="row.status === 'Handled'"
         slot="expand"
         slot-scope="{ row }"
       >
-        <div v-loading="loading">
+        <div v-loading="row.loading">
           <el-row
             :gutter="20"
             type="flex"
@@ -132,14 +130,8 @@
               招聘进度
             </el-col>
           </el-row>
-          <el-row v-if="management === 'noAvailable'">
-            <el-col class="taskInformation">
-              {{ '暂无数据' }}
-            </el-col>
-          </el-row>
-
           <el-row
-            v-for="item in management"
+            v-for="item in row.detail"
             :key="item.userId"
             :gutter="20"
             type="flex"
@@ -388,10 +380,6 @@ export default {
         },
         {
           choice: 'EmerType',
-          target: 3
-        },
-        {
-          choice: 'EducationalLevel',
           target: 4
         }
       ],
@@ -442,7 +430,7 @@ export default {
       if (typeof params === 'undefined') params = this.params
       this.decorator(params)
       getAllRecruitment(params).then((res) => {
-        this.data = res.data
+        this.data = res.data.map((item) => ({ ...item, detail: [], loading: false }))
         this.page.total = res.totalPage
       })
     },
@@ -489,6 +477,9 @@ export default {
         this.$store.dispatch('CommonDict', item.choice).then((res) => {
           this.searchConfig.popoverOptions[item.target].options = res
         })
+      })
+      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+        this.searchConfig.popoverOptions[3].options = res
       })
     },
     handleEdit(row) {
@@ -540,15 +531,14 @@ export default {
       return typeWord
     },
     recruitmentSituation(row) {
-      queryDistribution({ recruitmentId: row.id }).then((res) => {
-        this.loading = false
-        // 判断当前数组是否为空
-        if (res == null || res.length == 0) {
-          this.management = 'noAvailable'
-        } else {
-          this.management = res
-        }
-      })
+      if (!row.detail || row.detail.length === 0) {
+        row.loading = true
+
+        queryDistribution({ recruitmentId: row.id }).then((res) => {
+          row.detail = res
+          row.loading = false
+        })
+      }
     },
     getPercent(curNum, totalNum) {
       curNum = parseFloat(curNum)
@@ -563,16 +553,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  h4 {
-    font-size: 18px;
-  }
-}
-
 .isBlue {
   color: #207efa !important;
 }

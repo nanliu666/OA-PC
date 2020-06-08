@@ -114,7 +114,9 @@ export default {
     ...mapGetters(['userId'])
   },
   activated() {
-    this.ReplicationCache(this.$route.query.id)
+    if (typeof this.$route.query.id !== 'undefined') {
+      this.ReplicationCache(this.$route.query.id)
+    }
   },
   mounted() {
     if (typeof this.$route.query.id !== 'undefined') {
