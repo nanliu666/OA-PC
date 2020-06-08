@@ -20,6 +20,7 @@
           >
             <el-input
               v-model="form.note"
+              :autosize="{ minRows: 10, maxRows: 14 }"
               type="textarea"
               placeholder="请输入帮助说明"
             />
@@ -50,6 +51,10 @@ export default {
   props: {
     dialogVisible: {
       type: Boolean
+    },
+    note: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -71,6 +76,12 @@ export default {
     }
   },
   watch: {
+    note: {
+      handler(val) {
+        this.form.note = val
+      },
+      immediate: true
+    },
     dialog: {
       handler: function() {
         this.$emit('update:dialogVisible', false)

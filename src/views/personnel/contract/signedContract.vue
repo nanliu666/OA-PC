@@ -55,7 +55,7 @@
 import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { signedData } from './components/contractData'
 import { getCompany } from '@/api/personnel/selectedPerson'
-import { putContractInfo, getContractInfo } from '@/api/personnel/contart'
+import { putContractInfo, getContractInfo, postContractInfo } from '@/api/personnel/contart'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
@@ -146,15 +146,27 @@ export default {
         let params = {
           ...this.infoForm
         }
-        this.loading = true
-        putContractInfo(params).then(() => {
+        this.loading = false
+        if (this.infoForm.id) {
+          putContractInfo(params).then(() => {
+            this.$message.success('修改成功')
+            this.loading = false
+            setTimeout(() => {
+              this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+              this.$router.push({
+                path: '/personnel/contract/contract'
+              })
+            }, 2000)
+          })
+          return
+        }
+
+        postContractInfo(params).then(() => {
           this.loading = false
-          this.$message.success('修改成功')
+          this.$message.success('提交成功')
           setTimeout(() => {
             this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-            this.$router.push({
-              path: '/personnel/contract/contract'
-            })
+            this.$router.go(-1)
           }, 2000)
         })
       })

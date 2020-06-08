@@ -1,24 +1,24 @@
 <template>
   <div style="height:100%;width: 100% ">
     <div class="header">
-      <div>审批流程</div>
+      <div>
+        发起申请
+      </div>
     </div>
-    <div class="approval">
+    <div class="view-case">
       <div class="content flex flex-justify-start flex-items">
         <div
           v-for="(it, i) in info"
           :key="i"
           class="todo flex flex-justify-start "
-          @click="jump(it)"
+          @click="jump(it.formKey)"
         >
           <div class="images">
-            <!--            <i class="imgs iconfont " :class="[it.iconUrl]" />-->
-            <svg
-              class="imgs icon"
-              aria-hidden="true"
-            >
-              <use :[key]="'#' + it.iconUrl" />
-            </svg>
+            <!--              <el-image-->
+            <!--                :src="it.iconUrl"-->
+            <!--                class="imgs"-->
+            <!--              />-->
+            <i class="imgs iconfont  icon-approval-checkin-bicolor" />
           </div>
           <div class="info">
             <div class="info-title">
@@ -31,48 +31,45 @@
         </div>
       </div>
     </div>
-    <approval-dialog
-      v-if="dialogVisible"
-      :visible.sync="dialogVisible"
-    />
   </div>
 </template>
 
 <script>
-import approvalDialog from '@/views/approval/components/approvalDialog'
 import { getApprForm } from '@/api/approval/approval'
+
 export default {
-  name: 'ApprovalProcess',
-  components: {
-    approvalDialog
-  },
+  name: 'Apply',
   data() {
     return {
-      key: 'xlink:href',
-      dialogVisible: false,
-      info: []
+      info: [],
+      showData: ['UserFormalInfo', 'UserLeaveInfo']
     }
   },
   mounted() {
     this.getData()
   },
   methods: {
+    jump(formKey) {
+      if (formKey === this.showData[0]) {
+        this.$router.push({
+          path: '/personnel/administration/apply'
+        })
+      } else if (formKey === this.showData[1]) {
+        this.$router.push({
+          path: '/personnel/leave/applyLeave'
+        })
+      }
+      // /personnel/administration/apply
+    },
     getData() {
       getApprForm().then((res) => {
-        this.info = res
-        this.info.map((it) => {
-          it.iconUrl = it.iconUrl ? it.iconUrl : 'icon-approval-checkin-bicolor'
+        // this.info = res
+        this.info = []
+        res.map((it) => {
+          if (this.showData.includes(it.formKey)) {
+            this.info.push(it)
+          }
         })
-      })
-    },
-    jump(it) {
-      // this.dialogVisible = true
-      let params = {
-        formKey: it.formKey
-      }
-      this.$router.push({
-        path: '/approval/approvalDetail',
-        query: params
       })
     }
   }
@@ -80,51 +77,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  display: -ms-flex;
-  display: -moz-box;
-  display: -webkit-flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  color: #202940;
-  line-height: 28px;
-  font-weight: bold;
-  margin-top: 14px;
-}
-.approval {
-  margin-top: 16px;
-  background: #ffffff;
-  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-  padding: 24px !important;
-  min-height: calc(100% - 120px);
-  .form_ {
-    padding-top: 40px;
-    width: 400px;
-    margin: 0 auto;
-    font-size: 14px;
-    .label_ {
-      /*display: inline-block;*/
-      /*margin-top:24px;*/
-      /*margin-bottom:8px;*/
-    }
-    .tip {
-      font-size: 12px;
-      line-height: 14px;
-      color: #a0a8ae;
-    }
-    .bt {
-      /*margin-top: 40px;*/
-    }
-  }
-}
 .content {
   max-width: 1152px;
   margin: 0 auto;
-  /*padding: 24px 0px 24px 24px;*/
   flex-flow: row wrap;
   .todo {
     /*width: 352px;*/
@@ -138,18 +93,22 @@ export default {
     margin-bottom: 24px;
     padding: 24px;
     .images {
+      text-align: center;
+      display: inline-block;
+
+      /*overflow: hidden;*/
+      margin-right: 16px;
       .imgs {
         text-align: center;
         line-height: 48px;
         height: 48px;
         width: 48px;
-        /*border-radius: 50%;*/
+        border-radius: 50%;
         display: inline-block;
-        font-size: 32px;
+        font-size: 30px;
         color: #fff;
-        background: #fff;
+        background: #7ad683;
       }
-      margin-right: 16px;
     }
     .info {
       max-width: 232px;

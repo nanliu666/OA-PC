@@ -654,6 +654,9 @@ export default {
 .flex-flow {
   flex-flow: row nowrap;
 }
+.flex-flow-w {
+  flex-flow: row wrap;
+}
 .flex-flow-column {
   flex-flow: column nowrap;
 }
