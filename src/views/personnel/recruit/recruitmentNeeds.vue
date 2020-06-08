@@ -28,6 +28,7 @@
           <h4>审批流程</h4>
           <el-form
             ref="apprForm"
+            :model="infoForm"
             :rules="rules"
           >
             <el-form-item prop="apprProgress">
@@ -37,6 +38,7 @@
               />
             </el-form-item>
           </el-form>
+
           <template style="margin: 0 auto;">
             <el-button
               size="medium"
@@ -218,13 +220,17 @@ export default {
           })
         })
       ).then(() => {
-        this.infoForm.userId = this.userId
-        this.contrastMaxMin(this.infoForm.minSalary)
-        submitEewly(this.infoForm).then((res) => {
-          if (res && res.id) {
-            this.$refs['apprProgress'].submit(res.id).then(() => {
-              this.$message({ type: 'success', message: '提交成功' })
-              this.goBack()
+        this.$refs['apprForm'].validate((valid) => {
+          if (valid) {
+            this.infoForm.userId = this.userId
+            this.contrastMaxMin(this.infoForm.minSalary)
+            submitEewly(this.infoForm).then((res) => {
+              if (res && res.id) {
+                this.$refs['apprProgress'].submit(res.id).then(() => {
+                  this.$message({ type: 'success', message: '提交成功' })
+                  this.goBack()
+                })
+              }
             })
           }
         })
