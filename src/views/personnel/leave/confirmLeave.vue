@@ -438,7 +438,7 @@ export default {
 
   .info-row {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
 
     .info-row-item {
       margin: 10px 50px 0 0;

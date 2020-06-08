@@ -192,10 +192,15 @@ export default {
         type: 'warning'
       }).then(() => {
         this.deleteData.id = id
-        deleteAttachmentInfo(this.deleteData).then(() => {
-          // this.fileList.splice(index, 1)
-          this.initData()
-        })
+        deleteAttachmentInfo(this.deleteData)
+          .then(() => {
+            // this.fileList.splice(index, 1)
+            this.$message.success('删除成功')
+            this.initData()
+          })
+          .catch(() => {
+            this.$message.error('删除失败')
+          })
       })
     },
 

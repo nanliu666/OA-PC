@@ -41,8 +41,8 @@
             :config="tableConfig"
             :columns="columns"
             :loading="loading"
-            @pageSizeChange="sizeChange"
-            @currentPageChange="currentChange"
+            @current-page-change="currentPageChange"
+            @page-size-change="sizeChange"
           >
             <template slot="topMenu">
               <div class="flex-flow flex justify-content align-items ">
