@@ -92,7 +92,9 @@ export default {
     handleClick(tab) {
       let paneName = tab.paneName.trim()
       if (paneName === 'Finished' || paneName === 'Approved') {
-        this.$refs.demand.init(paneName)
+        if (typeof this.$refs.demand !== 'undefined') {
+          this.$refs.demand.init(paneName)
+        }
       }
     },
     allHandleClick(tab) {
