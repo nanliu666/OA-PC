@@ -16,7 +16,7 @@
         type="flex"
         class="introduce"
       >
-        <Introduce />
+        <introduce />
       </el-row>
       <el-form
         ref="users"

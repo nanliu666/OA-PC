@@ -128,6 +128,7 @@ export default {
   background-color: #f7f8fa;
 }
 .content {
+  margin-top: 5px;
   display: block;
   text-align: center;
   font-family: PingFangSC-Regular;
@@ -142,6 +143,7 @@ export default {
   line-height: 18px;
   text-align: center;
   margin-bottom: 10px;
+  margin: auto;
 }
 
 .frame {

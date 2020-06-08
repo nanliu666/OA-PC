@@ -78,9 +78,13 @@ export default {
       data: [],
       columns: [
         {
-          label: '需求编号',
+          label: '审批编号',
           prop: 'id',
           slot: true
+        },
+        {
+          label: '需求编号',
+          prop: 'formId'
         },
         {
           label: '用人部门',

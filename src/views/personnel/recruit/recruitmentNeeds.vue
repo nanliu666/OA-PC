@@ -219,7 +219,8 @@ export default {
             resolve(form)
           })
         })
-      ).then(() => {
+      ).then((res) => {
+        if (res.includes(false)) return
         this.$refs['apprForm'].validate((valid) => {
           if (valid) {
             this.infoForm.userId = this.userId
