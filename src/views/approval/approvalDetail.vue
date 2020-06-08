@@ -106,6 +106,11 @@ export default {
     this.getData()
   },
   methods: {
+    /**
+     * @author guanfenda
+     * @desc 返回审批流程
+     *
+     * */
     back() {
       this.$router.push({
         path: '/approval/approvalProcess'
@@ -119,6 +124,24 @@ export default {
     handleNote() {
       this.dialogVisible = true
     },
+    filerData(data, list) {
+      if (!(list.length >= data.length)) {
+        if (list.length === 0) {
+          data.map((it) => {
+            if (it.isStart === 1) {
+              list.push(it)
+            }
+          })
+        } else {
+          data.map((it) => {
+            if (list[list.length - 1].childId && list[list.length - 1].childId == it.id) {
+              list.push(it)
+            }
+          })
+        }
+        this.filerData(data, list)
+      }
+    },
     /**
      * @author guanfenda
      * @desc 获取流程节点
@@ -128,12 +151,18 @@ export default {
         formKey: this.$route.query.formKey
       }
       getAppProcess(params).then((res) => {
+        let list = []
+        this.filerData(res.nodes, list)
+        list.map((it) => (it.isEdit = false))
+
         this.initData = res
         this.note = res.note
+
+        debugger
         if (!res.id) {
           return
         }
-        this.approvalList = res.nodes
+        this.approvalList = list
       })
     },
     /**

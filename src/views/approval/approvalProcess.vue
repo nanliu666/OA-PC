@@ -12,7 +12,13 @@
           @click="jump(it)"
         >
           <div class="images">
-            <i class="imgs iconfont  icon-approval-checkin-bicolor" />
+            <!--            <i class="imgs iconfont " :class="[it.iconUrl]" />-->
+            <svg
+              class="imgs icon"
+              aria-hidden="true"
+            >
+              <use :[key]="'#' + it.iconUrl" />
+            </svg>
           </div>
           <div class="info">
             <div class="info-title">
@@ -42,6 +48,7 @@ export default {
   },
   data() {
     return {
+      key: 'xlink:href',
       dialogVisible: false,
       info: []
     }
@@ -53,6 +60,9 @@ export default {
     getData() {
       getApprForm().then((res) => {
         this.info = res
+        this.info.map((it) => {
+          it.iconUrl = it.iconUrl ? it.iconUrl : 'icon-approval-checkin-bicolor'
+        })
       })
     },
     jump(it) {
@@ -133,11 +143,11 @@ export default {
         line-height: 48px;
         height: 48px;
         width: 48px;
-        border-radius: 50%;
+        /*border-radius: 50%;*/
         display: inline-block;
-        font-size: 30px;
+        font-size: 32px;
         color: #fff;
-        background: #7ad683;
+        background: #fff;
       }
       margin-right: 16px;
     }

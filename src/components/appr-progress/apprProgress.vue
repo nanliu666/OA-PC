@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     getApprProcess(formKey) {
-      getAppProcess(formKey).then((res) => {
+      getAppProcess({ formKey }).then((res) => {
         this.progress = res
       })
     },

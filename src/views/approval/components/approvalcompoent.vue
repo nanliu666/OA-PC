@@ -1,15 +1,19 @@
 <template>
   <div>
-    <div class="flow ">
+    <div
+      class="flow"
+      @mouseleave="leave"
+    >
       <div
         v-for="(node, index) in approvalList"
         :key="index"
         class="row"
-        @mouseleave="leave"
       >
         <div class="edit">
           <div class="flex-flow flex flex-items edit_no">
-            <i class="spot" /> <span class="staff">{{ node.name }}</span>
+            <div class="line-spot">
+              <i class="spot" /> <span class="staff">{{ node.name }}</span>
+            </div>
             <el-link
               type="primary"
               class="edit_staff"
@@ -52,7 +56,9 @@
                 v-else
                 class="flex flex-flow-column flex-items edit_icon"
               >
+                <div />
                 <div class="spot_icon" />
+                <div />
               </div>
             </div>
             <div class="flex-flow flex flex-items edit_row">
@@ -399,6 +405,7 @@ export default {
   }
   .tip {
     margin-left: 10px;
+    margin-top: -4px;
   }
   .button_icon {
     margin-left: 10px;
@@ -416,9 +423,9 @@ export default {
     text-overflow: ellipsis;
     /*text-align: left;*/
   }
-  /*.edit_no{*/
-  /*  display: none;*/
-  /*}*/
+  .edit_no {
+    /*height: 58px;*/
+  }
   .edit_row {
     display: none;
   }
@@ -431,6 +438,10 @@ export default {
       border-radius: 50%;
       background: #1e9fff;
       margin-left: -5px;
+    }
+    .line-spot {
+      height: 58px;
+      line-height: 58px;
     }
     .staff {
       display: inline-block;
@@ -456,6 +467,7 @@ export default {
     }
     .edit_staff {
       font-size: 16px;
+      display: inline-block;
     }
   }
 }
