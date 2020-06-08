@@ -36,11 +36,13 @@
         <el-button
           type="text"
           size="medium"
-          @click="jumpToDetail(row.id)"
+          @click="jumpToDetail(row)"
         >
           {{ row.id }}
         </el-button>
       </template>
+
+      <template />
     </common-table>
   </div>
 </template>
@@ -114,16 +116,6 @@ export default {
         pageSizes: [10, 20, 30, 40, 50]
       },
       createOrgDailog: false,
-      setElement: [
-        {
-          choice: 'WorkYear',
-          target: 2
-        },
-        {
-          choice: 'EmerType',
-          target: 3
-        }
-      ],
       WorkYear: [],
       getLevel: []
     }
@@ -159,11 +151,11 @@ export default {
         })
       })
     },
-    jumpToDetail(id) {
+    jumpToDetail(row) {
       // 跳转审批详情
       this.$router.push({
         path: '/approval/appr/apprDetail',
-        query: { id: id }
+        query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
       })
     },
 
