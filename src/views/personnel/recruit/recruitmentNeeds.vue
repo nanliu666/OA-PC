@@ -24,12 +24,19 @@
             :info-form.sync="NewRequirement"
             :form.sync="infoForm"
           />
-          <h4>审批流程</h4>
 
-          <appr-progress
-            ref="apprProgress"
-            form-key="UserFormalInfo"
-          />
+          <h4>审批流程</h4>
+          <el-form
+            ref="apprForm"
+            :rules="rules"
+          >
+            <el-form-item prop="apprProgress">
+              <appr-progress
+                ref="apprProgress"
+                form-key="UserFormalInfo"
+              />
+            </el-form-item>
+          </el-form>
           <template style="margin: 0 auto;">
             <el-button
               size="medium"
@@ -71,6 +78,13 @@ export default {
     apprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   data() {
+    var checkAppr = (rule, value, callback) => {
+      if (!this.$refs['apprProgress'].validate()) {
+        callback(new Error('请选择审批人'))
+      } else {
+        callback()
+      }
+    }
     return {
       NewRequirement,
       infoForm: {
@@ -90,7 +104,10 @@ export default {
         reasonNote: null,
         remark: null
       },
-      dialogVisible: false
+      dialogVisible: false,
+      rules: {
+        apprProgress: [{ validator: checkAppr }]
+      }
     }
   },
   computed: {
@@ -202,10 +219,14 @@ export default {
         })
       ).then(() => {
         this.infoForm.userId = this.userId
-        let params = this.infoForm
         this.contrastMaxMin(this.infoForm.minSalary)
-        submitEewly(params).then(() => {
-          this.$message({ type: 'success', message: '操作成功!' })
+        submitEewly(this.infoForm).then((res) => {
+          if (res && res.id) {
+            this.$refs['apprProgress'].submit(res.id).then(() => {
+              this.$message({ type: 'success', message: '提交成功' })
+              this.goBack()
+            })
+          }
         })
       })
     },
@@ -224,6 +245,11 @@ export default {
       getRecruitmentDetail({ recruitmentId: id }).then((res) => {
         this.infoForm = res
       })
+    },
+    goBack() {
+      this.isDoNotSave()
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }
