@@ -69,12 +69,12 @@ const approvalList = Mock.mock({
     version: '1.0.0',
     nodes: [
       {
-        id: '@increment',
+        id: '1',
         name: '部门主管',
-        isStart: '0',
-        isEnd: '0',
+        isStart: 1,
+        isEnd: 0,
         parentId: '',
-        childId: '',
+        childId: '2',
         isEdit: false,
         users: [
           {
@@ -100,12 +100,12 @@ const approvalList = Mock.mock({
         ]
       },
       {
-        id: '@increment',
+        id: '2',
         name: '综合管理部',
         isStart: '0',
         isEnd: '0',
-        parentId: '',
-        childId: '',
+        parentId: 1,
+        childId: 4,
         isEdit: false,
         users: [
           {
@@ -131,11 +131,11 @@ const approvalList = Mock.mock({
         ]
       },
       {
-        id: '@increment',
+        id: '3',
         name: '控股负责人',
         isStart: '0',
-        isEnd: '0',
-        parentId: '',
+        isEnd: 1,
+        parentId: 3,
         childId: '',
         isEdit: false,
         users: [
@@ -147,12 +147,12 @@ const approvalList = Mock.mock({
         ]
       },
       {
-        id: '@increment',
+        id: '4',
         name: '总裁',
-        isStart: '0',
-        isEnd: '0',
-        parentId: '',
-        childId: '',
+        isStart: 0,
+        isEnd: 0,
+        parentId: '2',
+        childId: '3',
         isEdit: false,
         users: [
           {

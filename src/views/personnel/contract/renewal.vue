@@ -31,6 +31,26 @@
           :info-form.sync="signedData"
           :form.sync="infoForm"
         />
+        <div>
+          <el-form
+            ref="formApply"
+            :model="apply"
+            :rules="rules"
+            label-width="130px"
+            label-position="top"
+            size="medium"
+          >
+            <el-form-item
+              label="审批流程"
+              prop="apprProgress"
+            >
+              <apprProgress
+                ref="apprProgress"
+                form-key="UserContractInfo"
+              />
+            </el-form-item>
+          </el-form>
+        </div>
         <div class="footer flex flex-items flex-justify">
           <el-button
             size="medium"
@@ -55,21 +75,42 @@
 import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { signedData } from './components/contractData'
 import { getCompany } from '@/api/personnel/selectedPerson'
-import { getContractInfo, postContractInfo, putContractInfo } from '@/api/personnel/contart'
-import moment from 'moment'
+import { postContractApply } from '@/api/personnel/contart'
 
 export default {
   name: 'Renewal',
   components: {
-    inputArray
+    inputArray,
+    apprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   data() {
+    var checkAppr = (rule, value, callback) => {
+      if (!this.$refs['apprProgress'].validate()) {
+        callback(new Error('请选择审批人'))
+      } else {
+        callback()
+      }
+    }
     return {
+      apply: {
+        apprProgress: '',
+        note: ''
+      },
       loading: false,
       personInfo: {
         telephone: '150899544444',
         orgName: '行政部',
         jodName: '人力资源'
+      },
+      rules: {
+        note: [
+          {
+            required: true,
+            message: '请填写帮助说明',
+            trigger: 'change'
+          }
+        ],
+        apprProgress: [{ required: true, validator: checkAppr }]
       },
       signedData,
       infoForm: {
@@ -97,37 +138,8 @@ export default {
       ...this.$route.query
     }
     this.getCompany()
-    this.getContractInfo()
   },
   methods: {
-    getContractInfo() {
-      let params = {
-        userId: this.$route.query.userId
-      }
-      getContractInfo(params).then((res) => {
-        if (res && res.length > 0) {
-          let item = Math.max.apply(
-            Math,
-            res.map(function(item) {
-              var time = moment(item.beginDate).valueOf()
-              return time
-            })
-          )
-          let newContart = {}
-          res.map((it) => {
-            let time = moment(it.beginDate).valueOf()
-            if (item === time) {
-              newContart = it
-            }
-          })
-          delete newContart.id
-
-          this.infoForm = {
-            ...newContart
-          }
-        }
-      })
-    },
     handleBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
@@ -143,30 +155,26 @@ export default {
           })
         })
       ).then((res) => {
-        if (res.includes(false)) return
-        let params = {
-          ...this.infoForm
-        }
-        if (this.infoForm.id) {
-          putContractInfo(params).then(() => {
-            this.$message.success('修改成功')
-            setTimeout(() => {
-              this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-              this.$router.push({
-                path: '/personnel/contract/contract'
+        this.$refs['formApply'].validate((valid) => {
+          if (res.includes(false)) return
+          if (!valid) return
+          let params = {
+            ...this.infoForm
+          }
+          postContractApply(params).then((res) => {
+            // this.$message.success('提交成功')
+            if (res && res.id) {
+              this.$refs['apprProgress'].submit(res.id).then(() => {
+                this.$message({ type: 'success', message: '提交成功' })
+                setTimeout(() => {
+                  this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+                  this.$router.push({
+                    path: '/personnel/contract/contract'
+                  })
+                }, 2000)
               })
-            }, 2000)
+            }
           })
-          return
-        }
-        this.loading = true
-        postContractInfo(params).then(() => {
-          this.loading = false
-          this.$message.success('提交成功')
-          setTimeout(() => {
-            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-            this.$router.go(-1)
-          }, 2000)
         })
       })
     },
