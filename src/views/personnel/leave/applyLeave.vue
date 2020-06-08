@@ -11,9 +11,9 @@
         class="container"
       >
         <el-col
-          :xl="16"
-          :lg="16"
-          :md="18"
+          :xl="12"
+          :lg="12"
+          :md="14"
           :sm="20"
           :xs="22"
         >
@@ -23,7 +23,6 @@
             label-width="80px"
             label-position="top"
             :rules="rules"
-            inline
             class="form-wrap"
           >
             <!-- 标题 -->
@@ -46,7 +45,6 @@
                 <el-form-item
                   label="最后工作日"
                   prop="lastDate"
-                  style="width:80%"
                 >
                   <el-date-picker
                     v-model="queryInfo.lastDate"
@@ -66,7 +64,6 @@
                 <el-form-item
                   label="离职原因"
                   prop="reason"
-                  style="width:80%"
                 >
                   <el-select
                     v-model="queryInfo.reason"
@@ -89,10 +86,7 @@
               justify="center"
             >
               <el-col :span="14">
-                <el-form-item
-                  label="离职原因说明"
-                  style="width:80%"
-                >
+                <el-form-item label="离职原因说明">
                   <el-input
                     v-model="queryInfo.remark"
                     type="textarea"
@@ -100,8 +94,23 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <!-- 审批下个版本做 -->
-
+            <!-- 审批 -->
+            <el-row
+              type="flex"
+              justify="center"
+            >
+              <el-col :span="14">
+                <el-form-item
+                  label="审批流程"
+                  prop="apprProgress"
+                >
+                  <appr-progress
+                    ref="apprProgress"
+                    form-key="UserLeaveInfo"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
             <!-- 按钮区 -->
             <el-row
               type="flex"
@@ -137,8 +146,19 @@
 
 <script>
 import { applyLeaveInfo } from '@/api/leave/leave'
+
 export default {
+  components: {
+    apprProgress: () => import('@/components/appr-progress/apprProgress')
+  },
   data() {
+    var checkAppr = (rule, value, callback) => {
+      if (!this.$refs['apprProgress'].validate()) {
+        callback(new Error('请选择审批人'))
+      } else {
+        callback()
+      }
+    }
     return {
       // 申请离职params
       queryInfo: {
@@ -163,7 +183,8 @@ export default {
             message: '请选择离职原因',
             trigger: 'change'
           }
-        ]
+        ],
+        apprProgress: [{ validator: checkAppr, required: true }]
       },
       // 离职原因字典组
       LeaveReason: []
@@ -192,8 +213,13 @@ export default {
         }
         // 检验通过
         applyLeaveInfo(this.queryInfo)
-          .then(() => {
-            this.$message.success('提交成功', 2000, this.$router.go(-1))
+          .then((res) => {
+            if (res && res.id) {
+              this.$refs['apprProgress'].submit(res.id).then(() => {
+                this.$message.success('提交成功', 2000, this.$router.go(-1))
+              })
+            }
+            // this.$message.success('提交成功', 2000, this.$router.go(-1))
           })
           .catch(() => {})
       })
@@ -224,7 +250,7 @@ export default {
   font-size: 14px;
   color: #202940;
   line-height: 14px;
-  margin: 0 0 10px 0;
+  margin: 40px 0 10px 0;
 }
 
 .btn-box {
