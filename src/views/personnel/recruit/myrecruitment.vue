@@ -28,7 +28,7 @@
 <script>
 import MyneedsList from './listfile/myneedslist'
 export default {
-  name: 'RecruitList',
+  name: 'Myrecruitment',
   components: {
     MyneedsList
   },
@@ -58,12 +58,5 @@ export default {
 <style lang="scss" scoped>
 /deep/ .el-radio-button__inner {
   border-radius: 4px !important;
-}
-
-.active {
-  color: rgba(54, 138, 250, 1);
-}
-.newlyDemand {
-  float: right;
 }
 </style>

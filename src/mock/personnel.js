@@ -548,4 +548,40 @@ export default ({ mock }) => {
     }
     return myList
   })
+
+  //全部招聘需求审批筛选接口
+  Mock.mock(new RegExp('/appr/v1/recruitment/approve/list' + '.*'), 'get', () => {
+    let list = []
+    for (let i = 0; i < 12; i++) {
+      list.push(
+        Mock.mock({
+          id: '@integer(10000000000, 20000000000)',
+          apprNo: '@cname',
+          orgId: '@integer(10000000000, 20000000000)',
+          orgName: '@integer(0, 1)',
+          jobId: '@integer(1, 100)',
+          jobName: '@email',
+          positionId: '@integer(0, 1)',
+          positionName: 'Vm[Z',
+          userId: 'FmF',
+          userName: '1R2)@W',
+          status: 'F6z7tql',
+          applyTime: 'Primary',
+          completeTime: 'RH92',
+          formKey: 'X[RRQ',
+          formId: '@integer(0, 45)'
+        })
+      )
+    }
+    const myList = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response: {
+        totalNum: 12,
+        totalPage: 12,
+        data: list
+      }
+    }
+    return myList
+  })
 }

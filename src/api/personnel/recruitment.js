@@ -116,3 +116,13 @@ export const setRecruitment = (params) => {
 export const getRelationDemand = (params) => {
   return get('/user/v1/recruitment/candidate/list', { ...params })
 }
+
+/**
+ *  全部招聘需求审批筛选接口
+ * @param {String} jobName - 职位名称。模糊查询
+ * @param {String} userId -指定招聘人员ID
+ * */
+
+export const getApprove = (params) => {
+  return get('/appr/v1/recruitment/approve/list', { ...params })
+}
