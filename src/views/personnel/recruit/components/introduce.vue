@@ -56,7 +56,7 @@
 
       <el-col
         :span="8"
-        class="frame"
+        class=" bronone frame"
       >
         <span class="demandSize"> 候选人数</span>
         <span class="content isBurl">{{ user.candidateNum }}</span>
@@ -120,11 +120,12 @@ export default {
 
 <style lang="scss" scoped>
 .displayBar {
-  flex: 7;
+  margin: 20px 0;
   border-radius: 4px;
   margin-right: 20px;
   display: flex;
   padding: 20px 0;
+  background-color: #f7f8fa;
 }
 .content {
   display: block;
@@ -134,6 +135,7 @@ export default {
   color: #202940;
 }
 .demandSize {
+  width: 80px;
   display: block;
   font-size: 12px;
   color: #718199;
@@ -147,5 +149,9 @@ export default {
 }
 .isBurl {
   color: #207efa;
+}
+
+.bronone {
+  border: none !important;
 }
 </style>

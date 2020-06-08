@@ -58,6 +58,4 @@ person(options.mock)
 contact(options)
 leave(options)
 
-contact({ mock: false })
-
 personnelSettings(options.mock)

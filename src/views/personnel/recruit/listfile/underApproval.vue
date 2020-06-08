@@ -48,7 +48,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getApprove } from '@/api/personnel/recruitment'
-import { validatenull } from '@/util/validate'
 export default {
   name: 'DetailsList',
   components: {
@@ -90,7 +89,8 @@ export default {
         },
         {
           label: '审批状态',
-          prop: 'status'
+          prop: 'status',
+          slot: true
         },
         {
           label: '申请时间',
@@ -107,7 +107,6 @@ export default {
         enablePagination: true
       },
       params: {
-        progress: 'Approved',
         userId: null
       },
       page: { currentPage: 1, size: 10, total: 0 },
@@ -152,27 +151,18 @@ export default {
     },
 
     handleSubmit(params) {
-      let isEmpty = validatenull(params)
-      if (isEmpty) {
+      this.decorator(params)
+      getApprove(params).then(() => {
         this.$message({
-          showClose: true,
-          message: '请注意 搜索条件不能为空',
-          type: 'warning'
+          message: '操作成功',
+          type: 'success'
         })
-      } else {
-        this.decorator(params)
-        getApprove(params).then(() => {
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
-        })
-      }
+      })
     },
     jumpToDetail(id) {
       // 跳转审批详情
       this.$router.push({
-        path: '/personnel/recruit/specificPage',
+        path: '/approval/appr/apprDetail',
         query: { id: id }
       })
     },

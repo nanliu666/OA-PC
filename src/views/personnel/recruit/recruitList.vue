@@ -29,6 +29,10 @@
           @tab-click="handleClick"
         >
           <el-tab-pane
+            label="审批中"
+            name="UnderApproval"
+          />
+          <el-tab-pane
             label="招聘中"
             name="Approved"
           />
@@ -37,7 +41,11 @@
             name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
           />
         </el-tabs>
-        <detailsList ref="demand" />
+        <under-approval v-if="activeName === 'UnderApproval'" />
+        <detailsList
+          v-else
+          ref="demand"
+        />
       </div>
 
       <div v-show="doNotsave">
@@ -64,14 +72,14 @@ export default {
   name: 'RecruitList',
   components: {
     DetailsList: () => import('./listfile/detailsList'),
-    AllList: () => import('./listfile/allList')
+    AllList: () => import('./listfile/allList'),
+    underApproval: () => import('./listfile/underApproval')
   },
   data() {
     return {
       doNotsave: false,
       Select: true,
-      choice: 'my',
-      activeName: 'Approved',
+      activeName: 'UnderApproval',
       allActiveName: 'allApproved'
     }
   },
