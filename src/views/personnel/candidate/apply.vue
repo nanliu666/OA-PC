@@ -273,6 +273,7 @@ export default {
   },
   data() {
     return {
+      apprNo: '',
       applyId: '',
       recruitmentId: '',
       personId: '',
@@ -505,7 +506,8 @@ export default {
       this.loading = true
       postOfferApply(params).then((res) => {
         this.applyId = res.id
-        this.$refs['apprProgress'].submit(res.id).then(() => {
+        this.$refs['apprProgress'].submit(res.id).then((res) => {
+          this.apprNo = res.apprNo
           this.loading = false
           this.$message({ type: 'success', message: '提交成功' })
           this.active = 3
@@ -514,14 +516,24 @@ export default {
     },
     jumpDetail() {
       let params = {
-        ...this.$route.query,
-        applyId: this.applyId
+        apprNo: this.apprNo,
+        formId: this.applyId,
+        formKey: 'PersonOfferApply'
       }
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
-        path: '/personnel/candidate/applyDetail',
+        path: '/approval/appr/apprDetail',
         query: params
       })
+      // return
+      // let params = {
+      //   ...this.$route.query,
+      //   applyId: this.applyId
+      // }
+      // this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      // this.$router.push({
+      //   path: '/personnel/candidate/applyDetail',
+      //   query: params
+      // })
     },
     back() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
