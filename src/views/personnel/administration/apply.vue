@@ -137,7 +137,7 @@ export default {
       rules: {
         summary: [{ required: true, message: '请简单说说您的工作心得', trigger: 'blur' }],
         advise: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }],
-        apprProgress: [{ validator: checkAppr }]
+        apprProgress: [{ required: true, validator: checkAppr }]
       }
     }
   },
