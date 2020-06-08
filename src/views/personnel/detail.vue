@@ -71,7 +71,10 @@
                 <el-col :span="4">
                   <div class="grid-content">
                     <span>上级领导：</span>
-                    <span style="color: #368AFA;">{{ allInfo.leaderName }}</span>
+                    <span
+                      style="color: #368AFA; cursor: pointer;"
+                      @click="checkLeaderInfo(allInfo.leaderId)"
+                    >{{ allInfo.leaderName }}</span>
                   </div>
                 </el-col>
               </el-row>
@@ -184,6 +187,9 @@ export default {
       } else {
         return ''
       }
+    },
+    checkLeaderInfo(leaderId) {
+      this.$router.push('/personnel/detail/' + leaderId)
     },
     getBasicInfo() {
       let params = {

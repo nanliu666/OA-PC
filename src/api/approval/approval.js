@@ -84,3 +84,10 @@ export const getApplyRecord = (params) => {
 export const cancelApply = (params) => {
   return post('/appr/v1/appr/apply/cancel', params)
 }
+/**
+ * 审批申请提交接口
+ * @param {String} params
+ * */
+export const createApprApply = (params) => {
+  return post('/appr/v1/appr/apply/submit', params)
+}

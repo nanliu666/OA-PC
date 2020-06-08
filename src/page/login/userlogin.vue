@@ -172,7 +172,9 @@ export default {
             .dispatch('LoginByUsername', this.loginForm)
             .then((res) => {
               this.$router.push({ path: this.tagWel.value })
-              this.$store.dispatch('GetUserPrivilege', res.user_id)
+              this.$store.dispatch('GetUserPrivilege', res.user_id).then((menuAll) => {
+                this.$router.$avueRouter.formatRoutes(menuAll, true)
+              })
               loading.close()
             })
             .catch(() => {
