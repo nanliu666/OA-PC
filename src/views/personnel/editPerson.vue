@@ -331,6 +331,7 @@ export default {
   data() {
     return {
       personId: null,
+      recruitmentId: null,
       form: {
         recruitmentId: null,
         name: null,
@@ -405,11 +406,16 @@ export default {
     this.isTalent = this.$route.query.isTalent
     await this.getRecruitment()
     this.personId && this.getPersonInfo()
+    this.recruitmentId && (this.form.recruitmentId = this.recruitmentId)
   },
   activated() {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
+    this.recruitmentId = this.$route.query.recruitmentId
     this.personId && this.getPersonInfo()
+    if (this.form.recruitmentId && this.recruitmentId != this.form.recruitmentId) {
+      this.form.recruitmentId = this.$route.query.recruitmentId
+    }
   },
   methods: {
     inputNumber(value, key) {
@@ -431,8 +437,11 @@ export default {
       return true
     },
     getRecruitment() {
-      getRecruitmentList().then((res) => {
-        this.recruitmentList = res
+      return new Promise((resolve) => {
+        getRecruitmentList().then((res) => {
+          this.recruitmentList = res
+          resolve()
+        })
       })
     },
     getPersonInfo() {

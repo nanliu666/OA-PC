@@ -146,6 +146,7 @@
                     :minlength="basic.minLen"
                     :maxlength="basic.maxLen"
                     class="widthSet"
+                    show-word-limit
                     :disabled="basic.disabled || disabled"
                     :placeholder="basic.message"
                     @blur="blur(basic, basic.attrId === '1' ? true : false)"
@@ -161,6 +162,70 @@
                     :select-params="orgOptions.config.selectParams"
                     :tree-params="orgOptions.config.treeParams"
                   />
+                </template>
+                <template v-if="basic.inType == 12">
+                  <div class="flex flex-flow flex-items ">
+                    <el-input
+                      v-model.number="form[basic.props]"
+                      :minlength="basic.minLen"
+                      :maxlength="basic.maxLen"
+                      class="widthSet"
+                      :placeholder="basic.message"
+                      :disabled="basic.disabled || disabled"
+                      @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                    /><span style="margin: 0 12px">至</span>
+                    <el-input
+                      v-model.number="form[basic.propscomplex]"
+                      :minlength="basic.minLen"
+                      :maxlength="basic.maxLen"
+                      class="widthSet"
+                      :placeholder="basic.message"
+                      :disabled="basic.disabled || disabled"
+                      @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                    />
+                  </div>
+                </template>
+                <template v-if="basic.inType == 13">
+                  <div class="flex flex-flow flex-items ">
+                    <el-input
+                      v-model.number="form[basic.props]"
+                      :minlength="basic.minLen"
+                      :maxlength="basic.maxLen"
+                      class="widthSet"
+                      :disabled="basic.disabled || disabled"
+                      @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                    />
+                  </div>
+                </template>
+                <template v-if="basic.inType == 14">
+                  <el-radio-group
+                    v-model="form[basic.props]"
+                    :disabled="basic.disabled || disabled"
+                    @change="blur(basic.value)"
+                  >
+                    <el-radio
+                      v-for="item in basic.value"
+                      :key="item.value"
+                      :label="item.value"
+                    >
+                      {{ item.label }}
+                    </el-radio>
+                  </el-radio-group>
+                  <el-form-item
+                    v-show="explainshow"
+                    :label="basic.explainName"
+                  >
+                    <el-input
+                      v-model="form[basic.explain]"
+                      type="textarea"
+                      :minlength="basic.minLen"
+                      :maxlength="basic.maxLen"
+                      class="widthSet"
+                      show-word-limit
+                      :placeholder="basic.message"
+                      @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                    />
+                  </el-form-item>
                 </template>
               </el-form-item>
             </el-col>
@@ -199,6 +264,7 @@ export default {
   },
   data() {
     return {
+      explainshow: false,
       orgOptions: {
         props: {
           label: 'orgName',

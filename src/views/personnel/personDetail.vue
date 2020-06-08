@@ -573,7 +573,8 @@ export default {
           sex: row.sex,
           email: row.email,
           phonenum: row.phonenum,
-          recruitmentId: row.recruitmentId
+          recruitmentId: row.recruitmentId,
+          applyId: row.applyId
         }
       })
     },

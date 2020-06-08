@@ -78,13 +78,24 @@
               >
                 <span class="info-item-value">{{ item.relationship }}</span>
               </el-form-item>
-
+              <!-- debug -->
               <el-form-item
                 v-show="curItemIndex == index"
                 label="紧急联系人关系:"
-                prop="relationship"
               >
-                <el-input v-model="item.relationship" />
+                <el-select
+                  v-model="item.relationship"
+                  placeholder="请选择"
+                  clearable
+                >
+                  <el-option
+                    v-for="item in UserRelationshipList"
+                    :key="item.id"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+                <!-- <el-input v-model="item.relationship" /> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -189,11 +200,14 @@ export default {
             }
           }
         ]
-      }
+      },
+      // 紧急联系人数据
+      UserRelationshipList: []
     }
   },
   created() {
     this.getBasicInfo()
+    this.getUserRelationship()
   },
   methods: {
     addInfo() {
@@ -287,6 +301,20 @@ export default {
       } else {
         this.$set(this.emergencyInfo, index, deepClone(curItem))
       }
+    },
+    // 获取紧急联系人字典组数据
+    getUserRelationship() {
+      this.$store.dispatch('CommonDict', 'UserRelationship').then((res) => {
+        let UserRelationshipList = []
+        res.forEach((item) => {
+          UserRelationshipList.push({
+            id: item.id,
+            label: item.dictValue,
+            value: item.dictKey
+          })
+        })
+        this.UserRelationshipList = UserRelationshipList
+      })
     }
   }
 }

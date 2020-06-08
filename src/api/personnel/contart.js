@@ -50,3 +50,10 @@ export const postContractRecord = (params) => {
 export const postContractTodo = (params) => {
   return post('/user/v1/user/contract/todo', params)
 }
+/**
+ * @author guanfenda
+ *
+ *@desc 员工合同续签申请查询接口
+ *
+ * */
+export const postContractApply = (params) => post('/user/v1/user/contract/apply', params)
