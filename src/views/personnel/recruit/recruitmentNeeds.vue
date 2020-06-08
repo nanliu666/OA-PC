@@ -34,7 +34,7 @@
             <el-form-item prop="apprProgress">
               <appr-progress
                 ref="apprProgress"
-                form-key="UserFormalInfo"
+                form-key="Recruitment"
               />
             </el-form-item>
           </el-form>
@@ -77,7 +77,7 @@ export default {
   components: {
     CancelEdit: () => import('@/views/personnel/recruit/details/cancelEdit'),
     InputArray: () => import('@/views/personnel/candidate/components/inputArray'),
-    apprProgress: () => import('@/components/appr-progress/apprProgress')
+    ApprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   data() {
     var checkAppr = (rule, value, callback) => {

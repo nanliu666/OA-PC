@@ -42,7 +42,12 @@
         </el-button>
       </template>
 
-      <template />
+      <template
+        slot="status"
+        slot-scope="{ row }"
+      >
+        {{ calcStataus(row.status) }}
+      </template>
     </common-table>
   </div>
 </template>
@@ -166,6 +171,9 @@ export default {
     sizeChange(pageSize) {
       this.page.size = pageSize
       this.getTableData()
+    },
+    calcStataus(status) {
+      return { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' }[status]
     }
   }
 }
