@@ -1,15 +1,19 @@
 <template>
   <div>
-    <div class="flow ">
+    <div
+      class="flow"
+      @mouseleave="leave"
+    >
       <div
         v-for="(node, index) in approvalList"
         :key="index"
         class="row"
-        @mouseleave="leave"
       >
         <div class="edit">
           <div class="flex-flow flex flex-items edit_no">
-            <i class="spot" /> <span class="staff">{{ node.name }}</span>
+            <div class="line-spot">
+              <i class="spot" /> <span class="staff">{{ node.name }}</span>
+            </div>
             <el-link
               type="primary"
               class="edit_staff"
@@ -52,7 +56,9 @@
                 v-else
                 class="flex flex-flow-column flex-items edit_icon"
               >
+                <div />
                 <div class="spot_icon" />
+                <div />
               </div>
             </div>
             <div class="flex-flow flex flex-items edit_row">
@@ -106,37 +112,27 @@
             </div>
           </div>
         </div>
-        <div class="line flex flex-items">
+        <div class="line flex flex-items flex-flow-w">
           <div
-            v-if="!node.users.length > 0"
             class="img_icon"
             @click="handleAdduser(node, index)"
           >
             +
           </div>
           <div
-            v-else
+            v-for="(it, i) in node.users"
+            :key="i"
             class="img_icons"
           >
             <i
               class="icon-close el-icon-close"
-              @click="deleteNode(node, index)"
+              @click="deleteNode(node, i)"
             />
             <div class="flex flex-justify flex-flow-column flex-items">
-              <el-image
-                class="img"
-                fit="cover"
-                src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
-              >
-                <div
-                  slot="error"
-                  class="image-slot"
-                >
-                  <i class="el-icon-picture-outline" />
-                </div>
-              </el-image>
+              <i class="iconfont  icon-approval-checkin-bicolor imgs" />
               <div class="userName">
-                {{ node.users && node.users[0].name }}
+                {{ it.name }}
+                <!--                     {{node.users.length>0 &&node.users[0].name}}-->
               </div>
             </div>
           </div>
@@ -146,6 +142,7 @@
     <approvalDialog
       v-if="dialogVisible"
       :visible.sync="dialogVisible"
+      :users="node.users"
       @addUser="adduser"
     />
   </div>
@@ -194,12 +191,21 @@ export default {
      *
      * */
     adduser(list) {
-      let params = {
-        id: list.id,
-        name: list.name,
-        workNo: list.workNo
-      }
-      this.approvalList[this.index].users.push(params)
+      let idList = []
+      this.approvalList[this.index].users.map((it) => idList.push(it.id))
+      list.map((it) => {
+        if (!idList.includes(it.id)) {
+          let params = {
+            id: it.id,
+            name: it.name,
+            workNo: it.workNo
+          }
+          this.approvalList[this.index].users.push(params)
+        }
+
+        // let set =this.approvalList[this.index].users
+        // this.approvalList[this.index].users = new Set(set)
+      })
     },
 
     /**
@@ -268,8 +274,8 @@ export default {
      * @author guanfenda
      * @desc 删除节点用户
      * */
-    deleteNode(node, index) {
-      this.approvalList[index].users = []
+    deleteNode(node, i) {
+      node.users.splice(i, 1)
     },
     /**
      *  @author guanfenda
@@ -303,8 +309,11 @@ export default {
   margin-top: 30px;
   .line {
     border-left: 1px solid #1e9fff;
-    height: 100px;
+    min-height: 120px;
     position: relative;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row wrap !important;
     .img_icon {
       width: 60px;
       height: 60px;
@@ -315,15 +324,16 @@ export default {
       margin-left: 40px;
       line-height: 60px;
       text-align: center;
+      margin-bottom: 30px;
     }
     .img_icons {
       width: 60px;
       height: 60px;
-
+      margin-bottom: 30px;
       /*border: 1px dashed #909399;*/
       /*color: #909399;*/
       /*overflow: hidden;*/
-      background: #f2f6fc;
+      /*background: #f2f6fc;*/
       margin-left: 40px;
       line-height: 60px;
       text-align: center;
@@ -339,10 +349,18 @@ export default {
         padding: 3px;
         font-size: 8px !important;
       }
-      .img {
+      .imgs {
         border-radius: 50%;
+        display: inline-block;
+        line-height: 60px;
+        font-size: 30px;
         width: 60px;
         height: 60px;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        background: #207efa;
+        color: #fff;
       }
     }
   }
@@ -387,6 +405,7 @@ export default {
   }
   .tip {
     margin-left: 10px;
+    margin-top: -4px;
   }
   .button_icon {
     margin-left: 10px;
@@ -404,9 +423,9 @@ export default {
     text-overflow: ellipsis;
     /*text-align: left;*/
   }
-  /*.edit_no{*/
-  /*  display: none;*/
-  /*}*/
+  .edit_no {
+    /*height: 58px;*/
+  }
   .edit_row {
     display: none;
   }
@@ -419,6 +438,10 @@ export default {
       border-radius: 50%;
       background: #1e9fff;
       margin-left: -5px;
+    }
+    .line-spot {
+      height: 58px;
+      line-height: 58px;
     }
     .staff {
       display: inline-block;
@@ -444,6 +467,7 @@ export default {
     }
     .edit_staff {
       font-size: 16px;
+      display: inline-block;
     }
   }
 }
