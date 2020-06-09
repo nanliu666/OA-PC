@@ -13,50 +13,10 @@
         show-icon
       />
       <el-row
-        :gutter="24"
         type="flex"
         class="introduce"
       >
-        <!-- <div class="state">
-          <div class="on">
-            <div>
-              销售经理
-              <div class="bottomBox">
-                职位名称
-              </div>
-            </div>
-            <div>
-              2020-02-12
-              <div class="bottomBox">
-                最迟到岗日期
-              </div>
-            </div>
-            <div>
-              特急
-              <div class="bottomBox">
-                紧急程度
-              </div>
-            </div>
-            <div>
-              20
-              <div class="bottomBox">
-                需求总数
-              </div>
-            </div>
-            <div>
-              10
-              <div class="bottomBox">
-                已入职
-              </div>
-            </div>
-            <div>
-              50%
-              <div class="bottomBox">
-                招聘进度
-              </div>
-            </div>
-          </div>
-        </div> -->
+        <Introduce />
       </el-row>
       <el-form
         ref="users"
@@ -124,8 +84,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getStaffBasicInfo } from '@/api/personalInfo'
+import Introduce from './introduce'
 export default {
   name: 'Chang',
+  components: {
+    Introduce
+  },
   data() {
     return {
       inputdisabled: true,
