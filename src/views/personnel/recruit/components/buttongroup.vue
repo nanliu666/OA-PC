@@ -90,14 +90,14 @@ export default {
     ChangeContent() {
       this.$router.push({
         path: '/personnel/recruit/components/chang',
-        query: { id: this.$router.id }
+        query: { id: this.$route.query.id }
       })
     },
 
     JumpNewlybuild() {
       this.$router.push({
         path: '/personnel/recruit/recruitmentNeeds',
-        query: { id: this.$router.id }
+        query: { id: this.$route.query.id }
       })
     }
   }

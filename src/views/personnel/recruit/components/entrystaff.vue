@@ -21,7 +21,7 @@
           slot="sex"
           slot-scope="{ row }"
         >
-          {{ calcSex(row.sex) }}
+          {{ row.sex === 0 ? '男' : '女' }}
         </template>
         <template
           slot="educationalLevel"
@@ -106,11 +106,8 @@ export default {
     })
   },
   methods: {
-    jumpToDetail() {},
-    ReplicationCache(id) {
-      getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
-        this.data = res.data
-      })
+    jumpToDetail(personId) {
+      this.$router.push('/personnel/detail/' + personId)
     },
     getData() {
       getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
@@ -118,18 +115,10 @@ export default {
         this.childData = res
       })
     },
-    calcSex(sex) {
-      let typeWord
-      let whoSex = [
-        { sex: 1, result: '男' },
-        { sex: 0, result: '女' }
-      ]
-      whoSex.forEach((item) => {
-        if (item.sex === sex) {
-          typeWord = item.result
-        }
+    ReplicationCache(id) {
+      getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
+        this.data = res
       })
-      return typeWord
     },
     calcEducation(educationalLevel) {
       let typeLevel
