@@ -54,6 +54,7 @@
     <Again
       ref="Again"
       :visible.sync="createAssigned"
+      @dataJump="dataJump"
     />
   </div>
 </template>
@@ -85,6 +86,7 @@ export default {
   },
   methods: {
     DistributionContent() {
+      this.$set(this.status, 'jumpnot', 'yes')
       this.$refs.Again.init(this.status)
     },
     ChangeContent() {
@@ -99,6 +101,10 @@ export default {
         path: '/personnel/recruit/recruitmentNeeds',
         query: { id: this.$route.query.id }
       })
+    },
+    dataJump() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.push({ path: '/personnel/recruit/recruitList' })
     }
   }
 }

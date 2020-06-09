@@ -22,7 +22,7 @@
               >
                 <template v-if="basic.inType == 1">
                   <el-input
-                    v-model="form[basic.props]"
+                    v-model.number="form[basic.props]"
                     :minlength="basic.minLen"
                     :maxlength="basic.maxLen"
                     class="widthSet"
@@ -35,7 +35,7 @@
                 </template>
                 <template v-if="basic.inType == 2">
                   <el-select
-                    v-model="form[basic.props]"
+                    v-model.number="form[basic.props]"
                     :placeholder="basic.message"
                     class="widthSet select"
                     :disabled="basic.disabled || disabled"
@@ -172,6 +172,7 @@
                       class="widthSet"
                       :placeholder="basic.message"
                       :disabled="basic.disabled || disabled"
+                      @input="(value) => inputPhonenum(value, basic.props, basic.dataType)"
                       @blur="blur(basic, basic.attrId === '1' ? true : false)"
                     /><span style="margin: 0 12px">至</span>
                     <el-input
@@ -182,6 +183,7 @@
                       :placeholder="basic.message"
                       :disabled="basic.disabled || disabled"
                       @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                      @input="(value) => inputPhonenum(value, basic.propscomplex, basic.dataType)"
                     />
                   </div>
                 </template>

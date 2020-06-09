@@ -252,7 +252,7 @@ export default {
       }
     },
     onSubmitted() {
-      let accumulation = this.calWhetherBeyond()
+      let accumulation = this.calWhetherBeyond('onSubmitted')
       if (accumulation !== this.Numberofpeople) {
         this.$message({
           showClose: true,
@@ -270,19 +270,22 @@ export default {
         this.$emit('getTableData')
       }
     },
-    calWhetherBeyond() {
+    calWhetherBeyond(Submitted) {
       var total = null
       if (typeof this.dynamicValidateForm.users !== 'undefined') {
         this.dynamicValidateForm.users.forEach((item, index) => {
           this.dynamicValidateForm.users[index].operatorType = 'Update'
           total += item.taskNum
         })
-        if (total > this.Numberofpeople) {
-          this.$message({
-            showClose: true,
-            message: '请注意！ 需求总人数不能大于待分配人数',
-            type: 'error'
-          })
+        // eslint-disable-next-line valid-typeof
+        if (typeof Submitted !== 'onSubmitted') {
+          if (total > this.Numberofpeople) {
+            this.$message({
+              showClose: true,
+              message: '请注意！ 需求总人数不能大于待分配人数',
+              type: 'error'
+            })
+          }
         }
         return total
       }

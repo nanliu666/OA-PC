@@ -1,3 +1,4 @@
+/* eslint-disable valid-typeof */
 <template>
   <el-dialog
     title="分配招聘需求"
@@ -160,6 +161,7 @@ export default {
       Numberofpeople: null,
       Assigned: 4,
       EmerType: [],
+      jumpnot: null,
       list: {
         jobName: '销售经理',
         emerType: '特急',
@@ -205,7 +207,8 @@ export default {
     },
     async init(row) {
       this.list = row
-      let { id, entryNum, needNum } = row
+      let { id, entryNum, needNum, jumpnot } = row
+      this.jumpnot = jumpnot
       this.recruitmentId = id
       this.Totalnumberpeople = needNum
       this.Assigned = entryNum
@@ -214,8 +217,15 @@ export default {
       this.$emit('update:visible', true)
     },
     handleClose() {
+      if (typeof this.dynamicValidateForm.users !== 'undefined') {
+        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
+        itemArr[0].userId = null
+        this.dynamicValidateForm.users = itemArr
+      }
       this.$emit('update:visible', false)
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      if (this.jumpnot === 'yes') {
+        this.$emit('dataJump')
+      }
     },
     requeWorkList(page) {
       getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
@@ -236,22 +246,24 @@ export default {
         this.dynamicValidateForm.users.splice(index, 1)
       }
     },
-    calWhetherBeyond() {
+    calWhetherBeyond(Submitted) {
       var total = null
       this.dynamicValidateForm.users.forEach((item) => {
         total += item.taskNum
       })
-      if (total > this.Numberofpeople) {
-        this.$message({
-          showClose: true,
-          message: '请注意！ 需求总人数不能大于待分配人数',
-          type: 'error'
-        })
+      if (Submitted !== 'onSubmitted') {
+        if (total >= this.Numberofpeople) {
+          this.$message({
+            showClose: true,
+            message: '请注意！ 需求总人数不能大于待分配人数',
+            type: 'error'
+          })
+        }
       }
       return total
     },
     onSubmitted() {
-      let accumulation = this.calWhetherBeyond()
+      let accumulation = this.calWhetherBeyond('onSubmitted')
       if (accumulation !== this.Numberofpeople) {
         this.$message({
           showClose: true,
