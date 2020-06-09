@@ -53,10 +53,10 @@
               <el-col :span="24">
                 <el-form-item
                   label="更改原因"
-                  prop="operatorType"
+                  prop="reason"
                 >
                   <el-select
-                    v-model="users.operatorType"
+                    v-model="users.reason"
                     size="medium"
                     placeholder="请选择"
                   >
@@ -72,7 +72,7 @@
                 <el-form-item prop="apprProgress">
                   <appr-progress
                     ref="apprProgress"
-                    form-key="RecruitmentChangeNum  "
+                    form-key="UserFormalInfo"
                   />
                 </el-form-item>
               </el-col>
@@ -100,7 +100,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Introduce from './introduce'
-import { getRecruitmentDetail } from '@/api/personnel/recruitment'
+import { getRecruitmentDetail, getChange } from '@/api/personnel/recruitment'
 
 export default {
   name: 'Chang',
@@ -120,11 +120,11 @@ export default {
       inputdisabled: true,
       Status: null,
       users: {
-        taskNum: '',
-        operatorType: ''
+        taskNum: null,
+        reason: null
       },
       rules: {
-        operatorType: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }],
+        reason: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }],
         apprProgress: [{ validator: checkAppr }]
       },
       operatorTypeList: [
@@ -152,13 +152,22 @@ export default {
     })
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    submitForm() {
+      this.$refs['users'].validate((valid) => {
         if (valid) {
-          // this.$refs['apprProgress'].submit().then(() => {
-          //     this.$message({ type: 'success', message: '提交成功' })
-          //     this.goBack()
-          //   })
+          getChange({
+            recruitmentId: this.$route.query.id,
+            userId: this.userId,
+            changeNum: this.users.taskNum,
+            reason: this.users.reason
+          }).then((res) => {
+            if (res && res.id) {
+              this.$refs['apprProgress'].submit(res.id).then(() => {
+                this.$message({ type: 'success', message: '提交成功' })
+                this.goBack()
+              })
+            }
+          })
         }
       })
     },
