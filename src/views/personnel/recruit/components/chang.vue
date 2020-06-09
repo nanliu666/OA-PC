@@ -16,7 +16,7 @@
         type="flex"
         class="introduce"
       >
-        <introduce />
+        <introduce :status="Status" />
       </el-row>
       <el-form
         ref="users"
@@ -83,8 +83,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getStaffBasicInfo } from '@/api/personalInfo'
 import Introduce from './introduce'
+import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 export default {
   name: 'Chang',
   components: {
@@ -93,6 +93,7 @@ export default {
   data() {
     return {
       inputdisabled: true,
+      Status: null,
       users: {
         taskNum: '',
         operatorType: ''
@@ -120,10 +121,9 @@ export default {
     ...mapGetters(['userId'])
   },
   mounted() {
-    let params = {
-      userId: this.userId
-    }
-    getStaffBasicInfo(params).then(() => {})
+    getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
+      this.Status = res
+    })
   },
   methods: {
     submitForm(formName) {

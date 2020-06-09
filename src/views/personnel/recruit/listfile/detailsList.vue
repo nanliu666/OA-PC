@@ -363,9 +363,10 @@ export default {
         this.searchConfig.popoverOptions[3].options = res
       })
     },
-    JumpChange() {
+    JumpChange(row) {
       this.$router.push({
-        path: '/personnel/recruit/components/chang'
+        path: '/personnel/recruit/components/chang',
+        query: { id: row.id }
       })
     }
   }
