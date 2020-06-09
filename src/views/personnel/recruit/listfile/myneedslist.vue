@@ -240,10 +240,6 @@ export default {
         {
           choice: 'EmerType',
           target: 3
-        },
-        {
-          choice: 'EducationalLevel',
-          target: 4
         }
       ],
       WorkYear: [],
@@ -346,6 +342,9 @@ export default {
           this.searchConfig.popoverOptions[item.target].options = res
         })
       })
+      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+        this.searchConfig.popoverOptions[3].options = res
+      })
     },
     JumpCandidate(row) {
       this.$router.push({
@@ -358,20 +357,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  h4 {
-    font-size: 18px;
-  }
-}
-.bigText {
-  font-weight: 500;
-  font-size: 18px;
-}
-
 .resetEdge {
   position: absolute;
   right: 62px;

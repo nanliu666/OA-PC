@@ -191,7 +191,8 @@ export let NewRequirement = {
       explainName: '请补充招聘理由',
       props: 'reason',
       explain: 'reasonNote',
-      span: 24
+      span: 24,
+      rules: [{ required: true, message: '请选择招聘原因', trigger: 'blur' }]
     },
     {
       attrId: '17', // ：key唯一值

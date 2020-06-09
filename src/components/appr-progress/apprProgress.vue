@@ -75,7 +75,7 @@ export default {
   computed: {
     ...mapGetters(['userInfo']),
     title() {
-      return `${this.userInfo.name}发起了${FormKeysCN[this.formKey]}审批`
+      return `${this.userInfo.nick_name}发起了${FormKeysCN[this.formKey]}审批`
     }
   },
   watch: {
@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     getApprProcess(formKey) {
-      getAppProcess(formKey).then((res) => {
+      getAppProcess({ formKey }).then((res) => {
         this.progress = res
       })
     },
@@ -110,7 +110,7 @@ export default {
         title: this.title,
         formId,
         userId: this.userInfo.user_id,
-        progressId: this.progress.id,
+        processId: this.progress.id,
         nodes: this.progress.nodes.map((node) => ({
           nodeId: node.id,
           userId: node.user && node.user.id,

@@ -16,12 +16,10 @@
       class="apply"
     >
       <div class="step">
-        <el-steps
-          :active="active"
-          finish-status="success"
-        >
+        <el-steps :active="active">
           <el-step title="基本信息" />
           <el-step title="薪资福利信息" />
+          <el-step title="审批流程" />
           <el-step title="完成" />
         </el-steps>
       </div>
@@ -132,6 +130,50 @@
             </div>
             <div>
               <el-button
+                type="primary"
+                size="medium"
+                @click="handleTownext"
+              >
+                下一步
+              </el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-show="active === 2">
+        <div class="contain">
+          <div class="title content">
+            审批流程
+          </div>
+          <div class="flow">
+            <div class=" flex-flow flex flex-justify-start flex-items">
+              <div class="spot" />
+              <div class="person">
+                审批人
+              </div>
+              <apprProgress
+                ref="apprProgress"
+                form-key="PersonOfferApply"
+              />
+            </div>
+
+            <div class="line" />
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="next flex flex-justify-between flex-items">
+            <div>
+              <el-button
+                type="primary"
+                size="medium"
+                @click="handlePreStep"
+              >
+                上一步
+              </el-button>
+            </div>
+            <div>
+              <el-button
                 size="medium"
                 @click="close"
               >
@@ -140,7 +182,7 @@
               <el-button
                 type="primary"
                 size="medium"
-                @click="handleTownext"
+                @click="onsubmit"
               >
                 提交
               </el-button>
@@ -148,7 +190,7 @@
           </div>
         </div>
       </div>
-      <div v-show="active === 2">
+      <div v-show="active === 3">
         <div class="success">
           <div
             class="flex flex-justify flex-flow-column flex-items"
@@ -220,17 +262,19 @@ import {
   getposition,
   getTree,
   postOfferApply,
-  getOfferApply,
   getRecruitmentDetail
 } from '@/api/personnel/selectedPerson'
 
 export default {
   name: 'Apply',
   components: {
-    inputArray
+    inputArray,
+    apprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   data() {
     return {
+      apprNo: '',
+      applyId: '',
       recruitmentId: '',
       personId: '',
       loading: false,
@@ -299,8 +343,8 @@ export default {
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
       this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'dictKey')
     })
-    await this.getData()
     this.getRecruitment()
+
     // ContractType
   },
   methods: {
@@ -308,33 +352,6 @@ export default {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/candidate/candidateManagement'
-      })
-    },
-    getData() {
-      return new Promise((resolve, reject) => {
-        getOfferApply({ personId: this.personId })
-          .then((res) => {
-            if (res.companyId) {
-              this.infoForm = {
-                ...this.infoForm,
-                ...res
-              }
-              if (res.provinceCode && res.cityCode) {
-                this.infoForm.city = [res.provinceCode, res.cityCode]
-              }
-              res.isYangl === 1 && this.infoForm.risks.push('isYangl')
-              res.isYil === 1 && this.infoForm.risks.push('isYil')
-              res.isGs === 1 && this.infoForm.risks.push('isGs')
-              res.isShiy === 1 && this.infoForm.risks.push('isShiy')
-              res.isGjj === 1 && this.infoForm.risks.push('isGjj')
-              res.isShengy === 1 && this.infoForm.risks.push('isShengy')
-            }
-
-            resolve()
-          })
-          .catch(() => {
-            reject()
-          })
       })
     },
     getRecruitment() {
@@ -423,7 +440,7 @@ export default {
         })
     },
     handlePreStep() {
-      this.active = 0
+      this.active -= 1
     },
     handleNext() {
       // this.active =1
@@ -449,53 +466,74 @@ export default {
         })
       ).then((res) => {
         if (res.includes(false)) return
-
-        let workProvinceCode = this.infoForm.city[0],
-          workProvinceName = this.infoForm.pathLabels[0] || this.infoForm.workProvinceName,
-          workCityCode = this.infoForm.city[1],
-          workCityName = this.infoForm.pathLabels[1] || this.infoForm.workCityName,
-          risks = this.infoForm.risks,
-          isYangl = risks.includes('isYangl') ? 1 : 0,
-          isYil = risks.includes('isYil') ? 1 : 0,
-          isGs = risks.includes('isGs') ? 1 : 0,
-          isShengy = risks.includes('isShengy') ? 1 : 0,
-          isShiy = risks.includes('isYangl') ? 1 : 0,
-          isGjj = risks.includes('isGjj') ? 1 : 0
-        let params = {
-          ...this.infoForm,
-          ...this.infoForm.risks,
-          workProvinceCode,
-          workProvinceName,
-          workCityCode,
-          workCityName,
-          isYangl,
-          isYil,
-          isGs,
-          isShengy,
-          isShiy,
-          isGjj
-        }
-        this.loading = true
-        postOfferApply(params).then(() => {
-          this.loading = false
-          this.$message.success('提交成功')
-        })
         this.active = 2
+      })
+    },
+    /**
+     * @author guanfenda
+     *
+     * */
+    onsubmit() {
+      if (!this.$refs['apprProgress'].validate()) {
+        this.$message.warning('请选择审批人')
+        return
+      }
+      let workProvinceCode = this.infoForm.city[0],
+        workProvinceName = this.infoForm.pathLabels[0] || this.infoForm.workProvinceName,
+        workCityCode = this.infoForm.city[1],
+        workCityName = this.infoForm.pathLabels[1] || this.infoForm.workCityName,
+        risks = this.infoForm.risks,
+        isYangl = risks.includes('isYangl') ? 1 : 0,
+        isYil = risks.includes('isYil') ? 1 : 0,
+        isGs = risks.includes('isGs') ? 1 : 0,
+        isShengy = risks.includes('isShengy') ? 1 : 0,
+        isShiy = risks.includes('isYangl') ? 1 : 0,
+        isGjj = risks.includes('isGjj') ? 1 : 0
+      let params = {
+        ...this.infoForm,
+        ...this.infoForm.risks,
+        workProvinceCode,
+        workProvinceName,
+        workCityCode,
+        workCityName,
+        isYangl,
+        isYil,
+        isGs,
+        isShengy,
+        isShiy,
+        isGjj
+      }
+      this.loading = true
+      postOfferApply(params).then((res) => {
+        this.applyId = res.id
+        this.$refs['apprProgress'].submit(res.id).then((res) => {
+          this.apprNo = res.apprNo
+          this.loading = false
+          this.$message({ type: 'success', message: '提交成功' })
+          this.active = 3
+        })
       })
     },
     jumpDetail() {
       let params = {
-        ...this.$route.query
+        apprNo: this.apprNo,
+        formId: this.applyId,
+        formKey: 'PersonOfferApply'
       }
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
-        path: '/personnel/candidate/applyDetail',
-        // sex: row.sex,
-        // email: row.email,
-        // phonenum:row.phonenum,
-        // recruitmentId: row.recruitmentId
+        path: '/approval/appr/apprDetail',
         query: params
       })
+      // return
+      // let params = {
+      //   ...this.$route.query,
+      //   applyId: this.applyId
+      // }
+      // this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      // this.$router.push({
+      //   path: '/personnel/candidate/applyDetail',
+      //   query: params
+      // })
     },
     back() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
@@ -545,9 +583,14 @@ export default {
     font-size: 16px;
   }
 }
-
+.title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
 .contain {
   margin-top: 50px;
+  min-height: 300px;
 }
 
 .footer {
@@ -567,5 +610,70 @@ export default {
 }
 .back {
   cursor: pointer;
+}
+
+.flow {
+  /*margin-bottom: 100px;*/
+  /*margin-top: 30px;*/
+  padding: 0 200px;
+  .line {
+    border-left: 1px solid #1e9fff;
+    min-height: 120px;
+    position: relative;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row wrap !important;
+  }
+  .line:last-child {
+    border-left: 1px solid transparent;
+  }
+  .spot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #1e9fff;
+    margin-left: -5px;
+  }
+  .person {
+    margin: 0 20px;
+  }
+
+  /*.row:first-child {*/
+  /*  .edit {*/
+  /*    .delete-icon {*/
+  /*      !*display: none !important;*!*/
+  /*    }*/
+
+  /*    !*.img_icon{*!*/
+  /*    !*  border: 1px dashed #1e9fff;*!*/
+  /*    !*  color: #1e9fff;*!*/
+  /*    !*}*!*/
+  /*  }*/
+  /*}*/
+  /*.row:not(:first-child) {*/
+  /*  !*.edit{*!*/
+  /*  .spot_icon {*/
+  /*    display: none !important;*/
+  /*  }*/
+  /*  !*}*!*/
+  /*}*/
+  /*.row:hover {*/
+  /*  .edit_no {*/
+  /*    display: none;*/
+  /*  }*/
+  /*  .edit_row {*/
+  /*    display: inline-block;*/
+  /*    display: flex;*/
+  /*    display: -webkit-flex;*/
+  /*    flex-flow: row nowrap;*/
+  /*  }*/
+  /*  .line {*/
+  /*    .img_icon {*/
+  /*      border: 1px dashed #1e9fff !important;*/
+  /*      color: #1e9fff !important;*/
+  /*    }*/
+  /*  }*/
+  /*}*/
 }
 </style>
