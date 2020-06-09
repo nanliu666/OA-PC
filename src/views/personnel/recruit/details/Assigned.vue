@@ -292,12 +292,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pageHeader {
-  height: 48px;
-  line-height: 48px;
-  font-size: 18px;
-}
-
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #ccc;
 }
@@ -324,21 +318,6 @@ export default {
   color: #212a3f;
   text-align: right;
   font-weight: 600;
-}
-
-.frame {
-  border-right: 1px solid #ccc;
-  margin-bottom: 20px;
-}
-
-.content {
-  display: block;
-  font-family: PingFangSC-Regular;
-  font-size: 16px;
-  color: #202940;
-  line-height: 24px;
-  margin-bottom: 10px;
-  text-align: center;
 }
 
 /deep/ .el-input__inner {

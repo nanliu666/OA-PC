@@ -51,8 +51,8 @@ export default {
       this.$emit('update:visible', true)
     },
     handleClose() {
-      debugger
       this.$emit('update:visible', false)
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
     },
     goBack() {
       this.$router.go(-1)

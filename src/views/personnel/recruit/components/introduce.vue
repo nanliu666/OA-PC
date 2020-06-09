@@ -1,4 +1,3 @@
-/* eslint-disable vue/prop-name-casing */
 <template>
   <div>
     <el-row

@@ -19,7 +19,7 @@
         style="float: right;margin-top: -17px"
         size="medium"
         type="primary"
-        @click="JumpNewlybuild"
+        @click="JumpNewlybuild()"
       >
         复制
       </el-button>
@@ -92,13 +92,14 @@ export default {
         path: '/personnel/recruit/components/chang',
         query: { id: this.$router.id }
       })
+    },
+
+    JumpNewlybuild() {
+      this.$router.push({
+        path: '/personnel/recruit/recruitmentNeeds',
+        query: { id: this.$router.id }
+      })
     }
-  },
-  JumpNewlybuild() {
-    this.$router.push({
-      path: '/personnel/recruit/recruitmentNeeds',
-      query: { id: this.$router.id }
-    })
   }
 }
 </script>
