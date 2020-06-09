@@ -14,11 +14,12 @@
           @click="jump(it.formKey)"
         >
           <div class="images">
-            <!--              <el-image-->
-            <!--                :src="it.iconUrl"-->
-            <!--                class="imgs"-->
-            <!--              />-->
-            <i class="imgs iconfont  icon-approval-checkin-bicolor" />
+            <svg
+              class="imgs icon"
+              aria-hidden="true"
+            >
+              <use :[key]="'#' + it.iconUrl" />
+            </svg>
           </div>
           <div class="info">
             <div class="info-title">
@@ -41,6 +42,7 @@ export default {
   name: 'Apply',
   data() {
     return {
+      key: 'xlink:href',
       info: [],
       showData: ['UserFormalInfo', 'UserLeaveInfo']
     }
@@ -103,11 +105,11 @@ export default {
         line-height: 48px;
         height: 48px;
         width: 48px;
-        border-radius: 50%;
+        /*border-radius: 50%;*/
         display: inline-block;
-        font-size: 30px;
+        font-size: 32px;
         color: #fff;
-        background: #7ad683;
+        background: #fff;
       }
     }
     .info {

@@ -3,11 +3,13 @@
     <page-header class="pageHeader">
       <div slot="title">
         <span
+          style="cursor:pointer"
           :class="{ active: Select }"
           @click="changeTemp"
         >我提交的招聘需求</span>
         <span style=" margin: 0 20px">|</span>
         <span
+          style="cursor:pointer"
           :class="{ active: doNotsave }"
           @click="changeTemp('all')"
         >全部招聘需求</span>
@@ -29,6 +31,10 @@
           @tab-click="handleClick"
         >
           <el-tab-pane
+            label="审批中"
+            name="UnderApproval"
+          />
+          <el-tab-pane
             label="招聘中"
             name="Approved"
           />
@@ -37,7 +43,11 @@
             name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
           />
         </el-tabs>
-        <detailsList ref="demand" />
+        <under-approval v-if="activeName === 'UnderApproval'" />
+        <detailsList
+          v-else
+          ref="demand"
+        />
       </div>
 
       <div v-show="doNotsave">
@@ -64,14 +74,14 @@ export default {
   name: 'RecruitList',
   components: {
     DetailsList: () => import('./listfile/detailsList'),
-    AllList: () => import('./listfile/allList')
+    AllList: () => import('./listfile/allList'),
+    underApproval: () => import('./listfile/underApproval')
   },
   data() {
     return {
       doNotsave: false,
       Select: true,
-      choice: 'my',
-      activeName: 'Approved',
+      activeName: 'UnderApproval',
       allActiveName: 'allApproved'
     }
   },

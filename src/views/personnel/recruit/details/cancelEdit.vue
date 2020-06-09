@@ -45,7 +45,7 @@ export default {
     doNotSave() {
       this.$emit('isDoNotSave')
       this.$router.go(-1)
-      return this.handleClose()
+      this.handleClose()
     },
     init() {
       this.$emit('update:visible', true)
@@ -55,7 +55,7 @@ export default {
     },
     goBack() {
       this.$router.go(-1)
-      return this.handleClose()
+      this.handleClose()
     }
   }
 }
