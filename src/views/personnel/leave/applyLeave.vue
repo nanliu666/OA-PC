@@ -89,6 +89,7 @@
                 <el-form-item label="离职原因说明">
                   <el-input
                     v-model="queryInfo.remark"
+                    :rows="3"
                     type="textarea"
                   />
                 </el-form-item>
@@ -146,7 +147,7 @@
 
 <script>
 import { applyLeaveInfo } from '@/api/leave/leave'
-
+import { mapGetters } from 'vuex'
 export default {
   components: {
     apprProgress: () => import('@/components/appr-progress/apprProgress')
@@ -163,7 +164,7 @@ export default {
       // 申请离职params
       queryInfo: {
         // userId: "1263040438093533185",
-        userId: this.$route.query.userId,
+        userId: '',
         lastDate: '',
         reason: '',
         remark: ''
@@ -190,9 +191,13 @@ export default {
       LeaveReason: []
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   created() {
     this.getCommonDict()
   },
+
   methods: {
     // 获取离职原因字典组
     getCommonDict() {
@@ -212,6 +217,7 @@ export default {
           return this.$message.error('请填写必选项')
         }
         // 检验通过
+        this.queryInfo.userId = this.userId
         applyLeaveInfo(this.queryInfo)
           .then((res) => {
             if (res && res.id) {

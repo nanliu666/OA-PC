@@ -195,49 +195,14 @@
             <div>工作性质 :</div>
             <div>{{ applyData.workProperty | CommonDictType(WorkProperty) }}</div>
           </div>
-          <div class="detail-item">
-            <div>省份编码 :</div>
-            <div>{{ applyData.provinceCode }}</div>
-          </div>
-          <div class="detail-item">
-            <div>省份名称 :</div>
-            <div>{{ applyData.provinceName }}</div>
-          </div>
-          <div class="detail-item">
-            <div>地市编码 :</div>
-            <div>{{ applyData.cityCode }}</div>
-          </div>
-          <div class="detail-item">
-            <div>地市名称 :</div>
-            <div>{{ applyData.cityName }}</div>
-          </div>
-          <div class="detail-item">
-            <div>区县编码 :</div>
-            <div>{{ applyData.countyCode }}</div>
-          </div>
-          <div class="detail-item">
-            <div>区县名称 :</div>
-            <div>{{ applyData.countyName }}</div>
-          </div>
+
           <div class="detail-item">
             <div>详细地址 :</div>
             <div>{{ applyData.address }}</div>
           </div>
           <div class="detail-item">
-            <div>工作省份编码 :</div>
-            <div>{{ applyData.workProvinceCode }}</div>
-          </div>
-          <div class="detail-item">
-            <div>工作省份名称 :</div>
-            <div>{{ applyData.workProviceName }}</div>
-          </div>
-          <div class="detail-item">
-            <div>工作地市编码 :</div>
-            <div>{{ applyData.workCityCode }}</div>
-          </div>
-          <div class="detail-item">
-            <div>工作地市名称 :</div>
-            <div>{{ applyData.workCityName }}</div>
+            <div>工作城市 :</div>
+            <div>{{ applyData.workProviceName + applyData.workCityName }}</div>
           </div>
           <div class="detail-item">
             <div>试用期月薪 :</div>
@@ -448,7 +413,7 @@
           </div>
           <div class="detail-item">
             <div>异动原因 :</div>
-            <div>{{ applyData.reason | CommonDictType(ChangeReason) }}</div>
+            <div>{{ applyData.reason }}</div>
           </div>
           <div class="detail-item">
             <div>原公司名称 :</div>
@@ -490,7 +455,6 @@
             <div>备注 :</div>
             <div>{{ applyData.remark }}</div>
           </div>
-
           <div class="detail-item" />
         </div>
       </basic-container>
@@ -507,39 +471,23 @@
             :active="activeStep"
             align-center
           >
-            <!-- <el-step>
-							自定义图标
-							<template slot="icon">
-								<div class="icon active"></div>
-							</template>
-							自定义标题
-							<template slot="title">
-								<div class="title">提交用户申请</div>
-							</template>
-							自定义内容
-							<template slot="description">
-								<div class="description-box">
-									<div>王浩</div>
-									<div>2008-0808</div>
-									<div class="isUrge">催一下 <i class="el-icon-bell"></i></div>
-								</div>
-							</template>
-						</el-step> -->
             <el-step
               v-for="(item, index) in progressList"
               :key="item.id"
             >
               <!-- 自定义图标 -->
               <template slot="icon">
-                <div
-                  class="icon "
-                  :class="{ active: index >= activeStep ? false : true }"
-                />
+                <div>
+                  <div
+                    class="icon "
+                    :class="[{ active: index >= activeStep ? false : true }, { cancel: isCancel }]"
+                  />
+                </div>
               </template>
               <!-- 自定义标题 -->
               <template slot="title">
                 <div class="title">
-                  {{ item.name }}
+                  {{ item.name || '提交用印申请' }}
                 </div>
               </template>
               <!-- 自定义内容 -->
@@ -547,11 +495,14 @@
                 <div class="description-box">
                   <div>{{ item.userName }}</div>
                   <div>{{ item.approveTime }}</div>
-                  <div
-                    v-if="item.isUrge"
-                    class="isUrge"
-                  >
-                    催一下 <i class="el-icon-bell" />
+                  <div v-if="!isCancel">
+                    <div
+                      v-if="index != 0 && index == activeStep"
+                      class="isUrge"
+                      @click="handelUrge(item)"
+                    >
+                      催一下 <i class="el-icon-bell" />
+                    </div>
                   </div>
                 </div>
               </template>
@@ -565,37 +516,12 @@
         <div class="record-wrap-title">
           审批记录
         </div>
-        <div>
+        <!-- 没撤销 -->
+        <div v-if="!isCancel">
           <el-steps
             direction="vertical"
             align-center
           >
-            <!-- <el-step>
-							自定义图标
-							<template slot="icon">
-								<div class="icon active"></div>
-							</template>
-							自定义标题
-							<template slot="title">
-								<div class="title">部门主管 一人审批</div>
-							</template>
-							自定义内容
-							<template slot="description">
-								<div class="description-box">
-									<div class="img-box">
-										<img
-											src=""
-											alt=""
-										/>
-									</div>
-
-									<div class="detail-box">
-										<div>权育 <span>审批中</span></div>
-										<div>部门主管</div>
-									</div>
-								</div>
-							</template>
-						</el-step> -->
             <el-step
               v-for="(item, index) in recordList"
               :key="item.id"
@@ -607,7 +533,7 @@
               <!-- 自定义标题 -->
               <template slot="title">
                 <div class="title">
-                  {{ item.name }}
+                  {{ item.name || '提交申请' }}
                 </div>
               </template>
               <!-- 自定义内容 -->
@@ -619,7 +545,6 @@
                       alt=""
                     >
                   </div>
-
                   <div class="detail-box">
                     <div>
                       {{ item.userName
@@ -630,7 +555,8 @@
                       <span
                         v-else-if="item.result === 'Pass'"
                         class="isPass"
-                      >通过</span><span
+                      >同意</span>
+                      <span
                         v-else-if="item.result === 'Reject'"
                         class="isReject"
                       >拒绝</span>
@@ -639,7 +565,75 @@
                         class="appring"
                       >审批中</span>
                     </div>
-                    <div>{{ item.jobName }}</div>
+                    <div class="jobName-row">
+                      <div>{{ item.jobName }}</div>
+                      <div>{{ item.remark }}</div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-step>
+          </el-steps>
+        </div>
+        <!-- 已撤销 -->
+        <div v-else>
+          <el-steps
+            direction="vertical"
+            align-center
+          >
+            <el-step>
+              <!-- 自定义图标 -->
+              <template slot="icon">
+                <div class="icon active" />
+              </template>
+              <!-- 自定义标题 -->
+              <template slot="title">
+                <div class="title">
+                  {{ recordList.name || '申请撤销' }}
+                </div>
+              </template>
+              <!-- 自定义内容 -->
+              <template slot="description">
+                <div class="description-box">
+                  <div class="img-box">
+                    <img
+                      src=""
+                      alt=""
+                    >
+                  </div>
+                  <div class="detail-box">
+                    <div>
+                      {{ recordList.userName }}
+                      <span class="isCancel">已撤销</span>
+                    </div>
+                    <div>{{ recordList.jobName }}</div>
+                  </div>
+                </div>
+              </template>
+            </el-step>
+            <el-step>
+              <!-- 自定义图标 -->
+              <template slot="icon">
+                <div class="icon active" />
+              </template>
+              <!-- 自定义标题 -->
+              <template slot="title">
+                <div class="title">
+                  {{ recordList.name || '提交申请' }}
+                </div>
+              </template>
+              <!-- 自定义内容 -->
+              <template slot="description">
+                <div class="description-box">
+                  <div class="img-box">
+                    <img
+                      src=""
+                      alt=""
+                    >
+                  </div>
+                  <div class="detail-box">
+                    <div>{{ recordList.userName }}<span class="initiateAppl">发起审批</span></div>
+                    <div>{{ recordList.jobName }}</div>
                   </div>
                 </div>
               </template>
@@ -652,6 +646,7 @@
         <el-button
           type="primary"
           size="medium"
+          :disabled="isCancel"
           @click="handelcancel"
         >
           撤回
@@ -662,6 +657,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   getApplyDetail,
 
@@ -675,7 +671,9 @@ import {
   // 流程进度和审批记录
   getApplyRecord,
   // 撤回
-  cancelApply
+  cancelApply,
+  // 催一下
+  createdUrge
 } from '@/api/approval/approval'
 
 export default {
@@ -754,34 +752,55 @@ export default {
       progressList: [],
       recordList: [],
       // 流程进度
-      activeStep: 2
+      activeStep: 0,
+      isCancel: false
     }
   },
   computed: {
     // 标题
     title() {
       let title = ''
-      if (this.apprInfo.formKey === 'Recruitment') {
-        title = '招聘需求申请'
-      } else if (this.apprInfo.formKey === 'PersonOfferApply') {
-        title = '录用申请'
-      } else if (this.apprInfo.formKey === 'UserFormalInfo') {
-        title = '转正申请'
-      } else if (this.apprInfo.formKey === 'UserContractInfo') {
-        title = '续签合同申请'
-      } else if (this.apprInfo.formKey === 'UserLeaveInfo') {
-        title = '离职申请'
-      } else if (this.apprInfo.formKey === 'UserChangeInfo') {
-        title = '人事异动申请'
-      }
+      let arr = [
+        {
+          title: '招聘需求申请',
+          formKey: 'Recruitment'
+        },
+        {
+          title: '录用申请',
+          formKey: 'PersonOfferApply'
+        },
+        {
+          title: '转正申请',
+          formKey: 'UserFormalInfo'
+        },
+        {
+          title: '续签合同申请',
+          formKey: 'UserContractInfo'
+        },
+        {
+          title: '离职申请',
+          formKey: 'UserLeaveInfo'
+        },
+        {
+          title: '人事异动申请',
+          formKey: 'UserChangeInfo'
+        }
+      ]
+      arr.forEach((item) => {
+        if (this.apprInfo.formKey === item.formKey) {
+          title = item.title
+        }
+      })
       return title
-    }
+    },
+    ...mapGetters(['userId'])
   },
   created() {
     this.getCommonDict()
-    this.getApplyInfo()
-    this.getApprDetail()
-    this.getApprProgress()
+    this.initData()
+  },
+  activated() {
+    // this.initData()
   },
   methods: {
     // 获取用户申请详情
@@ -805,7 +824,7 @@ export default {
       } else if (formKey === 'UserContractInfo') {
         res = await getContractApply({ id: formId })
       } else if (formKey === 'UserLeaveInfo') {
-        res = await getLeaveApply({ id: formId })
+        res = await getLeaveApply({ id: formId, userId: this.userId })
       } else if (formKey === 'UserChangeInfo') {
         res = await getChangeApply({ id: formId })
       }
@@ -842,36 +861,93 @@ export default {
       let { apprNo } = this.$route.query
       let res = await getApplyRecord({ apprNo })
       let arr = []
-      res.forEach((item) => {
-        if (item.isApprove == '0') {
-          arr.push(item)
-        }
+      // 提交申请第一个
+      let indexApprove = res.findIndex((item) => {
+        return item.isApprove == '0'
       })
+      arr.push(res[indexApprove])
+      let indexStart = res.findIndex((item) => {
+        return item.isStart === 1
+      })
+      arr.push(res[indexStart])
       this.sordByChildId(arr, res)
+
       this.progressList = arr
+      // console.log(this.progressList)
+      // 获取走到哪个流程
+      this.activeStep = this.progressList.findIndex((item) => {
+        return item.result === '' && item.isApprove !== '0'
+      })
+      if (this.activeStep === -1) {
+        this.activeStep = arr.length
+      }
 
       let newArr = JSON.parse(JSON.stringify(arr))
+      let hasReject = newArr.some((item) => {
+        return item.result === 'Reject'
+      })
+      if (hasReject === true) {
+        newArr = newArr.slice(0, this.activeStep)
+      } else {
+        newArr = newArr.slice(0, this.activeStep + 1)
+      }
       newArr.reverse()
       this.recordList = newArr
+      // 判断是否已经撤销
+      // 最后一项是提交节点
+      if (newArr[newArr.length - 1].result === 'Cancel') {
+        this.isCancel = true
+        this.recordList = newArr[newArr.length - 1]
+      } else {
+        this.isCancel = false
+        this.recordList = newArr
+      }
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
       if (resList.length == dataList.length) {
         return
       }
-      dataList.forEach((item) => {
-        if (item.id == resList[resList.length - 1].childId) {
-          resList.push(item)
+      for (let i = 0; i <= dataList.length; i++) {
+        if (dataList[i].id == resList[resList.length - 1].childId) {
+          resList.push(dataList[i])
+          break
         }
-      })
+      }
       this.sordByChildId(resList, dataList)
     },
+
     // 撤回申请
     async handelcancel() {
       let { apprNo } = this.$route.query
+      let res = await this.$confirm('确定撤销申请吗?', '撤销申请', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch((err) => err)
+      if (res != 'confirm') {
+        return
+      }
       await cancelApply({ apprNo })
       this.$message.success('撤回成功')
       this.$router.go(-1)
+    },
+    // init
+    initData() {
+      this.getApplyInfo()
+      this.getApprDetail()
+      this.getApprProgress()
+    },
+    // 点击催一下
+    async handelUrge(params) {
+      let { userId, id: nodeId } = params
+      let { apprNo } = this.$route.query
+      await createdUrge({ userId, nodeId, apprNo })
+      this.$message({
+        type: 'success',
+        message: '催办成功'
+      })
+      // createdUrge(){}
     }
   }
 }
@@ -969,6 +1045,7 @@ export default {
 
 // 审批详情
 .apply-detail {
+  border-bottom: 2px transparent solid;
   .detail-box {
     display: flex;
     justify-content: start;
@@ -1002,9 +1079,7 @@ export default {
   /deep/ .el-step__icon.is-text {
     border: 0px;
   }
-  /deep/ .el-step__title.is-wait .title {
-    color: #738399;
-  }
+
   /deep/ .el-step__title.is-wait .title {
     color: #738399;
   }
@@ -1018,6 +1093,7 @@ export default {
     font-size: 14px;
     color: #212a3f;
   }
+
   // 小圆圈
   .icon {
     width: 9px;
@@ -1036,9 +1112,13 @@ export default {
     font-family: PingFangSC-Regular;
     font-size: 14px;
     color: #368afa;
+    cursor: pointer;
   }
   .active {
     background: #368afa;
+  }
+  .active.cancel {
+    background: red;
   }
 }
 // <!-- 审批记录 -->
@@ -1047,12 +1127,9 @@ export default {
   /deep/ .el-step__icon.is-text {
     border: 0px;
   }
-  // /deep/.l-step__title.title {
-  // 	font-family: PingFangSC-Regular;
-  // 	font-size: 14px;
-  // 	color: #212a3f;
-  // 	line-height: 24px;
-  // }
+  /deep/.el-step__description.is-wait {
+    padding-right: 0;
+  }
   .record-wrap-title {
     font-family: PingFangSC-Medium;
     font-size: 18px;
@@ -1080,6 +1157,8 @@ export default {
     display: flex;
     margin-bottom: 50px;
     .img-box {
+      width: 48px;
+      height: 48px;
       img {
         width: 48px;
         height: 48px;
@@ -1120,11 +1199,20 @@ export default {
           color: #7ad683;
           background: #f0fff0;
         }
+        .isCancel {
+          color: #ff8b8a;
+          background-color: #fff3f3;
+        }
       }
       :nth-child(2) {
         font-family: PingFangSC-Regular;
         font-size: 14px;
         color: #757c85;
+        display: flex;
+        :nth-child(2) {
+          margin-left: 18px;
+          line-height: 30px;
+        }
       }
     }
   }

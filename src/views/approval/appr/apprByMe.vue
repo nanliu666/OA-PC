@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
 import { getMyApprList } from '@/api/approval/approval'
 export default {
@@ -190,9 +191,13 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   created() {
     this.getTableList()
   },
+
   methods: {
     // 点击筛选
     handleSearch(params) {
@@ -200,6 +205,7 @@ export default {
     },
     // 获取表单数据
     async getTableList() {
+      this.queryInfo.userId = this.userId
       this.loading = true
       let { totalNum, data } = await getMyApprList(this.queryInfo)
       this.tableList = data

@@ -611,76 +611,95 @@ export default ({ mock }) => {
     // ])
     let list = [
       {
-        id: '102',
-        name: '部门经理审核',
-        isStart: 0,
-        isEnd: 0,
-        parentId: '101',
-        childId: '103',
-        isApprove: '1',
-        isUrge: 0,
-        urgeTime: '1997-11-28 21:43:11',
-        userId: '99999999999999',
-        userName: '权育经理',
-        jobId: '99999999999999',
-        jobName: '经理',
-        approveTime: '2008-10-01 21:04:28',
-        result: 'Pass',
-        remark: '第三个'
-      },
-      {
-        id: '103',
-        name: '部门总裁审核',
-        isStart: 0,
-        isEnd: 1,
-        parentId: '102',
-        childId: '104',
-        isApprove: '1',
-        isUrge: 0,
-        urgeTime: '1997-11-28 21:43:11',
-        userId: '99999999999999',
-        userName: '权育总裁',
-        jobId: '99999999999999',
-        jobName: '总裁',
-        approveTime: '2008-10-01 21:04:28',
-        result: 'Pass',
-        remark: '第四个'
-      },
-      {
-        id: '101',
-        name: '部门主管审核',
-        isStart: 0,
-        isEnd: 0,
-        parentId: '100',
-        childId: '102',
-        isApprove: '1',
-        isUrge: 0,
-        urgeTime: '1997-11-28 21:43:11',
-        userId: '99999999999999',
-        userName: '权育主管',
-        jobId: '99999999999999',
-        jobName: '主管',
-        approveTime: '2008-10-01 21:04:28',
-        result: 'Reject',
-        remark: '第二个'
-      },
-      {
-        id: '100',
-        name: '提交用户申请',
+        id: '1269932195301314561',
+        name: '部门主管',
         isStart: 1,
         isEnd: 0,
-        parentId: '10',
-        childId: '101',
+        parentId: '',
+        childId: '1269932195334868994',
+        isApprove: '1',
+        isUrge: 1,
+        urgeTime: '2020-06-09 15:34:51',
+        approveTime: '',
+        userId: '1258244944030916609',
+        userName: 'Zeus',
+        jobId: '1252190741156134914',
+        jobName: 'CEO',
+        result: 'Pass',
+        remark: ''
+      },
+
+      {
+        id: '1269932195372617729',
+        name: '控股负责人',
+        isStart: 0,
+        isEnd: 0,
+        parentId: '1269932195334868994',
+        childId: '1269932195410366466',
+        isApprove: '1',
+        isUrge: 1,
+        urgeTime: '2020-06-09 15:35:04',
+        approveTime: '',
+        userId: '1267718815366873089',
+        userName: '特朗普',
+        jobId: '1266194386426109954',
+        jobName: 'java后台',
+        result: 'Pass',
+        remark: ''
+      },
+      {
+        id: '1269932195334868994',
+        name: '综合管理部',
+        isStart: 0,
+        isEnd: 0,
+        parentId: '1269932195301314561',
+        childId: '1269932195372617729',
+        isApprove: '1',
+        isUrge: 1,
+        urgeTime: '2020-06-09 15:35:00',
+        approveTime: '',
+        userId: '1267423432296230913',
+        userName: '李四',
+        jobId: '1252190741156134914',
+        jobName: 'CEO',
+        result: 'Pass',
+        remark: ''
+      },
+      {
+        id: '',
+        name: '',
+        isStart: '',
+        isEnd: '',
+        parentId: '',
+        childId: '',
         isApprove: '0',
         isUrge: 0,
-        urgeTime: '1997-11-28 21:43:11',
-        userId: '99999999999999',
-        userName: '黄浩',
-        jobId: '99999999999999',
-        jobName: '测试员',
-        approveTime: '2008-10-01 21:04:28',
-        result: 'Pass',
-        remark: '第一个'
+        urgeTime: '',
+        approveTime: '',
+        userId: '1270176680773996546',
+        userName: '项羽',
+        jobId: '1266194197145559041',
+        jobName: 'web前端',
+        result: '',
+        remark: ''
+      },
+      {
+        id: '1269932195410366466',
+        name: '总裁',
+        isStart: 0,
+        isEnd: 1,
+        parentId: '1269932195372617729',
+        childId: '',
+        isApprove: '1',
+        isUrge: 1,
+        urgeTime: '2020-06-09 15:35:05',
+        approveTime: '',
+        userId: '1263040873252573186',
+        userName: '张金桦',
+        jobId: '1262996469389250561',
+        jobName: '开发工程师',
+        result: 'Reject',
+        remark: ''
       }
     ]
     return {
@@ -695,6 +714,13 @@ export default ({ mock }) => {
       response: 'ok'
     }
   })
+  // 催一下
+  Mock.mock(new RegExp('/appr/v1/appr/apply/urge' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+
   Mock.mock(new RegExp('/appr/v1/appr/apply/submit' + '.*'), 'post', (options) => {
     console.log('提交审批：', options.url, JSON.parse(options.body))
     return success

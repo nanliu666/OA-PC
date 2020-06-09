@@ -31,7 +31,7 @@ export const getApprForm = (params) => get('/appr/v1/appr/form', params)
  * @params params
  *
  */
-export const getMyApprList = (params) => get('/appr/v1/appr/my/approve/list', params)
+export const getMyApprList = (params) => post('/appr/v1/appr/my/approve/list', params)
 /*
  * @author
  * @desc申请信息查询
@@ -39,7 +39,8 @@ export const getMyApprList = (params) => get('/appr/v1/appr/my/approve/list', pa
  *
  */
 
-export const getApplyDetail = (params) => get(' /appr/v1/appr/apply/user', params)
+export const getApplyDetail = (params) => get('/appr/v1/appr/apply/user', params)
+
 //招聘需求申请详情查询
 
 export const getRecruitmentApply = (params) => {
@@ -59,19 +60,19 @@ export const getOperationApply = (params) => {
 // 续签合同申请详情查询
 
 export const getContractApply = (params) => {
-  return get(' /user/v1/user/contract/apply', params)
+  return get('/user/v1/user/contract/apply', params)
 }
 
 // 离职申请详情查询
 
 export const getLeaveApply = (params) => {
-  return get(' /user/v1/user/leave/info', params)
+  return get('/user/v1/user/leave/info', params)
 }
 
 // 人事异动申请详情查询
 
 export const getChangeApply = (params) => {
-  return get(' /user/v1/user/change/info', params)
+  return get('/user/v1/user/change/info', params)
 }
 
 // 流程进度和审批记录，调用接口
@@ -84,6 +85,12 @@ export const getApplyRecord = (params) => {
 export const cancelApply = (params) => {
   return post('/appr/v1/appr/apply/cancel', params)
 }
+
+// 催一下
+export const createdUrge = (params) => {
+  return post('/appr/v1/appr/apply/urge', params)
+}
+
 /**
  * 审批申请提交接口
  * @param {String} params
