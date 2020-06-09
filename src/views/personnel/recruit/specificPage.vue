@@ -139,7 +139,7 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  mounted() {
+  activated() {
     if (typeof this.$route.query.id !== 'undefined') {
       this.getData()
     }

@@ -215,6 +215,7 @@ export default {
     },
     handleClose() {
       this.$emit('update:visible', false)
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
     },
     requeWorkList(page) {
       getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
