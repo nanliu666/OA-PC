@@ -1,10 +1,6 @@
 <template>
   <div class="role-wrap">
-    <div class="oa-title_bar">
-      <div class="title-name">
-        角色管理
-      </div>
-    </div>
+    <page-header title="角色管理" />
     <basic-container>
       <el-container style="min-height: 600px">
         <roleAside
@@ -252,7 +248,6 @@ export default {
   },
   methods: {
     handlerDeleteAll(list) {
-      debugger
       this.$confirm('您确定要删除你所选中的角色吗?', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -479,15 +474,6 @@ export default {
 <style lang="scss" scoped>
 .role-wrap {
   margin-bottom: 150px;
-
-  .oa-title_bar {
-    padding: 14px 6px;
-
-    .title-name {
-      color: #202940;
-      font-size: 18px;
-    }
-  }
 
   .aside-wrap {
     border-right: 1px solid #e3e7e9;

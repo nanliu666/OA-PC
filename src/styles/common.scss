@@ -65,3 +65,33 @@ ul {
 .el-form-item--feedback .el-input__validateIcon {
   display: none;
 }
+
+.header {
+  display: flex;
+  display: -ms-flex;
+  display: -moz-box;
+  display: -webkit-flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  color: #202940;
+  line-height: 28px;
+  font-weight: bold;
+  margin-top: 14px;
+}
+.view-case {
+  margin-top: 16px;
+  background: #ffffff;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 24px !important;
+  min-height: calc(100% - 120px);
+}
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}

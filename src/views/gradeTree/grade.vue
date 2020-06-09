@@ -8,7 +8,7 @@
         v-show="editStatus"
         class="nav"
       >
-        <span style="width: 150px;display: inline-block;">
+        <span style="width: 170px;display: inline-block;">
           组织架构图
           <el-tooltip
             placement="top"
@@ -64,6 +64,7 @@
       </div>
       <div v-else>
         <el-button
+          v-loading="sortLoading"
           size="medium"
           type="primary"
           @click="sort"
@@ -193,6 +194,7 @@
 <script>
 import go from 'gojs'
 const $ = go.GraphObject.make
+import html2canvas from 'html2canvas'
 import positionDialog from './compoents/positionDialog'
 import orgDialog from './compoents/orgDialog'
 import {
@@ -213,6 +215,7 @@ export default {
   },
   data() {
     return {
+      sortLoading: false,
       firstLoad: false,
       zIndex: 999,
       loading: false,
@@ -718,7 +721,7 @@ export default {
                 row: 0,
                 column: 0,
                 alignment: go.Spot.Center,
-                height: 36,
+                margin: 0,
                 width: 200
               },
               $(go.Shape, 'RoundedRectangle', {
@@ -727,11 +730,21 @@ export default {
                 name: 'SHAPE1',
                 stroke: null
               }),
+              // $(go.TextBlock, { text: "a Text Block that takes 4 lines",
+              //   font: '14pt sans-serif',
+              //   overflow: go.TextBlock.OverflowClip, /* 默认值是OverflowClip溢出剪裁 */
+              //   // 没有限制最大行数
+              //   margin: 2,
+              //   width: 90 }),
               $(
                 go.TextBlock,
                 {
                   name: 'Name',
-                  font: 'bold 12pt serif'
+                  font: 'bold 13pt sans-serif',
+                  overflow: go.TextBlock.OverflowClip /* 默认值是OverflowClip溢出剪裁 */,
+                  wrap: go.TextBlock.WrapFit,
+                  textAlign: 'center',
+                  margin: 8
                 },
                 new go.Binding('text', 'orgName').makeTwoWay()
               )
@@ -867,24 +880,24 @@ export default {
         })
         return
       } else {
+        if (this.selData.userNum > 0) {
+          this.$confirm('很抱歉，您选中的组织或该职位下存在员工，请先将员工调整后再删除', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'info',
+              message: '取消操作!'
+            })
+          })
+          return
+        }
         this.$confirm('您确定要删除该组织或该职位吗?', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          if (this.selData.userNum > 0) {
-            this.$confirm('很抱歉，您选中的职位下存在员工，请先将员工调整后再删除', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              this.$message({
-                type: 'info',
-                message: '取消操作!'
-              })
-            })
-            return
-          }
           if (this.selData.type !== this.type[4]) {
             let params = { ids: this.selData.id }
             deleteOrganization(params).then(() => {
@@ -937,6 +950,7 @@ export default {
     back() {
       this.editStatus = true
       this.zIndex = 999
+      this.myDiagram.isReadOnly = true
     },
     isEdit_() {
       this.editStatus = false
@@ -962,25 +976,37 @@ export default {
         data.sort = data.sort ? data.sort : 1
         params.push(data)
       })
-      postSort(params).then(() => {
-        this.$message.success('排序成功')
-        this.getTree()
-      })
+      this.sortLoading = true
+      postSort(params)
+        .then(() => {
+          this.sortLoading = false
+          this.$message.success('排序成功')
+          this.getTree()
+        })
+        .catch(() => {
+          this.sortLoading = false
+        })
     },
     downloadImage() {
-      let images = this.myDiagram.makeImage({
-        scale: 1,
-        padding: 50,
-        type: 'image/jpeg',
-        background: 'rgba(220, 239, 254, 1)'
-      })
-      let href = images.src
-      var a = document.createElement('a')
-      a.download = '组织机构图.png'
-      a.href = href
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
+      var d = this.myDiagram.documentBounds
+      let myDiaramDiv = document.getElementById('myDiagramDiv')
+      myDiaramDiv.style.width = d.width + 'px'
+      this.load()
+      this.loading = true
+      setTimeout(() => {
+        new html2canvas(document.getElementById('myDiagramDiv')).then((canvas) => {
+          const href = canvas.toDataURL('image/jpeg')
+          var a = document.createElement('a')
+          a.download = '组织机构图.png'
+          a.href = href
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          myDiaramDiv.style.width = '100%'
+          this.load()
+          this.loading = false
+        })
+      }, 1000)
     }
   }
 }

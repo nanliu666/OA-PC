@@ -164,7 +164,6 @@
                 </div>
               </div>
             </div>
-
             <div />
           </div>
         </el-tab-pane>
@@ -180,6 +179,7 @@ export default {
   name: 'ApplyDetail',
   data() {
     return {
+      applyId: '',
       personId: '',
       recruitmentId: '',
       activeName: 'first',
@@ -386,6 +386,7 @@ export default {
       ...this.$route.query
     }
     this.personId = this.$route.query.personId
+    this.applyId = this.$route.query.applyId
     this.recruitmentId = this.$route.query.recruitmentId
     await this.getData()
     this.getWorkAddress()
@@ -423,7 +424,7 @@ export default {
     },
     getData() {
       return new Promise((resolve, reject) => {
-        getOfferApply({ personId: this.personId })
+        getOfferApply({ id: this.applyId })
           .then((res) => {
             if (res.companyId) {
               this.basic = {
@@ -466,6 +467,7 @@ export default {
       // console.log(tab, event)
     },
     back() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/candidate/candidateManagement'
       })

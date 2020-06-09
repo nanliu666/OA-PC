@@ -1,18 +1,19 @@
 <template>
   <div>
-    <div class="roster-header">
-      <h4>
+    <page-header class="pageHeader">
+      <h3 slot="title">
         转正管理 (试用期员工共计<i>{{ numberofpersonnel }}</i>人)
-      </h4>
-    </div>
+      </h3>
+    </page-header>
     <basic-container>
       <common-table
         style="width: 100%"
         :data="data"
+        :page="page"
         :config="tableConfig"
         :columns="columns"
-        @pageSizeChange="getTableData"
-        @currentPageChange="getTableData"
+        @page-size-change="sizeChange"
+        @current-page-change="currentPageChange"
       >
         <template slot="topMenu">
           <div class="flex-flow flex justify-content align-items ">
@@ -26,34 +27,14 @@
             </div>
             <div class="edge">
               <el-button
-                type="primary"
+                icon="el-icon-refresh-right"
                 size="medium"
+                class="topBtn"
+                type="text"
                 @click="getTableData"
-              >
-                <i class="el-icon-refresh" />
-              </el-button>
+              />
             </div>
           </div>
-        </template>
-        <template
-          v-if="scope.row.isDefault === 0"
-          slot="handler"
-          slot-scope="scope"
-        >
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleEdit(scope.row, scope.index)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleDelete(scope.row, scope.index)"
-          >
-            删除
-          </el-button>
         </template>
         <template
           slot="name"
@@ -62,7 +43,7 @@
           <el-button
             type="text"
             size="medium"
-            @click="jumpToDetail(row.positionId)"
+            @click="jumpToDetail(row)"
           >
             {{ row.name }}
           </el-button>
@@ -114,7 +95,7 @@ import AdjustEdit from './components/adjustEdit'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
 export default {
-  name: 'EmployeeRoster',
+  name: 'Workerlist',
   components: {
     SearchPopover,
     AdjustEdit
@@ -127,8 +108,6 @@ export default {
             type: 'input',
             field: 'search',
             label: '',
-            data: [],
-            month: [],
             config: {
               placeholder: '姓名/工号'
             }
@@ -137,7 +116,7 @@ export default {
         popoverOptions: [
           {
             type: 'treeSelect',
-            field: 'parentOrgId',
+            field: 'orgId',
             label: '部门',
             data: '',
             config: {
@@ -167,25 +146,10 @@ export default {
             label: '职位',
             field: 'jobs',
             arrField: 'jobId',
-            config: { multiple: true, optionLabel: 'jobName', optionValue: 'jobId' },
+            config: { optionLabel: 'jobName', optionValue: 'jobId' },
             options: [],
             loading: false,
-            noMore: false,
-            firstLoad(flag, item) {
-              if (flag && item.options.length === 0) {
-                item.loadMoreFun(item)
-              }
-            },
-            loadMoreFun(item) {
-              if (item.loading || item.noMore) return
-              item.loading = true
-              getOrgJob().then((res) => {
-                if (res.length > 0) {
-                  item.options.push(...res)
-                  item.noMore = true
-                }
-              })
-            }
+            noMore: false
           },
           {
             type: 'dataPicker',
@@ -232,18 +196,15 @@ export default {
         ]
       },
       createOrgDailog: false,
-      numberofpersonnel: 'xxx',
-      personStatistics: {
-        Formal: 0,
-        Try: 0,
-        WaitLeave: 0,
-        Leaved: 0
-      },
+      numberofpersonnel: null,
       number: 0,
       row: {},
       data: [],
       tableConfig: {
-        showHandler: true
+        showHandler: true,
+        showIndexColumn: false,
+        enableMultiSelect: false,
+        enablePagination: true
       },
       columns: [
         {
@@ -282,21 +243,26 @@ export default {
           slot: true
         }
       ],
-      params: {
-        pageNo: 1,
-        pageSize: 10
+      page: { currentPage: 1, size: 10, total: 0 },
+      pageConfig: {
+        pageSizes: [10, 20, 30, 40, 50]
       }
     }
   },
   created() {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
+      this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
+      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
+    })
+    getOrgJob().then((res) => {
+      this.searchConfig.popoverOptions[1].options = res
     })
   },
   methods: {
     getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+      if (typeof params === 'undefined') this.decorator((params = {}))
+
       let nowData = moment()
         .locale('zh-cn')
         .format('YYYY-MM-DD')
@@ -337,23 +303,20 @@ export default {
           }
         })
         this.data = res.data
+        this.page.total = res.totalNum
         this.numberofpersonnel = res.totalNum
       })
     },
     handleSubmit(params) {
-      let request = {
-        search: params.search || '',
-        pageNo: 1,
-        pageSize: 10,
-        orgs: [params.parentOrgId] || ' ',
-        jobs: [...params.jobs] || ' ',
-        probations: [params.probation] || ' '
-      }
-      request.beginEntryDate = params.beginEntryDate
-      request.endEntryDate = params.endEntryDate
-      request.beginFormalDate = params.beginFormalDate
-      request.endFormalDate = params.endFormalDate
-      return this.getTableData(request)
+      this.decorator(params)
+      params.orgs = [params.orgId]
+      params.jobs = [params.jobs]
+      getStaffList(params).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+      })
     },
     handleEditRole(row) {
       // let { status } = row
@@ -366,8 +329,9 @@ export default {
       // }
       this.$refs.adjustEdit.init(row)
     },
-    jumpToDetail(personId) {
-      this.$router.push(`/personnel/detail/${personId}`)
+
+    jumpToDetail(row) {
+      this.$router.push({ path: '/personnel/detail', query: { userId: row.userId } })
     },
     jumpApproval(Approvalcode) {
       return this.$message({
@@ -375,6 +339,20 @@ export default {
         message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
         type: 'warning'
       })
+    },
+    decorator(params) {
+      params.pageNo = this.page.currentPage
+      params.pageSize = this.page.size
+      return params
+    },
+
+    currentPageChange(param) {
+      this.page.currentPage = param
+      this.getTableData()
+    },
+    sizeChange(pageSize) {
+      this.page.size = pageSize
+      this.getTableData()
     }
   }
 }

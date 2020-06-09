@@ -7,8 +7,9 @@
         style="margin-right:12px;cursor: pointer;"
         @click="goBack"
       />
-      <span>{{ title }}</span>
-      <slot name="subTitle" />
+      <slot name="title">
+        <span>{{ title }}</span>
+      </slot>
     </span>
     <div class="button--wr">
       <slot name="rightMenu" />
@@ -29,10 +30,19 @@ export default {
     showBack: {
       type: Boolean,
       default: false
+    },
+    // 自定义返回方法
+    back: {
+      type: Function,
+      default: null
     }
   },
   methods: {
     goBack() {
+      if (this.back) {
+        this.back()
+        return
+      }
       this.$router.go(-1)
     }
   }

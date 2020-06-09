@@ -172,7 +172,9 @@ export default {
             .dispatch('LoginByUsername', this.loginForm)
             .then((res) => {
               this.$router.push({ path: this.tagWel.value })
-              this.$store.dispatch('GetUserPrivilege', res.user_id)
+              this.$store.dispatch('GetUserPrivilege', res.user_id).then((menuAll) => {
+                this.$router.$avueRouter.formatRoutes(menuAll, true)
+              })
               loading.close()
             })
             .catch(() => {
@@ -187,6 +189,10 @@ export default {
         process.env.NODE_ENV === 'development'
           ? 'www.bestgrand.com.cn'
           : window.location.href.split('/#/')[0]
+      // let domain =
+      //   process.env.NODE_ENV === 'development'
+      //     ? 'http://122.112.190.144'
+      //     : window.location.href.split('/#/')[0]
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
         this.$store.commit('SET_TENANT_ID', res.tenantId)

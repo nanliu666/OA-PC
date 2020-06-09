@@ -91,9 +91,6 @@ export default {
     openMenu(item = {}) {
       // this.$store.dispatch('GetMenu', item.id).then((data) => {
       this.$store.dispatch('SetMenu', item.children)
-      if (item.children.length !== 0) {
-        this.$router.$avueRouter.formatRoutes([item], true)
-      }
 
       //当点击顶部菜单后默认打开第一个菜单
       let path = this.getFirstPath(item.children, 0, true)

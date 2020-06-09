@@ -1,5 +1,6 @@
 <template>
   <div>
+    <page-header title="操作日志" />
     <basic-container>
       <avue-crud
         ref="crud"
