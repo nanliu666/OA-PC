@@ -163,6 +163,8 @@ export default {
   }
   .typeIcon {
     font-size: 40px;
+    color: #fff;
+    line-height: 88px;
   }
   .typeIconImg {
     width: 200px;
