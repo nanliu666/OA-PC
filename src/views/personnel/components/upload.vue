@@ -7,7 +7,7 @@
     >
       <i
         :class="typeIcon"
-        class="typeIcon"
+        class="typeIcon iconfont"
       />
       <div
         v-show="seen"

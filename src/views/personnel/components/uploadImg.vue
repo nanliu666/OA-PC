@@ -58,7 +58,7 @@
           :http-request="uploadRequst"
           :show-file-list="false"
           list-type="picture-card"
-          :limit="limit - fileList.length"
+          :limit="limit"
           :before-upload="beforeAvatarUpload"
           :on-success="handleAvatarSuccess"
           :multiple="true"
