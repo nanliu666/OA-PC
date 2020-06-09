@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      v-loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -93,6 +94,7 @@ export default {
     return {
       recruit: false,
       change: true,
+      loading: false,
       activeName: 'inrecruitment',
       searchConfig: {
         requireOptions: [
@@ -303,7 +305,9 @@ export default {
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
       this.decorator(params)
+      this.loading = true
       getMyRecruitment(params).then((res) => {
+        this.loading = false
         this.data = res.data
         this.page.total = res.totalPage
       })
@@ -317,13 +321,7 @@ export default {
     },
 
     handleSubmit(params) {
-      this.decorator(params)
-      getMyRecruitment(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-      })
+      this.getTableData(params)
     },
     jumpToDetail(row) {
       let rotate

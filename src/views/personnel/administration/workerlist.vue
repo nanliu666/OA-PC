@@ -7,6 +7,7 @@
     </page-header>
     <basic-container>
       <common-table
+        v-loading="loading"
         style="width: 100%"
         :data="data"
         :page="page"
@@ -102,6 +103,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -266,6 +268,7 @@ export default {
       let nowData = moment()
         .locale('zh-cn')
         .format('YYYY-MM-DD')
+      this.loading = true
       getStaffList(params).then((res) => {
         let { data } = res
         const isStatusArr = [
@@ -302,6 +305,7 @@ export default {
             data[index].isSelect = 'isSelect'
           }
         })
+        this.loading = false
         this.data = res.data
         this.page.total = res.totalNum
         this.numberofpersonnel = res.totalNum
@@ -311,11 +315,9 @@ export default {
       this.decorator(params)
       params.orgs = [params.orgId]
       params.jobs = [params.jobs]
+      this.loading = true
       getStaffList(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
+        this.loading = false
       })
     },
     handleEditRole(row) {

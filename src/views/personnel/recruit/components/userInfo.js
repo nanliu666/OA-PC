@@ -121,8 +121,7 @@ export let NewRequirement = {
       inType: 12, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请输入', // 提示必填提示
       props: 'maxSalary',
-      propscomplex: 'minSalary',
-      rules: [{ type: 'number', message: '薪酬必须为数字' }]
+      propscomplex: 'minSalary'
     },
     {
       attrId: '12', // ：key唯一值

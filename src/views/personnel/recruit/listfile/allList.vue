@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      v-loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -201,6 +202,7 @@ export default {
   data() {
     return {
       activeName: 'inrecruitment',
+      loading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -385,8 +387,7 @@ export default {
       ],
       WorkYear: [],
       getLevel: [],
-      management: [],
-      loading: true
+      management: []
     }
   },
   computed: {
@@ -429,7 +430,9 @@ export default {
     getTableData(params) {
       if (typeof params === 'undefined') params = this.params
       this.decorator(params)
+      this.loading = true
       getAllRecruitment(params).then((res) => {
+        this.loading = false
         this.data = res.data.map((item) => ({ ...item, detail: [], loading: false }))
         this.page.total = res.totalPage
       })
@@ -443,13 +446,7 @@ export default {
       return params
     },
     handleSubmit(params) {
-      this.decorator(params)
-      getAllRecruitment(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-      })
+      this.getTableData(params)
     },
     jumpToDetail(row) {
       let { id, status } = row

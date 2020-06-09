@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      v-loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -62,6 +63,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -153,11 +155,9 @@ export default {
 
     handleSubmit(params) {
       this.decorator(params)
+      this.loading = true
       getApprove(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
+        this.loading = false
       })
     },
     jumpToDetail(row) {
