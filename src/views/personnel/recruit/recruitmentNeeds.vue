@@ -243,10 +243,13 @@ export default {
     isDoNotSave() {
       for (let key in this.infoForm) {
         const allFruit = ['needNum', 'companyName']
-        if (allFruit.includes(!key)) {
+        if (allFruit.includes(key)) {
+          // 置空页面数据
+        } else {
           this.infoForm[key] = null
         }
       }
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
     },
     ReplicationCache(id) {
       getRecruitmentDetail({ recruitmentId: id }).then((res) => {
@@ -255,7 +258,6 @@ export default {
     },
     goBack() {
       this.isDoNotSave()
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }
   }

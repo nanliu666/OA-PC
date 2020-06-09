@@ -3,12 +3,7 @@
     <basic-container>
       <common-table
         :data="data"
-        :page="page"
         :columns="columns"
-        :page-config="pageConfig"
-        :config="tableConfig"
-        @page-size-change="sizeChange"
-        @expand-change="recruitmentSituation"
       >
         <template
           slot="name"
@@ -56,11 +51,6 @@ export default {
       activeName: 'inrecruitment',
       row: {},
       data: [],
-      tableConfig: {
-        showIndexColumn: false,
-        enableMultiSelect: false,
-        enablePagination: true
-      },
       columns: [
         {
           label: '姓名',
@@ -157,17 +147,6 @@ export default {
         }
       })
       return typeLevel
-    },
-    currentChange(val) {
-      this.params.pageNo = val
-      this.page.pagerCount = val
-      this.getData()
-    },
-    sizeChange(val) {
-      this.params.pageSize = val
-      this.params.pageNo = 1
-      this.page.pagerCount = 1
-      this.getData()
     }
   }
 }
