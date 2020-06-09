@@ -1,67 +1,65 @@
 <template>
-  <div>
-    <el-row
-      type="flex"
-      :gutter="52"
-      class="displayBar"
+  <el-row
+    type="flex"
+    :gutter="52"
+    class="displayBar"
+  >
+    <el-col
+      :span="8"
+      class="frame"
     >
-      <el-col
-        :span="8"
-        class="frame"
-      >
-        <span class="demandSize"> 职位名称</span>
-        <span class="content">{{ user.jobName }}</span>
-      </el-col>
+      <span class="demandSize"> 职位名称</span>
+      <span class="content">{{ user.jobName }}</span>
+    </el-col>
 
-      <el-col
-        :span="8"
-        class="frame"
-      >
-        <span class="demandSize"> 到岗日期</span>
-        <span class="content">{{ user.joinDate }}</span>
-      </el-col>
+    <el-col
+      :span="8"
+      class="frame"
+    >
+      <span class="demandSize"> 到岗日期</span>
+      <span class="content">{{ user.joinDate }}</span>
+    </el-col>
 
-      <el-col
-        :span="8"
-        class="frame"
-      >
-        <span class="demandSize"> 紧急程度</span>
-        <span class="content">{{ calEmerType(user.emerType) }}</span>
-      </el-col>
+    <el-col
+      :span="8"
+      class="frame"
+    >
+      <span class="demandSize"> 紧急程度</span>
+      <span class="content">{{ calEmerType(user.emerType) }}</span>
+    </el-col>
 
-      <el-col
-        :span="8"
-        class="frame"
-      >
-        <span class="demandSize"> 需求总数</span>
-        <span class="content">{{ user.needNum }}</span>
-      </el-col>
+    <el-col
+      :span="8"
+      class="frame"
+    >
+      <span class="demandSize"> 需求总数</span>
+      <span class="content">{{ user.needNum }}</span>
+    </el-col>
 
-      <el-col
-        :span="8"
-        class="frame"
-      >
-        <span class="demandSize"> 已入职</span>
-        <span class="content">{{ user.entryNum }}</span>
-      </el-col>
+    <el-col
+      :span="8"
+      class="frame"
+    >
+      <span class="demandSize"> 已入职</span>
+      <span class="content">{{ user.entryNum }}</span>
+    </el-col>
 
-      <el-col
-        :span="8"
-        class="frame"
-      >
-        <span class="demandSize"> 招聘进度</span>
-        <span class="content isBurl">{{ user.progress }}</span>
-      </el-col>
+    <el-col
+      :span="8"
+      class="frame"
+    >
+      <span class="demandSize"> 招聘进度</span>
+      <span class="content isBurl">{{ user.progress }}</span>
+    </el-col>
 
-      <el-col
-        :span="8"
-        class=" bronone frame"
-      >
-        <span class="demandSize"> 候选人数</span>
-        <span class="content isBurl">{{ user.candidateNum }}</span>
-      </el-col>
-    </el-row>
-  </div>
+    <el-col
+      :span="8"
+      class=" bronone frame"
+    >
+      <span class="demandSize"> 候选人数</span>
+      <span class="content isBurl">{{ user.candidateNum }}</span>
+    </el-col>
+  </el-row>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -125,6 +123,8 @@ export default {
   display: flex;
   padding: 20px 0;
   background-color: #f7f8fa;
+  margin-left: -3px !important;
+  margin-right: -1px !important;
 }
 .content {
   margin-top: 5px;
@@ -147,6 +147,8 @@ export default {
 
 .frame {
   border-right: solid 1px #ccc;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
 }
 .isBurl {
   color: #207efa;

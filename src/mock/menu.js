@@ -391,6 +391,28 @@ const res = {
                 alias: 'editPerson',
                 path: '/personnel/editPerson',
                 icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '126131436966690997876',
+                menuName: '招聘需求管理',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_editPerson',
+                alias: 'recruit',
+                path: '/personnel/recruit/recruitList',
+                icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '12613143696669089999999999999999',
+                menuName: '我的招聘需求',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'personnel_editPerson',
+                alias: 'recruit',
+                path: '/personnel/recruit/myrecruitment',
+                icon: 'iconfont iconicon_compile'
               }
             ]
           },
@@ -520,7 +542,7 @@ const res = {
             menuName: '转正申请',
             menuType: 'Menu',
             isOwn: 1,
-            isShow: 1,
+            isShow: 0,
             code: 'personnel_editPerson',
             alias: 'editPerson',
             path: '/personnel/administration/apply',
@@ -537,17 +559,7 @@ const res = {
             path: '/personnel/administration/workerlist',
             icon: 'iconfont iconicon_doc'
           },
-          {
-            menuId: '126131436966690997876',
-            menuName: '需求管理',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'personnel_editPerson',
-            alias: 'recruit',
-            path: '/personnel/recruit/recruitList',
-            icon: 'iconfont iconicon_compile'
-          },
+
           {
             menuId: '12613143696669094444444444',
             menuName: '需求详情',
@@ -575,21 +587,10 @@ const res = {
             menuName: '新建需求',
             menuType: 'Menu',
             isOwn: 1,
-            isShow: 1,
+            isShow: 0,
             code: 'personnel_editPerson',
             alias: 'recruit',
             path: '/personnel/recruit/recruitmentNeeds',
-            icon: 'iconfont iconicon_compile'
-          },
-          {
-            menuId: '12613143696669089999999999999999',
-            menuName: '我的招聘需求',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'personnel_editPerson',
-            alias: 'recruit',
-            path: '/personnel/recruit/myrecruitment',
             icon: 'iconfont iconicon_compile'
           },
           {
