@@ -3,6 +3,7 @@
     <page-header
       :title="title"
       show-back
+      :back="goBack"
     />
     <!-- 用户提交的申请 -->
     <basic-container>
@@ -646,7 +647,7 @@
         <el-button
           type="primary"
           size="medium"
-          :disabled="isCancel"
+          :disabled="isDisabled"
           @click="handelcancel"
         >
           撤回
@@ -753,6 +754,7 @@ export default {
       recordList: [],
       // 流程进度
       activeStep: 0,
+      // 是否已经撤回
       isCancel: false
     }
   },
@@ -793,6 +795,17 @@ export default {
       })
       return title
     },
+    // 按钮是否可以
+    isDisabled() {
+      let res = ''
+      if (this.isCancel) {
+        res = this.isCancel
+      }
+      if (this.activeStep > 1) {
+        res = true
+      }
+      return res
+    },
     ...mapGetters(['userId'])
   },
   created() {
@@ -800,14 +813,13 @@ export default {
     this.initData()
   },
   activated() {
-    // this.initData()
+    this.initData()
   },
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
       let res = await getApplyDetail(this.apprInfo)
       this.ApplyInfo = res
-      // console.log(res)
     },
 
     // 获取审批详情信息
@@ -829,7 +841,6 @@ export default {
         res = await getChangeApply({ id: formId })
       }
       this.applyData = res
-      // console.log(res)
     },
 
     // 获取相关字典组
@@ -861,7 +872,7 @@ export default {
       let { apprNo } = this.$route.query
       let res = await getApplyRecord({ apprNo })
       let arr = []
-      // 提交申请第一个
+      // 获取提交节点
       let indexApprove = res.findIndex((item) => {
         return item.isApprove == '0'
       })
@@ -874,33 +885,34 @@ export default {
 
       this.progressList = arr
       // console.log(this.progressList)
-      // 获取走到哪个流程
+      // 获取流程走到哪个节点
       this.activeStep = this.progressList.findIndex((item) => {
         return item.result === '' && item.isApprove !== '0'
       })
+      // 等于-1审批已经完成
       if (this.activeStep === -1) {
         this.activeStep = arr.length
       }
 
-      let newArr = JSON.parse(JSON.stringify(arr))
-      let hasReject = newArr.some((item) => {
+      let hasReject = arr.some((item) => {
         return item.result === 'Reject'
       })
+      // 有拒绝显示到拒绝节点  没有拒绝节点显示到同意审批的下一个节点
       if (hasReject === true) {
-        newArr = newArr.slice(0, this.activeStep)
+        arr = arr.slice(0, this.activeStep)
       } else {
-        newArr = newArr.slice(0, this.activeStep + 1)
+        arr = arr.slice(0, this.activeStep + 1)
       }
-      newArr.reverse()
-      this.recordList = newArr
+      arr.reverse()
+      this.recordList = arr
       // 判断是否已经撤销
       // 最后一项是提交节点
-      if (newArr[newArr.length - 1].result === 'Cancel') {
+      if (arr[arr.length - 1].result === 'Cancel') {
         this.isCancel = true
-        this.recordList = newArr[newArr.length - 1]
+        this.recordList = arr[arr.length - 1]
       } else {
         this.isCancel = false
-        this.recordList = newArr
+        this.recordList = arr
       }
     },
     // 根据子节点Id排序
@@ -947,7 +959,11 @@ export default {
         type: 'success',
         message: '催办成功'
       })
-      // createdUrge(){}
+    },
+    // goback
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }

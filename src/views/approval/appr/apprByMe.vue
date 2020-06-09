@@ -201,7 +201,8 @@ export default {
   methods: {
     // 点击筛选
     handleSearch(params) {
-      this.getTableList(params)
+      this.queryInfo = params
+      this.getTableList()
     },
     // 获取表单数据
     async getTableList() {
