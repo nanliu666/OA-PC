@@ -5,10 +5,14 @@
       @mouseenter="visible"
       @mouseleave="invisible"
     >
-      <i
-        :class="typeIcon"
-        class="typeIcon iconfont"
-      />
+      <!-- <i :class="typeIcon" class="typeIcon iconfont" /> -->
+      <svg
+        aria-hidden="true"
+        width="40px"
+        height="40px"
+      >
+        <use :[symbolKey]="'#' + typeIcon" />
+      </svg>
       <div
         v-show="seen"
         class="isShow"
@@ -89,6 +93,7 @@ export default {
   },
   data() {
     return {
+      symbolKey: 'xlink:href',
       openUpload: false,
       seen: false,
       lookUpData: {
@@ -154,6 +159,9 @@ export default {
   text-align: center;
   cursor: pointer;
   outline: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .el-icon-plus {
     font-size: 28px;
     color: #8c939d;
@@ -163,7 +171,7 @@ export default {
   }
   .typeIcon {
     font-size: 40px;
-    color: #fff;
+    // color: #fff;
     line-height: 88px;
   }
   .typeIconImg {
