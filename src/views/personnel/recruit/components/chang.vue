@@ -134,20 +134,14 @@ export default {
             message: '功能暂时没有支持请期待',
             type: 'warning'
           })
-          // let params = {}
-          // params.userId = this.userId
-          // params.operatorType = this.users.operatorType
-          // params.taskNum = this.users.taskNum
-          // putTask(params).then(() => {
-          //   this.$message({ type: 'success', message: '操作成功' })
-          // })
-          // return this.resetForm()
         }
       })
     },
     resetForm() {
       this.users.taskNum = ''
       this.users.operatorType = ''
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }
