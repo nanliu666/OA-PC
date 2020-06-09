@@ -317,6 +317,7 @@
                 <el-form-item
                   label="审批流程"
                   prop="apprProgress"
+                  style="width:100%"
                 >
                   <appr-progress
                     ref="apprProgress"
@@ -517,7 +518,7 @@ export default {
     getOrgName() {
       getOrganizationTree({ parentOrgId: '0' })
         .then((res) => {
-          this.subOrgOptions.config.treeParams.data = res
+          this.subOrgOptions.config.treeParams.data.push(res)
           this.$refs['orgTree'].treeDataUpdateFun(res)
           this.newOrgList = res
         })
