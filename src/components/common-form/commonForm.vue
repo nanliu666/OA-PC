@@ -201,7 +201,6 @@ export default {
     validate() {
       return new Promise((resolve, reject) => {
         this.$refs['form'].validate((pass, error) => {
-          this.$emit('update:model', this.model)
           if (pass) {
             resolve(this.model)
             return
