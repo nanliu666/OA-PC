@@ -34,7 +34,7 @@ approval({ mock: false })
 menu({ mock: false })
 
 candidate(options)
-selectPerson({ mock: true })
+selectPerson({ mock: false })
 position(options)
 grade(options)
 menus(options)
