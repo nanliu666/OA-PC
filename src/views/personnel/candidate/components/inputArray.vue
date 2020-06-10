@@ -22,7 +22,7 @@
               >
                 <template v-if="basic.inType == 1">
                   <el-input
-                    v-model.number="form[basic.props]"
+                    v-model="form[basic.props]"
                     :minlength="basic.minLen"
                     :maxlength="basic.maxLen"
                     class="widthSet"
@@ -35,7 +35,7 @@
                 </template>
                 <template v-if="basic.inType == 2">
                   <el-select
-                    v-model.number="form[basic.props]"
+                    v-model="form[basic.props]"
                     :placeholder="basic.message"
                     class="widthSet select"
                     :disabled="basic.disabled || disabled"

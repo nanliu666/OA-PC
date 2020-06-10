@@ -550,7 +550,7 @@ const res = {
           },
           {
             menuId: '36',
-            menuName: '转正列表',
+            menuName: '转正管理',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,
