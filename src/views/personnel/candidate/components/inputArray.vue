@@ -172,6 +172,7 @@
                       class="widthSet"
                       :placeholder="basic.message"
                       :disabled="basic.disabled || disabled"
+                      @input="(value) => inputPhonenum(value, basic.props, basic.dataType)"
                       @blur="blur(basic, basic.attrId === '1' ? true : false)"
                     /><span style="margin: 0 12px">至</span>
                     <el-input
@@ -182,6 +183,7 @@
                       :placeholder="basic.message"
                       :disabled="basic.disabled || disabled"
                       @blur="blur(basic, basic.attrId === '1' ? true : false)"
+                      @input="(value) => inputPhonenum(value, basic.propscomplex, basic.dataType)"
                     />
                   </div>
                 </template>

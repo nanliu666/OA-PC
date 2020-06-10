@@ -339,21 +339,6 @@ export default {
     this.getBasicInfo()
   },
   methods: {
-    judgeTime(value) {
-      let _this = this
-      let isHasCross = false
-      for (let i = 0; i < _this.educationInfo.length; i++) {
-        let item = _this.educationInfo[i]
-        let timeSpace = [item.beginDate, item.endDate]
-        if (_this.curItemId != item.id && judgeRepeatedTime(timeSpace, value)) {
-          isHasCross = true
-          return
-        } else {
-          isHasCross = false
-        }
-      }
-      return isHasCross
-    },
     addInfo() {
       this.type = 'add'
       let item = {
