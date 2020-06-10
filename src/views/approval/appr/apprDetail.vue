@@ -764,9 +764,6 @@ import {
   createdRejectAppr
 } from '@/api/approval/approval'
 
-// 上一个的路径
-let path = ''
-
 export default {
   filters: {
     // 过滤审批状态
@@ -839,6 +836,8 @@ export default {
       recordList: [],
       // 流程进度
       activeStep: 0,
+      // 当前审批节点的审批人ID
+      apprUserId: '',
       // 是否已经撤回
       isCancel: false,
       // 控制显示模态框
@@ -871,13 +870,7 @@ export default {
       }
       return res
     },
-    //根据跳转过来的路径判断  是否显示同意拒绝按钮  只有待我审批的才显示
-    isShowBtns() {
-      if (path === '/approval/appr/waitAppr') {
-        return true
-      }
-      return false
-    },
+
     // 模态框标题
     apprTitle() {
       let res = ''
@@ -887,6 +880,13 @@ export default {
         res = '审批拒绝意见'
       }
       return res
+    },
+    isShowBtns() {
+      // /当前审批节点的审批人的用户id和当前用户对比
+      if (this.userId === this.apprUserId) {
+        return true
+      }
+      return false
     },
     ...mapGetters(['userId'])
   },
@@ -998,6 +998,9 @@ export default {
         this.isCancel = false
         this.recordList = arr
       }
+
+      // 当前审批人id
+      this.apprUserId = this.progressList[this.activeStep].userId
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
@@ -1085,11 +1088,6 @@ export default {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }
-  },
-  // 获取from的路径
-  beforeRouteEnter(to, from, next) {
-    path = from.path
-    next()
   }
 }
 </script>
