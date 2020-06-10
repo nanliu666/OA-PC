@@ -1,5 +1,5 @@
 // /user/v1/user/work/address
-import { get, post } from '@/router/axios'
+import { get, post, put, del } from '@/router/axios'
 /***
  *  @author guanfenda
  *  @desc 工作地址查询接口
@@ -66,7 +66,7 @@ export const getWorklist = (params) => get('/user/v1/user/work/list', params)
  *@params params
  * */
 export const getAddresss = (params) => get('/user/v1/person/interview/addresss', params)
-// /user/v1/person/interview/addresss
+
 /***
  * @author guanfenda
  * @desc  面试信息地址新增接口
@@ -74,3 +74,17 @@ export const getAddresss = (params) => get('/user/v1/person/interview/addresss',
  *@params params
  * */
 export const postAddresss = (params) => post('/user/v1/person/interview/addresss', params)
+/***
+ * @author guanfenda
+ * @desc  面试信息地址修改接口
+ *
+ *@params params
+ * */
+export const putAddresss = (params) => put('/user/v1/person/interview/addresss', params)
+/***
+ * @author guanfenda
+ * @desc  面试信息地址修改接口
+ *
+ *@params params
+ * */
+export const delAddresss = (params) => del('/user/v1/person/interview/addresss', params)

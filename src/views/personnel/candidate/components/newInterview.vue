@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="新建面试信息"
+      :title="title"
       :visible.sync="dialog"
       width="550px"
       append-to-body
@@ -34,7 +34,7 @@
             </el-form-item>
           </el-form>
         </div>
-        <div v-if="type === 'Onsite'">
+        <div v-if="isShowAddress">
           <div class="address">
             面试地址
           </div>
@@ -89,12 +89,13 @@
 
 <script>
 import { regionData } from 'element-china-area-data'
-import { postAddresss } from '@/api/personnel/selectedPerson'
+import { postAddresss, putAddresss } from '@/api/personnel/selectedPerson'
 import { isMobile } from '@/util/validate'
 
 export default {
   name: 'NewInterview',
   props: {
+    row: {},
     visible: {
       type: Boolean,
       default: false
@@ -118,10 +119,13 @@ export default {
       }
     }
     return {
+      title: '',
+      isShowAddress: false,
       options: regionData,
       dialog: true,
       form: {
         addresslist: [],
+        pathLabels: [],
         address: '',
         name: '',
         phonenum: ''
@@ -166,17 +170,44 @@ export default {
   watch: {
     dialog: {
       handler: function() {
+        this.$emit('update:row', {})
         this.$emit('update:dialogVisible', this.dialog)
       },
       deep: true
     },
-    type: {
-      handler(data) {
-        data
-        // console.log(data)
+    row: {
+      handler(val) {
+        this.title = val.id ? '编辑面试信息' : '新建面试信息'
+        if (val.id) {
+          this.form.phonenum = val.phonenum
+          this.form.name = val.name
+        }
+        if (val.provinceCode) {
+          let {
+            provinceName,
+            cityName,
+            countyName,
+            provinceCode,
+            cityCode,
+            countyCode,
+            address
+          } = { ...val }
+          this.form.addresslist = [provinceCode, cityCode, countyCode]
+          this.form.pathLabels = [provinceName, cityName, countyName]
+          this.form.address = address
+        }
+        this.isShowAddress = val.provinceCode ? true : false
+        if (this.type === 'Onsite' && !val.id) {
+          this.isShowAddress = true
+        } else if (this.type === 'Onsite' && val.provinceCode) {
+          this.isShowAddress = true
+        } else if (val.provinceCode) {
+          this.isShowAddress = true
+        } else {
+          this.isShowAddress = false
+        }
       },
-      immediate: true,
-      deep: true
+      immediate: true
     }
   },
   methods: {
@@ -185,9 +216,9 @@ export default {
       this.form[index] = value
     },
     onsubmit() {
-      // this.
+      let form = this.isShowAddress ? ['form', 'addressForm'] : ['form']
       Promise.all(
-        ['form', 'addressForm'].map((it) => {
+        form.map((it) => {
           return new Promise((resolve, reject) => {
             this.$refs[it].validate((valid) => {
               if (valid) {
@@ -219,14 +250,19 @@ export default {
             cityName,
             countyName
           }
-
+          if (this.row.id) {
+            putAddresss(params).then(() => {
+              this.$message.success('修改成功')
+              this.dialog = false
+            })
+            return
+          }
           postAddresss(params).then(() => {
             this.$message.success('提交成功')
             this.dialog = false
           })
         })
         .catch(() => {})
-      return
     },
     handleChange() {
       let pathLabels = this.$refs['cascaderAddr'].getCheckedNodes()

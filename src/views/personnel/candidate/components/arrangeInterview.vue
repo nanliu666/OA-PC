@@ -101,13 +101,14 @@
       v-if="newDialog"
       :dialog-visible.sync="newDialog"
       :type="form.interviewType"
+      :row.sync="addressItem"
     />
   </div>
 </template>
 
 <script>
 import newInterview from './newInterview'
-import { getWorklist, getAddresss } from '@/api/personnel/selectedPerson'
+import { getWorklist, getAddresss, delAddresss } from '@/api/personnel/selectedPerson'
 
 let optionsList = [
   {
@@ -159,6 +160,7 @@ export default {
 
   data() {
     return {
+      addressItem: {},
       address: [],
       type: '',
       newDialog: false,
@@ -312,7 +314,23 @@ export default {
      * */
 
     onsubmit() {
-      this.$refs.form.validate().then(() => {})
+      this.$refs.form.validate().then((res) => {
+        let params = {}
+        this.address.map((it) => {
+          if (res.addressId === it.id) {
+            let { Address, phonenum, name } = { ...it }
+            params = {
+              address: Address || '',
+              phonenum,
+              name
+            }
+          }
+        })
+        this.form = {
+          ...this.form,
+          ...params
+        }
+      })
     },
     /***
      * @author guanfenda
@@ -344,20 +362,24 @@ export default {
       this.dialog = false
     },
     handlerEdit(item) {
-      this.item = JSON.parse(JSON.stringify(item))
+      this.addressItem = JSON.parse(JSON.stringify(item))
       this.newDialog = true
     },
     handlerDelete(item) {
-      item
       this.$confirm('您确认要删除该面试信息吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          let params = {
+            id: item.id
+          }
+          delAddresss(params).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -402,49 +424,59 @@ export default {
 .dialog-footer {
   text-align: center;
 }
+
 .selectOption:hover {
   .edit {
     display: block;
   }
 }
+
 .selectOption {
   font-size: 12px;
   line-height: 20px;
   padding: 8px 10px;
+
   > span:first-child {
     color: #718199;
     display: inline-block;
     width: 96px;
   }
+
   > span:nth-child(2) {
     color: #202940;
   }
+
   .edit {
     display: none;
     float: right;
     font-size: 14px;
     color: #a0a8ae;
+
     span {
       margin-right: 10px;
     }
   }
 }
+
 .noData {
   background: #fff;
   height: 100px;
   text-align: center;
   line-height: 100px;
 }
+
 .addInfo {
   background: #fff;
   border-top: 1px solid #efefef;
   padding-top: 10px;
   color: #207efa;
   font-size: 14px;
+
   .ADD {
     margin-right: 10px;
   }
 }
+
 .name {
   background: rgba(113, 129, 153, 0.1);
   border-radius: 4px;

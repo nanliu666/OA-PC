@@ -31,7 +31,7 @@ const options = { mock: false }
 
 user(options)
 approval({ mock: false })
-menu({ mock: true })
+menu({ mock: false })
 
 candidate(options)
 selectPerson({ mock: true })

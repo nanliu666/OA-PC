@@ -28,14 +28,14 @@ const address = {
     {
       id: 'jyh(',
       name: 'QQ',
-      phonenum: '13122221251',
-      provinceCode: '440000',
-      provinceName: '广东省',
-      cityCode: '440300',
-      cityName: '深圳市',
-      countyCode: '440305',
-      countyName: '南山区',
-      address: '高新科技园北区'
+      phonenum: '13122221251'
+      // provinceCode: '440000',
+      // provinceName: '广东省',
+      // cityCode: '440300',
+      // cityName: '深圳市',
+      // countyCode: '440305',
+      // countyName: '南山区',
+      // address: '高新科技园北区'
     }
   ]
 }
