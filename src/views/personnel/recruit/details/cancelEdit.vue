@@ -44,19 +44,19 @@ export default {
   methods: {
     doNotSave() {
       this.$emit('isDoNotSave')
-      this.$router.go(-1)
       this.handleClose()
+      this.goBack()
     },
     init() {
       this.$emit('update:visible', true)
     },
     handleClose() {
       this.$emit('update:visible', false)
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.goBack()
     },
     goBack() {
       this.$router.go(-1)
-      this.handleClose()
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
     }
   }
 }

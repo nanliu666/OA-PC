@@ -235,20 +235,23 @@ export default {
     addDomain() {
       this.calWhetherBeyond()
       // 判断当前请求返回数据是否有意义
-      if (typeof this.dynamicValidateForm.users !== 'undefined') {
-        this.dynamicValidateForm.users.push({
-          userId: '',
-          taskNum: 1,
-          disabled: true,
-          Rendering: 'Rendering'
-        })
-      } else {
+      if (
+        this.dynamicValidateForm.users &&
+        Object.keys(this.dynamicValidateForm.users).length === 0
+      ) {
         this.$message({
           showClose: true,
           message: '当前需求暂无可用员工, 请关闭重试',
           type: 'warning'
         })
         this.$emit('update:visible', false)
+      } else {
+        this.dynamicValidateForm.users.push({
+          userId: '',
+          taskNum: 1,
+          disabled: true,
+          Rendering: 'Rendering'
+        })
       }
     },
     onSubmitted() {
@@ -277,15 +280,12 @@ export default {
           this.dynamicValidateForm.users[index].operatorType = 'Update'
           total += item.taskNum
         })
-        // eslint-disable-next-line valid-typeof
-        if (typeof Submitted !== 'onSubmitted') {
-          if (total > this.Numberofpeople) {
-            this.$message({
-              showClose: true,
-              message: '请注意！ 需求总人数不能大于待分配人数',
-              type: 'error'
-            })
-          }
+        if (Submitted !== 'onSubmitted' && total > this.Numberofpeople) {
+          this.$message({
+            showClose: true,
+            message: '请注意！ 需求总人数不能大于待分配人数',
+            type: 'error'
+          })
         }
         return total
       }

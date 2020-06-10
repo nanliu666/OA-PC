@@ -140,7 +140,7 @@ export default {
     ...mapGetters(['userId'])
   },
   activated() {
-    if (typeof this.$route.query.id !== 'undefined') {
+    if (this.$route.query.id) {
       this.getData()
     }
   },
