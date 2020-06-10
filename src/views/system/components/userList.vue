@@ -128,6 +128,7 @@ export default {
         showHandler: true,
         enableMultiSelect: true,
         enablePagination: true,
+        uniqueKey: 'userId',
         handlerColumn: {
           width: '180'
         }

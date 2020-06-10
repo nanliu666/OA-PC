@@ -98,10 +98,10 @@
                   </div>
                   <div class=" item-row new-item">
                     <div class="title">
-                      简历审核
+                      简历审核取消
                     </div>
                     <div class="detail">
-                      市场拓展比雷埃夫斯港邮轮码头扩建
+                      市场拓展比雷埃夫斯港邮轮码头扩建大苏打实打实的大苏打实打实大苏打
                     </div>
                     <div class="time">
                       03-25 10:21
@@ -256,23 +256,48 @@ export default {
   min-width: 506px;
   height: 375px;
   background: #ffffff;
+  // 公共样式
+  .title {
+    min-width: 84px;
+    font-family: PingFangSC-Medium;
+    font-size: 14px;
+    line-height: 43px;
+    color: #718199;
+    display: inline-block;
+  }
+  .time {
+    margin-left: 24px;
+    font-size: 14px;
+    font-family: ArialMT;
+    line-height: 43px;
+    display: inline-block;
+    min-width: 80px;
+    display: inline-block;
+    min-width: 80px;
+  }
+  .detail {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    line-height: 43px;
+    display: inline-block;
+    text-align: start;
+    min-width: 273px;
+    width: 400px;
+    padding-left: 24px;
+    // 。。。
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   .new-item-tips {
-    height: 43px;
     border-bottom: solid 1px #eeeeee;
-
     .title {
-      min-width: 84px;
-      font-family: PingFangSC-Medium;
-      font-size: 14px;
-      color: #718199;
-      line-height: 43px;
-      display: inline-block;
       width: 98px;
-      span {
-        display: inline-block;
-        vertical-align: middle;
-      }
+      // span {
+      // 	display: inline-block;
+      // 	vertical-align: middle;
+      // }
       // 小红点
       .icon {
         margin-right: 8px;
@@ -281,61 +306,28 @@ export default {
         border-radius: 100%;
         background: #ff6464 100%;
         display: inline-block;
+        vertical-align: middle;
       }
     }
     .detail {
-      font-family: PingFangSC-Regular;
-      font-size: 14px;
       color: #202940;
-      line-height: 43px;
-      display: inline-block;
-      width: 273px;
-      text-align: start;
-      min-width: 273px;
-      width: 400px;
       // ...
     }
     .time {
-      margin-left: 24px;
-      font-family: ArialMT;
-      font-size: 14px;
       color: #000000;
-      line-height: 43px;
-      display: inline-block;
-
-      min-width: 80px;
     }
   }
   .new-item {
     border-bottom: solid 1px #eeeeee;
-    height: 43px;
     .title {
-      min-width: 84px;
-      margin-left: 14px;
-      font-family: PingFangSC-Medium;
-      font-size: 14px;
-      color: #718199;
-      line-height: 43px;
-      display: inline-block;
+      padding-left: 14px;
+      box-sizing: border-box;
     }
     .detail {
-      font-family: PingFangSC-Regular;
-      font-size: 14px;
       color: #718199;
-      line-height: 43px;
-      display: inline-block;
-      min-width: 273px;
-      width: 400px;
-      text-align: start;
     }
     .time {
-      font-family: ArialMT;
-      font-size: 14px;
       color: #718199;
-      line-height: 43px;
-      display: inline-block;
-      margin-left: 24px;
-      min-width: 80px;
     }
   }
   .item-row {

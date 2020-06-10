@@ -41,6 +41,7 @@
         </div>
         <template v-else>
           <el-input
+            ref="tag-input"
             v-model="tag.name"
             placeholder="请输入标签内容"
             style="width:calc(100% - 80px);"
@@ -170,6 +171,9 @@ export default {
       this.tagList.push({
         name: '',
         editing: true
+      })
+      this.$nextTick(() => {
+        this.$refs['tag-input'][0].focus()
       })
     }
   }
