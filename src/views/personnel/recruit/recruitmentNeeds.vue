@@ -130,7 +130,7 @@ export default {
     }
   },
   activated() {
-    if (typeof this.$route.query.id !== 'undefined') {
+    if (this.$route.query.id) {
       this.ReplicationCache(this.$route.query.id)
     }
   },
@@ -157,7 +157,7 @@ export default {
   },
   methods: {
     SaveState() {
-      if (typeof this.$route.query.id !== 'undefined') {
+      if (this.$route.query.id) {
         this.ReplicationCache(this.$route.query.id)
       }
     },
@@ -219,7 +219,8 @@ export default {
             resolve(form)
           })
         })
-      ).then(() => {
+      ).then((res) => {
+        if (res.includes(false)) return
         this.$refs['apprForm'].validate((valid) => {
           if (valid) {
             this.infoForm.userId = this.userId
@@ -242,7 +243,9 @@ export default {
     isDoNotSave() {
       for (let key in this.infoForm) {
         const allFruit = ['needNum', 'companyName']
-        if (allFruit.includes(!key)) {
+        if (allFruit.includes(key)) {
+          // 置空页面数据
+        } else {
           this.infoForm[key] = null
         }
       }

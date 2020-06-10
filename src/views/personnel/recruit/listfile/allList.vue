@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -73,22 +74,22 @@
         slot="status"
         slot-scope="{ row }"
       >
-        <el-button
+        <el-tag
           v-if="row.status === 'Handled'"
           size="medium"
           type="primary"
           plain
         >
           {{ isStatus(row.status) }}
-        </el-button>
-        <el-button
+        </el-tag>
+        <el-tag
           v-else
           size="medium"
           type="danger"
           plain
         >
           {{ isStatus(row.status) }}
-        </el-button>
+        </el-tag>
       </template>
       <template
         slot="expand"
@@ -201,6 +202,7 @@ export default {
   data() {
     return {
       activeName: 'inrecruitment',
+      loading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -385,8 +387,7 @@ export default {
       ],
       WorkYear: [],
       getLevel: [],
-      management: [],
-      loading: true
+      management: []
     }
   },
   computed: {
@@ -426,10 +427,11 @@ export default {
       this.params.progress = progress
       this.getTableData()
     },
-    getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+    getTableData(params = {}) {
       this.decorator(params)
+      this.loading = true
       getAllRecruitment(params).then((res) => {
+        this.loading = false
         this.data = res.data.map((item) => ({ ...item, detail: [], loading: false }))
         this.page.total = res.totalPage
       })
@@ -443,13 +445,7 @@ export default {
       return params
     },
     handleSubmit(params) {
-      this.decorator()
-      getAllRecruitment(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-      })
+      this.getTableData(params)
     },
     jumpToDetail(row) {
       let { id, status } = row
@@ -591,5 +587,6 @@ export default {
   line-height: 20px;
   padding-left: 23px !important;
   border-right: 1px solid #ccc;
+  margin: 0;
 }
 </style>

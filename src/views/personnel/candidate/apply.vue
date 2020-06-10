@@ -1,17 +1,11 @@
 <template>
   <div style="height: 100%">
-    <div class="header">
-      <div
-        class="back"
-        @click="back"
-      >
-        <i
-          class="el-icon-arrow-left"
-          style="font-weight: 800"
-        /> 录用申请
-      </div>
-    </div>
-    <div
+    <pageHeader
+      title="录用申请"
+      :back="back"
+      :show-back="showBack"
+    />
+    <basicContainer
       v-loading="loading"
       class="apply"
     >
@@ -47,20 +41,22 @@
             :form.sync="infoForm"
           />
         </div>
-        <div class="flex flex-flow flex-items flex-justify">
-          <el-button
-            size="medium"
-            @click="close"
-          >
-            取消
-          </el-button>
-          <el-button
-            type="primary"
-            size="medium"
-            @click="handleNext"
-          >
-            下一步
-          </el-button>
+        <div class="footer">
+          <div class="next flex flex-justify-between flex-items">
+            <el-button
+              size="medium"
+              @click="close"
+            >
+              取消
+            </el-button>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="handleNext"
+            >
+              下一步
+            </el-button>
+          </div>
         </div>
       </div>
       <div
@@ -240,7 +236,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </basicContainer>
   </div>
 </template>
 
@@ -273,6 +269,7 @@ export default {
   },
   data() {
     return {
+      showBack: true,
       apprNo: '',
       applyId: '',
       recruitmentId: '',
@@ -546,30 +543,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  display: -ms-flex;
-  display: -moz-box;
-  display: -webkit-flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  color: #202940;
-  line-height: 28px;
-  font-weight: bold;
-  margin-top: 14px;
-}
-
 .apply {
-  background: #ffffff;
-  border-radius: 4px;
-  padding: 24px;
-  margin-top: 15px;
-  box-sizing: border-box;
-  width: 100%;
-  margin-bottom: 50px;
-
   .step {
     padding: 0 200px;
   }
@@ -594,10 +568,10 @@ export default {
 }
 
 .footer {
-  height: 100px;
-  line-height: 100px;
+  /*height: 100px;*/
+  /*line-height: 100px;*/
   margin-top: 20px;
-  margin-bottom: 50px;
+  /*margin-bottom: 50px;*/
 
   .next {
     padding: 0 200px;
@@ -638,42 +612,5 @@ export default {
   .person {
     margin: 0 20px;
   }
-
-  /*.row:first-child {*/
-  /*  .edit {*/
-  /*    .delete-icon {*/
-  /*      !*display: none !important;*!*/
-  /*    }*/
-
-  /*    !*.img_icon{*!*/
-  /*    !*  border: 1px dashed #1e9fff;*!*/
-  /*    !*  color: #1e9fff;*!*/
-  /*    !*}*!*/
-  /*  }*/
-  /*}*/
-  /*.row:not(:first-child) {*/
-  /*  !*.edit{*!*/
-  /*  .spot_icon {*/
-  /*    display: none !important;*/
-  /*  }*/
-  /*  !*}*!*/
-  /*}*/
-  /*.row:hover {*/
-  /*  .edit_no {*/
-  /*    display: none;*/
-  /*  }*/
-  /*  .edit_row {*/
-  /*    display: inline-block;*/
-  /*    display: flex;*/
-  /*    display: -webkit-flex;*/
-  /*    flex-flow: row nowrap;*/
-  /*  }*/
-  /*  .line {*/
-  /*    .img_icon {*/
-  /*      border: 1px dashed #1e9fff !important;*/
-  /*      color: #1e9fff !important;*/
-  /*    }*/
-  /*  }*/
-  /*}*/
 }
 </style>

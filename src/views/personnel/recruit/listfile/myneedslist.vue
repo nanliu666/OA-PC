@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -83,6 +84,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -239,7 +241,7 @@ export default {
         },
         {
           choice: 'EmerType',
-          target: 3
+          target: 4
         }
       ],
       WorkYear: [],
@@ -289,11 +291,12 @@ export default {
       this.params.progress = progress
       this.getTableData()
     },
-    getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+    getTableData(params = {}) {
       this.decorator(params)
+      this.loading = true
       setRecruitment(params).then((res) => {
         this.data = res.data
+        this.loading = false
         this.page.total = res.totalPage
       })
     },
