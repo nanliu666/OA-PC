@@ -106,8 +106,6 @@ export default {
 
     .icon {
       margin-right: 5px;
-      display: inline-block;
-      vertical-align: middle;
     }
 
     .name {
