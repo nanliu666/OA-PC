@@ -379,7 +379,7 @@ export default {
       // this.configVisible = !this.configVisible
       this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = false
-      this.title = '新建子组织'
+      this.title = '新建子职位'
       this.positionDialog = true
     },
     handleAside(item, index) {

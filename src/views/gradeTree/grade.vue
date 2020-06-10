@@ -64,7 +64,6 @@
       </div>
       <div v-else>
         <el-button
-          v-loading="sortLoading"
           size="medium"
           type="primary"
           @click="sort"
@@ -215,6 +214,7 @@ export default {
   },
   data() {
     return {
+      frist: true,
       sortLoading: false,
       firstLoad: false,
       zIndex: 999,
@@ -293,8 +293,14 @@ export default {
     this.getTree()
     await this.getOrgData()
     this.init()
+    this.frist = false
   },
-  activated() {},
+  async activated() {
+    if (this.frist) return
+    this.getTree()
+    await this.getOrgData()
+    this.init()
+  },
   methods: {
     f(res) {
       res.map((it) => {
@@ -976,15 +982,15 @@ export default {
         data.sort = data.sort ? data.sort : 1
         params.push(data)
       })
-      this.sortLoading = true
+      this.loading = true
       postSort(params)
         .then(() => {
-          this.sortLoading = false
+          this.loading = false
           this.$message.success('排序成功')
           this.getTree()
         })
         .catch(() => {
-          this.sortLoading = false
+          this.loading = false
         })
     },
     downloadImage() {

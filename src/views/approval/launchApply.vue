@@ -1,11 +1,12 @@
 <template>
   <div style="height:100%;width: 100% ">
-    <div class="header">
-      <div>
-        发起申请
-      </div>
-    </div>
-    <div class="view-case">
+    <!--    <div class="header">-->
+    <!--      <div>-->
+    <!--        发起申请-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <pageHeader title="发起申请" />
+    <basicContainer>
       <div class="content flex flex-justify-start flex-items">
         <div
           v-for="(it, i) in info"
@@ -31,7 +32,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </basicContainer>
   </div>
 </template>
 
@@ -83,6 +84,7 @@ export default {
   max-width: 1152px;
   margin: 0 auto;
   flex-flow: row wrap;
+  cursor: pointer;
   .todo {
     /*width: 352px;*/
     width: 30%;

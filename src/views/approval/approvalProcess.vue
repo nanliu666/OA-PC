@@ -1,9 +1,10 @@
 <template>
-  <div style="height:100%;width: 100% ">
-    <div class="header">
-      <div>审批流程</div>
-    </div>
-    <div class="approval">
+  <div>
+    <!--    <div class="header">-->
+    <!--      <div>审批流程</div>-->
+    <!--    </div>-->
+    <pageHeader title="审批流程" />
+    <basic-container>
       <div class="content flex flex-justify-start flex-items">
         <div
           v-for="(it, i) in info"
@@ -30,7 +31,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </basic-container>
+    <!--    <div class="approval">-->
+
+    <!--    </div>-->
     <approval-dialog
       v-if="dialogVisible"
       :visible.sync="dialogVisible"
@@ -80,20 +84,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  display: -ms-flex;
-  display: -moz-box;
-  display: -webkit-flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  color: #202940;
-  line-height: 28px;
-  font-weight: bold;
-  margin-top: 14px;
-}
 .approval {
   margin-top: 16px;
   background: #ffffff;
@@ -124,7 +114,7 @@ export default {
 .content {
   max-width: 1152px;
   margin: 0 auto;
-  /*padding: 24px 0px 24px 24px;*/
+  cursor: pointer;
   flex-flow: row wrap;
   .todo {
     /*width: 352px;*/

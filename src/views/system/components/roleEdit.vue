@@ -310,7 +310,7 @@ export default {
         } else if (val === 'Job') {
           positionColumn.display = false
           jobColumn.display = true
-        } else {
+        } else if (val === 'No') {
           jobColumn.display = false
           positionColumn.display = false
         }
@@ -476,15 +476,11 @@ export default {
     },
     //新建角色
     createFunc(callback) {
-      let positions = [{ positionId: this.form.positions.length === 0 ? '' : this.form.positions }]
-      let jobs = []
-      this.form.jobs.filter((it) => {
-        jobs.push({ jobId: it })
-      })
+      let positions = [this.form.positions.length === 0 ? '' : this.form.positions]
       const params = {
         ...this.form,
         positions,
-        jobs,
+        jobs: this.form.jobs,
         categoryId: this.categoryId
       }
       this.loading = true
@@ -501,24 +497,24 @@ export default {
     },
     // 更新角色
     updateFunc() {
-      let positions = [{ positionId: this.form.positions.length === 0 ? '' : this.form.positions }]
-      let jobs = []
-      this.form.jobs.filter((it) => {
-        jobs.push({ jobId: it })
-      })
+      let positions = [this.form.positions.length === 0 ? '' : this.form.positions]
       const params = {
         ...this.form,
         positions,
-        jobs,
+        jobs: this.form.jobs,
         categoryId: this.categoryId
       }
       this.loading = true
-      updateRole(params).then(() => {
-        this.loading = false
-        this.$message.success('编辑角色成功')
-        this.$emit('reload')
-        this.onClose()
-      })
+      updateRole(params)
+        .then(() => {
+          this.loading = false
+          this.$message.success('编辑角色成功')
+          this.$emit('reload')
+          this.onClose()
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 关闭弹窗
     onClose() {
