@@ -34,16 +34,13 @@
             :rules="rules"
             :inline="true"
             :model="users"
-            class="demo-form-inline"
           >
-            <el-row
-              :gutter="24"
-              style=" position: relative; left: 90px;"
-            >
+            <el-row :gutter="24">
               <el-col :span="24">
                 <el-form-item label="您想将剩余需求总数更改为">
                   <el-input-number
                     v-model="users.taskNum"
+                    size="medium"
                     controls-position="right"
                     :min="1"
                   />
@@ -212,5 +209,10 @@ export default {
 
 .introduce {
   margin-left: 92px !important;
+}
+
+/deep/ .el-select--medium,
+.el-input-number {
+  width: 100% !important;
 }
 </style>
