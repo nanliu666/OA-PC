@@ -1,20 +1,6 @@
 <template>
   <div class="avue-logo">
-    <transition name="fade">
-      <span
-        v-if="keyCollapse"
-        key="0"
-        class="avue-logo_subtitle"
-      >{{ website.logo }}</span>
-    </transition>
-    <transition-group name="fade">
-      <template v-if="!keyCollapse">
-        <span
-          key="1"
-          class="avue-logo_title"
-        >{{ website.indexTitle }}</span>
-      </template>
-    </transition-group>
+    <img src="../../../public/img/logo.png">
   </div>
 </template>
 
@@ -62,20 +48,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  &_title {
+  img {
     display: block;
-    text-align: center;
-    font-weight: 300;
-    font-size: 20px;
-    width: 239px;
-    border-right: 1px solid #e3e7e9;
-  }
-  &_subtitle {
-    display: block;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
   }
 }
 </style>
