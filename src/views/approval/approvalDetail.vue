@@ -158,7 +158,6 @@ export default {
         this.initData = res
         this.note = res.note
 
-        debugger
         if (!res.id) {
           return
         }
