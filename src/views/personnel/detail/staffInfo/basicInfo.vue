@@ -549,6 +549,7 @@ export default {
           }
           break
         default:
+          callback()
       }
     }
     return {
@@ -565,10 +566,13 @@ export default {
           {
             required: true,
             trigger: 'blur',
+            message: '请输入手机号码'
+          },
+          {
+            required: true,
+            trigger: 'blur',
             validator: (rule, value, callback) => {
-              if (!value) {
-                callback(new Error('请输入手机号码'))
-              } else if (value && !isMobile(value)) {
+              if (value && !isMobile(value)) {
                 callback(new Error('手机号码格式不正确'))
               } else {
                 callback()
@@ -580,8 +584,13 @@ export default {
           {
             required: true,
             trigger: 'blur',
+            message: '请输入姓名'
+          },
+          {
+            required: true,
+            trigger: 'blur',
             validator: (rule, value, callback) => {
-              if (!value || (value && !validateName(value))) {
+              if (value && !validateName(value)) {
                 callback(new Error('请输入2-10位汉字、英文、空格和点号'))
               } else {
                 callback()
@@ -593,10 +602,13 @@ export default {
           {
             required: true,
             trigger: 'blur',
+            message: '请输入邮箱'
+          },
+          {
+            required: true,
+            trigger: 'blur',
             validator: (rule, value, callback) => {
-              if (!value) {
-                callback(new Error('请输入邮箱'))
-              } else if (value && !isEmailReg(value)) {
+              if (value && !isEmailReg(value)) {
                 callback(new Error('邮箱格式有误'))
               } else {
                 callback()
