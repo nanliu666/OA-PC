@@ -22,6 +22,7 @@
             style="height:100%;"
           >
             <el-tab-pane
+              v-loading="treeLoading"
               label="组织架构"
               name="orgTree"
             >
@@ -123,7 +124,8 @@ export default {
       },
       activeTag: null,
       activeOrg: null,
-      treeSearch: ''
+      treeSearch: '',
+      treeLoading: false
     }
   },
   computed: {
@@ -149,9 +151,15 @@ export default {
       this.tagMemberVisible = true
     },
     loadTree(parentOrgId = '0') {
-      getOrganization({ parentOrgId }).then((data) => {
-        this.treeData = data
-      })
+      this.treeLoading = true
+      getOrganization({ parentOrgId })
+        .then((data) => {
+          this.treeData = data
+          this.treeLoading = false
+        })
+        .catch(() => {
+          this.treeLoading = false
+        })
     },
     handleRefreshTag() {
       this.$refs['tags'].loadData()
@@ -168,5 +176,6 @@ export default {
 }
 /deep/ .el-tabs__content {
   height: calc(100% - 55px);
+  overflow: auto;
 }
 </style>
