@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header title="我发起的" />
+    <page-header title="待我审批" />
     <basic-container>
       <commonTable
         :data="tableList"
@@ -12,7 +12,7 @@
         @current-page-change="currentPageChange"
         @page-size-change="pageSizeChange"
       >
-        |<template slot="topMenu">
+        <template slot="topMenu">
           <div class="search-box">
             <SearchPopover
               :require-options="requireOptions"
@@ -86,7 +86,7 @@
 import { FormKeysCN } from '@/const/approve'
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getMyApprList } from '@/api/approval/approval'
+import { createdWaitApprList } from '@/api/approval/approval'
 export default {
   name: 'ApprByMe',
   components: {
@@ -108,6 +108,7 @@ export default {
           }
         }
       ],
+
       // 请求参数
       queryInfo: {
         pageNo: 1,
@@ -206,7 +207,7 @@ export default {
     async getTableList() {
       this.queryInfo.userId = this.userId
       this.loading = true
-      let { totalNum, data } = await getMyApprList(this.queryInfo)
+      let { totalNum, data } = await createdWaitApprList(this.queryInfo)
       this.tableList = data
       this.page.total = totalNum
       this.loading = false

@@ -91,6 +91,24 @@ export const createdUrge = (params) => {
   return post('/appr/v1/appr/apply/urge', params)
 }
 
+// 待我审批查询接口
+export const createdWaitApprList = (params) => {
+  return post('/appr/v1/appr/wait/approve/list', params)
+}
+// 同意审批
+export const createdPassAppr = (params) => {
+  return post('/appr/v1/appr/apply/pass', params)
+}
+// 拒绝审批
+export const createdRejectAppr = (params) => {
+  return post('/appr/v1/appr/apply/reject', params)
+}
+
+// 我已审批查询接口
+export const createdHasApprList = (params) => {
+  return post('/appr/v1/appr/has/approve/list', params)
+}
+
 /**
  * 审批申请提交接口
  * @param {String} params

@@ -648,16 +648,63 @@
           type="primary"
           size="medium"
           :disabled="isDisabled"
-          @click="handelcancel"
+          @click="handelCancel"
         >
           撤回
         </el-button>
+        <el-button
+          v-if="isShowBtns"
+          type="primary"
+          size="medium"
+          @click="handelClick('Reject')"
+        >
+          拒绝
+        </el-button>
+        <el-button
+          v-if="isShowBtns"
+          type="primary"
+          size="medium"
+          @click="handelClick('Pass')"
+        >
+          同意
+        </el-button>
       </div>
     </basic-container>
+
+    <!-- 审批意见模态框 -->
+    <el-dialog
+      :title="apprTitle"
+      :visible.sync="dialogVisible"
+      width="600px"
+      top="40vh"
+      :modal-append-to-body="false"
+    >
+      <el-input
+        v-model="apprRemark"
+        type="textarea"
+        :rows="4"
+        placeholder="请输入审批意见"
+      />
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="medium"
+          @click="dialogVisible = false"
+        >取 消</el-button>
+        <el-button
+          size="medium"
+          type="primary"
+          @click="handelConfirm"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { FormKeysCN } from '@/const/approve'
 import { mapGetters } from 'vuex'
 import {
   getApplyDetail,
@@ -674,8 +721,15 @@ import {
   // 撤回
   cancelApply,
   // 催一下
-  createdUrge
+  createdUrge,
+  // 同意审批
+  createdPassAppr,
+  // 拒绝审批
+  createdRejectAppr
 } from '@/api/approval/approval'
+
+// 上一个的路径
+let path = ''
 
 export default {
   filters: {
@@ -739,7 +793,6 @@ export default {
       show: false,
       // 审批详情
       applyData: {},
-
       // 字典组
       EmerType: [],
       WorkYear: [],
@@ -755,44 +808,25 @@ export default {
       // 流程进度
       activeStep: 0,
       // 是否已经撤回
-      isCancel: false
+      isCancel: false,
+      // 控制显示模态框
+      dialogVisible: false,
+      // 判断是同意审批还是拒绝审批
+      apprType: '',
+      // 审批意见
+      apprRemark: ''
     }
   },
   computed: {
     // 标题
     title() {
       let title = ''
-      let arr = [
-        {
-          title: '招聘需求申请',
-          formKey: 'Recruitment'
-        },
-        {
-          title: '录用申请',
-          formKey: 'PersonOfferApply'
-        },
-        {
-          title: '转正申请',
-          formKey: 'UserFormalInfo'
-        },
-        {
-          title: '续签合同申请',
-          formKey: 'UserContractInfo'
-        },
-        {
-          title: '离职申请',
-          formKey: 'UserLeaveInfo'
-        },
-        {
-          title: '人事异动申请',
-          formKey: 'UserChangeInfo'
+      for (let key in FormKeysCN) {
+        if (this.apprInfo.formKey === key) {
+          title = FormKeysCN[key]
+          break
         }
-      ]
-      arr.forEach((item) => {
-        if (this.apprInfo.formKey === item.formKey) {
-          title = item.title
-        }
-      })
+      }
       return title
     },
     // 按钮是否可以
@@ -800,9 +834,25 @@ export default {
       let res = ''
       if (this.isCancel) {
         res = this.isCancel
-      }
-      if (this.activeStep > 1) {
+      } else if (this.activeStep > 1) {
         res = true
+      }
+      return res
+    },
+    //根据跳转过来的路径判断  是否显示同意拒绝按钮  只有待我审批的才显示
+    isShowBtns() {
+      if (path === '/approval/appr/waitAppr') {
+        return true
+      }
+      return false
+    },
+    // 模态框标题
+    apprTitle() {
+      let res = ''
+      if (this.apprType === 'Pass') {
+        res = '审批同意意见'
+      } else if (this.apprType === 'Reject') {
+        res = '审批拒绝意见'
       }
       return res
     },
@@ -930,7 +980,7 @@ export default {
     },
 
     // 撤回申请
-    async handelcancel() {
+    async handelCancel() {
       let { apprNo } = this.$route.query
       let res = await this.$confirm('确定撤销申请吗?', '撤销申请', {
         confirmButtonText: '确定',
@@ -943,6 +993,41 @@ export default {
       await cancelApply({ apprNo })
       this.$message.success('撤回成功')
       this.$router.go(-1)
+    },
+    // 点击同意或拒绝按钮展示模态框
+    handelClick(type) {
+      this.apprType = type
+      ;(this.dialogVisible = true), (this.apprRemark = '')
+    },
+    // 点击确定审批
+    async handelConfirm() {
+      let { userId, id: nodeId } = this.progressList[this.activeStep]
+      let { apprNo } = this.$route.query
+      if (this.apprType === 'Reject') {
+        await createdRejectAppr({
+          userId,
+          nodeId,
+          apprNo,
+          remark: this.apprRemark
+        })
+        this.$message({
+          type: 'success',
+          message: '你已拒绝黄浩提交的用印申请'
+        })
+      } else if (this.apprType === 'Pass') {
+        await createdPassAppr({
+          userId,
+          nodeId,
+          apprNo,
+          remark: this.apprRemark
+        })
+        this.$message({
+          type: 'success',
+          message: '你已同意黄浩提交的用印申请'
+        })
+      }
+      this.dialogVisible = false
+      this.goBack()
     },
     // init
     initData() {
@@ -959,12 +1044,18 @@ export default {
         type: 'success',
         message: '催办成功'
       })
+      this.dialogVisible = false
     },
     // goback
     goBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }
+  },
+  // 获取from的路径
+  beforeRouteEnter(to, from, next) {
+    path = from.path
+    next()
   }
 }
 </script>
