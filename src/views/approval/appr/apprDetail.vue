@@ -458,6 +458,41 @@
           </div>
           <div class="detail-item" />
         </div>
+        <!-- 更改需求人数审批详情 -->
+        <div
+          v-else-if="apprInfo.formKey === 'RecruitmentChangeNum'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>招聘职位名称 :</div>
+            <div>{{ applyData.jobName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>需求人数 :</div>
+            <div>{{ applyData.needNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>已入职人数 :</div>
+            <div>{{ applyData.entryNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>用人部门名称 :</div>
+            <div>{{ applyData.orgName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>更改后的需求人数 :</div>
+            <div>{{ applyData.changeNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>提交用户名 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>更改原因 :</div>
+            <div>{{ applyData.reason }}</div>
+          </div>
+          <div class="detail-item" />
+        </div>
       </basic-container>
     </transition>
 
@@ -704,7 +739,7 @@
 </template>
 
 <script>
-import { FormKeysCN } from '@/const/approve'
+import { FormKeysCN, apprStatusCN } from '@/const/approve'
 import { mapGetters } from 'vuex'
 import {
   getApplyDetail,
@@ -716,6 +751,7 @@ import {
   getContractApply,
   getLeaveApply,
   getChangeApply,
+  getRecChangeNumApply,
   // 流程进度和审批记录
   getApplyRecord,
   // 撤回
@@ -736,14 +772,10 @@ export default {
     // 过滤审批状态
     filterstatus: (status) => {
       if (!status) return ''
-      if (status === 'Approve') {
-        return '审批中'
-      } else if (status === 'Pass') {
-        return '已通过'
-      } else if (status === 'Reject') {
-        return '已拒绝'
-      } else if (status === 'Cancel') {
-        return '已撤回'
+      for (let key in apprStatusCN) {
+        if (status === key) {
+          return apprStatusCN[key]
+        }
       }
     },
     // 字典组过滤 根据 dictKey =》 dictValue
@@ -889,6 +921,8 @@ export default {
         res = await getLeaveApply({ id: formId, userId: this.userId })
       } else if (formKey === 'UserChangeInfo') {
         res = await getChangeApply({ id: formId })
+      } else if (formKey === 'RecruitmentChangeNum') {
+        res = await getRecChangeNumApply({ id: formId })
       }
       this.applyData = res
     },

@@ -7,3 +7,9 @@ export const FormKeysCN = {
   UserChangeInfo: '人事异动申请',
   RecruitmentChangeNum: '更改需求人数'
 }
+export const apprStatusCN = {
+  Approve: '审批中',
+  Pass: '已通过',
+  Reject: '已拒绝',
+  Cancel: '已撤回'
+}

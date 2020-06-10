@@ -74,6 +74,10 @@ export const getLeaveApply = (params) => {
 export const getChangeApply = (params) => {
   return get('/user/v1/user/change/info', params)
 }
+// 更改需求人数详情查询
+export const getRecChangeNumApply = (params) => {
+  return get('/user/v1/recruitment/change/num', params)
+}
 
 // 流程进度和审批记录，调用接口
 export const getApplyRecord = (params) => {

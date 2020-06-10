@@ -551,6 +551,28 @@ export default ({ mock }) => {
     }
   })
 
+  // 更改需求人数申请查询
+  Mock.mock(new RegExp('/user/v1/recruitment/change/num' + '.*'), 'get', () => {
+    let response = {
+      id: 'pc)5P',
+      recruitmentId: 'YrfI6',
+      reason: '5Gle#',
+      changeNum: 244001235589024,
+      userId: 'jPBDT',
+      userName: 'fq]cTY',
+      orgId: 'i09l',
+      orgName: 'wEqx*D',
+      jobId: 'xIJ$t9',
+      jobName: 'tzx8W',
+      needNum: 4588332270048660,
+      entryNum: 3015356526241216
+    }
+
+    return {
+      response
+    }
+  })
+
   // 流程进度和审批记录
   Mock.mock(new RegExp('/appr/v1/appr/apply/record' + '.*'), 'get', () => {
     // let list = Mock.mock([
