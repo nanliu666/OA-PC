@@ -1089,7 +1089,6 @@ export default {
     }
     .num-box {
       flex: 1;
-      border-left: 1px solid #e3e7e9;
     }
     .apply-user-box {
       text-align: center;
@@ -1113,6 +1112,7 @@ export default {
     }
     .apply-status {
       text-align: end;
+      border-left: 1px solid #e3e7e9;
       flex: 0.5;
       :nth-child(2) {
         font-family: PingFangSC-Medium;
