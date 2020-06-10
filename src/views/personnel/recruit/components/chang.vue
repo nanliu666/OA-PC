@@ -62,9 +62,9 @@
                   >
                     <el-option
                       v-for="item in operatorTypeList"
-                      :key="item.dictKey"
+                      :key="item.dictValue"
                       :label="item.dictValue"
-                      :value="item.dictKey"
+                      :value="item.dictValue"
                     />
                   </el-select>
                 </el-form-item>
@@ -72,7 +72,7 @@
                 <el-form-item prop="apprProgress">
                   <appr-progress
                     ref="apprProgress"
-                    form-key="UserFormalInfo"
+                    form-key="RecruitmentChangeNum"
                   />
                 </el-form-item>
               </el-col>
@@ -129,15 +129,12 @@ export default {
       },
       operatorTypeList: [
         {
-          dictKey: 0,
           dictValue: '临时增加新任务'
         },
         {
-          dictKey: 1,
           dictValue: '部门人手已足够'
         },
         {
-          dictKey: 2,
           dictValue: '其它'
         }
       ]
