@@ -6,7 +6,7 @@
       :back="back"
     />
     <basic-container>
-      <div>
+      <div class="approval">
         <div class="flex flex-justify-start flex-items title">
           <i class="el-icon-caret-bottom" />审批流程
           <el-link
@@ -242,6 +242,6 @@ export default {
 
 .footer {
   position: absolute;
-  bottom: 50px;
+  bottom: -50px;
 }
 </style>
