@@ -311,7 +311,21 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <!-- 审批暂时不做 -->
+            <!-- 审批-->
+            <el-row>
+              <el-col :span="24">
+                <el-form-item
+                  label="审批流程"
+                  prop="apprProgress"
+                  style="width:100%"
+                >
+                  <appr-progress
+                    ref="apprProgress"
+                    form-key="UserChangeInfo"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
             <!-- 按钮 -->
             <el-row class="btn-box">
               <el-col :span="10">
@@ -343,13 +357,23 @@ import { getOrganizationCompany } from '@/api/personnel/roster'
 import { getJobInfo, getPositionInfo, getStaffBasicInfo } from '@/api/personalInfo.js'
 import { getOrganizationTree } from '@/api/organize/grade.js'
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
-
+import apprProgress from '@/components/appr-progress/apprProgress'
+// import getAppProcess from "@/api/approval/approval"
 export default {
   name: 'ChangeApply',
   components: {
-    ElTreeSelect
+    ElTreeSelect,
+    apprProgress
   },
   data() {
+    // 审批校验
+    var checkAppr = (rule, value, callback) => {
+      if (!this.$refs['apprProgress'].validate()) {
+        callback(new Error('请选择审批人'))
+      } else {
+        callback()
+      }
+    }
     return {
       // 请求数据params and 员工信息
       applyParams: {
@@ -373,7 +397,8 @@ export default {
       applyRules: {
         type: [{ required: true, message: '请选择异动类型', trigger: 'blur' }],
         reason: [{ required: true, message: '请选择异动原因', trigger: 'change' }],
-        effectDate: [{ required: true, message: '请选择生效日期', trigger: 'blur' }]
+        effectDate: [{ required: true, message: '请选择生效日期', trigger: 'blur' }],
+        apprProgress: [{ validator: checkAppr, required: true }]
       },
       // 字典组异动原因
       changeReason: [],
@@ -493,7 +518,7 @@ export default {
     getOrgName() {
       getOrganizationTree({ parentOrgId: '0' })
         .then((res) => {
-          this.subOrgOptions.config.treeParams.data = res
+          this.subOrgOptions.config.treeParams.data.push(res)
           this.$refs['orgTree'].treeDataUpdateFun(res)
           this.newOrgList = res
         })
@@ -584,8 +609,12 @@ export default {
           positionName !== newPositionName
         ) {
           changeApply(this.applyParams)
-            .then(() => {
-              this.$message.success('提交成功', 3000, this.$router.go(-1))
+            .then((res) => {
+              if (res && res.id) {
+                this.$refs['apprProgress'].submit(res.id).then(() => {
+                  this.$message.success('提交成功', 3000, this.$router.go(-1))
+                })
+              }
             })
             .catch()
         } else {

@@ -33,31 +33,56 @@
         <div class="content">
           <div class="content-item">
             <div class="icon-box tips">
-              <i class="iconfont icon-menu-entry-filled" />
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-approval-checkin-bicolor" />
+              </svg>
             </div>
             <span>新建提醒</span>
           </div>
           <div class="content-item">
             <div class="icon-box apply">
-              <i class="iconfont icon-menu-recruit-filled" />
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-approval-recruit-bicolor" />
+              </svg>
             </div>
             <span>通用申请</span>
           </div>
           <div class="content-item">
             <div class="icon-box  arrange">
-              <i class="iconfont icon-menu-contract-filled" />
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-approval-Seal-bicolor" />
+              </svg>
             </div>
             <span>安排面试</span>
           </div>
           <div class="content-item">
             <div class="icon-box book">
-              <i class="iconfont icon-menu-flow_W" />
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-approval-travel-outlined" />
+              </svg>
             </div>
             <span>通讯录</span>
           </div>
           <div class="content-item">
             <div class="icon-box add">
-              <i class="iconfont icon-tips-add-outlined" />
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-approval-invitation-bicolor" />
+              </svg>
             </div>
             <span>添加员工</span>
           </div>
@@ -223,20 +248,9 @@ export default {
   text-align: center;
   border-radius: 100%;
 }
-.tips {
-  background: rgb(31, 245, 85);
-}
-.apply {
-  background: rgb(5, 201, 207);
-}
-.arrange {
-  background: rgb(250, 45, 189);
-}
-.book {
-  background: rgb(235, 70, 70);
-}
-.add {
-  background: rgb(252, 255, 58);
+.icon {
+  width: 40px;
+  height: 40px;
 }
 
 // 工作概览
