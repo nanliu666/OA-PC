@@ -30,8 +30,8 @@ import approval from './approval'
 const options = { mock: false }
 
 user(options)
-approval({ mock: false })
-menu({ mock: true })
+approval(options)
+menu(options)
 
 candidate(options)
 selectPerson(options)
