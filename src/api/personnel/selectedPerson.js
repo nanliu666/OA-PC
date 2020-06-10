@@ -88,3 +88,11 @@ export const putAddresss = (params) => put('/user/v1/person/interview/addresss',
  *@params params
  * */
 export const delAddresss = (params) => del('/user/v1/person/interview/addresss', params)
+
+/***
+ * @author guanfenda
+ * @desc  安排面试发送接口
+ *
+ *@params params
+ * */
+export const postInterViewSend = (params) => post('/user/v1/person/interview/send', params)

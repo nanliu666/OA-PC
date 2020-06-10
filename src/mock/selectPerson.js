@@ -51,4 +51,7 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/user/v1/person/interview/addresss' + '.*'), 'get', () => {
     return address
   })
+  Mock.mock(new RegExp('/user/v1/person/interview/send' + '.*'), 'post', () => {
+    return json
+  })
 }

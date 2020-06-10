@@ -11,7 +11,7 @@
         <div>
           <commonForm
             ref="form"
-            :model.sync="form"
+            :model="form"
             :columns="columns"
           >
             <template slot="personId">
@@ -80,21 +80,28 @@
               />
             </template>
           </commonForm>
+          <el-checkbox v-model="form.interview">
+            同步发送面试登记表
+          </el-checkbox>
         </div>
-        <span
+        <div
           slot="footer"
-          class="dialog-footer flex flex-flow flex-items flex-justify"
+          class="dialog-footer"
         >
           <el-button
             size="medium"
             @click="handleClose"
-          >取 消</el-button>
+          >
+            取 消
+          </el-button>
           <el-button
             type="primary"
             size="medium"
             @click="onsubmit"
-          >确 定</el-button>
-        </span>
+          >
+            确 定
+          </el-button>
+        </div>
       </div>
     </el-dialog>
     <new-interview
@@ -108,7 +115,12 @@
 
 <script>
 import newInterview from './newInterview'
-import { getWorklist, getAddresss, delAddresss } from '@/api/personnel/selectedPerson'
+import {
+  getWorklist,
+  getAddresss,
+  delAddresss,
+  postInterViewSend
+} from '@/api/personnel/selectedPerson'
 
 let optionsList = [
   {
@@ -180,7 +192,8 @@ export default {
         interviewTime: '',
         remark: '',
         addressId: '',
-        orgId: ''
+        orgId: '',
+        interview: true
       },
       columns: [
         {
@@ -314,10 +327,10 @@ export default {
      * */
 
     onsubmit() {
-      this.$refs.form.validate().then((res) => {
+      this.$refs.form.validate().then(() => {
         let params = {}
         this.address.map((it) => {
-          if (res.addressId === it.id) {
+          if (this.form.addressId === it.id) {
             let { Address, phonenum, name } = { ...it }
             params = {
               address: Address || '',
@@ -326,10 +339,23 @@ export default {
             }
           }
         })
-        this.form = {
+        let data = {
           ...this.form,
           ...params
         }
+
+        data.interview = this.form.interview ? 1 : 0
+        // console.log(data)
+        this.loading = true
+        postInterViewSend(data)
+          .then(() => {
+            this.loading = false
+            this.dialog = false
+            this.$message.success('提交成功')
+          })
+          .catch(() => {
+            this.loading = false
+          })
       })
     },
     /***
@@ -422,7 +448,7 @@ export default {
 }
 
 .dialog-footer {
-  text-align: center;
+  text-align: right;
 }
 
 .selectOption:hover {
