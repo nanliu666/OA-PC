@@ -139,8 +139,7 @@ export default {
     this.getTableData()
   },
   methods: {
-    getTableData(params) {
-      if (params === undefined || params === null) params = this.params
+    getTableData(params = {}) {
       this.decorator(params)
       getApprove(params).then((res) => {
         this.data = res.data

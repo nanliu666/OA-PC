@@ -1,4 +1,3 @@
-/* eslint-disable valid-typeof */
 <template>
   <el-dialog
     title="分配招聘需求"
@@ -251,14 +250,12 @@ export default {
       this.dynamicValidateForm.users.forEach((item) => {
         total += item.taskNum
       })
-      if (Submitted !== 'onSubmitted') {
-        if (total >= this.Numberofpeople) {
-          this.$message({
-            showClose: true,
-            message: '请注意！ 需求总人数不能大于待分配人数',
-            type: 'error'
-          })
-        }
+      if (Submitted !== 'onSubmitted' && total >= this.Numberofpeople) {
+        this.$message({
+          showClose: true,
+          message: '请注意！ 需求总人数不能大于待分配人数',
+          type: 'error'
+        })
       }
       return total
     },

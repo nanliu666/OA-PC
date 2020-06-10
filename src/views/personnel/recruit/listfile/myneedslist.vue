@@ -291,8 +291,7 @@ export default {
       this.params.progress = progress
       this.getTableData()
     },
-    getTableData(params) {
-      if (params != null && params != undefined) params = this.params
+    getTableData(params = {}) {
       this.decorator(params)
       this.loading = true
       setRecruitment(params).then((res) => {
