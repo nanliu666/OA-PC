@@ -21,6 +21,7 @@ import leave from './leave'
 import personnelSettings from './personnel/settings'
 import contact from './contact'
 import approval from './approval'
+import interview from './interview'
 /**
  * 模拟数据mock
  *
@@ -32,9 +33,9 @@ const options = { mock: false }
 user(options)
 approval({ mock: false })
 menu({ mock: false })
-
+interview({ mock: true })
 candidate(options)
-selectPerson({ mock: true })
+selectPerson(options)
 position(options)
 grade(options)
 menus(options)
