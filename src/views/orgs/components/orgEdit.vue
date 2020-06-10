@@ -307,7 +307,7 @@ export default {
       this.form = JSON.parse(JSON.stringify(row))
       this.parentOrgIdLabel = this.findOrg(row.parentOrgId).orgName
       this.form.parentOrgType = this.findOrg(row.parentOrgId).orgType
-      this.loadRadio()
+      this.loadRadio(true)
       this.$emit('update:visible', true)
       this.loadOrgTree()
     },
@@ -336,20 +336,20 @@ export default {
       }
       this.$emit('update:visible', false)
     },
-    loadRadio() {
+    loadRadio(noChangeType) {
       // this.form.orgType = 'Company'
       this.radioDisable = this.$options.data().radioDisable
       if (this.form.parentOrgType === 'Enterprise') {
-        this.form.orgType = 'Company'
+        if (!noChangeType) this.form.orgType = 'Company'
       } else if (this.form.parentOrgType === 'Company') {
-        this.form.orgType = 'Department'
+        if (!noChangeType) this.form.orgType = 'Department'
       } else if (this.form.parentOrgType === 'Department') {
         this.radioDisable.Company = true
-        this.form.orgType = 'Department'
+        if (!noChangeType) this.form.orgType = 'Department'
       } else if (this.form.parentOrgType === 'Group') {
         this.radioDisable.Company = true
         this.radioDisable.Department = true
-        this.form.orgType = 'Group'
+        if (!noChangeType) this.form.orgType = 'Group'
       }
     },
     handleOrgNodeClick(data) {

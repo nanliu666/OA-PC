@@ -83,7 +83,8 @@ export default {
         categoryId: [{ required: true, message: '请选择附件分类', trigger: 'blur' }],
         name: [{ required: true, message: '请输入文件名称', trigger: 'blur' }]
       },
-      attachmentType: {}
+      attachmentType: {},
+      loading: false
     }
   },
   created() {
@@ -112,11 +113,17 @@ export default {
       this.$emit('update:visible', false)
     },
     submit() {
-      modifyAttachmentInfo(this.form).then(() => {
-        this.$message.success('修改成功')
-        this.$emit('update:visible', false)
-        this.$emit('refresh')
-      })
+      this.loading = true
+      modifyAttachmentInfo(this.form)
+        .then(() => {
+          this.$message.success('修改成功')
+          this.loading = false
+          this.$emit('update:visible', false)
+          this.$emit('refresh')
+        })
+        .catch(() => {
+          this.loading = false
+        })
     }
   }
 }
