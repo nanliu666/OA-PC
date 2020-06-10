@@ -168,11 +168,11 @@ export default {
     resetForm() {
       this.users.taskNum = ''
       this.users.operatorType = ''
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-      this.$router.go(-1)
+      this.goBack()
     },
     goBack() {
       this.$router.go(-1)
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
     }
   }
 }

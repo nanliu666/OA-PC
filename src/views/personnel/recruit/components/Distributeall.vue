@@ -111,7 +111,7 @@ export default {
     ...mapGetters(['userId'])
   },
   mounted() {
-    if (typeof this.$route.query.id !== 'undefined') {
+    if (this.$route.query.id !== undefined || this.$route.query.id !== null) {
       this.recruitmentSituation()
     }
   },

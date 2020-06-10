@@ -263,7 +263,7 @@ export default {
   },
   methods: {
     getTableData(params) {
-      if (params != null && params != undefined) this.decorator((params = {}))
+      if (params === undefined || params === null) this.decorator((params = {}))
       let nowData = moment()
         .locale('zh-cn')
         .format('YYYY-MM-DD')

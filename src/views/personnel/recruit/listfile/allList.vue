@@ -428,7 +428,7 @@ export default {
       this.getTableData()
     },
     getTableData(params) {
-      if (params != null && params != undefined) params = this.params
+      if (params === undefined || params === null) params = this.params
       this.decorator(params)
       this.loading = true
       getAllRecruitment(params).then((res) => {

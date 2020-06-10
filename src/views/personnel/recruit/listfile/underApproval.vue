@@ -120,6 +120,7 @@ export default {
         enablePagination: true
       },
       params: {
+        progress: 'Approved',
         userId: null
       },
       page: { currentPage: 1, size: 10, total: 0 },
@@ -139,7 +140,7 @@ export default {
   },
   methods: {
     getTableData(params) {
-      if (params !== null && params !== undefined) params = this.params
+      if (params === undefined || params === null) params = this.params
       this.decorator(params)
       getApprove(params).then((res) => {
         this.data = res.data

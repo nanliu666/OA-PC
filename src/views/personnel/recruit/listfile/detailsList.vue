@@ -303,7 +303,7 @@ export default {
       this.getTableData()
     },
     getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+      if (params === undefined || params === null) params = this.params
       this.decorator(params)
       this.loading = true
       getMyRecruitment(params).then((res) => {
