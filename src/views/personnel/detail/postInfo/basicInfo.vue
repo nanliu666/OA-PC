@@ -99,7 +99,7 @@
             </el-col>
 
             <el-col
-              :span="9"
+              :span="10"
               :push="2"
             >
               <el-form-item :label="`附属职位${index + 1}:`">
@@ -227,7 +227,7 @@
             </el-col>
 
             <el-col
-              :span="9"
+              :span="10"
               :push="2"
             >
               <el-form-item :label="`附属职位${index + 1}:`">
@@ -1070,7 +1070,7 @@ span.optionRight {
 }
 .delete-org-job {
   float: right;
-  margin-right: 5%;
+  margin-right: 2%;
   margin-top: 7px;
   cursor: pointer;
   &:hover {

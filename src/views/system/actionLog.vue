@@ -171,3 +171,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+/deep/ .el-form-item__label {
+  line-height: 40px;
+}
+</style>
