@@ -19,7 +19,7 @@
         style="float: right;margin-top: -17px"
         size="medium"
         type="primary"
-        @click="JumpNewlybuild"
+        @click="JumpNewlybuild()"
       >
         复制
       </el-button>
@@ -54,6 +54,7 @@
     <Again
       ref="Again"
       :visible.sync="createAssigned"
+      @dataJump="dataJump"
     />
   </div>
 </template>
@@ -85,20 +86,26 @@ export default {
   },
   methods: {
     DistributionContent() {
+      this.$set(this.status, 'jumpnot', 'yes')
       this.$refs.Again.init(this.status)
     },
     ChangeContent() {
       this.$router.push({
         path: '/personnel/recruit/components/chang',
-        query: { id: this.$router.id }
+        query: { id: this.$route.query.id }
       })
+    },
+
+    JumpNewlybuild() {
+      this.$router.push({
+        path: '/personnel/recruit/recruitmentNeeds',
+        query: { id: this.$route.query.id }
+      })
+    },
+    dataJump() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.push({ path: '/personnel/recruit/recruitList' })
     }
-  },
-  JumpNewlybuild() {
-    this.$router.push({
-      path: '/personnel/recruit/recruitmentNeeds',
-      query: { id: this.$router.id }
-    })
   }
 }
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -62,6 +63,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -78,9 +80,13 @@ export default {
       data: [],
       columns: [
         {
-          label: '需求编号',
+          label: '审批编号',
           prop: 'id',
           slot: true
+        },
+        {
+          label: '需求编号',
+          prop: 'formId'
         },
         {
           label: '用人部门',
@@ -114,6 +120,7 @@ export default {
         enablePagination: true
       },
       params: {
+        progress: 'Approved',
         userId: null
       },
       page: { currentPage: 1, size: 10, total: 0 },
@@ -132,8 +139,7 @@ export default {
     this.getTableData()
   },
   methods: {
-    getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+    getTableData(params = {}) {
       this.decorator(params)
       getApprove(params).then((res) => {
         this.data = res.data
@@ -149,11 +155,9 @@ export default {
 
     handleSubmit(params) {
       this.decorator(params)
+      this.loading = true
       getApprove(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
+        this.loading = false
       })
     },
     jumpToDetail(row) {

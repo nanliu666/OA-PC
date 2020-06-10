@@ -3,12 +3,7 @@
     <basic-container>
       <common-table
         :data="data"
-        :page="page"
         :columns="columns"
-        :page-config="pageConfig"
-        :config="tableConfig"
-        @page-size-change="sizeChange"
-        @expand-change="recruitmentSituation"
       >
         <template
           slot="name"
@@ -26,7 +21,7 @@
           slot="sex"
           slot-scope="{ row }"
         >
-          {{ calcSex(row.sex) }}
+          {{ row.sex === 0 ? '男' : '女' }}
         </template>
         <template
           slot="educationalLevel"
@@ -47,20 +42,8 @@ export default {
   data() {
     return {
       childData: [],
-      user: {
-        joinDate: null,
-        userName: null,
-        id: null
-      },
-      status: '招聘中',
-      activeName: 'inrecruitment',
       row: {},
       data: [],
-      tableConfig: {
-        showIndexColumn: false,
-        enableMultiSelect: false,
-        enablePagination: true
-      },
       columns: [
         {
           label: '姓名',
@@ -95,20 +78,7 @@ export default {
           slot: true
         }
       ],
-      params: {
-        pageNo: 1,
-        pageSize: 10
-      },
-      page: {
-        pageSize: 100,
-        pagerCount: 1,
-        total: 10
-      },
-      pageConfig: {
-        pageSizes: [10, 20, 30, 40, 50]
-      },
-      EducationalLevel: [],
-      progress: 'Approved'
+      EducationalLevel: []
     }
   },
   computed: {
@@ -136,19 +106,6 @@ export default {
         }
       )
     },
-    calcSex(sex) {
-      let typeWord
-      let whoSex = [
-        { sex: 1, result: '男' },
-        { sex: 0, result: '女' }
-      ]
-      whoSex.forEach((item) => {
-        if (item.sex === sex) {
-          typeWord = item.result
-        }
-      })
-      return typeWord
-    },
     calcEducation(educationalLevel) {
       let typeLevel
       this.EducationalLevel.forEach((item) => {
@@ -158,16 +115,8 @@ export default {
       })
       return typeLevel
     },
-    currentChange(val) {
-      this.params.pageNo = val
-      this.page.pagerCount = val
-      this.getData()
-    },
-    sizeChange(val) {
-      this.params.pageSize = val
-      this.params.pageNo = 1
-      this.page.pagerCount = 1
-      this.getData()
+    jumpToDetail(personId) {
+      this.$router.push('/personnel/detail/' + personId)
     }
   }
 }

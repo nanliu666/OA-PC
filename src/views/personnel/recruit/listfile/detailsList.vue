@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -93,6 +94,7 @@ export default {
     return {
       recruit: false,
       change: true,
+      loading: false,
       activeName: 'inrecruitment',
       searchConfig: {
         requireOptions: [
@@ -250,10 +252,6 @@ export default {
         },
         {
           choice: 'EmerType',
-          target: 3
-        },
-        {
-          choice: 'EducationalLevel',
           target: 4
         }
       ],
@@ -304,10 +302,11 @@ export default {
       this.params.progress = progress
       this.getTableData()
     },
-    getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+    getTableData(params = {}) {
       this.decorator(params)
+      this.loading = true
       getMyRecruitment(params).then((res) => {
+        this.loading = false
         this.data = res.data
         this.page.total = res.totalPage
       })
@@ -321,13 +320,7 @@ export default {
     },
 
     handleSubmit(params) {
-      this.decorator(params)
-      getMyRecruitment(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-      })
+      this.getTableData(params)
     },
     jumpToDetail(row) {
       let rotate
@@ -367,9 +360,10 @@ export default {
         this.searchConfig.popoverOptions[3].options = res
       })
     },
-    JumpChange() {
+    JumpChange(row) {
       this.$router.push({
-        path: '/personnel/recruit/components/chang'
+        path: '/personnel/recruit/components/chang',
+        query: { id: row.id }
       })
     }
   }
