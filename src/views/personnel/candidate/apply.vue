@@ -237,12 +237,6 @@
         </div>
       </div>
     </basicContainer>
-    <!--    <div-->
-    <!--      v-loading="loading"-->
-    <!--      class="apply"-->
-    <!--    >-->
-    <!-- -->
-    <!--    </div>-->
   </div>
 </template>
 
@@ -550,14 +544,6 @@ export default {
 
 <style lang="scss" scoped>
 .apply {
-  /*background: #ffffff;*/
-  /*border-radius: 4px;*/
-  /*padding: 24px;*/
-  /*margin-top: 15px;*/
-  /*box-sizing: border-box;*/
-  /*width: 100%;*/
-  /*margin-bottom: 50px;*/
-
   .step {
     padding: 0 200px;
   }

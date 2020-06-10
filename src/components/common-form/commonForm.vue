@@ -50,7 +50,7 @@
             <el-radio
               v-for="item in column.options"
               :key="item[(column.props && column.props.value) || 'value']"
-              :value="item[(column.props && column.props.value) || 'value']"
+              :label="item[(column.props && column.props.value) || 'value']"
             >
               {{
                 column.props
@@ -201,6 +201,7 @@ export default {
     validate() {
       return new Promise((resolve, reject) => {
         this.$refs['form'].validate((pass, error) => {
+          this.$emit('update:model', this.model)
           if (pass) {
             resolve(this.model)
             return

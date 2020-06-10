@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="安排面试"
+      :title="title"
       :visible.sync="dialog"
       width="550px"
       append-to-body
@@ -9,32 +9,25 @@
     >
       <div v-loading="loading">
         <div>
-          <avue-form
+          <commonForm
             ref="form"
-            v-model="form"
-            :option="option"
+            :model.sync="form"
+            :columns="columns"
           >
-            <template slot="userName">
+            <template slot="personId">
               <span class="name">{{ form.userName }}</span>
             </template>
-            <template slot="time">
-              <el-date-picker
-                v-model="form.time"
-                type="date"
-                placeholder="请选择面试时间"
-              />
-            </template>
-            <template slot="parentId">
+            <template slot="addressId">
               <el-select
-                v-model="form.parentId"
+                v-model="form.addressId"
                 clearable
                 filterable
                 placeholder="请选择面试信息"
               >
                 <el-option
-                  v-for="item in optionsList"
+                  v-for="item in address"
                   :key="item.id"
-                  :label="item.person"
+                  :label="item.name"
                   :value="item.id"
                 >
                   <div class="selectOption">
@@ -45,7 +38,7 @@
                       <div v-if="item[it.name]">
                         <span>{{ it.text }}</span><span>{{ item[it.name] }}</span>
                         <b
-                          v-if="it.name === 'person'"
+                          v-if="it.name === 'name'"
                           class="edit"
                         >
                           <span
@@ -80,7 +73,13 @@
                 </el-option>
               </el-select>
             </template>
-          </avue-form>
+            <template slot="remark">
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+              />
+            </template>
+          </commonForm>
         </div>
         <span
           slot="footer"
@@ -93,7 +92,7 @@
           <el-button
             type="primary"
             size="medium"
-            @click="handleClose"
+            @click="onsubmit"
           >确 定</el-button>
         </span>
       </div>
@@ -101,13 +100,15 @@
     <new-interview
       v-if="newDialog"
       :dialog-visible.sync="newDialog"
-      :type="type"
+      :type="form.interviewType"
     />
   </div>
 </template>
 
 <script>
 import newInterview from './newInterview'
+import { getWorklist, getAddresss } from '@/api/personnel/selectedPerson'
+
 let optionsList = [
   {
     id: '123456',
@@ -149,145 +150,117 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    title: {
+      type: String,
+      default: ''
     }
   },
 
   data() {
     return {
+      address: [],
       type: '',
       newDialog: false,
       List,
       infoText: [
-        { name: 'person', text: '联系人：' },
+        { name: 'name', text: '联系人：' },
         { name: 'phonenum', text: '联系人手机号码：' },
-        { name: 'address', text: '面试地址：' }
+        { name: 'Address', text: '面试地址：' }
       ],
       optionsList,
       loading: false,
       dialog: true,
+
       form: {
         userName: '',
-        jobName: '',
-        time: '',
+        interviewType: 'Onsite',
+        interviewTime: '',
         remark: '',
-        parentId: '',
+        addressId: '',
         orgId: ''
       },
-      option: {
-        menuBtn: false,
-        labelPosition: 'top',
-        size: 'medium',
-        column: [
-          {
-            label: '已选择',
-            prop: 'userName',
-            type: 'select',
-            row: true,
-            span: 24,
-            formslot: true,
-            labelslot: true,
-            errorslot: true
+      columns: [
+        {
+          span: 24,
+          prop: 'personId',
+          itemType: 'slot',
+          label: '已选择',
+          options: [],
+          props: {
+            label: 'jobName',
+            value: 'id'
           },
-          {
-            label: '面试官',
-            prop: 'jobName',
-            type: 'select',
-            row: true,
-            span: 24,
-            placeholder: '请请选择面试官',
-            rules: [
-              {
-                required: true,
-                message: '请请选择面试官',
-                trigger: 'blur'
-              }
-            ]
+          required: false
+        },
+        {
+          span: 24,
+          prop: 'userId',
+          itemType: 'select',
+          filterable: true,
+          label: '面试官',
+          options: [],
+          props: {
+            label: 'name',
+            value: 'userId'
           },
-          {
-            label: '面试时间',
-            prop: 'time',
-            type: 'date',
-            row: true,
-            span: 24,
-            placeholder: '请选择面试时间',
-            formslot: true,
-            labelslot: true,
-            errorslot: true,
-            rules: [
-              {
-                required: true,
-                message: '请选择面试时间',
-                trigger: 'blur'
-              }
-            ],
-            dicData: ''
+          required: true
+        },
+        {
+          span: 24,
+          prop: 'interviewTime',
+          itemType: 'datePicker',
+          label: '面试时间',
+          options: [],
+          props: {
+            label: 'jobName',
+            value: 'id'
           },
-          {
-            label: '面试方式',
-            prop: 'parentIds',
-            span: 24,
-            type: 'radio',
-            rules: [
-              {
-                required: true,
-                message: '请选择面试方式',
-                trigger: 'blur'
-              }
-            ],
-            dicData: [
-              {
-                label: '现场面试',
-                value: '0',
-                // list: ['Enterprise', 'Company'],
-                disabled: false
-              },
-              {
-                label: '电话面试',
-                value: '1',
-                // list: ['Enterprise', 'Company', 'Department'],
-                disabled: false
-              },
-              {
-                label: '视频面试',
-                value: '2',
-                // list: ['Enterprise', 'Company', 'Department', 'Group'],
-                disabled: false
-              }
-            ],
-            change: ({ value }) => {
-              this.type = value
+          required: true
+        },
+        {
+          span: 24,
+          prop: 'interviewType',
+          itemType: 'radio',
+          label: '面试方式',
+
+          options: [
+            {
+              label: '现场面试',
+              value: 'Onsite'
+            },
+            {
+              label: '电话面试',
+              value: 'Phone'
+            },
+            {
+              label: '视频面试',
+              value: 'Video'
             }
+          ],
+          required: true
+        },
+        {
+          span: 24,
+          prop: 'addressId',
+          itemType: 'slot',
+          label: '面试信息',
+          options: [],
+          props: {
+            label: 'jobName',
+            value: 'id'
           },
-          {
-            label: '面试信息',
-            prop: 'parentId',
-            formslot: true,
-            labelslot: true,
-            errorslot: true,
-            display: true,
-            disabled: false,
-            filterable: true,
-            placeholder: '请选择面试信息',
-            span: 24,
-            dicData: [],
-            rules: [
-              {
-                required: false,
-                message: '请选择面试信息',
-                trigger: 'change'
-              }
-            ]
-          },
-          {
-            label: '备注',
-            prop: 'remark',
-            type: 'textarea',
-            row: true,
-            span: 24,
-            placeholder: '请输入描述'
-          }
-        ]
-      }
+          required: true
+        },
+        {
+          span: 24,
+          prop: 'remark',
+          itemType: 'input',
+          label: '备注',
+          required: false,
+          type: 'textarea'
+        }
+      ]
     }
   },
 
@@ -301,12 +274,69 @@ export default {
     row: {
       handler: function(data) {
         this.form.userName = data.userName
+        this.form.personId = data.personId
+        this.form.recruitmentId = data.recruitmentId
       },
       deep: true,
       immediate: true
     }
   },
+  mounted() {
+    this.getInterviewer()
+    this.getAddresss()
+  },
   methods: {
+    /***
+     *
+     *
+     * */
+    getAddresss() {
+      let params = {
+        name: ''
+      }
+      getAddresss(params).then((res) => {
+        this.address = []
+        res.map((it) => {
+          let params = {
+            ...it,
+            Address: it.provinceName + it.cityName + it.countyName + it.address
+          }
+          this.address.push(params)
+        })
+      })
+    },
+    /**
+     * @author guanfenda
+     * @desc 提交
+     *
+     * */
+
+    onsubmit() {
+      this.$refs.form.validate().then(() => {})
+    },
+    /***
+     * @author guanfenda
+     * @desc 在职员工查询（面试官）
+     * */
+    getInterviewer() {
+      let params = {
+        pageNo: 1,
+        pageSize: 10000
+      }
+      getWorklist(params).then((res) => {
+        let i = this.filterData(this.columns, 'userId')
+        this.columns[i].options = res.data
+      })
+    },
+    filterData(dtda, prop) {
+      let i = ''
+      dtda.map((it, index) => {
+        if (it.prop === prop) {
+          i = index
+        }
+      })
+      return i
+    },
     handleAddInterview() {
       this.newDialog = true
     },
@@ -314,7 +344,7 @@ export default {
       this.dialog = false
     },
     handlerEdit(item) {
-      item
+      this.item = JSON.parse(JSON.stringify(item))
       this.newDialog = true
     },
     handlerDelete(item) {

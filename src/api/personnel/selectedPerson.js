@@ -52,3 +52,25 @@ export const getOfferApply = (params) => get('/user/v1/candidate/offer/apply', p
  *  @params params
  */
 export const getRecruitmentDetail = (params) => get('/user/v1/recruitment/detail', params)
+
+/***
+ *  @author guanfenda
+ *  @desc 在职员工查询接口
+ *  @params params
+ */
+export const getWorklist = (params) => get('/user/v1/user/work/list', params)
+/***
+ * @author guanfenda
+ * @desc  面试信息地址查询接口
+ *
+ *@params params
+ * */
+export const getAddresss = (params) => get('/user/v1/person/interview/addresss', params)
+// /user/v1/person/interview/addresss
+/***
+ * @author guanfenda
+ * @desc  面试信息地址新增接口
+ *
+ *@params params
+ * */
+export const postAddresss = (params) => post('/user/v1/person/interview/addresss', params)

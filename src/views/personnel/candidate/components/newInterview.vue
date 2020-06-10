@@ -16,33 +16,38 @@
             ref="form"
             :model="form"
             label-width="0px"
+            :rules="rules"
           >
-            <el-form-item>
+            <el-form-item prop="name">
               <el-input
                 v-model="form.name"
                 placeholder="请输入联系人姓名"
               />
             </el-form-item>
-            <el-form-item>
+            <el-form-item prop="phonenum">
               <el-input
                 v-model="form.phonenum"
                 placeholder="请输入联系人手机号码"
+                maxlength="11"
+                @input="(value) => inputPhonenum(value, 'phonenum')"
               />
             </el-form-item>
           </el-form>
         </div>
-        <div v-if="type === '0'">
+        <div v-if="type === 'Onsite'">
           <div class="address">
             面试地址
           </div>
           <el-form
             ref="addressForm"
             :model="form"
+            :rules="rules"
             label-width="0"
           >
-            <el-form-item>
+            <el-form-item prop="addresslist">
               <el-cascader
-                v-model="form.address"
+                ref="cascaderAddr"
+                v-model="form.addresslist"
                 clearable
                 size="large"
                 :options="options"
@@ -50,9 +55,9 @@
                 @change="handleChange"
               />
             </el-form-item>
-            <el-form-item>
+            <el-form-item prop="address">
               <el-input
-                v-model="form.addree2"
+                v-model="form.address"
                 type="textarea"
                 placeholder="请输入详细地址，例如街道名称、门牌号码、楼层和房间号等详细地址"
               />
@@ -72,7 +77,7 @@
           <el-button
             type="primary"
             size="medium"
-            @click="handleClose"
+            @click="onsubmit"
           >
             确 定
           </el-button>
@@ -84,6 +89,8 @@
 
 <script>
 import { regionData } from 'element-china-area-data'
+import { postAddresss } from '@/api/personnel/selectedPerson'
+import { isMobile } from '@/util/validate'
 
 export default {
   name: 'NewInterview',
@@ -100,10 +107,60 @@ export default {
     }
   },
   data() {
+    let _this = this
+    const validatePhone = (rule, value, callback) => {
+      if (!_this.form.phonenum) {
+        callback(new Error('请输入手机号码'))
+      } else if (_this.form.phonenum && !isMobile(value)) {
+        callback(new Error('手机号码格式不正确'))
+      } else {
+        callback()
+      }
+    }
     return {
       options: regionData,
       dialog: true,
-      form: {}
+      form: {
+        addresslist: [],
+        address: '',
+        name: '',
+        phonenum: ''
+      },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '请输入联系人姓名',
+            trigger: 'blur'
+          }
+        ],
+        phonenum: [
+          {
+            required: true,
+            message: '请输入联系人手机号码',
+            trigger: 'blur'
+          },
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validatePhone
+          }
+        ],
+        addresslist: [
+          {
+            required: true,
+            message: '请选择面试地址',
+            trigger: 'blur'
+          }
+        ],
+        address: [
+          {
+            required: true,
+            message: '请输入详细地址',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   watch: {
@@ -123,9 +180,57 @@ export default {
     }
   },
   methods: {
-    handleChange(data) {
-      data
-      // console.log(data)
+    inputPhonenum(value, index) {
+      value = value.replace(/[^\d]/g, '')
+      this.form[index] = value
+    },
+    onsubmit() {
+      // this.
+      Promise.all(
+        ['form', 'addressForm'].map((it) => {
+          return new Promise((resolve, reject) => {
+            this.$refs[it].validate((valid) => {
+              if (valid) {
+                resolve(it)
+              } else {
+                reject(it)
+              }
+            })
+          })
+        })
+      )
+        .then(() => {
+          let { name, phonenum, address } = this.form
+
+          let provinceCode = this.form.addresslist[0]
+          let cityCode = this.form.addresslist[1]
+          let countyCode = this.form.addresslist[2]
+          let provinceName = this.form.pathLabels[0]
+          let cityName = this.form.pathLabels[1]
+          let countyName = this.form.pathLabels[2]
+          let params = {
+            name,
+            phonenum,
+            address,
+            provinceCode,
+            cityCode,
+            countyCode,
+            provinceName,
+            cityName,
+            countyName
+          }
+
+          postAddresss(params).then(() => {
+            this.$message.success('提交成功')
+            this.dialog = false
+          })
+        })
+        .catch(() => {})
+      return
+    },
+    handleChange() {
+      let pathLabels = this.$refs['cascaderAddr'].getCheckedNodes()
+      this.form.pathLabels = pathLabels[0].pathLabels
     },
     handleClose() {
       this.dialog = false
@@ -135,40 +240,40 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/ .el-dialog__header {
-  padding: 16px 0;
-  margin: 0 24px;
-  border-bottom: 1px solid rgba(208, 211, 214, 0.44);
-  font-size: 18px;
-  color: #202940;
-  line-height: 24px;
-}
+/*/deep/ .el-dialog__header {*/
+/*  padding: 16px 0;*/
+/*  margin: 0 24px;*/
+/*  border-bottom: 1px solid rgba(208, 211, 214, 0.44);*/
+/*  font-size: 18px;*/
+/*  color: #202940;*/
+/*  line-height: 24px;*/
+/*}*/
 
-/deep/ .el-dialog__body {
-  padding: 24px;
-}
+/*/deep/ .el-dialog__body {*/
+/*  padding: 24px;*/
+/*}*/
 
-/deep/ .el-dialog__footer {
-  padding: 0px 24px 24px;
-}
+/*/deep/ .el-dialog__footer {*/
+/*  padding: 0px 24px 24px;*/
+/*}*/
 
-/deep/ .el-form-item__label {
-  line-height: 20px;
-  font-size: 14px;
-  color: #0f0000;
-}
+/*/deep/ .el-form-item__label {*/
+/*  line-height: 20px;*/
+/*  font-size: 14px;*/
+/*  color: #0f0000;*/
+/*}*/
 
-/deep/ .el-form-item {
-  margin-bottom: 24px;
-}
+/*/deep/ .el-form-item {*/
+/*  margin-bottom: 24px;*/
+/*}*/
 
 .dialog-footer {
-  text-align: center;
+  text-align: right;
 }
 
-/deep/ .el-form-item {
-  margin-bottom: 12px;
-}
+/*/deep/ .el-form-item {*/
+/*  margin-bottom: 12px;*/
+/*}*/
 
 .info,
 .address {
