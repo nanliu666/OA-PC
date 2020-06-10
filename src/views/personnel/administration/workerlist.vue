@@ -7,7 +7,7 @@
     </page-header>
     <basic-container>
       <common-table
-        v-loading="loading"
+        :loading="loading"
         style="width: 100%"
         :data="data"
         :page="page"
@@ -263,8 +263,7 @@ export default {
   },
   methods: {
     getTableData(params) {
-      if (typeof params === 'undefined') this.decorator((params = {}))
-
+      if (params != null && params != undefined) this.decorator((params = {}))
       let nowData = moment()
         .locale('zh-cn')
         .format('YYYY-MM-DD')

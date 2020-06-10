@@ -1,7 +1,7 @@
 <template>
   <div>
     <common-table
-      v-loading="loading"
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"

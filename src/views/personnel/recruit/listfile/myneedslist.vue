@@ -1,6 +1,7 @@
 <template>
   <div>
     <common-table
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -83,6 +84,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -290,10 +292,12 @@ export default {
       this.getTableData()
     },
     getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+      if (params != null && params != undefined) params = this.params
       this.decorator(params)
+      this.loading = true
       setRecruitment(params).then((res) => {
         this.data = res.data
+        this.loading = false
         this.page.total = res.totalPage
       })
     },

@@ -1,7 +1,7 @@
 <template>
   <div>
     <common-table
-      v-loading="loading"
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+      if (params !== null && params !== undefined) params = this.params
       this.decorator(params)
       getApprove(params).then((res) => {
         this.data = res.data

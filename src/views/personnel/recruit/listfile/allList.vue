@@ -1,7 +1,7 @@
 <template>
   <div>
     <common-table
-      v-loading="loading"
+      :loading="loading"
       :data="data"
       :page="page"
       :columns="columns"
@@ -428,7 +428,7 @@ export default {
       this.getTableData()
     },
     getTableData(params) {
-      if (typeof params === 'undefined') params = this.params
+      if (params != null && params != undefined) params = this.params
       this.decorator(params)
       this.loading = true
       getAllRecruitment(params).then((res) => {
