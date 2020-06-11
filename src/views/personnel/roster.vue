@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <div class="roster-header">
-      <div class="header">
-        员工花名册
-      </div>
-      <el-dropdown @command="handleCommand">
+  <div class="fill">
+    <page-header title="员工花名册">
+      <el-dropdown
+        slot="rightMenu"
+        @command="handleCommand"
+      >
         <el-button
           type="primary"
           size="medium"
@@ -19,7 +19,7 @@
           <el-dropdown-item>Excel导入员工</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-    </div>
+    </page-header>
     <div class="state">
       <div class="on">
         <div
@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-    <basic-container>
+    <basic-container block>
       <search-component
         ref="searchComponent"
         :show-status="tabStatus === 'onJob'"
@@ -342,6 +342,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.basic-container--block {
+  height: calc(100% - 82px - 116px);
+  min-height: calc(100% - 82px - 116px);
+}
 .roster-header {
   display: flex;
   justify-content: space-between;

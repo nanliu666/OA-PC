@@ -426,7 +426,7 @@ export default {
   color: #202940;
   line-height: 28px;
   font-weight: bold;
-  margin-top: 14px;
+  padding-top: 14px;
 }
 
 .person {

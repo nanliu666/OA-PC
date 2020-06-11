@@ -77,7 +77,7 @@
       </el-container>
     </div>
 
-    <div class="info-detail">
+    <div class="info-detail staff-info-container">
       <!-- 个人详细信息（包括基本信息和紧急联系人信息） -->
       <div class="personal-basic-info no-back-style">
         <div class="info-edit-button">
@@ -324,7 +324,7 @@
 </template>
 
 <script>
-import emergencyMembers from './userCenter/emergencyMembers.vue'
+import emergencyMembers from '../personnel/detail/staffInfo/emergency.vue'
 import { validateName, isEmailReg, validataBankCard } from '@/util/validate'
 import { getStaffBasicInfo, editStaffBasicInfo } from '../../api/personalInfo'
 import { mapGetters } from 'vuex'
@@ -417,9 +417,13 @@ export default {
   },
   created() {
     this.getUserAllInfo()
+    this.getCSS()
   },
 
   methods: {
+    getCSS() {
+      return require('../personnel/detail/staffInfo.scss')
+    },
     regionChange() {
       let thsAreaCode = this.$refs['regionCascader'].getCheckedNodes()[0].pathLabels
       this.perosonnalInfo.userAddress =

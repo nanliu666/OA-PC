@@ -1,10 +1,8 @@
 <template>
   <div style="height:100%">
-    <div class="header">
-      用户管理
-    </div>
+    <page-header title="用户管理" />
     <el-row
-      style="height: calc(100% - 80px);"
+      style="height: calc(100% - 82px);"
       :gutter="8"
     >
       <el-col
@@ -169,11 +167,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  font-weight: bold;
-  font-size: 18px;
-  padding: 14px 0 16px;
-}
 /deep/ .el-tabs__content {
   height: calc(100% - 55px);
   overflow: auto;

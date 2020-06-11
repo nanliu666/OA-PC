@@ -3,6 +3,7 @@
     <page-header
       title="确认离职"
       show-back
+      :back="goBack"
     />
     <basic-container class="info-wrap">
       <!-- 头部 员工name  userId orgname jobname -->
@@ -415,6 +416,11 @@ export default {
     handelUrging() {
       this.$message.success('催办成功')
       return
+    },
+    //goBack
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }

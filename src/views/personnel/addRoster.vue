@@ -1,15 +1,14 @@
 <template>
   <div style="height">
-    <el-page-header
-      content="添加员工"
-      class="pageHeader"
-      @back="goBack"
+    <page-header
+      title="添加员工"
+      show-back
+      :back="goBack"
     />
     <basic-container v-loading="loading">
       <el-row
         type="flex"
         justify="center"
-        style="padding-top:40px;"
       >
         <el-col
           :xl="16"
@@ -24,7 +23,7 @@
             label-width="80px"
             label-position="top"
             :rules="rules"
-            inline
+            size="medium"
           >
             <el-row>
               <el-col :span="24">

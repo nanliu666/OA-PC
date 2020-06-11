@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <div class="org-header">
-      <div class="header">
-        组织机构管理
-      </div>
-      <el-dropdown @command="handleCommand">
+  <div class="fill">
+    <page-header title="组织机构管理">
+      <el-dropdown
+        slot="menuRight"
+        @command="handleCommand"
+      >
         <el-button
           type="primary"
           size="medium"
@@ -16,11 +16,12 @@
           <el-dropdown-item command="add">
             单个新建
           </el-dropdown-item>
-          <el-dropdown-item>Excel导入</el-dropdown-item>
+          <!-- <el-dropdown-item>Excel导入</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
-    </div>
-    <basic-container>
+    </page-header>
+
+    <basic-container block>
       <div class="transitionBox">
         <transition name="el-zoom-in-center">
           <div
@@ -199,7 +200,8 @@ const column = [
   {
     label: '组织编码',
     prop: 'orgCode',
-    align: 'right'
+    align: 'right',
+    minwWidth: '150px'
   },
   {
     label: '组织负责人',
@@ -335,7 +337,6 @@ export default {
         defaultExpandAll: true,
         selection: true,
         formHeight: 20,
-        height: 'auto',
         rowKey: 'orgId',
         column: column
       },
@@ -505,16 +506,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.org-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  // padding: 0 24px;
-  .header {
-    font-weight: bold;
-    font-size: 18px;
-    padding: 14px 0 16px;
-  }
+.basic-container--block {
+  height: calc(100% - 82px);
+  min-height: calc(100% - 82px);
 }
 .originColumn {
   height: 25px;

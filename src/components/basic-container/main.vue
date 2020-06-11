@@ -40,14 +40,17 @@ export default {
 <style lang="scss">
 .basic-container {
   box-sizing: border-box;
-  margin-bottom: 24px;
+
   &--block {
+    min-height: 100%;
     height: 100%;
     .el-card {
-      height: 100%;
+      min-height: 100%;
+      box-sizing: border-box;
+      margin-bottom: 24px;
     }
     .el-card__body {
-      height: 100%;
+      min-height: 100%;
       box-sizing: border-box;
     }
   }

@@ -458,10 +458,45 @@
           </div>
           <div class="detail-item" />
         </div>
+        <!-- 更改需求人数审批详情 -->
+        <div
+          v-else-if="apprInfo.formKey === 'RecruitmentChangeNum'"
+          class="detail-box"
+        >
+          <div class="detail-item">
+            <div>招聘职位名称 :</div>
+            <div>{{ applyData.jobName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>需求人数 :</div>
+            <div>{{ applyData.needNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>已入职人数 :</div>
+            <div>{{ applyData.entryNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>用人部门名称 :</div>
+            <div>{{ applyData.orgName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>更改后的需求人数 :</div>
+            <div>{{ applyData.changeNum }}</div>
+          </div>
+          <div class="detail-item">
+            <div>提交用户名 :</div>
+            <div>{{ applyData.userName }}</div>
+          </div>
+          <div class="detail-item">
+            <div>更改原因 :</div>
+            <div>{{ applyData.reason }}</div>
+          </div>
+          <div class="detail-item" />
+        </div>
       </basic-container>
     </transition>
 
-    <basic-container>
+    <basic-container v-loading="loading">
       <!-- 流程进度 -->
       <div class="progress-wrap">
         <div class="progress-wrap-title">
@@ -481,7 +516,7 @@
                 <div>
                   <div
                     class="icon "
-                    :class="[{ active: index >= activeStep ? false : true }, { cancel: isCancel }]"
+                    :class="[{ active: index > activeStep ? false : true }, { cancel: isCancel }]"
                   />
                 </div>
               </template>
@@ -496,9 +531,10 @@
                 <div class="description-box">
                   <div>{{ item.userName }}</div>
                   <div>{{ item.approveTime }}</div>
-                  <div v-if="!isCancel">
+                  <div
+                    v-if="!isCancel && index != 0 && index == activeStep && !isShowBtns && isUser"
+                  >
                     <div
-                      v-if="index != 0 && index == activeStep"
                       class="isUrge"
                       @click="handelUrge(item)"
                     >
@@ -642,22 +678,69 @@
           </el-steps>
         </div>
       </div>
-
+      <!-- 按钮 -->
       <div class="cancel-btn-box">
         <el-button
           type="primary"
           size="medium"
           :disabled="isDisabled"
-          @click="handelcancel"
+          @click="handelCancel"
         >
           撤回
         </el-button>
+        <el-button
+          v-if="isShowBtns"
+          type="primary"
+          size="medium"
+          @click="handelClick('Reject')"
+        >
+          拒绝
+        </el-button>
+        <el-button
+          v-if="isShowBtns"
+          type="primary"
+          size="medium"
+          @click="handelClick('Pass')"
+        >
+          同意
+        </el-button>
       </div>
     </basic-container>
+
+    <!-- 审批意见模态框 -->
+    <el-dialog
+      :title="apprTitle"
+      :visible.sync="dialogVisible"
+      width="600px"
+      top="40vh"
+      :modal-append-to-body="false"
+    >
+      <el-input
+        v-model="apprRemark"
+        type="textarea"
+        :rows="4"
+        placeholder="请输入审批意见"
+      />
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="medium"
+          @click="dialogVisible = false"
+        >取 消</el-button>
+        <el-button
+          size="medium"
+          type="primary"
+          @click="handelConfirm"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { FormKeysCN, apprStatusCN } from '@/const/approve'
 import { mapGetters } from 'vuex'
 import {
   getApplyDetail,
@@ -669,12 +752,17 @@ import {
   getContractApply,
   getLeaveApply,
   getChangeApply,
+  getRecChangeNumApply,
   // 流程进度和审批记录
   getApplyRecord,
   // 撤回
   cancelApply,
   // 催一下
-  createdUrge
+  createdUrge,
+  // 同意审批
+  createdPassAppr,
+  // 拒绝审批
+  createdRejectAppr
 } from '@/api/approval/approval'
 
 export default {
@@ -682,15 +770,7 @@ export default {
     // 过滤审批状态
     filterstatus: (status) => {
       if (!status) return ''
-      if (status === 'Approve') {
-        return '审批中'
-      } else if (status === 'Pass') {
-        return '已通过'
-      } else if (status === 'Reject') {
-        return '已拒绝'
-      } else if (status === 'Cancel') {
-        return '已撤回'
-      }
+      return apprStatusCN[status]
     },
     // 字典组过滤 根据 dictKey =》 dictValue
     // CommonDictarr字典组数组
@@ -714,14 +794,12 @@ export default {
     },
     // 过滤异动类型
     changeType(value) {
-      if (!value) return ''
-      if (value == 'Position') {
-        return '调岗'
-      } else if (value == 'Up') {
-        return '晋升'
-      } else if (value == 'Down') {
-        return '降级'
+      let changeTypeCN = {
+        Position: '调岗',
+        Up: '晋升',
+        Down: '降级'
       }
+      return changeTypeCN[value] || ''
     }
   },
   data() {
@@ -739,7 +817,6 @@ export default {
       show: false,
       // 审批详情
       applyData: {},
-
       // 字典组
       EmerType: [],
       WorkYear: [],
@@ -754,77 +831,77 @@ export default {
       recordList: [],
       // 流程进度
       activeStep: 0,
+      // 当前审批节点的审批人ID
+      apprUserId: '',
+      // 提交人ID
+      applyUserId: '',
       // 是否已经撤回
-      isCancel: false
+      isCancel: false,
+      // 控制显示模态框
+      dialogVisible: false,
+      // 判断是同意审批还是拒绝审批
+      apprType: '',
+      // 审批意见
+      apprRemark: '',
+      loading: true
     }
   },
   computed: {
-    // 标题
+    // // 标题
     title() {
-      let title = ''
-      let arr = [
-        {
-          title: '招聘需求申请',
-          formKey: 'Recruitment'
-        },
-        {
-          title: '录用申请',
-          formKey: 'PersonOfferApply'
-        },
-        {
-          title: '转正申请',
-          formKey: 'UserFormalInfo'
-        },
-        {
-          title: '续签合同申请',
-          formKey: 'UserContractInfo'
-        },
-        {
-          title: '离职申请',
-          formKey: 'UserLeaveInfo'
-        },
-        {
-          title: '人事异动申请',
-          formKey: 'UserChangeInfo'
-        }
-      ]
-      arr.forEach((item) => {
-        if (this.apprInfo.formKey === item.formKey) {
-          title = item.title
-        }
-      })
-      return title
+      return FormKeysCN[this.apprInfo.formKey]
     },
-    // 按钮是否可以
+    // 按钮是否可用
     isDisabled() {
-      let res = ''
+      let res = false
       if (this.isCancel) {
-        res = this.isCancel
-      }
-      if (this.activeStep > 1) {
+        res = true
+      } else if (this.activeStep > 1) {
         res = true
       }
       return res
     },
+    // 模态框标题
+    apprTitle() {
+      let apprTitleCN = {
+        Pass: '审批同意意见',
+        Reject: '审批拒绝意见'
+      }
+      return apprTitleCN[this.apprType] || ''
+    },
+    // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
+    isShowBtns() {
+      if (this.userId === this.apprUserId) {
+        return true
+      }
+      return false
+    },
+    // 提交人跟当前用户是否同一个人
+    isUser() {
+      if (this.userId === this.applyUserId) {
+        return true
+      }
+      return false
+    },
     ...mapGetters(['userId'])
   },
-  created() {
+  async created() {
+    await this.getApplyInfo()
+    this.getApprDetail()
+    this.getApprProgress()
     this.getCommonDict()
-    this.initData()
-  },
-  activated() {
-    this.initData()
   },
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
-      let res = await getApplyDetail(this.apprInfo)
+      let res = await getApplyDetail({ apprNo: this.$route.query.apprNo })
+
       this.ApplyInfo = res
     },
 
     // 获取审批详情信息
     async getApprDetail() {
-      let { formId, formKey } = this.$route.query
+      let { formId, formKey } = this.ApplyInfo
       // 根据不同的formKey 调用不同申请详情查询接口
       let res = ''
       if (formKey === 'Recruitment') {
@@ -839,6 +916,8 @@ export default {
         res = await getLeaveApply({ id: formId, userId: this.userId })
       } else if (formKey === 'UserChangeInfo') {
         res = await getChangeApply({ id: formId })
+      } else if (formKey === 'RecruitmentChangeNum') {
+        res = await getRecChangeNumApply({ id: formId })
       }
       this.applyData = res
     },
@@ -869,6 +948,7 @@ export default {
     },
     // 流程进度和审批记录
     async getApprProgress() {
+      this.loading = true
       let { apprNo } = this.$route.query
       let res = await getApplyRecord({ apprNo })
       let arr = []
@@ -877,6 +957,7 @@ export default {
         return item.isApprove == '0'
       })
       arr.push(res[indexApprove])
+      // 获取开始节点
       let indexStart = res.findIndex((item) => {
         return item.isStart === 1
       })
@@ -893,7 +974,6 @@ export default {
       if (this.activeStep === -1) {
         this.activeStep = arr.length
       }
-
       let hasReject = arr.some((item) => {
         return item.result === 'Reject'
       })
@@ -914,6 +994,16 @@ export default {
         this.isCancel = false
         this.recordList = arr
       }
+
+      // 审批完成
+      if (this.progressList.length === this.activeStep) {
+        // 提交人ID
+        this.applyUserId = this.progressList[0].userId
+        return
+      }
+      // 当前审批人id
+      this.apprUserId = this.progressList[this.activeStep].userId
+      this.loading = false
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
@@ -930,7 +1020,7 @@ export default {
     },
 
     // 撤回申请
-    async handelcancel() {
+    async handelCancel() {
       let { apprNo } = this.$route.query
       let res = await this.$confirm('确定撤销申请吗?', '撤销申请', {
         confirmButtonText: '确定',
@@ -944,11 +1034,40 @@ export default {
       this.$message.success('撤回成功')
       this.$router.go(-1)
     },
-    // init
-    initData() {
-      this.getApplyInfo()
-      this.getApprDetail()
-      this.getApprProgress()
+    // 点击同意或拒绝按钮展示模态框
+    handelClick(type) {
+      this.apprType = type
+      ;(this.dialogVisible = true), (this.apprRemark = '')
+    },
+    // 点击确定审批
+    async handelConfirm() {
+      let { userId, id: nodeId } = this.progressList[this.activeStep]
+      let { apprNo } = this.$route.query
+      if (this.apprType === 'Reject') {
+        await createdRejectAppr({
+          userId,
+          nodeId,
+          apprNo,
+          remark: this.apprRemark
+        })
+        this.$message({
+          type: 'success',
+          message: '你已拒绝黄浩提交的用印申请'
+        })
+      } else if (this.apprType === 'Pass') {
+        await createdPassAppr({
+          userId,
+          nodeId,
+          apprNo,
+          remark: this.apprRemark
+        })
+        this.$message({
+          type: 'success',
+          message: '你已同意黄浩提交的用印申请'
+        })
+      }
+      this.dialogVisible = false
+      this.goBack()
     },
     // 点击催一下
     async handelUrge(params) {
@@ -959,6 +1078,7 @@ export default {
         type: 'success',
         message: '催办成功'
       })
+      this.dialogVisible = false
     },
     // goback
     goBack() {
@@ -998,7 +1118,6 @@ export default {
     }
     .num-box {
       flex: 1;
-      border-left: 1px solid #e3e7e9;
     }
     .apply-user-box {
       text-align: center;
@@ -1022,6 +1141,7 @@ export default {
     }
     .apply-status {
       text-align: end;
+      border-left: 1px solid #e3e7e9;
       flex: 0.5;
       :nth-child(2) {
         font-family: PingFangSC-Medium;
@@ -1078,6 +1198,9 @@ export default {
         text-align: right;
         width: 246px;
         vertical-align: middle;
+      }
+      :nth-child(2) {
+        max-width: 252px;
       }
     }
   }
