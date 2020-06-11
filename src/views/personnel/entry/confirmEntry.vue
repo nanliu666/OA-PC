@@ -8,356 +8,337 @@
       <el-row
         type="flex"
         justify="center"
-        style="padding: 0 120px"
       >
-        <el-form
-          ref="form"
-          :model="form"
-          label-width="80px"
-          label-position="top"
-          :rules="rules"
-          inline
+        <el-col
+          :xl="16"
+          :lg="16"
+          :md="18"
+          :sm="20"
+          :xs="22"
         >
-          <el-col :span="24">
-            <h4>基本信息</h4>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
+          <el-form
+            ref="form"
+            :model="form"
+            label-position="top"
+            :rules="rules"
+            size="medium"
           >
-            <el-form-item
-              label="姓名"
-              prop="name"
-            >
-              <el-input v-model="form.name" />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item label="性别">
-              <el-radio-group v-model="form.sex">
-                <el-radio :label="1">
-                  男
-                </el-radio>
-                <el-radio :label="0">
-                  女
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="手机号"
-              prop="phonenum"
-            >
-              <el-input
-                v-model="form.phonenum"
-                maxlength="11"
-                disabled
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="邮箱"
-              prop="userEmail"
-            >
-              <el-input v-model="form.userEmail" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <h4>入职信息</h4>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="入职日期"
-              class="entryDate"
-              prop="entryDate"
-            >
-              <el-date-picker
-                v-model="form.entryDate"
-                type="date"
-                placeholder="选择日期"
-                style="width: 100%;"
-                value-format="yyyy-MM-dd"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item label="试用期">
-              <el-select
-                v-model="form.probation"
-                placeholder="请选择"
-              >
-                <el-option
-                  label="无试用期"
-                  :value="0"
-                />
-                <el-option
-                  v-for="item in [1, 2, 3, 4, 5, 6]"
-                  :key="item"
-                  :label="item + '个月'"
-                  :value="item"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="入职公司"
-              prop="companyId"
-            >
-              <el-select
-                v-model="form.companyId"
-                placeholder="请选择"
-                disabled
-              >
-                <el-option
-                  v-for="item in companyList"
-                  :key="item.orgId"
-                  :label="item.orgName"
-                  :value="item.orgId"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="工号"
-              prop="workNo"
-            >
-              <el-input
-                ref="workNo"
-                v-model="form.workNo"
-              >
-                <template slot="append">
-                  <div @click="autoUserId">
-                    自动生成
-                  </div>
-                </template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="部门"
-              prop="orgId"
-              disabled
-            >
-              <el-tree-select
-                ref="orgTree"
-                v-model="form.orgId"
-                :popover-class="orgOptions.config.fas"
-                :styles="orgOptions.styles"
-                :select-params="orgOptions.config.selectParams"
-                :tree-params="orgOptions.config.treeParams"
-                disabled
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="职位"
-              prop="jobId"
-              disabled
-            >
-              <el-select
-                v-model="form.jobId"
-                placeholder="请选择"
-                disabled
-              >
-                <el-option
-                  v-for="item in jobList"
-                  :key="item.jobId"
-                  :label="item.jobName"
-                  :value="item.jobId"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item label="岗位">
-              <el-select
-                v-model="form.positionId"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in positionList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="工作性质"
-              prop="workProperty"
-            >
-              <el-select
-                v-model="form.workProperty"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in workPropertyList"
-                  :key="item.dictKey"
-                  :label="item.dictValue"
-                  :value="item.dictKey"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item
-              label="员工状态"
-              prop="status"
-            >
-              <el-select
-                v-model="form.status"
-                placeholder="请选择"
-              >
-                <el-option
-                  label="试用期"
-                  value="Try"
-                />
-                <el-option
-                  label="正式"
-                  value="Formal"
-                />
-                <el-option
-                  label="已离职"
-                  value="Leaved"
-                />
-                <el-option
-                  label="待离职"
-                  value="WaitLeave"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="10"
-            :push="2"
-          >
-            <el-form-item label="工作地址">
-              <el-select
-                ref="workAddressId"
-                v-model="form.workAddressId"
-                v-loadmore="loadWorkAddress"
-                placeholder="请选择"
-                @change="handleAddressClick"
-              >
-                <el-option
-                  v-for="item in workAddress"
-                  :key="item.id"
-                  :label="item.address"
-                  :value="item.id"
-                  class="workOption"
+            <el-row>
+              <el-col :span="24">
+                <h4>基本信息</h4>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item
+                  label="姓名"
+                  prop="name"
                 >
-                  <span style="float: left">{{ item.address }}</span>
-                  <span
-                    class="optionRight"
-                    @click.stop="deleteAddress(item)"
-                  >
-                    <i class="el-icon-error" />
-                  </span>
-                  <span
-                    class="optionRight"
-                    @click.stop="editAddress(item)"
-                  >
-                    <i class="el-icon-edit-outline" />
-                  </span>
-                </el-option>
-                <div
-                  v-show="loadAddress"
-                  class="addressLoading"
-                >
-                  <i class="el-icon-loading" />
-                </div>
-                <el-option
-                  value
-                  label
-                  style="text-align:center"
-                >
-                  <div
-                    class="newAddress"
-                    @click="createAddress"
-                  >
-                    <i class="el-icon-plus" /> 新建工作地址
-                  </div>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="22"
-            :push="2"
-          >
-            <el-form-item label="工作城市">
-              <el-cascader
-                ref="workProvinceArr"
-                v-model="form.workProvinceArr"
-                :options="provinceAndCityData"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="16"
-            :push="8"
-          >
-            <el-form-item>
-              <el-button
-                size="medium"
-                @click="handleCancal"
+                  <el-input v-model="form.name" />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
               >
-                取消
-              </el-button>
-              <el-button
-                type="primary"
-                size="medium"
-                @click="handleSubmit"
+                <el-form-item label="性别">
+                  <el-radio-group v-model="form.sex">
+                    <el-radio :label="1">
+                      男
+                    </el-radio>
+                    <el-radio :label="0">
+                      女
+                    </el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item
+                  label="手机号"
+                  prop="phonenum"
+                >
+                  <el-input
+                    v-model="form.phonenum"
+                    maxlength="11"
+                    disabled
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
               >
-                确认入职
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-form>
+                <el-form-item
+                  label="邮箱"
+                  prop="userEmail"
+                >
+                  <el-input v-model="form.userEmail" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <h4>入职信息</h4>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item
+                  label="入职日期"
+                  class="entryDate"
+                  prop="entryDate"
+                >
+                  <el-date-picker
+                    v-model="form.entryDate"
+                    type="date"
+                    placeholder="选择日期"
+                    style="width: 100%;"
+                    value-format="yyyy-MM-dd"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="试用期">
+                  <el-select
+                    v-model="form.probation"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      label="无试用期"
+                      :value="0"
+                    />
+                    <el-option
+                      v-for="item in [1, 2, 3, 4, 5, 6]"
+                      :key="item"
+                      :label="item + '个月'"
+                      :value="item"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item
+                  label="入职公司"
+                  prop="companyId"
+                >
+                  <el-select
+                    v-model="form.companyId"
+                    placeholder="请选择"
+                    disabled
+                  >
+                    <el-option
+                      v-for="item in companyList"
+                      :key="item.orgId"
+                      :label="item.orgName"
+                      :value="item.orgId"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item
+                  label="工号"
+                  prop="workNo"
+                >
+                  <el-input
+                    ref="workNo"
+                    v-model="form.workNo"
+                  >
+                    <template slot="append">
+                      <div @click="autoUserId">
+                        自动生成
+                      </div>
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item
+                  label="部门"
+                  prop="orgId"
+                  disabled
+                >
+                  <el-tree-select
+                    ref="orgTree"
+                    v-model="form.orgId"
+                    :popover-class="orgOptions.config.fas"
+                    :styles="orgOptions.styles"
+                    :select-params="orgOptions.config.selectParams"
+                    :tree-params="orgOptions.config.treeParams"
+                    disabled
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item
+                  label="职位"
+                  prop="jobId"
+                  disabled
+                >
+                  <el-select
+                    v-model="form.jobId"
+                    placeholder="请选择"
+                    disabled
+                  >
+                    <el-option
+                      v-for="item in jobList"
+                      :key="item.jobId"
+                      :label="item.jobName"
+                      :value="item.jobId"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="岗位">
+                  <el-select
+                    v-model="form.positionId"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in positionList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item
+                  label="工作性质"
+                  prop="workProperty"
+                >
+                  <el-select
+                    v-model="form.workProperty"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in workPropertyList"
+                      :key="item.dictKey"
+                      :label="item.dictValue"
+                      :value="item.dictKey"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item
+                  label="员工状态"
+                  prop="status"
+                >
+                  <el-select
+                    v-model="form.status"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      label="试用期"
+                      value="Try"
+                    />
+                    <el-option
+                      label="正式"
+                      value="Formal"
+                    />
+                    <el-option
+                      label="已离职"
+                      value="Leaved"
+                    />
+                    <el-option
+                      label="待离职"
+                      value="WaitLeave"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="工作地址">
+                  <el-select
+                    ref="workAddressId"
+                    v-model="form.workAddressId"
+                    v-loadmore="loadWorkAddress"
+                    placeholder="请选择"
+                    @change="handleAddressClick"
+                  >
+                    <el-option
+                      v-for="item in workAddress"
+                      :key="item.id"
+                      :label="item.address"
+                      :value="item.id"
+                      class="workOption"
+                    >
+                      <span style="float: left">{{ item.address }}</span>
+                      <span
+                        class="optionRight"
+                        @click.stop="deleteAddress(item)"
+                      >
+                        <i class="el-icon-error" />
+                      </span>
+                      <span
+                        class="optionRight"
+                        @click.stop="editAddress(item)"
+                      >
+                        <i class="el-icon-edit-outline" />
+                      </span>
+                    </el-option>
+                    <div
+                      v-show="loadAddress"
+                      class="addressLoading"
+                    >
+                      <i class="el-icon-loading" />
+                    </div>
+                    <el-option
+                      value
+                      label
+                      style="text-align:center"
+                    >
+                      <div
+                        class="newAddress"
+                        @click="createAddress"
+                      >
+                        <i class="el-icon-plus" /> 新建工作地址
+                      </div>
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="工作城市">
+                  <el-cascader
+                    ref="workProvinceArr"
+                    v-model="form.workProvinceArr"
+                    :options="provinceAndCityData"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item>
+                  <el-button
+                    size="medium"
+                    @click="handleCancal"
+                  >
+                    取消
+                  </el-button>
+                  <el-button
+                    type="primary"
+                    size="medium"
+                    @click="handleSubmit"
+                  >
+                    确认入职
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-col>
       </el-row>
       <el-dialog
         title="新建工作地址"
@@ -786,12 +767,11 @@ export default {
 /deep/ .el-col {
   .el-form-item {
     .el-form-item__content {
-      width: 250px;
       .el-select {
-        width: 250px;
+        width: 100%;
       }
       .el-cascader {
-        width: 250px;
+        width: 100%;
       }
       .el-input-group--append {
         .el-input__inner {
