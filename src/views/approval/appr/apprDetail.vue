@@ -10,7 +10,7 @@
       <!-- 申请信息 -->
       <div class="apply-info-wrap">
         <div class="title">
-          {{ ApplyInfo.userName }}提交的{{ title }}
+          {{ ApplyInfo.userName }}提交的{{ title }}申请
         </div>
         <div class="info">
           <div class="num-box">
@@ -504,7 +504,7 @@
         </div>
         <div>
           <el-steps
-            :active="activeStep"
+            :active="isCancel ? activeStep : activeStep + 1"
             align-center
           >
             <el-step
@@ -516,14 +516,14 @@
                 <div>
                   <div
                     class="icon "
-                    :class="[{ active: index > activeStep ? false : true }, { cancel: isCancel }]"
+                    :class="[{ active: index <= activeStep }, { cancel: isCancel && index == 0 }]"
                   />
                 </div>
               </template>
               <!-- 自定义标题 -->
               <template slot="title">
                 <div class="title">
-                  {{ item.name || '提交用印申请' }}
+                  {{ item.name || '提交申请' }}
                 </div>
               </template>
               <!-- 自定义内容 -->
@@ -531,9 +531,7 @@
                 <div class="description-box">
                   <div>{{ item.userName }}</div>
                   <div>{{ item.approveTime }}</div>
-                  <div
-                    v-if="!isCancel && index != 0 && index == activeStep && !isShowBtns && isUser"
-                  >
+                  <div v-if="!isCancel && index != 0 && index == activeStep && !isShowBtns">
                     <div
                       class="isUrge"
                       @click="handelUrge(item)"
@@ -679,11 +677,14 @@
         </div>
       </div>
       <!-- 按钮 -->
-      <div class="cancel-btn-box">
+      <div
+        v-if="!isCancel && !isFished && !isReject"
+        class="cancel-btn-box"
+      >
         <el-button
+          v-if="!isShowCancel"
           type="primary"
           size="medium"
-          :disabled="isDisabled"
           @click="handelCancel"
         >
           撤回
@@ -826,10 +827,11 @@ export default {
       ContractType: [],
       LeaveReason: [],
       ChangeReason: [],
-      // 流程审批记录List
+      // 流程进度数据
       progressList: [],
+      // 审批记录
       recordList: [],
-      // 流程进度
+      // 流程进度当前的节点
       activeStep: 0,
       // 当前审批节点的审批人ID
       apprUserId: '',
@@ -837,6 +839,10 @@ export default {
       applyUserId: '',
       // 是否已经撤回
       isCancel: false,
+      // 是否已经完成
+      isFished: false,
+      // 是否已经拒绝
+      isReject: false,
       // 控制显示模态框
       dialogVisible: false,
       // 判断是同意审批还是拒绝审批
@@ -852,7 +858,7 @@ export default {
       return FormKeysCN[this.apprInfo.formKey]
     },
     // 按钮是否可用
-    isDisabled() {
+    isShowCancel() {
       let res = false
       if (this.isCancel) {
         res = true
@@ -891,11 +897,17 @@ export default {
     this.getApprProgress()
     this.getCommonDict()
   },
+  async activated() {
+    await this.getApplyInfo()
+    this.getApprDetail()
+    this.getApprProgress()
+    this.getCommonDict()
+  },
+
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
       let res = await getApplyDetail({ apprNo: this.$route.query.apprNo })
-
       this.ApplyInfo = res
     },
 
@@ -949,7 +961,7 @@ export default {
     // 流程进度和审批记录
     async getApprProgress() {
       this.loading = true
-      let { apprNo } = this.$route.query
+      let { apprNo } = this.ApplyInfo
       let res = await getApplyRecord({ apprNo })
       let arr = []
       // 获取提交节点
@@ -957,22 +969,28 @@ export default {
         return item.isApprove == '0'
       })
       arr.push(res[indexApprove])
-      // 获取开始节点
+      // 获取审批开始节点
       let indexStart = res.findIndex((item) => {
         return item.isStart === 1
       })
       arr.push(res[indexStart])
+      // 排序
       this.sordByChildId(arr, res)
-
+      // 流程进度数据
       this.progressList = arr
-      // console.log(this.progressList)
+
       // 获取流程走到哪个节点
       this.activeStep = this.progressList.findIndex((item) => {
         return item.result === '' && item.isApprove !== '0'
       })
+
       // 等于-1审批已经完成
       if (this.activeStep === -1) {
+        this.isFished = true
         this.activeStep = arr.length
+      } else {
+        // 还没完成，获取当前审批节点
+        this.apprUserId = this.progressList[this.activeStep].userId
       }
       let hasReject = arr.some((item) => {
         return item.result === 'Reject'
@@ -980,13 +998,15 @@ export default {
       // 有拒绝显示到拒绝节点  没有拒绝节点显示到同意审批的下一个节点
       if (hasReject === true) {
         arr = arr.slice(0, this.activeStep)
+        this.activeStep -= 1
+        this.isReject = true
       } else {
         arr = arr.slice(0, this.activeStep + 1)
       }
       arr.reverse()
-      this.recordList = arr
-      // 判断是否已经撤销
-      // 最后一项是提交节点
+
+      // 判断是否已经撤销 最后一项是提交节点
+      // 审批记录数据
       if (arr[arr.length - 1].result === 'Cancel') {
         this.isCancel = true
         this.recordList = arr[arr.length - 1]
@@ -994,16 +1014,9 @@ export default {
         this.isCancel = false
         this.recordList = arr
       }
-
-      // 审批完成
-      if (this.progressList.length === this.activeStep) {
-        // 提交人ID
-        this.applyUserId = this.progressList[0].userId
-        return
-      }
-      // 当前审批人id
-      this.apprUserId = this.progressList[this.activeStep].userId
       this.loading = false
+      // 提交申请人的id
+      this.applyUserId = this.progressList[this.progressList.length - 1].userId
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
@@ -1052,7 +1065,7 @@ export default {
         })
         this.$message({
           type: 'success',
-          message: '你已拒绝黄浩提交的用印申请'
+          message: '你已拒绝这个申请'
         })
       } else if (this.apprType === 'Pass') {
         await createdPassAppr({
@@ -1063,7 +1076,7 @@ export default {
         })
         this.$message({
           type: 'success',
-          message: '你已同意黄浩提交的用印申请'
+          message: '你已同意这个申请'
         })
       }
       this.dialogVisible = false
@@ -1283,6 +1296,9 @@ export default {
     height: 9px;
     background: #368afa;
     border-radius: 100%;
+  }
+  .icon.isReject {
+    background: red;
   }
   .title {
     font-family: PingFangSC-Regular;
