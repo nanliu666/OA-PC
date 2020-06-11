@@ -1,8 +1,5 @@
 <template>
-  <el-row
-    type="flex"
-    justify="center"
-  >
+  <el-row>
     <el-col :span="24">
       <div class="workArea-wrap">
         <el-row :gutter="20">
