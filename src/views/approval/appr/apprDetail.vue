@@ -849,7 +849,7 @@ export default {
   computed: {
     // // 标题
     title() {
-      return FormKeysCN[this.apprInfo.formKey] || '申请详情'
+      return FormKeysCN[this.apprInfo.formKey]
     },
     // 按钮是否可用
     isDisabled() {
@@ -894,7 +894,8 @@ export default {
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
-      let res = await getApplyDetail({ apprNo: this.apprInfo.apprNo })
+      let res = await getApplyDetail({ apprNo: this.$route.query.apprNo })
+
       this.ApplyInfo = res
     },
 
