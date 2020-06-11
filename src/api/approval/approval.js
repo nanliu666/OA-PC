@@ -74,6 +74,10 @@ export const getLeaveApply = (params) => {
 export const getChangeApply = (params) => {
   return get('/user/v1/user/change/info', params)
 }
+// 更改需求人数详情查询
+export const getRecChangeNumApply = (params) => {
+  return get('/user/v1/recruitment/change/num', params)
+}
 
 // 流程进度和审批记录，调用接口
 export const getApplyRecord = (params) => {
@@ -89,6 +93,24 @@ export const cancelApply = (params) => {
 // 催一下
 export const createdUrge = (params) => {
   return post('/appr/v1/appr/apply/urge', params)
+}
+
+// 待我审批查询接口
+export const createdWaitApprList = (params) => {
+  return post('/appr/v1/appr/wait/approve/list', params)
+}
+// 同意审批
+export const createdPassAppr = (params) => {
+  return post('/appr/v1/appr/apply/pass', params)
+}
+// 拒绝审批
+export const createdRejectAppr = (params) => {
+  return post('/appr/v1/appr/apply/reject', params)
+}
+
+// 我已审批查询接口
+export const createdHasApprList = (params) => {
+  return post('/appr/v1/appr/has/approve/list', params)
 }
 
 /**
