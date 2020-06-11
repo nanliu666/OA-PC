@@ -305,9 +305,8 @@ export default {
     handleEditRole(row) {
       this.$refs.adjustEdit.init(row)
     },
-
     jumpToDetail(row) {
-      this.$router.push('/personnel/detail/' + row.userId)
+      this.$router.push('/personnel/detail/' + row.personId)
     },
     jumpApproval(apprNo) {
       this.$router.push({
