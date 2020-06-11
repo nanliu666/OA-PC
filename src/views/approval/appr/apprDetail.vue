@@ -496,7 +496,7 @@
       </basic-container>
     </transition>
 
-    <basic-container>
+    <basic-container v-loading="loading">
       <!-- 流程进度 -->
       <div class="progress-wrap">
         <div class="progress-wrap-title">
@@ -848,7 +848,8 @@ export default {
       // 判断是同意审批还是拒绝审批
       apprType: '',
       // 审批意见
-      apprRemark: ''
+      apprRemark: '',
+      loading: true
     }
   },
   computed: {
@@ -903,7 +904,6 @@ export default {
   async created() {
     await this.getApplyInfo()
     this.getApprDetail()
-
     this.getApprProgress()
     this.getCommonDict()
   },
@@ -963,6 +963,7 @@ export default {
     },
     // 流程进度和审批记录
     async getApprProgress() {
+      this.loading = true
       let { apprNo } = this.$route.query
       let res = await getApplyRecord({ apprNo })
       let arr = []
@@ -1009,10 +1010,15 @@ export default {
         this.recordList = arr
       }
 
+      // 审批完成
+      if (this.progressList.length === this.activeStep) {
+        // 提交人ID
+        this.applyUserId = this.progressList[0].userId
+        this.loading = false
+        return
+      }
       // 当前审批人id
       this.apprUserId = this.progressList[this.activeStep].userId
-      // 提交人ID
-      this.applyUserId = this.progressList[0].userId
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {

@@ -12,7 +12,7 @@
         @current-page-change="currentPageChange"
         @page-size-change="pageSizeChange"
       >
-        |<template slot="topMenu">
+        <template slot="topMenu">
           <div class="search-box">
             <SearchPopover
               :require-options="requireOptions"
