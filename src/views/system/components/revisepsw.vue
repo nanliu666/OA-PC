@@ -46,7 +46,6 @@
               placeholder="请输入新密码"
               type="password"
               show-password
-              @input="inputPassword($event, format[1])"
             />
           </el-form-item>
           <el-form-item prop="confirmPassword">
@@ -61,7 +60,6 @@
               placeholder="请输入确认密码"
               type="password"
               show-password
-              @input="inputPassword($event, format[2])"
             />
           </el-form-item>
           <el-form-item>
@@ -107,7 +105,6 @@ export default {
     }
     return {
       active: 0,
-      format: ['oldPassword', 'newPassword', 'confirmPassword'],
       form: {
         oldPassword: '',
         newPassword: '',
@@ -132,17 +129,21 @@ export default {
         if (isPass) {
           let params = {
             userId: this.userInfo.user_id,
-            newPassword: md5(this.form.oldPassword),
-            oldPassword: md5(this.form.newPassword)
+            newPassword: md5(this.form.newPassword),
+            oldPassword: md5(this.form.oldPassword)
           }
           checkPassword(params).then(() => {
             this.$message.success('修改成功')
+            setTimeout(() => {
+              this.goback()
+            }, 3000)
           })
         }
       })
     },
     goback() {
       this.$parent.editType = 'entry'
+      this.$parent.getUserAllInfo()
     }
   }
 }
