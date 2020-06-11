@@ -16,7 +16,8 @@ export const loginByUsername = (tenantId, username, password, type, key, code) =
       password,
       grant_type: website.captchaMode ? 'captcha' : 'password',
       scope: 'all',
-      type
+      type,
+      user_type: 'staff'
     }
   })
 
@@ -31,7 +32,8 @@ export const refreshToken = (refresh_token, tenantId) =>
       tenantId,
       refresh_token,
       grant_type: 'refresh_token',
-      scope: 'all'
+      scope: 'all',
+      user_type: 'staff'
     }
   })
 export const getUserPrivilege = (userId) => {
