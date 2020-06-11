@@ -57,7 +57,7 @@
       class=" bronone frame"
     >
       <span class="demandSize"> 候选人数</span>
-      <span class="content isBurl">{{ user.candidateNum }}</span>
+      <span class="content">{{ user.candidateNum }}</span>
     </el-col>
   </el-row>
 </template>

@@ -125,6 +125,7 @@
           v-if="userVisible"
           :visible.sync="userVisible"
           :role-id="roleId"
+          @upDate="onLoad"
         />
       </el-container>
     </basic-container>

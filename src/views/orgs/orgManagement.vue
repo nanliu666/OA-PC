@@ -221,7 +221,8 @@ const column = [
   },
   {
     label: '描述',
-    prop: 'remark'
+    prop: 'remark',
+    overHidden: true
   }
 ]
 

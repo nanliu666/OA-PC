@@ -398,8 +398,8 @@ const res = {
                 menuType: 'Menu',
                 isOwn: 1,
                 isShow: 1,
-                code: 'personnel_editPerson',
-                alias: 'recruit',
+                code: 'personnl_editPerson',
+                alias: 'recruite',
                 path: '/personnel/recruit/recruitList',
                 icon: 'iconfont iconicon_compile'
               },
