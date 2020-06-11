@@ -158,7 +158,7 @@
             </el-col>
             <el-col
               :span="5"
-              class="taskInformation"
+              class="taskInformation  isBlue "
             >
               {{ item.entryNum }}
             </el-col>
@@ -170,7 +170,7 @@
             </el-col>
             <el-col
               :span="4"
-              class="taskInformation   isBlue  noborder"
+              class="taskInformation isRed  noborder"
             >
               {{ getPercent(item.taskNum, item.entryNum) }}
             </el-col>
@@ -602,5 +602,9 @@ export default {
   padding-left: 23px !important;
   border-right: 1px solid #ccc;
   margin: 0;
+}
+
+.isRed {
+  color: #ff6464;
 }
 </style>
