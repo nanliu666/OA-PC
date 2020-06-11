@@ -365,37 +365,57 @@
           slot="interview"
           slot-scope="{ row }"
         >
-          {{ row.sex == 1 ? '已发送' : '未发送' }}
+          {{
+            row.interview == 1 ? '已发送' : '未发送'
+          }}
+        </template>
+        <template
+          slot="approveStatus"
+          slot-scope="{ row }"
+        >
+          {{
+            approveStatusWord[row.approveStatus]
+          }}
         </template>
         <template
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{ row.provinceName + row.cityName }}
+          {{
+            row.provinceName + row.cityName
+          }}
         </template>
         <template
           slot="educationalLevel"
           slot-scope="{ row }"
         >
-          {{ educationalDict[row.educationalLevel] }}
+          {{
+            educationalDict[row.educationalLevel]
+          }}
         </template>
         <template
           slot="recruitment"
           slot-scope="{ row }"
         >
-          {{ recruitmentChannel[row.recruitment] }}
+          {{
+            recruitmentChannel[row.recruitment]
+          }}
         </template>
         <template
           slot="monthSalary"
           slot-scope="{ row }"
         >
-          {{ row.monthSalary / 1000 + 'K' }}
+          {{
+            row.monthSalary / 1000 + 'K'
+          }}
         </template>
         <template
           slot="createTime"
           slot-scope="{ row }"
         >
-          {{ row.createTime.split(' ')[0] }}
+          {{
+            row.createTime.split(' ')[0]
+          }}
         </template>
         <template
           slot="handler"
@@ -504,14 +524,19 @@
             <!-- 面试通过 -->
             <template v-if="row.status === '4'">
               <el-button
+                v-if="row.applyId === ''"
                 type="text"
                 @click="handleApplyEmploy(row)"
               >
                 申请录用
               </el-button>
-              <!-- <el-button type="text" @click="handleCheckEmploy(row)">
+              <el-button
+                v-else
+                type="text"
+                @click="handleCheckEmploy(row)"
+              >
                 查看申请
-              </el-button>-->
+              </el-button>
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -678,16 +703,24 @@ const column = [
   },
   {
     label: '招聘负责人',
-    prop: 'userName'
+    prop: 'userName',
+    width: '100'
   },
   {
     label: '候选人状态',
     prop: 'status',
-    slot: true
+    slot: true,
+    width: '100'
   },
   {
     label: '面试登记表',
     prop: 'interview',
+    slot: true,
+    width: '100'
+  },
+  {
+    label: '录用申请',
+    prop: 'approveStatus',
     slot: true
   },
   {
@@ -760,7 +793,7 @@ const column = [
     label: '候选人添加时间',
     prop: 'createTime',
     slot: true,
-    width: 100
+    width: 120
   }
 ]
 
@@ -829,6 +862,7 @@ export default {
         '5': '待发Offer',
         '6': '已发Offer'
       },
+      approveStatusWord: { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' },
       loading: false,
       data: [],
       columns: column,
@@ -957,7 +991,14 @@ export default {
       this.$message.success('发送成功')
     },
     handleCheckEmploy(row) {
-      this.$router.push('/personnel/candidate/applyDetail/' + row.personId)
+      let params = {
+        formId: row.applyId,
+        formKey: 'PersonOfferApply'
+      }
+      this.$router.push({
+        path: '/approval/appr/apprDetail',
+        query: params
+      })
     },
     handleApplyEmploy(row) {
       this.$router.push({
@@ -992,7 +1033,11 @@ export default {
       this.$router.push('/personnel/candidate/sendOffer?personId=' + row.personId)
     },
     toDetail(row) {
-      this.$router.push('/personnel/personDetail/' + row.personId)
+      if (row.status === '4') {
+        this.$router.push('/personnel/personDetail/' + row.personId + `?applyId=${row.applyId}`)
+      } else {
+        this.$router.push('/personnel/personDetail/' + row.personId)
+      }
     },
     handleAcceptOffer(row) {
       this.$confirm('您确认要替候选人接受入职offer？接受后该候选人后将会进入待入职状态', '提示', {

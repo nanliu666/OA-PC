@@ -192,7 +192,7 @@ export default {
     padding-left: 24px;
     margin-top: 0;
   }
-  /deep/.el-tabs__nav {
+  /deep/.el-tabs__nav-scroll {
     padding-left: 24px;
   }
 }

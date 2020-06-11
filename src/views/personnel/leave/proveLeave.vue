@@ -3,6 +3,7 @@
     <page-header
       title="开具离职证明"
       show-back
+      :back="goBack"
     />
     <basic-container>
       <el-row
@@ -201,8 +202,14 @@ export default {
     // 点击取消
     handelCancel() {
       this.$router.go(-1)
-    }
+    },
     // 点击打印预览
+
+    //goBack
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
+    }
   }
 }
 </script>

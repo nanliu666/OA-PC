@@ -144,7 +144,7 @@ export default async () => {
           loadMoreFun(item) {
             if (item.loading || item.noMore) return
             item.loading = true
-            getOrgPosition({ pageNo: 1, pageSize: 100 }).then((res) => {
+            getOrgPosition({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
               if (res.length > 0) {
                 item.options.push(...res)
                 item.pageNo += 1

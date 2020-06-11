@@ -91,7 +91,9 @@
           slot="workProperty"
           slot-scope="{ row }"
         >
-          {{ workProperty[row.workProperty] }}
+          {{
+            workProperty[row.workProperty]
+          }}
         </template>
         <template
           slot="entryDate"
@@ -207,7 +209,7 @@ const willEntryColumn = [
     label: '预计入职日期',
     prop: 'entryDate',
     slot: true,
-    width: 100
+    width: 120
   }
 ]
 
@@ -225,7 +227,7 @@ const giveUpEntryColumn = [
     label: '原定入职日期',
     prop: 'entryDate',
     slot: true,
-    width: 100
+    width: 120
   }
 ]
 

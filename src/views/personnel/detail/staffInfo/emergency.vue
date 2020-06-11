@@ -76,7 +76,7 @@
                 v-show="curItemIndex != index"
                 label="紧急联系人关系:"
               >
-                <span class="info-item-value">{{ item.relationship }}</span>
+                <span class="info-item-value">{{ getRelationship(index) }}</span>
               </el-form-item>
               <!-- debug -->
               <el-form-item
@@ -90,12 +90,11 @@
                 >
                   <el-option
                     v-for="item in UserRelationshipList"
-                    :key="item.id"
-                    :label="item.label"
-                    :value="item.value"
+                    :key="item.dictKey"
+                    :label="item.dictValue"
+                    :value="item.dictKey"
                   />
                 </el-select>
-                <!-- <el-input v-model="item.relationship" /> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -210,6 +209,17 @@ export default {
     this.getUserRelationship()
   },
   methods: {
+    getRelationship(index) {
+      let dictValue = ''
+      for (let i = 0; i < this.UserRelationshipList.length; i++) {
+        let item = this.UserRelationshipList[i]
+        if (this.emergencyInfo[index].relationship == item.dictKey) {
+          dictValue = item.dictValue
+          return dictValue
+        }
+      }
+      return dictValue
+    },
     addInfo() {
       this.type = 'add'
       let item = {
@@ -305,15 +315,7 @@ export default {
     // 获取紧急联系人字典组数据
     getUserRelationship() {
       this.$store.dispatch('CommonDict', 'UserRelationship').then((res) => {
-        let UserRelationshipList = []
-        res.forEach((item) => {
-          UserRelationshipList.push({
-            id: item.id,
-            label: item.dictValue,
-            value: item.dictKey
-          })
-        })
-        this.UserRelationshipList = UserRelationshipList
+        this.UserRelationshipList = res
       })
     }
   }
