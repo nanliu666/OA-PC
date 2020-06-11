@@ -50,7 +50,7 @@
             <el-radio
               v-for="item in column.options"
               :key="item[(column.props && column.props.value) || 'value']"
-              :value="item[(column.props && column.props.value) || 'value']"
+              :label="item[(column.props && column.props.value) || 'value']"
             >
               {{
                 column.props

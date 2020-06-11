@@ -584,4 +584,16 @@ export default ({ mock }) => {
     }
     return myList
   })
+
+  // 提交修改申请接口 （对应修改人数）
+  Mock.mock(new RegExp('/user/v1/recruitment/change/num' + '.*'), 'post', () => {
+    const myList = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response: {
+        id: '1270332900294000642'
+      }
+    }
+    return myList
+  })
 }

@@ -192,7 +192,9 @@ export default {
      * */
     adduser(list) {
       let idList = []
+      this.approvalList[this.index].users = []
       this.approvalList[this.index].users.map((it) => idList.push(it.id))
+
       list.map((it) => {
         if (!idList.includes(it.id)) {
           let params = {

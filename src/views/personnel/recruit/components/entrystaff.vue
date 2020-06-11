@@ -3,12 +3,7 @@
     <basic-container>
       <common-table
         :data="data"
-        :page="page"
         :columns="columns"
-        :page-config="pageConfig"
-        :config="tableConfig"
-        @page-size-change="sizeChange"
-        @current-page-change="currentPageChange"
       >
         <template
           slot="name"
@@ -26,7 +21,7 @@
           slot="sex"
           slot-scope="{ row }"
         >
-          {{ calcSex(row.sex) }}
+          {{ row.sex === 0 ? '男' : '女' }}
         </template>
         <template
           slot="educationalLevel"
@@ -55,11 +50,6 @@ export default {
       activeName: 'inrecruitment',
       row: {},
       data: [],
-      tableConfig: {
-        showIndexColumn: false,
-        enableMultiSelect: false,
-        enablePagination: true
-      },
       columns: [
         {
           label: '姓名',
@@ -94,18 +84,6 @@ export default {
           slot: true
         }
       ],
-      params: {
-        pageNo: 1,
-        pageSize: 10
-      },
-      page: {
-        pageSize: 100,
-        pagerCount: 1,
-        total: 10
-      },
-      pageConfig: {
-        pageSizes: [10, 20, 30, 40, 50]
-      },
       EducationalLevel: [],
       progress: 'Approved'
     }
@@ -114,12 +92,12 @@ export default {
     ...mapGetters(['userId'])
   },
   activated() {
-    if (typeof this.$route.query.id !== 'undefined') {
+    if (this.$route.query.id !== undefined && this.$route.query.id !== null) {
       this.ReplicationCache(this.$route.query.id)
     }
   },
   mounted() {
-    if (typeof this.$route.query.id !== 'undefined') {
+    if (this.$route.query.id !== undefined && this.$route.query.id !== null) {
       this.getData()
       this.ReplicationCache(this.$route.query.id)
     }
@@ -128,12 +106,8 @@ export default {
     })
   },
   methods: {
-    jumpToDetail() {},
-    ReplicationCache(id) {
-      getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
-        this.data = res.data
-        this.page.total = res.totalPage
-      })
+    jumpToDetail(personId) {
+      this.$router.push('/personnel/detail/' + personId)
     },
     getData() {
       getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
@@ -141,18 +115,10 @@ export default {
         this.childData = res
       })
     },
-    calcSex(sex) {
-      let typeWord
-      let whoSex = [
-        { sex: 1, result: '男' },
-        { sex: 0, result: '女' }
-      ]
-      whoSex.forEach((item) => {
-        if (item.sex === sex) {
-          typeWord = item.result
-        }
+    ReplicationCache(id) {
+      getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
+        this.data = res
       })
-      return typeWord
     },
     calcEducation(educationalLevel) {
       let typeLevel
@@ -162,17 +128,6 @@ export default {
         }
       })
       return typeLevel
-    },
-    currentChange(val) {
-      this.params.pageNo = val
-      this.page.pagerCount = val
-      this.getData()
-    },
-    sizeChange(val) {
-      this.params.pageSize = val
-      this.params.pageNo = 1
-      this.page.pagerCount = 1
-      this.getData()
     },
     ChangeContent() {
       this.$router.push({

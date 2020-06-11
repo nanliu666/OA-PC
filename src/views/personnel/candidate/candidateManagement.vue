@@ -652,6 +652,7 @@
     />
     <arrange
       v-if="arrangeDialog"
+      :title="arrangeTitle"
       :dialog-visible.sync="arrangeDialog"
       :row="row"
     />
@@ -783,6 +784,7 @@ export default {
   components: { SearchPopover, WeedOutDialog, PushAuditDialog, ChangeJobDialog, arrange },
   data() {
     return {
+      arrangeTitle: '',
       arrangeDialog: false,
       row: {},
       checkColumn: [
@@ -982,6 +984,7 @@ export default {
     },
     handleArrange(row) {
       this.arrangeDialog = true
+      this.arrangeTitle = '重新安排面试'
       this.row = JSON.parse(JSON.stringify(row))
     },
     handleExport() {},

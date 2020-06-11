@@ -126,3 +126,9 @@ export const getRelationDemand = (params) => {
 export const getApprove = (params) => {
   return get('/appr/v1/recruitment/approve/list', { ...params })
 }
+
+/*************************** 修改需求人数提交 ****************************************** */
+
+export const getChange = (params) => {
+  return post('/user/v1/recruitment/change/num', { ...params })
+}

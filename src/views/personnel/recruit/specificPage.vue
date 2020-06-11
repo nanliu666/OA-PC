@@ -71,7 +71,7 @@
                 class="buttonPrimary"
                 type="primary"
                 size="medium"
-                @click="JumpCandidate(row)"
+                @click="JumpCandidate()"
               >
                 添加候选人
               </el-button>
@@ -139,8 +139,8 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  mounted() {
-    if (typeof this.$route.query.id !== 'undefined') {
+  activated() {
+    if (this.$route.query.id) {
       this.getData()
     }
   },

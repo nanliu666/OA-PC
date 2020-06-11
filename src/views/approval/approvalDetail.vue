@@ -1,46 +1,45 @@
 <template>
-  <div style="height:100%;width: 100% ">
-    <div class="header">
-      <div>
-        <i
-          class="icon el-icon-arrow-left"
-          @click="back"
-        /> 审批流程
-      </div>
-    </div>
-    <div class="view-case approval">
-      <div class="flex flex-justify-start flex-items title">
-        <i class="el-icon-caret-bottom" />审批流程
-        <el-link
-          type="primary"
-          class="hellp"
-          @click="handleNote"
-        >
-          审批流程帮助
-        </el-link>
-      </div>
-      <approvalcompoent :approval-list.sync="approvalList" />
-      <div class="footer">
-        <el-button
-          type="primary"
-          size="medium"
-          @click="onsubmit"
-        >
-          保存
-        </el-button>
-        <el-button
-          size="medium"
-          @click="back"
-        >
-          取消
-        </el-button>
-      </div>
-    </div>
-    <noteDialog
-      v-if="dialogVisible"
-      :note.sync="note"
-      :dialog-visible.sync="dialogVisible"
+  <div>
+    <pageHeader
+      title="审批流程"
+      :show-back="showBack"
+      :back="back"
     />
+    <basic-container>
+      <div class="approval">
+        <div class="flex flex-justify-start flex-items title">
+          <i class="el-icon-caret-bottom" />审批流程
+          <el-link
+            type="primary"
+            class="hellp"
+            @click="handleNote"
+          >
+            审批流程帮助
+          </el-link>
+        </div>
+        <approvalcompoent :approval-list.sync="approvalList" />
+        <div class="footer">
+          <el-button
+            type="primary"
+            size="medium"
+            @click="onsubmit"
+          >
+            保存
+          </el-button>
+          <el-button
+            size="medium"
+            @click="back"
+          >
+            取消
+          </el-button>
+        </div>
+      </div>
+      <noteDialog
+        v-if="dialogVisible"
+        :note.sync="note"
+        :dialog-visible.sync="dialogVisible"
+      />
+    </basic-container>
   </div>
 </template>
 
@@ -54,6 +53,7 @@ export default {
   components: { approvalcompoent, noteDialog },
   data() {
     return {
+      showBack: true,
       dialogVisible: false,
       input: '',
       note: '',
@@ -157,8 +157,6 @@ export default {
 
         this.initData = res
         this.note = res.note
-
-        debugger
         if (!res.id) {
           return
         }
@@ -235,6 +233,7 @@ export default {
   font-size: 16px;
   margin-left: -10px;
   margin-top: 30px;
+
   .hellp {
     font-size: 16px;
     margin-left: 16px;
@@ -243,6 +242,6 @@ export default {
 
 .footer {
   position: absolute;
-  bottom: 50px;
+  bottom: -50px;
 }
 </style>

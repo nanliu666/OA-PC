@@ -178,7 +178,8 @@ export default {
               }
             })
             .catch(() => {
-              this.dialog = false
+              this.loading = false
+              // this.dialog = false
             })
         }
       })

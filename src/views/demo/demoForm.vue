@@ -242,6 +242,8 @@ export default {
       })
     },
     handleSubmit() {
+      // eslint-disable-next-line
+      console.log('form', JSON.parse(JSON.stringify(this.form)))
       this.$refs.form
         .validate()
         .then((res) => {

@@ -40,6 +40,7 @@ export default {
 <style lang="scss">
 .basic-container {
   box-sizing: border-box;
+  margin-bottom: 24px;
   &--block {
     height: 100%;
     .el-card {

@@ -235,24 +235,27 @@ export default {
     addDomain() {
       this.calWhetherBeyond()
       // 判断当前请求返回数据是否有意义
-      if (typeof this.dynamicValidateForm.users !== 'undefined') {
-        this.dynamicValidateForm.users.push({
-          userId: '',
-          taskNum: 1,
-          disabled: true,
-          Rendering: 'Rendering'
-        })
-      } else {
+      if (
+        this.dynamicValidateForm.users &&
+        Object.keys(this.dynamicValidateForm.users).length === 0
+      ) {
         this.$message({
           showClose: true,
           message: '当前需求暂无可用员工, 请关闭重试',
           type: 'warning'
         })
         this.$emit('update:visible', false)
+      } else {
+        this.dynamicValidateForm.users.push({
+          userId: '',
+          taskNum: 1,
+          disabled: true,
+          Rendering: 'Rendering'
+        })
       }
     },
     onSubmitted() {
-      let accumulation = this.calWhetherBeyond()
+      let accumulation = this.calWhetherBeyond('onSubmitted')
       if (accumulation !== this.Numberofpeople) {
         this.$message({
           showClose: true,
@@ -270,14 +273,14 @@ export default {
         this.$emit('getTableData')
       }
     },
-    calWhetherBeyond() {
+    calWhetherBeyond(Submitted) {
       var total = null
       if (typeof this.dynamicValidateForm.users !== 'undefined') {
         this.dynamicValidateForm.users.forEach((item, index) => {
           this.dynamicValidateForm.users[index].operatorType = 'Update'
           total += item.taskNum
         })
-        if (total > this.Numberofpeople) {
+        if (Submitted !== 'onSubmitted' && total > this.Numberofpeople) {
           this.$message({
             showClose: true,
             message: '请注意！ 需求总人数不能大于待分配人数',
@@ -292,12 +295,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pageHeader {
-  height: 48px;
-  line-height: 48px;
-  font-size: 18px;
-}
-
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #ccc;
 }
@@ -324,21 +321,6 @@ export default {
   color: #212a3f;
   text-align: right;
   font-weight: 600;
-}
-
-.frame {
-  border-right: 1px solid #ccc;
-  margin-bottom: 20px;
-}
-
-.content {
-  display: block;
-  font-family: PingFangSC-Regular;
-  font-size: 16px;
-  color: #202940;
-  line-height: 24px;
-  margin-bottom: 10px;
-  text-align: center;
 }
 
 /deep/ .el-input__inner {
