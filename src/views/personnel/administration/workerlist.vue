@@ -65,6 +65,34 @@
         </template>
 
         <template
+          slot="status"
+          slot-scope="{ row }"
+        >
+          {{ calStatus(row.status) }}
+        </template>
+
+        <template
+          slot="approveStatus"
+          slot-scope="{ row }"
+        >
+          {{ calApprNo(row.approveStatus) }}
+        </template>
+
+        <template
+          slot="apprNo"
+          slot-scope="{ row }"
+        >
+          <el-button
+            size="medium"
+            type="text"
+            @click="jumpApproval(row.apprNo)"
+          >
+            {{ row.apprNo }}
+          </el-button>
+        </template>
+
+        <template
+          v-if="row.approveStatus === 'Cancel'"
           slot="handler"
           slot-scope="{ row }"
         >
@@ -219,8 +247,19 @@ export default {
           prop: 'workNo'
         },
         {
+          label: '员工状态',
+          prop: 'status',
+          slot: true
+        },
+        {
           label: '转正申请状态',
-          prop: 'status'
+          prop: 'approveStatus',
+          slot: true
+        },
+        {
+          label: '审批编号',
+          prop: 'apprNo',
+          slot: true
         },
         {
           label: '部门',
@@ -270,31 +309,7 @@ export default {
       this.loading = true
       getStaffList(params).then((res) => {
         let { data } = res
-        const isStatusArr = [
-          {
-            status: 'Try',
-            real: '试用期'
-          },
-          {
-            status: 'Formal',
-            real: '正式'
-          },
-          {
-            status: 'Leaved',
-            real: '已离职'
-          },
-          {
-            status: 'WaitLeave',
-            real: '待离职'
-          }
-        ]
         data.forEach((item, index) => {
-          isStatusArr.forEach((StatusArr) => {
-            if (item.status === StatusArr.status) {
-              item.status = StatusArr.real
-            }
-          })
-
           let isOverdue = moment(nowData).isBefore(item.formalDate)
           if (isOverdue) {
             data[index].isOverdue = ''
@@ -320,25 +335,17 @@ export default {
       })
     },
     handleEditRole(row) {
-      // let { status } = row
-      // if (status == '申请中' || status == '已退回') {
-      //   return this.$message({
-      //     showClose: true,
-      //     message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
-      //     type: 'warning'
-      //   })
-      // }
       this.$refs.adjustEdit.init(row)
     },
 
     jumpToDetail(row) {
-      this.$router.push({ path: '/personnel/detail', query: { userId: row.userId } })
+      this.$router.push('/personnel/detail/' + row.userId)
     },
-    jumpApproval(Approvalcode) {
-      return this.$message({
-        showClose: true,
-        message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
-        type: 'warning'
+    jumpApproval(apprNo) {
+      // 跳转审批详情  formKey为固定申请值
+      this.$router.push({
+        path: '/approval/appr/apprDetail',
+        query: { formKey: 'UserFormalInfo ', apprNo: apprNo }
       })
     },
     decorator(params) {
@@ -354,6 +361,12 @@ export default {
     sizeChange(pageSize) {
       this.page.size = pageSize
       this.getTableData()
+    },
+    calStatus(status) {
+      return { Try: '试用期', Formal: '正式', Leaved: '已离职', WaitLeave: '待离职' }[status]
+    },
+    calApprNo(apprNo) {
+      return { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' }[apprNo]
     }
   }
 }
