@@ -1,9 +1,9 @@
 <template>
   <div>
-    <page-header class="pageHeader">
-      <h3 slot="title">
+    <page-header>
+      <span slot="title">
         转正管理 (试用期员工共计<i>{{ numberofpersonnel }}</i>人)
-      </h3>
+      </span>
     </page-header>
     <basic-container>
       <common-table
@@ -55,7 +55,7 @@
           slot-scope="{ row }"
         >
           <span>{{ row.formalDate }}</span>
-          <span :class="row.isSelect">{{ row.isOverdue }}</span>
+          <span :class="{ isSelect: row.overdue }">{{ row.overdue == true ? '逾期' : '' }}</span>
         </template>
         <template
           slot="probation"
@@ -65,6 +65,34 @@
         </template>
 
         <template
+          slot="status"
+          slot-scope="{ row }"
+        >
+          {{ calStatus(row.status) }}
+        </template>
+
+        <template
+          slot="approveStatus"
+          slot-scope="{ row }"
+        >
+          {{ calApprNo(row.approveStatus) }}
+        </template>
+
+        <template
+          slot="apprNo"
+          slot-scope="{ row }"
+        >
+          <el-button
+            size="medium"
+            type="text"
+            @click="jumpApproval(row.apprNo)"
+          >
+            {{ row.apprNo }}
+          </el-button>
+        </template>
+
+        <template
+          v-if="row.approveStatus === 'Cancel'"
           slot="handler"
           slot-scope="{ row }"
         >
@@ -182,18 +210,6 @@ export default {
               { label: '六个月', value: 6 }
             ],
             config: {}
-          },
-          {
-            type: 'select',
-            field: 'orgType',
-            data: '',
-            label: '申请状态',
-            options: [
-              { label: '未申请', value: 0 },
-              { label: '已驳回', value: 1 },
-              { label: '申请中', value: 2 }
-            ],
-            config: {}
           }
         ]
       },
@@ -219,8 +235,19 @@ export default {
           prop: 'workNo'
         },
         {
+          label: '员工状态',
+          prop: 'status',
+          slot: true
+        },
+        {
           label: '转正申请状态',
-          prop: 'status'
+          prop: 'approveStatus',
+          slot: true
+        },
+        {
+          label: '审批编号',
+          prop: 'apprNo',
+          slot: true
         },
         {
           label: '部门',
@@ -264,86 +291,34 @@ export default {
   methods: {
     getTableData(params = {}) {
       this.decorator(params)
-      let nowData = moment()
-        .locale('zh-cn')
-        .format('YYYY-MM-DD')
       this.loading = true
       getStaffList(params).then((res) => {
-        let { data } = res
-        const isStatusArr = [
-          {
-            status: 'Try',
-            real: '试用期'
-          },
-          {
-            status: 'Formal',
-            real: '正式'
-          },
-          {
-            status: 'Leaved',
-            real: '已离职'
-          },
-          {
-            status: 'WaitLeave',
-            real: '待离职'
-          }
-        ]
-        data.forEach((item, index) => {
-          isStatusArr.forEach((StatusArr) => {
-            if (item.status === StatusArr.status) {
-              item.status = StatusArr.real
-            }
-          })
-
-          let isOverdue = moment(nowData).isBefore(item.formalDate)
-          if (isOverdue) {
-            data[index].isOverdue = ''
-            data[index].isSelect = ''
-          } else {
-            data[index].isOverdue = '逾期'
-            data[index].isSelect = 'isSelect'
-          }
-        })
         this.loading = false
-        this.data = res.data
+        this.data = res.data.map((item) => ({ ...item, overdue: this.calBeyond(item.formalDate) }))
         this.page.total = res.totalNum
         this.numberofpersonnel = res.totalNum
       })
     },
     handleSubmit(params) {
-      this.decorator(params)
-      params.orgs = [params.orgId]
-      params.jobs = [params.jobs]
-      this.loading = true
-      getStaffList(params).then(() => {
-        this.loading = false
-      })
+      this.getTableData(params)
     },
     handleEditRole(row) {
-      // let { status } = row
-      // if (status == '申请中' || status == '已退回') {
-      //   return this.$message({
-      //     showClose: true,
-      //     message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
-      //     type: 'warning'
-      //   })
-      // }
       this.$refs.adjustEdit.init(row)
     },
-
     jumpToDetail(row) {
-      this.$router.push({ path: '/personnel/detail', query: { userId: row.userId } })
+      this.$router.push('/personnel/detail/' + row.personId)
     },
-    jumpApproval(Approvalcode) {
-      return this.$message({
-        showClose: true,
-        message: `很抱歉，审批编号为${Approvalcode},审批详情页面正在开发，请期待`,
-        type: 'warning'
+    jumpApproval(apprNo) {
+      this.$router.push({
+        path: '/approval/appr/apprDetail',
+        query: { formKey: 'UserFormalInfo ', apprNo: apprNo }
       })
     },
     decorator(params) {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
+      params.orgs = [params.orgId]
+      params.jobs = [params.jobs]
       return params
     },
 
@@ -354,85 +329,30 @@ export default {
     sizeChange(pageSize) {
       this.page.size = pageSize
       this.getTableData()
+    },
+    calStatus(status) {
+      return { Try: '试用期', Formal: '正式', Leaved: '已离职', WaitLeave: '待离职' }[status]
+    },
+    calApprNo(apprNo) {
+      return { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' }[apprNo]
+    },
+    calBeyond(formalDate) {
+      let nowData = moment()
+        .locale('zh-cn')
+        .format('YYYY-MM-DD')
+      let isOverdue = moment(nowData).isBefore(formalDate)
+      if (!isOverdue) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  h4 {
-    font-size: 18px;
-  }
-}
-.state {
-  display: flex;
-  padding: 0 6px;
-  margin-bottom: 10px;
-  .on {
-    flex: 4;
-    background: #ffffff;
-    border-radius: 4px;
-    margin-right: 20px;
-    display: flex;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      border-right: 1px solid #e3e7e9;
-      cursor: pointer;
-      .bottomBox {
-        height: 2px;
-        width: 68px;
-        background: #207efa;
-        margin: 0 auto;
-        margin-top: 28px;
-      }
-    }
-    :last-of-type {
-      border-right: 0;
-    }
-    .current {
-      color: #207efa;
-    }
-  }
-  .left {
-    flex: 1;
-    background: #ffffff;
-    border-radius: 4px;
-    > div {
-      flex: 1;
-      text-align: center;
-      height: 46px;
-      margin: 30px 0;
-      line-height: 46px;
-      cursor: pointer;
-      .bottomBox {
-        height: 2px;
-        width: 68px;
-        background: #207efa;
-        margin: 0 auto;
-        margin-top: 28px;
-      }
-    }
-    .current {
-      color: #207efa;
-    }
-  }
-}
-
 .edge {
-  position: absolute;
-  right: 59px;
-}
-
-.beBverdue {
   position: absolute;
   right: 59px;
 }

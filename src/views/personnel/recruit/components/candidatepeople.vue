@@ -21,7 +21,7 @@
           slot="sex"
           slot-scope="{ row }"
         >
-          {{ row.sex === 0 ? '男' : '女' }}
+          {{ row.sex === 1 ? '男' : '女' }}
         </template>
         <template
           slot="educationalLevel"
