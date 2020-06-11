@@ -138,14 +138,7 @@ export default {
         {
           label: '审批类型',
           formatter: (row) => {
-            let result = ''
-            for (let key in FormKeysCN) {
-              if (row.formKey === key) {
-                result = FormKeysCN[key]
-                break
-              }
-            }
-            return result
+            return FormKeysCN[row.formKey]
           }
         },
         {
