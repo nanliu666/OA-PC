@@ -476,10 +476,18 @@
                 重新安排面试
               </el-button>
               <el-button
+                v-if="row.interview === 0"
                 type="text"
-                @click="handleSend"
+                @click="handleSend(row)"
               >
                 发送面试登记表
+              </el-button>
+              <el-button
+                v-else
+                type="text"
+                @click="loopUpInterview"
+              >
+                查看面试登记表
               </el-button>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
@@ -495,9 +503,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>
+                  <!--                  <el-dropdown-item command>-->
+                  <!--                    下载简历-->
+                  <!--                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -773,7 +781,8 @@ import {
   getCandidateStatusStat,
   getCandidateList,
   acceptCandidateOffer,
-  changeCandidateOffer
+  changeCandidateOffer,
+  postRegisterSend
 } from '@/api/personnel/candidate'
 import { getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
@@ -952,9 +961,29 @@ export default {
     })
     this.loadData()
   },
+  activated() {
+    this.loadData()
+  },
   methods: {
-    handleSend() {
-      this.$message.success('发送成功')
+    /***
+     * @author guanfenda
+     * @desc 查看面试登记表
+     *
+     * */
+    loopUpInterview() {
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm'
+      })
+    },
+    handleSend(row) {
+      let params = {
+        recruitmentId: row.recruitmentId,
+        personId: row.personId
+      }
+      postRegisterSend(params).then(() => {
+        this.$message.success('发送成功')
+        this.loadData()
+      })
     },
     handleCheckEmploy(row) {
       this.$router.push('/personnel/candidate/applyDetail/' + row.personId)
@@ -984,7 +1013,7 @@ export default {
     },
     handleArrange(row) {
       this.arrangeDialog = true
-      this.arrangeTitle = '重新安排面试'
+      this.arrangeTitle = '安排面试'
       this.row = JSON.parse(JSON.stringify(row))
     },
     handleExport() {},

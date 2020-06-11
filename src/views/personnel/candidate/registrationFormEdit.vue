@@ -263,7 +263,6 @@
         保存
       </el-button>
       <el-button
-        type="info"
         size="medium"
         @click="close"
       >

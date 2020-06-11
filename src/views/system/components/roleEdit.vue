@@ -476,7 +476,9 @@ export default {
     },
     //新建角色
     createFunc(callback) {
-      let positions = [this.form.positions.length === 0 ? '' : this.form.positions]
+      let positions = []
+
+      this.form.positions && positions.push(this.form.positions)
       const params = {
         ...this.form,
         positions,
@@ -497,7 +499,8 @@ export default {
     },
     // 更新角色
     updateFunc() {
-      let positions = [this.form.positions.length === 0 ? '' : this.form.positions]
+      let positions = []
+      this.form.positions && positions.push(this.form.positions)
       const params = {
         ...this.form,
         positions,

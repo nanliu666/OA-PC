@@ -775,10 +775,10 @@ export default {
                 {
                   name: 'userName',
                   font: '11pt sans-serif',
-                  overflow: go.TextBlock.OverflowEllipsis,
+                  overflow: go.TextBlock.OverflowClip,
                   wrap: go.TextBlock.WrapFit,
                   maxLines: 4,
-                  margin: 6,
+                  margin: 10,
                   isMultiline: true
                 },
                 new go.Binding('text', 'userName').makeTwoWay()
