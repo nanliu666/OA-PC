@@ -146,7 +146,7 @@ export default {
         popoverOptions: [
           {
             type: 'treeSelect',
-            field: 'orgId',
+            field: 'orgs',
             label: '部门',
             data: '',
             config: {
@@ -282,7 +282,6 @@ export default {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getOrgJob().then((res) => {
       this.searchConfig.popoverOptions[1].options = res
@@ -306,7 +305,7 @@ export default {
       this.$refs.adjustEdit.init(row)
     },
     jumpToDetail(row) {
-      this.$router.push('/personnel/detail/' + row.personId)
+      this.$router.push('/personnel/detail/' + row.userId)
     },
     jumpApproval(apprNo) {
       this.$router.push({
@@ -317,8 +316,14 @@ export default {
     decorator(params) {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
-      params.orgs = [params.orgId]
-      params.jobs = [params.jobs]
+      if (params.orgs) {
+        params.orgs = [params.orgs]
+      }
+
+      if (params.jobs) {
+        params.jobs = [params.jobs]
+      }
+
       return params
     },
 

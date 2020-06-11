@@ -87,8 +87,6 @@ export default {
       })
     },
     getPercent(curNum, totalNum) {
-      totalNum = 6
-      curNum = 9
       curNum = parseFloat(curNum)
       totalNum = parseFloat(totalNum)
       if (isNaN(curNum) || isNaN(totalNum)) {

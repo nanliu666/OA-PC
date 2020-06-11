@@ -12,7 +12,7 @@
           <el-button
             type="text"
             size="medium"
-            @click="jumpToDetail(row.personId)"
+            @click="jumpToDetail(row)"
           >
             {{ row.name }}
           </el-button>
@@ -30,14 +30,14 @@
           {{ calcEducation(row.educationalLevel) }}
         </template>
 
-        <template
+        <!-- <template
           slot="tags"
           slot-scope="{ row }"
         >
           <el-tag :color="row.tagsColor">
             {{ row.tagsName }}
           </el-tag>
-        </template>
+        </template> -->
       </common-table>
     </basic-container>
   </div>
@@ -78,11 +78,11 @@ export default {
           label: '个人邮箱',
           prop: 'email'
         },
-        {
-          label: '标签',
-          prop: 'tags',
-          slot: true
-        },
+        // {
+        //   label: '标签',
+        //   prop: 'tags',
+        //   slot: true
+        // },
         {
           label: '毕业学校',
           prop: 'university'
@@ -119,8 +119,8 @@ export default {
     })
   },
   methods: {
-    jumpToDetail(personId) {
-      this.$router.push('/personnel/detail/' + personId)
+    jumpToDetail(row) {
+      this.$router.push('/personnel/detail/' + row.userId)
     },
     getData() {
       getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
@@ -131,9 +131,9 @@ export default {
     ReplicationCache(id) {
       getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
         this.data = res.map((item) => ({
-          ...item,
-          tagsName: this.employeeName(...item.tags),
-          tagsColor: this.employeeColor(...item.tags)
+          ...item
+          // tagsName: this.employeeName(...item.tags),
+          // tagsColor: this.employeeColor(...item.tags)
         }))
       })
     },
@@ -150,13 +150,13 @@ export default {
       this.$router.push({
         path: '/personnel/recruit/components/chang'
       })
-    },
-    employeeColor(tags) {
-      return tags['color']
-    },
-    employeeName(tags) {
-      return tags['name']
     }
+    // employeeColor(tags) {
+    //   return tags['color']
+    // },
+    // employeeName(tags) {
+    //   return tags['name']
+    // }
   }
 }
 </script>
