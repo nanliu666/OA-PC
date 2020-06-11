@@ -37,11 +37,6 @@
             招聘进度
           </el-col>
         </el-row>
-        <el-row v-if="management === 'noAvailable'">
-          <el-col class="taskInformation">
-            {{ '暂无数据' }}
-          </el-col>
-        </el-row>
 
         <el-row
           v-for="item in management"
@@ -73,11 +68,8 @@
           >
             {{ item.candidateNum }}
           </el-col>
-          <el-col
-            :span="4"
-            class="taskInformation isBlue  noborder"
-          >
-            {{ getPercent(item.taskNum, item.entryNum) }}
+          <el-col :span="4">
+            <el-progress :percentage="item.nodeData" />
           </el-col>
         </el-row>
       </div>
@@ -104,7 +96,8 @@ export default {
       status: '招聘中',
       activeName: 'inrecruitment',
       row: {},
-      data: []
+      data: [],
+      nodeData: null
     }
   },
   computed: {
@@ -119,21 +112,19 @@ export default {
     recruitmentSituation() {
       queryDistribution({ recruitmentId: this.$route.query.id }).then((res) => {
         this.loading = false
-        // 判断当前数组是否为空
-        if (res == null || res.length == 0) {
-          this.management = 'noAvailable'
-        } else {
-          this.management = res
-        }
+        this.management = res.map((item) => ({
+          ...item,
+          nodeData: this.getPercent(item.taskNum, item.entryNum)
+        }))
       })
     },
     getPercent(curNum, totalNum) {
       curNum = parseFloat(curNum)
       totalNum = parseFloat(totalNum)
       if (isNaN(curNum) || isNaN(totalNum)) {
-        return '-'
+        return 0
       }
-      return Math.round((totalNum / curNum) * 10000) / 100 + '%'
+      return Math.round((totalNum / curNum) * 10000) / 100
     }
   }
 }
