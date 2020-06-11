@@ -406,6 +406,7 @@
             >
               <el-cascader
                 ref="cascaderAddr"
+                v-model="nativePlace"
                 :options="regionCascader.option"
                 :separator="'/'"
                 @change="regionChange"
@@ -555,6 +556,7 @@ export default {
     return {
       staffInfo: {},
       region: [],
+      nativePlace: [],
       readonlyBasicInfo: true,
       householdOptions: [],
       politicalOptions: [],
@@ -740,8 +742,12 @@ export default {
   },
   created() {
     this.dispatchSelect()
+    this.initNativePlace()
   },
   methods: {
+    initNativePlace() {
+      this.nativePlace = [this.staffInfo.nativeProvinceCode, this.staffInfo.nativeCityCode]
+    },
     getUserSex() {
       if (this.staffInfo.sex == 1) {
         return '男'
@@ -786,6 +792,7 @@ export default {
       }
       getStaffBasicInfo(params).then((res) => {
         this.staffInfo = res
+        this.initNativePlace()
       })
     },
     saveInfo() {

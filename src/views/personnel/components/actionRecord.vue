@@ -1,7 +1,7 @@
 <template>
   <div class="steps-bos">
     <basic-container>
-      <el-timeline :reverse="true">
+      <el-timeline :reverse="false">
         <el-timeline-item
           v-for="(item, index) in stepsData"
           :key="index"
