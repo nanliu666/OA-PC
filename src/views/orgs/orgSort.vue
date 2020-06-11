@@ -139,6 +139,7 @@ export default {
 .treeBox {
   width: calc (100% - 160) px;
   padding-bottom: 40px;
+  overflow: scroll;
 }
 
 /deep/ .is-always-shadow {
