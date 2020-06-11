@@ -3,6 +3,7 @@
     <page-header
       title="离职证明"
       show-back
+      :back="goBack"
     />
     <div class="btn-wrap">
       <div class="btn-box">
@@ -61,7 +62,13 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    //goBack
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
+    }
+  }
 }
 </script>
 

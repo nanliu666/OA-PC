@@ -551,6 +551,28 @@ export default ({ mock }) => {
     }
   })
 
+  // 更改需求人数申请查询
+  Mock.mock(new RegExp('/user/v1/recruitment/change/num' + '.*'), 'get', () => {
+    let response = {
+      id: 'pc)5P',
+      recruitmentId: 'YrfI6',
+      reason: '5Gle#',
+      changeNum: 244001235589024,
+      userId: 'jPBDT',
+      userName: 'fq]cTY',
+      orgId: 'i09l',
+      orgName: 'wEqx*D',
+      jobId: 'xIJ$t9',
+      jobName: 'tzx8W',
+      needNum: 4588332270048660,
+      entryNum: 3015356526241216
+    }
+
+    return {
+      response
+    }
+  })
+
   // 流程进度和审批记录
   Mock.mock(new RegExp('/appr/v1/appr/apply/record' + '.*'), 'get', () => {
     // let list = Mock.mock([
@@ -720,7 +742,263 @@ export default ({ mock }) => {
       response: 'ok'
     }
   })
+  // 待我审批查询
+  Mock.mock(new RegExp('/appr/v1/appr/wait/approve/list' + '.*'), 'get', () => {
+    let list = Mock.mock([
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'Recruitment',
+        formId: '@integer(1, 100)',
+        orgId: '@integer(1, 100)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(1, 100)',
+        userName: '@cname',
+        jobId: '@integer(1, 100)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(1, 100)',
+        status: 'Approve',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(1, 100)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'PersonOfferApply',
+        formId: '@integer(1, 100)',
+        orgId: '@integer(1, 100)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(1, 100)',
+        userName: '@cname',
+        jobId: '@integer(1, 100)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(1, 100)',
+        status: 'Approve',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(1, 100)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserFormalInfo',
+        formId: '@integer(1, 100)',
+        orgId: '@integer(1, 100)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(1, 100)',
+        userName: '@cname',
+        jobId: '@integer(1, 100)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(1, 100)',
+        status: 'Approve',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(1, 100)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserContractInfo',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Pass',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserLeaveInfo',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Reject',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserChangeInfo',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Cancel',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      }
+    ])
 
+    return {
+      response: {
+        totalNum: 50,
+        totalPage: 10,
+        data: list
+      }
+    }
+  })
+
+  // 我已审批查询
+  Mock.mock(new RegExp('/appr/v1/appr/has/approve/list' + '.*'), 'get', () => {
+    let list = Mock.mock([
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'Recruitment',
+        formId: '@integer(1, 100)',
+        orgId: '@integer(1, 100)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(1, 100)',
+        userName: '@cname',
+        jobId: '@integer(1, 100)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(1, 100)',
+        status: 'Approve',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(1, 100)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'PersonOfferApply',
+        formId: '@integer(1, 100)',
+        orgId: '@integer(1, 100)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(1, 100)',
+        userName: '@cname',
+        jobId: '@integer(1, 100)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(1, 100)',
+        status: 'Approve',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(1, 100)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserFormalInfo',
+        formId: '@integer(1, 100)',
+        orgId: '@integer(1, 100)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(1, 100)',
+        userName: '@cname',
+        jobId: '@integer(1, 100)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(1, 100)',
+        status: 'Approve',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(1, 100)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserContractInfo',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Pass',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserLeaveInfo',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Reject',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      },
+      {
+        apprNo: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        formKey: 'UserChangeInfo',
+        formId: '@integer(100000, 10000000000)',
+        orgId: '@integer(100000, 10000000000)',
+        orgName: '@ctitle(1,3)',
+        userId: '@integer(100000, 10000000000)',
+        userName: '@cname',
+        jobId: '@integer(100000, 10000000000)',
+        jobName: '@ctitle(1,3)',
+        processId: '@integer(100000, 10000000000)',
+        status: 'Cancel',
+        applyTime: '@date()',
+        completeTime: '@date()',
+        approveUser: '@integer(100000, 10000000000)',
+        approveName: '@cname'
+      }
+    ])
+
+    return {
+      response: {
+        totalNum: 50,
+        totalPage: 10,
+        data: list
+      }
+    }
+  })
+  // 同意审批
+  Mock.mock(new RegExp(' /appr/v1/appr/apply/reject' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+  // 拒绝审批
+  Mock.mock(new RegExp('/appr/v1/appr/apply/urge' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+
+  // 提交审批
   Mock.mock(new RegExp('/appr/v1/appr/apply/submit' + '.*'), 'post', (options) => {
     console.log('提交审批：', options.url, JSON.parse(options.body))
     return success

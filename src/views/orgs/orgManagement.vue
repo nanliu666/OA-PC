@@ -199,7 +199,8 @@ const column = [
   {
     label: '组织编码',
     prop: 'orgCode',
-    align: 'right'
+    align: 'right',
+    minwWidth: '150px'
   },
   {
     label: '组织负责人',

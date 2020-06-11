@@ -3,6 +3,7 @@
     <page-header
       title="离职申请"
       show-back
+      :back="goBack"
     />
     <basic-container>
       <el-row
@@ -229,6 +230,11 @@ export default {
           })
           .catch(() => {})
       })
+    },
+    // goBack
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }
