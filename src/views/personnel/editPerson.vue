@@ -507,6 +507,7 @@ export default {
         params.cityName = inputValue[1]
         submitFunc(params).then(() => {
           this.$message.success('提交成功')
+          this.$router.go(-1)
           this.clear()
           if (!shouldContinue) {
             this.goBack()

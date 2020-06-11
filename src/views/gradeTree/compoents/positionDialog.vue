@@ -241,20 +241,24 @@ export default {
               this.form.parentId = ''
               this.initOrgId = ''
             }
-            // conso.log(this.orgData.parentJobId)
             jod = jod.filter((it) => {
               if (this.row.id !== it.jobId && this.isEdit) {
+                return it
+              } else {
                 return it
               }
             })
             jod = jod.filter((it) => {
               if (this.orgData.id !== it.jobId && this.isEdit) {
                 return it
+              } else {
+                return it
               }
             })
 
             jod.map((it) => {
-              (it.label = it.jobName), (it.value = it.jobId)
+              it.label = it.jobName
+              it.value = it.jobId
             })
             this.option.column[3].dicData = jod
             this.loading = false
@@ -270,9 +274,6 @@ export default {
     dialog: {
       handler: function() {
         this.$emit('update:dialogVisible', this.dialog)
-        // if (!this.dialog) {
-        //   this.$refs.form.resetFields()
-        // }
       }
     },
     dialogVisible: {

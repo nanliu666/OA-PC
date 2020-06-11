@@ -26,7 +26,6 @@
         <div
           v-show="!isSearch"
           id="avue-view"
-          style="height: calc(100% - 30px);overflow-y:auto;overflow-x:hidden;"
         >
           <keep-alive v-if="$route.meta.$keepAlive">
             <router-view

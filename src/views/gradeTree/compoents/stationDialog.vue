@@ -144,16 +144,23 @@ export default {
       this.onClickSave({ again: true }, this.reset)
     },
     modity() {
-      let data = {
-        ...this.row,
-        ...this.form
-      }
-      this.loading = true
-      putV1Position(data).then(() => {
-        this.$message.success('修改成功')
-        this.$emit('onSubmit', data)
-        this.loading = false
-        this.dialog = false
+      this.$refs.form.validate((vaild) => {
+        if (!vaild) return
+        let data = {
+          ...this.row,
+          ...this.form
+        }
+        this.loading = true
+        putV1Position(data)
+          .then(() => {
+            this.$message.success('修改成功')
+            this.$emit('onSubmit', data)
+            this.loading = false
+            this.dialog = false
+          })
+          .catch(() => {
+            this.loading = false
+          })
       })
     },
     onClickSave({ again = false }, reset) {

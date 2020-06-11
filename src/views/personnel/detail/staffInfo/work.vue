@@ -75,7 +75,7 @@
                   range-separator="至"
                   start-placeholder="开始月份"
                   end-placeholder="结束月份"
-                  unlink-panels="true"
+                  :unlink-panels="true"
                   @blur="monthChange(item)"
                 />
               </el-form-item>

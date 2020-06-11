@@ -149,21 +149,21 @@ export default {
             trigger: 'blur',
             validator: validatePhone
           }
-        ],
-        addresslist: [
-          {
-            required: true,
-            message: '请选择面试地址',
-            trigger: 'blur'
-          }
-        ],
-        address: [
-          {
-            required: true,
-            message: '请输入详细地址',
-            trigger: 'blur'
-          }
         ]
+        // addresslist: [
+        //   {
+        //     required: true,
+        //     message: '请选择面试地址',
+        //     trigger: 'blur'
+        //   }
+        // ],
+        // address: [
+        //   {
+        //     required: true,
+        //     message: '请输入详细地址',
+        //     trigger: 'blur'
+        //   }
+        // ]
       }
     }
   },
