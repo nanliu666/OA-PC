@@ -228,7 +228,7 @@ export default {
     height: 100%;
     padding: 0 10px;
     border-right: 1px solid #f2f2f2;
-    overflow: auto;
+    overflow: scroll;
     .filter-tree {
       margin-top: 20px;
     }

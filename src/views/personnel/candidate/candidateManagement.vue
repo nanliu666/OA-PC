@@ -365,57 +365,43 @@
           slot="interview"
           slot-scope="{ row }"
         >
-          {{
-            row.interview == 1 ? '已发送' : '未发送'
-          }}
+          {{ row.interview == 1 ? '已发送' : '未发送' }}
         </template>
         <template
           slot="approveStatus"
           slot-scope="{ row }"
         >
-          {{
-            approveStatusWord[row.approveStatus]
-          }}
+          {{ approveStatusWord[row.approveStatus] }}
         </template>
         <template
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{
-            row.provinceName + row.cityName
-          }}
+          {{ row.provinceName + row.cityName }}
         </template>
         <template
           slot="educationalLevel"
           slot-scope="{ row }"
         >
-          {{
-            educationalDict[row.educationalLevel]
-          }}
+          {{ educationalDict[row.educationalLevel] }}
         </template>
         <template
           slot="recruitment"
           slot-scope="{ row }"
         >
-          {{
-            recruitmentChannel[row.recruitment]
-          }}
+          {{ recruitmentChannel[row.recruitment] }}
         </template>
         <template
           slot="monthSalary"
           slot-scope="{ row }"
         >
-          {{
-            row.monthSalary / 1000 + 'K'
-          }}
+          {{ row.monthSalary / 1000 + 'K' }}
         </template>
         <template
           slot="createTime"
           slot-scope="{ row }"
         >
-          {{
-            row.createTime.split(' ')[0]
-          }}
+          {{ row.createTime.split(' ')[0] }}
         </template>
         <template
           slot="handler"
