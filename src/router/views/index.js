@@ -47,6 +47,24 @@ export default [
     ]
   },
   {
+    path: '',
+    component: Layout,
+    children: [
+      {
+        path: '/personnel/administration/apply',
+        name: '转正申请',
+        component: () =>
+          import(/* webpackChunkName: "views" */ '@/views/personnel/administration/apply')
+      },
+      {
+        path: '/personnel/leave/applyLeave',
+        name: '离职申请',
+        component: () =>
+          import(/* webpackChunkName: "views" */ '@/views/personnel/leave/applyLeave')
+      }
+    ]
+  },
+  {
     path: '/work/process/leave',
     component: Layout,
     redirect: '/work/process/leave/form',
