@@ -516,7 +516,7 @@
                 <div>
                   <div
                     class="icon "
-                    :class="[{ active: index >= activeStep ? false : true }, { cancel: isCancel }]"
+                    :class="[{ active: index > activeStep ? false : true }, { cancel: isCancel }]"
                   />
                 </div>
               </template>
@@ -531,9 +531,10 @@
                 <div class="description-box">
                   <div>{{ item.userName }}</div>
                   <div>{{ item.approveTime }}</div>
-                  <div v-if="!isCancel">
+                  <div
+                    v-if="!isCancel && index != 0 && index == activeStep && !isShowBtns && isUser"
+                  >
                     <div
-                      v-if="index != 0 && index == activeStep"
                       class="isUrge"
                       @click="handelUrge(item)"
                     >
@@ -838,6 +839,8 @@ export default {
       activeStep: 0,
       // 当前审批节点的审批人ID
       apprUserId: '',
+      // 提交人ID
+      applyUserId: '',
       // 是否已经撤回
       isCancel: false,
       // 控制显示模态框
@@ -860,11 +863,11 @@ export default {
       }
       return title
     },
-    // 按钮是否可以
+    // 按钮是否可用
     isDisabled() {
-      let res = ''
+      let res = false
       if (this.isCancel) {
-        res = this.isCancel
+        res = true
       } else if (this.activeStep > 1) {
         res = true
       }
@@ -881,32 +884,39 @@ export default {
       }
       return res
     },
+    // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
     isShowBtns() {
-      // /当前审批节点的审批人的用户id和当前用户对比
       if (this.userId === this.apprUserId) {
+        return true
+      }
+      return false
+    },
+    // 提交人跟当前用户是否同一个人
+    isUser() {
+      if (this.userId === this.applyUserId) {
         return true
       }
       return false
     },
     ...mapGetters(['userId'])
   },
-  created() {
+  async created() {
+    await this.getApplyInfo()
+    this.getApprDetail()
+
+    this.getApprProgress()
     this.getCommonDict()
-    this.initData()
-  },
-  activated() {
-    this.initData()
   },
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
-      let res = await getApplyDetail(this.apprInfo)
+      let res = await getApplyDetail({ apprNo: this.apprInfo.apprNo })
       this.ApplyInfo = res
     },
 
     // 获取审批详情信息
     async getApprDetail() {
-      let { formId, formKey } = this.$route.query
+      let { formId, formKey } = this.ApplyInfo
       // 根据不同的formKey 调用不同申请详情查询接口
       let res = ''
       if (formKey === 'Recruitment') {
@@ -961,6 +971,7 @@ export default {
         return item.isApprove == '0'
       })
       arr.push(res[indexApprove])
+      // 获取开始节点
       let indexStart = res.findIndex((item) => {
         return item.isStart === 1
       })
@@ -977,7 +988,6 @@ export default {
       if (this.activeStep === -1) {
         this.activeStep = arr.length
       }
-
       let hasReject = arr.some((item) => {
         return item.result === 'Reject'
       })
@@ -1001,6 +1011,8 @@ export default {
 
       // 当前审批人id
       this.apprUserId = this.progressList[this.activeStep].userId
+      // 提交人ID
+      this.applyUserId = this.progressList[0].userId
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
@@ -1065,12 +1077,6 @@ export default {
       }
       this.dialogVisible = false
       this.goBack()
-    },
-    // init
-    initData() {
-      this.getApplyInfo()
-      this.getApprDetail()
-      this.getApprProgress()
     },
     // 点击催一下
     async handelUrge(params) {
@@ -1201,6 +1207,9 @@ export default {
         text-align: right;
         width: 246px;
         vertical-align: middle;
+      }
+      :nth-child(2) {
+        max-width: 252px;
       }
     }
   }
