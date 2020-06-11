@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="fill">
     <page-header title="菜单管理" />
-    <basic-container>
+    <basic-container block>
       <avue-crud
         ref="crud"
         v-model="form"
@@ -458,4 +458,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.basic-container--block {
+  height: calc(100% - 82px);
+  min-height: calc(100% - 82px);
+}
+</style>

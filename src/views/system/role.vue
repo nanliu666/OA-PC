@@ -1,8 +1,8 @@
 <template>
-  <div class="role-wrap">
+  <div class="role-wrap fill">
     <page-header title="角色管理" />
-    <basic-container>
-      <el-container style="min-height: 600px">
+    <basic-container block>
+      <el-container style="min-height:100%">
         <roleAside
           v-bind="options"
           :current-id.sync="options.currentId"
@@ -472,9 +472,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .basic-container--block {
+  height: calc(100% - 82px);
+  min-height: calc(100% - 82px);
+  > .el-card {
+    height: 100%;
+    > .el-card__body {
+      height: 100%;
+    }
+  }
+}
 .role-wrap {
-  margin-bottom: 150px;
-
   .aside-wrap {
     border-right: 1px solid #e3e7e9;
   }
