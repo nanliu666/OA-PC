@@ -126,11 +126,20 @@
           <!-- 面试通过 -->
           <template v-if="personInfo.status === '4'">
             <el-button
+              v-if="$route.query.applyId === ''"
               type="primary"
               size="medium"
               @click="handleApplyEmploy(row)"
             >
               申请录用
+            </el-button>
+            <el-button
+              v-else
+              type="primary"
+              size="medium"
+              @click="handleCheckEmploy(row)"
+            >
+              查看申请
             </el-button>
             <el-button
               type="danger"
@@ -364,7 +373,9 @@
                 :span="16"
                 class="value"
               >
-                {{ personInfo.provinceName + '/' + personInfo.cityName }}
+                {{
+                  personInfo.provinceName + '/' + personInfo.cityName
+                }}
               </el-col>
               <el-col
                 :span="8"
@@ -433,7 +444,9 @@
                 :span="16"
                 class="value"
               >
-                {{ recruitmentChannel[personInfo.recruitment] }}
+                {{
+                  recruitmentChannel[personInfo.recruitment]
+                }}
               </el-col>
               <el-col
                 :span="8"
@@ -448,9 +461,9 @@
                 <a
                   class="attachmentUrl"
                   :href="personInfo.attachmentUrl"
-                >{{
-                  personInfo.attachmentName
-                }}</a>
+                >
+                  {{ personInfo.attachmentName }}
+                </a>
               </el-col>
             </el-row>
           </div>
@@ -563,6 +576,16 @@ export default {
   methods: {
     handleSend() {
       this.$message.success('发送成功')
+    },
+    handleCheckEmploy() {
+      let params = {
+        formId: this.$route.query.applyId,
+        formKey: 'PersonOfferApply'
+      }
+      this.$router.push({
+        path: '/approval/appr/apprDetail',
+        query: params
+      })
     },
     handleApplyEmploy(row) {
       this.$router.push({

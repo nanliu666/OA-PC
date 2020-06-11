@@ -3,6 +3,7 @@
     <page-header
       title="人事异动申请"
       :show-back="true"
+      :back="goBack"
     />
     <basic-container>
       <el-row
@@ -621,6 +622,11 @@ export default {
           return this.$message.info('请输入人事异动的变更内容', 3000)
         }
       })
+    },
+    // goback
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }

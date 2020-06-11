@@ -249,6 +249,7 @@ export default {
   methods: {
     goback() {
       this.$parent.editType = 'entry'
+      this.$parent.getUserAllInfo()
     },
     next() {
       if (this.step == 1) {
