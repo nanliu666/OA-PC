@@ -794,14 +794,12 @@ export default {
     },
     // 过滤异动类型
     changeType(value) {
-      if (!value) return ''
-      if (value == 'Position') {
-        return '调岗'
-      } else if (value == 'Up') {
-        return '晋升'
-      } else if (value == 'Down') {
-        return '降级'
+      let changeTypeCN = {
+        Position: '调岗',
+        Up: '晋升',
+        Down: '降级'
       }
+      return changeTypeCN[value] || ''
     }
   },
   data() {
@@ -851,7 +849,7 @@ export default {
   computed: {
     // // 标题
     title() {
-      return FormKeysCN[this.apprInfo.formKey]
+      return FormKeysCN[this.apprInfo.formKey] || '申请详情'
     },
     // 按钮是否可用
     isDisabled() {
@@ -863,16 +861,13 @@ export default {
       }
       return res
     },
-
     // 模态框标题
     apprTitle() {
-      let res = ''
-      if (this.apprType === 'Pass') {
-        res = '审批同意意见'
-      } else if (this.apprType === 'Reject') {
-        res = '审批拒绝意见'
+      let apprTitleCN = {
+        Pass: '审批同意意见',
+        Reject: '审批拒绝意见'
       }
-      return res
+      return apprTitleCN[this.apprType] || ''
     },
     // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
     isShowBtns() {

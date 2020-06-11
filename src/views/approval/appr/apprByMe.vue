@@ -203,7 +203,6 @@ export default {
       this.tableList = data
       this.page.total = totalNum
       this.loading = false
-      // console.log(this.tableList)
     },
     // 监听页码发生改变
     currentPageChange(param) {
