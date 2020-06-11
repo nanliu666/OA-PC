@@ -678,7 +678,7 @@
           </el-steps>
         </div>
       </div>
-
+      <!-- 按钮 -->
       <div class="cancel-btn-box">
         <el-button
           type="primary"
@@ -770,11 +770,7 @@ export default {
     // 过滤审批状态
     filterstatus: (status) => {
       if (!status) return ''
-      for (let key in apprStatusCN) {
-        if (status === key) {
-          return apprStatusCN[key]
-        }
-      }
+      return apprStatusCN[status]
     },
     // 字典组过滤 根据 dictKey =》 dictValue
     // CommonDictarr字典组数组
@@ -853,16 +849,9 @@ export default {
     }
   },
   computed: {
-    // 标题
+    // // 标题
     title() {
-      let title = ''
-      for (let key in FormKeysCN) {
-        if (this.apprInfo.formKey === key) {
-          title = FormKeysCN[key]
-          break
-        }
-      }
-      return title
+      return FormKeysCN[this.apprInfo.formKey]
     },
     // 按钮是否可用
     isDisabled() {
@@ -1014,11 +1003,11 @@ export default {
       if (this.progressList.length === this.activeStep) {
         // 提交人ID
         this.applyUserId = this.progressList[0].userId
-        this.loading = false
         return
       }
       // 当前审批人id
       this.apprUserId = this.progressList[this.activeStep].userId
+      this.loading = false
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
