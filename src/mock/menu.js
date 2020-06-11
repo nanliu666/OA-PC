@@ -398,8 +398,8 @@ const res = {
                 menuType: 'Menu',
                 isOwn: 1,
                 isShow: 1,
-                code: 'personnel_editPerson',
-                alias: 'recruit',
+                code: 'personnl_editPerson',
+                alias: 'recruite',
                 path: '/personnel/recruit/recruitList',
                 icon: 'iconfont iconicon_compile'
               },
@@ -844,6 +844,28 @@ const res = {
                 code: 'approval_approval',
                 alias: 'approval',
                 path: '/approval/appr/apprDetail',
+                icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '0000003',
+                menuName: '待我审批',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'approval_approval',
+                alias: 'approval',
+                path: '/approval/appr/waitAppr',
+                icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '0000004',
+                menuName: '我已审批',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'approval_approval',
+                alias: 'approval',
+                path: '/approval/appr/hasAppr',
                 icon: 'iconfont iconicon_compile'
               }
             ]

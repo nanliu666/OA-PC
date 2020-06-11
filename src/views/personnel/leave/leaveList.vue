@@ -58,6 +58,46 @@
               {{ row.name }}
             </el-button>
           </template>
+          <!-- 审批编码 -->
+          <template
+            slot="apprNo"
+            slot-scope="{ row }"
+          >
+            <el-button
+              type="text"
+              size="medium"
+              @click="goApprDetail(row.apprNo)"
+            >
+              {{ row.apprNo }}
+            </el-button>
+          </template>
+          <!-- 当前审批状态 -->
+          <template
+            slot="approveStatus"
+            slot-scope="{ row }"
+          >
+            <el-tag v-if="row.approveStatus === 'Approve'">
+              审批中
+            </el-tag>
+            <el-tag
+              v-else-if="row.approveStatus === 'Pass'"
+              type="success"
+            >
+              已通过
+            </el-tag>
+            <el-tag
+              v-else-if="row.approveStatus === 'Reject'"
+              type="danger"
+            >
+              已拒绝
+            </el-tag>
+            <el-tag
+              v-else-if="row.approveStatus === 'Cancel'"
+              type="warning"
+            >
+              已撤回
+            </el-tag>
+          </template>
           <!-- 操作列 -->
           <template
             slot="handler"
@@ -277,6 +317,13 @@ export default {
           slot: true
         },
         {
+          label: '审批编码',
+          align: 'center',
+          prop: 'apprNo',
+          width: '80px',
+          slot: true
+        },
+        {
           label: '工号',
           align: 'center',
           prop: 'workNo',
@@ -359,6 +406,12 @@ export default {
             })
             return dictValue
           }
+        },
+        {
+          label: '审批状态',
+          align: 'center',
+          prop: 'approveStatus',
+          slot: true
         },
         {
           label: '离职申请时间',
@@ -694,6 +747,16 @@ export default {
         path: '/personnel/leave/proveLeave',
         query: {
           userId
+        }
+      })
+    },
+    // 跳去审批详情
+    goApprDetail(apprNo) {
+      this.$router.push({
+        path: '/approval/appr/apprDetail',
+        query: {
+          apprNo,
+          formKey: 'UserLeaveInfo'
         }
       })
     }

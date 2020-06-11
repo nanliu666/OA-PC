@@ -4,7 +4,7 @@
       title="组织详情"
       show-back
     />
-    <basic-container :block="true">
+    <basic-container block>
       <div class="container">
         <div class="treeBox">
           <el-input
@@ -218,12 +218,11 @@ export default {
   font-size: 18px;
 }
 .basic-container--block {
-  height: calc(100% - 48px);
+  height: calc(100% - 82px);
 }
 .container {
   display: flex;
   height: 100%;
-  padding: 20px 0;
   .treeBox {
     flex: 1;
     height: 100%;
@@ -267,9 +266,6 @@ export default {
   }
 }
 
-/deep/ .el-card__body {
-  height: 100%;
-}
 /deep/ .el-tree-node__content {
   height: 40px;
 }

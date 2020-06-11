@@ -154,7 +154,7 @@
       <position-dialog
         v-if="positionDialog"
         :dialog-visible.sync="positionDialog"
-        :row="row"
+        :row.sync="row"
         :title="title"
         :is-edit="isEdit"
         :org-tree="orgTree"
@@ -510,7 +510,7 @@ export default {
   color: #202940;
   line-height: 28px;
   font-weight: bold;
-  margin-top: 14px;
+  padding-top: 14px;
 }
 .nav {
   display: flex;

@@ -177,7 +177,7 @@ export default {
       })
       if (isUser) return //不给提交
 
-      if (this.initData.id) {
+      if (this.initData.id && this.note) {
         let params = {
           id: this.initData.id,
           note: this.note

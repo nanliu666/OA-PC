@@ -21,13 +21,22 @@
           slot="sex"
           slot-scope="{ row }"
         >
-          {{ row.sex === 0 ? '男' : '女' }}
+          {{ row.sex === 1 ? '男' : '女' }}
         </template>
         <template
           slot="educationalLevel"
           slot-scope="{ row }"
         >
           {{ calcEducation(row.educationalLevel) }}
+        </template>
+
+        <template
+          slot="tags"
+          slot-scope="{ row }"
+        >
+          <el-tag :color="row.tagsColor">
+            {{ row.tagsName }}
+          </el-tag>
         </template>
       </common-table>
     </basic-container>
@@ -69,7 +78,11 @@ export default {
           label: '个人邮箱',
           prop: 'email'
         },
-
+        {
+          label: '标签',
+          prop: 'tags',
+          slot: true
+        },
         {
           label: '毕业学校',
           prop: 'university'
@@ -117,7 +130,11 @@ export default {
     },
     ReplicationCache(id) {
       getEntryDetails({ userId: this.userId, recruitmentId: id }).then((res) => {
-        this.data = res
+        this.data = res.map((item) => ({
+          ...item,
+          tagsName: this.employeeName(...item.tags),
+          tagsColor: this.employeeColor(...item.tags)
+        }))
       })
     },
     calcEducation(educationalLevel) {
@@ -133,6 +150,12 @@ export default {
       this.$router.push({
         path: '/personnel/recruit/components/chang'
       })
+    },
+    employeeColor(tags) {
+      return tags['color']
+    },
+    employeeName(tags) {
+      return tags['name']
     }
   }
 }

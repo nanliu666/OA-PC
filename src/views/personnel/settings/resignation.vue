@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fill">
     <page-header title="离职交接事项">
       <template slot="rightMenu">
         <el-button
@@ -18,8 +18,7 @@
         </el-button>
       </template>
     </page-header>
-
-    <basic-container>
+    <basic-container block>
       <el-alert
         title="使用指南：为了便于员工离职办理更顺畅，可以提前维护员工离职需要处理的事项，通知到各个干系人做准备"
         type="info"
@@ -340,5 +339,10 @@ export default {
   text-align: center;
   line-height: 300px;
   color: #757c85;
+}
+
+.basic-container--block {
+  height: calc(100% - 82px);
+  min-height: calc(100% - 82px);
 }
 </style>
