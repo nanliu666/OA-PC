@@ -1,9 +1,9 @@
 <template>
   <div>
-    <page-header class="pageHeader">
-      <h3 slot="title">
+    <page-header>
+      <span slot="title">
         转正管理 (试用期员工共计<i>{{ numberofpersonnel }}</i>人)
-      </h3>
+      </span>
     </page-header>
     <basic-container>
       <common-table
@@ -210,18 +210,6 @@ export default {
               { label: '六个月', value: 6 }
             ],
             config: {}
-          },
-          {
-            type: 'select',
-            field: 'orgType',
-            data: '',
-            label: '申请状态',
-            options: [
-              { label: '未申请', value: 0 },
-              { label: '已驳回', value: 1 },
-              { label: '申请中', value: 2 }
-            ],
-            config: {}
           }
         ]
       },
@@ -306,7 +294,6 @@ export default {
       this.loading = true
       getStaffList(params).then((res) => {
         this.loading = false
-        this.data = res.data
         this.data = res.data.map((item) => ({ ...item, overdue: this.calBeyond(item.formalDate) }))
         this.page.total = res.totalNum
         this.numberofpersonnel = res.totalNum

@@ -91,6 +91,13 @@
           {{ isStatus(row.status) }}
         </el-tag>
       </template>
+
+      <template
+        slot="emerType"
+        slot-scope="{ row }"
+      >
+        <cla-label :emertype="row.emerType" />
+      </template>
       <template
         slot="expand"
         slot-scope="{ row }"
@@ -192,12 +199,14 @@ import { getAllRecruitment, getPost, queryDistribution } from '@/api/personnel/r
 import { getOrgTreeSimple } from '@/api/org/org'
 import Again from '@/views/personnel/recruit/details/again'
 import Assigned from '@/views/personnel/recruit/details/Assigned'
+import ClaLabel from '@/views/personnel/recruit/components/claLabel'
 export default {
   name: 'AllList',
   components: {
     SearchPopover,
     Again,
-    Assigned
+    Assigned,
+    ClaLabel
   },
   data() {
     return {
@@ -330,6 +339,11 @@ export default {
         {
           label: '候选人数',
           prop: 'candidateNum'
+        },
+        {
+          label: '紧急程度',
+          prop: 'emerType',
+          slot: true
         },
         {
           label: '需求状态',
