@@ -12,7 +12,7 @@
         <div class="edit">
           <div class="flex-flow flex flex-items edit_no">
             <div class="line-spot">
-              <i class="spot" /> <span class="staff">{{ node.name }}</span>
+              <b> <i class="spot" /> </b><span class="staff">{{ node.name }}</span>
             </div>
             <el-link
               type="primary"
@@ -444,6 +444,10 @@ export default {
     .line-spot {
       height: 58px;
       line-height: 58px;
+      b {
+        width: 9px;
+        display: inline-block;
+      }
     }
     .staff {
       display: inline-block;

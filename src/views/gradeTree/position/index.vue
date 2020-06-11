@@ -154,7 +154,7 @@
       <position-dialog
         v-if="positionDialog"
         :dialog-visible.sync="positionDialog"
-        :row="row"
+        :row.sync="row"
         :title="title"
         :is-edit="isEdit"
         :org-tree="orgTree"

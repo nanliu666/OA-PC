@@ -19,6 +19,7 @@
                 v-model="form.userId"
                 v-loadmore="loadMoreLeader"
                 placeholder="请选择组织负责人"
+                clearable
               >
                 <el-option
                   v-for="item in leaderList"
@@ -282,16 +283,10 @@ export default {
             display: true,
             filterable: true,
             multiple: true,
+            clearable: true,
             placeholder: '请选择组织负责人',
             span: 24,
-            dicData: consc,
-            rules: [
-              {
-                required: true,
-                message: '请选择组织负责人',
-                trigger: 'blur'
-              }
-            ]
+            dicData: consc
           },
           {
             label: '描述',

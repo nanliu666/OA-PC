@@ -96,6 +96,21 @@
               重新安排面试
             </el-button>
             <el-button
+              v-if="personInfo.interview === 0"
+              type="primary"
+              size="medium"
+              @click="handleSend"
+            >
+              发送面试登记表
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="loopUpInterview"
+            >
+              查看面试登记表
+            </el-button>
+            <el-button
               type="primary"
               size="medium"
               @click="handleSend"
@@ -574,6 +589,11 @@ export default {
     // this.getPersonRecord()
   },
   methods: {
+    loopUpInterview() {
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm'
+      })
+    },
     handleSend() {
       this.$message.success('发送成功')
     },

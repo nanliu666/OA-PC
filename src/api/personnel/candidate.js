@@ -88,3 +88,8 @@ export const sendOffer = (params) => {
 export const getOfferApply = (personId) => {
   return get('/user/v1/candidate/offer/apply', { personId })
 }
+/**
+ * @author guanfenda
+ * @desc 面试登记表发送接口
+ * */
+export const postRegisterSend = (params) => post('/user/v1/interview/register/send', params)
