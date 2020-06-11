@@ -27,7 +27,7 @@
     <!-- 快捷入口 -->
     <div class="quick-access">
       <div class="title-wrap">
-        <span class="title">快捷入口</span> <span>...</span>
+        <span class="title">快捷入口</span> <span><i class="el-icon-more" /></span>
       </div>
       <div class="main-wrap">
         <div class="content">
@@ -125,8 +125,8 @@ export default {
   // left: 32px;
   // top: 64px;
   height: 90vh;
-  width: 332px;
-  // margin-top: 16px;
+  width: 100%;
+
   background: #ffffff;
   overflow: auto;
 }
@@ -204,6 +204,9 @@ export default {
       font-size: 16px;
       color: #212a3f;
       line-height: 24px;
+    }
+    span {
+      cursor: pointer;
     }
   }
   //

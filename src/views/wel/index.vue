@@ -35,7 +35,9 @@ export default {
   }
   .main {
     float: left;
-    width: calc(100% - 380px);
+    width: calc(100vw - 412px);
+    // width: calc(100% - 22vw);
+
     margin-left: 16px;
   }
 }

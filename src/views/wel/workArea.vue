@@ -1,5 +1,8 @@
 <template>
-  <el-row>
+  <el-row
+    type="flex"
+    justify="center"
+  >
     <el-col :span="24">
       <div class="workArea-wrap">
         <el-row :gutter="20">
@@ -19,40 +22,27 @@
                       <p>海外拓展部市场经理罗常常常常常常海外拓展部市场经理罗常常常常常常</p>
                       <span>滞留两天</span>
                     </div>
-
-                    <span class="time-box">03-25 10:21</span>
+                    <div class="time-box">
+                      03-25 10:21
+                    </div>
                   </div>
                   <div class="item-row">
                     <div class="text-box">
-                      <p>海外拓展部市常常常常</p>
+                      <p>海外拓展部市场经理罗常常常常常常海外拓展部市场经理罗常常常常常常</p>
                       <span>滞留两天</span>
                     </div>
-
-                    <span class="time-box">03-25 10:21</span>
+                    <div class="time-box">
+                      03-25 10:21
+                    </div>
                   </div>
                   <div class="item-row">
                     <div class="text-box">
-                      <p>海外拓展部市场经理罗常常常常常常</p>
+                      <p>海外拓展常常常常部市场经理罗常常常常常常</p>
                       <span>滞留两天</span>
                     </div>
-
-                    <span class="time-box">03-25 10:21</span>
-                  </div>
-                  <div class="item-row">
-                    <div class="text-box">
-                      <p>海外拓展部市场经理罗常常常常常常常常常常常常常常常常</p>
-                      <span>滞留两天</span>
+                    <div class="time-box">
+                      03-25 10:21
                     </div>
-
-                    <span class="time-box">03-25 10:21</span>
-                  </div>
-                  <div class="item-row">
-                    <div class="text-box">
-                      <p>海外拓展部市场经理罗常常常常常常</p>
-                      <span>滞留两天</span>
-                    </div>
-
-                    <span class="time-box">03-25 10:21</span>
                   </div>
                 </div>
                 <div slot="Warning">
@@ -78,7 +68,7 @@
                       <span>安排面试</span>
                     </div>
                     <div class="detail">
-                      海外拓展部市场经理罗常常预计入…
+                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…
                     </div>
                     <div class="time">
                       03-25 10:21
@@ -90,7 +80,7 @@
                       <span>简历审核</span>
                     </div>
                     <div class="detail">
-                      海外拓展部市场经理罗常常预计入…
+                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…
                     </div>
                     <div class="time">
                       03-25 10:21
@@ -198,62 +188,61 @@ export default {
 }
 
 .todolist-wrap {
-  min-width: 506px;
+  min-width: 375px;
   height: 375px;
   background: #ffffff;
-
-  .todolist {
-    .item-row {
+  .item-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: solid 1px #eeeeee;
+    padding: 0 24px;
+    height: 43px;
+    .text-box {
       display: flex;
-      justify-content: space-between;
-      border-bottom: solid 1px #eeeeee;
-      padding: 0 24px;
-      height: 43px;
-      .text-box {
-        p {
-          font-family: PingFangSC-Regular;
-          font-size: 14px;
-          color: #13141a;
-          line-height: 43px;
-
-          height: 43px;
-          max-width: 200px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          margin: 0 20px 0 0px;
-          display: inline-block;
-          vertical-align: middle;
-        }
-        span {
-          display: inline-block;
-          background: #ff8b8a;
-          border-radius: 4px;
-          border-radius: 4px;
-          font-family: PingFangSC-Medium;
-          font-size: 14px;
-          color: #ffffff;
-          line-height: 20px;
-          padding: 3px 6px;
-        }
-        vertical-align: middle;
-        display: inline-block;
-      }
-
-      .time-box {
-        vertical-align: text-bottom;
-        font-family: ArialMT;
+      justify-self: start;
+      align-items: center;
+      width: 80%;
+      margin-right: 12px;
+      p {
+        font-family: PingFangSC-Regular;
         font-size: 14px;
-        color: #718199;
+        color: #13141a;
         line-height: 43px;
+        height: 43px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0 20px 0 0px;
       }
+      span {
+        background: #ff8b8a;
+
+        border-radius: 4px;
+        font-family: PingFangSC-Medium;
+        font-size: 14px;
+        text-align: center;
+        color: #ffffff;
+        line-height: 26px;
+        padding: 3px 6px;
+        min-width: 63px;
+        height: 26px;
+      }
+    }
+
+    .time-box {
+      vertical-align: text-bottom;
+      font-family: ArialMT;
+      font-size: 14px;
+      color: #718199;
+      line-height: 43px;
+      min-width: 80px;
     }
   }
 }
 
 // 消息中心
 .news-wrap {
-  min-width: 506px;
+  min-width: 375px;
   height: 375px;
   background: #ffffff;
   // 公共样式
@@ -273,7 +262,6 @@ export default {
     display: inline-block;
     min-width: 80px;
     display: inline-block;
-    min-width: 80px;
   }
   .detail {
     font-family: PingFangSC-Regular;
@@ -281,8 +269,7 @@ export default {
     line-height: 43px;
     display: inline-block;
     text-align: start;
-    min-width: 273px;
-    width: 400px;
+    width: 80%;
     padding-left: 24px;
     // 。。。
     overflow: hidden;
@@ -311,7 +298,6 @@ export default {
     }
     .detail {
       color: #202940;
-      // ...
     }
     .time {
       color: #000000;
