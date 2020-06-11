@@ -14,7 +14,6 @@ import { iconfontUrl, iconfontVersion } from '@/config/env'
 import i18n from './lang' // Internationalization
 import '@/styles/oa-custom/theme/index.css'
 import './styles/common.scss'
-import basicBlock from './components/basic-block/main'
 import basicContainer from './components/basic-container/main'
 import pageHeader from './components/page-header/pageHeader'
 import commonForm from './components/common-form/commonForm'
@@ -39,7 +38,6 @@ Vue.use(loadmore)
 Vue.use(Permission)
 //注册全局容器
 Vue.component('basicContainer', basicContainer)
-Vue.component('basicBlock', basicBlock)
 Vue.component('commonTable', commonTable)
 Vue.component('pageHeader', pageHeader)
 Vue.component('commonForm', commonForm)
