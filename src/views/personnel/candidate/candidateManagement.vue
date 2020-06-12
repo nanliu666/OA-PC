@@ -1,10 +1,10 @@
 <template>
   <div style="height: 100%">
-    <div class="roster-header">
-      <div class="header">
-        候选人管理
-      </div>
-      <el-dropdown @command="handleCommand">
+    <page-header title="候选人管理">
+      <el-dropdown
+        slot="rightMenu"
+        @command="handleCommand"
+      >
         <el-button
           type="primary"
           size="medium"
@@ -19,7 +19,7 @@
           <!-- <el-dropdown-item>Excel导入候选人</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
-    </div>
+    </page-header>
     <div class="state">
       <div class="on">
         <div
@@ -216,7 +216,7 @@
         </div>
       </div>
     </div>
-    <basic-container>
+    <basic-container block>
       <common-table
         ref="commonTable"
         style="width: 100%;height:100%"
@@ -1209,16 +1209,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  // padding: 0 24px;
-  .header {
-    font-weight: bold;
-    font-size: 18px;
-    padding: 14px 0 16px;
-  }
+.basic-container--block {
+  height: calc(100% - 82px - 116px);
+  min-height: calc(100% - 82px - 116px);
 }
 
 .topBtn {
