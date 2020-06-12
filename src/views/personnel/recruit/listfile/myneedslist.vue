@@ -309,13 +309,7 @@ export default {
     },
 
     handleSubmit(params) {
-      this.decorator(params)
-      setRecruitment(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-      })
+      this.getTableData(params)
     },
     jumpToDetail(id) {
       let myneeds

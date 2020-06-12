@@ -141,7 +141,9 @@ export default {
   methods: {
     getTableData(params = {}) {
       this.decorator(params)
+      this.loading = true
       getApprove(params).then((res) => {
+        this.loading = false
         this.data = res.data
         this.page.total = res.totalPage
       })
@@ -154,11 +156,7 @@ export default {
     },
 
     handleSubmit(params) {
-      this.decorator(params)
-      this.loading = true
-      getApprove(params).then(() => {
-        this.loading = false
-      })
+      this.getTableData(params)
     },
     jumpToDetail(row) {
       // 跳转审批详情

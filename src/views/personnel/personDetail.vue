@@ -388,9 +388,7 @@
                 :span="16"
                 class="value"
               >
-                {{
-                  personInfo.provinceName + '/' + personInfo.cityName
-                }}
+                {{ personInfo.provinceName + '/' + personInfo.cityName }}
               </el-col>
               <el-col
                 :span="8"
@@ -459,9 +457,7 @@
                 :span="16"
                 class="value"
               >
-                {{
-                  recruitmentChannel[personInfo.recruitment]
-                }}
+                {{ recruitmentChannel[personInfo.recruitment] }}
               </el-col>
               <el-col
                 :span="8"
