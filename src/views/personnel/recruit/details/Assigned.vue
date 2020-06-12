@@ -115,7 +115,7 @@
                 <el-input-number
                   v-model="domain.taskNum"
                   controls-position="right"
-                  :min="1"
+                  :min="0"
                   :max="Numberofpeople"
                 />
               </el-col>
