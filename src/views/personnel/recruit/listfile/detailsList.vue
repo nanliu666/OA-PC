@@ -308,7 +308,7 @@ export default {
       getMyRecruitment(params).then((res) => {
         this.loading = false
         this.data = res.data
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
     decorator(params) {

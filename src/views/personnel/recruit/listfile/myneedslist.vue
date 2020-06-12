@@ -297,7 +297,7 @@ export default {
       setRecruitment(params).then((res) => {
         this.data = res.data
         this.loading = false
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
     decorator(params) {

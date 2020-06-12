@@ -11,16 +11,16 @@
       :gutter="52"
     >
       <el-col :span="8">
-        <span class="demandSize"> 需求人数: {{ Totalnumberpeople }}</span>
+        待分配: <span id="assigned">{{ Numberofpeople }}</span>
       </el-col>
-      <el-col :span="8">
+      <!-- <el-col :span="8">
         <span class="demandSize">
           已分配: <span id="assigned">{{ Assigned }}</span></span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
           待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <el-form
@@ -95,7 +95,7 @@
 
               <el-col :span="4">
                 <el-input
-                  :value="domain.isTaskNum"
+                  :value="domain.olditem"
                   :disabled="domain.disabled"
                 />
               </el-col>
@@ -117,7 +117,6 @@
                   controls-position="right"
                   :min="1"
                   :max="Numberofpeople"
-                  @change="calWhetherBeyond"
                 />
               </el-col>
             </el-row>
@@ -163,33 +162,23 @@ export default {
   data() {
     return {
       recruitmentId: '',
-      Totalnumberpeople: 25,
-      Numberofpeople: 21,
-      Assigned: 4,
+      Totalnumberpeople: 0,
+      Numberofpeople: 0,
+      Assigned: 0,
       dynamicValidateForm: {
         users: [
           {
             personnel: '',
             name: '',
-            isTaskNum: 1,
             peopleDisabled: true,
             disabled: true,
-            entryNum: 3,
-            candidateNum: 4,
-            taskNum: 1
+            entryNum: 0,
+            candidateNum: 0,
+            taskNum: 0
           }
         ]
       },
       options: []
-    }
-  },
-  watch: {
-    recruitmentId: function(newval, oldval) {
-      if (newval !== oldval) {
-        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
-        itemArr[0].userId = null
-        this.dynamicValidateForm.users = itemArr
-      }
     }
   },
   methods: {
@@ -217,6 +206,7 @@ export default {
       queryDistribution({ recruitmentId: mentId }).then((res) => {
         if (res.length !== 0) {
           res.forEach((item) => {
+            item.olditem = item.taskNum
             item.peopleDisabled = true
             item.disabled = true
           })
@@ -233,8 +223,6 @@ export default {
       this.$emit('update:visible', false)
     },
     addDomain() {
-      this.calWhetherBeyond()
-      // 判断当前请求返回数据是否有意义
       if (
         this.dynamicValidateForm.users &&
         Object.keys(this.dynamicValidateForm.users).length === 0
@@ -248,46 +236,42 @@ export default {
       } else {
         this.dynamicValidateForm.users.push({
           userId: '',
-          taskNum: 1,
+          taskNum: 0,
           disabled: true,
           Rendering: 'Rendering'
         })
       }
     },
-    onSubmitted() {
-      let accumulation = this.calWhetherBeyond('onSubmitted')
-      if (accumulation !== this.Numberofpeople) {
-        this.$message({
-          showClose: true,
-          message: '请注意！分配需求人数要等与需求总人数',
-          type: 'error'
+    calWhetherBeyond() {
+      var total = null
+      if (this.dynamicValidateForm.users) {
+        this.dynamicValidateForm.users.forEach((item) => {
+          total += item.taskNum
         })
-      } else {
+        return total
+      }
+    },
+    onSubmitted() {
+      let total = this.calWhetherBeyond()
+      if (total === this.Totalnumberpeople) {
         let parms = {}
         parms.recruitmentId = this.recruitmentId
-        parms.users = this.dynamicValidateForm.users
+        parms.users = this.dynamicValidateForm.users.map((item) => ({
+          userId: item.userId,
+          taskNum: item.taskNum,
+          operatorType: 'Update'
+        }))
         putDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
         this.$emit('update:visible', false)
         this.$emit('getTableData')
-      }
-    },
-    calWhetherBeyond(Submitted) {
-      var total = null
-      if (typeof this.dynamicValidateForm.users !== 'undefined') {
-        this.dynamicValidateForm.users.forEach((item, index) => {
-          this.dynamicValidateForm.users[index].operatorType = 'Update'
-          total += item.taskNum
+      } else {
+        this.$message({
+          showClose: true,
+          message: '请注意！分配需求人数要等与需求总人数',
+          type: 'error'
         })
-        if (Submitted !== 'onSubmitted' && total > this.Numberofpeople) {
-          this.$message({
-            showClose: true,
-            message: '请注意！ 需求总人数不能大于待分配人数',
-            type: 'error'
-          })
-        }
-        return total
       }
     }
   }

@@ -447,7 +447,7 @@ export default {
       getAllRecruitment(params).then((res) => {
         this.loading = false
         this.data = res.data.map((item) => ({ ...item, detail: [], loading: false }))
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
 
