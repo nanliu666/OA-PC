@@ -2,7 +2,7 @@
   <el-dialog
     title="重新分配招聘需求"
     :visible="visible"
-    width="80%"
+    width="1200px"
     :modal-append-to-body="false"
     @close="handleClose"
   >
@@ -10,7 +10,7 @@
       type="flex"
       :gutter="52"
     >
-      <el-col :span="8">
+      <el-col :span="6">
         待分配: <span id="assigned">{{ Numberofpeople }}</span>
       </el-col>
       <!-- <el-col :span="8">
@@ -45,85 +45,80 @@
           <span class="department">剩余任务</span>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item
-            v-for="domain in dynamicValidateForm.users"
-            :key="domain.id"
+
+      <el-form-item
+        v-for="domain in dynamicValidateForm.users"
+        :key="domain.id"
+      >
+        <el-row
+          :gutter="6"
+          type="flex"
+        >
+          <el-col
+            v-if="domain.Rendering === 'Rendering'"
+            :span="8"
           >
-            <el-row
-              :span="24"
-              :gutter="6"
-              type="flex"
+            <el-select
+              v-model="domain.userId"
+              placeholder="请选择"
             >
-              <el-col
-                v-if="domain.Rendering === 'Rendering'"
-                :span="8"
+              <el-input
+                v-model="domain.personnel"
+                placeholder="姓名/工号"
+                @change="requeWorkList(5)"
               >
-                <el-select
-                  v-model="domain.userId"
-                  placeholder="请选择"
-                >
-                  <el-input
-                    v-model="domain.personnel"
-                    placeholder="姓名/工号"
-                    @change="requeWorkList(5)"
-                  >
-                    <i
-                      slot="prefix"
-                      class="el-input__icon el-icon-search"
-                      @click="requeWorkList(3)"
-                    />
-                  </el-input>
-                  <el-option
-                    v-for="item in options"
-                    :key="item.name"
-                    :label="item.name"
-                    :value="item.userId"
-                  />
-                </el-select>
-              </el-col>
-              <el-col
-                v-else
-                :span="8"
-              >
-                <el-input
-                  v-model="domain.name"
-                  :disabled="domain.peopleDisabled"
+                <i
+                  slot="prefix"
+                  class="el-input__icon el-icon-search"
+                  @click="requeWorkList(3)"
                 />
-              </el-col>
+              </el-input>
+              <el-option
+                v-for="item in options"
+                :key="item.name"
+                :label="item.name"
+                :value="item.userId"
+              />
+            </el-select>
+          </el-col>
+          <el-col
+            v-else
+            :span="8"
+          >
+            <el-input
+              v-model="domain.name"
+              :disabled="domain.peopleDisabled"
+            />
+          </el-col>
 
-              <el-col :span="4">
-                <el-input
-                  :value="domain.olditem"
-                  :disabled="domain.disabled"
-                />
-              </el-col>
-              <el-col :span="4">
-                <el-input
-                  :value="domain.entryNum"
-                  :disabled="domain.disabled"
-                />
-              </el-col>
-              <el-col :span="4">
-                <el-input
-                  :value="domain.candidateNum"
-                  :disabled="domain.disabled"
-                />
-              </el-col>
-              <el-col :span="4">
-                <el-input-number
-                  v-model="domain.taskNum"
-                  controls-position="right"
-                  :min="0"
-                  :max="Numberofpeople"
-                />
-              </el-col>
-            </el-row>
-          </el-form-item>
-        </el-col>
-      </el-row>
-
+          <el-col :span="4">
+            <el-input
+              :value="domain.olditem"
+              :disabled="domain.disabled"
+            />
+          </el-col>
+          <el-col :span="4">
+            <el-input
+              :value="domain.entryNum"
+              :disabled="domain.disabled"
+            />
+          </el-col>
+          <el-col :span="4">
+            <el-input
+              :value="domain.candidateNum"
+              :disabled="domain.disabled"
+            />
+          </el-col>
+          <el-col :span="4">
+            <el-input-number
+              v-model="domain.taskNum"
+              controls-position="right"
+              :min="0"
+              :max="Numberofpeople"
+            />
+          </el-col>
+        </el-row>
+      </el-form-item>
       <el-form-item>
         <el-button
           type="text"
