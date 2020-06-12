@@ -352,7 +352,7 @@ export default {
       })
     },
     getRecruitment() {
-      getRecruitmentDetail(this.recruitmentId).then((res) => {
+      getRecruitmentDetail({ recruitmentId: this.recruitmentId }).then((res) => {
         this.infoForm.companyId = res.companyId
         this.infoForm.orgId = res.orgId
         this.infoForm.jobId = res.jobId
