@@ -1,107 +1,112 @@
 <template>
-  <el-row :gutter="8">
+  <el-row
+    :gutter="8"
+    class="fill"
+  >
     <page-header title="系统字典" />
-    <el-col :span="11">
-      <basic-container>
-        <el-card class="box-card">
-          <div
-            slot="header"
-            class="clearfix"
+    <el-col
+      :span="12"
+      style="height:calc(100% - 82px)"
+    >
+      <basic-container block>
+        <div
+          slot="header"
+          class="clearfix"
+        >
+          <span>字典列表</span>
+        </div>
+        <div class="clearfix">
+          <avue-crud
+            ref="crud"
+            v-model="formParent"
+            :option="optionParent"
+            :table-loading="loading"
+            :data="dataParent"
+            :page="pageParent"
+            :before-open="beforeOpen"
+            @row-del="rowDel"
+            @row-update="rowUpdate"
+            @row-save="rowSave"
+            @row-click="handleRowClick"
+            @search-change="searchChange"
+            @search-reset="searchReset"
+            @selection-change="selectionChange"
+            @current-change="currentChange"
+            @size-change="sizeChange"
+            @refresh-change="refreshChange"
+            @on-load="onLoadParent"
           >
-            <span>字典列表</span>
-          </div>
-          <div class="clearfix">
-            <avue-crud
-              ref="crud"
-              v-model="formParent"
-              :option="optionParent"
-              :table-loading="loading"
-              :data="dataParent"
-              :page="pageParent"
-              :before-open="beforeOpen"
-              @row-del="rowDel"
-              @row-update="rowUpdate"
-              @row-save="rowSave"
-              @row-click="handleRowClick"
-              @search-change="searchChange"
-              @search-reset="searchReset"
-              @selection-change="selectionChange"
-              @current-change="currentChange"
-              @size-change="sizeChange"
-              @refresh-change="refreshChange"
-              @on-load="onLoadParent"
-            >
-              <template slot="menuLeft">
-                <el-button
-                  type="danger"
-                  size="small"
-                  icon="el-icon-delete"
-                  plain
-                  @click="handleDelete"
-                >
-                  删 除
-                </el-button>
-              </template>
-              <template
-                slot="isSealed"
-                slot-scope="{ row }"
+            <template slot="menuLeft">
+              <el-button
+                type="danger"
+                size="small"
+                icon="el-icon-delete"
+                plain
+                @click="handleDelete"
               >
-                <el-tag>{{ row.isSealed === 0 ? '否' : '是' }}</el-tag>
-              </template>
-            </avue-crud>
-          </div>
-        </el-card>
+                删 除
+              </el-button>
+            </template>
+            <template
+              slot="isSealed"
+              slot-scope="{ row }"
+            >
+              <el-tag>{{ row.isSealed === 0 ? '否' : '是' }}</el-tag>
+            </template>
+          </avue-crud>
+        </div>
       </basic-container>
     </el-col>
-    <el-col :span="13">
-      <basic-container>
-        <el-card class="box-card">
-          <div
-            slot="header"
-            class="clearfix"
+    <el-col
+      :span="12"
+      style="height:calc(100% - 82px)"
+    >
+      <basic-container block>
+        <div
+          slot="header"
+          class="clearfix"
+        >
+          <span>[{{ dictValue }}] 字典详情</span>
+        </div>
+        <div class="clearfix">
+          <avue-crud
+            ref="crudChild"
+            v-model="formChild"
+            :option="optionChild"
+            :table-loading="loadingChild"
+            :data="dataChild"
+            :page="pageChild"
+            :before-open="beforeOpenChild"
+            @row-del="rowDelChild"
+            @row-update="rowUpdateChild"
+            @row-save="rowSaveChild"
+            @search-change="searchChangeChild"
+            @search-reset="searchResetChild"
+            @selection-change="selectionChangeChild"
+            @current-change="currentChangeChild"
+            @size-change="sizeChangeChild"
+            @refresh-change="refreshChangeChild"
+            @on-load="onLoadChild"
           >
-            <span>[{{ dictValue }}] 字典详情</span>
-          </div>
-          <div class="clearfix">
-            <avue-crud
-              ref="crudChild"
-              v-model="formChild"
-              :option="optionChild"
-              :table-loading="loadingChild"
-              :data="dataChild"
-              :page="pageChild"
-              :before-open="beforeOpenChild"
-              @row-del="rowDelChild"
-              @row-update="rowUpdateChild"
-              @row-save="rowSaveChild"
-              @search-change="searchChangeChild"
-              @search-reset="searchResetChild"
-              @selection-change="selectionChangeChild"
-              @current-change="currentChangeChild"
-              @size-change="sizeChangeChild"
-              @refresh-change="refreshChangeChild"
-              @on-load="onLoadChild"
-            >
-              <template slot="menuLeft">
-                <el-button
-                  type="danger"
-                  size="small"
-                  icon="el-icon-delete"
-                  plain
-                  @click="handleDelete"
-                >
-                  删 除
-                </el-button>
-              </template>
-              <template
-                slot="isSealed"
-                slot-scope="{ row }"
+            <template slot="menuLeft">
+              <el-button
+                type="danger"
+                size="small"
+                icon="el-icon-delete"
+                plain
+                @click="handleDelete"
               >
-                <el-tag>{{ row.isSealed === 0 ? '否' : '是' }}</el-tag>
-              </template>
-            </avue-crud>
-          </div>
-        </el-card>
+                删 除
+              </el-button>
+            </template>
+            <template
+              slot="isSealed"
+              slot-scope="{ row }"
+            >
+              <el-tag>{{ row.isSealed === 0 ? '否' : '是' }}</el-tag>
+            </template>
+          </avue-crud>
+        </div>
       </basic-container>
     </el-col>
   </el-row>

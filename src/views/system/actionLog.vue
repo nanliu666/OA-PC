@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="fill">
     <page-header title="操作日志" />
-    <basic-container>
+    <basic-container block>
       <avue-crud
         ref="crud"
         :option="option"
@@ -92,7 +92,6 @@ export default {
       option: {
         ...tableOptions,
         refreshBtn: true,
-        height: 'auto',
         calcHeight: 80,
         tip: false,
         searchShow: true,
@@ -175,5 +174,9 @@ export default {
 <style lang="scss" scoped>
 /deep/ .el-form-item__label {
   line-height: 40px;
+}
+.basic-container--block {
+  height: calc(100% - 82px);
+  min-height: calc(100% - 82px);
 }
 </style>

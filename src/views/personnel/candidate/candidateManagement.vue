@@ -1,10 +1,10 @@
 <template>
   <div style="height: 100%">
-    <div class="roster-header">
-      <div class="header">
-        候选人管理
-      </div>
-      <el-dropdown @command="handleCommand">
+    <page-header title="候选人管理">
+      <el-dropdown
+        slot="rightMenu"
+        @command="handleCommand"
+      >
         <el-button
           type="primary"
           size="medium"
@@ -19,7 +19,7 @@
           <!-- <el-dropdown-item>Excel导入候选人</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
-    </div>
+    </page-header>
     <div class="state">
       <div class="on">
         <div
@@ -216,7 +216,7 @@
         </div>
       </div>
     </div>
-    <basic-container>
+    <basic-container block>
       <common-table
         ref="commonTable"
         style="width: 100%;height:100%"
@@ -365,57 +365,43 @@
           slot="interview"
           slot-scope="{ row }"
         >
-          {{
-            row.interview == 1 ? '已发送' : '未发送'
-          }}
+          {{ row.interview == 1 ? '已发送' : '未发送' }}
         </template>
         <template
           slot="approveStatus"
           slot-scope="{ row }"
         >
-          {{
-            approveStatusWord[row.approveStatus]
-          }}
+          {{ approveStatusWord[row.approveStatus] }}
         </template>
         <template
           slot="provinceCode"
           slot-scope="{ row }"
         >
-          {{
-            row.provinceName + row.cityName
-          }}
+          {{ row.provinceName + row.cityName }}
         </template>
         <template
           slot="educationalLevel"
           slot-scope="{ row }"
         >
-          {{
-            educationalDict[row.educationalLevel]
-          }}
+          {{ educationalDict[row.educationalLevel] }}
         </template>
         <template
           slot="recruitment"
           slot-scope="{ row }"
         >
-          {{
-            recruitmentChannel[row.recruitment]
-          }}
+          {{ recruitmentChannel[row.recruitment] }}
         </template>
         <template
           slot="monthSalary"
           slot-scope="{ row }"
         >
-          {{
-            row.monthSalary / 1000 + 'K'
-          }}
+          {{ row.monthSalary / 1000 + 'K' }}
         </template>
         <template
           slot="createTime"
           slot-scope="{ row }"
         >
-          {{
-            row.createTime.split(' ')[0]
-          }}
+          {{ row.createTime.split(' ')[0] }}
         </template>
         <template
           slot="handler"
@@ -496,10 +482,18 @@
                 重新安排面试
               </el-button>
               <el-button
+                v-if="row.interview === 0"
                 type="text"
-                @click="handleSend"
+                @click="handleSend(row)"
               >
                 发送面试登记表
+              </el-button>
+              <el-button
+                v-else
+                type="text"
+                @click="loopUpInterview"
+              >
+                查看面试登记表
               </el-button>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
@@ -515,9 +509,9 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>
+                  <!--                  <el-dropdown-item command>-->
+                  <!--                    下载简历-->
+                  <!--                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -806,7 +800,8 @@ import {
   getCandidateStatusStat,
   getCandidateList,
   acceptCandidateOffer,
-  changeCandidateOffer
+  changeCandidateOffer,
+  postRegisterSend
 } from '@/api/personnel/candidate'
 import { getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
@@ -986,9 +981,29 @@ export default {
     })
     this.loadData()
   },
+  activated() {
+    this.loadData()
+  },
   methods: {
-    handleSend() {
-      this.$message.success('发送成功')
+    /***
+     * @author guanfenda
+     * @desc 查看面试登记表
+     *
+     * */
+    loopUpInterview() {
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm'
+      })
+    },
+    handleSend(row) {
+      let params = {
+        recruitmentId: row.recruitmentId,
+        personId: row.personId
+      }
+      postRegisterSend(params).then(() => {
+        this.$message.success('发送成功')
+        this.loadData()
+      })
     },
     handleCheckEmploy(row) {
       let params = {
@@ -1025,7 +1040,7 @@ export default {
     },
     handleArrange(row) {
       this.arrangeDialog = true
-      this.arrangeTitle = '重新安排面试'
+      this.arrangeTitle = '安排面试'
       this.row = JSON.parse(JSON.stringify(row))
     },
     handleExport() {},
@@ -1194,16 +1209,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  // padding: 0 24px;
-  .header {
-    font-weight: bold;
-    font-size: 18px;
-    padding: 14px 0 16px;
-  }
+.basic-container--block {
+  height: calc(100% - 82px - 116px);
+  min-height: calc(100% - 82px - 116px);
 }
 
 .topBtn {

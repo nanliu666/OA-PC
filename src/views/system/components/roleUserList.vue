@@ -152,6 +152,7 @@ export default {
     onAddUser() {
       this.page.currentPage = 1
       this.onLoad(this.page)
+      this.$emit('upDate')
     },
     // 点击添加
     onClickAdd() {

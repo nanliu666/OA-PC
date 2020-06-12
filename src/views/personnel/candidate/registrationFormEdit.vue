@@ -263,7 +263,6 @@
         保存
       </el-button>
       <el-button
-        type="info"
         size="medium"
         @click="close"
       >
@@ -427,7 +426,7 @@ export default {
   color: #202940;
   line-height: 28px;
   font-weight: bold;
-  margin-top: 14px;
+  padding-top: 14px;
 }
 
 .person {

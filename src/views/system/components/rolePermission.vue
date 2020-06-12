@@ -350,6 +350,8 @@ export default {
   .scroll-item {
     border-right: 1px solid #f2f2f2;
     min-width: 180px;
+    overflow: hidden;
+    overflow-y: auto;
 
     &.scroll-tree {
       min-width: 220px;

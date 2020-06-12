@@ -12,10 +12,10 @@
             <div class="action-name">
               {{ item.operatorName }} {{ item.content }}
             </div>
-            <div
+            <!-- <div
               class="action-content"
               v-html="item.remark"
-            />
+            /> -->
           </template>
         </el-timeline-item>
       </el-timeline>

@@ -1,86 +1,23 @@
 <template>
   <div>
     <basic-container>
-      <div v-loading="loading">
-        <el-row
-          :gutter="20"
-          type="flex"
+      <common-table
+        class="progress"
+        :loading="loading"
+        :data="data"
+        :columns="columns"
+      >
+        <template
+          slot="nodeData"
+          slot-scope="{ row }"
         >
-          <el-col
-            :span="5"
-            class="internalDetails"
-          >
-            招聘人员
-          </el-col>
-          <el-col
-            :span="5"
-            class="internalDetails"
-          >
-            任务数
-          </el-col>
-          <el-col
-            :span="5"
-            class="internalDetails"
-          >
-            入职数
-          </el-col>
-          <el-col
-            :span="5"
-            class="internalDetails"
-          >
-            候选人数
-          </el-col>
-          <el-col
-            :span="4"
-            class="internalDetails noborder "
-          >
-            招聘进度
-          </el-col>
-        </el-row>
-        <el-row v-if="management === 'noAvailable'">
-          <el-col class="taskInformation">
-            {{ '暂无数据' }}
-          </el-col>
-        </el-row>
-
-        <el-row
-          v-for="item in management"
-          :key="item.userId"
-          :gutter="20"
-          type="flex"
-        >
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.name }}
-          </el-col>
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.taskNum }}
-          </el-col>
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.entryNum }}
-          </el-col>
-          <el-col
-            :span="5"
-            class="taskInformation"
-          >
-            {{ item.candidateNum }}
-          </el-col>
-          <el-col
-            :span="4"
-            class="taskInformation isBlue  noborder"
-          >
-            {{ getPercent(item.taskNum, item.entryNum) }}
-          </el-col>
-        </el-row>
-      </div>
+          <el-progress
+            class="static"
+            :class="{ empty: row.nodeData === 0 }"
+            :percentage="row.nodeData"
+          />
+        </template>
+      </common-table>
     </basic-container>
   </div>
 </template>
@@ -104,7 +41,31 @@ export default {
       status: '招聘中',
       activeName: 'inrecruitment',
       row: {},
-      data: []
+      data: [],
+      columns: [
+        {
+          label: '招聘人员',
+          prop: 'name'
+        },
+        {
+          label: '任务数',
+          prop: 'taskNum'
+        },
+        {
+          label: '入职数',
+          prop: 'entryNum'
+        },
+        {
+          label: '候选人数',
+          prop: 'candidateNum'
+        },
+        {
+          label: '招聘进度',
+          prop: 'nodeData',
+          slot: true
+        }
+      ],
+      nodeData: null
     }
   },
   computed: {
@@ -119,21 +80,19 @@ export default {
     recruitmentSituation() {
       queryDistribution({ recruitmentId: this.$route.query.id }).then((res) => {
         this.loading = false
-        // 判断当前数组是否为空
-        if (res == null || res.length == 0) {
-          this.management = 'noAvailable'
-        } else {
-          this.management = res
-        }
+        this.data = res.map((item) => ({
+          ...item,
+          nodeData: this.getPercent(item.taskNum, item.entryNum)
+        }))
       })
     },
     getPercent(curNum, totalNum) {
       curNum = parseFloat(curNum)
       totalNum = parseFloat(totalNum)
       if (isNaN(curNum) || isNaN(totalNum)) {
-        return '-'
+        return 0
       }
-      return Math.round((totalNum / curNum) * 10000) / 100 + '%'
+      return Math.round((totalNum / curNum) * 10000) / 100
     }
   }
 }
@@ -172,5 +131,26 @@ export default {
 
 .isBlue {
   color: #207efa !important;
+}
+/deep/ .empty {
+  .el-progress__text {
+    color: red;
+  }
+}
+/deep/ .static {
+  .el-progress__text {
+    float: left;
+    margin-left: 0px !important;
+    margin-right: 10px;
+  }
+  .el-progress-bar {
+    margin-top: 5px;
+  }
+}
+/deep/ .progress {
+  .el-progress--line {
+    display: flex;
+    flex-direction: row-reverse;
+  }
 }
 </style>

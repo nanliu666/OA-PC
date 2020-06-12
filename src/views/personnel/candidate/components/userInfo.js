@@ -1,3 +1,13 @@
+let sixList = [
+  {
+    label: '男',
+    value: 1
+  },
+  {
+    label: '女',
+    value: 0
+  }
+]
 export let infoForm = {
   basicAttrs: [
     {
@@ -20,7 +30,7 @@ export let infoForm = {
     {
       attrId: '2', // ：key唯一值
       attrName: '性别：', // lable
-      value: '', // 单选框多选框的potion的值
+      value: sixList, // 单选框多选框的potion的值
       status: false, // 是否设置规则
       dataType: 1, // 当inType=1时生效
       inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
@@ -476,16 +486,7 @@ export let certificate = {
     }
   ]
 }
-let sixList = [
-  {
-    label: '男',
-    value: 1
-  },
-  {
-    label: '女',
-    value: 0
-  }
-]
+
 export let personInfo = {
   basicAttrs: [
     {

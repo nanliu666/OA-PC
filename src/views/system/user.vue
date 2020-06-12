@@ -2,7 +2,7 @@
   <div style="height:100%">
     <page-header title="用户管理" />
     <el-row
-      style="height: calc(100% - 80px);"
+      style="height: calc(100% - 82px);"
       :gutter="8"
     >
       <el-col
