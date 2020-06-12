@@ -253,7 +253,7 @@ export default {
     },
     onSubmitted() {
       let total = this.calWhetherBeyond()
-      if (total === this.Totalnumberpeople) {
+      if (total === this.Numberofpeople) {
         let parms = {}
         parms.recruitmentId = this.recruitmentId
         parms.users = this.dynamicValidateForm.users.map((item) => ({
