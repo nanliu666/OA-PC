@@ -197,9 +197,9 @@
                 :push="2"
               >
                 <el-form-item label="工作地址:">
-                  <span class="info-item-value">{{
-                    personInfo.workProviceName + personInfo.workCityName + personInfo.address
-                  }}</span>
+                  <span class="info-item-value">
+                    {{ personInfo.workProviceName + personInfo.workCityName + personInfo.address }}
+                  </span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -207,9 +207,9 @@
                 :push="2"
               >
                 <el-form-item label="工作城市:">
-                  <span class="info-item-value">{{
-                    personInfo.workProviceName + personInfo.workCityName
-                  }}</span>
+                  <span class="info-item-value">
+                    {{ personInfo.workProviceName + personInfo.workCityName }}
+                  </span>
                 </el-form-item>
               </el-col>
               <!-- <el-col :span="10" :push="2">
@@ -301,12 +301,17 @@ export default {
       getPersonInfo({ personId: this.$route.params.personId }).then((res) => {
         Object.assign(this.personInfo, res)
       })
-      getOfferApply({ personId: this.$route.params.personId }).then((res) => {
+      getOfferApply({ id: this.$route.query.applyId }).then((res) => {
         Object.assign(this.personInfo, res)
       })
     },
     confirmEntry() {
-      this.$router.push('/personnel/entry/confirmEntry/' + this.personInfo.personId)
+      this.$router.push(
+        '/personnel/entry/confirmEntry/' +
+          this.personInfo.personId +
+          '?applyId=' +
+          this.$route.query.applyId
+      )
     }
   }
 }

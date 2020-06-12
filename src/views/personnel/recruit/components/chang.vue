@@ -141,7 +141,7 @@ export default {
     ...mapGetters(['userId'])
   },
   mounted() {
-    getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
+    getRecruitmentDetail(this.$route.query.id).then((res) => {
       this.Status = res
     })
   },
