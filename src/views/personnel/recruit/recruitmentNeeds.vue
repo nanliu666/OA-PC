@@ -251,7 +251,7 @@ export default {
       }
     },
     ReplicationCache(id) {
-      getRecruitmentDetail({ recruitmentId: id }).then((res) => {
+      getRecruitmentDetail(id).then((res) => {
         this.infoForm = res
       })
     },
