@@ -188,16 +188,16 @@
               >
                 <el-form-item
                   v-show="readonly"
-                  label="公司邮箱:"
+                  label="邮箱:"
                 >
-                  <span>{{ perosonnalInfo.email }}</span>
+                  <span>{{ perosonnalInfo.userEmail }}</span>
                 </el-form-item>
                 <el-form-item
                   v-show="!readonly"
-                  label="公司邮箱:"
+                  label="邮箱:"
                   prop="email"
                 >
-                  <el-input v-model="perosonnalInfo.email" />
+                  <el-input v-model="perosonnalInfo.userEmail" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -318,7 +318,7 @@
         </div>
       </div>
       <!-- 紧急联系人列表 -->
-      <emergency-members />
+      <emergency-members :userid="userInfo.user_id" />
     </div>
   </div>
 </template>

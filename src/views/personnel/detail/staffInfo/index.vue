@@ -139,7 +139,7 @@ export default {
     }
   },
   mounted() {
-    this.box = document.querySelector('#avue-view')
+    this.box = document.querySelector('.staff-detail-info')
   },
   methods: {
     goAnchor(selector, index, event) {

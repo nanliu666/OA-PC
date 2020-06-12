@@ -186,9 +186,7 @@ export default {
     },
     getTenant() {
       let domain =
-        process.env.NODE_ENV === 'development'
-          ? 'www.bestgrand.com.cn'
-          : window.location.href.split('/#/')[0]
+        process.env.NODE_ENV === 'development' ? 'www.bestgrand.com.cn' : window.location.host
       // let domain =
       //   process.env.NODE_ENV === 'development'
       //     ? 'http://122.112.190.144'
