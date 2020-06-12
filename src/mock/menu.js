@@ -549,18 +549,6 @@ const res = {
             icon: 'iconfont iconicon_doc'
           },
           {
-            menuId: '36',
-            menuName: '转正管理',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'personnel_editPerson',
-            alias: 'editPerson',
-            path: '/personnel/administration/workerlist',
-            icon: 'iconfont iconicon_doc'
-          },
-
-          {
             menuId: '12613143696669094444444444',
             menuName: '需求详情',
             menuType: 'Menu',
@@ -660,19 +648,6 @@ const res = {
                 path: '/personnel/leave/leaveList',
                 icon: 'iconfont iconicon_subordinate',
                 dataPrivileges: []
-              },
-              {
-                menuId: '802',
-                menuName: '离职申请',
-                menuType: 'Menu',
-                isOwn: 1,
-                isShow: 1,
-                code: 'org_management',
-                alias: 'orgManagement',
-                path: '/personnel/leave/applyLeave',
-                icon: 'iconfont iconicon_subordinate',
-                dataPrivileges: [],
-                children: []
               },
               {
                 menuId: '803',

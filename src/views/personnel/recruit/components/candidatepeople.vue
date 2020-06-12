@@ -12,7 +12,7 @@
           <el-button
             type="text"
             size="medium"
-            @click="jumpToDetail(row.personId)"
+            @click="jumpToDetail(row)"
           >
             {{ row.name }}
           </el-button>
@@ -115,8 +115,8 @@ export default {
       })
       return typeLevel
     },
-    jumpToDetail(personId) {
-      this.$router.push('/personnel/detail/' + personId)
+    jumpToDetail(row) {
+      this.$router.push('/personnel/detail/' + row.personId)
     }
   }
 }
