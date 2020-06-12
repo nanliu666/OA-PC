@@ -373,7 +373,7 @@
               >
                 {{ personInfo.major }}
               </el-col>
-              <el-col
+              <!-- <el-col
                 :span="8"
                 class="key"
               >
@@ -384,13 +384,13 @@
                 class="value"
               >
                 <template v-for="item in personInfo.tags">
-                  <!-- :style="{color:item.color}" -->
                   <span
                     :key="item.tagId"
+                    :style="{color:item.color}"
                     class="tag-class"
                   >{{ item.name }}</span>
                 </template>
-              </el-col>
+              </el-col> -->
               <el-col
                 :span="8"
                 class="key"
