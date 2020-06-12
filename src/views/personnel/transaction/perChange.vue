@@ -279,7 +279,7 @@ export default {
       //   table设置
       tableConfig: {
         showIndexColumn: false,
-        enableMultiSelect: true,
+        enableMultiSelect: false,
         enablePagination: true,
         uniqueKey: 'userId'
       },
