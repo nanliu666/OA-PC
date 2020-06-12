@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="staff-detail-info">
     <page-header
       title="个人信息"
       :back="goBack"
@@ -160,8 +160,34 @@ export default {
         activeTab: 'first'
       },
       circleUrl: '',
-      allInfo: {}
+      allInfo: {},
+      box: null
     }
+  },
+  mounted() {
+    let _this = this
+    this.box = document.querySelector('.staff-detail-info')
+    // 监听这个dom的scroll事件
+    this.box.addEventListener(
+      'scroll',
+      () => {
+        let siderBar = document.querySelector('.sidebar-erea')
+        if (_this.box.scrollTop - _this.topValue > 0) {
+          if (_this.box.scrollTop >= 240) {
+            siderBar.style.position = 'fixed'
+            siderBar.style.top = 100 + 'px'
+            siderBar.style.right = 20 + 'px'
+          }
+        } else {
+          if (_this.box.scrollTop <= 240) {
+            siderBar.style.position = 'relative'
+            siderBar.style.top = 0
+          }
+        }
+        _this.topValue = _this.box.scrollTop
+      },
+      false
+    )
   },
   created() {
     this.getBasicInfo()
@@ -244,6 +270,11 @@ export default {
     padding: 0 15px;
     color: #202940;
   }
+}
+.staff-detail-info {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .staff-info-container {
   font-family: 'PingFangSC-Semibold;';
