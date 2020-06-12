@@ -244,7 +244,7 @@ export default {
   background: #ffffff;
   // 公共样式
   .title {
-    min-width: 84px;
+    min-width: 100px;
     font-family: PingFangSC-Medium;
     font-size: 14px;
     line-height: 43px;
