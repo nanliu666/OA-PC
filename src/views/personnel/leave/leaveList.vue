@@ -429,7 +429,8 @@ export default {
       // 表格配置
       tableConfig: {
         showIndexColumn: false,
-        enableMultiSelect: true,
+        // 选择列先去除
+        // enableMultiSelect: true,
         enablePagination: true,
         uniqueKey: 'userId',
         showHandler: true,
