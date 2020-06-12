@@ -145,12 +145,12 @@
           </template>
           <!-- 离职日期 -->
           <template
-            slot="lastDate"
+            slot="leaveDate"
             slot-scope="{ row }"
           >
             <div>
-              <span>{{ row.lastDate }}</span>
-              <span v-if="isWaitLeave">
+              <span>{{ row.leaveDate }}</span>
+              <span v-if="row.leaveDate">
                 <el-tag
                   type="info"
                   size="small"
@@ -389,7 +389,7 @@ export default {
         {
           label: '离职日期',
           align: 'center',
-          prop: 'lastDate',
+          prop: 'leaveDate',
           slot: true,
           width: '150px'
         },
