@@ -1,28 +1,26 @@
 <template>
-  <div style="height:100%">
+  <div class="fill">
     <page-header title="用户管理" />
     <el-row
       style="height: calc(100% - 82px);"
       :gutter="8"
     >
       <el-col
-        style="height:100%"
+        class="fill"
         :xs="9"
         :sm="7"
         :md="6"
       >
-        <basic-container
-          block
-          style="padding-left:0;"
-        >
+        <basic-container block>
           <el-tabs
             v-model="activeTabName"
-            style="height:100%;"
+            class="fill"
           >
             <el-tab-pane
               v-loading="treeLoading"
               label="组织架构"
               name="orgTree"
+              class="fill"
             >
               <el-input
                 v-model="treeSearch"
@@ -50,7 +48,7 @@
             </el-tab-pane>
             <el-tab-pane
               name="tags"
-              style="height:100%"
+              class="fill"
             >
               <span slot="label">
                 标签
@@ -170,5 +168,15 @@ export default {
 /deep/ .el-tabs__content {
   height: calc(100% - 55px);
   overflow: auto;
+}
+/deep/ .basic-container--block {
+  height: 100%;
+  min-height: 100%;
+  > .el-card {
+    height: 100%;
+    > .el-card__body {
+      height: 100%;
+    }
+  }
 }
 </style>

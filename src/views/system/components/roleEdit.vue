@@ -128,6 +128,15 @@ export default {
         callback()
       }
     }
+    const change = (rule, value, callback) => {
+      setTimeout(() => {
+        if (!this.form.type) {
+          callback(new Error('请选择关联职位'))
+        } else {
+          callback()
+        }
+      }, 0)
+    }
     return {
       jobTree: [],
       noJobRTree: [],
@@ -136,7 +145,7 @@ export default {
       form: {
         roleId: '',
         roleName: '',
-        type: 'Job',
+        type: '',
         remark: '',
         positions: '',
         jobs: []
@@ -169,7 +178,8 @@ export default {
             rules: [
               {
                 required: true,
-                message: '请选择关联类型',
+                // message: '请选择关联类型',
+                validator: change,
                 trigger: 'change'
               }
             ],
@@ -302,6 +312,7 @@ export default {
     },
     'form.type': {
       handler(val) {
+        this.form.type = val
         const positionColumn = this.findObject(this.option.column, 'positions')
         const jobColumn = this.findObject(this.option.column, 'jobs')
         if (val === 'Position') {
@@ -315,7 +326,8 @@ export default {
           positionColumn.display = false
         }
       },
-      immediate: true
+      immediate: true,
+      deep: true
     },
     jobs: {
       handler(val) {
@@ -335,8 +347,7 @@ export default {
           positionColumn.dicData = val
         }
       },
-      immediate: true,
-      deep: true
+      immediate: true
     },
     'form.jobs': {
       // 清空关联职位的校验

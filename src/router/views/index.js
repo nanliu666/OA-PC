@@ -1,6 +1,7 @@
 import Layout from '@/page/index/'
 import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
 import demoRoutes from './demo'
+import todo from './todo'
 export default [
   {
     path: '/wel',
@@ -95,5 +96,6 @@ export default [
       }
     ]
   },
+  ...todo,
   ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
 ]

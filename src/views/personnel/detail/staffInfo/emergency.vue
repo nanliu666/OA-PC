@@ -164,6 +164,12 @@ import { deepClone } from '@/util/util'
 import { isMobile, validateName } from '@/util/validate'
 let curItem = {}
 export default {
+  props: {
+    userid: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       emergencyInfo: [],
@@ -261,7 +267,7 @@ export default {
         if (isPass) {
           if (this.type == 'add') {
             let params = {
-              userId: this.$route.params.userId,
+              userId: this.$route.params.userId || this.userid,
               name: item.name,
               phone: item.phone,
               relationship: item.relationship
@@ -291,7 +297,7 @@ export default {
     },
     getBasicInfo() {
       let params = {
-        userId: this.$route.params.userId
+        userId: this.$route.params.userId || this.userid
       }
       getStaffEmerInfo(params).then((res) => {
         this.emergencyInfo = res

@@ -153,7 +153,10 @@ export default {
       getAppProcess(params).then((res) => {
         let list = []
         this.filerData(res.nodes, list)
-        list.map((it) => (it.isEdit = false))
+        list.map((it) => {
+          it.isEdit = false
+          it.editname = it.name
+        })
 
         this.initData = res
         this.note = res.note

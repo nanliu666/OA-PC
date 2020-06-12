@@ -513,10 +513,11 @@
             >
               <!-- 自定义图标 -->
               <template slot="icon">
+                <!-- :class="[{ active: index <= activeStep }, { cancel: isCancel && index == 0 }]" -->
                 <div>
                   <div
                     class="icon "
-                    :class="[{ active: index <= activeStep }, { cancel: isCancel && index == 0 }]"
+                    :class="iconClass(index)"
                   />
                 </div>
               </template>
@@ -531,7 +532,11 @@
                 <div class="description-box">
                   <div>{{ item.userName }}</div>
                   <div>{{ item.approveTime }}</div>
-                  <div v-if="!isCancel && index != 0 && index == activeStep && !isShowBtns">
+                  <div
+                    v-if="
+                      !isCancel && index != 0 && index == activeStep && !isShowBtns && !isReject
+                    "
+                  >
                     <div
                       class="isUrge"
                       @click="handelUrge(item)"
@@ -888,6 +893,37 @@ export default {
         return true
       }
       return false
+    },
+    // iconClass
+    iconClass() {
+      // 已撤回
+      if (this.isCancel) {
+        return function(index) {
+          // 第一个显示红色
+          if (index === 0) {
+            return 'cancel'
+          }
+          return ''
+        }
+      }
+      // 已拒绝
+      else if (this.isReject) {
+        return function(index) {
+          if (index < this.activeStep) {
+            return 'active'
+          } else if (index == this.activeStep) {
+            return 'reject'
+          } else {
+            return ''
+          }
+        }
+      } else {
+        return function(index) {
+          if (index <= this.activeStep) {
+            return 'active'
+          }
+        }
+      }
     },
     ...mapGetters(['userId'])
   },
@@ -1269,7 +1305,10 @@ export default {
   .active {
     background: #368afa;
   }
-  .active.cancel {
+  .cancel {
+    background: red;
+  }
+  .reject {
     background: red;
   }
 }
