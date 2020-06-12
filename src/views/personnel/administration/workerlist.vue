@@ -323,7 +323,6 @@ export default {
       if (params.jobs) {
         params.jobs = [params.jobs]
       }
-
       return params
     },
 
@@ -357,9 +356,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.edge {
+/deep/ .edge {
   position: absolute;
   right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 
 .isSelect {

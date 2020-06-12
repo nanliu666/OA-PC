@@ -572,10 +572,12 @@ export default {
   font-size: 18px;
 }
 
-.resetEdge {
+/deep/ .resetEdge {
   position: absolute;
-  right: 62px;
-  margin-top: 3px;
+  right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 
 /deep/ .el-table__expanded-cell[class*='cell'] {
