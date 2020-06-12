@@ -318,7 +318,7 @@
         </div>
       </div>
       <!-- 紧急联系人列表 -->
-      <emergency-members />
+      <emergency-members :userid="userInfo.user_id" />
     </div>
   </div>
 </template>
