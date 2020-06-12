@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="分配招聘需求"
+    title="重新分配招聘需求"
     :visible="visible"
     width="80%"
     :modal-append-to-body="false"
@@ -49,7 +49,7 @@
         <el-col :span="24">
           <el-form-item
             v-for="domain in dynamicValidateForm.users"
-            :key="domain.key"
+            :key="domain.id"
           >
             <el-row
               :span="24"
@@ -123,6 +123,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-form-item>
         <el-button
           type="text"
@@ -151,6 +152,7 @@
 <script>
 import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
+import { createUniqueID } from '@/util/util'
 export default {
   name: 'Assigned',
   props: {
@@ -168,6 +170,7 @@ export default {
       dynamicValidateForm: {
         users: [
           {
+            id: createUniqueID(),
             personnel: '',
             name: '',
             peopleDisabled: true,
@@ -259,7 +262,7 @@ export default {
         parms.users = this.dynamicValidateForm.users.map((item) => ({
           userId: item.userId,
           taskNum: item.taskNum,
-          operatorType: 'Update'
+          operatorType: this.calId(item.id)
         }))
         putDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
@@ -272,6 +275,13 @@ export default {
           message: '请注意！分配需求人数要等与需求总人数',
           type: 'error'
         })
+      }
+    },
+    calId(id) {
+      if (id) {
+        return 'Update'
+      } else {
+        return 'Add'
       }
     }
   }

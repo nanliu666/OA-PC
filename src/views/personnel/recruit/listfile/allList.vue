@@ -410,7 +410,6 @@ export default {
   created() {
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
   },
   mounted() {
@@ -543,7 +542,6 @@ export default {
     recruitmentSituation(row) {
       if (!row.detail || row.detail.length === 0) {
         row.loading = true
-
         queryDistribution({ recruitmentId: row.id }).then((res) => {
           row.detail = res
           row.loading = false
