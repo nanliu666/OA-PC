@@ -63,8 +63,8 @@
       <el-row>
         <el-col :span="24">
           <el-form-item
-            v-for="domain in dynamicValidateForm.users"
-            :key="domain.id"
+            v-for="user in dynamicValidateForm.users"
+            :key="user.id"
           >
             <el-row
               :span="24"
@@ -72,7 +72,7 @@
             >
               <el-col :span="12">
                 <el-select
-                  v-model="domain.userId"
+                  v-model="user.userId"
                   placeholder="请选择"
                 >
                   <el-input
@@ -97,7 +97,7 @@
               </el-col>
               <el-col :span="12">
                 <el-input-number
-                  v-model="domain.taskNum"
+                  v-model="user.taskNum"
                   controls-position="right"
                   :min="1"
                   :max="Numberofpeople"
@@ -107,7 +107,7 @@
               <el-button
                 v-show="isDelete"
                 type="text"
-                @click.prevent="removeDomain(domain)"
+                @click.prevent="removeUsers(user)"
               >
                 <i class="el-icon-delete" />
               </el-button>
@@ -235,7 +235,7 @@ export default {
         id: createUniqueID()
       })
     },
-    removeDomain(item) {
+    removeUsers(item) {
       let index = this.dynamicValidateForm.users.indexOf(item)
       if (index !== -1) {
         this.dynamicValidateForm.users.splice(index, 1)
