@@ -41,7 +41,7 @@ export let NewRequirement = {
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择工作性质', // 提示必填提示
       props: 'workProperty',
-      rules: [{ required: true, message: '请选择招聘单位', trigger: 'blur' }]
+      rules: [{ required: true, message: '请选择工作性质', trigger: 'blur' }]
     },
     {
       attrId: '6', // ：key唯一值
@@ -69,7 +69,7 @@ export let NewRequirement = {
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择职位', // 提示必填提示
       props: 'jobId',
-      rules: [{ required: true, message: '请选择输入需求人数', trigger: 'blur' }]
+      rules: [{ required: true, message: '请选择输入招聘职位', trigger: 'blur' }]
     },
     {
       attrId: '8', // ：key唯一值
@@ -83,7 +83,7 @@ export let NewRequirement = {
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择发布时状态', // 提示必填提示
       props: 'joinDate',
-      rules: [{ required: true, message: '请选择招聘单位', trigger: 'blur' }]
+      rules: [{ required: true, message: '请选择到岗日期', trigger: 'blur' }]
     },
     {
       attrId: '4', // ：key唯一值
@@ -120,8 +120,8 @@ export let NewRequirement = {
       dataType: 1, // 当inType=1时生效
       inType: 12, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请输入', // 提示必填提示
-      props: 'maxSalary',
-      propscomplex: 'minSalary'
+      props: 'minSalary',
+      propscomplex: 'maxSalary'
     },
     {
       attrId: '12', // ：key唯一值
