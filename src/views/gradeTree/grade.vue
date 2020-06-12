@@ -965,25 +965,28 @@ export default {
     },
     sort() {
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
-      let params = []
-      nodeDataArray.map((it) => {
-        let data = {
-          parentId: it.parent,
-          id: it.id,
-          name: it.name,
-          type: it.type
-          // sort: it.parent || 0
+      let nodeObj = {}
+      nodeDataArray.forEach((item) => {
+        if (nodeObj[item.parent]) {
+          nodeObj[item.parent].push(item)
+        } else {
+          nodeObj[item.parent] = [item]
         }
-        params.filter((item) => {
-          if (item.parentId === it.parentId) {
-            data.sort = item.sort + 1
-          }
-        })
-        data.sort = data.sort ? data.sort : 1
-        params.push(data)
       })
+      let list = []
+      for (const key in nodeObj) {
+        list.push(
+          ...nodeObj[key].map((item, index) => ({
+            parentId: item.parent,
+            id: item.id,
+            name: item.name,
+            type: item.type,
+            sort: index + 1
+          }))
+        )
+      }
       this.loading = true
-      postSort(params)
+      postSort(list)
         .then(() => {
           this.loading = false
           this.$message.success('排序成功')

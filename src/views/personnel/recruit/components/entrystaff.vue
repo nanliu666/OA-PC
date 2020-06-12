@@ -121,6 +121,7 @@ export default {
   methods: {
     jumpToDetail(row) {
       this.$router.push('/personnel/detail/' + row.userId)
+      // this.$router.push('/personnel/detail/' + row.personId)
     },
     getData() {
       getRecruitmentDetail(this.$route.query.id).then((res) => {
