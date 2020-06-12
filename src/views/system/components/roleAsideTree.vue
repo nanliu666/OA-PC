@@ -21,6 +21,7 @@
       :default-expanded-keys="[currentId]"
       :highlight-current="true"
       :filter-node-method="filterNode"
+      @node-click="node"
     >
       <div
         slot-scope="{ node, data }"
@@ -64,6 +65,10 @@
 export default {
   name: 'AsideTree',
   props: {
+    groupId: {
+      type: String,
+      default: ''
+    },
     showMore: {
       type: Boolean,
       default: true
@@ -96,7 +101,8 @@ export default {
   },
   data() {
     return {
-      searchInput: ''
+      searchInput: '',
+      cateId: ''
     }
   },
   watch: {
@@ -115,6 +121,17 @@ export default {
     }
   },
   methods: {
+    /**
+     * @author guanfenda
+     * @desc 节点选中
+     *
+     * */
+    node(data) {
+      if (!data.roleNum) {
+        this.cateId = data.cateId
+        this.$emit('update:groupId', this.cateId)
+      }
+    },
     filterNode(value, data) {
       return data[this.props.label].indexOf(value) !== -1
     },
