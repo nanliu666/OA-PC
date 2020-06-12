@@ -691,7 +691,7 @@ export default {
         return
       }
       getRecruitmentDetail(this.$route.query.recruitmentId).then((res) => {
-        Object.assign(this.personId, {
+        Object.assign(this.personInfo, {
           recruitmentId: res.recruitmentId,
           jobName: res.jobName,
           orgName: res.orgName

@@ -146,7 +146,7 @@ export default {
   },
   methods: {
     getData() {
-      getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
+      getRecruitmentDetail(this.$route.query.id).then((res) => {
         this.user = res
         this.childData = res
       })
