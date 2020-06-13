@@ -226,6 +226,14 @@ export default {
         })
       ).then((res) => {
         if (res.includes(false)) return
+        if (
+          this.infoForm.maxSalary &&
+          this.infoForm.minSalary &&
+          Number(this.infoForm.maxSalary) <= Number(this.infoForm.minSalary)
+        ) {
+          this.$message.error('最大薪资不可小于最小薪资范围')
+          return
+        }
         this.$refs['apprForm'].validate((valid) => {
           if (valid) {
             this.infoForm.userId = this.userId
