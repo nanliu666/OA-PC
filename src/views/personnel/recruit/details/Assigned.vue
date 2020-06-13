@@ -158,6 +158,7 @@ export default {
   },
   data() {
     return {
+      jumpnot: null,
       recruitmentId: '',
       Totalnumberpeople: 0,
       Numberofpeople: 0,
@@ -186,7 +187,8 @@ export default {
       this.handleClose()
     },
     async init(row) {
-      let { id, entryNum, needNum } = row
+      let { id, entryNum, needNum, jumpnot } = row
+      this.jumpnot = jumpnot
       this.recruitmentId = id
       this.Totalnumberpeople = needNum
       this.Assigned = entryNum
@@ -219,6 +221,9 @@ export default {
         this.dynamicValidateForm.users = itemArr
       }
       this.$emit('update:visible', false)
+      if (this.jumpnot === 'yes') {
+        this.$emit('dataJump')
+      }
     },
     addDomain() {
       if (
