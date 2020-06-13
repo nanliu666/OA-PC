@@ -181,13 +181,13 @@ export default {
       form.basicAttrs[index].value = dict
     },
     getUseInformation() {
-      let params = {
-        userId: this.userId
+      if (this && this.userId) {
+        getStaffBasicInfo({ userId: this.userId }).then((res) => {
+          this.infoForm.companyName = res.companyName
+          this.infoForm.companyId = res.companyId
+        })
       }
-      getStaffBasicInfo(params).then((res) => {
-        this.infoForm.companyName = res.companyName
-        this.infoForm.companyId = res.companyId
-      })
+
       // 页面初始化
       getOrganizationCompany({ parentOrgId: 0 }).then((res) => {
         this.dataFilter(res, this.NewRequirement, 'orgId', 'orgName', 'orgId')
