@@ -461,16 +461,10 @@ export default {
       this.getTableData(params)
     },
     jumpToDetail(row) {
-      let { id, status } = row
-      let rotate
-      if (row.status === 'Handled') {
-        rotate = 'allHandled'
-      } else {
-        rotate = 'allUnHandle'
-      }
+      let { id } = row
       this.$router.push({
         path: '/personnel/recruit/specificPage',
-        query: { id: id, status: status, rotate: rotate }
+        query: { id: id, status: 'aRequirements' }
       })
     },
     currentPageChange(param) {
