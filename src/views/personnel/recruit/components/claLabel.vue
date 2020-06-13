@@ -1,29 +1,22 @@
 <template>
-  <div>
-    <template v-if="emertype === 'Super'">
-      <el-tag type="danger">
+  <div class="claLabel">
+    <template v-if="emertype === 'suit' || emertype === 'common'">
+      <el-tag
+        size="medium"
+        type="info"
+      >
         {{ calEmerType(emertype) }}
       </el-tag>
     </template>
 
-    <template v-else-if="emertype === 'suit'">
-      <el-tag type="info">
+    <template v-else-if="emertype === 'urgent' || emertype === 'Super'">
+      <el-tag
+        type="danger"
+        size="medium"
+      >
         {{ calEmerType(emertype) }}
       </el-tag>
     </template>
-
-    <template v-else-if="emertype === 'urgent'">
-      <el-tag type="danger">
-        {{ calEmerType(emertype) }}
-      </el-tag>
-    </template>
-
-    <template v-else-if="emertype === 'common'">
-      <el-tag type="info">
-        {{ calEmerType(emertype) }}
-      </el-tag>
-    </template>
-
     <template v-else />
   </div>
 </template>
@@ -72,5 +65,12 @@ export default {
   color: #718199;
   line-height: 18px;
   display: block;
+}
+
+.claLabel {
+  /deep/ .el-tag {
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>

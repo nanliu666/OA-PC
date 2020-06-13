@@ -308,7 +308,7 @@ export default {
       getMyRecruitment(params).then((res) => {
         this.loading = false
         this.data = res.data
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
     decorator(params) {
@@ -371,9 +371,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.resetEdge {
+/deep/ .resetEdge {
   position: absolute;
-  right: 62px;
-  margin-top: 3px;
+  right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 </style>

@@ -410,7 +410,6 @@ export default {
   created() {
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
   },
   mounted() {
@@ -447,7 +446,7 @@ export default {
       getAllRecruitment(params).then((res) => {
         this.loading = false
         this.data = res.data.map((item) => ({ ...item, detail: [], loading: false }))
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
 
@@ -543,7 +542,6 @@ export default {
     recruitmentSituation(row) {
       if (!row.detail || row.detail.length === 0) {
         row.loading = true
-
         queryDistribution({ recruitmentId: row.id }).then((res) => {
           row.detail = res
           row.loading = false
@@ -572,10 +570,12 @@ export default {
   font-size: 18px;
 }
 
-.resetEdge {
+/deep/ .resetEdge {
   position: absolute;
-  right: 62px;
-  margin-top: 3px;
+  right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 
 /deep/ .el-table__expanded-cell[class*='cell'] {
