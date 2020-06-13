@@ -116,11 +116,6 @@ export default {
     ...mapGetters(['userId'])
   },
   watch: {
-    'infoForm.minSalary': function(newval, oldval) {
-      if (newval != oldval) {
-        this.contrastMaxMin(newval)
-      }
-    },
     'infoForm.reason': function(newval) {
       if (newval === 'Other') {
         this.$refs.personInfo.explainshow = true
@@ -133,6 +128,7 @@ export default {
     if (this.$route.query.id) {
       this.ReplicationCache(this.$route.query.id)
     }
+    this.getUseInformation()
   },
   mounted() {
     this.getUseInformation()
@@ -205,17 +201,6 @@ export default {
         this.dataFilter(res, this.NewRequirement, 'positionId', 'name', 'id')
       })
     },
-    contrastMaxMin(newval) {
-      if (this.infoForm.maxSalary === '' || this.infoForm.maxSalary !== null) {
-        if (this.infoForm.maxSalary < newval) {
-          return this.$message({
-            showClose: true,
-            message: '请注意! 最大薪资不可小于最小薪资范围',
-            type: 'error'
-          })
-        }
-      }
-    },
     handleTownext() {
       return Promise.all(
         ['personInfo'].map((it) => {
@@ -237,7 +222,6 @@ export default {
         this.$refs['apprForm'].validate((valid) => {
           if (valid) {
             this.infoForm.userId = this.userId
-            this.contrastMaxMin(this.infoForm.minSalary)
             submitEewly(this.infoForm).then((res) => {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
