@@ -5,7 +5,10 @@
       class="pageHeader"
       show-back
     />
-    <basic-container style="margin-button: 40px">
+    <basic-container
+      v-loading="loading"
+      style="margin-button: 40px"
+    >
       <el-row :gutter="24">
         <el-col class="fullName">
           {{ user.userName }}提交的招聘需求
@@ -16,38 +19,38 @@
         type="flex"
         style="margin-top:20px"
       >
-        <el-col :span="9">
+        <el-col :span="6">
           <span class="nodetitle">需求编号:</span>
           <span>{{ user.id }}</span>
         </el-col>
 
-        <el-col :span="9">
+        <el-col :span="6">
           <span class="nodetitle">提交人:</span>
           <span>{{ user.userName }}</span>
         </el-col>
 
-        <el-col :span="9">
+        <el-col :span="6">
           <span class="nodetitle">到岗时间:</span>
           <span>{{ user.joinDate }}</span>
         </el-col>
+
+        <el-col :span="6">
+          <span class="nodetitle">状态:</span>
+          <span style="color: #207EFA">{{
+            user.needNum !== user.entryNum ? '招聘中' : '已结束'
+          }}</span>
+        </el-col>
         <Buttongroup-from :child-data="childData" />
       </el-row>
-    </basic-container>
-    <basic-container>
       <el-tabs v-model="activeName">
+        <Introduce :status="childData" />
+
+        <!-- 全部招聘需求 -->
         <el-tab-pane
-          v-if="$route.query.status === 'UnHandle'"
+          v-if="$route.query.status === 'aRequirements'"
           label="分配信息"
           name="inrecruitment"
         >
-          <Unassignedfrom :child-data="childData" />
-        </el-tab-pane>
-        <el-tab-pane
-          v-else-if="$route.query.status === 'Handled'"
-          label="分配信息"
-          name="inrecruitment"
-        >
-          <Introduce :status="childData" />
           <h3 class="Header">
             分配详情
           </h3>
@@ -58,27 +61,42 @@
           <Entrystaff />
         </el-tab-pane>
 
+        <!-- 我的招聘需求 -->
         <el-tab-pane
-          v-else
+          v-else-if="$route.query.status === 'mNeeds'"
           label="招聘进度"
           name="inrecruitment"
         >
-          <Introduce :status="childData" />
-          <div v-if="$route.query.myneeds === 'myneeds'">
+          <h3 class="Header">
+            分配详情
+          </h3>
+          <distri-buteall />
+          <div v-if="childData.status === 'Handled'">
             <h3 class="Header">
-              关联候选人
-              <el-button
-                class="buttonPrimary"
-                type="primary"
-                size="medium"
-                @click="JumpCandidate()"
-              >
-                添加候选人
-              </el-button>
+              已入职员工
             </h3>
-
-            <candidatepeople />
+            <Entrystaff />
           </div>
+        </el-tab-pane>
+
+        <!-- 我的提交招聘需求 -->
+        <el-tab-pane
+          v-else-if="$route.query.status === 'iSubmit'"
+          label="招聘进度"
+          name="inrecruitment"
+        >
+          <h3 class="Header">
+            关联候选人
+            <el-button
+              class="buttonPrimary"
+              type="primary"
+              size="medium"
+              @click="JumpCandidate()"
+            >
+              添加候选人
+            </el-button>
+          </h3>
+          <Candidatepeople />
           <h3 class="Header">
             已入职员工
           </h3>
@@ -100,7 +118,6 @@ import { mapGetters } from 'vuex'
 import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 import Candidatepeople from './components/candidatepeople'
 import Introduce from './components/introduce'
-import Unassignedfrom from './components/unassigned'
 import DetailsDetails from './paging/details'
 import Entrystaff from './components/entrystaff'
 import DistriButeall from './components/Distributeall'
@@ -109,7 +126,6 @@ export default {
   name: 'StaffList',
   components: {
     DetailsDetails,
-    Unassignedfrom,
     Introduce,
     Candidatepeople,
     Entrystaff,
@@ -118,11 +134,14 @@ export default {
   },
   data() {
     return {
+      loading: false,
       childData: [],
       user: {
         joinDate: null,
         userName: null,
-        id: null
+        id: null,
+        needNum: null,
+        entryNum: null
       },
       status: '招聘中',
       activeName: 'inrecruitment',
@@ -132,8 +151,7 @@ export default {
         showIndexColumn: false,
         enableMultiSelect: false,
         enablePagination: true
-      },
-      progress: 'Approved'
+      }
     }
   },
   computed: {
@@ -146,7 +164,9 @@ export default {
   },
   methods: {
     getData() {
+      this.loading = true
       getRecruitmentDetail(this.$route.query.id).then((res) => {
+        this.loading = false
         this.user = res
         this.childData = res
       })
@@ -193,7 +213,8 @@ export default {
 }
 
 .Header {
-  margin-top: 40px;
+  margin-top: 10px;
+  line-height: 30px;
   margin-bottom: 0px;
   font-family: PingFangSC-Regular;
   font-size: 14px;
@@ -214,5 +235,6 @@ export default {
 
 .buttonPrimary {
   float: right;
+  margin-right: 25px;
 }
 </style>
