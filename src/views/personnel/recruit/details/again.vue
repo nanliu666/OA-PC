@@ -42,11 +42,12 @@
         <span class="demandSize">
           待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
       </el-col>
+
+      <el-col :span="8">
+        <span class="demandSize">需求人数:{{ Totalnumberpeople }}</span>
+      </el-col>
     </el-row>
 
-    <el-col :span="8">
-      <span class="demandSize">需求人数:{{ Totalnumberpeople }}</span>
-    </el-col>
     <el-form
       ref="dynamicValidateForm"
       :model="dynamicValidateForm"
@@ -219,7 +220,7 @@ export default {
         this.dynamicValidateForm.users = itemArr
       }
       this.$emit('update:visible', false)
-      if (this.jumpnot === 'yes') {
+      if (this.jumpnot) {
         this.$emit('dataJump')
       }
     },

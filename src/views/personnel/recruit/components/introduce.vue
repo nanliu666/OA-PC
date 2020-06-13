@@ -83,9 +83,9 @@ export default {
     ...mapGetters(['userId'])
   },
   watch: {
-    Status: async function(newval) {
+    Status: function(newval) {
       this.user = newval
-      await this.getPercent(this.user.needNum, this.user.entryNum)
+      this.getPercent(this.user.needNum, this.user.entryNum)
     }
   },
   mounted() {

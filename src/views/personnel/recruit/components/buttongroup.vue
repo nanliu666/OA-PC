@@ -1,30 +1,27 @@
 <template>
   <div class="Requirements">
     <div v-if="$route.query.status === 'mNeeds'">
-      <template v-if="(childData.status = 'UnHandle')">
-        <template
-          v-if="
-            childData.needNum === childData.entryNum || childData.needNum - childData.entryNum == 0
-          "
+      <template
+        v-if="
+          childData.needNum === childData.entryNum || childData.needNum - childData.entryNum == 0
+        "
+      >
+        <el-button
+          size="medium"
+          type="primary"
+          @click="JumpNewlybuild()"
         >
-          <el-button
-            size="medium"
-            type="primary"
-            @click="ChangeContent"
-          >
-            更改需求人数
-          </el-button>
-        </template>
-
-        <template v-else>
-          <el-button
-            size="medium"
-            type="primary"
-            @click="JumpNewlybuild()"
-          >
-            复制
-          </el-button>
-        </template>
+          复制
+        </el-button>
+      </template>
+      <template v-else>
+        <el-button
+          size="medium"
+          type="primary"
+          @click="ChangeContent"
+        >
+          更改需求人数
+        </el-button>
       </template>
     </div>
 
@@ -40,10 +37,10 @@
 
     <Again
       ref="Again"
-      :visible.sync="createAssigned"
+      :visible.sync="createAgain"
       @dataJump="dataJump"
     />
-    <assigned
+    <Assigned
       ref="Assigned"
       :visible.sync="createAssigned"
       @getTableData="dataJump"
@@ -68,13 +65,14 @@ export default {
         id: null
       },
       status: null,
+      createAgain: false,
       createAssigned: false
     }
   },
   methods: {
     // 需求状态，UnHandle-待分配，Handled-已分配
     DistributionContent() {
-      this.$set(this.childData, 'jumpnot', 'yes')
+      this.$set(this.childData, 'jumpnot', true)
       if (this.childData && this.childData.status === 'UnHandle') {
         this.$refs.Again.init(this.childData)
       } else {

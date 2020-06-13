@@ -221,7 +221,7 @@ export default {
         this.dynamicValidateForm.users = itemArr
       }
       this.$emit('update:visible', false)
-      if (this.jumpnot === 'yes') {
+      if (this.jumpnot) {
         this.$emit('dataJump')
       }
     },
@@ -299,13 +299,13 @@ export default {
 .textForm {
   margin-top: 10px;
 }
-.demandSize {
-  display: block;
-  font-size: 12px;
-  color: #718199;
-  line-height: 18px;
-  text-align: center;
-}
+// .demandSize {
+//   display: block;
+//   font-size: 12px;
+//   color: #718199;
+//   line-height: 18px;
+//   text-align: center;
+// }
 #assigned {
   color: #1989fa;
 }
