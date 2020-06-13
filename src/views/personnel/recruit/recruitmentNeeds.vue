@@ -186,8 +186,13 @@ export default {
           this.infoForm.companyName = res.companyName
           this.infoForm.companyId = res.companyId
         })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '当前员工尚未被公司认证 请联系管理员',
+          type: 'warning'
+        })
       }
-
       // 页面初始化
       getOrganizationCompany({ parentOrgId: 0 }).then((res) => {
         this.dataFilter(res, this.NewRequirement, 'orgId', 'orgName', 'orgId')

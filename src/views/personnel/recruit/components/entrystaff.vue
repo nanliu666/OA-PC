@@ -120,8 +120,15 @@ export default {
   },
   methods: {
     jumpToDetail(row) {
-      this.$router.push('/personnel/detail/' + row.userId)
-      // this.$router.push('/personnel/detail/' + row.personId)
+      if (row && row.userId) {
+        this.$router.push('/personnel/detail/' + row.userId)
+      } else {
+        this.$message({
+          showClose: true,
+          message: '当前员工尚未被公司认证 请联系管理员',
+          type: 'warning'
+        })
+      }
     },
     getData() {
       getRecruitmentDetail(this.$route.query.id).then((res) => {
