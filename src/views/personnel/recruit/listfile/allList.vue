@@ -426,6 +426,9 @@ export default {
     })
     this.getDictionarygroup()
   },
+  activated() {
+    this.getTableData()
+  },
   methods: {
     getWorkProperty(type) {
       let typeWord
