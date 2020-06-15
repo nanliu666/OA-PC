@@ -687,7 +687,7 @@
         class="cancel-btn-box"
       >
         <el-button
-          v-if="!isShowCancel"
+          v-if="!isShowCancel && !isUser"
           type="primary"
           size="medium"
           @click="handelCancel"
@@ -862,7 +862,7 @@ export default {
     title() {
       return FormKeysCN[this.apprInfo.formKey]
     },
-    // 按钮是否可用
+    // 撤回是否可用
     isShowCancel() {
       let res = false
       if (this.isCancel) {
