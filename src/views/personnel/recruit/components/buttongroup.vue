@@ -1,69 +1,63 @@
 <template>
-  <div style="width: 620px;">
-    <div v-if="$route.query.rotate === 'myHandled'">
-      <span class="nodetitle">状态:</span>
-      <span style="color: #207EFA">{{ recruitment }}</span>
-      <el-button
-        style="float: right;margin-top: -17px"
-        size="medium"
-        type="primary"
-        @click="ChangeContent"
-      >
-        更改需求人数
-      </el-button>
+  <div class="Requirements">
+    <div v-if="$route.query.status === 'mNeeds'">
+      <template v-if="(childData.status = 'UnHandle')">
+        <template
+          v-if="
+            childData.needNum === childData.entryNum || childData.needNum - childData.entryNum == 0
+          "
+        >
+          <el-button
+            size="medium"
+            type="primary"
+            @click="ChangeContent"
+          >
+            更改需求人数
+          </el-button>
+        </template>
+
+        <template v-else>
+          <el-button
+            size="medium"
+            type="primary"
+            @click="JumpNewlybuild()"
+          >
+            复制
+          </el-button>
+        </template>
+      </template>
     </div>
-    <div v-else-if="$route.query.rotate === 'myUnHandle'">
-      <span class="nodetitle">状态:</span>
-      <span style="color: #207EFA">{{ end }}</span>
+
+    <template v-else-if="$route.query.status === 'aRequirements'">
       <el-button
-        style="float: right;margin-top: -17px"
-        size="medium"
-        type="primary"
-        @click="JumpNewlybuild()"
-      >
-        复制
-      </el-button>
-    </div>
-    <div v-else-if="$route.query.rotate === 'allUnHandle'">
-      <span class="nodetitle">状态:</span>
-      <span style="color: #207EFA">{{ recruitment }}</span>
-      <el-button
-        style="float: right;margin-top: -17px"
         size="medium"
         type="primary"
         @click="DistributionContent()"
       >
-        分配
+        {{ childData.status === 'UnHandle' ? '分配' : '重新分配' }}
       </el-button>
-    </div>
-    <div v-else-if="$route.query.rotate === 'allHandled'">
-      <span class="nodetitle">状态:</span>
-      <span style="color: #207EFA">{{ end }}</span>
-    </div>
-
-    <div v-else-if="$route.query.myneeds === 'end'">
-      <span class="nodetitle">状态:</span>
-      <span style="color: #207EFA">{{ end }}</span>
-    </div>
-
-    <div v-else>
-      <span class="nodetitle">状态:</span>
-      <span style="color: #207EFA">{{ recruitment }}</span>
-    </div>
+    </template>
 
     <Again
       ref="Again"
       :visible.sync="createAssigned"
       @dataJump="dataJump"
     />
+    <assigned
+      ref="Assigned"
+      :visible.sync="createAssigned"
+      @getTableData="dataJump"
+    />
   </div>
 </template>
 <script>
 import Again from '@/views/personnel/recruit/details/again'
+import Assigned from '@/views/personnel/recruit/details/Assigned'
 export default {
   name: 'Buttongroup',
   components: {
-    Again
+    Again,
+    Assigned
   },
   props: ['childData'],
   data() {
@@ -73,21 +67,19 @@ export default {
         userName: null,
         id: null
       },
-      end: '已结束',
-      recruitment: '招聘中',
       status: null,
       createAssigned: false
     }
   },
-  watch: {
-    childData: function(newval) {
-      this.status = newval
-    }
-  },
   methods: {
+    // 需求状态，UnHandle-待分配，Handled-已分配
     DistributionContent() {
-      this.$set(this.status, 'jumpnot', 'yes')
-      this.$refs.Again.init(this.status)
+      this.$set(this.childData, 'jumpnot', 'yes')
+      if (this.childData && this.childData.status === 'UnHandle') {
+        this.$refs.Again.init(this.childData)
+      } else {
+        this.$refs.Assigned.init(this.childData)
+      }
     },
     ChangeContent() {
       this.$router.push({
@@ -127,5 +119,9 @@ export default {
   color: #718199;
   line-height: 18px;
   display: block;
+}
+.Requirements {
+  width: 150px;
+  text-align: center;
 }
 </style>

@@ -27,7 +27,8 @@
           @page-size-change="pageSizeChange"
         >
           <!-- 搜素框 -->
-          |<template slot="topMenu">
+          |
+          <template slot="topMenu">
             <div class="search-box">
               <SearchPopover
                 :require-options="requireOptions"
@@ -155,9 +156,7 @@
                   type="info"
                   size="small"
                   class="isConfirm"
-                >
-                  已确认
-                </el-tag>
+                >已确认</el-tag>
               </span>
             </div>
           </template>

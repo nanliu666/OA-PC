@@ -1,8 +1,8 @@
 <template>
   <el-dialog
-    title="分配招聘需求"
+    title="重新分配招聘需求"
     :visible="visible"
-    width="80%"
+    width="1200px"
     :modal-append-to-body="false"
     @close="handleClose"
   >
@@ -10,17 +10,17 @@
       type="flex"
       :gutter="52"
     >
-      <el-col :span="8">
-        <span class="demandSize"> 需求人数: {{ Totalnumberpeople }}</span>
+      <el-col :span="6">
+        待分配: <span id="assigned">{{ Numberofpeople }}</span>
       </el-col>
-      <el-col :span="8">
+      <!-- <el-col :span="8">
         <span class="demandSize">
           已分配: <span id="assigned">{{ Assigned }}</span></span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
           待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <el-form
@@ -45,85 +45,80 @@
           <span class="department">剩余任务</span>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item
-            v-for="domain in dynamicValidateForm.users"
-            :key="domain.key"
-          >
-            <el-row
-              :span="24"
-              :gutter="6"
-              type="flex"
-            >
-              <el-col
-                v-if="domain.Rendering === 'Rendering'"
-                :span="8"
-              >
-                <el-select
-                  v-model="domain.userId"
-                  placeholder="请选择"
-                >
-                  <el-input
-                    v-model="domain.personnel"
-                    placeholder="姓名/工号"
-                    @change="requeWorkList(5)"
-                  >
-                    <i
-                      slot="prefix"
-                      class="el-input__icon el-icon-search"
-                      @click="requeWorkList(3)"
-                    />
-                  </el-input>
-                  <el-option
-                    v-for="item in options"
-                    :key="item.name"
-                    :label="item.name"
-                    :value="item.userId"
-                  />
-                </el-select>
-              </el-col>
-              <el-col
-                v-else
-                :span="8"
-              >
-                <el-input
-                  v-model="domain.name"
-                  :disabled="domain.peopleDisabled"
-                />
-              </el-col>
 
-              <el-col :span="4">
-                <el-input
-                  :value="domain.isTaskNum"
-                  :disabled="domain.disabled"
+      <el-form-item
+        v-for="domain in dynamicValidateForm.users"
+        :key="domain.id"
+      >
+        <el-row
+          :gutter="6"
+          type="flex"
+        >
+          <el-col
+            v-if="domain.Rendering === 'Rendering'"
+            :span="8"
+          >
+            <el-select
+              v-model="domain.userId"
+              placeholder="请选择"
+            >
+              <el-input
+                v-model="domain.personnel"
+                placeholder="姓名/工号"
+                @change="requeWorkList(5)"
+              >
+                <i
+                  slot="prefix"
+                  class="el-input__icon el-icon-search"
+                  @click="requeWorkList(3)"
                 />
-              </el-col>
-              <el-col :span="4">
-                <el-input
-                  :value="domain.entryNum"
-                  :disabled="domain.disabled"
-                />
-              </el-col>
-              <el-col :span="4">
-                <el-input
-                  :value="domain.candidateNum"
-                  :disabled="domain.disabled"
-                />
-              </el-col>
-              <el-col :span="4">
-                <el-input-number
-                  v-model="domain.taskNum"
-                  controls-position="right"
-                  :min="1"
-                  :max="Numberofpeople"
-                  @change="calWhetherBeyond"
-                />
-              </el-col>
-            </el-row>
-          </el-form-item>
-        </el-col>
-      </el-row>
+              </el-input>
+              <el-option
+                v-for="item in options"
+                :key="item.name"
+                :label="item.name"
+                :value="item.userId"
+              />
+            </el-select>
+          </el-col>
+          <el-col
+            v-else
+            :span="8"
+          >
+            <el-input
+              v-model="domain.name"
+              :disabled="domain.peopleDisabled"
+            />
+          </el-col>
+
+          <el-col :span="4">
+            <el-input
+              :value="domain.olditem"
+              :disabled="domain.disabled"
+            />
+          </el-col>
+          <el-col :span="4">
+            <el-input
+              :value="domain.entryNum"
+              :disabled="domain.disabled"
+            />
+          </el-col>
+          <el-col :span="4">
+            <el-input
+              :value="domain.candidateNum"
+              :disabled="domain.disabled"
+            />
+          </el-col>
+          <el-col :span="4">
+            <el-input-number
+              v-model="domain.taskNum"
+              controls-position="right"
+              :min="0"
+              :max="Numberofpeople"
+            />
+          </el-col>
+        </el-row>
+      </el-form-item>
       <el-form-item>
         <el-button
           type="text"
@@ -152,6 +147,7 @@
 <script>
 import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
+import { createUniqueID } from '@/util/util'
 export default {
   name: 'Assigned',
   props: {
@@ -162,34 +158,26 @@ export default {
   },
   data() {
     return {
+      jumpnot: null,
       recruitmentId: '',
-      Totalnumberpeople: 25,
-      Numberofpeople: 21,
-      Assigned: 4,
+      Totalnumberpeople: 0,
+      Numberofpeople: 0,
+      Assigned: 0,
       dynamicValidateForm: {
         users: [
           {
+            id: createUniqueID(),
             personnel: '',
             name: '',
-            isTaskNum: 1,
             peopleDisabled: true,
             disabled: true,
-            entryNum: 3,
-            candidateNum: 4,
-            taskNum: 1
+            entryNum: 0,
+            candidateNum: 0,
+            taskNum: 0
           }
         ]
       },
       options: []
-    }
-  },
-  watch: {
-    recruitmentId: function(newval, oldval) {
-      if (newval !== oldval) {
-        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
-        itemArr[0].userId = null
-        this.dynamicValidateForm.users = itemArr
-      }
     }
   },
   methods: {
@@ -199,7 +187,8 @@ export default {
       this.handleClose()
     },
     async init(row) {
-      let { id, entryNum, needNum } = row
+      let { id, entryNum, needNum, jumpnot } = row
+      this.jumpnot = jumpnot
       this.recruitmentId = id
       this.Totalnumberpeople = needNum
       this.Assigned = entryNum
@@ -217,6 +206,7 @@ export default {
       queryDistribution({ recruitmentId: mentId }).then((res) => {
         if (res.length !== 0) {
           res.forEach((item) => {
+            item.olditem = item.taskNum
             item.peopleDisabled = true
             item.disabled = true
           })
@@ -231,10 +221,11 @@ export default {
         this.dynamicValidateForm.users = itemArr
       }
       this.$emit('update:visible', false)
+      if (this.jumpnot === 'yes') {
+        this.$emit('dataJump')
+      }
     },
     addDomain() {
-      this.calWhetherBeyond()
-      // 判断当前请求返回数据是否有意义
       if (
         this.dynamicValidateForm.users &&
         Object.keys(this.dynamicValidateForm.users).length === 0
@@ -248,46 +239,49 @@ export default {
       } else {
         this.dynamicValidateForm.users.push({
           userId: '',
-          taskNum: 1,
+          taskNum: 0,
           disabled: true,
           Rendering: 'Rendering'
         })
       }
     },
-    onSubmitted() {
-      let accumulation = this.calWhetherBeyond('onSubmitted')
-      if (accumulation !== this.Numberofpeople) {
-        this.$message({
-          showClose: true,
-          message: '请注意！分配需求人数要等与需求总人数',
-          type: 'error'
+    calWhetherBeyond() {
+      var total = null
+      if (this.dynamicValidateForm.users) {
+        this.dynamicValidateForm.users.forEach((item) => {
+          total += item.taskNum
         })
-      } else {
+        return total
+      }
+    },
+    onSubmitted() {
+      let total = this.calWhetherBeyond()
+      if (total === this.Numberofpeople) {
         let parms = {}
         parms.recruitmentId = this.recruitmentId
-        parms.users = this.dynamicValidateForm.users
+        parms.users = this.dynamicValidateForm.users.map((item) => ({
+          userId: item.userId,
+          taskNum: item.taskNum,
+          operatorType: this.calId(item.id)
+        }))
         putDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
         this.$emit('update:visible', false)
         this.$emit('getTableData')
+      } else {
+        this.$message({
+          showClose: true,
+          message: '请注意！分配需求人数要等与需求总人数',
+          type: 'error'
+        })
       }
     },
-    calWhetherBeyond(Submitted) {
-      var total = null
-      if (typeof this.dynamicValidateForm.users !== 'undefined') {
-        this.dynamicValidateForm.users.forEach((item, index) => {
-          this.dynamicValidateForm.users[index].operatorType = 'Update'
-          total += item.taskNum
-        })
-        if (Submitted !== 'onSubmitted' && total > this.Numberofpeople) {
-          this.$message({
-            showClose: true,
-            message: '请注意！ 需求总人数不能大于待分配人数',
-            type: 'error'
-          })
-        }
-        return total
+    calId(id) {
+      if (id) {
+        return 'Update'
+      } else {
+        return 'Add'
       }
     }
   }

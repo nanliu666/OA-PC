@@ -31,7 +31,7 @@
           @tab-click="handleClick"
         >
           <el-tab-pane
-            label="审批中"
+            label="审批"
             name="UnderApproval"
           />
           <el-tab-pane

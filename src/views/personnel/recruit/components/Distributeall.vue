@@ -23,7 +23,6 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-
 import { queryDistribution } from '@/api/personnel/recruitment'
 export default {
   name: 'Distributeall',
@@ -90,6 +89,9 @@ export default {
       curNum = parseFloat(curNum)
       totalNum = parseFloat(totalNum)
       if (isNaN(curNum) || isNaN(totalNum)) {
+        return '-'
+      }
+      if (curNum === 0) {
         return 0
       }
       return Math.round((totalNum / curNum) * 10000) / 100

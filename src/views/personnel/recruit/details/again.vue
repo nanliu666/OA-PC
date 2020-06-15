@@ -35,9 +35,6 @@
       :gutter="52"
     >
       <el-col :span="8">
-        <span class="demandSize">需求人数:{{ Totalnumberpeople }}</span>
-      </el-col>
-      <el-col :span="8">
         <span class="demandSize">
           已分配: <span id="assigned">{{ Assigned }}</span></span>
       </el-col>
@@ -46,6 +43,10 @@
           待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
       </el-col>
     </el-row>
+
+    <el-col :span="8">
+      <span class="demandSize">需求人数:{{ Totalnumberpeople }}</span>
+    </el-col>
     <el-form
       ref="dynamicValidateForm"
       :model="dynamicValidateForm"
@@ -62,8 +63,8 @@
       <el-row>
         <el-col :span="24">
           <el-form-item
-            v-for="domain in dynamicValidateForm.users"
-            :key="domain.key"
+            v-for="user in dynamicValidateForm.users"
+            :key="user.id"
           >
             <el-row
               :span="24"
@@ -71,11 +72,11 @@
             >
               <el-col :span="12">
                 <el-select
-                  v-model="domain.userId"
+                  v-model="user.userId"
                   placeholder="请选择"
                 >
                   <el-input
-                    v-model="plens"
+                    v-model="personnel"
                     placeholder="姓名/工号"
                     @change="requeWorkList(15)"
                   >
@@ -96,18 +97,17 @@
               </el-col>
               <el-col :span="12">
                 <el-input-number
-                  v-model="domain.taskNum"
+                  v-model="user.taskNum"
                   controls-position="right"
                   :min="1"
                   :max="Numberofpeople"
                   style="margin-right: 5px;"
-                  @change="calWhetherBeyond"
                 />
               </el-col>
               <el-button
                 v-show="isDelete"
                 type="text"
-                @click.prevent="removeDomain(domain)"
+                @click.prevent="removeUsers(user)"
               >
                 <i class="el-icon-delete" />
               </el-button>
@@ -124,16 +124,18 @@
         </el-button>
       </el-form-item>
     </el-form>
+
     <el-button
       size="medium"
       @click="handleClose"
     >
       取消
     </el-button>
+
     <el-button
       type="primary"
       size="medium"
-      @click="onSubmitted"
+      @click="onSubmitted(dynamicValidateForm.users)"
     >
       确定
     </el-button>
@@ -143,6 +145,7 @@
 <script>
 import { taskDistribution } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
+import { createUniqueID } from '@/util/util'
 export default {
   name: 'Again',
   props: {
@@ -153,12 +156,12 @@ export default {
   },
   data() {
     return {
-      plens: '',
+      personnel: null,
       recruitmentId: '',
       isDelete: false,
-      Totalnumberpeople: 25,
+      Totalnumberpeople: 0,
       Numberofpeople: null,
-      Assigned: 4,
+      Assigned: 0,
       EmerType: [],
       jumpnot: null,
       list: {
@@ -169,6 +172,7 @@ export default {
       dynamicValidateForm: {
         users: [
           {
+            id: createUniqueID(),
             userId: null,
             taskNum: 1
           }
@@ -183,13 +187,6 @@ export default {
         this.isDelete = true
       } else {
         this.isDelete = false
-      }
-    },
-    recruitmentId: function(newval, oldval) {
-      if (newval !== oldval) {
-        let itemArr = this.dynamicValidateForm.users.splice(0, 1)
-        itemArr[0].userId = null
-        this.dynamicValidateForm.users = itemArr
       }
     }
   },
@@ -232,35 +229,27 @@ export default {
       })
     },
     addDomain() {
-      let accumulation = this.calWhetherBeyond()
-      if (accumulation > this.Numberofpeople) return
       this.dynamicValidateForm.users.push({
         userId: '',
-        taskNum: 1
+        taskNum: 1,
+        id: createUniqueID()
       })
     },
-    removeDomain(item) {
+    removeUsers(item) {
       let index = this.dynamicValidateForm.users.indexOf(item)
       if (index !== -1) {
         this.dynamicValidateForm.users.splice(index, 1)
       }
     },
-    calWhetherBeyond(Submitted) {
+    calWhetherBeyond() {
       var total = null
-      this.dynamicValidateForm.users.forEach((item) => {
+      this.dynamicValidateForm.users.map((item) => {
         total += item.taskNum
       })
-      if (Submitted !== 'onSubmitted' && total >= this.Numberofpeople) {
-        this.$message({
-          showClose: true,
-          message: '请注意！ 需求总人数不能大于待分配人数',
-          type: 'error'
-        })
-      }
       return total
     },
-    onSubmitted() {
-      let accumulation = this.calWhetherBeyond('onSubmitted')
+    onSubmitted(users) {
+      let accumulation = this.calWhetherBeyond()
       if (accumulation !== this.Numberofpeople) {
         this.$message({
           showClose: true,
@@ -268,10 +257,10 @@ export default {
           type: 'error'
         })
       } else {
-        let parms = {}
-        parms.recruitmentId = this.recruitmentId
-        parms.users = this.dynamicValidateForm.users
-        taskDistribution(parms).then(() => {
+        taskDistribution({
+          recruitmentId: this.recruitmentId,
+          users: users.map((user) => ({ userId: user.userId, taskNum: user.taskNum }))
+        }).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
         this.$emit('update:visible', false)

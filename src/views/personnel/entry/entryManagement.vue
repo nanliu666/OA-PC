@@ -91,9 +91,7 @@
           slot="workProperty"
           slot-scope="{ row }"
         >
-          {{
-            workProperty[row.workProperty]
-          }}
+          {{ workProperty[row.workProperty] }}
         </template>
         <template
           slot="entryDate"
@@ -251,7 +249,7 @@ export default {
       data: [],
       tableConfig: {
         showHandler: true,
-        enableMultiSelect: true,
+        // enableMultiSelect: true,
         enablePagination: true,
         uniqueKey: 'personId',
         highlightSelect: true,
@@ -340,7 +338,7 @@ export default {
   },
   methods: {
     confirmEntry(row) {
-      this.$router.push('/personnel/entry/confirmEntry/' + row.personId)
+      this.$router.push('/personnel/entry/confirmEntry/' + row.personId + '?applyId=' + row.applyId)
     },
     addWillEntry(row) {
       this.$confirm('您确认要将该员工添加到待入职吗？', '添加到待入职', {
@@ -392,7 +390,7 @@ export default {
     toDetail(row) {
       if (this.status !== 'latelyEntry') {
         this.$router.push(
-          '/personnel/entry/entryPersonDetail/' + row.personId + '?status=' + this.status
+          `/personnel/entry/entryPersonDetail/${row.personId}?status=${this.status}&applyId=${row.applyId}`
         )
       } else {
         this.$router.push('/personnel/detail/' + row.userId)
