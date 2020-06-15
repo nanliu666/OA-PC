@@ -82,11 +82,13 @@ export default {
         {
           label: '审批编号',
           prop: 'id',
-          slot: true
+          slot: true,
+          minWidth: '120px'
         },
         {
           label: '需求编号',
-          prop: 'formId'
+          prop: 'formId',
+          minWidth: '120px'
         },
         {
           label: '用人部门',
@@ -107,11 +109,13 @@ export default {
         },
         {
           label: '申请时间',
-          prop: 'applyTime'
+          prop: 'applyTime',
+          minWidth: '120px'
         },
         {
           label: '完成时间',
-          prop: 'completeTime'
+          prop: 'completeTime',
+          minWidth: '120px'
         }
       ],
       tableConfig: {
