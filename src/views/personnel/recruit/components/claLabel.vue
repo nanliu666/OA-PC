@@ -79,8 +79,10 @@ export default {
 
 .claLabel {
   .subelements {
-    white-space: nowrap;
-    min-width: 50px;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
     display: inline-block;
     vertical-align: top;
   }
