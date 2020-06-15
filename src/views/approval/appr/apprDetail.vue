@@ -514,7 +514,25 @@
               <!-- 自定义图标 -->
               <template slot="icon">
                 <!-- :class="[{ active: index <= activeStep }, { cancel: isCancel && index == 0 }]" -->
-                <div>
+                <div class="icon-box">
+                  <div
+                    v-if="index == 0 && isCancel"
+                    class="tip cancel-text"
+                  >
+                    已撤回
+                  </div>
+                  <div
+                    v-if="index == activeStep && isReject"
+                    class="tip reject-text"
+                  >
+                    已拒绝
+                  </div>
+                  <div
+                    v-if="index == progressList.length - 1 && isFished"
+                    class="tip fished-text"
+                  >
+                    已通过
+                  </div>
                   <div
                     class="icon "
                     :class="iconClass(index)"
@@ -644,7 +662,7 @@
                   <div class="detail-box">
                     <div>
                       {{ recordList.userName }}
-                      <span class="isCancel">已撤销</span>
+                      <span class="isCancel">已撤回</span>
                     </div>
                     <div>{{ recordList.jobName }}</div>
                   </div>
@@ -1267,7 +1285,6 @@ export default {
   /deep/ .el-step__icon.is-text {
     border: 0px;
   }
-
   /deep/ .el-step__title.is-wait .title {
     color: #738399;
   }
@@ -1281,7 +1298,23 @@ export default {
     font-size: 14px;
     color: #212a3f;
   }
-
+  .icon-box {
+    position: relative;
+    .tip {
+      position: absolute;
+      top: -30px;
+      left: -20px;
+    }
+    .cancel-text {
+      color: red;
+    }
+    .reject-text {
+      color: red;
+    }
+    .fished-text {
+      color: #368afa;
+    }
+  }
   // 小圆圈
   .icon {
     width: 9px;
