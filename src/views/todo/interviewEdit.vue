@@ -203,7 +203,7 @@ export default {
           itemType: 'input',
           label: '面试评价',
           span: 24,
-          rows: 2,
+          rows: 3,
           type: 'textarea',
           required: true,
           rules: [{ max: 200, message: '最多输入200个字符', trigger: 'blur' }]
