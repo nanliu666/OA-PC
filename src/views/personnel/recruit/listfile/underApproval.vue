@@ -100,7 +100,8 @@ export default {
         },
         {
           label: '岗位',
-          prop: 'positionName'
+          prop: 'positionName',
+          minWidth: '120px'
         },
         {
           label: '审批状态',
