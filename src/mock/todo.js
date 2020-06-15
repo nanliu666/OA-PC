@@ -24,7 +24,10 @@ export default ({ mock }) => {
             'LeaveList',
             'Leave'
           ],
-          createTime: '@date'
+          bizId: '@increment',
+          createTime: '@date',
+          startDate: '@date',
+          endDate: '@date'
         })
       )
     }
@@ -34,6 +37,36 @@ export default ({ mock }) => {
         totalPage: 5,
         data: list
       }
+    }
+  })
+  Mock.mock(new RegExp('/api/user/v1/person/resume/check' + '.*'), 'get', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    return {
+      response: Mock.mock({
+        id: '@increment',
+        title: '@csentence',
+        'status|1': ['UnCheck', 'Pass', 'Reject', 'Cancel'],
+        checkName: '@cname',
+        checkRemark: '@csentence',
+        checkTime: '@date',
+        personId: '1271038384256966657',
+        reason: '@csentence',
+        pushName: '@cname',
+        pushRemark: '@csentence',
+        pushTime: '@date'
+      })
+    }
+  })
+  Mock.mock(new RegExp('/api/user/v1/person/resume/reject' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    return {
+      response: {}
+    }
+  })
+  Mock.mock(new RegExp('/api/user/v1/person/resume/pass' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    return {
+      response: {}
     }
   })
 }

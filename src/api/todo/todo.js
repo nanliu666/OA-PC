@@ -1,4 +1,4 @@
-import { get } from '@/router/axios'
+import { get, post } from '@/router/axios'
 
 /**
  * 待办任务查询接口
@@ -10,4 +10,28 @@ import { get } from '@/router/axios'
  * */
 export const getTodoList = (params) => {
   return get('/task/v1/todo/list', params)
+}
+
+/**
+ * 候选人简历审核详情查询接口
+ * @param {String} id
+ * */
+export const getResumeCheck = (id) => {
+  return get('/user/v1/person/resume/check', { id })
+}
+
+/**
+ * 候选人简历审核淘汰接口
+ * @param {Object} params
+ * */
+export const modifyResumeReject = (params) => {
+  return post('/user/v1/person/resume/reject', params)
+}
+
+/**
+ * 候选人简历审核通过接口
+ * @param {Object} params
+ * */
+export const modifyResumePass = (params) => {
+  return post('/user/v1/person/resume/pass', params)
 }
