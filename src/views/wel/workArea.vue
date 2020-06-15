@@ -185,7 +185,7 @@ export default {
 }
 
 .todolist-wrap {
-  min-width: 375px;
+  min-width: 340px;
   height: 375px;
   background: #ffffff;
   .item-row {
@@ -239,7 +239,7 @@ export default {
 
 // 消息中心
 .news-wrap {
-  min-width: 375px;
+  min-width: 340px;
   height: 375px;
   background: #ffffff;
   // 公共样式
