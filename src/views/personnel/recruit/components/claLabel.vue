@@ -5,7 +5,7 @@
         size="medium"
         type="info"
       >
-        {{ calEmerType(emertype) }}
+        <span class="subelements">{{ calEmerType(emertype) }} </span>
       </el-tag>
     </template>
 
@@ -14,7 +14,7 @@
         type="danger"
         size="medium"
       >
-        {{ calEmerType(emertype) }}
+        <span class="subelements"> {{ calEmerType(emertype) }} </span>
       </el-tag>
     </template>
     <template v-else />
@@ -71,6 +71,18 @@ export default {
   /deep/ .el-tag {
     width: 100%;
     text-align: center;
+    overflow: hidden;
+    position: relative;
+    top: 9px;
+  }
+}
+
+.claLabel {
+  .subelements {
+    white-space: nowrap;
+    min-width: 50px;
+    display: inline-block;
+    vertical-align: top;
   }
 }
 </style>
