@@ -5,7 +5,7 @@
       show-back
       :back="goBack"
     />
-    <basic-container>
+    <basic-container v-loading="loading">
       <el-row
         type="flex"
         justify="center"
@@ -184,7 +184,8 @@ export default {
             trigger: 'change'
           }
         ]
-      }
+      },
+      loading: false
     }
   },
   created() {
@@ -192,6 +193,7 @@ export default {
   },
   methods: {
     async getproveData() {
+      this.loading = true
       let res = await getLeaveCert({
         userId: this.userId
       })
@@ -199,6 +201,7 @@ export default {
         ...res,
         nowDate: new Date()
       }
+      this.loading = false
     },
     // 点击取消
     handelCancel() {
