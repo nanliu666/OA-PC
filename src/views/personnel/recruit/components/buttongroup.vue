@@ -120,6 +120,5 @@ export default {
 }
 .Requirements {
   width: 150px;
-  text-align: center;
 }
 </style>

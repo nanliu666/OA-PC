@@ -449,7 +449,7 @@ export default {
         this.page.total = res.totalNum
       })
     },
-
+    // 有关页面发送API请求化时 请求参数格式化
     decorator(params) {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size

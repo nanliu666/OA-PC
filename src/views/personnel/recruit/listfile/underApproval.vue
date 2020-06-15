@@ -135,6 +135,11 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
+
+  activated() {
+    this.getTableData()
+  },
+
   mounted() {
     this.getTableData()
   },
