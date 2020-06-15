@@ -75,9 +75,7 @@ export default {
     position: relative;
     top: 9px;
   }
-}
 
-.claLabel {
   .subelements {
     text-align: center;
     text-overflow: ellipsis;
