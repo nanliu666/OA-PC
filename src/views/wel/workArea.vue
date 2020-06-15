@@ -220,11 +220,11 @@ export default {
       // 代办事项
       toDoList: [
         {
-          label: '待处理(12)',
+          label: '待处理',
           name: 'Pending'
         },
         {
-          label: '预警(5)',
+          label: '预警',
           name: 'Warning'
         }
       ],
