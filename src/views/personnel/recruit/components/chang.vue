@@ -39,7 +39,7 @@
               <el-col :span="24">
                 <el-form-item label="您想将剩余需求总数更改为">
                   <el-input-number
-                    v-model="users.taskNum"
+                    v-model="users.needNum"
                     size="medium"
                     controls-position="right"
                     :min="1"
@@ -53,7 +53,7 @@
                   prop="reason"
                 >
                   <el-select
-                    v-model="users.reason"
+                    v-model="users.changreason"
                     size="medium"
                     placeholder="请选择"
                   >
@@ -117,8 +117,8 @@ export default {
       inputdisabled: true,
       Status: null,
       users: {
-        taskNum: null,
-        reason: null
+        needNum: null,
+        changreason: null
       },
       rules: {
         reason: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }],
@@ -142,6 +142,7 @@ export default {
   },
   mounted() {
     getRecruitmentDetail(this.$route.query.id).then((res) => {
+      this.users = res
       this.Status = res
     })
   },
@@ -152,8 +153,8 @@ export default {
           getChange({
             recruitmentId: this.$route.query.id,
             userId: this.userId,
-            changeNum: this.users.taskNum,
-            reason: this.users.reason
+            changeNum: this.users.needNum,
+            reason: this.users.changreason
           }).then((res) => {
             if (res && res.id) {
               this.$refs['apprProgress'].submit(res.id).then(() => {
@@ -166,8 +167,8 @@ export default {
       })
     },
     resetForm() {
-      this.users.taskNum = ''
-      this.users.operatorType = ''
+      this.users.needNum = ''
+      this.users.changreason = ''
       this.goBack()
     },
     goBack() {
