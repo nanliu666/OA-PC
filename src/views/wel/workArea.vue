@@ -14,39 +14,82 @@
                 @click-icon="handelClick('代办事项')"
                 @tab-click="changeTodo"
               >
-                <div slot="Pending">
-                  <div class="item-row">
+                <div
+                  v-if="toDoListData.length"
+                  slot="Pending"
+                >
+                  <div
+                    v-for="item in toDoListData"
+                    :key="item.id"
+                    class="item-row"
+                  >
                     <div class="text-box">
-                      <p>海外拓展部市场经理罗常常常常常常海外拓展部市场经理罗常常常常常常</p>
+                      <p>【{{ item.type | filterType }}】{{ item.title }}</p>
                       <span>滞留两天</span>
                     </div>
                     <div class="time-box">
-                      03-25 10:21
-                    </div>
-                  </div>
-                  <div class="item-row">
-                    <div class="text-box">
-                      <p>
-                        海外拓展部市场经理罗常常常常常常海外拓展部市场经理罗常常常常常dsadasdasdasdasdasd常
-                      </p>
-                      <span>滞留两天</span>
-                    </div>
-                    <div class="time-box">
-                      03-25 10:21
-                    </div>
-                  </div>
-                  <div class="item-row">
-                    <div class="text-box">
-                      <p>海外拓展常常常常部市场经理罗常常常常常常</p>
-                      <span>滞留两天</span>
-                    </div>
-                    <div class="time-box">
-                      03-25 10:21
+                      {{ item.createTime }}
                     </div>
                   </div>
                 </div>
-                <div slot="Warning">
-                  预警
+                <div
+                  v-else
+                  slot="Pending"
+                >
+                  <div class="placeholder-box">
+                    您当前没有待办事项，前往，<el-button
+                      type="text"
+                      size="medium"
+                      @click="goTodoCenter"
+                    >
+                      代办中心
+                    </el-button>
+                  </div>
+                </div>
+                <div
+                  v-if="toDoListData.length"
+                  slot="Warning"
+                >
+                  <div
+                    v-for="item in toDoListData"
+                    :key="item.id"
+                    class="item-row"
+                  >
+                    <div class="text-box">
+                      <p>【{{ item.type | filterType }}】{{ item.title }}</p>
+                      <!-- <span>滞留两天</span> -->
+                    </div>
+                    <div class="time-box">
+                      {{ item.createTime }}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  v-else
+                  slot="Warning"
+                >
+                  <div class="placeholder-box">
+                    您当前没有待办事项，前往，<el-button
+                      type="text"
+                      size="medium"
+                      @click="goTodoCenter"
+                    >
+                      代办中心
+                    </el-button>
+                  </div>
+                </div>
+                <div
+                  v-if="toDoListData.length"
+                  slot="foot"
+                  class="view-all"
+                >
+                  <el-button
+                    type="text"
+                    size="medium"
+                    @click="goTodoCenter"
+                  >
+                    查看全部
+                  </el-button>
                 </div>
               </tagCom>
             </div>
@@ -113,6 +156,17 @@
                 <div slot="systemNews">
                   系统消息
                 </div>
+                <div
+                  slot="foot"
+                  class="view-all"
+                >
+                  <el-button
+                    type="text"
+                    size="medium"
+                  >
+                    查看全部
+                  </el-button>
+                </div>
               </tagCom>
             </div>
           </el-col>
@@ -123,12 +177,19 @@
 </template>
 
 <script>
+import { todoTypeCN } from '@/const/todo'
+import { getTodoList } from '@/api/todo/todo'
 import tagCom from './components/tagCom'
 export default {
   name: 'MainContent',
   components: {
     tagCom
-    // toDoList
+  },
+  filters: {
+    filterType(value) {
+      if (!value) return
+      return todoTypeCN[value]
+    }
   },
   data() {
     return {
@@ -144,6 +205,15 @@ export default {
         }
       ],
       toDoActiveName: 'Pending',
+      // 请求参数
+      todoQuery: {
+        pageNo: '',
+        pageSize: '',
+        isWarn: '',
+        status: 'UnFinished'
+      },
+      // 列表数据
+      toDoListData: [],
       // 消息通知
       newList: [
         {
@@ -158,8 +228,38 @@ export default {
       newActiveName: 'workNews'
     }
   },
+  created() {
+    this.loadingToDoData()
+  },
   methods: {
-    changeTodo() {},
+    async loadingToDoData() {
+      let res = await getTodoList(this.todoQuery)
+      this.toDoListData = res.data
+    },
+
+    changeTodo() {
+      // Pending  isWarn参数为空  Warning isWarn参数为1
+      if (this.toDoActiveName === 'Pending') {
+        (this.todoQuery.isWarn = ''), this.loadingToDoData()
+      } else if (this.toDoActiveName === 'Warning') {
+        (this.todoQuery.isWarn = 1), this.loadingToDoData()
+      }
+    },
+    // 点击查看代办事项全部，跳到代办中心
+    goTodoCenter() {
+      // Pending  isWarn参数为空  Warning isWarn参数为1
+      let isWarn = ''
+      if (this.toDoActiveName === 'Warning') {
+        isWarn = 1
+      }
+      this.$router.push({
+        path: '/todo/todoList',
+        query: {
+          status: 'UnFinished',
+          isWarn
+        }
+      })
+    },
     changeNews() {},
     handelClick() {
       // console.log(e)
@@ -189,12 +289,32 @@ export default {
   /deep/.el-tabs__nav-scroll {
     padding-left: 24px;
   }
+  /deep/.el-tabs__content {
+    height: 215px;
+    overflow-y: auto;
+  }
 }
 
 .todolist-wrap {
   min-width: 340px;
   height: 375px;
   background: #ffffff;
+  position: relative;
+  overflow-y: auto;
+  .view-all {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+  }
+  // 没有代办数据时显示
+  .placeholder-box {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
   .item-row {
     display: flex;
     justify-content: space-between;
@@ -249,6 +369,12 @@ export default {
   min-width: 340px;
   height: 375px;
   background: #ffffff;
+  position: relative;
+  .view-all {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+  }
   // 公共样式
   .title {
     min-width: 100px;

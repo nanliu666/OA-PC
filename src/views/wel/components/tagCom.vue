@@ -21,6 +21,7 @@
         <slot :name="item.name" />
       </el-tab-pane>
     </el-tabs>
+    <slot name="foot" />
   </div>
 </template>
 
