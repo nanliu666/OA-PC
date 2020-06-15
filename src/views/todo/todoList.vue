@@ -53,6 +53,7 @@
             :require-options="searchConfig.requireOptions"
             :popover-options="searchConfig.popoverOptions"
             @submit="handleSubmit"
+            @reset="handleReset"
           />
           <el-button
             type="text"
@@ -233,6 +234,10 @@ export default {
         // 离职办理
         //
       }
+    },
+    handleReset() {
+      this.query = { status: this.query.status }
+      // this.loadData()
     },
     handleSubmit(params) {
       this.query = { ...this.query, ...params }
