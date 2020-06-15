@@ -37,7 +37,7 @@
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-approval-checkin-bicolor" />
+                <use xlink:href="#icon-remind-bicolor" />
               </svg>
             </div>
             <span>新建提醒</span>
@@ -48,7 +48,7 @@
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-approval-recruit-bicolor" />
+                <use xlink:href="#icon-approval-Seal-bicolor" />
               </svg>
             </div>
             <span>通用申请</span>
@@ -59,7 +59,7 @@
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-approval-Seal-bicolor" />
+                <use xlink:href="#icon-interview-bicolor" />
               </svg>
             </div>
             <span>安排面试</span>
@@ -70,19 +70,14 @@
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-approval-travel-outlined" />
+                <use xlink:href="#icon-directories-bicolor" />
               </svg>
             </div>
             <span>通讯录</span>
           </div>
           <div class="content-item">
             <div class="icon-box add">
-              <svg
-                class="icon"
-                aria-hidden="true"
-              >
-                <use xlink:href="#icon-approval-invitation-bicolor" />
-              </svg>
+              <i class="icon-tips-plus-outlined" />
             </div>
             <span>添加员工</span>
           </div>
@@ -163,6 +158,7 @@ export default {
         position: absolute;
         right: 0;
         top: 70%;
+        cursor: pointer;
       }
     }
   }
@@ -227,6 +223,7 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
+        cursor: pointer;
         span {
           font-family: PingFangSC-Regular;
           font-size: 14px;
@@ -252,8 +249,19 @@ export default {
   border-radius: 100%;
 }
 .icon {
-  width: 40px;
-  height: 40px;
+  margin-top: 8px;
+  width: 32px;
+  height: 32px;
+}
+.add {
+  border: 1px solid #e3e7e9;
+  border-radius: 24px;
+  border-radius: 24px;
+  .icon-tips-plus-outlined {
+    color: #a0a8ae;
+    border-radius: 1px;
+    font: size 16px;
+  }
 }
 
 // 工作概览

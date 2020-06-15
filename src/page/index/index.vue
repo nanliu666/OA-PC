@@ -111,9 +111,11 @@ export default {
     openMenu(item = {}) {
       this.$store.dispatch('SetMenu', item.children)
       let path = this.getFirstPath(item.children, 0, true)
-      this.$router.push({
-        path
-      })
+      if (this.$route.path !== path) {
+        this.$router.push({
+          path
+        })
+      }
     },
     getFirstPath(children, index = 0) {
       if (children[index].menuType !== 'Dir' && children[index].path) {

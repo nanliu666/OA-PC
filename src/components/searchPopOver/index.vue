@@ -8,7 +8,7 @@
         v-for="item in requireOptions"
         :key="item.field"
         :label="item.label"
-        :class="item.type === 'treeSelect' ? 'treeSelect' : ''"
+        :class="[item.type === 'treeSelect' ? 'treeSelect' : '', 'require-form-item']"
       >
         <el-input
           v-if="item.type === 'input'"
@@ -120,7 +120,10 @@
           @change="change"
         />-->
       </el-form-item>
-      <el-form-item v-if="popoverOptions.length === 0">
+      <el-form-item
+        v-if="popoverOptions.length === 0"
+        class="require-form-item"
+      >
         <el-button
           type="primary"
           size="medium"
@@ -129,7 +132,10 @@
           搜索
         </el-button>
       </el-form-item>
-      <el-form-item v-else>
+      <el-form-item
+        v-else
+        class="require-form-item"
+      >
         <el-popover
           v-model="popoverShow"
           placement="bottom"
@@ -453,6 +459,7 @@ export default {
           item.data = ''
         }
       })
+      this.$emit('reset')
     }
   }
 }
@@ -474,6 +481,9 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+/deep/ .require-form-item {
+  margin-bottom: 0;
+}
 .popOver-footer {
   margin: 0 auto;
   text-align: right;

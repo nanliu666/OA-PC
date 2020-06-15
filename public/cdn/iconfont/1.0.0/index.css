@@ -1,8 +1,8 @@
 
 [class^="icon-"]{
-	font-family: "iconfont" !important;
+	font-family: "iconfont";
 	/* 以下内容参照第三方图标库本身的规则 */
-	font-size: 18px !important;
+	font-size: 18px;
 	font-style: normal;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
