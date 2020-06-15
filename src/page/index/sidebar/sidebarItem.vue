@@ -160,10 +160,12 @@ export default {
         },
         item.meta
       )
-      this.$router.push({
-        path,
-        query: item.query
-      })
+      if (this.$route.path !== path) {
+        this.$router.push({
+          path,
+          query: item.query
+        })
+      }
     }
   }
 }

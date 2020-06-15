@@ -9,21 +9,23 @@
       <top ref="top" />
     </div>
     <div class="avue-layout">
-      <div
-        v-show="!isSearch"
-        id="avue-view"
-      >
-        <keep-alive v-if="$route.meta.$keepAlive">
+      <div class="avue-main avue-main--fullscreen avue-main--notag">
+        <div
+          v-show="!isSearch"
+          id="avue-view"
+        >
+          <keep-alive v-if="$route.meta.$keepAlive">
+            <router-view
+              :key="$route.fullPath"
+              class="avue-view"
+            />
+          </keep-alive>
           <router-view
+            v-else
             :key="$route.fullPath"
             class="avue-view"
           />
-        </keep-alive>
-        <router-view
-          v-else
-          :key="$route.fullPath"
-          class="avue-view"
-        />
+        </div>
       </div>
     </div>
     <div

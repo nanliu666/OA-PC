@@ -1,20 +1,67 @@
 <template>
   <div class="fill">
-    <page-header title="代办中心" />
+    <page-header
+      title="代办中心"
+      show-back
+    />
     <basic-container block>
+      <!--UnFinished-待完成，Finished-已完成-->
+      <el-tabs
+        v-model="query.status"
+        @tab-click="handleTabChange"
+      >
+        <el-tab-pane
+          label="待处理"
+          name="UnFinished"
+        />
+        <el-tab-pane
+          label="已完成"
+          name="Finished"
+        />
+      </el-tabs>
       <common-table
         :config="tableConfig"
         :page="page"
         :columns="columns"
         :data="tableData"
+        :loading="loading"
       >
-        <search-popover
-          ref="searchPopover"
+        <div
+          slot="title"
+          slot-scope="{ row }"
+        >
+          <el-button
+            type="text"
+            size="medium"
+            @click="jumpToDetail(row)"
+          >
+            {{ row.title }}
+          </el-button>
+          <el-tag
+            v-if="ifShowWarn(row)"
+            type="danger"
+          >
+            停滞{{ getWarnText(row) }}天
+          </el-tag>
+        </div>
+        <div
           slot="topMenu"
-          :require-options="searchConfig.requireOptions"
-          :popover-options="searchConfig.popoverOptions"
-          @submit="handleSubmit"
-        />
+          class="memu"
+        >
+          <search-popover
+            ref="searchPopover"
+            :require-options="searchConfig.requireOptions"
+            :popover-options="searchConfig.popoverOptions"
+            @submit="handleSubmit"
+          />
+          <el-button
+            type="text"
+            class="refresh"
+            icon="el-icon-refresh-right"
+            size="medium"
+            @click="loadData"
+          />
+        </div>
       </common-table>
     </basic-container>
   </div>
@@ -22,6 +69,7 @@
 <script>
 import { todoTypeCN } from '@/const/todo'
 import { getTodoList } from '@/api/todo/todo'
+import moment from 'moment'
 
 export default {
   name: 'TodoList',
@@ -30,8 +78,10 @@ export default {
   },
   data() {
     return {
-      query: {},
-      loading: true,
+      query: {
+        status: 'UnFinished'
+      },
+      loading: false,
       page: {
         currentPage: 1,
         size: 10,
@@ -46,7 +96,8 @@ export default {
         {
           label: '标题',
           prop: 'title',
-          minWidth: '300px'
+          minWidth: '300px',
+          slot: true
         },
         {
           label: '类型',
@@ -57,7 +108,20 @@ export default {
         },
         {
           label: '时间',
-          prop: 'createTime'
+          prop: 'createTime',
+          formatter(record) {
+            let m = moment(record.createTime)
+            let now = moment()
+            if (m.format('YYYY-MM-DD') === now.format('YYYY-MM-DD')) {
+              return m.format('HH:mm')
+            } else if (m.format('YYYY-MM-DD') === now.subtract(1, 'days').format('YYYY-MM-DD')) {
+              return `昨天 ${m.format('HH:mm')}`
+            } else if (m.get('year') === now.get('year')) {
+              return m.format('MM-DD HH:mm')
+            } else {
+              return m.format('YYYY-MM-DD HH:mm')
+            }
+          }
         }
       ],
       tableData: [],
@@ -112,8 +176,66 @@ export default {
     this.loadData()
   },
   methods: {
+    ifShowWarn(row) {
+      return moment().diff(moment(row.endDate)) > 0
+    },
+    getWarnText(row) {
+      return moment().diff(moment(row.startDate), 'days')
+    },
+    handleTabChange() {
+      this.page.currentPage = 1
+      this.loadData()
+    },
+    jumpToDetail(row) {
+      if (row.type === 'Interview') {
+        // 面试
+        this.$router.push({
+          path: '/todo/interviewDetail',
+          query: { id: row.bizId }
+        })
+      } else if (row.type === 'Approve') {
+        // 审批
+        this.$router.push({
+          path: '/approval/appr',
+          query: {
+            apprNo: row.bizId
+          }
+        })
+      } else if (row.type === 'Recruitment') {
+        // 招聘
+        this.$router.push({
+          path: '/personnel/recruit/specificPage',
+          query: {
+            id: row.bizId
+          }
+        })
+      } else if (row.type === 'ResumeReview') {
+        // 简历审核
+        this.$router.push({
+          path: '/todo/resumeReview',
+          query: {
+            id: row.bizId
+          }
+        })
+      } else if (row.type === 'InterviewRegister') {
+        // 面试登记表
+        //
+      } else if (row.type === 'Entry') {
+        // 入职办理
+        //
+      } else if (row.type === 'EntryRegister') {
+        // 入职登记表
+        //
+      } else if (row.type === 'LeaveList') {
+        // 离职事项
+        //
+      } else if (row.type === 'Leave') {
+        // 离职办理
+        //
+      }
+    },
     handleSubmit(params) {
-      this.query = params
+      this.query = { ...this.query, ...params }
       this.loadData()
     },
     loadData() {
@@ -135,4 +257,17 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.basic-container--block {
+  height: calc(100% - 82px);
+  min-height: calc(100% - 82px);
+}
+.memu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.refresh {
+  color: #a0a8ae;
+}
+</style>

@@ -58,13 +58,17 @@
   transition: all 0.5s;
   background: #f2f5f7;
   z-index: 1026;
-
+  #avue-view {
+    height: calc(100% - 50px);
+  }
   &--fullscreen {
     width: 100%;
     left: 0;
   }
-  #avue-view {
-    height: calc(100% - 50px);
+  &--notag {
+    #avue-view {
+      height: 100%;
+    }
   }
 }
 
