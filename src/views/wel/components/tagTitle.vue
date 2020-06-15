@@ -6,6 +6,7 @@
         v-if="icon"
         class="el-icon-arrow-right"
         style="margin-right:12px;cursor: pointer;"
+        @click="handelClick"
       />
     </span>
   </div>
@@ -26,7 +27,11 @@ export default {
       default: true
     }
   },
-  methods: {}
+  methods: {
+    handelClick(e) {
+      this.$emit('click', e)
+    }
+  }
 }
 </script>
 
