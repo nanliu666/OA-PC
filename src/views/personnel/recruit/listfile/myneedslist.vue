@@ -297,7 +297,7 @@ export default {
       setRecruitment(params).then((res) => {
         this.data = res.data
         this.loading = false
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
     decorator(params) {
@@ -312,16 +312,9 @@ export default {
       this.getTableData(params)
     },
     jumpToDetail(id) {
-      let myneeds
-      //  应用场景 ：如果是招聘中（Approved）打开候选人模块
-      if (this.params.progress === 'Approved') {
-        myneeds = 'myneeds'
-      } else {
-        myneeds = 'end'
-      }
       this.$router.push({
         path: '/personnel/recruit/specificPage',
-        query: { id: id, myneeds: myneeds }
+        query: { id: id, status: 'iSubmit' }
       })
     },
 
@@ -354,9 +347,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.resetEdge {
+/deep/ .resetEdge {
   position: absolute;
-  right: 62px;
-  margin-top: 3px;
+  right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 </style>

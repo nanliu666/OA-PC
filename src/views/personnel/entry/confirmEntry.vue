@@ -546,7 +546,7 @@ export default {
       this.form.recruitmentId = res.recruitmentId
       this.$refs.form.clearValidate()
     })
-    getOfferApply({ personId: this.$route.params.personId }).then((res) => {
+    getOfferApply({ id: this.$route.query.applyId }).then((res) => {
       this.form.orgId = res.orgId
       this.form.jobId = res.jobId
       this.form.positionId = res.positionId

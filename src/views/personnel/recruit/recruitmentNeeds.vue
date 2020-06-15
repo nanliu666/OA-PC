@@ -116,11 +116,6 @@ export default {
     ...mapGetters(['userId'])
   },
   watch: {
-    'infoForm.minSalary': function(newval, oldval) {
-      if (newval != oldval) {
-        this.contrastMaxMin(newval)
-      }
-    },
     'infoForm.reason': function(newval) {
       if (newval === 'Other') {
         this.$refs.personInfo.explainshow = true
@@ -133,6 +128,7 @@ export default {
     if (this.$route.query.id) {
       this.ReplicationCache(this.$route.query.id)
     }
+    this.getUseInformation()
   },
   mounted() {
     this.getUseInformation()
@@ -181,13 +177,18 @@ export default {
       form.basicAttrs[index].value = dict
     },
     getUseInformation() {
-      let params = {
-        userId: this.userId
+      if (this && this.userId) {
+        getStaffBasicInfo({ userId: this.userId }).then((res) => {
+          this.infoForm.companyName = res.companyName
+          this.infoForm.companyId = res.companyId
+        })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '当前员工尚未被公司认证 请联系管理员',
+          type: 'warning'
+        })
       }
-      getStaffBasicInfo(params).then((res) => {
-        this.infoForm.companyName = res.companyName
-        this.infoForm.companyId = res.companyId
-      })
       // 页面初始化
       getOrganizationCompany({ parentOrgId: 0 }).then((res) => {
         this.dataFilter(res, this.NewRequirement, 'orgId', 'orgName', 'orgId')
@@ -200,17 +201,6 @@ export default {
         this.dataFilter(res, this.NewRequirement, 'positionId', 'name', 'id')
       })
     },
-    contrastMaxMin(newval) {
-      if (this.infoForm.maxSalary === '' || this.infoForm.maxSalary !== null) {
-        if (this.infoForm.maxSalary < newval) {
-          return this.$message({
-            showClose: true,
-            message: '请注意! 最大薪资不可小于最小薪资范围',
-            type: 'error'
-          })
-        }
-      }
-    },
     handleTownext() {
       return Promise.all(
         ['personInfo'].map((it) => {
@@ -221,10 +211,17 @@ export default {
         })
       ).then((res) => {
         if (res.includes(false)) return
+        if (
+          this.infoForm.maxSalary &&
+          this.infoForm.minSalary &&
+          Number(this.infoForm.maxSalary) <= Number(this.infoForm.minSalary)
+        ) {
+          this.$message.error('最大薪资不可小于最小薪资范围')
+          return
+        }
         this.$refs['apprForm'].validate((valid) => {
           if (valid) {
             this.infoForm.userId = this.userId
-            this.contrastMaxMin(this.infoForm.minSalary)
             submitEewly(this.infoForm).then((res) => {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
@@ -251,7 +248,7 @@ export default {
       }
     },
     ReplicationCache(id) {
-      getRecruitmentDetail({ recruitmentId: id }).then((res) => {
+      getRecruitmentDetail(id).then((res) => {
         this.infoForm = res
       })
     },

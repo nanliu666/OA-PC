@@ -10,6 +10,7 @@
           :props="props"
           :current-id="currentId"
           :tree-list="treeList"
+          :group-id.sync="cateForm.groupId"
           @del="handleDel"
           @edit="handleEdit"
           @reload="reload"
@@ -160,6 +161,7 @@ export default {
   },
   data() {
     return {
+      cateId: '',
       loading: false,
       type,
       groupVisible: false,
@@ -353,7 +355,6 @@ export default {
               this.$refs.groupForm.resetForm()
             }
           } else {
-            // console.log('handleCommand____',node,data)
             // 点击的是编辑
             this.groupForm.groupId = data[this.props.id]
             this.groupForm.groupName = data[this.props.label]
@@ -366,9 +367,13 @@ export default {
           if (!data) {
             // 新增，初始化表单数据
             this.cateForm.categoryId = ''
-            if (this.$refs.cateForm) {
-              this.$refs.cateForm.resetForm()
-            }
+            let groupId = this.cateForm.groupId
+            this.$nextTick(() => {
+              if (this.$refs.cateForm) {
+                this.$refs.cateForm.resetForm()
+                this.cateForm.groupId = groupId
+              }
+            })
           } else {
             // 点击的是编辑
             this.cateForm.categoryId = data[this.props.id]

@@ -260,7 +260,7 @@ export default {
     },
     jumpToDetail({ personId, recruitmentId }) {
       this.$router.push(
-        `/personnel/personDetail/${personId}?isTalent=1&recruitmentId=${recruitmentId}`
+        `/personnel/personDetail/${personId}?isTalent=1&recruitmentId=${recruitmentId}&tagName=人才库详情`
       )
     },
     loadData() {

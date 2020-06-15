@@ -863,7 +863,10 @@ export default {
       columns: column,
       tableConfig: {
         showHandler: true,
-        enableMultiSelect: true,
+        rowKey: (row) => {
+          return row.personId + row.recruitmentId
+        },
+        // enableMultiSelect: true,
         enablePagination: true,
         uniqueKey: 'personId',
         highlightSelect: true,

@@ -1,32 +1,12 @@
 <template>
   <div>
-    <div
-      class="flow"
-      @mouseleave="leave"
-    >
+    <div class="flow">
       <div
         v-for="(node, index) in approvalList"
         :key="index"
         class="row"
       >
         <div class="edit">
-          <div class="flex-flow flex flex-items edit_no">
-            <div class="line-spot">
-              <b> <i class="spot" /> </b><span class="staff">{{ node.name }}</span>
-            </div>
-            <el-link
-              type="primary"
-              class="edit_staff"
-            />
-            <span
-              v-if="!node.users.length > 0"
-              class="tip"
-            >请选择审批人</span>
-            <span
-              v-else
-              class="tip"
-            >一人审批</span>
-          </div>
           <div class="flex-flow flex flex-items edit_row">
             <div>
               <div
@@ -52,16 +32,17 @@
                 />
                 <div />
               </div>
+
               <div
                 v-else
-                class="flex flex-flow-column flex-items edit_icon"
+                class="edit_spot"
               >
-                <div />
                 <div class="spot_icon" />
+                <div />
                 <div />
               </div>
             </div>
-            <div class="flex-flow flex flex-items edit_row">
+            <div class="flex-flow flex flex-justify-start flex-items edit_row">
               <div v-if="!node.isEdit">
                 <span class="staff">{{ node.name }}</span>
                 <el-link
@@ -87,10 +68,11 @@
             >
               <el-input
                 ref="inputVal"
-                v-model="name"
+                v-model="node.editname"
                 placeholder="请输入"
                 style="width:200px"
-                @input="(value) => limitInput(value)"
+                @input="(value) => limitInput(value, node)"
+                @blur="blur"
               />
               <span><el-button
                 type="success"
@@ -180,10 +162,11 @@ export default {
     }
   },
   methods: {
-    limitInput(data) {
-      if (data.length > 20) {
-        this.name = data.substr(0, 20)
-      }
+    limitInput(data, node) {
+      node.editname = data.length > 20 ? data.substr(0, 20) : data
+      // if (data.length > 20) {
+      //   // node = data.substr(0, 20)
+      // }
     },
     /**
      * @author guanfenda
@@ -234,7 +217,7 @@ export default {
      * @desc 修改节点名字
      * */
     handleEditName(node) {
-      node.name = this.name || node.name
+      node.name = node.editname
       node.isEdit = false
       this.name = ''
     },
@@ -288,6 +271,9 @@ export default {
         data = '审批人'
         this.approvalList[index].name = '审批人'
       }
+      this.approvalList.map((it) => {
+        it.isEdit = false
+      })
     },
     /***
      * @author guanfenda
@@ -295,6 +281,9 @@ export default {
      *
      * */
     handleEdit(node) {
+      this.approvalList.map((it) => {
+        it.isEdit = false
+      })
       node.isEdit = true
       this.name = node.name
       this.$nextTick(() => {
@@ -342,7 +331,6 @@ export default {
       position: relative;
       .icon-close {
         position: absolute;
-        /*color: #909399;*/
         z-index: 999;
         left: 45px;
         background: #000;
@@ -389,9 +377,9 @@ export default {
     /*}*/
   }
   .row:hover {
-    .edit_no {
-      display: none;
-    }
+    /*.edit_no {*/
+    /*  display: none;*/
+    /*}*/
     .edit_row {
       display: inline-block;
       display: flex;
@@ -429,7 +417,7 @@ export default {
     /*height: 58px;*/
   }
   .edit_row {
-    display: none;
+    /*display: none;*/
   }
   .edit {
     padding: 5px 0;
@@ -439,13 +427,12 @@ export default {
       height: 10px;
       border-radius: 50%;
       background: #1e9fff;
-      margin-left: -5px;
     }
     .line-spot {
       height: 58px;
       line-height: 58px;
       b {
-        width: 9px;
+        width: 15px;
         display: inline-block;
       }
     }
@@ -456,15 +443,27 @@ export default {
     }
     .edit_icon {
       margin-left: -7px;
+      line-height: 58px;
+      height: 58px;
       color: #1e9fff;
+      display: flex;
       .spot_icon {
         display: inline-block;
         width: 10px;
         height: 10px;
         border-radius: 50%;
         background: #1e9fff;
-        margin-left: -0px;
         margin: 5px 0;
+      }
+    }
+    .edit_spot {
+      .spot_icon {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #1e9fff;
+        margin-left: -5px;
       }
     }
     .delete-icon {

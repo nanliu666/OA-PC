@@ -89,6 +89,9 @@ export default {
       this.status = newval
     }
   },
+  activated() {
+    this.getDemand()
+  },
   mounted() {
     this.getDemand()
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
@@ -100,11 +103,13 @@ export default {
       this.$refs.Again.init(this.status)
     },
     getDemand() {
-      getRelationDemand({ recruitmentId: this.$route.query.id, userId: this.userId }).then(
-        (res) => {
-          this.data = res
-        }
-      )
+      if (this.$route.query.id && this.userId) {
+        getRelationDemand({ recruitmentId: this.$route.query.id, userId: this.userId }).then(
+          (res) => {
+            this.data = res
+          }
+        )
+      }
     },
     calcEducation(educationalLevel) {
       let typeLevel

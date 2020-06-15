@@ -96,29 +96,7 @@ export default {
     }
   },
   mounted() {
-    let _this = this
-    this.box = document.querySelector('#avue-view')
-    // 监听这个dom的scroll事件
-    this.box.addEventListener(
-      'scroll',
-      () => {
-        let siderBar = document.querySelector('.sidebar-erea')
-        if (_this.box.scrollTop - _this.topValue > 0) {
-          if (_this.box.scrollTop >= 240) {
-            siderBar.style.position = 'fixed'
-            siderBar.style.top = 100 + 'px'
-            siderBar.style.right = 20 + 'px'
-          }
-        } else {
-          if (_this.box.scrollTop <= 240) {
-            siderBar.style.position = 'relative'
-            siderBar.style.top = 0
-          }
-        }
-        _this.topValue = _this.box.scrollTop
-      },
-      false
-    )
+    this.box = document.querySelector('.staff-detail-info')
   },
   methods: {
     goAnchor(selector, index, event) {
