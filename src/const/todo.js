@@ -9,3 +9,16 @@ export const todoTypeCN = {
   LeaveList: '离职事项',
   Leave: '离职办理'
 }
+
+export const interviewStatusCN = {
+  UnEvaluate: '待评价',
+  Pass: '通过',
+  Reject: '淘汰',
+  Cancel: '已撤销'
+}
+
+export const interviewTypeCN = {
+  Onsite: '现场面试',
+  Phone: '电话面试',
+  Video: '视频面试'
+}
