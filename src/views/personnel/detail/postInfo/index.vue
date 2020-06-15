@@ -63,7 +63,6 @@ export default {
   data() {
     return {
       box: null,
-      topValue: 0,
       filterNavItemActive: 0,
       allInfo: {},
       asideBar: [

@@ -161,7 +161,8 @@ export default {
       },
       circleUrl: '',
       allInfo: {},
-      box: null
+      box: null,
+      topValue: 0
     }
   },
   mounted() {
