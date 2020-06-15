@@ -248,7 +248,7 @@ export default {
     // 点击查看代办事项全部，跳到代办中心
     goTodoCenter() {
       // Pending  isWarn参数为空  Warning isWarn参数为1
-      let isWarn = ''
+      let isWarn = null
       if (this.toDoActiveName === 'Warning') {
         isWarn = 1
       }
@@ -303,7 +303,7 @@ export default {
   overflow-y: auto;
   .view-all {
     position: absolute;
-    bottom: 24px;
+    bottom: 12px;
     left: 24px;
   }
   // 没有代办数据时显示
@@ -372,7 +372,7 @@ export default {
   position: relative;
   .view-all {
     position: absolute;
-    bottom: 24px;
+    bottom: 12px;
     left: 24px;
   }
   // 公共样式
