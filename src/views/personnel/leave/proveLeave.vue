@@ -119,10 +119,10 @@
               <el-col :span="10">
                 <el-form-item
                   label="开具证明日期"
-                  prop="nowData"
+                  prop="nowDate"
                 >
                   <el-date-picker
-                    v-model="proveData.nowData"
+                    v-model="proveData.nowDate"
                     type="date"
                     style="width : 100%"
                     placeholder="选择日期"
@@ -143,8 +143,9 @@
                   <el-button
                     size="medium"
                     type="primary"
+                    @click="goToPrint"
                   >
-                    打印预览
+                    预览
                   </el-button>
                 </div>
               </el-col>
@@ -172,11 +173,11 @@ export default {
         entryDate: '',
         leaveDate: '',
         relieveDate: '',
-        nowData: ''
+        nowDate: ''
       },
       // 校验规则
       proveRules: {
-        nowData: [
+        nowDate: [
           {
             required: true,
             message: '请选择日期',
@@ -196,7 +197,7 @@ export default {
       })
       this.proveData = {
         ...res,
-        nowData: new Date()
+        nowDate: new Date()
       }
     },
     // 点击取消
@@ -209,6 +210,16 @@ export default {
     goBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
+    },
+    // 去预览
+    goToPrint() {
+      this.$router.push({
+        path: '/personnel/leave/printProve',
+        query: {
+          userId: this.userId,
+          printDate: this.proveData.nowDate.getTime()
+        }
+      })
     }
   }
 }
