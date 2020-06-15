@@ -3,6 +3,7 @@
     <page-header
       title="面试评价"
       show-back
+      :back="goBack"
     />
     <basic-container block>
       <div class="name-box">
@@ -29,7 +30,7 @@
           <div class="page-bottom">
             <el-button
               size="medium"
-              @click="handleCancel"
+              @click="goBack"
             >
               取消
             </el-button>
@@ -50,6 +51,19 @@
 import { postInterviewInfo } from '@/api/todo/todo'
 export default {
   data() {
+    var checkScore = (rule, value, callback) => {
+      setTimeout(() => {
+        if (value < 0) {
+          callback(new Error('评分必须大于0'))
+        } else {
+          if (value > 100) {
+            callback(new Error('评分必须小于等于100'))
+          } else {
+            callback()
+          }
+        }
+      }, 500)
+    }
     return {
       formData: {
         workBackground: '',
@@ -204,7 +218,7 @@ export default {
             onlyNumber: true
           },
           placeholder: '0～100分',
-          rules: []
+          rules: [{ validator: checkScore, trigger: 'blur' }]
         },
         {
           prop: 'status',
@@ -237,7 +251,9 @@ export default {
         })
         .catch(() => {})
     },
-    handleCancel() {
+    // goback
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }
   }
