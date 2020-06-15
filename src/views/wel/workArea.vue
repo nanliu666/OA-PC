@@ -340,9 +340,7 @@ export default {
       }
     },
     changeNews() {},
-    handelClick() {
-      // console.log(e)
-    }
+    handelClick() {}
   }
 }
 </script>

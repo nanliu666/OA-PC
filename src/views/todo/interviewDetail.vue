@@ -76,6 +76,8 @@
           </div>
         </div>
       </div>
+      <!-- 候选人信息 -->
+      <person-detail :person-id="$route.query.id" />
     </basic-container>
   </div>
 </template>
@@ -90,6 +92,9 @@ export default {
     filterType(value) {
       return interviewTypeCN[value] || value
     }
+  },
+  components: {
+    PersonDetail: () => import('./components/personDetail')
   },
   data() {
     return {
