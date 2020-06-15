@@ -14,6 +14,7 @@
                 @click-icon="handelClick('代办事项')"
                 @tab-click="changeTodo"
               >
+                <!-- 带处理 -->
                 <div
                   v-if="toDoListData.length"
                   slot="Pending"
@@ -24,11 +25,15 @@
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p>【{{ item.type | filterType }}】{{ item.title }}</p>
-                      <span>滞留两天</span>
+                      <p @click="jumpToDetail(item.type, item.bizId)">
+                        【{{ item.type | filterType }}】{{ item.title }}
+                      </p>
+                      <span
+                        v-if="ifShowWarn(item.createTime)"
+                      >滞留{{ getWarnText(item.startDate) }}天</span>
                     </div>
                     <div class="time-box">
-                      {{ item.createTime }}
+                      {{ item.createTime | filterDate }}
                     </div>
                   </div>
                 </div>
@@ -46,6 +51,7 @@
                     </el-button>
                   </div>
                 </div>
+                <!-- 预警 -->
                 <div
                   v-if="toDoListData.length"
                   slot="Warning"
@@ -56,11 +62,15 @@
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p>【{{ item.type | filterType }}】{{ item.title }}</p>
-                      <!-- <span>滞留两天</span> -->
+                      <p @click="jumpToDetail(item.type, item.bizId)">
+                        【{{ item.type | filterType }}】{{ item.title }}
+                      </p>
+                      <span
+                        v-if="ifShowWarn(item.createTime)"
+                      >滞留{{ getWarnText(item.startDate) }}天</span>
                     </div>
                     <div class="time-box">
-                      {{ item.createTime }}
+                      {{ item.createTime | filterDate }}
                     </div>
                   </div>
                 </div>
@@ -177,6 +187,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { todoTypeCN } from '@/const/todo'
 import { getTodoList } from '@/api/todo/todo'
 import tagCom from './components/tagCom'
@@ -189,6 +200,19 @@ export default {
     filterType(value) {
       if (!value) return
       return todoTypeCN[value]
+    },
+    filterDate(createTime) {
+      let m = moment(createTime)
+      let now = moment()
+      if (m.format('YYYY-MM-DD') === now.format('YYYY-MM-DD')) {
+        return m.format('HH:mm')
+      } else if (m.format('YYYY-MM-DD') === now.subtract(1, 'days').format('YYYY-MM-DD')) {
+        return `昨天 ${m.format('HH:mm')}`
+      } else if (m.get('year') === now.get('year')) {
+        return m.format('MM-DD HH:mm')
+      } else {
+        return m.format('YYYY-MM-DD HH:mm')
+      }
     }
   },
   data() {
@@ -236,7 +260,13 @@ export default {
       let res = await getTodoList(this.todoQuery)
       this.toDoListData = res.data
     },
-
+    // 处理滞留按钮
+    ifShowWarn(endDate) {
+      return moment().diff(moment(endDate)) > 0
+    },
+    getWarnText(startDate) {
+      return moment().diff(moment(startDate), 'days')
+    },
     changeTodo() {
       // Pending  isWarn参数为空  Warning isWarn参数为1
       if (this.toDoActiveName === 'Pending') {
@@ -259,6 +289,55 @@ export default {
           isWarn
         }
       })
+    },
+    // 跳去详情
+    jumpToDetail(type, bizId) {
+      if (type === 'Interview') {
+        // 面试
+        this.$router.push({
+          path: '/todo/interviewDetail',
+          query: { id: bizId }
+        })
+      } else if (type === 'Approve') {
+        // 审批
+        this.$router.push({
+          path: '/approval/appr',
+          query: {
+            apprNo: bizId
+          }
+        })
+      } else if (type === 'Recruitment') {
+        // 招聘
+        this.$router.push({
+          path: '/personnel/recruit/specificPage',
+          query: {
+            id: bizId
+          }
+        })
+      } else if (type === 'ResumeReview') {
+        // 简历审核
+        this.$router.push({
+          path: '/todo/resumeReview',
+          query: {
+            id: bizId
+          }
+        })
+      } else if (type === 'InterviewRegister') {
+        // 面试登记表
+        //
+      } else if (type === 'Entry') {
+        // 入职办理
+        //
+      } else if (type === 'EntryRegister') {
+        // 入职登记表
+        //
+      } else if (type === 'LeaveList') {
+        // 离职事项
+        //
+      } else if (type === 'Leave') {
+        // 离职办理
+        //
+      }
     },
     changeNews() {},
     handelClick() {
@@ -328,6 +407,7 @@ export default {
       width: 70%;
       margin-right: 12px;
       p {
+        cursor: pointer;
         font-family: PingFangSC-Regular;
         font-size: 14px;
         color: #13141a;
