@@ -11,6 +11,7 @@
                 title="代办事项"
                 :label-array="toDoList"
                 class="todolist"
+                @click-icon="handelClick('代办事项')"
                 @tab-click="changeTodo"
               >
                 <div slot="Pending">
@@ -25,7 +26,9 @@
                   </div>
                   <div class="item-row">
                     <div class="text-box">
-                      <p>海外拓展部市场经理罗常常常常常常海外拓展部市场经理罗常常常常常常</p>
+                      <p>
+                        海外拓展部市场经理罗常常常常常常海外拓展部市场经理罗常常常常常dsadasdasdasdasdasd常
+                      </p>
                       <span>滞留两天</span>
                     </div>
                     <div class="time-box">
@@ -56,6 +59,7 @@
                 title="消息通知"
                 :label-array="newList"
                 class="new"
+                @click-icon="handelClick('消息通知')"
                 @tab-click="changeNews"
               >
                 <div slot="workNews">
@@ -65,7 +69,7 @@
                       <span>安排面试</span>
                     </div>
                     <div class="detail">
-                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…
+                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…dasdasd
                     </div>
                     <div class="time">
                       03-25 10:21
@@ -77,7 +81,7 @@
                       <span>简历审核</span>
                     </div>
                     <div class="detail">
-                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…
+                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…dasdasd
                     </div>
                     <div class="time">
                       03-25 10:21
@@ -88,7 +92,7 @@
                       简历审核取消
                     </div>
                     <div class="detail">
-                      市场拓展比雷埃夫斯港邮轮码头扩建大苏打实打实的大苏打实打实大苏打
+                      市场拓展比雷埃夫斯港邮轮码头扩建大苏打实打实的大苏打实打实大苏打dasdadsad
                     </div>
                     <div class="time">
                       03-25 10:21
@@ -156,7 +160,10 @@ export default {
   },
   methods: {
     changeTodo() {},
-    changeNews() {}
+    changeNews() {},
+    handelClick() {
+      // console.log(e)
+    }
   }
 }
 </script>

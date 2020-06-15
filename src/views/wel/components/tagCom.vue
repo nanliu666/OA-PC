@@ -6,6 +6,7 @@
     <tagTitle
       :title="title"
       :icon="icon"
+      @click="handelClick"
     />
     <el-tabs
       v-model="chooseName"
@@ -63,6 +64,9 @@ export default {
     Click(tab, event) {
       this.$emit('input', this.chooseName)
       this.$emit('tab-click', tab, event)
+    },
+    handelClick(e) {
+      this.$emit('click-icon', e)
     }
   }
 }
