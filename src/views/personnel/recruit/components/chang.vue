@@ -37,7 +37,10 @@
           >
             <el-row :gutter="24">
               <el-col :span="24">
-                <el-form-item label="您想将剩余需求总数更改为">
+                <el-form-item
+                  label="您想将剩余需求总数更改为"
+                  prop="changneedNum"
+                >
                   <el-input-number
                     v-model="users.changneedNum"
                     size="medium"
@@ -121,6 +124,7 @@ export default {
         changreason: null
       },
       rules: {
+        changneedNum: [{ required: true, message: '请您选择选择更改后的人数', trigger: 'chang' }],
         changreason: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }],
         apprProgress: [{ validator: checkAppr }]
       },

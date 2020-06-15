@@ -314,19 +314,23 @@ export default {
         {
           label: '需求编号',
           prop: 'id',
-          slot: true
+          slot: true,
+          minWidth: '100px'
         },
         {
           label: '用人部门',
-          prop: 'orgName'
+          prop: 'orgName',
+          minWidth: '120px'
         },
         {
           label: '职位',
-          prop: 'jobName'
+          prop: 'jobName',
+          minWidth: '120px'
         },
         {
           label: '岗位',
-          prop: 'positionName'
+          prop: 'positionName',
+          minWidth: '120px'
         },
         {
           label: '需求人数',
@@ -334,7 +338,8 @@ export default {
         },
         {
           label: '已入职人数',
-          prop: 'entryNum'
+          prop: 'entryNum',
+          width: '100'
         },
         {
           label: '候选人数',
@@ -352,7 +357,8 @@ export default {
         },
         {
           label: '到岗日期',
-          prop: 'joinDate'
+          prop: 'joinDate',
+          minWidth: '120px'
         },
         {
           label: '工作年限',

@@ -89,7 +89,7 @@
                   </el-input>
 
                   <el-option
-                    v-for="item in options"
+                    v-for="item in filteredUser"
                     :key="item.name"
                     :label="item.name"
                     :value="item.userId"
@@ -182,6 +182,14 @@ export default {
       options: []
     }
   },
+  computed: {
+    filteredUser() {
+      return this.options.filter(
+        (option) =>
+          !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+      )
+    }
+  },
   watch: {
     'dynamicValidateForm.users.length': function(newval) {
       if (newval > 1) {
@@ -230,6 +238,10 @@ export default {
       })
     },
     addDomain() {
+      if (this.dynamicValidateForm.users.some((user) => !user.userId)) {
+        this.$message.error('请先选择员工')
+        return
+      }
       this.dynamicValidateForm.users.push({
         userId: '',
         taskNum: 1,
@@ -260,7 +272,9 @@ export default {
       } else {
         taskDistribution({
           recruitmentId: this.recruitmentId,
-          users: users.map((user) => ({ userId: user.userId, taskNum: user.taskNum }))
+          users: users
+            .filter((item) => item.userId)
+            .map((user) => ({ userId: user.userId, taskNum: user.taskNum }))
         }).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
