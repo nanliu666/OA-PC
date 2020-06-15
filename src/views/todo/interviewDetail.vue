@@ -252,6 +252,7 @@ export default {
 }
 // 面试评价
 .evaluate-wrap {
+  padding-bottom: 8px;
   border-top: 1px solid #e3e7e9;
   .title {
     font-family: PingFangSC-Medium;
@@ -273,6 +274,7 @@ export default {
         width: 50%;
         margin: 8px 0;
       }
+
       .label {
         font-family: PingFangSC-Regular;
         font-size: 14px;
