@@ -185,7 +185,8 @@ export default {
         },
         {
           label: '用人部门',
-          prop: 'orgName'
+          prop: 'orgName',
+          minWidth: '120px'
         },
         {
           label: '职位',
@@ -201,7 +202,8 @@ export default {
         },
         {
           label: '已入职人数',
-          prop: 'entryNum'
+          prop: 'entryNum',
+          width: '100'
         },
         {
           label: '候选人数',

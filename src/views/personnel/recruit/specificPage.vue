@@ -43,22 +43,23 @@
         <Buttongroup-from :child-data="childData" />
       </el-row>
       <el-tabs v-model="activeName">
-        <Introduce :status="childData" />
-
         <!-- 全部招聘需求 -->
         <el-tab-pane
           v-if="$route.query.status === 'aRequirements'"
           label="分配信息"
           name="inrecruitment"
         >
+          <Introduce :status="childData" />
           <h3 class="Header">
             分配详情
           </h3>
           <distri-buteall />
-          <h3 class="Header">
-            已入职员工
-          </h3>
-          <Entrystaff />
+          <div v-if="childData.entryNum !== 0">
+            <h3 class="Header">
+              已入职员工
+            </h3>
+            <Entrystaff />
+          </div>
         </el-tab-pane>
 
         <!-- 我的招聘需求 -->
@@ -67,11 +68,12 @@
           label="招聘进度"
           name="inrecruitment"
         >
+          <Introduce :status="childData" />
           <h3 class="Header">
             分配详情
           </h3>
           <distri-buteall />
-          <div v-if="childData.status === 'Handled'">
+          <div v-if="childData.status === 'Handled' || childData.entryNum !== 0">
             <h3 class="Header">
               已入职员工
             </h3>
@@ -85,6 +87,7 @@
           label="招聘进度"
           name="inrecruitment"
         >
+          <Introduce :status="childData" />
           <h3 class="Header">
             关联候选人
             <el-button

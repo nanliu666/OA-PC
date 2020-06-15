@@ -36,6 +36,7 @@
           ref="probation"
           v-model="form.probation"
           placeholder="请输入"
+          @change="calcDate(form.probation)"
         >
           <el-option
             v-for="item in probationOptions"
@@ -131,21 +132,14 @@ export default {
       }
     }
   },
-  watch: {
-    'form.probation': function(newval, oldval) {
-      if (newval != oldval) this.calcDate(newval)
-    }
-  },
   methods: {
     submit() {
       this.$refs.ruleForm.validate((valid) => {
         if (!valid) {
           return
         }
-        let params = {}
-        params.userId = this.userId
-        params.probation = this.int
-        putProbation(params).then(() => {
+
+        putProbation({ userId: this.userId, probation: this.int }).then(() => {
           this.$message({ type: 'success', message: '操作成功' })
         })
         this.$emit('getTableData')
@@ -163,10 +157,14 @@ export default {
     },
     calcDate(monthCount) {
       this.int = monthCount
-      let isStr = this.newEntryDate
-      this.probationDate = moment(isStr)
-        .add(monthCount, 'M')
-        .format('YYYY-MM-DD')
+      if (monthCount === 0) {
+        this.probationDate = this.entryDate
+      } else {
+        let isStr = this.newEntryDate
+        this.probationDate = moment(isStr)
+          .add(monthCount, 'M')
+          .format('YYYY-MM-DD')
+      }
     },
     handleClose() {
       this.form.probation = ''
