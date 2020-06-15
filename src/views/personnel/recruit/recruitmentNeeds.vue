@@ -7,6 +7,7 @@
     />
     <basic-container>
       <el-row
+        v-loading="loading"
         type="flex"
         justify="center"
         style="padding-top:40px;"
@@ -88,6 +89,7 @@ export default {
       }
     }
     return {
+      loading: false,
       NewRequirement,
       infoForm: {
         positionId: null,
@@ -222,11 +224,13 @@ export default {
         this.$refs['apprForm'].validate((valid) => {
           if (valid) {
             this.infoForm.userId = this.userId
+            this.loading = true
             submitEewly(this.infoForm).then((res) => {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
+                  this.loading = false
                   this.$message({ type: 'success', message: '提交成功' })
-                  this.goBack()
+                  if (this.loading) this.goBack()
                 })
               }
             })
