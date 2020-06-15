@@ -198,7 +198,7 @@ export default {
       display: flex;
       justify-self: start;
       align-items: center;
-      width: 80%;
+      width: 70%;
       margin-right: 12px;
       p {
         font-family: PingFangSC-Regular;
@@ -266,7 +266,7 @@ export default {
     line-height: 43px;
     display: inline-block;
     text-align: start;
-    width: 80%;
+    width: 70%;
     padding-left: 24px;
     // 。。。
     overflow: hidden;
