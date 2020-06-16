@@ -24,6 +24,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { queryDistribution } from '@/api/personnel/recruitment'
+import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 export default {
   name: 'Distributeall',
   props: [],
@@ -81,20 +82,9 @@ export default {
         this.loading = false
         this.data = res.map((item) => ({
           ...item,
-          nodeData: this.getPercent(item.taskNum, item.entryNum)
+          nodeData: claAccuracy(item.taskNum, item.entryNum, true)
         }))
       })
-    },
-    getPercent(curNum, totalNum) {
-      curNum = parseFloat(curNum)
-      totalNum = parseFloat(totalNum)
-      if (isNaN(curNum) || isNaN(totalNum)) {
-        return '-'
-      }
-      if (curNum === 0) {
-        return 0
-      }
-      return Math.round((totalNum / curNum) * 10000) / 100
     }
   }
 }

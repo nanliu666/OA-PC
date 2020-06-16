@@ -86,7 +86,7 @@ export default {
   watch: {
     Status: function(newval) {
       this.user = newval
-      this.percentage(this.user)
+      this.user.progress = claAccuracy(this.user.needNum, this.user.entryNum)
     }
   },
   mounted() {
@@ -103,17 +103,6 @@ export default {
         }
       })
       return typeWord
-    },
-    // getPercent(curNum, totalNum) {
-    //   curNum = parseFloat(curNum)
-    //   totalNum = parseFloat(totalNum)
-    //   if (isNaN(curNum) || isNaN(totalNum)) {
-    //     return '-'
-    //   }
-    //   this.user.progress = Math.round((totalNum / curNum) * 10000) / 100 + '%'
-    // }
-    percentage(row) {
-      this.user.progress = claAccuracy(row.needNum, row.entryNum)
     }
   }
 }
