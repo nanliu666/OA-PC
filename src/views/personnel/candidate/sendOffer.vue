@@ -103,6 +103,7 @@ export default {
       personId: null,
       personInfo: {},
       offerInfo: {
+        personId: null,
         attachmentName: null,
         attachmentUrl: null,
         ccEmail: null,
@@ -142,7 +143,7 @@ export default {
     },
     getOfferInfo() {
       getOfferInfo(this.personId).then((data) => {
-        Object.assign(this.offerInfo, data)
+        Object.assign(this.offerInfo, data, { personId: this.personId })
         this.$refs['editOfferStepOne'].init({
           userId: data.userId,
           entryDate: data.entryDate,
