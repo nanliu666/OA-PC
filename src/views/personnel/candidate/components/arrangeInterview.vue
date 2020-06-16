@@ -109,6 +109,7 @@
       :dialog-visible.sync="newDialog"
       :type="form.interviewType"
       :row.sync="addressItem"
+      @updataAddree="getAddresss"
     />
   </div>
 </template>
@@ -119,7 +120,8 @@ import {
   getWorklist,
   getAddresss,
   delAddresss,
-  postInterViewSend
+  postInterViewSend,
+  postInterViewResend
 } from '@/api/personnel/selectedPerson'
 
 let optionsList = [
@@ -226,11 +228,8 @@ export default {
           prop: 'interviewTime',
           itemType: 'datePicker',
           label: '面试时间',
-          options: [],
-          props: {
-            label: 'jobName',
-            value: 'id'
-          },
+          type: 'datetime',
+          valueFormat: 'yyyy-MM-dd HH:mm:ss',
           required: true
         },
         {
@@ -302,7 +301,8 @@ export default {
   },
   methods: {
     /***
-     *
+     * author guanfenda
+     * 获取地址
      *
      * */
     getAddresss() {
@@ -345,17 +345,31 @@ export default {
         }
 
         data.interview = this.form.interview ? 1 : 0
-        // console.log(data)
-        this.loading = true
-        postInterViewSend(data)
-          .then(() => {
-            this.loading = false
-            this.dialog = false
-            this.$message.success('提交成功')
-          })
-          .catch(() => {
-            this.loading = false
-          })
+
+        if (this.row.status === '2') {
+          this.loading = true
+
+          postInterViewSend(data)
+            .then(() => {
+              this.loading = false
+              this.dialog = false
+              this.$message.success('提交成功')
+            })
+            .catch(() => {
+              this.loading = false
+            })
+        } else if (this.row.status === '3') {
+          this.loading = true
+          postInterViewResend()
+            .then(() => {
+              this.loading = false
+              this.dialog = false
+              this.$message.success('提交成功')
+            })
+            .catch(() => {
+              this.loading = false
+            })
+        }
       })
     },
     /***
@@ -402,6 +416,7 @@ export default {
             id: item.id
           }
           delAddresss(params).then(() => {
+            this.getAddresss()
             this.$message({
               type: 'success',
               message: '删除成功!'

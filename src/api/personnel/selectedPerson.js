@@ -96,3 +96,18 @@ export const delAddresss = (params) => del('/user/v1/person/interview/addresss',
  *@params params
  * */
 export const postInterViewSend = (params) => post('/user/v1/person/interview/send', params)
+
+/***
+ * @author guanfenda
+ * @desc  重新安排面试发送接口
+ *
+ *@params params
+ * */
+export const postInterViewResend = (params) => post('/user/v1/person/interview/resend', params)
+/***
+ * @author guanfenda
+ * @desc  人员信息查询接口
+ *
+ *@params params
+ * */
+export const getpersonInfo = (params) => get('/helper/v1/person/info', params)

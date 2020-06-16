@@ -589,7 +589,7 @@ const res = {
             isShow: 0,
             code: 'personnel_registrationForm',
             alias: 'registrationForm',
-            path: '/personnel/candidate/registrationForm/:personId',
+            path: '/personnel/candidate/registrationForm',
             icon: 'iconfont iconicon_doc'
           },
           {

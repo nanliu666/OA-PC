@@ -247,6 +247,10 @@ export default {
     this.getPositionsFunc()
     this.onLoad()
   },
+  activated() {
+    this.getPositionsFunc()
+    this.onLoad()
+  },
   methods: {
     handlerDeleteAll(list) {
       this.$confirm('您确定要删除你所选中的角色吗?', {
@@ -302,6 +306,7 @@ export default {
     async onLoad() {
       await this.getTreeCate()
       this.loadRoleData()
+      this.getPositionsFunc()
     },
 
     // 加载右侧角色列表
