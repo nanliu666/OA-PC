@@ -67,7 +67,7 @@
                       </p>
                       <span
                         v-if="ifShowWarn(item.createTime)"
-                      >滞留{{ getWarnText(item.startDate) }}天</span>
+                      >滞留{{ getWarnText(item.beginDate) }}天</span>
                     </div>
                     <div class="time-box">
                       {{ item.createTime | filterDate }}
@@ -264,8 +264,8 @@ export default {
     ifShowWarn(endDate) {
       return moment().diff(moment(endDate)) > 0
     },
-    getWarnText(startDate) {
-      return moment().diff(moment(startDate), 'days')
+    getWarnText(beginDate) {
+      return moment().diff(moment(beginDate), 'days')
     },
     changeTodo() {
       // Pending  isWarn参数为空  Warning isWarn参数为1
