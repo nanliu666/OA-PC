@@ -27,9 +27,23 @@
             <el-option
               v-for="(item, index) in column.dicData"
               :key="index"
+              :disabled="item.roles.length > 0"
               :label="item[column.props.label]"
               :value="item[column.props.value]"
-            />
+            >
+              <div v-if="item.roles.length > 0">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="该岗位已被关联"
+                  placement="top"
+                >
+                  <div style="margin-left: 22px;">
+                    {{ item[column.props.label] }}
+                  </div>
+                </el-tooltip>
+              </div>
+            </el-option>
           </el-select>
         </template>
         <template
@@ -211,7 +225,8 @@ export default {
             span: 24,
             props: {
               label: this.positionProps.label,
-              value: this.positionProps.id
+              value: this.positionProps.id,
+              disabled: true
             },
             dicData: [],
             rules: [
