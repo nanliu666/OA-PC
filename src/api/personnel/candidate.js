@@ -93,3 +93,14 @@ export const getOfferApply = (id) => {
  * @desc 面试登记表发送接口
  * */
 export const postRegisterSend = (params) => post('/user/v1/interview/register/send', params)
+
+// 候选人简历推送审核接口
+export const postResumeCheck = (params) => post('/user/v1/person/resume/check', params)
+
+// 面试登记表确认接口
+export const confirmInterviewRegister = (params) =>
+  post('/user/v1/interview/register/confirm', params)
+
+// 面试登记表通知修改接口
+export const notifyInterviewRegister = (params) =>
+  post('/user/v1/interview/register/notify', params)

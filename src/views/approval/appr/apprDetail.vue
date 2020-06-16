@@ -961,7 +961,7 @@ export default {
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
-      let res = await getApplyDetail({ apprNo: this.$route.query.apprNo })
+      let res = await getApplyDetail(this.$route.query)
       this.ApplyInfo = res
     },
 

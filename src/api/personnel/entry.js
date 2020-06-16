@@ -24,3 +24,17 @@ export const getOfferApply = (params) => {
 export const createContract = (params) => {
   return post('/api/user/v1/user/contract/info', params)
 }
+
+// 入职登记表通知修改接口
+export const notifyCandidateRegister = (params) => {
+  return post('/user/v1/candidate/register/notify', params)
+}
+
+// 入职登记表确认接口
+export const confirmEntryRegister = (params) => post('/user/v1/candidate/register/confirm', params)
+
+// 入职登记表发送接口
+export const sendEntryRegister = (params) => post('/user/v1/candidate/register/send', params)
+
+// 入职登记表发送接口
+export const postEntryRegisterSend = (params) => post('/user/v1/candidate/register/send', params)

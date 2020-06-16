@@ -24,6 +24,7 @@ import approval from './approval'
 import interview from './interview'
 import todo from './todo'
 import msg from './msg'
+import entry from './entry'
 /**
  * 模拟数据mock
  *
@@ -35,7 +36,8 @@ const options = { mock: false }
 user(options)
 approval(options)
 menu(options)
-interview(options)
+interview({ mock: false })
+
 candidate(options)
 selectPerson(options)
 position(options)
@@ -64,3 +66,5 @@ leave(options)
 personnelSettings(options.mock)
 todo(options)
 msg(options)
+todo({ mock: false })
+entry({ mock: false })

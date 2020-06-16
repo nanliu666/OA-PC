@@ -58,7 +58,7 @@
           <span :class="{ isSelect: row.overdue }">{{ row.overdue == true ? '逾期' : '' }}</span>
         </template>
         <template
-          slot="probation"
+          slot="probations"
           slot-scope="{ row }"
         >
           {{ row.probation === 0 ? '无试用期' : `${row.probation}个月` }}
@@ -197,7 +197,7 @@ export default {
           },
           {
             type: 'select',
-            field: 'probation',
+            field: 'probations',
             data: '',
             label: '试用期',
             options: [
@@ -258,7 +258,8 @@ export default {
         },
         {
           label: '职务',
-          prop: 'jobName'
+          prop: 'jobName',
+          minWidth: '120px'
         },
         {
           label: '入职时间',
@@ -328,6 +329,11 @@ export default {
       if (params.jobs) {
         params.jobs = [params.jobs]
       }
+
+      if (params.probations) {
+        params.probations = [params.probations]
+      }
+
       return params
     },
 
