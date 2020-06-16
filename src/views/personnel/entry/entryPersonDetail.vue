@@ -31,9 +31,20 @@
             >
               确认入职
             </el-button>
-            <!-- <el-button size="medium">
+            <el-button
+              v-if="!register"
+              size="medium"
+              @click="handleSend"
+            >
               发送入职登记表
-            </el-button>-->
+            </el-button>
+            <el-button
+              v-if="register"
+              type="text"
+              @click="handleViewRegister"
+            >
+              查看入职登记表
+            </el-button>
             <el-dropdown @command="handleCommand">
               <el-button
                 size="medium"
@@ -232,7 +243,7 @@
 <script>
 import PageHeader from '@/components/page-header/pageHeader'
 import { getPersonInfo } from '@/api/personnel/candidate'
-import { getOfferApply, addOutCandidateAccept } from '@/api/personnel/entry'
+import { getOfferApply, addOutCandidateAccept, postEntryRegisterSend } from '@/api/personnel/entry'
 import GiveOutEntryDialog from './components/giveOutEntryDialog'
 
 export default {
@@ -261,7 +272,8 @@ export default {
       },
       statusWord: { '7': '待入职', '8': '放弃入职' },
       workProperty: {},
-      giveOutEntryDialog: false
+      giveOutEntryDialog: false,
+      register: this.$route.query.register === '1'
     }
   },
   created() {
@@ -297,6 +309,17 @@ export default {
         this.$refs.giveOutEntryDialog.out(this.personInfo)
       }
     },
+    handleSend() {
+      let params = {
+        recruitmentId: this.personInfo.recruitmentId,
+        personId: this.personInfo.personId
+      }
+      postEntryRegisterSend(params).then(() => {
+        this.$message.success('发送成功')
+        this.register = true
+        this.loadData()
+      })
+    },
     getPersonInfo() {
       getPersonInfo({ personId: this.$route.params.personId }).then((res) => {
         Object.assign(this.personInfo, res)
@@ -312,6 +335,18 @@ export default {
           '?applyId=' +
           this.$route.query.applyId
       )
+    },
+    handleViewRegister() {
+      let params = {
+        recruitmentId: this.personInfo.recruitmentId,
+        personId: this.personInfo.personId,
+        entry: 1,
+        tagName: '入职登记表详情'
+      }
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm',
+        query: params
+      })
     }
   }
 }
