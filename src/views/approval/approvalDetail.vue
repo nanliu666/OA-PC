@@ -198,12 +198,19 @@ export default {
       })
       this.approvalList.reduce((prev, cur) => {
         // 处理前后
+        prev.isStart = 0
+        prev.isEnd = 0
+        cur.isStart = 0
+        cur.isEnd = 0
         if (prev.id === 1) {
           //开始节点
           prev.isStart = 1
+          prev.isEnd = 0
         }
+
         if (cur.id === this.approvalList.length) {
           //结束节点
+          cur.isStart = 0
           cur.isEnd = 1
         }
         cur.parentId = prev.id
