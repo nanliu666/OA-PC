@@ -96,9 +96,14 @@
         </div>
       </el-tooltip>
       <img
+        v-if="userInfo.avatar"
         class="top-bar__img"
         :src="userInfo.avatar"
       >
+      <i
+        v-else
+        class="icon-usercircle top-bar__usericon"
+      />
       <el-dropdown>
         <span class="el-dropdown-link">
           {{ userInfo.userName }}
