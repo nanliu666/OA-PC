@@ -265,6 +265,8 @@ export default {
         attachmentName: this.offerInfo.attachmentName,
         noticeUser: this.offerInfo.noticeUser,
         isFill: this.offerInfo.isFill,
+        personId: this.offerInfo.personId,
+        recruitmentId: this.personInfo.recruitmentId,
         content: this.$refs['editOfferStepThree'].getContentHtml()
       })
         .then(() => {

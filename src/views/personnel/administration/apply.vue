@@ -91,7 +91,7 @@
 
             <el-button
               size="medium"
-              @click="resetForm()"
+              @click="goBack()"
             >
               取消
             </el-button>
