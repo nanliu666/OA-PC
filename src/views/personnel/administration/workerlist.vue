@@ -258,7 +258,8 @@ export default {
         },
         {
           label: '职务',
-          prop: 'jobName'
+          prop: 'jobName',
+          minWidth: '120px'
         },
         {
           label: '入职时间',

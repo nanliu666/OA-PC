@@ -43,17 +43,26 @@
           {{ row.id }}
         </el-button>
       </template>
+
       <template
-        slot="workYear"
+        slot="emerType"
         slot-scope="{ row }"
       >
-        {{ getWorkYear(row.workYear) }}
+        {{ EmerType[row.emerType] }}
       </template>
+
       <template
-        slot="educationalLevel"
+        slot="workProperty"
         slot-scope="{ row }"
       >
-        {{ getEducationalLevel(row.educationalLevel) }}
+        {{ workProperty[row.workProperty] }}
+      </template>
+
+      <template
+        slot="accuracy"
+        slot-scope="{ row }"
+      >
+        {{ claAccuracy(row.needNum, row.entryNum) }}
       </template>
 
       <template
@@ -181,7 +190,18 @@ export default {
         {
           label: '需求编号',
           prop: 'id',
-          slot: true
+          slot: true,
+          minWidth: '120px'
+        },
+        {
+          label: '职位',
+          prop: 'jobName',
+          minWidth: '120px'
+        },
+        {
+          label: '岗位',
+          prop: 'positionName',
+          minWidth: '120px'
         },
         {
           label: '用人部门',
@@ -189,47 +209,33 @@ export default {
           minWidth: '120px'
         },
         {
-          label: '职位',
-          prop: 'jobName'
+          label: '工作性质',
+          prop: 'workProperty',
+          slot: true
         },
         {
-          label: '岗位',
-          prop: 'positionName'
+          label: '紧急程度',
+          prop: 'emerType',
+          slot: true
         },
         {
           label: '需求人数',
           prop: 'needNum'
         },
         {
-          label: '已入职人数',
+          label: '已入职',
           prop: 'entryNum',
           width: '100'
         },
         {
+          label: '招聘进度',
+          prop: 'accuracy',
+          minWidth: '120px',
+          slot: true
+        },
+        {
           label: '候选人数',
           prop: 'candidateNum'
-        },
-        {
-          label: '到岗日期',
-          prop: 'joinDate'
-        },
-        {
-          label: '工作年限',
-          prop: 'workYear',
-          slot: true
-        },
-        {
-          label: '学历要求',
-          prop: 'educationalLevel',
-          slot: true
-        },
-        {
-          label: '最低薪资',
-          prop: 'minSalary'
-        },
-        {
-          label: '最高薪酬',
-          prop: 'maxSalary'
         }
       ],
       tableConfig: {
@@ -257,8 +263,8 @@ export default {
           target: 4
         }
       ],
-      WorkYear: [],
-      getLevel: []
+      workProperty: {},
+      EmerType: {}
     }
   },
   computed: {
@@ -273,11 +279,17 @@ export default {
     getPost().then((res) => {
       this.searchConfig.popoverOptions[1].options = res
     })
-    this.$store.dispatch('CommonDict', 'WorkYear').then((res) => {
-      this.WorkYear = res
+    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
+      (this.WorkYear = res),
+        res.forEach((item) => {
+          this.EmerType[item.dictKey] = item.dictValue
+        })
     })
-    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
-      this.getLevel = res
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      this.searchConfig.popoverOptions[3].options = res
+      res.forEach((item) => {
+        this.workProperty[item.dictKey] = item.dictValue
+      })
     })
     this.getDictionarygroup()
   },
@@ -305,7 +317,10 @@ export default {
       this.getTableData()
     },
     getTableData(params = {}) {
-      this.decorator(params)
+      params.pageNo = this.page.currentPage
+      params.pageSize = this.page.size
+      params.userId = this.userId
+      params.progress = this.params.progress
       this.loading = true
       getMyRecruitment(params).then((res) => {
         this.loading = false
@@ -313,14 +328,6 @@ export default {
         this.page.total = res.totalNum
       })
     },
-    decorator(params) {
-      params.pageNo = this.page.currentPage
-      params.pageSize = this.page.size
-      params.userId = this.userId
-      params.progress = this.params.progress
-      return params
-    },
-
     handleSubmit(params) {
       this.getTableData(params)
     },
@@ -361,6 +368,14 @@ export default {
         path: '/personnel/recruit/components/chang',
         query: { id: row.id }
       })
+    },
+    claAccuracy(curNum, totalNum) {
+      curNum = parseFloat(curNum)
+      totalNum = parseFloat(totalNum)
+      if (isNaN(curNum) || isNaN(totalNum)) {
+        return '-'
+      }
+      return Math.round((totalNum / curNum) * 10000) / 100 + '%'
     }
   }
 }
