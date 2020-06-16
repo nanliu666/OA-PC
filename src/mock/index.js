@@ -23,6 +23,7 @@ import contact from './contact'
 import approval from './approval'
 import interview from './interview'
 import todo from './todo'
+import msg from './msg'
 import entry from './entry'
 /**
  * 模拟数据mock
@@ -63,5 +64,7 @@ contact(options)
 leave(options)
 
 personnelSettings(options.mock)
+todo(options)
+msg(options)
 todo({ mock: false })
 entry({ mock: false })

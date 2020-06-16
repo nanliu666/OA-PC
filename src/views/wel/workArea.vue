@@ -5,16 +5,17 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <!-- 代办事项 -->
-            <div class="todolist-wrap">
+            <div
+              v-loading="todoLoading"
+              class="todolist-wrap"
+            >
               <tagCom
                 v-model="toDoActiveName"
-                title="代办事项"
+                title="待办事项"
                 :label-array="toDoList"
                 class="todolist"
-                @click-icon="handelClick('代办事项')"
-                @tab-click="changeTodo"
               >
-                <!-- 带处理 -->
+                <!-- 待处理 -->
                 <div
                   v-if="toDoListData.length"
                   slot="Pending"
@@ -28,7 +29,9 @@
                       <p @click="jumpToDetail(item.type, item.bizId)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
-                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                      <span
+                        v-if="ifShowWarn(item.createTime)"
+                      >滞留{{ getWarnText(item.startDate) }}天</span>
                     </div>
                     <div class="time-box">
                       {{ item.createTime | filterDate }}
@@ -51,11 +54,11 @@
                 </div>
                 <!-- 预警 -->
                 <div
-                  v-if="toDoListData.length"
+                  v-if="warningList.length"
                   slot="Warning"
                 >
                   <div
-                    v-for="item in toDoListData"
+                    v-for="item in warningList"
                     :key="item.id"
                     class="item-row"
                   >
@@ -85,7 +88,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="toDoListData.length"
+                  v-if="toDoActiveName === 'Pending' ? toDoListData.length : warningList.length"
                   slot="foot"
                   class="view-all"
                 >
@@ -102,73 +105,108 @@
           </el-col>
           <el-col :span="12">
             <!-- 消息通知 -->
-            <div class="news-wrap">
+            <div
+              v-loading="warnLoading"
+              class="news-wrap"
+            >
               <tagCom
                 v-model="newActiveName"
                 title="消息通知"
                 :label-array="newList"
                 class="new"
-                @click-icon="handelClick('消息通知')"
-                @tab-click="changeNews"
               >
-                <div slot="workNews">
-                  <div class="item-row new-item-tips">
-                    <div class="title">
-                      <div class="icon" />
-                      <span>安排面试</span>
+                <div
+                  v-if="msgWorkList.length"
+                  slot="workNews"
+                >
+                  <el-tooltip
+                    v-for="item in msgWorkList"
+                    :key="item.id"
+                    :enterable="false"
+                    :content="item.content"
+                    placement="top"
+                  >
+                    <div @click="handelRead(item)">
+                      <div
+                        class="item-row new-item-tips"
+                        :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
+                      >
+                        <div class="title">
+                          <div
+                            v-if="item.isRead === 0"
+                            class="icon"
+                          />
+                          <span>{{ item.title }}</span>
+                        </div>
+                        <div class="detail">
+                          {{ item.content }}
+                        </div>
+                        <div class="time">
+                          {{ item.createTime }}
+                        </div>
+                      </div>
                     </div>
-                    <div class="detail">
-                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…dasdasd
-                    </div>
-                    <div class="time">
-                      03-25 10:21
-                    </div>
-                  </div>
-                  <div class=" item-row new-item-tips">
-                    <div class="title">
-                      <div class="icon" />
-                      <span>简历审核</span>
-                    </div>
-                    <div class="detail">
-                      海外拓展部市场经理罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…罗常常预计入…dasdasd
-                    </div>
-                    <div class="time">
-                      03-25 10:21
-                    </div>
-                  </div>
-                  <div class=" item-row new-item">
-                    <div class="title">
-                      简历审核取消
-                    </div>
-                    <div class="detail">
-                      市场拓展比雷埃夫斯港邮轮码头扩建大苏打实打实的大苏打实打实大苏打dasdadsad
-                    </div>
-                    <div class="time">
-                      03-25 10:21
-                    </div>
-                  </div>
-                  <div class=" item-row new-item">
-                    <div class="title">
-                      面试安排
-                    </div>
-                    <div class="detail">
-                      大数据统计输出报表大家最想去哪
-                    </div>
-                    <div class="time">
-                      03-25 10:21
-                    </div>
-                  </div>
-                </div>
-                <div slot="systemNews">
-                  系统消息
+                  </el-tooltip>
                 </div>
                 <div
+                  v-else
+                  slot="workNews"
+                >
+                  <div class="no-msg-box">
+                    暂时没有工作消息通知
+                  </div>
+                </div>
+                <div
+                  v-if="msgSystemList.length"
+                  slot="systemNews"
+                >
+                  <el-tooltip
+                    v-for="item in msgSystemList"
+                    :key="item.id"
+                    :enterable="false"
+                    effect="dark"
+                    :content="item.content"
+                    placement="top"
+                  >
+                    <div @click="handelRead(item)">
+                      <div
+                        class="item-row new-item-tips"
+                        :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
+                      >
+                        <div class="title">
+                          <div
+                            v-if="item.isRead === 0"
+                            class="icon"
+                          />
+                          <span>{{ item.title }}</span>
+                        </div>
+                        <div class="detail">
+                          {{ item.content }}
+                        </div>
+                        <div class="time">
+                          {{ item.createTime }}
+                        </div>
+                      </div>
+                    </div>
+                  </el-tooltip>
+                </div>
+                <div
+                  v-else
+                  slot="systemNews"
+                >
+                  <div class="no-msg-box">
+                    暂时没有工作消息通知
+                  </div>
+                </div>
+                <div
+                  v-if="newActiveName === 'workNews' ? msgWorkList.length : msgSystemList.length"
                   slot="foot"
                   class="view-all"
                 >
                   <el-button
                     type="text"
                     size="medium"
+                    @click="goMsgCenter"
                   >
                     查看全部
                   </el-button>
@@ -186,7 +224,9 @@
 import moment from 'moment'
 import { todoTypeCN } from '@/const/todo'
 import { getTodoList } from '@/api/todo/todo'
+import { getMsgList, creatSignReadMsg } from '@/api/msg/msg'
 import tagCom from './components/tagCom'
+import { mapGetters } from 'vuex'
 export default {
   name: 'MainContent',
   components: {
@@ -234,6 +274,8 @@ export default {
       },
       // 列表数据
       toDoListData: [],
+      warningList: [],
+      todoLoading: false,
       // 消息通知
       newList: [
         {
@@ -245,16 +287,43 @@ export default {
           name: 'systemNews'
         }
       ],
-      newActiveName: 'workNews'
+      newActiveName: 'workNews',
+      msgQuery: {
+        pageNo: '1',
+        pageSize: '10',
+        userId: '',
+        type: '',
+        isRead: null
+      },
+      msgWorkList: [],
+      msgSystemList: [],
+      warnLoading: false
     }
+  },
+  computed: {
+    ...mapGetters(['userId'])
   },
   created() {
     this.loadingToDoData()
+    this.loadingMsgData()
   },
   methods: {
+    // 获取todoData
     async loadingToDoData() {
-      let res = await getTodoList(this.todoQuery)
-      this.toDoListData = res.data
+      try {
+        this.todoLoading = true
+        this.todoQuery.isWarn = null
+        let toDoRes = await getTodoList(this.todoQuery)
+        this.toDoListData = toDoRes.data
+        this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
+        this.todoQuery.isWarn = 1
+        let warningRes = await getTodoList(this.todoQuery)
+        this.warningList = warningRes.data
+        this.toDoList[1].label = `预警(${warningRes.totalNum})`
+        this.todoLoading = false
+      } catch (error) {
+        this.todoLoading = false
+      }
     },
     // 处理滞留按钮
     ifShowWarn(row) {
@@ -262,14 +331,6 @@ export default {
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
-    },
-    changeTodo() {
-      // Pending  isWarn参数为空  Warning isWarn参数为1
-      if (this.toDoActiveName === 'Pending') {
-        (this.todoQuery.isWarn = ''), this.loadingToDoData()
-      } else if (this.toDoActiveName === 'Warning') {
-        (this.todoQuery.isWarn = 1), this.loadingToDoData()
-      }
     },
     // 点击查看代办事项全部，跳到代办中心
     goTodoCenter() {
@@ -335,8 +396,58 @@ export default {
         //
       }
     },
-    changeNews() {},
-    handelClick() {}
+    async loadingMsgData() {
+      try {
+        this.warnLoading = true
+        this.msgQuery.userId = this.userId
+        let { data } = await getMsgList(this.msgQuery)
+        this.msgWorkList = data.filter((item) => {
+          return item.type === 'Work'
+        })
+        this.msgWorkList.sort((a, b) => {
+          return a.isRead - b.isRead
+        })
+        this.msgSystemList = data.filter((item) => {
+          return item.type === 'System'
+        })
+        this.msgSystemList.sort((a, b) => {
+          return a.isRead - b.isRead
+        })
+        this.warnLoading = false
+      } catch (error) {
+        this.warnLoading = false
+      }
+    },
+    // 跳去信息中心
+    goMsgCenter() {
+      this.$router.push({
+        path: '/msg/msg'
+      })
+    },
+    // 确定已读信息
+    async handelRead({ id, isRead }) {
+      if (isRead === 1) {
+        return
+      }
+      try {
+        await this.$confirm('确定已读该信息?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        let params = {
+          id,
+          userId: this.userId
+        }
+        await creatSignReadMsg(params)
+        this.loadingMsgData()
+        this.$message.success('标记已读成功')
+      } catch (error) {
+        if (error !== 'cancel') {
+          throw error
+        }
+      }
+    }
   }
 }
 </script>
@@ -443,6 +554,7 @@ export default {
   min-width: 340px;
   height: 375px;
   background: #ffffff;
+  overflow-y: auto;
   position: relative;
   .view-all {
     position: absolute;
@@ -521,11 +633,16 @@ export default {
     }
   }
   .item-row {
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
     border-bottom: solid 1px #eeeeee;
     padding: 0 24px;
     height: 43px;
+  }
+  .no-msg-box {
+    text-align: center;
+    line-height: 215px;
   }
 }
 </style>
