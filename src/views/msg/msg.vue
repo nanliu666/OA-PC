@@ -151,7 +151,7 @@ export default {
     async loadingData() {
       this.loading = true
       this.msgQuery.userId = this.userId
-      let res = await getMsgList(this.msgQuery.userId)
+      let res = await getMsgList(this.msgQuery)
       this.dataList = res.data
       this.page.total = res.totalNum
       this.loading = false

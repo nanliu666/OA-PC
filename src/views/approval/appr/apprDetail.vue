@@ -1152,6 +1152,13 @@ export default {
     },
     // goback
     goBack() {
+      if (this.$route.query.page) {
+        this.$router.push({
+          path: '/personnel/candidate/candidateManagement'
+        })
+        this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+        return
+      }
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }

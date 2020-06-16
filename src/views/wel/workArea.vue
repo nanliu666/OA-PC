@@ -310,16 +310,20 @@ export default {
   methods: {
     // 获取todoData
     async loadingToDoData() {
-      this.todoLoading = true
-      this.todoQuery.isWarn = null
-      let toDoRes = await getTodoList(this.todoQuery)
-      this.toDoListData = toDoRes.data
-      this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
-      this.todoQuery.isWarn = 1
-      let warningRes = await getTodoList(this.todoQuery)
-      this.warningList = warningRes.data
-      this.toDoList[1].label = `预警(${warningRes.totalNum})`
-      this.todoLoading = false
+      try {
+        this.todoLoading = true
+        this.todoQuery.isWarn = null
+        let toDoRes = await getTodoList(this.todoQuery)
+        this.toDoListData = toDoRes.data
+        this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
+        this.todoQuery.isWarn = 1
+        let warningRes = await getTodoList(this.todoQuery)
+        this.warningList = warningRes.data
+        this.toDoList[1].label = `预警(${warningRes.totalNum})`
+        this.todoLoading = false
+      } catch (error) {
+        this.todoLoading = false
+      }
     },
     // 处理滞留按钮
     ifShowWarn(row) {
@@ -393,23 +397,26 @@ export default {
       }
     },
     async loadingMsgData() {
-      this.warnLoading = true
-      this.msgQuery.userId = this.userId
-      let { data } = await getMsgList(this.msgQuery).finally(() => {
+      try {
+        this.warnLoading = true
+        this.msgQuery.userId = this.userId
+        let { data } = await getMsgList(this.msgQuery)
+        this.msgWorkList = data.filter((item) => {
+          return item.type === 'Work'
+        })
+        this.msgWorkList.sort((a, b) => {
+          return a.isRead - b.isRead
+        })
+        this.msgSystemList = data.filter((item) => {
+          return item.type === 'System'
+        })
+        this.msgSystemList.sort((a, b) => {
+          return a.isRead - b.isRead
+        })
         this.warnLoading = false
-      })
-      this.msgWorkList = data.filter((item) => {
-        return item.type === 'Work'
-      })
-      this.msgWorkList.sort((a, b) => {
-        return a.isRead - b.isRead
-      })
-      this.msgSystemList = data.filter((item) => {
-        return item.type === 'System'
-      })
-      this.msgSystemList.sort((a, b) => {
-        return a.isRead - b.isRead
-      })
+      } catch (error) {
+        this.warnLoading = false
+      }
     },
     // 跳去信息中心
     goMsgCenter() {
