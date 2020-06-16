@@ -265,7 +265,7 @@ export default {
         attachmentName: this.offerInfo.attachmentName,
         noticeUser: this.offerInfo.noticeUser,
         isFill: this.offerInfo.isFill,
-        personId: this.offerInfo.personId,
+        personId: this.personInfo.personId,
         recruitmentId: this.personInfo.recruitmentId,
         content: this.$refs['editOfferStepThree'].getContentHtml()
       })
