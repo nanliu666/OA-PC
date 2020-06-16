@@ -1,5 +1,8 @@
 <template>
-  <div class="info-wrap">
+  <div
+    v-loading="loading"
+    class="info-wrap"
+  >
     <!-- 个人信息 -->
     <div class="info-box">
       <!-- 头像 -->
@@ -14,13 +17,13 @@
       </div>
       <!-- 姓名 -->
       <div class="name-row ">
-        <span>{{ userInfo.nick_name }}</span>
+        <span>{{ info.name }}</span>
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>人事专员</span>
+        <span>{{ info.positionName }}</span>
         <span>|</span>
-        <span>易宝软件广州分公司</span>
+        <span>{{ info.companyName }}</span>
       </div>
     </div>
 
@@ -108,13 +111,13 @@
       <div class="main-wrap">
         <div class="content">
           <div class="content-item">
-            <span class="num-box">12</span> <span class="handel">待我处理</span>
+            <span class="num-box">{{ waitForMeNum }}</span> <span class="handel">待我处理</span>
           </div>
           <div class="content-item">
-            <span class="num-box">12</span> <span class="handel">我发起的</span>
+            <span class="num-box">0</span> <span class="handel">-</span>
           </div>
           <div class="content-item">
-            <span class="num-box">12</span> <span class="handel">抄送我的</span>
+            <span class="num-box">0</span> <span class="handel">-</span>
           </div>
         </div>
       </div>
@@ -123,13 +126,25 @@
 </template>
 
 <script>
+import { getTodoList } from '@/api/todo/todo'
+import { getStaffBasicInfo } from '@/api/personalInfo'
 import { mapGetters } from 'vuex'
 export default {
   name: 'InfoViewArea',
+  data() {
+    return {
+      info: {},
+      // 待我处理
+      waitForMeNum: 0,
+      loading: false
+    }
+  },
   computed: {
     ...mapGetters(['userInfo'])
   },
-  created() {},
+  created() {
+    this.loadingUserInfo()
+  },
   methods: {
     // 点击添加员工
     jumpToAddUser() {
@@ -140,6 +155,15 @@ export default {
     // 开发中
     handelClick() {
       this.$message.info('该功能真正开发中')
+    },
+    // 获取员工信息
+    async loadingUserInfo() {
+      this.loading = true
+      let res = await getStaffBasicInfo({ userId: this.userInfo.user_id })
+      this.info = res
+      let { totalNum } = await getTodoList({ status: 'UnFinished' })
+      this.waitForMeNum = totalNum
+      this.loading = false
     }
   }
 }
