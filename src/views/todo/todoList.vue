@@ -1,7 +1,7 @@
 <template>
   <div class="fill">
     <page-header
-      title="代办中心"
+      title="待办中心"
       show-back
     />
     <basic-container block>
