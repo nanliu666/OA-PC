@@ -9,7 +9,7 @@ import { get, post } from '@/router/axios'
  * @param {String} params.type - 类型
  * */
 export const getTodoList = (params) => {
-  return get('/task/v1/todo/list', params)
+  return get('/user/v1/todo/list', params)
 }
 // 候选人面试详情查询
 export const getInterviewInfo = (params) => {

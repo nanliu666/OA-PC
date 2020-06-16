@@ -121,7 +121,7 @@ export default {
       return typeLevel
     },
     jumpToDetail(row) {
-      this.$router.push('/personnel/detail/' + row.personId)
+      this.$router.push('/personnel/personDetail/' + row.personId)
     }
   }
 }
