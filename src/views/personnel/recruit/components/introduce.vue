@@ -63,6 +63,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 export default {
   name: 'Introduce',
   props: ['Status'],
@@ -85,7 +86,7 @@ export default {
   watch: {
     Status: function(newval) {
       this.user = newval
-      this.getPercent(this.user.needNum, this.user.entryNum)
+      this.percentage(this.user)
     }
   },
   mounted() {
@@ -103,13 +104,16 @@ export default {
       })
       return typeWord
     },
-    getPercent(curNum, totalNum) {
-      curNum = parseFloat(curNum)
-      totalNum = parseFloat(totalNum)
-      if (isNaN(curNum) || isNaN(totalNum)) {
-        return '-'
-      }
-      this.user.progress = Math.round((totalNum / curNum) * 10000) / 100 + '%'
+    // getPercent(curNum, totalNum) {
+    //   curNum = parseFloat(curNum)
+    //   totalNum = parseFloat(totalNum)
+    //   if (isNaN(curNum) || isNaN(totalNum)) {
+    //     return '-'
+    //   }
+    //   this.user.progress = Math.round((totalNum / curNum) * 10000) / 100 + '%'
+    // }
+    percentage(row) {
+      this.user.progress = claAccuracy(row.needNum, row.entryNum)
     }
   }
 }

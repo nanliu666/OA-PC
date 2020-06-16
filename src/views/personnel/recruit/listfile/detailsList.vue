@@ -62,7 +62,7 @@
         slot="accuracy"
         slot-scope="{ row }"
       >
-        {{ claAccuracy(row.needNum, row.entryNum) }}
+        {{ percentage(row) }}
       </template>
 
       <template
@@ -94,6 +94,7 @@
 import { mapGetters } from 'vuex'
 import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
+import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 export default {
   name: 'DetailsList',
   components: {
@@ -324,7 +325,7 @@ export default {
       this.loading = true
       getMyRecruitment(params).then((res) => {
         this.loading = false
-        this.data = res.data
+        this.data = res.data.map((item) => ({ ...item, percentage: null }))
         this.page.total = res.totalNum
       })
     },
@@ -369,13 +370,8 @@ export default {
         query: { id: row.id }
       })
     },
-    claAccuracy(curNum, totalNum) {
-      curNum = parseFloat(curNum)
-      totalNum = parseFloat(totalNum)
-      if (isNaN(curNum) || isNaN(totalNum)) {
-        return '-'
-      }
-      return Math.round((totalNum / curNum) * 10000) / 100 + '%'
+    percentage(row) {
+      return (row.percentage = claAccuracy(row.needNum, row.entryNum))
     }
   }
 }

@@ -58,16 +58,10 @@
         </el-button>
       </template>
       <template
-        slot="workYear"
+        slot="accuracy"
         slot-scope="{ row }"
       >
-        {{ getWorkYear(row.workYear) }}
-      </template>
-      <template
-        slot="educationalLevel"
-        slot-scope="{ row }"
-      >
-        {{ getEducationalLevel(row.educationalLevel) }}
+        {{ percentage(row) }}
       </template>
 
       <template
@@ -172,7 +166,7 @@
               :span="4"
               class="taskInformation isRed  noborder"
             >
-              {{ getPercent(item.taskNum, item.entryNum) }}
+              {{ percentage(item) }}
             </el-col>
           </el-row>
         </div>
@@ -197,6 +191,7 @@ import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
 import { getAllRecruitment, getPost, queryDistribution } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
+import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 import Again from '@/views/personnel/recruit/details/again'
 import Assigned from '@/views/personnel/recruit/details/Assigned'
 import ClaLabel from '@/views/personnel/recruit/components/claLabel'
@@ -315,11 +310,6 @@ export default {
           label: '需求编号',
           prop: 'id',
           slot: true,
-          minWidth: '100px'
-        },
-        {
-          label: '用人部门',
-          prop: 'orgName',
           minWidth: '120px'
         },
         {
@@ -333,19 +323,6 @@ export default {
           minWidth: '120px'
         },
         {
-          label: '需求人数',
-          prop: 'needNum'
-        },
-        {
-          label: '已入职人数',
-          prop: 'entryNum',
-          width: '100'
-        },
-        {
-          label: '候选人数',
-          prop: 'candidateNum'
-        },
-        {
           label: '紧急程度',
           prop: 'emerType',
           slot: true
@@ -356,27 +333,23 @@ export default {
           slot: true
         },
         {
-          label: '到岗日期',
-          prop: 'joinDate',
-          minWidth: '120px'
+          label: '需求人数',
+          prop: 'needNum'
+        },
+
+        {
+          label: '已入职',
+          prop: 'entryNum'
         },
         {
-          label: '工作年限',
-          prop: 'workYear',
+          label: '招聘进度',
+          prop: 'accuracy',
+          minWidth: '120px',
           slot: true
         },
         {
-          label: '学历要求',
-          prop: 'educationalLevel',
-          slot: true
-        },
-        {
-          label: '最低薪资',
-          prop: 'minSalary'
-        },
-        {
-          label: '最高薪酬',
-          prop: 'maxSalary'
+          label: '候选人数',
+          prop: 'candidateNum'
         }
       ],
       tableConfig: {
@@ -450,22 +423,24 @@ export default {
       this.getTableData()
     },
     getTableData(params = {}) {
-      this.decorator(params)
-      this.loading = true
-      getAllRecruitment(params).then((res) => {
-        this.loading = false
-        this.data = res.data.map((item) => ({ ...item, detail: [], loading: false }))
-        this.page.total = res.totalNum
-      })
-    },
-    // 有关页面发送API请求化时 请求参数格式化
-    decorator(params) {
+      // 有关页面发送API请求化时 请求参数格式化
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
       params.userId = this.userId
       params.progress = this.params.progress
-      return params
+      this.loading = true
+      getAllRecruitment(params).then((res) => {
+        this.loading = false
+        this.data = res.data.map((item) => ({
+          ...item,
+          detail: [],
+          loading: false,
+          percentage: null
+        }))
+        this.page.total = res.totalNum
+      })
     },
+
     handleSubmit(params) {
       this.getTableData(params)
     },
@@ -533,31 +508,22 @@ export default {
       })
       return typeWord
     },
-    getEducationalLevel(type) {
-      let typeWord
-      this.getLevel.forEach((item) => {
-        if (item.dictKey === type) {
-          typeWord = item.dictValue
-        }
-      })
-      return typeWord
-    },
     recruitmentSituation(row) {
       if (!row.detail || row.detail.length === 0) {
         row.loading = true
         queryDistribution({ recruitmentId: row.id }).then((res) => {
-          row.detail = res
+          row.detail = res.map((item) => ({ ...item, percentage: null }))
           row.loading = false
         })
       }
     },
-    getPercent(curNum, totalNum) {
-      curNum = parseFloat(curNum)
-      totalNum = parseFloat(totalNum)
-      if (isNaN(curNum) || isNaN(totalNum)) {
-        return '-'
+    percentage(row) {
+      // 点击查看详情时判断使用哪个参数
+      if (row && row.taskNum) {
+        return (row.percentage = claAccuracy(row.taskNum, row.entryNum))
+      } else {
+        return (row.percentage = claAccuracy(row.needNum, row.entryNum))
       }
-      return Math.round((totalNum / curNum) * 10000) / 100 + '%'
     }
   }
 }
