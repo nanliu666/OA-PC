@@ -56,10 +56,6 @@
                   v-if="!node.users.length > 0"
                   class="tip"
                 >请选择审批人</span>
-                <span
-                  v-else
-                  class="tip"
-                >一人审批</span>
               </div>
             </div>
             <div

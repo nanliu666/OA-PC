@@ -299,7 +299,7 @@ export default {
     if (this.frist) return
     this.getTree()
     await this.getOrgData()
-    this.init()
+    this.load()
   },
   methods: {
     f(res) {

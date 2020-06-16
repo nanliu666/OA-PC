@@ -491,7 +491,7 @@
               <el-button
                 v-else
                 type="text"
-                @click="loopUpInterview"
+                @click="loopUpInterview(row)"
               >
                 查看面试登记表
               </el-button>
@@ -990,9 +990,15 @@ export default {
      * @desc 查看面试登记表
      *
      * */
-    loopUpInterview() {
+    loopUpInterview(row) {
+      let params = {
+        recruitmentId: row.recruitmentId,
+        personId: row.personId,
+        interview: row.interview
+      }
       this.$router.push({
-        path: '/personnel/candidate/registrationForm'
+        path: '/personnel/candidate/registrationForm',
+        query: params
       })
     },
     handleSend(row) {
@@ -1040,7 +1046,12 @@ export default {
     },
     handleArrange(row) {
       this.arrangeDialog = true
-      this.arrangeTitle = '安排面试'
+      if (row.status === '2') {
+        this.arrangeTitle = '安排面试'
+      } else {
+        this.arrangeTitle = '重新安排面试'
+      }
+
       this.row = JSON.parse(JSON.stringify(row))
     },
     handleExport() {},

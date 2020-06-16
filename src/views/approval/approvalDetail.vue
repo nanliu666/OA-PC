@@ -9,13 +9,13 @@
       <div class="approval">
         <div class="flex flex-justify-start flex-items title">
           <i class="el-icon-caret-bottom" />审批流程
-          <el-link
-            type="primary"
-            class="hellp"
-            @click="handleNote"
-          >
-            审批流程帮助
-          </el-link>
+          <!--          <el-link-->
+          <!--            type="primary"-->
+          <!--            class="hellp"-->
+          <!--            @click="handleNote"-->
+          <!--          >-->
+          <!--            审批流程帮助-->
+          <!--          </el-link>-->
         </div>
         <approvalcompoent :approval-list.sync="approvalList" />
         <div class="footer">
@@ -45,7 +45,7 @@
 
 <script>
 import approvalcompoent from '@/views/approval/components/approvalcompoent'
-import { getAppProcess, putAppProcess, postAppProcess } from '@/api/approval/approval'
+import { getAppProcess, postAppProcess } from '@/api/approval/approval'
 import noteDialog from '@/views/approval/components/noteDialog'
 
 export default {
@@ -116,14 +116,14 @@ export default {
         path: '/approval/approvalProcess'
       })
     },
-    /**
-     * @author guanfenda
-     * @desc 处理显示帮助弹框
-     *
-     * */
-    handleNote() {
-      this.dialogVisible = true
-    },
+    // /**
+    //  * @author guanfenda
+    //  * @desc 处理显示帮助弹框
+    //  *
+    //  * */
+    // handleNote() {
+    //   this.dialogVisible = true
+    // },
     filerData(data, list) {
       if (!(list.length >= data.length)) {
         if (list.length === 0) {
@@ -180,13 +180,13 @@ export default {
       })
       if (isUser) return //不给提交
 
-      if (this.initData.id && this.note) {
-        let params = {
-          id: this.initData.id,
-          note: this.note
-        }
-        putAppProcess(params).then(() => {})
-      }
+      // if (this.initData.id && this.note) {
+      //   let params = {
+      //     id: this.initData.id,
+      //     note: this.note
+      //   }
+      //   putAppProcess(params).then(() => {})
+      // }
       let params = {
         formKey: this.$route.query.formKey,
         note: this.note,
