@@ -55,7 +55,21 @@
           <!-- 候选人详情 -->
           <template v-else>
             <template v-if="personInfo.status === '1'">
-              <!-- <el-button type="primary" size="medium" @click="hadlePushAudit">推送审核</el-button> -->
+              <el-button
+                v-if="$route.query.pushResume === '0'"
+                type="primary"
+                size="medium"
+                @click="hadlePushAudit"
+              >
+                推送审核
+              </el-button>
+              <el-button
+                v-if="$route.query.pushResume === '1'"
+                type="text"
+                disabled
+              >
+                已推送
+              </el-button>
               <el-button
                 type="danger"
                 size="medium"

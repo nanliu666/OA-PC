@@ -241,6 +241,7 @@
 <script>
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import { provinceAndCityData } from 'element-china-area-data'
+import { getOrgTreeSimple } from '@/api/org/org'
 const cityOptions = ['上海', '北京', '广州', '深圳']
 export default {
   name: 'InputArray',
@@ -320,6 +321,12 @@ export default {
             this.$nextTick(() => {
               this.orgOptions.config.treeParams.data = it.value
               this.$refs['orgTree'] && this.$refs['orgTree'][0].treeDataUpdateFun(it.value)
+            })
+          }
+          if (it.newlybuild) {
+            getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
+              this.orgOptions.config.treeParams.data = res
+              this.$refs['orgTree'] && this.$refs['orgTree'][0].treeDataUpdateFun(res)
             })
           }
         })
