@@ -212,6 +212,7 @@
               <el-link
                 type="primary"
                 style="font-size: 17px;position: relative;top:-3px"
+                @click="jumpMyApproval"
               >
                 审批-我发起的
               </el-link>
@@ -345,6 +346,11 @@ export default {
     // ContractType
   },
   methods: {
+    jumpMyApproval() {
+      this.$router.push({
+        path: '/approval/appr/waitAppr'
+      })
+    },
     jump() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
@@ -515,7 +521,8 @@ export default {
       let params = {
         apprNo: this.apprNo,
         formId: this.applyId,
-        formKey: 'PersonOfferApply'
+        formKey: 'PersonOfferApply',
+        page: 'apply'
       }
       this.$router.push({
         path: '/approval/appr/apprDetail',

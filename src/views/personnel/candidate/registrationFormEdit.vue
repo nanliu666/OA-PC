@@ -308,7 +308,8 @@
 </template>
 
 <script>
-import { provinceAndCityData } from 'element-china-area-data'
+import { provinceAndCityData, CodeToText } from 'element-china-area-data'
+import { putpersonInfo } from '@/api/personnel/selectedPerson'
 import {
   infoForm,
   contacts,
@@ -397,39 +398,45 @@ export default {
         this.form.native = []
         val.nativeProvinceCode && this.form.native.push(val.nativeProvinceCode)
         val.nativeCityCode && this.form.native.push(val.nativeCityCode)
-        val.emer.map((it) => {
-          this.contactsform = []
-          this.contactsform.push({ contacts: contacts, form: { ...it } })
-        })
-        val.family.map((it) => {
-          this.familyform = []
-          this.familyform.push({ family: family, form: { ...it } })
-        })
-        val.education.map((it) => {
-          it.educationTime = []
-          it.beginDate && it.educationTime.push(it.beginDate)
-          it.endDate && it.educationTime.push(it.endDate)
-          this.educationform = []
-          this.educationform.push({ education: education, form: { ...it } })
-        })
-        val.work.map((it) => {
-          it.workTime = []
-          it.beginWorkDate && it.workTime.push(it.beginWorkDate)
-          it.endWorkDate && it.workTime.push(it.endWorkDate)
-          this.workform = []
-          this.workform.push({ work: work, form: { ...it } })
-        })
-        val.train.map((it) => {
-          it.time = []
-          it.beginDate && it.time.push(it.beginDate)
-          it.endDate && it.time.push(it.endDate)
-          this.trainform = []
-          this.trainform.push({ train: train, form: { ...it } })
-        })
-        val.certificate.map((it) => {
-          this.certificateform = []
-          this.certificateform.push({ certificate: certificate, form: { ...it } })
-        })
+        val.emer &&
+          val.emer.map((it) => {
+            this.contactsform = []
+            this.contactsform.push({ contacts: contacts, form: { ...it } })
+          })
+        val.family &&
+          val.family.map((it) => {
+            this.familyform = []
+            this.familyform.push({ family: family, form: { ...it } })
+          })
+        val.education &&
+          val.education.map((it) => {
+            it.educationTime = []
+            it.beginDate && it.educationTime.push(it.beginDate)
+            it.endDate && it.educationTime.push(it.endDate)
+            this.educationform = []
+            this.educationform.push({ education: education, form: { ...it } })
+          })
+        val.work &&
+          val.work.map((it) => {
+            it.workTime = []
+            it.beginWorkDate && it.workTime.push(it.beginWorkDate)
+            it.endWorkDate && it.workTime.push(it.endWorkDate)
+            this.workform = []
+            this.workform.push({ work: work, form: { ...it } })
+          })
+        val.emer &&
+          val.train.map((it) => {
+            it.time = []
+            it.beginDate && it.time.push(it.beginDate)
+            it.endDate && it.time.push(it.endDate)
+            this.trainform = []
+            this.trainform.push({ train: train, form: { ...it } })
+          })
+        val.certificate &&
+          val.certificate.map((it) => {
+            this.certificateform = []
+            this.certificateform.push({ certificate: certificate, form: { ...it } })
+          })
       },
       immediate: true
     },
@@ -489,8 +496,116 @@ export default {
         }
       })
     },
+    /**
+     * @author guanfenda
+     * 判断是否更新和修改
+     * */
+    dataPush(form, type) {
+      form.map((it) => {
+        // 判断是否更新和修改
+        if (it.form.id) {
+          it.form.operatorType = 'Update'
+          type.push(it.form)
+        } else {
+          let isAdd = false
+          for (let key in it.form) {
+            if (key) {
+              isAdd = true
+            }
+          }
+          if (!isAdd) return
+          it.form.operatorType = 'Add'
+          type.push(it.form)
+        }
+      })
+    },
+    /***
+     *
+     * @author guanfenda
+     * 判断是否删除
+     *
+     * */
+    datadelete(form, type) {
+      form.map((it) => {
+        // 判断是否更新和修改
+        let index = type.findIndex((item) => {
+          return it.id === item.id
+        })
+        if (index < 0) {
+          it.operatorType = 'Del'
+          type.push(it)
+        }
+      })
+    },
+    /**
+     * @author guanfenda
+     * 登记表提交
+     * */
     handleSave() {
-      this.$emit('close')
+      this.$refs.form
+        .validate()
+        .then(() => {
+          let emer = []
+          this.dataPush(this.contactsform, emer)
+          this.data.emer && this.datadelete(this.data.emer, emer)
+          let family = []
+          this.dataPush(this.familyform, family)
+          this.data.family && this.datadelete(this.data.family, family)
+          let education = []
+          this.dataPush(this.educationform, education)
+          this.data.education && this.datadelete(this.data.education, education)
+          let work = []
+          this.dataPush(this.workform, work)
+          this.data.work && this.datadelete(this.data.work, work)
+          let train = []
+          this.dataPush(this.trainform, train)
+          this.data.train && this.datadelete(this.data.train, train)
+          let certificate = []
+          this.dataPush(this.certificateform, certificate)
+          this.data.certificate && this.datadelete(this.data.certificate, certificate)
+          education.map((it) => {
+            if (it.educationTime.length > 0) {
+              it.beginDate = it.educationTime[0]
+              it.endDate = it.educationTime[1]
+            }
+          })
+          work.map((it) => {
+            if (it.workTime.length > 0) {
+              it.beginWorkDate = it.workTime[0]
+              it.beginWorkDate = it.workTime[1]
+            }
+          })
+          train.map((it) => {
+            if (it.time.length > 0) {
+              it.beginDate = it.time[0]
+              it.endDate = it.time[1]
+            }
+          })
+          this.form.nativeProvinceCode = this.form.native[0] || ''
+          this.form.nativeProvinceName = CodeToText[this.form.native[0]] || ''
+          this.form.nativeCityCode = this.form.native[1] || ''
+          this.form.nativeCityName = CodeToText[this.form.native[1]] || ''
+          let params = {
+            personId: this.$route.query.personId,
+            ...this.form,
+            emer: emer,
+            family: family,
+            education: education,
+            work: work,
+            train: train,
+            certificate: certificate
+          }
+          this.loading = true
+          putpersonInfo(params).then(() => {
+            this.loading = false
+            this.$message.success('提交成功')
+            this.$emit('close')
+          })
+        })
+        .catch(() => {
+          this.loading = false
+          this.$refs.form.scrollIntoView()
+        })
     },
     close() {
       this.$emit('close')
