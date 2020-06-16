@@ -267,6 +267,7 @@
     <div v-else>
       <edit
         :modity="modity"
+        :data="data"
         @close="handleClose"
       />
     </div>
@@ -288,6 +289,10 @@ export default {
         department: 'ucd部门',
         position: 'ue设计师',
         status: '面试中'
+      },
+      data: {},
+      potions: {
+        form: this.basic
       },
       basic: {
         name: '',
@@ -474,7 +479,7 @@ export default {
       trainAttr: [
         {
           prop: 'time',
-          label: '受教育'
+          label: '培训日期'
         },
         {
           prop: 'name',
@@ -521,7 +526,7 @@ export default {
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
       this.EducationalLevel = res
     })
-    this.$store.dispatch('CommonDict', 'nation').then((res) => {
+    this.$store.dispatch('CommonDict', 'Nation').then((res) => {
       this.nation = res
     })
     this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
@@ -592,6 +597,7 @@ export default {
         personId: this.$route.query.personId
       }
       getpersonInfo(params).then((res) => {
+        this.data = res
         for (let key in this.basic) {
           this.basic[key] = res[key]
         }
