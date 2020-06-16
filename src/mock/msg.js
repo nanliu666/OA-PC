@@ -24,4 +24,16 @@ export default ({ mock }) => {
       }
     }
   })
+  // 该消息标记为已读
+  Mock.mock(new RegExp('/api/msg/v1/msg/notify/read' + '.*'), 'post', () => {
+    return {
+      response: 'OK'
+    }
+  })
+  // 删除所有已读信息
+  Mock.mock(new RegExp('/api/msg/v1/msg/notify/read/del' + '.*'), 'post', () => {
+    return {
+      response: 'OK'
+    }
+  })
 }
