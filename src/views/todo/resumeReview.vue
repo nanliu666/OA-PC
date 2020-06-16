@@ -7,9 +7,12 @@
     <basic-container block>
       <div class="inner-header">
         <div class="title">
-          王嘉尔（IOS工程师）的简历审核
+          {{ personData.name }}（{{ personData.jobName }}）的简历审核
         </div>
-        <div class="button-wr">
+        <div
+          v-if="resumeData.status === 'UnCheck'"
+          class="button-wr"
+        >
           <el-button
             type="primary"
             size="medium"
@@ -82,7 +85,10 @@
           </span>
         </div>
       </div>
-      <person-detail :person-id="resumeData.personId" />
+      <person-detail
+        :person-id="resumeData.personId"
+        @update="updatePersonData"
+      />
       <resume-pass
         :id="id"
         ref="resumePass"
@@ -120,7 +126,8 @@ export default {
       resumeData: {},
       statusDict,
       passVisible: false,
-      rejectVisible: false
+      rejectVisible: false,
+      personData: {}
     }
   },
   created() {
@@ -142,6 +149,9 @@ export default {
     },
     handleReject() {
       this.$refs.resumeReject.init()
+    },
+    updatePersonData(personData) {
+      this.personData = personData
     }
   }
 }
