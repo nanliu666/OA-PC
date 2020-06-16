@@ -230,7 +230,7 @@ export default {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
                   this.loading = false
                   this.$message({ type: 'success', message: '提交成功' })
-                  if (this.loading) this.goBack()
+                  this.goBack()
                 })
               }
             })
