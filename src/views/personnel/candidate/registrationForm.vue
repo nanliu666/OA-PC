@@ -69,11 +69,44 @@
               <div style="text-align: right">
                 {{ info.text }}：
               </div>
-              <div>{{ basic[info.attribute] }}</div>
+              <div>{{ filterData(basic[info.attribute], info.attribute) }}</div>
             </div>
           </div>
         </div>
         <div />
+      </div>
+      <div class="family">
+        <div class="title">
+          家庭信息
+        </div>
+        <div>
+          <el-table
+            ref="table"
+            :data="familyData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              v-for="(item, index) in familyAttr"
+              :key="index"
+              show-overflow-tooltip
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            >
+              <template slot-scope="scope">
+                <template v-if="item.prop === 'relationship'">
+                  <div class="row">
+                    {{ formatter(scope.row[item.prop], UserRelationship) }}
+                  </div>
+                </template>
+                <template v-else>
+                  {{ scope.row[item.prop] }}
+                </template>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
       <div class="contacts">
         <div class="title">
@@ -82,17 +115,29 @@
         <div>
           <el-table
             ref="table"
-            :data="contactsData"
+            :data="emer"
             stripe
             style="width: 100%"
           >
             <el-table-column
-              v-for="(item, index) in contactsAttr"
+              v-for="(item, index) in emerAttr"
               :key="index"
+              show-overflow-tooltip
               :prop="item.prop"
               :label="item.label"
               :width="item.width"
-            />
+            >
+              <template slot-scope="scope">
+                <template v-if="item.prop === 'relationship'">
+                  <div class="row">
+                    {{ formatter(scope.row[item.prop], UserRelationship) }}
+                  </div>
+                </template>
+                <template v-else>
+                  {{ scope.row[item.prop] }}
+                </template>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -110,10 +155,27 @@
             <el-table-column
               v-for="(item, index) in attr"
               :key="index"
+              show-overflow-tooltip
               :prop="item.prop"
               :label="item.label"
               :width="item.width"
-            />
+            >
+              <template slot-scope="scope">
+                <template v-if="item.prop === 'educationalLevel'">
+                  <div class="row">
+                    {{ formatter(scope.row[item.prop], EducationalLevel) }}
+                  </div>
+                </template>
+                <template v-else-if="item.prop === 'educationalType'">
+                  <div class="row">
+                    {{ formatter(scope.row[item.prop], EducationalType) }}
+                  </div>
+                </template>
+                <template v-else>
+                  {{ scope.row[item.prop] }}
+                </template>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -124,17 +186,34 @@
         <div>
           <el-table
             ref="table"
-            :data="EducationalData"
+            :data="workData"
             stripe
             style="width: 100%"
           >
             <el-table-column
               v-for="(item, index) in workAttr"
               :key="index"
+              show-overflow-tooltip
               :prop="item.prop"
               :label="item.label"
               :width="item.width"
-            />
+            >
+              <template slot-scope="scope">
+                <template v-if="item.prop === 'salary'">
+                  <div class="row">
+                    {{ scope.row[item.prop] }}元
+                  </div>
+                </template>
+                <template v-else-if="item.prop === 'isSecret'">
+                  <div class="row">
+                    {{ isSecret === 1 ? '有' : '无' }}
+                  </div>
+                </template>
+                <template v-else>
+                  {{ scope.row[item.prop] }}
+                </template>
+              </template>
+            </el-table-column>
           </el-table>
           <div class="tip">
             与其它公司间有无守密义务或竞业禁止义务：无
@@ -155,6 +234,7 @@
             <el-table-column
               v-for="(item, index) in trainAttr"
               :key="index"
+              show-overflow-tooltip
               :prop="item.prop"
               :label="item.label"
               :width="item.width"
@@ -183,27 +263,6 @@
           </el-table>
         </div>
       </div>
-      <div class="family">
-        <div class="title">
-          家庭信息
-        </div>
-        <div>
-          <el-table
-            ref="table"
-            :data="familyData"
-            stripe
-            style="width: 100%"
-          >
-            <el-table-column
-              v-for="(item, index) in familyAttr"
-              :key="index"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-            />
-          </el-table>
-        </div>
-      </div>
     </div>
     <div v-else>
       <edit
@@ -215,6 +274,7 @@
 </template>
 
 <script>
+import { getpersonInfo } from '@/api/personnel/selectedPerson'
 import edit from './registrationFormEdit'
 export default {
   name: 'RegistrationForm',
@@ -230,20 +290,23 @@ export default {
         status: '面试中'
       },
       basic: {
-        name: '张琪',
-        six: '男',
-        age: 23,
-        marriage: '已婚',
-        birth: '1998',
-        height: '188cm',
-        weight: '70kg',
-        education: '本科',
-        adress: '广东省阳江市阳西县溪头镇丰头村委会东红村22号',
-        contacts: '张良',
-        type: '城镇',
-        PresentAddress: '广州市黄埔区新西发士大夫',
-        relatives: '有',
-        telephtone: '15089906928'
+        name: '',
+        sex: '',
+        phonenum: '',
+        email: '',
+        idType: '',
+        idNo: '',
+        birthDate: '',
+        educationalLevel: '',
+        firstWorkDate: '',
+        marriage: '',
+        health: '',
+        nation: '',
+        politicalStatus: '',
+        native: '',
+        householdType: '',
+        idAddress: '',
+        userAddress: ''
       },
       basicInfo: [
         {
@@ -251,259 +314,71 @@ export default {
           text: '姓名'
         },
         {
-          attribute: 'six',
+          attribute: 'sex',
           text: '性别'
         },
         {
-          attribute: 'age',
-          text: '年龄'
+          attribute: 'phonenum',
+          text: '手机号码'
+        },
+        {
+          attribute: 'email',
+          text: '邮箱'
+        },
+        {
+          attribute: 'idType',
+          text: '证件类型'
+        },
+        {
+          attribute: 'idNo',
+          text: '证件号码'
+        },
+        {
+          attribute: 'birthDate',
+          text: '出生日期'
+        },
+        {
+          attribute: 'educationalLevel',
+          text: '最高学历'
+        },
+        {
+          attribute: 'firstWorkDate',
+          text: '首次参加工作时间'
         },
         {
           attribute: 'marriage',
           text: '婚姻状况'
         },
         {
-          attribute: 'birth',
-          text: '出生日期'
+          attribute: 'health',
+          text: '健康状况'
         },
         {
-          attribute: 'height',
-          text: '身高'
+          attribute: 'nation',
+          text: '民族'
         },
         {
-          attribute: 'weight',
-          text: '体重'
+          attribute: 'politicalStatus',
+          text: '政治面貌'
         },
         {
-          attribute: 'education',
-          text: '最高学历'
+          attribute: 'native',
+          text: '籍贯'
         },
         {
-          attribute: 'adress',
-          text: '身份证地址'
-        },
-        {
-          attribute: 'type',
+          attribute: 'householdType',
           text: '户口类型'
         },
         {
-          attribute: 'contacts',
-          text: '紧急联系人'
+          attribute: 'idAddress',
+          text: '身份证地址'
         },
         {
-          attribute: 'PresentAddress',
+          attribute: 'userAddress',
           text: '现住址'
-        },
-        {
-          attribute: 'relatives',
-          text: '是否有亲属再本公司工作'
-        },
-        {
-          attribute: 'telephtone',
-          text: '紧急电话'
         }
       ],
-      contactsData: [
-        {
-          name: '张良',
-          relationship: '父亲',
-          telephone: '15915988899'
-        },
-        {
-          name: '张良',
-          relationship: '父亲',
-          telephone: '15915988899'
-        },
-        {
-          name: '张良',
-          relationship: '父亲',
-          telephone: '15915988899'
-        }
-      ],
-      contactsAttr: [
-        {
-          prop: 'name',
-          label: '紧急联系人姓名'
-        },
-        {
-          prop: 'relationship',
-          label: '紧急联系人关系'
-        },
-        {
-          prop: 'telephone',
-          label: '紧急联系人电话'
-        }
-      ],
-      EducationalData: [
-        {
-          educationTime: '2012-09-15至2016-06-15',
-          schoolName: '广州大学',
-          major: '计算机信息工程',
-          education: '本科',
-          typesOfducation: '统招'
-        },
-        {
-          educationTime: '2012-09-15至2016-06-15',
-          schoolName: '广州大学',
-          major: '计算机信息工程',
-          education: '本科',
-          typesOfducation: '统招'
-        },
-        {
-          educationTime: '2012-09-15至2016-06-15',
-          schoolName: '广州大学',
-          major: '计算机信息工程',
-          education: '本科',
-          typesOfducation: '统招'
-        }
-      ],
-      workData: [
-        {
-          educationTime: '2012-09-15至2016-06-15',
-          schoolName: '腾讯科技(深圳)有限公司',
-          major: '工业设计工程',
-          education: '30k/月',
-          typesOfducation: '统招',
-          fixedTelephone: '5567515'
-        },
-        {
-          educationTime: '2012-09-15至2016-06-15',
-          schoolName: '腾讯科技(深圳)有限公司',
-          major: '工业设计工程',
-          education: '30k/月',
-          typesOfducation: '统招',
-          fixedTelephone: '5567515'
-        },
-        {
-          educationTime: '2012-09-15至2016-06-15',
-          schoolName: '腾讯科技(深圳)有限公司',
-          major: '工业设计工程',
-          education: '30k/月',
-          typesOfducation: '统招',
-          fixedTelephone: '5567515'
-        }
-      ],
-      workAttr: [
-        {
-          prop: 'educationTime',
-          label: '在职时间'
-        },
-        {
-          prop: 'schoolName',
-          label: '单位名称'
-        },
-        {
-          prop: 'major',
-          label: '职位名称'
-        },
-        {
-          prop: 'education',
-          label: '薪资'
-        },
-        {
-          prop: 'typesOfducation',
-          label: '单位联系人'
-        },
-        {
-          prop: 'fixedTelephone',
-          label: '固定电话'
-        }
-      ],
-      trainData: [
-        {
-          time: '2017-09 至 2019-06',
-          curriculum: '中国体验设计大会',
-          organ: '上海易宝软件有限公司'
-        },
-        {
-          time: '2017-09 至 2019-06',
-          curriculum: '中国体验设计大会',
-          organ: '上海易宝软件有限公司'
-        },
-        {
-          time: '2017-09 至 2019-06',
-          curriculum: '中国体验设计大会',
-          organ: '上海易宝软件有限公司'
-        }
-      ],
-      trainAttr: [
-        {
-          prop: 'time',
-          label: '受教育'
-        },
-        {
-          prop: 'curriculum',
-          label: '培训课程'
-        },
-        {
-          prop: 'organ',
-          label: '培训机构'
-        }
-      ],
-      qualificationData: [
-        {
-          name: '计算机8级',
-          code: 'JSJ02231',
-          organ: '广州市教育局',
-          time: '2019-12-01'
-        },
-        {
-          name: '计算机8级',
-          code: 'JSJ02231',
-          organ: '广州市教育局',
-          time: '2019-12-01'
-        },
-        {
-          name: '计算机8级',
-          code: 'JSJ02231',
-          organ: '广州市教育局',
-          time: '2019-12-01'
-        }
-      ],
-      qualificationAttr: [
-        {
-          prop: 'name',
-          label: '证书名称'
-        },
-        {
-          prop: 'code',
-          label: '证书编号'
-        },
-        {
-          prop: 'organ',
-          label: '发证机构'
-        },
-        {
-          prop: 'time',
-          label: '发证日期'
-        }
-      ],
-      familyData: [
-        {
-          relationship: '弟弟',
-          name: '王嘉尔',
-          age: '23',
-          workUnit: '腾讯科技(深圳)有限公司',
-          post: '工业设计工程',
-          fixedTelephone: '13989088767'
-        },
-        {
-          relationship: '弟弟',
-          name: '王嘉尔',
-          age: '23',
-          workUnit: '腾讯科技(深圳)有限公司',
-          post: '工业设计工程',
-          fixedTelephone: '13989088767'
-        },
-        {
-          relationship: '弟弟',
-          name: '王嘉尔',
-          age: '23',
-          workUnit: '腾讯科技(深圳)有限公司',
-          post: '工业设计工程',
-          fixedTelephone: '13989088767'
-        }
-      ],
+      familyData: [],
       familyAttr: [
         {
           prop: 'relationship',
@@ -518,18 +393,34 @@ export default {
           label: '年龄'
         },
         {
-          prop: 'workUnit',
+          prop: 'companyName',
           label: '工作单位'
         },
         {
-          prop: 'post',
-          label: '职务'
+          prop: 'jobName',
+          label: '职位'
         },
         {
-          prop: 'fixedTelephone',
-          label: '固定电话'
+          prop: 'phone',
+          label: '联系电话'
         }
       ],
+      emer: [],
+      emerAttr: [
+        {
+          prop: 'name',
+          label: '紧急联系人姓名'
+        },
+        {
+          prop: 'relationship',
+          label: '紧急联系人关系'
+        },
+        {
+          prop: 'phone',
+          label: '紧急联系人电话'
+        }
+      ],
+      EducationalData: [],
       attr: [
         {
           prop: 'educationTime',
@@ -540,21 +431,188 @@ export default {
           label: '学校名称'
         },
         {
-          prop: 'major',
+          prop: 'majorName',
           label: '专业'
         },
         {
-          prop: 'education',
+          prop: 'educationalLevel',
           label: '学历'
         },
         {
-          prop: 'typesOfducation',
+          prop: 'educationalType',
           label: '教育类型'
         }
-      ]
+      ],
+      workData: [],
+      workAttr: [
+        {
+          prop: 'workTime',
+          label: '在职时间'
+        },
+        {
+          prop: 'companyName',
+          label: '单位名称'
+        },
+        {
+          prop: 'jobName',
+          label: '职位名称'
+        },
+        {
+          prop: 'salary',
+          label: '薪资'
+        },
+        {
+          prop: 'witnessName',
+          label: '证明人名称'
+        },
+        {
+          prop: 'witnessPhone',
+          label: '证明人电话'
+        }
+      ],
+      trainData: [],
+      trainAttr: [
+        {
+          prop: 'time',
+          label: '受教育'
+        },
+        {
+          prop: 'name',
+          label: '培训课程'
+        },
+        {
+          prop: 'companyName',
+          label: '培训机构'
+        }
+      ],
+      qualificationData: [],
+      qualificationAttr: [
+        {
+          prop: 'name',
+          label: '证书名称'
+        },
+        {
+          prop: 'code',
+          label: '证书编号'
+        },
+        {
+          prop: 'companyName',
+          label: '发证机构'
+        },
+        {
+          prop: 'issueDate',
+          label: '发证日期'
+        }
+      ],
+      idType: [],
+      EducationalLevel: [],
+      nation: [],
+      PoliticalStatus: [],
+      HouseholdType: [],
+      UserRelationship: [],
+      EducationalType: []
     }
   },
+  mounted() {
+    this.getData()
+    this.$store.dispatch('CommonDict', 'idType').then((res) => {
+      this.idType = res
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.EducationalLevel = res
+    })
+    this.$store.dispatch('CommonDict', 'nation').then((res) => {
+      this.nation = res
+    })
+    this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
+      this.PoliticalStatus = res
+    })
+    this.$store.dispatch('CommonDict', 'HouseholdType').then((res) => {
+      this.HouseholdType = res
+    })
+    this.$store.dispatch('CommonDict', 'UserRelationship').then((res) => {
+      this.UserRelationship = res
+    })
+    this.$store.dispatch('CommonDict', 'EducationalType').then((res) => {
+      this.EducationalType = res
+    })
+  },
   methods: {
+    value(typelist, data) {
+      let value = ''
+      typelist.map((item) => {
+        if (item.dictKey === data) {
+          value = item.dictValue
+        }
+      })
+      return value
+    },
+    formatter(data, type) {
+      let val = this.value(type, data)
+      return val
+    },
+    /***
+     * author guanfenda
+     *
+     * @desc 格式basec数据
+     *
+     * */
+    filterData(data, key) {
+      let params = ''
+      switch (key) {
+        case 'sex':
+          params = data === 1 ? '男' : '女'
+          break
+        case 'idType':
+          params = this.value(this.idType, data)
+          break
+        case 'educationalLevel':
+          params = this.value(this.EducationalLevel, data)
+          break
+        case 'nation':
+          params = this.value(this.nation, data)
+          break
+        case 'marriage':
+          params = data === 1 ? '已婚' : '未婚'
+          break
+        case 'politicalStatus':
+          params = this.value(this.PoliticalStatus, data)
+          break
+        case 'householdType':
+          params = this.value(this.HouseholdType, data)
+          break
+        default:
+          params = data
+          break
+      }
+      return params
+    },
+    getData() {
+      let params = {
+        personId: this.$route.query.personId
+      }
+      getpersonInfo(params).then((res) => {
+        for (let key in this.basic) {
+          this.basic[key] = res[key]
+        }
+        this.basic.native = res.nativeProvinceName + res.nativeCityName
+        this.emer = res.emer
+        this.familyData = res.family
+        this.EducationalData = res.education
+        this.EducationalData.map((it) => {
+          it.educationTime = it.beginDate + ' ~ ' + it.endDate
+        })
+        this.workData = res.work
+        this.workData.map((it) => {
+          it.workTime = it.beginWorkDate + ' ~ ' + it.endWorkDate
+        })
+        this.trainData = res.train
+        this.trainData.map((it) => {
+          it.time = it.beginDate + ' ~ ' + it.endDate
+        })
+        this.qualificationData = res.certificate
+      })
+    },
     handleClose() {
       this.isEdit = !this.isEdit
     },
@@ -701,7 +759,7 @@ export default {
   padding: 0 24px 0px 24px;
 }
 .family {
-  margin-bottom: 60px;
+  /*margin-bottom: 60px;*/
 }
 .tip {
   color: #a0a8ae;

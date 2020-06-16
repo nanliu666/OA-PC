@@ -49,7 +49,6 @@ export default {
   name: 'Entrystaff',
   data() {
     return {
-      childData: [],
       user: {
         joinDate: null,
         userName: null,
@@ -133,7 +132,6 @@ export default {
     getData() {
       getRecruitmentDetail(this.$route.query.id).then((res) => {
         this.user = res
-        this.childData = res
       })
     },
     ReplicationCache(id) {

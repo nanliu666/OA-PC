@@ -53,6 +53,7 @@
             :require-options="searchConfig.requireOptions"
             :popover-options="searchConfig.popoverOptions"
             @submit="handleSubmit"
+            @reset="handleReset"
           />
           <el-button
             type="text"
@@ -180,7 +181,7 @@ export default {
       return moment().diff(moment(row.endDate)) > 0
     },
     getWarnText(row) {
-      return moment().diff(moment(row.startDate), 'days')
+      return moment().diff(moment(row.beginDate), 'days')
     },
     handleTabChange() {
       this.page.currentPage = 1
@@ -219,6 +220,13 @@ export default {
         })
       } else if (row.type === 'InterviewRegister') {
         // 面试登记表
+
+        this.$router.push({
+          path: '/personnel/candidate/registrationForm',
+          query: {
+            personId: row.bizId
+          }
+        })
         //
       } else if (row.type === 'Entry') {
         // 入职办理
@@ -233,6 +241,10 @@ export default {
         // 离职办理
         //
       }
+    },
+    handleReset() {
+      this.query = { status: this.query.status }
+      // this.loadData()
     },
     handleSubmit(params) {
       this.query = { ...this.query, ...params }

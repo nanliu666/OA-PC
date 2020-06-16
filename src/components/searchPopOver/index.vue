@@ -459,6 +459,7 @@ export default {
           item.data = ''
         }
       })
+      this.$emit('reset')
     }
   }
 }
