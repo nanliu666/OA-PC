@@ -293,8 +293,8 @@ export default {
       ],
       newActiveName: 'workNews',
       msgQuery: {
-        pageNo: '',
-        pageSize: '',
+        pageNo: '1',
+        pageSize: '10',
         userId: '',
         type: '',
         isRead: null
@@ -319,7 +319,6 @@ export default {
       let toDoRes = await getTodoList(this.todoQuery)
       this.toDoListData = toDoRes.data
       this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
-
       this.todoQuery.isWarn = 1
       let warningRes = await getTodoList(this.todoQuery)
       this.warningList = warningRes.data
@@ -401,8 +400,10 @@ export default {
     },
     async loadingMsgData() {
       this.warnLoading = true
-      this.todoQuery.userId = this.userId
-      let { data } = await getMsgList(this.todoQuery)
+      this.msgQuery.userId = this.userId
+      let { data } = await getMsgList(this.msgQuery).finally(() => {
+        this.warnLoading = false
+      })
       this.msgWorkList = data.filter((item) => {
         return item.type === 'Work'
       })
@@ -415,7 +416,6 @@ export default {
       this.msgSystemList.sort((a, b) => {
         return a.isRead - b.isRead
       })
-      this.warnLoading = false
     },
     // 跳去信息中心
     goMsgCenter() {
