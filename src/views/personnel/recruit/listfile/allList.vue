@@ -177,12 +177,12 @@
     <again
       ref="Again"
       :visible.sync="createAgain"
-      @getTableData="getTableData"
+      @refresh="getTableData()"
     />
     <assigned
       ref="Assigned"
       :visible.sync="createAssigned"
-      @getTableData="getTableData"
+      @refresh="getTableData()"
     />
   </div>
 </template>
@@ -410,6 +410,9 @@ export default {
     this.getTableData()
   },
   methods: {
+    refresNew() {
+      this.getTableData({})
+    },
     getWorkProperty(type) {
       let typeWord
       this.WorkProperty.forEach((item) => {
