@@ -58,7 +58,7 @@
           <el-button
             type="text"
             class="refresh"
-            icon="el-icon-refresh-right"
+            icon="icon-basics-refresh-outlined"
             size="medium"
             @click="loadData"
           />

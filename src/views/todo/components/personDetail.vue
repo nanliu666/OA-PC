@@ -182,13 +182,11 @@ export default {
       getPersonInfo(personId)
         .then((res) => {
           this.personData = res
+          this.$emit('update', res)
         })
         .finally(() => {
           this.loading = false
         })
-    },
-    getPersonData() {
-      return this.personData
     }
   }
 }
