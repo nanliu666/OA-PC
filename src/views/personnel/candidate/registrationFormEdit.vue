@@ -37,10 +37,15 @@
         基本信息
       </div>
       <div style="margin:0 100px;">
-        <inputArray
-          ref="info"
-          :form.sync="form"
-          :info-form.sync="infoForm"
+        <!--        <inputArray-->
+        <!--          ref="info"-->
+        <!--          :form.sync="form"-->
+        <!--          :info-form.sync="infoForm"-->
+        <!--        />-->
+        <commonForm
+          ref="form"
+          :model="form"
+          :columns="infoForm"
         />
       </div>
     </div>
@@ -64,10 +69,15 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
+          <!--          <inputArray-->
+          <!--            :ref="`contacts${i}`"-->
+          <!--            :info-form.sync="contacts.contacts"-->
+          <!--            :form="contacts.form"-->
+          <!--          />-->
+          <commonForm
             :ref="`contacts${i}`"
-            :info-form.sync="contacts.contacts"
-            :form="contacts.form"
+            :model="contacts.form"
+            :columns="contacts.contacts"
           />
         </div>
 
@@ -99,11 +109,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
+          <commonForm
             :ref="`family${i}`"
-            :info-form.sync="family.family"
-            :form="family.form"
+            :model="family.form"
+            :columns="family.family"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`family${i}`"-->
+          <!--            :info-form.sync="family.family"-->
+          <!--            :form="family.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -134,11 +149,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="education.education"
-            :form="education.form"
+          <commonForm
+            :ref="`education$${i}`"
+            :model="education.form"
+            :columns="education.education"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`education${i}`"-->
+          <!--            :info-form.sync="education.education"-->
+          <!--            :form="education.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -169,11 +189,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="work.work"
-            :form="work.form"
+          <commonForm
+            :ref="`work${i}`"
+            :model="work.form"
+            :columns="work.work"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`education${i}`"-->
+          <!--            :info-form.sync="work.work"-->
+          <!--            :form="work.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -204,11 +229,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="train.train"
-            :form="train.form"
+          <commonForm
+            :ref="`train${i}`"
+            :model="train.form"
+            :columns="train.train"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`train${i}`"-->
+          <!--            :info-form.sync="train.train"-->
+          <!--            :form="train.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -239,11 +269,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="certificate.certificate"
-            :form="certificate.form"
+          <commonForm
+            :ref="`certificate${i}`"
+            :model="certificate.form"
+            :columns="certificate.certificate"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`certificate${i}`"-->
+          <!--            :info-form.sync="certificate.certificate"-->
+          <!--            :form="certificate.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -273,7 +308,7 @@
 </template>
 
 <script>
-import inputArray from './components/inputArray'
+import { provinceAndCityData } from 'element-china-area-data'
 import {
   infoForm,
   contacts,
@@ -283,15 +318,18 @@ import {
   train,
   certificate
 } from './components/userInfo'
-
 export default {
   name: 'RegistrationFormEdit',
-  components: {
-    inputArray
-  },
+  components: {},
   props: {
     modity: {
       type: Boolean
+    },
+    data: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {
@@ -322,34 +360,135 @@ export default {
         status: '面试中'
       },
       form: {
-        name: '1',
-        six: '1',
-        age: '1',
-        phone: '',
+        name: '',
+        sex: '',
+        phonenum: '',
         email: '',
-        healthy: '',
-        fisrtWork: '',
-        nativePlace: '',
-        newAddress: '',
-        IDaddress: '',
-        householdRegister: '',
+        idType: '',
+        idNo: '',
+        birthDate: '',
+        educationalLevel: '',
+        firstWorkDate: '',
+        marriage: '',
+        health: '',
         nation: '',
-        marriage: '1',
-        birth: '1',
-        height: '1',
-        weight: '1',
-        education: '1',
-        adress: '1',
-        contacts: '1',
-        type: '1',
-        PresentAddress: '1',
-        relatives: '1',
-        telephone: '1'
-      }
+        politicalStatus: '',
+        native: [],
+        householdType: '',
+        idAddress: '',
+        userAddress: ''
+      },
+      idType: [],
+      EducationalLevel: [],
+      Nation: [],
+      PoliticalStatus: [],
+      HouseholdType: [],
+      UserRelationship: [],
+      EducationalType: []
     }
   },
-  mounted() {},
+  watch: {
+    data: {
+      handler(val) {
+        for (let key in this.form) {
+          this.form[key] = val[key]
+        }
+        this.form.native = [val.nativeProvinceCode]
+        this.form.native = []
+        val.nativeProvinceCode && this.form.native.push(val.nativeProvinceCode)
+        val.nativeCityCode && this.form.native.push(val.nativeCityCode)
+        val.emer.map((it) => {
+          this.contactsform = []
+          this.contactsform.push({ contacts: contacts, form: { ...it } })
+        })
+        val.family.map((it) => {
+          this.familyform = []
+          this.familyform.push({ family: family, form: { ...it } })
+        })
+        val.education.map((it) => {
+          it.educationTime = []
+          it.beginDate && it.educationTime.push(it.beginDate)
+          it.endDate && it.educationTime.push(it.endDate)
+          this.educationform = []
+          this.educationform.push({ education: education, form: { ...it } })
+        })
+        val.work.map((it) => {
+          it.workTime = []
+          it.beginWorkDate && it.workTime.push(it.beginWorkDate)
+          it.endWorkDate && it.workTime.push(it.endWorkDate)
+          this.workform = []
+          this.workform.push({ work: work, form: { ...it } })
+        })
+        val.train.map((it) => {
+          it.time = []
+          it.beginDate && it.time.push(it.beginDate)
+          it.endDate && it.time.push(it.endDate)
+          this.trainform = []
+          this.trainform.push({ train: train, form: { ...it } })
+        })
+        val.certificate.map((it) => {
+          this.certificateform = []
+          this.certificateform.push({ certificate: certificate, form: { ...it } })
+        })
+      },
+      immediate: true
+    },
+    form: {
+      handler() {},
+      deep: true
+    },
+    educationform: {
+      handler() {},
+      deep: true
+    }
+  },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'idType').then((res) => {
+      this.idType = res
+      this.options(this.infoForm, 'idType', res)
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.EducationalLevel = res
+      this.options(this.infoForm, 'educationalLevel', res)
+      this.options(education, 'educationalLevel', res)
+    })
+    this.$store.dispatch('CommonDict', 'Nation').then((res) => {
+      this.Nation = res
+      this.options(this.infoForm, 'nation', res)
+    })
+    this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
+      this.PoliticalStatus = res
+      this.options(this.infoForm, 'politicalStatus', res)
+    })
+    this.$store.dispatch('CommonDict', 'HouseholdType').then((res) => {
+      this.HouseholdType = res
+      this.options(this.infoForm, 'householdType', res)
+    })
+    this.$store.dispatch('CommonDict', 'UserRelationship').then((res) => {
+      this.UserRelationship = res
+      this.options(family, 'relationship', res)
+      this.options(contacts, 'relationship', res)
+    })
+    this.$store.dispatch('CommonDict', 'EducationalType').then((res) => {
+      this.EducationalType = res
+      this.options(education, 'educationalType', res)
+      this.options(education, 'educationalType', res)
+    })
+    this.options(this.infoForm, 'native', provinceAndCityData)
+  },
   methods: {
+    /**
+     * author guanfenda
+     * @desc 处理posion赋值
+     *
+     * */
+    options(data, prop, position) {
+      data.map((it) => {
+        if (it.prop === prop) {
+          it.options = position
+        }
+      })
+    },
     handleSave() {
       this.$emit('close')
     },

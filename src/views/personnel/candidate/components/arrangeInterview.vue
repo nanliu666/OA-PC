@@ -360,7 +360,7 @@ export default {
             })
         } else if (this.row.status === '3') {
           this.loading = true
-          postInterViewResend()
+          postInterViewResend(data)
             .then(() => {
               this.loading = false
               this.dialog = false

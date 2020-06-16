@@ -45,29 +45,29 @@ const info = {
     personId: '人员ID',
     name: '真实姓名',
     phonenum: '手机号',
-    sex: '1：男；0：女',
+    sex: 1,
     email: '个人邮箱',
     idType: 'IDCard',
     idNo: '证件号码',
-    birthDate: '出生日期',
+    birthDate: '2020-07-16',
     educationalLevel: 'High',
-    firstWorkDate: '首次参加工作时间',
-    marriage: '婚姻状态，1：已婚，0：未婚',
+    firstWorkDate: '2020-07-15',
+    marriage: 1,
     health: '健康状态',
     nation: 'Han',
     politicalStatus: 'Ordinary',
-    nativeProvinceCode: '籍贯省份编码',
-    nativeProvinceName: '籍贯省份名称',
-    nativeCityCode: '籍贯地市编码',
-    nativeCityName: '籍贯地市名称',
+    nativeProvinceCode: '440000',
+    nativeProvinceName: '广东省',
+    nativeCityCode: '440100',
+    nativeCityName: '广州市',
     householdType: 'Urban',
     idAddress: '身份证地址',
     userAddress: '现住址',
     bankName: '开户银行名称',
     bankNo: '开户银行账号',
-    isFirstSs: '是否本地首次缴纳社保，1：是，0：否',
+    isFirstSs: 1,
     ssNo: '个人社保号',
-    isFirstEpf: '\t是否本地首次缴纳公积金，1：是，0：否',
+    isFirstEpf: 1,
     epfNo: '个人公积金账号',
     emer: [
       {
@@ -91,8 +91,8 @@ const info = {
     education: [
       {
         id: '教育经历ID',
-        beginDate: '受教育开始日期',
-        endDate: '受教育截止日期',
+        beginDate: '2020-07-15',
+        endDate: '2020-08-15',
         educationalLevel: 'High',
         educationalType: 'Self',
         schoolName: '学校名称',
@@ -102,8 +102,8 @@ const info = {
     work: [
       {
         id: '工作经历ID',
-        beginWorkDate: '在职开始日期',
-        endWorkDate: '在职截止日期',
+        beginWorkDate: '2018-07-15',
+        endWorkDate: '2020-07-15',
         companyName: '在职单位名称',
         jobName: '职位名称',
         salary: '15000',
@@ -118,8 +118,8 @@ const info = {
     train: [
       {
         id: '培训经历ID',
-        beginDate: '培训开始日期',
-        endDate: '培训截止日期',
+        beginDate: '2018-07-15',
+        endDate: '2020-07-15',
         name: '培训课程名称',
         companyName: '培训机构名称'
       }
@@ -130,7 +130,7 @@ const info = {
         name: '证书名称',
         code: '证书编号',
         companyName: '发证机构名称',
-        issueDate: '发证日期'
+        issueDate: '2018-07-15'
       }
     ],
     attachment: [
