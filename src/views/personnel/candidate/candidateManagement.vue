@@ -410,12 +410,20 @@
           <div class="handlerRow">
             <!-- 待沟通 -->
             <template v-if="row.status === '1'">
-              <!-- <el-button
+              <el-button
+                v-if="row.pushResume === 0"
                 type="text"
                 @click="hadlePushAudit(row)"
               >
                 推送审核
-              </el-button>-->
+              </el-button>
+              <el-button
+                v-if="row.pushResume === 1"
+                type="text"
+                disabled
+              >
+                已推送
+              </el-button>
               <el-button
                 type="text"
                 @click="handleWeedOut(row)"
@@ -1064,6 +1072,10 @@ export default {
     toDetail(row) {
       if (row.status === '4') {
         this.$router.push('/personnel/personDetail/' + row.personId + `?applyId=${row.applyId}`)
+      } else if (row.status === '1') {
+        this.$router.push(
+          '/personnel/personDetail/' + row.personId + `?pushResume=${row.pushResume}`
+        )
       } else {
         this.$router.push('/personnel/personDetail/' + row.personId)
       }

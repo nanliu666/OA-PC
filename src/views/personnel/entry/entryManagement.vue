@@ -111,9 +111,20 @@
               >
                 确认入职
               </el-button>
-              <!-- <el-button type="text">
-              发送入职登记表
-              </el-button>-->
+              <el-button
+                v-if="row.register === 0"
+                type="text"
+                @click="handleSend(row)"
+              >
+                发送入职登记表
+              </el-button>
+              <el-button
+                v-if="row.register === 1"
+                type="text"
+                @click="handleViewRegister(row)"
+              >
+                查看入职登记表
+              </el-button>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
@@ -236,7 +247,11 @@ import GiveOutEntryDialog from './components/giveOutEntryDialog'
 import { getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { getUserList } from '@/api/personnel/roster'
-import { getCandidateAcceptList, addOutCandidateAccept } from '@/api/personnel/entry'
+import {
+  getCandidateAcceptList,
+  addOutCandidateAccept,
+  postEntryRegisterSend
+} from '@/api/personnel/entry'
 export default {
   name: 'EntryManagement',
   components: { PageHeader, SearchPopover, GiveOutEntryDialog },
@@ -390,7 +405,7 @@ export default {
     toDetail(row) {
       if (this.status !== 'latelyEntry') {
         this.$router.push(
-          `/personnel/entry/entryPersonDetail/${row.personId}?status=${this.status}&applyId=${row.applyId}`
+          `/personnel/entry/entryPersonDetail/${row.personId}?status=${this.status}&applyId=${row.applyId}&register=${row.register}`
         )
       } else {
         this.$router.push('/personnel/detail/' + row.userId)
@@ -458,7 +473,29 @@ export default {
     handleRefresh() {
       this.loadData(1)
     },
-    handleExport() {}
+    handleExport() {},
+    handleSend(row) {
+      let params = {
+        recruitmentId: row.recruitmentId,
+        personId: row.personId
+      }
+      postEntryRegisterSend(params).then(() => {
+        this.$message.success('发送成功')
+        this.loadData()
+      })
+    },
+    handleViewRegister(row) {
+      let params = {
+        recruitmentId: row.recruitmentId,
+        personId: row.personId,
+        entry: 1,
+        tagName: '入职登记表详情'
+      }
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm',
+        query: params
+      })
+    }
   }
 }
 </script>
