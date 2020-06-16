@@ -111,7 +111,7 @@
               >
                 <el-form-item label="薪酬范围">
                   <span class="distance">
-                    ￥{{ personnel.maxSalary }} ~ ￥{{ personnel.minSalary }}</span>
+                    ￥{{ personnel.minSalary }} ~ ￥ {{ personnel.maxSalary }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
