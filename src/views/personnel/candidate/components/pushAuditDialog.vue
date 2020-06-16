@@ -14,7 +14,7 @@
       label-width="100px"
       label-position="top"
     >
-      <el-form-item
+      <!-- <el-form-item
         v-show="multiple"
         label="已选择"
       >
@@ -26,7 +26,7 @@
             {{ item.name }}
           </el-tag>
         </template>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item
         label="审核人"
         prop="userId"
@@ -88,6 +88,7 @@
 </template>
 <script>
 import { getUserWorkList } from '@/api/org/org'
+import { postResumeCheck } from '@/api/personnel/candidate'
 
 export default {
   name: 'PushAuditDialog',
@@ -121,7 +122,28 @@ export default {
       this.$emit('update:visible', false)
     },
     submit() {
-      this.$message.info('此功能待开发')
+      this.$refs.ruleForm.validate((valid, obj) => {
+        if (valid) {
+          const params = {
+            pushUser: this.$store.state.user.userInfo.user_id,
+            pushRemark: this.form.remark,
+            checkUser: this.form.userId,
+            recruitmentId: this.candiateList[0].recruitmentId,
+            personId: this.candiateList[0].personId
+          }
+          this.loading = true
+          postResumeCheck(params).then(() => {
+            this.$message.success('推送审核成功!')
+            this.loading = false
+            Object.assign(this.$data.form, this.$options.data().form)
+            this.$emit('refresh')
+            this.$emit('update:visible', false)
+          })
+        } else {
+          this.$message.error(obj[Object.keys(obj)[0]][0].message)
+          return false
+        }
+      })
     },
     pushAudit(item) {
       if (Array.isArray(item)) {

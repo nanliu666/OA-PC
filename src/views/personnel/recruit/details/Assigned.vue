@@ -282,7 +282,7 @@ export default {
           this.$message({ message: '操作成功', type: 'success' })
         })
         this.$emit('update:visible', false)
-        this.$emit('getTableData')
+        this.$emit('refresh')
       } else {
         this.$message({
           showClose: true,

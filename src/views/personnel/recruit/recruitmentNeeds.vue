@@ -71,8 +71,8 @@ import { mapGetters } from 'vuex'
 import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
-import { getOrganizationCompany } from '@/api/personnel/roster'
 import { getRecruitmentDetail } from '@/api/personnel/recruitment'
+
 export default {
   name: 'RecruitmentNeeds',
   components: {
@@ -114,6 +114,7 @@ export default {
       }
     }
   },
+
   computed: {
     ...mapGetters(['userId'])
   },
@@ -124,6 +125,11 @@ export default {
       } else {
         this.$refs.personInfo.explainshow = false
       }
+    },
+    'infoForm.orgId': function(newval) {
+      getJobInfo({ orgId: newval }).then((res) => {
+        this.dataFilter(res, this.NewRequirement, 'jobId', 'jobName', 'jobId')
+      })
     }
   },
   activated() {
@@ -191,14 +197,7 @@ export default {
           type: 'warning'
         })
       }
-      // 页面初始化
-      getOrganizationCompany({ parentOrgId: 0 }).then((res) => {
-        this.dataFilter(res, this.NewRequirement, 'orgId', 'orgName', 'orgId')
-      })
-      // 招聘职位
-      getJobInfo({}).then((res) => {
-        this.dataFilter(res, this.NewRequirement, 'jobId', 'jobName', 'jobId')
-      })
+
       getPost().then((res) => {
         this.dataFilter(res, this.NewRequirement, 'positionId', 'name', 'id')
       })
