@@ -242,16 +242,19 @@ export default {
         {
           label: '转正申请状态',
           prop: 'approveStatus',
-          slot: true
+          slot: true,
+          width: '120'
         },
         {
           label: '审批编号',
           prop: 'apprNo',
-          slot: true
+          slot: true,
+          minWidth: '120px'
         },
         {
           label: '部门',
-          prop: 'orgName'
+          prop: 'orgName',
+          minWidth: '120px'
         },
         {
           label: '职务',
@@ -259,12 +262,14 @@ export default {
         },
         {
           label: '入职时间',
-          prop: 'entryDate'
+          prop: 'entryDate',
+          minWidth: '120px'
         },
         {
           label: '转正日期',
           prop: 'formalDate',
-          slot: true
+          slot: true,
+          minWidth: '120px'
         },
         {
           label: '试用期',
@@ -323,7 +328,6 @@ export default {
       if (params.jobs) {
         params.jobs = [params.jobs]
       }
-
       return params
     },
 
@@ -357,9 +361,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.edge {
+/deep/ .edge {
   position: absolute;
   right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 
 .isSelect {

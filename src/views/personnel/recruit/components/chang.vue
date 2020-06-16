@@ -37,9 +37,12 @@
           >
             <el-row :gutter="24">
               <el-col :span="24">
-                <el-form-item label="您想将剩余需求总数更改为">
+                <el-form-item
+                  label="您想将剩余需求总数更改为"
+                  prop="changneedNum"
+                >
                   <el-input-number
-                    v-model="users.taskNum"
+                    v-model="users.changneedNum"
                     size="medium"
                     controls-position="right"
                     :min="1"
@@ -50,10 +53,10 @@
               <el-col :span="24">
                 <el-form-item
                   label="更改原因"
-                  prop="reason"
+                  prop="changreason"
                 >
                   <el-select
-                    v-model="users.reason"
+                    v-model="users.changreason"
                     size="medium"
                     placeholder="请选择"
                   >
@@ -117,11 +120,12 @@ export default {
       inputdisabled: true,
       Status: null,
       users: {
-        taskNum: null,
-        reason: null
+        changneedNum: null,
+        changreason: null
       },
       rules: {
-        reason: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }],
+        changneedNum: [{ required: true, message: '请您选择选择更改后的人数', trigger: 'chang' }],
+        changreason: [{ required: true, message: '请您选择更改原因', trigger: 'blur' }],
         apprProgress: [{ validator: checkAppr }]
       },
       operatorTypeList: [
@@ -141,7 +145,8 @@ export default {
     ...mapGetters(['userId'])
   },
   mounted() {
-    getRecruitmentDetail({ recruitmentId: this.$route.query.id }).then((res) => {
+    getRecruitmentDetail(this.$route.query.id).then((res) => {
+      this.users.changneedNum = res.needNum
       this.Status = res
     })
   },
@@ -152,8 +157,8 @@ export default {
           getChange({
             recruitmentId: this.$route.query.id,
             userId: this.userId,
-            changeNum: this.users.taskNum,
-            reason: this.users.reason
+            changeNum: this.users.changneedNum,
+            reason: this.users.changreason
           }).then((res) => {
             if (res && res.id) {
               this.$refs['apprProgress'].submit(res.id).then(() => {
@@ -166,8 +171,8 @@ export default {
       })
     },
     resetForm() {
-      this.users.taskNum = ''
-      this.users.operatorType = ''
+      this.users.needNum = ''
+      this.users.changreason = ''
       this.goBack()
     },
     goBack() {

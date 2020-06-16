@@ -129,7 +129,15 @@ export default {
     return {
       data: [],
       WorkProperty: [],
-      ContractType: []
+      ContractType: [],
+      tableConfig: {
+        showHandler: true,
+        enablePagination: true,
+        enableMultiSelect: false,
+        handlerColumn: {
+          width: 120
+        }
+      }
     }
   },
   watch: {

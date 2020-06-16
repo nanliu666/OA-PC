@@ -314,19 +314,23 @@ export default {
         {
           label: '需求编号',
           prop: 'id',
-          slot: true
+          slot: true,
+          minWidth: '100px'
         },
         {
           label: '用人部门',
-          prop: 'orgName'
+          prop: 'orgName',
+          minWidth: '120px'
         },
         {
           label: '职位',
-          prop: 'jobName'
+          prop: 'jobName',
+          minWidth: '120px'
         },
         {
           label: '岗位',
-          prop: 'positionName'
+          prop: 'positionName',
+          minWidth: '120px'
         },
         {
           label: '需求人数',
@@ -334,7 +338,8 @@ export default {
         },
         {
           label: '已入职人数',
-          prop: 'entryNum'
+          prop: 'entryNum',
+          width: '100'
         },
         {
           label: '候选人数',
@@ -352,7 +357,8 @@ export default {
         },
         {
           label: '到岗日期',
-          prop: 'joinDate'
+          prop: 'joinDate',
+          minWidth: '120px'
         },
         {
           label: '工作年限',
@@ -410,7 +416,6 @@ export default {
   created() {
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
   },
   mounted() {
@@ -426,6 +431,9 @@ export default {
       this.getLevel = res
     })
     this.getDictionarygroup()
+  },
+  activated() {
+    this.getTableData()
   },
   methods: {
     getWorkProperty(type) {
@@ -447,10 +455,10 @@ export default {
       getAllRecruitment(params).then((res) => {
         this.loading = false
         this.data = res.data.map((item) => ({ ...item, detail: [], loading: false }))
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
-
+    // 有关页面发送API请求化时 请求参数格式化
     decorator(params) {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
@@ -462,16 +470,10 @@ export default {
       this.getTableData(params)
     },
     jumpToDetail(row) {
-      let { id, status } = row
-      let rotate
-      if (row.status === 'Handled') {
-        rotate = 'allHandled'
-      } else {
-        rotate = 'allUnHandle'
-      }
+      let { id } = row
       this.$router.push({
         path: '/personnel/recruit/specificPage',
-        query: { id: id, status: status, rotate: rotate }
+        query: { id: id, status: 'aRequirements' }
       })
     },
     currentPageChange(param) {
@@ -543,7 +545,6 @@ export default {
     recruitmentSituation(row) {
       if (!row.detail || row.detail.length === 0) {
         row.loading = true
-
         queryDistribution({ recruitmentId: row.id }).then((res) => {
           row.detail = res
           row.loading = false
@@ -572,10 +573,12 @@ export default {
   font-size: 18px;
 }
 
-.resetEdge {
+/deep/ .resetEdge {
   position: absolute;
-  right: 62px;
-  margin-top: 3px;
+  right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 
 /deep/ .el-table__expanded-cell[class*='cell'] {

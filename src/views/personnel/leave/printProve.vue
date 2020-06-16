@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <page-header
       title="离职证明"
       show-back
@@ -10,63 +10,114 @@
         <el-button
           type="primary"
           size="medium"
+          @click="handelClick"
         >
           打印
         </el-button>
-        <el-button size="medium">
+        <el-button
+          size="medium"
+          @click="handelClick"
+        >
           下载
         </el-button>
       </div>
     </div>
-    <basic-container>
-      <div
-        style="font-family: PingFangSC-Medium; font-size: 32px; color: #202940;letter-spacing: 6px;text-align: 
-        right;line-height: 40px;"
-      >
+    <div>
+      <div class="main">
         <div>
-          <h3 style="text-align:center;">
+          <h3 style="text-align:center">
             离 职 证 明
           </h3>
-          <div
-            style="font-family: PingFangSC-Regular;font-size: 14px;color: #202940;line-height: 26px; text-align:center"
-          >
-            <p>
-              <span>{{ userInfo.name }}(身份证号码:{{ userInfo.idNo }})</span>
+          <div class="detail-wrap">
+            <p class="detail">
+              {{ userInfo.name }}（身份证号： {{ userInfo.idNo }}）于
+              {{ userInfo.entryDate }}入职我公司，在我公 司，在我公司
+              <span class="item">{{ userInfo.orgName }}</span> 任
+              <span class="item"> {{ userInfo.jobName }}</span>。现协商解除劳动合同关系，并于
+              <span class="item">{{ userInfo.relieveDate }}</span> 日协商解除，不再履行。自
+              {{ userInfo.leaveDate }}
+              日起，双方不再存在任何劳动关系，也不存在任何赔偿，补偿，劳动报酬，保险，福利等方面的权利请求和争议。
+            </p>
+            <p class="prove-box">
+              特此证明
+            </p>
+            <p class="companyName-box">
+              公司名称 <span class="item">{{ userInfo.companyName }}</span>
+            </p>
+            <p class="data-box">
+              <span class="item">{{ userInfo.printDate }}</span>
             </p>
           </div>
         </div>
       </div>
-    </basic-container>
+    </div>
   </div>
 </template>
 
 <script>
+import { getLeaveCert } from '@/api/leave/leave'
 export default {
   data() {
     return {
       userInfo: {
-        userId: '用户ID',
-        workNo: '工号',
-        name: '张三丰',
-        idType: '证件类型，字典组：IDType',
-        idNo: '445678913635816589723',
-        companyId: '入职公司ID',
-        companyName: '入职公司名称',
-        orgId: '部门ID',
-        orgName: '部门名称',
-        jobId: '职位Id',
-        jobName: '职位名称',
-        entryDate: '入职日期，YYYY-MM-DD',
-        leaveDate: '离职日期，YYYY-MM-DD',
-        relieveDate: '解除合同日期，YYYY-MM-DD'
-      }
+        // userId: '用户ID',
+        // workNo: '工号',
+        // name: '张三丰',
+        // idType: '证件类型，字典组：IDType',
+        // idNo: '445678913635816589723',
+        // companyId: '入职公司ID',
+        // companyName: '入职公司名称',
+        // orgId: '部门ID',
+        // orgName: '部门名称',
+        // jobId: '职位Id',
+        // jobName: '职位名称',
+        // entryDate: '入职日期，YYYY-MM-DD',
+        // leaveDate: '离职日期，YYYY-MM-DD',
+        // relieveDate: '解除合同日期，YYYY-MM-DD',
+        // nowDate: new Date('yyyy,mth,dd')
+        userId: '',
+        workNo: '',
+        name: '',
+        idType: '',
+        idNo: '',
+        companyId: '',
+        companyName: '',
+        orgId: '',
+        orgName: '',
+        jobId: '',
+        jobName: '',
+        entryDate: '',
+        leaveDate: '',
+        relieveDate: '',
+        printDate: ''
+      },
+      loading: false
     }
+  },
+  created() {
+    this.lodingData()
   },
   methods: {
     //goBack
     goBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
+    },
+    handelClick() {
+      this.$message.info('该功能正在开发中')
+    },
+    async lodingData() {
+      this.loading = true
+      let res = await getLeaveCert({
+        userId: this.$route.query.userId
+      })
+      this.userInfo = res
+      let printDate = new Date(this.$route.query.printDate)
+      let year = printDate.getFullYear()
+      let mon = printDate.getMonth() + 1
+      let day = printDate.getDate()
+      this.userInfo.printDate = `${year}年-${mon}月-${day}日`
+      this.loading = false
     }
   }
 }
@@ -77,5 +128,54 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
+}
+
+.main {
+  background: #ffffff;
+  height: 50vh;
+  padding: 50px 50px;
+  font-size: 32px;
+  color: #202940;
+  letter-spacing: 6px;
+  // text-align: right;
+  line-height: 40px;
+  width: 800px;
+  margin: 0 auto;
+  .detail-wrap {
+    p {
+      font-size: 14px;
+      color: #202940;
+      line-height: 26px;
+    }
+    .detail {
+      font-size: 16px;
+      color: #202940;
+      text-align: left;
+    }
+    .prove-box {
+      margin-left: 50px;
+      font-weight: bold;
+
+      font-size: 16px;
+      color: #202940;
+    }
+    .companyName-box {
+      text-align: right;
+
+      font-size: 14px;
+      color: #202940;
+    }
+    .data-box {
+      text-align: right;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #202940;
+      line-height: 26px;
+    }
+    .item {
+      margin: 0;
+      border-bottom: 1px solid #000;
+    }
+  }
 }
 </style>

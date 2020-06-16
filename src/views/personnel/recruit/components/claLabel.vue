@@ -1,29 +1,22 @@
 <template>
-  <div>
-    <template v-if="emertype === 'Super'">
-      <el-tag type="danger">
-        {{ calEmerType(emertype) }}
+  <div class="claLabel">
+    <template v-if="emertype === 'suit' || emertype === 'common'">
+      <el-tag
+        size="medium"
+        type="info"
+      >
+        <span class="subelements">{{ calEmerType(emertype) }} </span>
       </el-tag>
     </template>
 
-    <template v-else-if="emertype === 'suit'">
-      <el-tag type="info">
-        {{ calEmerType(emertype) }}
+    <template v-else-if="emertype === 'urgent' || emertype === 'Super'">
+      <el-tag
+        type="danger"
+        size="medium"
+      >
+        <span class="subelements"> {{ calEmerType(emertype) }} </span>
       </el-tag>
     </template>
-
-    <template v-else-if="emertype === 'urgent'">
-      <el-tag type="danger">
-        {{ calEmerType(emertype) }}
-      </el-tag>
-    </template>
-
-    <template v-else-if="emertype === 'common'">
-      <el-tag type="info">
-        {{ calEmerType(emertype) }}
-      </el-tag>
-    </template>
-
     <template v-else />
   </div>
 </template>
@@ -72,5 +65,24 @@ export default {
   color: #718199;
   line-height: 18px;
   display: block;
+}
+
+.claLabel {
+  /deep/ .el-tag {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    top: 9px;
+  }
+
+  .subelements {
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+  }
 }
 </style>

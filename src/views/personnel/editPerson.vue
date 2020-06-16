@@ -214,7 +214,7 @@
                 >
                   <el-input
                     v-model="form.monthSalary"
-                    maxlength="11"
+                    maxlength="9"
                     @input="(v) => inputNumber(v, 'monthSalary')"
                   />
                 </el-form-item>
@@ -440,6 +440,9 @@ export default {
       return new Promise((resolve) => {
         getRecruitmentList().then((res) => {
           this.recruitmentList = res
+          this.form.orgName = (
+            this.recruitmentList.find((item) => item.id === this.form.recruitmentId) || {}
+          ).orgName
           resolve()
         })
       })
@@ -507,11 +510,11 @@ export default {
         params.cityName = inputValue[1]
         submitFunc(params).then(() => {
           this.$message.success('提交成功')
-          this.$router.go(-1)
           this.clear()
           if (!shouldContinue) {
-            this.goBack()
+            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
           }
+          this.$router.go(-1)
         })
       })
     },

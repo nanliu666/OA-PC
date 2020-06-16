@@ -85,8 +85,8 @@ export const sendOffer = (params) => {
  * 录用申请查询接口
  * @param {String} personId - 人员ID
  * */
-export const getOfferApply = (personId) => {
-  return get('/user/v1/candidate/offer/apply', { personId })
+export const getOfferApply = (id) => {
+  return get('/user/v1/candidate/offer/apply', { id })
 }
 /**
  * @author guanfenda

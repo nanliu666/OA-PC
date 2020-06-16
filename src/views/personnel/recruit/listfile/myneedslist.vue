@@ -44,16 +44,17 @@
         </el-button>
       </template>
       <template
-        slot="workYear"
+        slot="emerType"
         slot-scope="{ row }"
       >
-        {{ getWorkYear(row.workYear) }}
+        {{ getEmerType(row.emerType) }}
       </template>
+
       <template
-        slot="educationalLevel"
+        slot="accuracy"
         slot-scope="{ row }"
       >
-        {{ getEducationalLevel(row.educationalLevel) }}
+        {{ claAccuracy(row.taskNum, row.entryNum) }}
       </template>
 
       <template
@@ -157,6 +158,14 @@ export default {
             config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
           },
           {
+            type: 'select',
+            field: 'reason',
+            data: '',
+            label: '招聘原因',
+            options: [],
+            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
+          },
+          {
             type: 'dataPicker',
             data: '',
             label: '到岗日期',
@@ -170,53 +179,52 @@ export default {
         {
           label: '需求编号',
           prop: 'id',
-          slot: true
-        },
-        {
-          label: '用人部门',
-          prop: 'orgName'
+          slot: true,
+          minWidth: '140px'
         },
         {
           label: '职位',
-          prop: 'jobName'
+          prop: 'jobName',
+          minWidth: '120px'
         },
         {
           label: '岗位',
-          prop: 'positionName'
+          prop: 'positionName',
+          minWidth: '120px'
         },
         {
-          label: '需求人数',
-          prop: 'needNum'
+          label: '紧急程度',
+          prop: 'emerType',
+          minWidth: '120px',
+          slot: true
         },
         {
-          label: '已入职人数',
+          label: '分配人',
+          prop: 'userName',
+          minWidth: '120px'
+        },
+        {
+          label: '分配时间',
+          prop: 'createTime',
+          minWidth: '120px'
+        },
+        {
+          label: '任务数',
+          prop: 'taskNum'
+        },
+        {
+          label: '已入职',
           prop: 'entryNum'
+        },
+        {
+          label: '招聘进度',
+          prop: 'accuracy',
+          minWidth: '120px',
+          slot: true
         },
         {
           label: '候选人数',
           prop: 'candidateNum'
-        },
-        {
-          label: '到岗日期',
-          prop: 'joinDate'
-        },
-        {
-          label: '工作年限',
-          prop: 'workYear',
-          slot: true
-        },
-        {
-          label: '学历要求',
-          prop: 'educationalLevel',
-          slot: true
-        },
-        {
-          label: '最低薪资',
-          prop: 'minSalary'
-        },
-        {
-          label: '最高薪酬',
-          prop: 'maxSalary'
         }
       ],
       tableConfig: {
@@ -245,7 +253,8 @@ export default {
         }
       ],
       WorkYear: [],
-      getLevel: []
+      getLevel: [],
+      emerType: []
     }
   },
   computed: {
@@ -255,7 +264,6 @@ export default {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
       this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
-      this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getPost().then((res) => {
       this.searchConfig.popoverOptions[1].options = res
@@ -263,10 +271,16 @@ export default {
     this.$store.dispatch('CommonDict', 'WorkYear').then((res) => {
       this.WorkYear = res
     })
-    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
-      this.getLevel = res
+    this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
+      this.searchConfig.popoverOptions[5].options = res
+    })
+    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
+      this.emerType = res
     })
     this.getDictionarygroup()
+  },
+  activated() {
+    this.getTableData()
   },
   methods: {
     getEducationalLevel(type) {
@@ -297,7 +311,7 @@ export default {
       setRecruitment(params).then((res) => {
         this.data = res.data
         this.loading = false
-        this.page.total = res.totalPage
+        this.page.total = res.totalNum
       })
     },
     decorator(params) {
@@ -307,21 +321,23 @@ export default {
       params.progress = this.params.progress
       return params
     },
+    getEmerType(type) {
+      let typeWord
+      this.emerType.forEach((item) => {
+        if (item.dictKey === type) {
+          typeWord = item.dictValue
+        }
+      })
+      return typeWord
+    },
 
     handleSubmit(params) {
       this.getTableData(params)
     },
     jumpToDetail(id) {
-      let myneeds
-      //  应用场景 ：如果是招聘中（Approved）打开候选人模块
-      if (this.params.progress === 'Approved') {
-        myneeds = 'myneeds'
-      } else {
-        myneeds = 'end'
-      }
       this.$router.push({
         path: '/personnel/recruit/specificPage',
-        query: { id: id, myneeds: myneeds }
+        query: { id: id, status: 'iSubmit' }
       })
     },
 
@@ -348,15 +364,25 @@ export default {
         path: '/personnel/editPerson',
         query: { recruitmentId: row.id }
       })
+    },
+    claAccuracy(curNum, totalNum) {
+      curNum = parseFloat(curNum)
+      totalNum = parseFloat(totalNum)
+      if (isNaN(curNum) || isNaN(totalNum)) {
+        return '-'
+      }
+      return Math.round((totalNum / curNum) * 10000) / 100 + '%'
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.resetEdge {
+/deep/ .resetEdge {
   position: absolute;
-  right: 62px;
-  margin-top: 3px;
+  right: 59px;
+  .el-button--text {
+    color: #a0a8ae;
+  }
 }
 </style>

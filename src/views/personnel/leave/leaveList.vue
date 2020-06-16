@@ -27,7 +27,8 @@
           @page-size-change="pageSizeChange"
         >
           <!-- 搜素框 -->
-          |<template slot="topMenu">
+          |
+          <template slot="topMenu">
             <div class="search-box">
               <SearchPopover
                 :require-options="requireOptions"
@@ -145,19 +146,17 @@
           </template>
           <!-- 离职日期 -->
           <template
-            slot="lastDate"
+            slot="leaveDate"
             slot-scope="{ row }"
           >
             <div>
-              <span>{{ row.lastDate }}</span>
-              <span v-if="isWaitLeave">
+              <span>{{ row.leaveDate }}</span>
+              <span v-if="row.leaveDate">
                 <el-tag
                   type="info"
                   size="small"
                   class="isConfirm"
-                >
-                  已确认
-                </el-tag>
+                >已确认</el-tag>
               </span>
             </div>
           </template>
@@ -389,7 +388,7 @@ export default {
         {
           label: '离职日期',
           align: 'center',
-          prop: 'lastDate',
+          prop: 'leaveDate',
           slot: true,
           width: '150px'
         },
