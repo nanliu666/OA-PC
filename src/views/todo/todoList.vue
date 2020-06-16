@@ -1,7 +1,7 @@
 <template>
   <div class="fill">
     <page-header
-      title="代办中心"
+      title="待办中心"
       show-back
     />
     <basic-container block>
@@ -58,7 +58,7 @@
           <el-button
             type="text"
             class="refresh"
-            icon="el-icon-refresh-right"
+            icon="icon-basics-refresh-outlined"
             size="medium"
             @click="loadData"
           />
@@ -181,7 +181,7 @@ export default {
       return moment().diff(moment(row.endDate)) > 0
     },
     getWarnText(row) {
-      return moment().diff(moment(row.startDate), 'days')
+      return moment().diff(moment(row.beginDate), 'days')
     },
     handleTabChange() {
       this.page.currentPage = 1
@@ -220,6 +220,13 @@ export default {
         })
       } else if (row.type === 'InterviewRegister') {
         // 面试登记表
+
+        this.$router.push({
+          path: '/personnel/candidate/registrationForm',
+          query: {
+            personId: row.bizId
+          }
+        })
         //
       } else if (row.type === 'Entry') {
         // 入职办理

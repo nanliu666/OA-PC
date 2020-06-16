@@ -41,6 +41,8 @@ module.exports = {
     open: true,
     proxy: {
       '/api': {
+        // 庆荣
+        // target: 'http://192.168.1.36/',
         // 本地环境
         target: 'http://192.168.1.100:8000/',
 

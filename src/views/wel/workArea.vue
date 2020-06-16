@@ -28,9 +28,7 @@
                       <p @click="jumpToDetail(item.type, item.bizId)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
-                      <span
-                        v-if="ifShowWarn(item.createTime)"
-                      >滞留{{ getWarnText(item.startDate) }}天</span>
+                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
                     </div>
                     <div class="time-box">
                       {{ item.createTime | filterDate }}
@@ -65,9 +63,7 @@
                       <p @click="jumpToDetail(item.type, item.bizId)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
-                      <span
-                        v-if="ifShowWarn(item.createTime)"
-                      >滞留{{ getWarnText(item.startDate) }}天</span>
+                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
                     </div>
                     <div class="time-box">
                       {{ item.createTime | filterDate }}
@@ -261,11 +257,11 @@ export default {
       this.toDoListData = res.data
     },
     // 处理滞留按钮
-    ifShowWarn(endDate) {
-      return moment().diff(moment(endDate)) > 0
+    ifShowWarn(row) {
+      return moment().diff(moment(row.endDate)) > 0
     },
-    getWarnText(startDate) {
-      return moment().diff(moment(startDate), 'days')
+    getWarnText(row) {
+      return moment().diff(moment(row.beginDate), 'days')
     },
     changeTodo() {
       // Pending  isWarn参数为空  Warning isWarn参数为1
