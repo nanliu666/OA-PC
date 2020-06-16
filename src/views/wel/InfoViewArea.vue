@@ -14,7 +14,7 @@
       </div>
       <!-- 姓名 -->
       <div class="name-row ">
-        <span>SerAti Zhi</span>
+        <span>{{ userInfo.nick_name }}</span>
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
@@ -27,11 +27,14 @@
     <!-- 快捷入口 -->
     <div class="quick-access">
       <div class="title-wrap">
-        <span class="title">快捷入口</span> <span><i class="el-icon-more" /></span>
+        <span class="title">快捷入口</span>
       </div>
       <div class="main-wrap">
         <div class="content">
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box tips">
               <svg
                 class="icon"
@@ -42,7 +45,10 @@
             </div>
             <span>新建提醒</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box apply">
               <svg
                 class="icon"
@@ -53,7 +59,10 @@
             </div>
             <span>通用申请</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box  arrange">
               <svg
                 class="icon"
@@ -64,7 +73,10 @@
             </div>
             <span>安排面试</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box book">
               <svg
                 class="icon"
@@ -75,7 +87,10 @@
             </div>
             <span>通讯录</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="jumpToAddUser"
+          >
             <div class="icon-box add">
               <i class="icon-tips-plus-outlined" />
             </div>
@@ -108,9 +123,25 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'InfoViewArea',
-  components: {}
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
+  created() {},
+  methods: {
+    // 点击添加员工
+    jumpToAddUser() {
+      this.$router.push({
+        path: '/personnel/addRoster'
+      })
+    },
+    // 开发中
+    handelClick() {
+      this.$message.info('该功能真正开发中')
+    }
+  }
 }
 </script>
 
