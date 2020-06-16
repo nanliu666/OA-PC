@@ -788,7 +788,7 @@ export default {
       this.staffInfo.workCityName = thsAreaCode[1]
       this.staffInfo.workProvinceCode = value[0]
       this.staffInfo.workCityCode = value[1]
-      this.staffInfo.address = ''
+      // this.staffInfo.address = ''
     },
     editInfo() {
       this.$set(this.delSubOrgJob, 'subOrg', [])
