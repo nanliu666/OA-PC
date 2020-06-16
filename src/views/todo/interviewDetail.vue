@@ -109,33 +109,7 @@ export default {
   data() {
     return {
       // 面试详情信息
-      InterviewInfo: {
-        // id: '',
-        // pushUser: '',
-        // pushName: '',
-        // pushTime: '',
-        // status: '',
-        // interviewUser: '',
-        // interviewName: '',
-        // interviewTime: '',
-        // interviewType: '',
-        // name: '',
-        // phonenum: '',
-        // address: '',
-        // remark: '',
-        // interview: '',
-        // recruitmentId: '',
-        // personId: '',
-        // evaluateTime: '',
-        // workBackground: '',
-        // workExperience: '',
-        // knowledge: '',
-        // train: '',
-        // specialty: '',
-        // evaluation: '',
-        // score: '',
-        // jobName: ''
-      },
+      InterviewInfo: {},
       //面试评价信息
       evaluateList: [
         {

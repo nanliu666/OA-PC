@@ -14,8 +14,6 @@
                 title="待办事项"
                 :label-array="toDoList"
                 class="todolist"
-                @click-icon="handelClick('代办事项')"
-                @tab-click="changeTodo"
               >
                 <!-- 待处理 -->
                 <div
@@ -116,8 +114,6 @@
                 title="消息通知"
                 :label-array="newList"
                 class="new"
-                @click-icon="handelClick('消息通知')"
-                @tab-click="changeNews"
               >
                 <div
                   v-if="msgWorkList.length"
@@ -332,8 +328,6 @@ export default {
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
     },
-
-    changeTodo() {},
     // 点击查看代办事项全部，跳到代办中心
     goTodoCenter() {
       // Pending  isWarn参数为空  Warning isWarn参数为1
@@ -428,26 +422,25 @@ export default {
       if (isRead === 1) {
         return
       }
-      let result = await this.$confirm('确定已读该信息?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).catch((error) => {
-        error
-      })
-      if (result != 'confirm') {
-        return
+      try {
+        await this.$confirm('确定已读该信息?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        let params = {
+          id,
+          userId: this.userId
+        }
+        await creatSignReadMsg(params)
+        this.loadingMsgData()
+        this.$message.success('标记已读成功')
+      } catch (error) {
+        if (error !== 'cancel') {
+          throw error
+        }
       }
-      let params = {
-        id,
-        userId: this.userId
-      }
-      await creatSignReadMsg(params)
-      this.loadingMsgData()
-      this.$message.success('标记已读成功')
-    },
-    changeNews() {},
-    handelClick() {}
+    }
   }
 }
 </script>
