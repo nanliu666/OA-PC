@@ -694,6 +694,8 @@ export default {
 
           this.staffInfo.workProvinceName = item.provinceName
           this.staffInfo.workCityName = item.cityName
+          this.staffInfo.workProvinceCode = item.provinceCode
+          this.staffInfo.workCityCode = item.cityCode
         }
       })
     },
@@ -786,6 +788,7 @@ export default {
       this.staffInfo.workCityName = thsAreaCode[1]
       this.staffInfo.workProvinceCode = value[0]
       this.staffInfo.workCityCode = value[1]
+      this.staffInfo.address = ''
     },
     editInfo() {
       this.$set(this.delSubOrgJob, 'subOrg', [])
@@ -862,6 +865,7 @@ export default {
       this.readonlyBasicInfo = true
       this.staffInfo = deepClone(staffInfo)
       this.initSubJobOptions()
+      this.initRegion()
     },
     getJob(item, index) {
       if (item.subOrgId) {
