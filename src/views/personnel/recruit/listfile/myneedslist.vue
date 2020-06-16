@@ -54,7 +54,7 @@
         slot="accuracy"
         slot-scope="{ row }"
       >
-        {{ percentage(row) }}
+        {{ percentage(row) + '%' }}
       </template>
       <template
         slot="handler"
@@ -366,7 +366,7 @@ export default {
       })
     },
     percentage(row) {
-      return (row.percentage = claAccuracy(row.needNum, row.entryNum))
+      return (row.percentage = claAccuracy(row.taskNum, row.entryNum))
     }
   }
 }

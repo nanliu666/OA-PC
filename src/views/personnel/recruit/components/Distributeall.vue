@@ -82,7 +82,7 @@ export default {
         this.loading = false
         this.data = res.map((item) => ({
           ...item,
-          nodeData: claAccuracy(item.taskNum, item.entryNum, true)
+          nodeData: claAccuracy(item.taskNum, item.entryNum)
         }))
       })
     }

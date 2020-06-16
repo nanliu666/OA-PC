@@ -62,7 +62,7 @@
         slot="accuracy"
         slot-scope="{ row }"
       >
-        {{ percentage(row) }}
+        {{ percentage(row) + '%' }}
       </template>
 
       <template

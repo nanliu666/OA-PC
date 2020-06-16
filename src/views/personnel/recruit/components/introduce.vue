@@ -49,7 +49,7 @@
       class="frame"
     >
       <span class="demandSize"> 招聘进度</span>
-      <span class="content isBurl">{{ user.progress }}</span>
+      <span class="content isBurl">{{ `${user.progress}%` }}</span>
     </el-col>
 
     <el-col

@@ -61,7 +61,7 @@
         slot="accuracy"
         slot-scope="{ row }"
       >
-        {{ percentage(row) }}
+        {{ percentage(row) + '%' }}
       </template>
 
       <template
@@ -164,9 +164,10 @@
             </el-col>
             <el-col
               :span="4"
-              class="taskInformation isRed  noborder"
+              :class="{ isRed: item.percentage === 0 }"
+              class="taskInformation  noborder"
             >
-              {{ percentage(item) }}
+              {{ percentage(item) + '%' }}
             </el-col>
           </el-row>
         </div>
