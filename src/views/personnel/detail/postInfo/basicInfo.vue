@@ -696,6 +696,13 @@ export default {
           this.staffInfo.workCityName = item.cityName
           this.staffInfo.workProvinceCode = item.provinceCode
           this.staffInfo.workCityCode = item.cityCode
+
+          this.staffInfo.provinceName = item.provinceName
+          this.staffInfo.cityName = item.cityName
+          this.staffInfo.countyName = item.countyName
+          this.staffInfo.provinceCode = item.provinceCode
+          this.staffInfo.cityCode = item.cityCode
+          this.staffInfo.countyCode = item.countyCode
         }
       })
     },
