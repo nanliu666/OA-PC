@@ -22,9 +22,10 @@ export let NewRequirement = {
       attrvalue: '', // 后台返回值
       minLen: '', // 最小长度
       maxLen: '', // 最大长度
-      value: '', // 单选框多选框的potion的值
+      value: [], // 单选框多选框的potion的值
       dataType: 1, // 当inType=1时生效
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      inType: 11, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
+      newlybuild: true,
       message: '请选择部门', // 提示必填提示
       props: 'orgId',
       rules: [{ required: true, message: '请选择用人部门', trigger: 'blur' }]
