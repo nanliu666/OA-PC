@@ -239,6 +239,7 @@ export default {
           let provinceName = this.form.pathLabels[0]
           let cityName = this.form.pathLabels[1]
           let countyName = this.form.pathLabels[2]
+
           let params = {
             name,
             phonenum,
@@ -251,14 +252,17 @@ export default {
             countyName
           }
           if (this.row.id) {
+            params.id = this.row.id
             putAddresss(params).then(() => {
               this.$message.success('修改成功')
+              this.$emit('updataAddree')
               this.dialog = false
             })
             return
           }
           postAddresss(params).then(() => {
             this.$message.success('提交成功')
+            this.$emit('updataAddree')
             this.dialog = false
           })
         })

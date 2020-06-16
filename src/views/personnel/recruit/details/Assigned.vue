@@ -70,11 +70,11 @@
                 <i
                   slot="prefix"
                   class="el-input__icon el-icon-search"
-                  @click="requeWorkList(3)"
+                  @click="requeWorkList(5)"
                 />
               </el-input>
               <el-option
-                v-for="item in options"
+                v-for="item in filteredUser"
                 :key="item.name"
                 :label="item.name"
                 :value="item.userId"
@@ -137,7 +137,7 @@
     <el-button
       type="primary"
       size="medium"
-      @click="onSubmitted"
+      @click="onSubmitted()"
     >
       确定
     </el-button>
@@ -178,6 +178,15 @@ export default {
         ]
       },
       options: []
+      // 用于捕获用户userId的数组
+    }
+  },
+  computed: {
+    filteredUser() {
+      return this.options.filter(
+        (option) =>
+          !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+      )
     }
   },
   methods: {
@@ -221,15 +230,12 @@ export default {
         this.dynamicValidateForm.users = itemArr
       }
       this.$emit('update:visible', false)
-      if (this.jumpnot === 'yes') {
+      if (this.jumpnot) {
         this.$emit('dataJump')
       }
     },
     addDomain() {
-      if (
-        this.dynamicValidateForm.users &&
-        Object.keys(this.dynamicValidateForm.users).length === 0
-      ) {
+      if (this.dynamicValidateForm.users && this.dynamicValidateForm.users.length === 0) {
         this.$message({
           showClose: true,
           message: '当前需求暂无可用员工, 请关闭重试',
@@ -237,7 +243,12 @@ export default {
         })
         this.$emit('update:visible', false)
       } else {
+        if (this.dynamicValidateForm.users.some((user) => !user.userId)) {
+          this.$message.error('请先选择员工')
+          return
+        }
         this.dynamicValidateForm.users.push({
+          id: createUniqueID(),
           userId: '',
           taskNum: 0,
           disabled: true,
@@ -254,16 +265,19 @@ export default {
         return total
       }
     },
-    onSubmitted() {
+    onSubmitted(parms = {}) {
+      // 判断人数是否相当
       let total = this.calWhetherBeyond()
       if (total === this.Numberofpeople) {
-        let parms = {}
         parms.recruitmentId = this.recruitmentId
-        parms.users = this.dynamicValidateForm.users.map((item) => ({
-          userId: item.userId,
-          taskNum: item.taskNum,
-          operatorType: this.calId(item.id)
-        }))
+        parms.users = this.dynamicValidateForm.users
+          .filter((item) => item.userId)
+          .map((item) => ({
+            userId: item.userId,
+            taskNum: item.taskNum,
+            // 利用已经生成的ID来判断当前分配状态是否为已经生成
+            operatorType: this.calStatus(item.id)
+          }))
         putDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
         })
@@ -277,7 +291,7 @@ export default {
         })
       }
     },
-    calId(id) {
+    calStatus(id) {
       if (id) {
         return 'Update'
       } else {
@@ -299,13 +313,13 @@ export default {
 .textForm {
   margin-top: 10px;
 }
-.demandSize {
-  display: block;
-  font-size: 12px;
-  color: #718199;
-  line-height: 18px;
-  text-align: center;
-}
+// .demandSize {
+//   display: block;
+//   font-size: 12px;
+//   color: #718199;
+//   line-height: 18px;
+//   text-align: center;
+// }
 #assigned {
   color: #1989fa;
 }
