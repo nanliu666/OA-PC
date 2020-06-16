@@ -25,6 +25,11 @@ export default [
         path: '/todo/resumeReview',
         name: '简历审核',
         component: () => import(/* webpackChunkName: "views" */ '@/views/todo/resumeReview')
+      },
+      {
+        path: '/msg/msg',
+        name: '消息中心',
+        component: () => import(/* webpackChunkName: "views" */ '@/views/msg/msg')
       }
     ]
   }

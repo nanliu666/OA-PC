@@ -6,13 +6,17 @@
     />
     <basic-container block>
       <!-- 头部 -->
-      <div class="header">
+      <div
+        v-loading="loading"
+        class="header"
+      >
         <div class="name-row">
           <div class="name-box">
-            {{ InterviewInfo.name }}的面试
+            {{ personData.name }} （ {{ personData.jobName }} ） 的面试
           </div>
           <div class="btn-box">
             <el-button
+              v-if="InterviewInfo.status == 'UnEvaluate'"
               type="primary"
               size="medium"
               @click="goToInterEdit"
@@ -36,6 +40,7 @@
       <!-- 面试评价 -->
       <div
         v-if="InterviewInfo.status !== 'UnEvaluate'"
+        v-loading="loading"
         class="evaluate-wrap"
       >
         <div class="title">
@@ -77,7 +82,12 @@
         </div>
       </div>
       <!-- 候选人信息 -->
-      <person-detail :person-id="$route.query.id" />
+      <div class="person-detail">
+        <person-detail
+          :person-id="InterviewInfo.personId"
+          @update="updatePersonData"
+        />
+      </div>
     </basic-container>
   </div>
 </template>
@@ -99,32 +109,7 @@ export default {
   data() {
     return {
       // 面试详情信息
-      InterviewInfo: {
-        // id: '',
-        // pushUser: '',
-        // pushName: '',
-        // pushTime: '',
-        // status: '',
-        // interviewUser: '',
-        // interviewName: '',
-        // interviewTime: '',
-        // interviewType: '',
-        // name: '',
-        // phonenum: '',
-        // address: '',
-        // remark: '',
-        // interview: '',
-        // recruitmentId: '',
-        // personId: '',
-        // evaluateTime: '',
-        // workBackground: '',
-        // workExperience: '',
-        // knowledge: '',
-        // train: '',
-        // specialty: '',
-        // evaluation: '',
-        // score: ''
-      },
+      InterviewInfo: {},
       //面试评价信息
       evaluateList: [
         {
@@ -195,7 +180,9 @@ export default {
           name: 'address',
           detail: ''
         }
-      ]
+      ],
+      loading: false,
+      personData: {}
     }
   },
   created() {
@@ -204,8 +191,11 @@ export default {
   methods: {
     //获取面试详情信息
     async getDataInfo() {
+      this.loading = true
       let { id } = this.$route.query
-      this.InterviewInfo = await getInterviewInfo({ id })
+      this.InterviewInfo = await getInterviewInfo({ id }).finally(() => {
+        this.loading = false
+      })
       this.evaluateList.forEach((item) => {
         return (item.detail = this.InterviewInfo[item.name])
       })
@@ -220,6 +210,9 @@ export default {
         path: '/todo/interviewEdit',
         query: { id, name }
       })
+    },
+    updatePersonData(personData) {
+      this.personData = personData
     }
   }
 }
@@ -228,6 +221,7 @@ export default {
 <style lang="scss" scoped>
 // 头部
 .header {
+  border-bottom: 1px solid #e3e7e9;
   .name-row {
     display: flex;
     justify-content: space-between;
@@ -258,7 +252,8 @@ export default {
 // 面试评价
 .evaluate-wrap {
   padding-bottom: 8px;
-  border-top: 1px solid #e3e7e9;
+  border-bottom: 1px solid #e3e7e9;
+
   .title {
     font-family: PingFangSC-Medium;
     font-size: 14px;
@@ -295,7 +290,9 @@ export default {
     }
   }
 }
-
+.person-detail {
+  border-bottom: 1px solid #e3e7e9;
+}
 .basic-container--block {
   height: calc(100% - 82px);
   min-height: calc(100% - 82px);
