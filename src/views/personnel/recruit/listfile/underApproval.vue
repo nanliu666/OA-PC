@@ -150,7 +150,9 @@ export default {
   },
   methods: {
     getTableData(params = {}) {
-      this.decorator(params)
+      params.pageNo = this.page.currentPage
+      params.pageSize = this.page.size
+      params.userId = this.userId
       this.loading = true
       getApprove(params).then((res) => {
         this.loading = false
@@ -158,13 +160,6 @@ export default {
         this.page.total = res.totalPage
       })
     },
-    decorator(params) {
-      params.pageNo = this.page.currentPage
-      params.pageSize = this.page.size
-      params.userId = this.userId
-      return params
-    },
-
     handleSubmit(params) {
       this.getTableData(params)
     },
@@ -175,7 +170,6 @@ export default {
         query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
       })
     },
-
     currentPageChange(param) {
       this.page.currentPage = param
       this.getTableData()

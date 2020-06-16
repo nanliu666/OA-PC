@@ -49,7 +49,7 @@
       class="frame"
     >
       <span class="demandSize"> 招聘进度</span>
-      <span class="content isBurl">{{ user.progress }}</span>
+      <span class="content isBurl">{{ `${user.progress}%` }}</span>
     </el-col>
 
     <el-col
@@ -63,6 +63,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 export default {
   name: 'Introduce',
   props: ['Status'],
@@ -85,7 +86,7 @@ export default {
   watch: {
     Status: function(newval) {
       this.user = newval
-      this.getPercent(this.user.needNum, this.user.entryNum)
+      this.user.progress = claAccuracy(this.user.needNum, this.user.entryNum)
     }
   },
   mounted() {
@@ -102,14 +103,6 @@ export default {
         }
       })
       return typeWord
-    },
-    getPercent(curNum, totalNum) {
-      curNum = parseFloat(curNum)
-      totalNum = parseFloat(totalNum)
-      if (isNaN(curNum) || isNaN(totalNum)) {
-        return '-'
-      }
-      this.user.progress = Math.round((totalNum / curNum) * 10000) / 100 + '%'
     }
   }
 }
