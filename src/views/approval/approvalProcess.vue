@@ -72,7 +72,8 @@ export default {
     jump(it) {
       // this.dialogVisible = true
       let params = {
-        formKey: it.formKey
+        formKey: it.formKey,
+        title: it.name
       }
       this.$router.push({
         path: '/approval/approvalDetail',

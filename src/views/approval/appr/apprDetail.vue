@@ -522,13 +522,13 @@
                     已撤回
                   </div>
                   <div
-                    v-if="index == activeStep && isReject"
+                    v-else-if="index == activeStep && isReject"
                     class="tip reject-text"
                   >
                     已拒绝
                   </div>
                   <div
-                    v-if="index == progressList.length - 1 && isFished"
+                    v-else-if="index == progressList.length - 1 && isFished"
                     class="tip fished-text"
                   >
                     已通过
@@ -705,9 +705,10 @@
         class="cancel-btn-box"
       >
         <el-button
-          v-if="!isShowCancel && !isUser"
+          v-if="!isShowCancel"
           type="primary"
           size="medium"
+          :disabled="!isUser"
           @click="handelCancel"
         >
           撤回
@@ -756,6 +757,7 @@
         <el-button
           size="medium"
           type="primary"
+          :loading="loading"
           @click="handelConfirm"
         >确 定</el-button>
       </span>
@@ -872,7 +874,7 @@ export default {
       apprType: '',
       // 审批意见
       apprRemark: '',
-      loading: true
+      loading: false
     }
   },
   computed: {
@@ -961,7 +963,7 @@ export default {
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
-      let res = await getApplyDetail({ apprNo: this.$route.query.apprNo })
+      let res = await getApplyDetail(this.$route.query)
       this.ApplyInfo = res
     },
 
@@ -1070,7 +1072,7 @@ export default {
       }
       this.loading = false
       // 提交申请人的id
-      this.applyUserId = this.progressList[this.progressList.length - 1].userId
+      this.applyUserId = this.progressList[0].userId
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
@@ -1108,6 +1110,7 @@ export default {
     },
     // 点击确定审批
     async handelConfirm() {
+      this.loading = true
       let { userId, id: nodeId } = this.progressList[this.activeStep]
       let { apprNo } = this.$route.query
       if (this.apprType === 'Reject') {
@@ -1134,6 +1137,7 @@ export default {
         })
       }
       this.dialogVisible = false
+      this.loading = false
       this.goBack()
     },
     // 点击催一下
@@ -1149,6 +1153,13 @@ export default {
     },
     // goback
     goBack() {
+      if (this.$route.query.page) {
+        this.$router.push({
+          path: '/personnel/candidate/candidateManagement'
+        })
+        this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+        return
+      }
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }

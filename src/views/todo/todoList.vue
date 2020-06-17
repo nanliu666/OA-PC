@@ -1,7 +1,7 @@
 <template>
   <div class="fill">
     <page-header
-      title="代办中心"
+      title="待办中心"
       show-back
     />
     <basic-container block>
@@ -58,7 +58,7 @@
           <el-button
             type="text"
             class="refresh"
-            icon="el-icon-refresh-right"
+            icon="icon-basics-refresh-outlined"
             size="medium"
             @click="loadData"
           />
@@ -71,6 +71,7 @@
 import { todoTypeCN } from '@/const/todo'
 import { getTodoList } from '@/api/todo/todo'
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'TodoList',
@@ -173,6 +174,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   created() {
     this.loadData()
   },
@@ -255,6 +259,7 @@ export default {
       getTodoList({
         pageNo: this.page.currentPage,
         pageSize: this.page.size,
+        userId: this.userId,
         ...this.query
       })
         .then((res) => {

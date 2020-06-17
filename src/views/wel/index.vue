@@ -2,10 +2,10 @@
   <!-- <div>首页</div> -->
   <div class="page clearfix">
     <div class="aside">
-      <infoViewArea />
+      <infoViewArea :todo-count="todoCount" />
     </div>
     <div class="main">
-      <workArea />
+      <workArea :todo-count.sync="todoCount" />
     </div>
   </div>
 </template>
@@ -18,6 +18,11 @@ export default {
   components: {
     infoViewArea,
     workArea
+  },
+  data() {
+    return {
+      todoCount: 0
+    }
   }
 }
 </script>
@@ -34,11 +39,9 @@ export default {
     width: 332px;
   }
   .main {
-    float: left;
-    width: calc(100vw - 412px);
+    float: right;
+    width: calc(100vw - 415px);
     // width: calc(100% - 22vw);
-
-    margin-left: 16px;
   }
 }
 /* 清楚浮动 */

@@ -1,37 +1,44 @@
 <template>
-  <div class="info-wrap">
+  <div
+    v-loading="loading"
+    class="info-wrap"
+  >
     <!-- 个人信息 -->
     <div class="info-box">
       <!-- 头像 -->
       <div class="avatar-row ">
         <div class="avatar-img">
-          <img
+          <!-- <img
             src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
             alt=""
-          >
-          <span class="add-btn">+</span>
+          > -->
+          <i class="icon-usercircle" />
+          <!-- <span class="add-btn">+</span> -->
         </div>
       </div>
       <!-- 姓名 -->
       <div class="name-row ">
-        <span>SerAti Zhi</span>
+        <span>{{ info.name }}</span>
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>人事专员</span>
+        <span>{{ info.positionName }}</span>
         <span>|</span>
-        <span>易宝软件广州分公司</span>
+        <span>{{ info.companyName }}</span>
       </div>
     </div>
 
     <!-- 快捷入口 -->
     <div class="quick-access">
       <div class="title-wrap">
-        <span class="title">快捷入口</span> <span><i class="el-icon-more" /></span>
+        <span class="title">快捷入口</span>
       </div>
       <div class="main-wrap">
         <div class="content">
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box tips">
               <svg
                 class="icon"
@@ -42,7 +49,10 @@
             </div>
             <span>新建提醒</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box apply">
               <svg
                 class="icon"
@@ -53,7 +63,10 @@
             </div>
             <span>通用申请</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box  arrange">
               <svg
                 class="icon"
@@ -64,7 +77,10 @@
             </div>
             <span>安排面试</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="handelClick"
+          >
             <div class="icon-box book">
               <svg
                 class="icon"
@@ -75,7 +91,10 @@
             </div>
             <span>通讯录</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="jumpToAddUser"
+          >
             <div class="icon-box add">
               <i class="icon-tips-plus-outlined" />
             </div>
@@ -93,13 +112,14 @@
       <div class="main-wrap">
         <div class="content">
           <div class="content-item">
-            <span class="num-box">12</span> <span class="handel">待我处理</span>
+            <span class="num-box">{{ todoCount || '--' }}</span>
+            <span class="handel">待我处理</span>
           </div>
           <div class="content-item">
-            <span class="num-box">12</span> <span class="handel">待我处理</span>
+            <span class="num-box">--</span> <span class="handel">我发起的</span>
           </div>
           <div class="content-item">
-            <span class="num-box">12</span> <span class="handel">待我处理</span>
+            <span class="num-box">--</span> <span class="handel">抄送我的</span>
           </div>
         </div>
       </div>
@@ -108,9 +128,49 @@
 </template>
 
 <script>
+import { getStaffBasicInfo } from '@/api/personalInfo'
+import { mapGetters } from 'vuex'
 export default {
   name: 'InfoViewArea',
-  components: {}
+  props: {
+    todoCount: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      info: {},
+      // 待我处理
+      waitForMeNum: 0,
+      loading: false
+    }
+  },
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
+  created() {
+    this.loadingUserInfo()
+  },
+  methods: {
+    // 点击添加员工
+    jumpToAddUser() {
+      this.$router.push({
+        path: '/personnel/addRoster'
+      })
+    },
+    // 开发中
+    handelClick() {
+      this.$message.info('该功能正在开发中')
+    },
+    // 获取员工信息
+    async loadingUserInfo() {
+      this.loading = true
+      let res = await getStaffBasicInfo({ userId: this.userInfo.user_id })
+      this.info = res
+      this.loading = false
+    }
+  }
 }
 </script>
 
@@ -138,12 +198,17 @@ export default {
       height: 116px;
       width: 116px;
       border-radius: 100%;
-      border: 5px solid #ececf3;
+      // border: 5px solid #ececf3;
       position: relative;
-      img {
-        width: 116px;
-        height: 116px;
-        border-radius: 100%;
+      // img {
+      // 	width: 116px;
+      // 	height: 116px;
+      // 	border-radius: 100%;
+      // }
+      .icon-usercircle {
+        font-size: 116px;
+        vertical-align: middle;
+        color: #cfd3d6;
       }
       .add-btn {
         display: inline-block;

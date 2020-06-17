@@ -218,6 +218,15 @@ export default {
     },
     validateField() {
       return this.$refs['form'].validateField(...arguments)
+    },
+    scrollIntoView() {
+      this.$refs['form'] &&
+        this.$refs['form'].$el &&
+        this.$refs['form'].$el.scrollIntoView &&
+        this.$refs['form'].$el.scrollIntoView({
+          behavior: 'auto',
+          block: 'end'
+        })
     }
   }
 }

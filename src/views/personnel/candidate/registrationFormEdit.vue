@@ -37,10 +37,15 @@
         基本信息
       </div>
       <div style="margin:0 100px;">
-        <inputArray
-          ref="info"
-          :form.sync="form"
-          :info-form.sync="infoForm"
+        <!--        <inputArray-->
+        <!--          ref="info"-->
+        <!--          :form.sync="form"-->
+        <!--          :info-form.sync="infoForm"-->
+        <!--        />-->
+        <commonForm
+          ref="form"
+          :model="form"
+          :columns="infoForm"
         />
       </div>
     </div>
@@ -64,10 +69,15 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
+          <!--          <inputArray-->
+          <!--            :ref="`contacts${i}`"-->
+          <!--            :info-form.sync="contacts.contacts"-->
+          <!--            :form="contacts.form"-->
+          <!--          />-->
+          <commonForm
             :ref="`contacts${i}`"
-            :info-form.sync="contacts.contacts"
-            :form="contacts.form"
+            :model="contacts.form"
+            :columns="contacts.contacts"
           />
         </div>
 
@@ -99,11 +109,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
+          <commonForm
             :ref="`family${i}`"
-            :info-form.sync="family.family"
-            :form="family.form"
+            :model="family.form"
+            :columns="family.family"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`family${i}`"-->
+          <!--            :info-form.sync="family.family"-->
+          <!--            :form="family.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -134,11 +149,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="education.education"
-            :form="education.form"
+          <commonForm
+            :ref="`education$${i}`"
+            :model="education.form"
+            :columns="education.education"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`education${i}`"-->
+          <!--            :info-form.sync="education.education"-->
+          <!--            :form="education.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -169,11 +189,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="work.work"
-            :form="work.form"
+          <commonForm
+            :ref="`work${i}`"
+            :model="work.form"
+            :columns="work.work"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`education${i}`"-->
+          <!--            :info-form.sync="work.work"-->
+          <!--            :form="work.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -204,11 +229,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="train.train"
-            :form="train.form"
+          <commonForm
+            :ref="`train${i}`"
+            :model="train.form"
+            :columns="train.train"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`train${i}`"-->
+          <!--            :info-form.sync="train.train"-->
+          <!--            :form="train.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -239,11 +269,16 @@
           >
             <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
           </span>
-          <inputArray
-            :ref="`education${i}`"
-            :info-form.sync="certificate.certificate"
-            :form="certificate.form"
+          <commonForm
+            :ref="`certificate${i}`"
+            :model="certificate.form"
+            :columns="certificate.certificate"
           />
+          <!--          <inputArray-->
+          <!--            :ref="`certificate${i}`"-->
+          <!--            :info-form.sync="certificate.certificate"-->
+          <!--            :form="certificate.form"-->
+          <!--          />-->
         </div>
 
         <div
@@ -273,7 +308,8 @@
 </template>
 
 <script>
-import inputArray from './components/inputArray'
+import { provinceAndCityData, CodeToText } from 'element-china-area-data'
+import { putpersonInfo } from '@/api/personnel/selectedPerson'
 import {
   infoForm,
   contacts,
@@ -283,19 +319,53 @@ import {
   train,
   certificate
 } from './components/userInfo'
-
+import { cardid, HMCardValid, TWCardValid } from '@/util/validate'
 export default {
   name: 'RegistrationFormEdit',
-  components: {
-    inputArray
-  },
+  components: {},
   props: {
     modity: {
       type: Boolean
+    },
+    data: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {
+    //  检验证件是否符合
+    let checkIdNo = (rule, value, callback) => {
+      let IdType = this.form.idType
+      switch (IdType) {
+        case 'IDCard':
+          if (value && cardid(value)[0]) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        case 'pass01':
+          if (value && !HMCardValid(value)) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        case 'pass02':
+          if (value && !TWCardValid(value)) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        default:
+          callback()
+      }
+    }
     return {
+      checkIdNo,
       infoForm,
       contactsform: [{ contacts: contacts, form: {} }],
       educationform: [{ education: education, form: {} }],
@@ -322,36 +392,265 @@ export default {
         status: '面试中'
       },
       form: {
-        name: '1',
-        six: '1',
-        age: '1',
-        phone: '',
+        name: '',
+        sex: '',
+        phonenum: '',
         email: '',
-        healthy: '',
-        fisrtWork: '',
-        nativePlace: '',
-        newAddress: '',
-        IDaddress: '',
-        householdRegister: '',
+        idType: '',
+        idNo: '',
+        birthDate: '',
+        educationalLevel: '',
+        firstWorkDate: '',
+        marriage: '',
+        health: '',
         nation: '',
-        marriage: '1',
-        birth: '1',
-        height: '1',
-        weight: '1',
-        education: '1',
-        adress: '1',
-        contacts: '1',
-        type: '1',
-        PresentAddress: '1',
-        relatives: '1',
-        telephone: '1'
-      }
+        politicalStatus: '',
+        native: [],
+        householdType: '',
+        idAddress: '',
+        userAddress: ''
+      },
+      idType: [],
+      EducationalLevel: [],
+      Nation: [],
+      PoliticalStatus: [],
+      HouseholdType: [],
+      UserRelationship: [],
+      EducationalType: []
     }
   },
-  mounted() {},
+  watch: {
+    data: {
+      handler(val) {
+        for (let key in this.form) {
+          this.form[key] = val[key]
+        }
+        this.form.native = [val.nativeProvinceCode]
+        this.form.native = []
+        val.nativeProvinceCode && this.form.native.push(val.nativeProvinceCode)
+        val.nativeCityCode && this.form.native.push(val.nativeCityCode)
+        val.emer &&
+          val.emer.map((it) => {
+            this.contactsform = []
+            this.contactsform.push({ contacts: contacts, form: { ...it } })
+          })
+        val.family &&
+          val.family.map((it) => {
+            this.familyform = []
+            this.familyform.push({ family: family, form: { ...it } })
+          })
+        val.education &&
+          val.education.map((it) => {
+            it.educationTime = []
+            it.beginDate && it.educationTime.push(it.beginDate)
+            it.endDate && it.educationTime.push(it.endDate)
+            this.educationform = []
+            this.educationform.push({ education: education, form: { ...it } })
+          })
+        val.work &&
+          val.work.map((it) => {
+            it.workTime = []
+            it.beginWorkDate && it.workTime.push(it.beginWorkDate)
+            it.endWorkDate && it.workTime.push(it.endWorkDate)
+            this.workform = []
+            this.workform.push({ work: work, form: { ...it } })
+          })
+        val.emer &&
+          val.train.map((it) => {
+            it.time = []
+            it.beginDate && it.time.push(it.beginDate)
+            it.endDate && it.time.push(it.endDate)
+            this.trainform = []
+            this.trainform.push({ train: train, form: { ...it } })
+          })
+        val.certificate &&
+          val.certificate.map((it) => {
+            this.certificateform = []
+            this.certificateform.push({ certificate: certificate, form: { ...it } })
+          })
+      },
+      immediate: true
+    },
+    form: {
+      handler() {},
+      deep: true
+    },
+    educationform: {
+      handler() {},
+      deep: true
+    }
+  },
+  created() {
+    this.validataId()
+  },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'idType').then((res) => {
+      this.idType = res
+      this.options(this.infoForm, 'idType', res)
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.EducationalLevel = res
+      this.options(this.infoForm, 'educationalLevel', res)
+      this.options(education, 'educationalLevel', res)
+    })
+    this.$store.dispatch('CommonDict', 'Nation').then((res) => {
+      this.Nation = res
+      this.options(this.infoForm, 'nation', res)
+    })
+    this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
+      this.PoliticalStatus = res
+      this.options(this.infoForm, 'politicalStatus', res)
+    })
+    this.$store.dispatch('CommonDict', 'HouseholdType').then((res) => {
+      this.HouseholdType = res
+      this.options(this.infoForm, 'householdType', res)
+    })
+    this.$store.dispatch('CommonDict', 'UserRelationship').then((res) => {
+      this.UserRelationship = res
+      this.options(family, 'relationship', res)
+      this.options(contacts, 'relationship', res)
+    })
+    this.$store.dispatch('CommonDict', 'EducationalType').then((res) => {
+      this.EducationalType = res
+      this.options(education, 'educationalType', res)
+      this.options(education, 'educationalType', res)
+    })
+    this.options(this.infoForm, 'native', provinceAndCityData)
+  },
   methods: {
+    /**
+     * @author guanfenda
+     * @desc 处理验证
+     * */
+    validataId() {
+      this.infoForm.map((it) => {
+        if (it.prop === 'idNo') {
+          it.rules[0].validator = this.checkIdNo
+        }
+      })
+    },
+    /**
+     * author guanfenda
+     * @desc 处理posion赋值
+     *
+     * */
+    options(data, prop, position) {
+      data.map((it) => {
+        if (it.prop === prop) {
+          it.options = position
+        }
+      })
+    },
+    /**
+     * @author guanfenda
+     * 判断是否更新和修改
+     * */
+    dataPush(form, type) {
+      form.map((it) => {
+        // 判断是否更新和修改
+        if (it.form.id) {
+          it.form.operatorType = 'Update'
+          type.push(it.form)
+        } else {
+          let isAdd = false
+          for (let key in it.form) {
+            if (key) {
+              isAdd = true
+            }
+          }
+          if (!isAdd) return
+          it.form.operatorType = 'Add'
+          type.push(it.form)
+        }
+      })
+    },
+    /***
+     *
+     * @author guanfenda
+     * 判断是否删除
+     *
+     * */
+    datadelete(form, type) {
+      form.map((it) => {
+        // 判断是否更新和修改
+        let index = type.findIndex((item) => {
+          return it.id === item.id
+        })
+        if (index < 0) {
+          it.operatorType = 'Del'
+          type.push(it)
+        }
+      })
+    },
+    /**
+     * @author guanfenda
+     * 登记表提交
+     * */
     handleSave() {
-      this.$emit('close')
+      this.$refs.form
+        .validate()
+        .then(() => {
+          let emer = []
+          this.dataPush(this.contactsform, emer)
+          this.data.emer && this.datadelete(this.data.emer, emer)
+          let family = []
+          this.dataPush(this.familyform, family)
+          this.data.family && this.datadelete(this.data.family, family)
+          let education = []
+          this.dataPush(this.educationform, education)
+          this.data.education && this.datadelete(this.data.education, education)
+          let work = []
+          this.dataPush(this.workform, work)
+          this.data.work && this.datadelete(this.data.work, work)
+          let train = []
+          this.dataPush(this.trainform, train)
+          this.data.train && this.datadelete(this.data.train, train)
+          let certificate = []
+          this.dataPush(this.certificateform, certificate)
+          this.data.certificate && this.datadelete(this.data.certificate, certificate)
+          education.map((it) => {
+            if (it.educationTime.length > 0) {
+              it.beginDate = it.educationTime[0]
+              it.endDate = it.educationTime[1]
+            }
+          })
+          work.map((it) => {
+            if (it.workTime.length > 0) {
+              it.beginWorkDate = it.workTime[0]
+              it.endWorkDate = it.workTime[1]
+            }
+          })
+          train.map((it) => {
+            if (it.time.length > 0) {
+              it.beginDate = it.time[0]
+              it.endDate = it.time[1]
+            }
+          })
+          this.form.nativeProvinceCode = this.form.native[0] || ''
+          this.form.nativeProvinceName = CodeToText[this.form.native[0]] || ''
+          this.form.nativeCityCode = this.form.native[1] || ''
+          this.form.nativeCityName = CodeToText[this.form.native[1]] || ''
+          let params = {
+            personId: this.$route.query.personId,
+            ...this.form,
+            emer: emer,
+            family: family,
+            education: education,
+            work: work,
+            train: train,
+            certificate: certificate
+          }
+          this.loading = true
+          putpersonInfo(params).then(() => {
+            this.loading = false
+            this.$message.success('提交成功')
+            this.$emit('close')
+          })
+        })
+        .catch(() => {
+          this.loading = false
+          this.$refs.form.scrollIntoView()
+        })
     },
     close() {
       this.$emit('close')

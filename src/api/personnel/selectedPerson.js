@@ -111,3 +111,11 @@ export const postInterViewResend = (params) => post('/user/v1/person/interview/r
  *@params params
  * */
 export const getpersonInfo = (params) => get('/helper/v1/person/info', params)
+// /helper/v1/person/info
+/***
+ * @author guanfenda
+ * @desc  人员信息修改接口
+ *
+ *@params params
+ * */
+export const putpersonInfo = (params) => put('/helper/v1/person/info', params)

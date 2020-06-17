@@ -5,7 +5,7 @@ export default ({ mock }) => {
   if (!mock) return
 
   //获取表格数据
-  Mock.mock(new RegExp('/api/task/v1/todo/list' + '.*'), 'get', (options) => {
+  Mock.mock(new RegExp('/api/user/v1/todo/list' + '.*'), 'get', (options) => {
     console.log(options.url, JSON.parse(options.body))
     let list = []
     for (let i = 0; i < 10; i++) {

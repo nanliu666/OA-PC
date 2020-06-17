@@ -17,17 +17,124 @@
       </div>
       <div class="flex flex-flow flex-justify-between">
         <div class="person_position flex flex-items flex-flow">
-          <div>
-            {{ personInfo.department }}
-          </div>
+          <div>{{ personInfo.department }}</div>
           <div>{{ personInfo.position }}</div>
-          <div>
-            {{ personInfo.status }}
-          </div>
+          <div>{{ personInfo.status }}</div>
         </div>
         <div class="flex flex-items flex-flow">
           <div>
-            <el-button
+            <template
+              v-if="
+                (candidateInfo.status === '3' ||
+                  candidateInfo.status === '7' ||
+                  candidateInfo.status === '8') &&
+                  data.interviewRegister === 0 &&
+                  this.emer.length === 0
+              "
+            >
+              <el-button
+                type="primary"
+                size="medium"
+                style="margin-right: 15px;"
+                @click="handleSend"
+              >
+                {{ $route.query.entry ? '重新发送入职登记表' : '重新发送面试登记表' }}
+              </el-button>
+            </template>
+            <!-- <template v-else-if="candidateInfo.status === '0'">
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                下载
+              </el-button>
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                打印
+              </el-button>
+            </template> -->
+            <template
+              v-else-if="
+                (candidateInfo.status === '3' ||
+                  candidateInfo.status === '7' ||
+                  candidateInfo.status === '8') &&
+                  data.interviewRegister === 0 &&
+                  this.emer.length > 0
+              "
+            >
+              <el-button
+                type="primary"
+                size="medium"
+                style="margin-right: 15px;"
+                @click="handlerConfirm"
+              >
+                {{ $route.query.entry ? '确认入职登记表' : '确认面试登记表' }}
+              </el-button>
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+                @click="handlerNotice"
+              >
+                通知TA修改
+              </el-button>
+              <el-dropdown
+                trigger="click"
+                @command="handleCommand"
+              >
+                <el-button
+                  type="primary"
+                  size="medium"
+                >
+                  更多
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-if="!isEdit"
+                    command="modity"
+                  >
+                    帮TA修改
+                  </el-dropdown-item>
+                  <el-dropdown-item v-if="isEdit">
+                    取消修改
+                  </el-dropdown-item>
+                  <!-- <el-dropdown-item>下载</el-dropdown-item>
+                  <el-dropdown-item>打印</el-dropdown-item> -->
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template
+              v-else-if="
+                (candidateInfo.status === '3' ||
+                  candidateInfo.status === '7' ||
+                  candidateInfo.status === '8') &&
+                  data.interviewRegister === 1
+              "
+            >
+              <el-button
+                type="primary"
+                size="medium"
+                disabled
+                style="margin-right: 15px;"
+              >
+                已确认
+              </el-button>
+              <!-- <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                下载
+              </el-button>
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                打印
+              </el-button> -->
+            </template>
+            <!-- <el-button
               v-if="!isEdit"
               type="primary"
               size="medium"
@@ -44,11 +151,7 @@
               @click="handlerEdit"
             >
               取消修改
-            </el-button>
-          </div>
-          <div class="icon">
-            <span> <i class="el-icon-download" />下载</span>
-            <span><i class="el-icon-printer" />打印</span>
+            </el-button>-->
           </div>
         </div>
       </div>
@@ -267,18 +370,31 @@
     <div v-else>
       <edit
         :modity="modity"
+        :data="data"
         @close="handleClose"
       />
     </div>
+    <notice-modify-register
+      ref="noticeModifyRegister"
+      :visible.sync="noticeModifyRegister"
+      @refresh="getData"
+    />
   </div>
 </template>
 
 <script>
 import { getpersonInfo } from '@/api/personnel/selectedPerson'
+import { confirmEntryRegister, sendEntryRegister } from '@/api/personnel/entry'
+import {
+  getPersonInfo as getCandidateInfo,
+  postRegisterSend,
+  confirmInterviewRegister
+} from '@/api/personnel/candidate'
+import NoticeModifyRegister from './components/noticeModifyRegister'
 import edit from './registrationFormEdit'
 export default {
   name: 'RegistrationForm',
-  components: { edit },
+  components: { edit, NoticeModifyRegister },
   data() {
     return {
       modity: true,
@@ -289,6 +405,11 @@ export default {
         position: 'ue设计师',
         status: '面试中'
       },
+      data: {},
+      potions: {
+        form: this.basic
+      },
+      candidateInfo: {},
       basic: {
         name: '',
         sex: '',
@@ -474,7 +595,7 @@ export default {
       trainAttr: [
         {
           prop: 'time',
-          label: '受教育'
+          label: '培训日期'
         },
         {
           prop: 'name',
@@ -510,7 +631,21 @@ export default {
       PoliticalStatus: [],
       HouseholdType: [],
       UserRelationship: [],
-      EducationalType: []
+      EducationalType: [],
+      noticeModifyRegister: false
+    }
+  },
+  created() {
+    if (this.$route.query.entry) {
+      Object.assign(this.basic, { bankName: '', bankNo: '', isFirstSs: '', isFirstEpf: '' })
+      this.basicInfo.push(
+        ...[
+          { attribute: 'bankName', text: '开户银行名称' },
+          { attribute: 'bankNo', text: '开户银行账号' },
+          { attribute: 'isFirstSs', text: '本地首次缴纳社保' },
+          { attribute: 'isFirstEpf', text: '本地首次缴纳公积金' }
+        ]
+      )
     }
   },
   mounted() {
@@ -521,7 +656,7 @@ export default {
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
       this.EducationalLevel = res
     })
-    this.$store.dispatch('CommonDict', 'nation').then((res) => {
+    this.$store.dispatch('CommonDict', 'Nation').then((res) => {
       this.nation = res
     })
     this.$store.dispatch('CommonDict', 'PoliticalStatus').then((res) => {
@@ -581,6 +716,12 @@ export default {
         case 'householdType':
           params = this.value(this.HouseholdType, data)
           break
+        case 'isFirstSs':
+          params = data === 1 ? '是' : '否'
+          break
+        case 'isFirstEpf':
+          params = data === 1 ? '是' : '否'
+          break
         default:
           params = data
           break
@@ -592,6 +733,7 @@ export default {
         personId: this.$route.query.personId
       }
       getpersonInfo(params).then((res) => {
+        this.data = res
         for (let key in this.basic) {
           this.basic[key] = res[key]
         }
@@ -611,7 +753,17 @@ export default {
           it.time = it.beginDate + ' ~ ' + it.endDate
         })
         this.qualificationData = res.certificate
+        this.candidateInfo.interviewRegister = res.interviewRegister
+        this.candidateInfo.entryRegister = res.entryRegister
       })
+      getCandidateInfo(params).then((res) => {
+        this.candidateInfo = Object.assign(this.candidateInfo, res)
+      })
+    },
+    handleCommand(command) {
+      if (command === 'modity') {
+        this.handlerEdit()
+      }
     },
     handleClose() {
       this.isEdit = !this.isEdit
@@ -622,6 +774,37 @@ export default {
     handleBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
+    },
+    handleSend() {
+      let params = {
+        recruitmentId: this.candidateInfo.recruitmentId,
+        personId: this.$route.query.personId
+      }
+      let sendFun = this.$route.query.entry ? sendEntryRegister : postRegisterSend
+      sendFun(params).then(() => {
+        this.$message.success('发送成功')
+        this.getData()
+      })
+    },
+    handlerNotice() {
+      let params = {
+        personId: this.$route.query.personId,
+        recruitmentId: this.candidateInfo.recruitmentId
+      }
+      this.$route.query.entry
+        ? this.$refs.noticeModifyRegister.noticeEntry(params)
+        : this.$refs.noticeModifyRegister.noticeInterview(params)
+    },
+    handlerConfirm() {
+      let params = {
+        recruitmentId: this.candidateInfo.recruitmentId,
+        personId: this.$route.query.personId
+      }
+      let confirmFun = this.$route.query.entry ? confirmEntryRegister : confirmInterviewRegister
+      confirmFun(params).then(() => {
+        this.$message.success('确认成功')
+        this.getData()
+      })
     }
   }
 }
@@ -694,7 +877,7 @@ export default {
     div {
       /*width: 200px;*/
       padding: 15px 0;
-      ont-size: 14px;
+      font-size: 14px;
     }
     div:first-child {
       color: #718199;

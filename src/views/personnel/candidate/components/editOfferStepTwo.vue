@@ -108,7 +108,9 @@
                 :key="user.userId"
                 :class="['user', { last: index === form.noticeUserList.length - 1 }]"
               >
-                <div class="head" />
+                <div class="head">
+                  <i class="icon-usercircle" />
+                </div>
                 <div class="name">
                   {{ user.name }}
                 </div>
@@ -235,20 +237,26 @@ export default {
 <style lang="scss" scoped>
 .notice-user-list {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   .user {
     flex-direction: column;
     display: flex;
     align-items: center;
+    margin-bottom: 8px;
     &.last {
       margin-right: 12px;
     }
     .head {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(245, 246, 246, 0.5);
-      border: 1px solid rgba(117, 124, 133, 0.5);
+      // width: 34px;
+      // height: 34px;
+      // border-radius: 50%;
+      // background: rgba(245, 246, 246, 0.5);
+      // border: 1px solid rgba(117, 124, 133, 0.5);
+      i {
+        font-size: 34px;
+        color: #cfd3d6;
+      }
     }
     .name {
       line-height: 16px;
@@ -256,16 +264,17 @@ export default {
   }
   .plus {
     margin: 0 6px;
+    margin-top: 12px;
   }
   .add {
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     background: rgba(245, 246, 246, 0.5);
     border: 1px dashed rgba(117, 124, 133, 0.5);
     border-radius: 50%;
     text-align: center;
-    line-height: 40px;
+    line-height: 34px;
     i {
       color: #757c85;
     }
