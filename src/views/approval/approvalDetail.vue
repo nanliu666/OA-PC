@@ -1,7 +1,7 @@
 <template>
   <div>
     <pageHeader
-      title="审批流程"
+      :title="title"
       :show-back="showBack"
       :back="back"
     />
@@ -53,6 +53,7 @@ export default {
   components: { approvalcompoent, noteDialog },
   data() {
     return {
+      title: '',
       showBack: true,
       dialogVisible: false,
       input: '',
@@ -103,6 +104,7 @@ export default {
     }
   },
   mounted() {
+    this.title = this.$route.query.title
     this.getData()
   },
   methods: {
