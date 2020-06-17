@@ -11,7 +11,7 @@
             {{ personInfo.name }}
           </div>
           <div class="status">
-            {{ statusWord[$route.query.status] }}
+            {{ statusWord[personInfo.status] }}
           </div>
         </div>
         <div class="leftBottom">
@@ -23,7 +23,7 @@
       </div>
       <div class="right">
         <div class="btn">
-          <template v-if="$route.query.status === '7'">
+          <template v-if="personInfo.status === '7'">
             <el-button
               type="primary"
               size="medium"
@@ -32,14 +32,14 @@
               确认入职
             </el-button>
             <el-button
-              v-if="!register"
+              v-if="!personInfo.register"
               size="medium"
               @click="handleSend"
             >
               发送入职登记表
             </el-button>
             <el-button
-              v-if="register"
+              v-if="personInfo.register"
               type="text"
               @click="handleViewRegister"
             >
@@ -61,7 +61,7 @@
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-          <template v-if="$route.query.status === '8'">
+          <template v-if="personInfo.status === '8'">
             <el-button
               type="primary"
               size="medium"
@@ -93,7 +93,6 @@
           </el-col>
           <div class="info-content">
             <el-form
-              :model="personInfo"
               label-width="150px"
               class="info-form"
             >
@@ -151,8 +150,8 @@
                 :span="10"
                 :push="2"
               >
-                <el-form-item :label="$route.query.status === 7 ? '原定入职日期:' : '原定入职日期'">
-                  <span class="info-item-value">{{ personInfo.entryDate }}</span>
+                <el-form-item :label="personInfo.status === 7 ? '预计入职日期:' : '原定入职日期'">
+                  <span class="info-item-value">{{ applyInfo.entryDate }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -160,7 +159,7 @@
                 :push="2"
               >
                 <el-form-item label="试用期:">
-                  <span class="info-item-value">{{ personInfo.probation || 0 }}个月</span>
+                  <span class="info-item-value">{{ applyInfo.probation || 0 }}个月</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -168,7 +167,7 @@
                 :push="2"
               >
                 <el-form-item label="入职公司:">
-                  <span class="info-item-value">{{ personInfo.companyName }}</span>
+                  <span class="info-item-value">{{ applyInfo.companyName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -176,7 +175,7 @@
                 :push="2"
               >
                 <el-form-item label="部门:">
-                  <span class="info-item-value">{{ personInfo.orgName }}</span>
+                  <span class="info-item-value">{{ applyInfo.orgName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -184,7 +183,7 @@
                 :push="2"
               >
                 <el-form-item label="职位:">
-                  <span class="info-item-value">{{ personInfo.jobName }}</span>
+                  <span class="info-item-value">{{ applyInfo.jobName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -192,7 +191,7 @@
                 :push="2"
               >
                 <el-form-item label="岗位:">
-                  <span class="info-item-value">{{ personInfo.positionName }}</span>
+                  <span class="info-item-value">{{ applyInfo.positionName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -200,7 +199,7 @@
                 :push="2"
               >
                 <el-form-item label="工作性质:">
-                  <span class="info-item-value">{{ workProperty[personInfo.workProperty] }}</span>
+                  <span class="info-item-value">{{ workProperty[applyInfo.workProperty] }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -209,7 +208,7 @@
               >
                 <el-form-item label="工作地址:">
                   <span class="info-item-value">
-                    {{ personInfo.workProviceName + personInfo.workCityName + personInfo.address }}
+                    {{ applyInfo.workProviceName + applyInfo.workCityName + applyInfo.address }}
                   </span>
                 </el-form-item>
               </el-col>
@@ -219,7 +218,7 @@
               >
                 <el-form-item label="工作城市:">
                   <span class="info-item-value">
-                    {{ personInfo.workProviceName + personInfo.workCityName }}
+                    {{ applyInfo.workProviceName + applyInfo.workCityName }}
                   </span>
                 </el-form-item>
               </el-col>
@@ -236,14 +235,18 @@
     <give-out-entry-dialog
       ref="giveOutEntryDialog"
       :visible.sync="giveOutEntryDialog"
-      @refresh="loadData(1)"
+      @refresh="getPersonInfo()"
     />
   </div>
 </template>
 <script>
 import PageHeader from '@/components/page-header/pageHeader'
-import { getPersonInfo } from '@/api/personnel/candidate'
-import { getOfferApply, addOutCandidateAccept, postEntryRegisterSend } from '@/api/personnel/entry'
+import {
+  getOfferApply,
+  addOutCandidateAccept,
+  postEntryRegisterSend,
+  getCandidateAcceptDetail
+} from '@/api/personnel/entry'
 import GiveOutEntryDialog from './components/giveOutEntryDialog'
 
 export default {
@@ -251,29 +254,11 @@ export default {
   components: { PageHeader, GiveOutEntryDialog },
   data() {
     return {
-      personInfo: {
-        name: '',
-        email: '',
-        sex: '',
-        personId: '',
-        entryDate: '',
-        probation: '',
-        companyName: '',
-        orgName: '',
-        jobName: '',
-        positionName: '',
-        workProperty: '',
-        provinceName: '',
-        cityName: '',
-        countyName: '',
-        address: '',
-        workProviceName: '',
-        workCityName: ''
-      },
+      personInfo: {},
+      applyInfo: {},
       statusWord: { '7': '待入职', '8': '放弃入职' },
       workProperty: {},
-      giveOutEntryDialog: false,
-      register: this.$route.query.register === '1'
+      giveOutEntryDialog: false
     }
   },
   created() {
@@ -306,7 +291,10 @@ export default {
     },
     handleCommand(command) {
       if (command === 'getOutEntry') {
-        this.$refs.giveOutEntryDialog.out(this.personInfo)
+        this.$refs.giveOutEntryDialog.out({
+          personId: this.personInfo.personId,
+          name: this.personInfo.name
+        })
       }
     },
     handleSend() {
@@ -316,15 +304,15 @@ export default {
       }
       postEntryRegisterSend(params).then(() => {
         this.$message.success('发送成功')
-        this.register = true
-        this.loadData()
+        this.personInfo.register = 1
+        this.getPersonInfo()
       })
     },
     getPersonInfo() {
       getOfferApply({ id: this.$route.query.applyId }).then((apply) => {
-        Object.assign(this.personInfo, apply)
-        getPersonInfo({ personId: apply.personId }).then((info) => {
-          Object.assign(this.personInfo, info)
+        this.applyInfo = apply
+        getCandidateAcceptDetail({ personId: apply.personId }).then((info) => {
+          this.personInfo = info
         })
       })
     },
