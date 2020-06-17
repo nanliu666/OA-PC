@@ -305,7 +305,7 @@ export default {
   },
   created() {
     this.loadingToDoData()
-    this.loadingMsgData()
+    // this.loadingMsgData()
   },
   methods: {
     // 获取todoData
