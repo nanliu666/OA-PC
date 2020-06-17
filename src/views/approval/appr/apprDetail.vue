@@ -708,7 +708,7 @@
           v-if="!isShowCancel"
           type="primary"
           size="medium"
-          :disabled="isUser"
+          :disabled="!isUser"
           @click="handelCancel"
         >
           撤回
@@ -1072,7 +1072,7 @@ export default {
       }
       this.loading = false
       // 提交申请人的id
-      this.applyUserId = this.progressList[this.progressList.length - 1].userId
+      this.applyUserId = this.progressList[0].userId
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
