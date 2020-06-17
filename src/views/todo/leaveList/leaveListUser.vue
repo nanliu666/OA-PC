@@ -130,21 +130,31 @@ export default {
   }
 }
 // 主要内容区
+// 主要内容区
 .main-wrap {
   margin-top: 30px;
+  margin-left: 20px;
   .tips-row {
     font-size: 14px;
     color: #0e001c;
     line-height: 20px;
+
+    margin-bottom: 16px;
   }
   .category-box {
+    margin-left: 20px;
     .categoryName-row {
-      font-size: 16px;
+      font-size: 14px;
       color: #202940;
+      font-weight: bold;
+
+      margin-bottom: 16px;
     }
     .detail-box {
       font-size: 14px;
       color: #718199;
+
+      margin-bottom: 16px;
     }
   }
 }

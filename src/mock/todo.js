@@ -21,7 +21,8 @@ export default ({ mock }) => {
             'InterviewRegister',
             'Entry',
             'EntryRegister',
-            'LeaveList',
+            'LeaveListOrg',
+            'LeaveListUser',
             'Leave'
           ],
           bizId: '@increment',
