@@ -705,7 +705,7 @@
         class="cancel-btn-box"
       >
         <el-button
-          v-if="!isShowCancel && !isUser"
+          v-if="!isShowCancel"
           type="primary"
           size="medium"
           @click="handelCancel"
