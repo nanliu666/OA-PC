@@ -8,11 +8,12 @@
       <!-- 头像 -->
       <div class="avatar-row ">
         <div class="avatar-img">
-          <img
+          <!-- <img
             src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
             alt=""
-          >
-          <span class="add-btn">+</span>
+          > -->
+          <i class="icon-usercircle" />
+          <!-- <span class="add-btn">+</span> -->
         </div>
       </div>
       <!-- 姓名 -->
@@ -160,7 +161,7 @@ export default {
     },
     // 开发中
     handelClick() {
-      this.$message.info('该功能真正开发中')
+      this.$message.info('该功能正在开发中')
     },
     // 获取员工信息
     async loadingUserInfo() {
@@ -197,12 +198,17 @@ export default {
       height: 116px;
       width: 116px;
       border-radius: 100%;
-      border: 5px solid #ececf3;
+      // border: 5px solid #ececf3;
       position: relative;
-      img {
-        width: 116px;
-        height: 116px;
-        border-radius: 100%;
+      // img {
+      // 	width: 116px;
+      // 	height: 116px;
+      // 	border-radius: 100%;
+      // }
+      .icon-usercircle {
+        font-size: 116px;
+        vertical-align: middle;
+        color: #cfd3d6;
       }
       .add-btn {
         display: inline-block;

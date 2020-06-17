@@ -238,6 +238,7 @@ export default {
       return todoTypeCN[value]
     },
     filterDate(createTime) {
+      if (!createTime) return
       let m = moment(createTime)
       let now = moment()
       if (m.format('YYYY-MM-DD') === now.format('YYYY-MM-DD')) {
@@ -305,7 +306,7 @@ export default {
   },
   created() {
     this.loadingToDoData()
-    this.loadingMsgData()
+    // this.loadingMsgData()
   },
   methods: {
     // 获取todoData
