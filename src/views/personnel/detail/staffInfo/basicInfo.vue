@@ -632,11 +632,14 @@ export default {
   },
   computed: {
     getAge() {
-      let age = ''
+      let age = 0
       if (this.staffInfo.birthDate) {
         let curYear = new Date().getFullYear()
         let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
         age = curYear - birthYear
+      }
+      if (age < 0) {
+        age = 0
       }
       return age
     },
@@ -644,7 +647,7 @@ export default {
       return this.staffInfo.nativeProvinceName + this.staffInfo.nativeCityName
     },
     calcWorkAge() {
-      let workAge = ''
+      let workAge = 0
       if (this.staffInfo.firstWorkDate) {
         let fomatToMS = new Date().getTime() - new Date(this.staffInfo.firstWorkDate).getTime()
         let dayToMS = 1000 * 60 * 60 * 24
