@@ -708,6 +708,7 @@
           v-if="!isShowCancel"
           type="primary"
           size="medium"
+          :disabled="isUser"
           @click="handelCancel"
         >
           撤回
