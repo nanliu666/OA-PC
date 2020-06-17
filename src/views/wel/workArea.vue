@@ -238,6 +238,7 @@ export default {
       return todoTypeCN[value]
     },
     filterDate(createTime) {
+      if (!createTime) return
       let m = moment(createTime)
       let now = moment()
       if (m.format('YYYY-MM-DD') === now.format('YYYY-MM-DD')) {

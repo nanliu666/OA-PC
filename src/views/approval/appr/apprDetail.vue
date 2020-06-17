@@ -522,13 +522,13 @@
                     已撤回
                   </div>
                   <div
-                    v-if="index == activeStep && isReject"
+                    v-else-if="index == activeStep && isReject"
                     class="tip reject-text"
                   >
                     已拒绝
                   </div>
                   <div
-                    v-if="index == progressList.length - 1 && isFished"
+                    v-else-if="index == progressList.length - 1 && isFished"
                     class="tip fished-text"
                   >
                     已通过
@@ -705,9 +705,10 @@
         class="cancel-btn-box"
       >
         <el-button
-          v-if="!isShowCancel && !isUser"
+          v-if="!isShowCancel"
           type="primary"
           size="medium"
+          :disabled="!isUser"
           @click="handelCancel"
         >
           撤回
@@ -1071,7 +1072,7 @@ export default {
       }
       this.loading = false
       // 提交申请人的id
-      this.applyUserId = this.progressList[this.progressList.length - 1].userId
+      this.applyUserId = this.progressList[0].userId
     },
     // 根据子节点Id排序
     sordByChildId(resList, dataList) {
