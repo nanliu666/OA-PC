@@ -191,8 +191,8 @@ export default {
       this.$router.go(-1)
     },
     resetForm() {
-      this.apply.advise = ''
-      this.apply.summary = ''
+      this.apply.advise = null
+      this.apply.summary = null
     }
   }
 }
