@@ -111,13 +111,14 @@
       <div class="main-wrap">
         <div class="content">
           <div class="content-item">
-            <span class="num-box">{{ waitForMeNum }}</span> <span class="handel">待我处理</span>
+            <span class="num-box">{{ todoCount || '--' }}</span>
+            <span class="handel">待我处理</span>
           </div>
           <div class="content-item">
-            <span class="num-box">0</span> <span class="handel">-</span>
+            <span class="num-box">--</span> <span class="handel">我发起的</span>
           </div>
           <div class="content-item">
-            <span class="num-box">0</span> <span class="handel">-</span>
+            <span class="num-box">--</span> <span class="handel">抄送我的</span>
           </div>
         </div>
       </div>
@@ -126,11 +127,16 @@
 </template>
 
 <script>
-import { getTodoList } from '@/api/todo/todo'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { mapGetters } from 'vuex'
 export default {
   name: 'InfoViewArea',
+  props: {
+    todoCount: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       info: {},
@@ -161,8 +167,6 @@ export default {
       this.loading = true
       let res = await getStaffBasicInfo({ userId: this.userInfo.user_id })
       this.info = res
-      let { totalNum } = await getTodoList({ status: 'UnFinished' })
-      this.waitForMeNum = totalNum
       this.loading = false
     }
   }
