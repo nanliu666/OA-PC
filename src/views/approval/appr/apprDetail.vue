@@ -509,7 +509,7 @@
           >
             <el-step
               v-for="(item, index) in progressList"
-              :key="item.id"
+              :key="index"
             >
               <!-- 自定义图标 -->
               <template slot="icon">
@@ -582,7 +582,7 @@
           >
             <el-step
               v-for="(item, index) in recordList"
-              :key="item.id"
+              :key="index"
             >
               <!-- 自定义图标 -->
               <template slot="icon">
