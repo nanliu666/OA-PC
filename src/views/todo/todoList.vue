@@ -25,6 +25,8 @@
         :columns="columns"
         :data="tableData"
         :loading="loading"
+        @page-size-change="sizeChange"
+        @current-page-change="currentChange"
       >
         <div
           slot="title"
@@ -181,6 +183,14 @@ export default {
     this.loadData()
   },
   methods: {
+    sizeChange(val) {
+      this.page.size = val
+      this.loadData()
+    },
+    currentChange(val) {
+      this.page.currentPage = val
+      this.loadData()
+    },
     ifShowWarn(row) {
       return moment().diff(moment(row.endDate)) > 0
     },
