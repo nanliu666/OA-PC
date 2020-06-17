@@ -636,10 +636,9 @@ export default {
       if (this.staffInfo.birthDate) {
         let curYear = new Date().getFullYear()
         let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
-        age = curYear - birthYear
-      }
-      if (age < 0) {
-        age = 0
+        if (curYear > birthYear) {
+          age = curYear - birthYear
+        }
       }
       return age
     },
