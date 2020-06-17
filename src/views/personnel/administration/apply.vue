@@ -98,7 +98,7 @@
             <el-button
               type="primary"
               size="medium"
-              @click="submitForm('apply')"
+              @click="submitForm()"
             >
               提交
             </el-button>
@@ -155,21 +155,16 @@ export default {
     })
   },
   methods: {
-    configurationData(params) {
-      params.userId = this.userId
-      params.summary = this.apply.summary
-      params.advise = this.apply.advise
-      params.entryDate = this.apply.entryDate
-      params.formalDate = this.apply.formalDate
-      return params
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    submitForm(params = {}) {
+      this.$refs['apply'].validate((valid) => {
         if (valid) {
-          let params = {}
-          this.configurationData(params)
-          createApply(params)
-            .then((res) => {
+          params.userId = this.userId
+          params.summary = this.apply.summary
+          params.advise = this.apply.advise
+          params.entryDate = this.apply.entryDate
+          params.formalDate = this.apply.formalDate
+          if (params && params.formalDate) {
+            createApply(params).then((res) => {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
                   this.$message({ type: 'success', message: '提交成功' })
@@ -177,7 +172,14 @@ export default {
                 })
               }
             })
-            .catch()
+          } else {
+            this.$message({
+              showClose: true,
+              message: '该用户不符合,或者已经转正,无需重复提交',
+              type: 'warning'
+            })
+            this.goBack()
+          }
         } else {
           return false
         }
