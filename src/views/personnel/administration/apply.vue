@@ -163,7 +163,7 @@ export default {
           params.advise = this.apply.advise
           params.entryDate = this.apply.entryDate
           params.formalDate = this.apply.formalDate
-          if (params && params.formalDate) {
+          if (params && params.formalDate && params.entryDate) {
             createApply(params).then((res) => {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
@@ -175,7 +175,7 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: '该用户不符合,或者已经转正,无需重复提交',
+              message: '该用户不符合,或者已经转正,无需提交',
               type: 'warning'
             })
             this.goBack()
