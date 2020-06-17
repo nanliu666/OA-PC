@@ -303,6 +303,13 @@ export default {
     },
     visible: function(val) {
       this.$emit('visible-change', val)
+    },
+    'treeParams.data': {
+      handler(val) {
+        this.treeDataUpdateFun(val)
+      },
+      deep: true,
+      immediate: true
     }
   },
   created() {

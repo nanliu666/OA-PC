@@ -321,11 +321,11 @@ export default {
       })
     },
     getPersonInfo() {
-      getPersonInfo({ personId: this.$route.params.personId }).then((res) => {
-        Object.assign(this.personInfo, res)
-      })
-      getOfferApply({ id: this.$route.query.applyId }).then((res) => {
-        Object.assign(this.personInfo, res)
+      getOfferApply({ id: this.$route.query.applyId }).then((apply) => {
+        Object.assign(this.personInfo, apply)
+        getPersonInfo({ personId: apply.personId }).then((info) => {
+          Object.assign(this.personInfo, info)
+        })
       })
     },
     confirmEntry() {

@@ -231,7 +231,6 @@ export default {
             personId: row.bizId
           }
         })
-        //
       } else if (row.type === 'Entry') {
         // 入职办理
         //

@@ -405,7 +405,7 @@ export default {
     toDetail(row) {
       if (this.status !== 'latelyEntry') {
         this.$router.push(
-          `/personnel/entry/entryPersonDetail/${row.personId}?status=${this.status}&applyId=${row.applyId}&register=${row.register}`
+          `/personnel/entry/entryPersonDetail?status=${this.status}&applyId=${row.applyId}&register=${row.register}`
         )
       } else {
         this.$router.push('/personnel/detail/' + row.userId)
