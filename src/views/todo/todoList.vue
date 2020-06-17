@@ -31,6 +31,7 @@
         <div
           slot="title"
           slot-scope="{ row }"
+          class="title"
         >
           <el-button
             type="text"
@@ -192,7 +193,11 @@ export default {
       this.loadData()
     },
     ifShowWarn(row) {
-      return moment().diff(moment(row.endDate)) > 0
+      return (
+        moment()
+          .startOf('day')
+          .diff(moment(row.endDate)) > 0
+      )
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
@@ -293,6 +298,10 @@ export default {
 .basic-container--block {
   height: calc(100% - 82px);
   min-height: calc(100% - 82px);
+}
+.title {
+  display: flex;
+  align-items: center;
 }
 .memu {
   display: flex;
