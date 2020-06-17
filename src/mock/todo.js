@@ -109,4 +109,60 @@ export default ({ mock }) => {
       response: {}
     }
   })
+  // 员工离职交接事项
+  Mock.mock(new RegExp('/user/v1/user/leave/note' + '.*'), 'get', () => {
+    let obj = Mock.mock({
+      userId: '@increment',
+      userName: '@cname',
+      createTime: '@date',
+      'status|1': ['UnConfirm', 'Confirmed'],
+      'isUrge|1': [1, 0],
+      urgeTime: '@date',
+      data: [
+        {
+          categoryId: '@increment',
+          categoryName: '@ctitle(3,5)',
+          details: [
+            {
+              detailId: '@increment',
+              detailName: '@csentence'
+            },
+            {
+              detailId: '@increment',
+              detailName: '@csentence'
+            }
+          ]
+        },
+        {
+          categoryId: '@increment',
+          categoryName: '@ctitle(3,5)',
+          details: [
+            {
+              detailId: '@increment',
+              detailName: '@csentence'
+            },
+            {
+              detailId: '@increment',
+              detailName: '@csentence'
+            }
+          ]
+        }
+      ]
+    })
+    return {
+      response: obj
+    }
+  })
+  // 员工离职交接事项确认
+  Mock.mock(new RegExp('/user/v1/user/leave/note/confirm' + '.*'), 'post', () => {
+    return {
+      response: '确认成功'
+    }
+  })
+  // 员工离职交接事项确认
+  Mock.mock(new RegExp('/user/v1/user/leave/note/urge' + '.*'), 'post', () => {
+    return {
+      response: '催办成功'
+    }
+  })
 }

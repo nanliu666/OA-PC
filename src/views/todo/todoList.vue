@@ -232,14 +232,27 @@ export default {
           }
         })
         //
+      } else if (row.type === 'LeaveListOrg') {
+        // 离职事项（部门）
+        this.$router.push({
+          path: '/todo/leaveListOrg',
+          query: {
+            id: row.bizId
+          }
+        })
+      } else if (row.type === 'LeaveListUser') {
+        // 离职事项（员工）
+        this.$router.push({
+          path: '/todo/LeaveListUser',
+          query: {
+            id: row.bizId
+          }
+        })
       } else if (row.type === 'Entry') {
         // 入职办理
         //
       } else if (row.type === 'EntryRegister') {
         // 入职登记表
-        //
-      } else if (row.type === 'LeaveList') {
-        // 离职事项
         //
       } else if (row.type === 'Leave') {
         // 离职办理

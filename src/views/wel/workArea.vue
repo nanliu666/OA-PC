@@ -382,6 +382,22 @@ export default {
             id: bizId
           }
         })
+      } else if (type === 'LeaveListOrg') {
+        // 离职事项（部门）
+        this.$router.push({
+          path: '/todo/leaveListOrg',
+          query: {
+            id: bizId
+          }
+        })
+      } else if (type === 'LeaveListUser') {
+        // 离职事项（员工）
+        this.$router.push({
+          path: '/todo/LeaveListUser',
+          query: {
+            id: bizId
+          }
+        })
       } else if (type === 'InterviewRegister') {
         // 面试登记表
         //
@@ -390,9 +406,6 @@ export default {
         //
       } else if (type === 'EntryRegister') {
         // 入职登记表
-        //
-      } else if (type === 'LeaveList') {
-        // 离职事项
         //
       } else if (type === 'Leave') {
         // 离职办理
