@@ -311,6 +311,7 @@ export default {
     // 获取todoData
     async loadingToDoData() {
       try {
+        this.todoQuery.userId = this.userId
         this.todoLoading = true
         this.todoQuery.isWarn = null
         let toDoRes = await getTodoList(this.todoQuery)
