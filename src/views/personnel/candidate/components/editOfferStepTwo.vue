@@ -172,7 +172,8 @@ export default {
       },
       rules: {
         title: [{ required: true, message: '请输入offer标题', trigger: 'input' }],
-        validDay: [{ required: true, message: '请输入入职日期', trigger: 'blur' }]
+        validDay: [{ required: true, message: '请输入入职日期', trigger: 'blur' }],
+        isFill: [{ required: true, message: '请选择是否邀请填写入职登记' }]
       },
       validDayOptions: [],
       visible: false

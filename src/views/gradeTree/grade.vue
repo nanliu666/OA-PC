@@ -1,6 +1,7 @@
 <template>
   <div
     v-loading="loading"
+    element-loading-text="正在查询构建组织架构图，请稍等..."
     class="grade"
   >
     <div class="header">

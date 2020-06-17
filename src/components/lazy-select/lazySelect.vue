@@ -114,6 +114,7 @@ export default {
           } else {
             this.noMore = false
           }
+          this.$emit('update:optionList', this.optionList)
         })
         .finally(() => {
           this.loading = false

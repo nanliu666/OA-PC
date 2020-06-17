@@ -1,3 +1,5 @@
+import { isMobile, isEmail } from '@/util/validate'
+
 let sixList = [
   {
     label: '男',
@@ -18,6 +20,22 @@ let marriageList = [
     value: 0
   }
 ]
+// isEmail
+const validateEmail = (rule, value, callback) => {
+  if (!isEmail(value)) {
+    callback(new Error('邮箱不正确'))
+  } else {
+    callback()
+  }
+}
+const validatePhone = (rule, value, callback) => {
+  if (!isMobile(value)) {
+    callback(new Error('手机号码格式不正确'))
+  } else {
+    callback()
+  }
+}
+
 export let infoForm = [
   {
     span: 10,
@@ -49,6 +67,10 @@ export let infoForm = [
     props: {
       onlyNumber: true
     },
+    rules: [
+      { required: true, validator: validatePhone, trigger: 'blur' },
+      { required: true, message: '请输入手机号码', trigger: 'blur' }
+    ],
     required: true
   },
   {
@@ -58,6 +80,11 @@ export let infoForm = [
     itemType: 'input',
     label: '邮箱',
     props: {},
+    rules: [
+      { required: true, validator: validateEmail, trigger: 'blur' },
+      { required: true, message: '请输入邮箱', trigger: 'blur' }
+    ],
+
     required: true
   },
   {
@@ -78,6 +105,11 @@ export let infoForm = [
     prop: 'idNo',
     itemType: 'input',
     label: '证件号码',
+    maxlength: 18,
+    rules: [
+      { required: true, validator: '', trigger: 'blur' },
+      { required: true, message: '请输入证件号码', trigger: 'blur' }
+    ],
     required: true
   },
   {

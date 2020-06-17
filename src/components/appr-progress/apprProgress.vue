@@ -96,7 +96,7 @@ export default {
      * 校验，成功返回true
      */
     validate() {
-      return !this.progress.nodes.some((node) => !node.user)
+      return this.progress.nodes.length > 0 && this.progress.nodes.every((node) => node.user)
     },
     submit(id) {
       if (!this.validate()) {

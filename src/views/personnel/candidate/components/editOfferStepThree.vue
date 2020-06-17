@@ -48,7 +48,7 @@
           <h3 style="text-align:center;">
             录 用 通 知 书
           </h3>
-          尊敬的 <b>{{ offerInfo.name }}</b>先生/女士：
+          尊敬的 <b>{{ personInfo.name }}</b>先生/女士：
           <br>
           <span>部门：</span>
           {{ offerInfo.orgName }}
@@ -62,9 +62,9 @@
             <br>
             联 系 人： {{ offerInfo.userName }}
             <br>
-            联系人电话：{{ offerInfo.userPhonenum }}
+            联系人电话：{{ offerInfo.phonenum }}
             <br>
-            报道地址：{{ offerInfo.provinceName + offerInfo.cityName + offerInfo.address }}
+            报道地址：{{ workAddress.provinceName + workAddress.cityName + workAddress.address }}
           </p>
           <p>
             二、薪酬福利
@@ -115,11 +115,24 @@ export default {
     offerInfo: {
       type: Object,
       default: () => ({})
+    },
+    personInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    workAddressList: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
       templateDict
+    }
+  },
+  computed: {
+    workAddress() {
+      return this.workAddressList.find((item) => item.id === this.offerInfo.workAddressId) || {}
     }
   },
   methods: {

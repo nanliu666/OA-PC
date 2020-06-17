@@ -17,6 +17,7 @@
       <edit-offer-step-one
         v-show="active === 1"
         ref="editOfferStepOne"
+        :work-address-list.sync="workAddressList"
         :person-info="personInfo"
       />
       <edit-offer-step-two
@@ -27,6 +28,8 @@
       <edit-offer-step-three
         v-show="active === 3"
         ref="editOfferStepThree"
+        :work-address-list.sync="workAddressList"
+        :person-info="personInfo"
         :offer-info="offerInfo"
       />
       <div class="footer">
@@ -121,6 +124,7 @@ export default {
         validDay: null,
         workAddressId: null
       },
+      workAddressList: [],
       submitLoading: false,
       sending: false
     }

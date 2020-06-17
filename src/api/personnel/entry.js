@@ -4,7 +4,10 @@ import { get, post } from '@/router/axios'
 export const getCandidateAcceptList = (params) => {
   return post('/api/user/v1/candidate/accept/list', params)
 }
-
+// 待入职人员详情
+export const getCandidateAcceptDetail = (params) => {
+  return get('/api/user/v1/candidate/accept/detail', params)
+}
 // 待入职人员放弃入职
 export const getOutCandidateAccept = (params) => {
   return post('/api/user/v1/candidate/accept/out', params)
