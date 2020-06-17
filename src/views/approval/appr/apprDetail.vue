@@ -522,13 +522,13 @@
                     已撤回
                   </div>
                   <div
-                    v-if="index == activeStep && isReject"
+                    v-else-if="index == activeStep && isReject"
                     class="tip reject-text"
                   >
                     已拒绝
                   </div>
                   <div
-                    v-if="index == progressList.length - 1 && isFished"
+                    v-else-if="index == progressList.length - 1 && isFished"
                     class="tip fished-text"
                   >
                     已通过
