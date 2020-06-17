@@ -161,7 +161,7 @@ export default {
     },
     // 开发中
     handelClick() {
-      this.$message.info('该功能真正开发中')
+      this.$message.info('该功能正在开发中')
     },
     // 获取员工信息
     async loadingUserInfo() {
