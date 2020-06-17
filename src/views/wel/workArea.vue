@@ -384,13 +384,25 @@ export default {
         })
       } else if (type === 'InterviewRegister') {
         // 面试登记表
-        //
+        this.$router.push({
+          path: '/personnel/candidate/registrationForm',
+          query: {
+            personId: bizId
+          }
+        })
       } else if (type === 'Entry') {
         // 入职办理
-        //
+        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${bizId}`)
       } else if (type === 'EntryRegister') {
         // 入职登记表
-        //
+        this.$router.push({
+          path: '/personnel/candidate/registrationForm',
+          query: {
+            personId: bizId,
+            entry: 1,
+            tagName: '入职登记表详情'
+          }
+        })
       } else if (type === 'LeaveList') {
         // 离职事项
         //

@@ -358,7 +358,7 @@ export default {
             .catch(() => {
               this.loading = false
             })
-        } else if (this.row.status === '3') {
+        } else if (this.row.status === '3' || this.row.status === '4') {
           this.loading = true
           postInterViewResend(data)
             .then(() => {
