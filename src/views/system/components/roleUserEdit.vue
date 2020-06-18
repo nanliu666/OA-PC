@@ -97,6 +97,7 @@
           取消
         </el-button>
         <el-button
+          v-loading="submiting"
           type="primary"
           size="medium"
           @click="onClickSave"
@@ -126,6 +127,7 @@ export default {
   data() {
     return {
       loading: false,
+      submiting: false,
       searchInput: '',
       page: {
         currentPage: 1,
@@ -266,9 +268,9 @@ export default {
         roleId: this.roleId,
         users: users
       }
-      this.loading = true
+      this.submiting = true
       addUser(params).then(() => {
-        this.loading = false
+        this.submiting = false
         this.$message.success('用户添加成功')
         this.$emit('onAddUser')
         this.onClickCancel()
