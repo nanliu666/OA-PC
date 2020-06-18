@@ -45,6 +45,7 @@
             <el-button
               type="primary"
               size="medium"
+              :loading="loading"
               @click="handleSubmit"
             >
               提交
@@ -387,8 +388,8 @@ export default {
     ReplicationCache(id) {
       getRecruitmentDetail(id).then((res) => {
         if (res && res.minSalary && res.maxSalary) {
-          this.form.range.min = res.minSalary
-          this.form.range.max = res.maxSalary
+          this.range.min = res.minSalary
+          this.range.max = res.maxSalary
         }
         this.form = res
       })

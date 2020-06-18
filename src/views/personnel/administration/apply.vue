@@ -96,6 +96,7 @@
               取消
             </el-button>
             <el-button
+              :loading="loading"
               type="primary"
               size="medium"
               @click="submitForm()"
@@ -127,6 +128,7 @@ export default {
       }
     }
     return {
+      loading: false,
       inputdisabled: true,
       apply: {
         entryDate: '暂无数据',
@@ -163,8 +165,10 @@ export default {
           params.advise = this.apply.advise
           params.entryDate = this.apply.entryDate
           params.formalDate = this.apply.formalDate
+          this.loading = true
           if (params && params.formalDate && params.entryDate) {
             createApply(params).then((res) => {
+              this.loading = false
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
                   this.$message({ type: 'success', message: '提交成功' })
