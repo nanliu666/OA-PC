@@ -150,8 +150,7 @@ export default {
       return getWorkAddressList(params)
     },
     clear() {
-      this.$refs.form.clearValidate()
-      this.form = this.$options.data().form
+      this.$refs.form.resetFields()
     },
     validate() {
       return new Promise((resolve, reject) => {
