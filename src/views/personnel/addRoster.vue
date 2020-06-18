@@ -34,7 +34,7 @@
                   label="姓名"
                   prop="name"
                 >
-                  <el-input v-model="form.name" />
+                  <el-input v-model.trim="form.name" />
                 </el-form-item>
               </el-col>
               <el-col
@@ -695,12 +695,16 @@ export default {
             params.subOrg = Array.from(new Set(params.subOrg))
             params.subJob = Array.from(new Set(params.subJob))
             this.loading = true
-            createUser(params).then(() => {
-              this.$message.success('创建成功')
-              this.loading = false
-              Object.assign(this.$data.form, this.$options.data().form)
-              resolve()
-            })
+            createUser(params)
+              .then(() => {
+                this.$message.success('创建成功')
+                this.loading = false
+                Object.assign(this.$data.form, this.$options.data().form)
+                resolve()
+              })
+              .catch(() => {
+                this.loading = false
+              })
           } else {
             this.$message.error('请完善信息')
             reject()
