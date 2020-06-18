@@ -604,6 +604,17 @@ const res = {
             icon: 'iconfont iconicon_doc'
           },
           {
+            menuId: '31212212454541222',
+            menuName: '面试评价',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'personnel_interivewDetails',
+            alias: 'registrationFormEdit',
+            path: '/personnel/candidate/interivewDetails',
+            icon: 'iconfont iconicon_doc'
+          },
+          {
             menuId: '312122124545423',
             menuName: '申请录用',
             menuType: 'Menu',
