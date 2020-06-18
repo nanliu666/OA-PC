@@ -355,6 +355,7 @@ export default {
               this.loading = false
               this.dialog = false
               this.$message.success('提交成功')
+              this.$emit('load')
             })
             .catch(() => {
               this.loading = false
@@ -365,6 +366,7 @@ export default {
             .then(() => {
               this.loading = false
               this.dialog = false
+              this.$emit('load')
               this.$message.success('提交成功')
             })
             .catch(() => {

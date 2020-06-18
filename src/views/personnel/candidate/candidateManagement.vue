@@ -682,6 +682,7 @@
       :title="arrangeTitle"
       :dialog-visible.sync="arrangeDialog"
       :row="row"
+      @load="loadAllData"
     />
   </div>
 </template>
@@ -995,6 +996,7 @@ export default {
     this.loadData()
   },
   methods: {
+    //
     /***
      * @author guanfenda
      * @desc 查看面试登记表
@@ -1180,10 +1182,13 @@ export default {
         this.handleArrange(data)
       } else if (command === 'InterviewEvaluation') {
         let params = {
-          personId: data.personId
+          personId: data.personId,
+          orgName: data.orgName,
+          jobName: data.jobName,
+          name: data.name
         }
         this.$router.push({
-          path: '/todo/interviewDetail',
+          path: '/personnel/candidate/interivewDetails',
           query: params
         })
       }

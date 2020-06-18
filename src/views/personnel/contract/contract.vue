@@ -27,6 +27,7 @@
           <signed
             :table-data="signedData"
             :pages="page"
+            :columns="signedColumns"
             @sizeChange="sizeChangeAlready"
             @currentChange="currentChangeAlready"
           >
@@ -110,6 +111,7 @@
           <signed
             :table-data="todoData"
             :pages="pageT"
+            :columns="todoColumns"
             @sizeChange="sizeChangeTodo"
             @currentChange="currentChangeTodo"
           >
@@ -190,6 +192,8 @@
           <signed
             :table-data="recordData"
             :pages="pageR"
+            :table-config="recordTableConfig"
+            :columns="recordColumns"
             @sizeChange="sizeChangeR"
             @currentChange="currentChangeR"
           >
@@ -241,6 +245,270 @@ export default {
   mixins: [mixin],
   data() {
     return {
+      signedColumns: [
+        {
+          label: '姓名',
+          width: 120,
+          prop: 'name',
+          slot: true
+        },
+        {
+          label: '工号',
+          width: 120,
+          prop: 'workNo'
+        },
+        {
+          label: '部门',
+          prop: 'orgName',
+          width: 120
+        },
+        {
+          label: '职位',
+          width: 120,
+          prop: 'jobName'
+        },
+        {
+          label: '岗位',
+          width: 120,
+          prop: 'positionName'
+        },
+        {
+          label: '工作性质',
+          width: 120,
+          prop: 'workProperty',
+          slot: true
+        },
+        {
+          label: '员工状态',
+          width: 120,
+          prop: 'status',
+          slot: true
+        },
+        {
+          label: '入职日期',
+          width: 120,
+          prop: 'entryDate'
+        },
+        {
+          label: '手机号码',
+          prop: 'phonenum',
+          width: 120
+        },
+        {
+          label: '合同公司',
+          width: 120,
+          prop: 'contractName'
+        },
+        {
+          label: '合同编号',
+          width: 120,
+          prop: 'contractCode'
+        },
+        {
+          label: '合同类型',
+          width: 120,
+          prop: 'contractType',
+          slot: true
+        },
+        {
+          label: '合同状态',
+          prop: 'contractStatus',
+          width: 120,
+          slot: true
+        },
+        {
+          label: '合同开始日期',
+          prop: 'beginContractDate',
+          width: 120
+        },
+        {
+          label: '合同结束日期',
+          prop: 'endContractDate',
+          width: 120
+        },
+        {
+          label: '合同签订次数',
+          prop: 'signNum',
+          width: 120
+        }
+      ],
+      todoColumns: [
+        {
+          label: '姓名',
+          width: 120,
+          prop: 'name',
+          slot: true
+        },
+        {
+          label: '工号',
+          width: 120,
+          prop: 'workNo'
+        },
+        {
+          label: '部门',
+          prop: 'orgName',
+          width: 120
+        },
+        {
+          label: '职位',
+          width: 120,
+          prop: 'jobName'
+        },
+        {
+          label: '岗位',
+          width: 120,
+          prop: 'positionName'
+        },
+        {
+          label: '工作性质',
+          width: 120,
+          prop: 'workProperty',
+          slot: true
+        },
+        {
+          label: '员工状态',
+          width: 120,
+          prop: 'status',
+          slot: true
+        },
+        {
+          label: '入职日期',
+          width: 120,
+          prop: 'entryDate'
+        },
+        {
+          label: '手机号码',
+          prop: 'phonenum',
+          width: 120
+        },
+        {
+          label: '合同公司',
+          width: 120,
+          prop: 'contractName'
+        },
+        {
+          label: '合同编号',
+          width: 120,
+          prop: 'contractCode'
+        },
+        {
+          label: '合同类型',
+          width: 120,
+          prop: 'contractType',
+          slot: true
+        },
+        {
+          label: '合同状态',
+          prop: 'contractStatus',
+          width: 120,
+          slot: true
+        },
+        {
+          label: '合同开始日期',
+          prop: 'beginContractDate',
+          width: 120
+        },
+        {
+          label: '合同结束日期',
+          prop: 'endContractDate',
+          width: 120
+        },
+        {
+          label: '合同签订次数',
+          prop: 'signNum',
+          width: 120
+        }
+      ],
+      recordColumns: [
+        {
+          label: '姓名',
+          width: 120,
+          prop: 'name',
+          slot: true
+        },
+        {
+          label: '工号',
+          width: 120,
+          prop: 'workNo'
+        },
+        {
+          label: '部门',
+          prop: 'orgName',
+          width: 120
+        },
+        {
+          label: '职位',
+          width: 120,
+          prop: 'jobName'
+        },
+        {
+          label: '岗位',
+          width: 120,
+          prop: 'positionName'
+        },
+        {
+          label: '工作性质',
+          width: 120,
+          prop: 'workProperty',
+          slot: true
+        },
+        {
+          label: '员工状态',
+          width: 120,
+          prop: 'status',
+          slot: true
+        },
+        {
+          label: '入职日期',
+          width: 120,
+          prop: 'entryDate'
+        },
+        {
+          label: '手机号码',
+          prop: 'phonenum',
+          width: 120
+        },
+        {
+          label: '合同公司',
+          width: 120,
+          prop: 'contractName'
+        },
+        {
+          label: '合同编号',
+          width: 120,
+          prop: 'contractCode'
+        },
+        {
+          label: '合同类型',
+          width: 120,
+          prop: 'contractType',
+          slot: true
+        },
+        {
+          label: '合同状态',
+          prop: 'contractStatus',
+          width: 120,
+          slot: true
+        },
+        {
+          label: '合同开始日期',
+          prop: 'beginContractDate',
+          width: 120
+        },
+        {
+          label: '合同结束日期',
+          prop: 'endContractDate',
+          width: 120
+        }
+      ],
+      recordTableConfig: {
+        showHandler: false,
+        enablePagination: true,
+        enableMultiSelect: false,
+        handlerColumn: {
+          width: 120
+        }
+      },
       signedtotalNum: 0,
       signedTodoTotalNum: 0,
       activeName: '1',

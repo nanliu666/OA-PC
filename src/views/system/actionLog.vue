@@ -98,7 +98,7 @@ export default {
         searchMenuSpan: 6,
         border: true,
         index: true,
-        selection: true,
+        selection: false,
         menu: false,
         size: 'medium',
         column: [
