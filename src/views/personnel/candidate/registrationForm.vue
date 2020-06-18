@@ -28,7 +28,8 @@
                 (candidateInfo.status === '3' ||
                   candidateInfo.status === '7' ||
                   candidateInfo.status === '8') &&
-                  candidateInfo.interviewRegister === '0'
+                  data.interviewRegister === 0 &&
+                  this.emer.length === 0
               "
             >
               <el-button
@@ -59,7 +60,8 @@
                 (candidateInfo.status === '3' ||
                   candidateInfo.status === '7' ||
                   candidateInfo.status === '8') &&
-                  candidateInfo.interviewRegister === '0'
+                  data.interviewRegister === 0 &&
+                  this.emer.length > 0
               "
             >
               <el-button
@@ -108,7 +110,7 @@
                 (candidateInfo.status === '3' ||
                   candidateInfo.status === '7' ||
                   candidateInfo.status === '8') &&
-                  candidateInfo.interviewRegister === '1'
+                  data.interviewRegister === 1
               "
             >
               <el-button

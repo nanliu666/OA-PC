@@ -238,6 +238,7 @@ export default {
       return todoTypeCN[value]
     },
     filterDate(createTime) {
+      if (!createTime) return
       let m = moment(createTime)
       let now = moment()
       if (m.format('YYYY-MM-DD') === now.format('YYYY-MM-DD')) {
@@ -267,8 +268,8 @@ export default {
       toDoActiveName: 'Pending',
       // 请求参数
       todoQuery: {
-        pageNo: '',
-        pageSize: '',
+        pageNo: '1',
+        pageSize: '10',
         isWarn: '',
         status: 'UnFinished'
       },
@@ -305,17 +306,19 @@ export default {
   },
   created() {
     this.loadingToDoData()
-    this.loadingMsgData()
+    // this.loadingMsgData()
   },
   methods: {
     // 获取todoData
     async loadingToDoData() {
       try {
+        this.todoQuery.userId = this.userId
         this.todoLoading = true
         this.todoQuery.isWarn = null
         let toDoRes = await getTodoList(this.todoQuery)
         this.toDoListData = toDoRes.data
         this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
+        this.$emit('update:todoCount', toDoRes.totalNum)
         this.todoQuery.isWarn = 1
         let warningRes = await getTodoList(this.todoQuery)
         this.warningList = warningRes.data
@@ -327,7 +330,11 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return moment().diff(moment(row.endDate)) > 0
+      return (
+        moment()
+          .startOf('day')
+          .diff(moment(row.endDate)) > 0
+      )
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
@@ -381,13 +388,25 @@ export default {
         })
       } else if (type === 'InterviewRegister') {
         // 面试登记表
-        //
+        this.$router.push({
+          path: '/personnel/candidate/registrationForm',
+          query: {
+            personId: bizId
+          }
+        })
       } else if (type === 'Entry') {
         // 入职办理
-        //
+        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${bizId}`)
       } else if (type === 'EntryRegister') {
         // 入职登记表
-        //
+        this.$router.push({
+          path: '/personnel/candidate/registrationForm',
+          query: {
+            personId: bizId,
+            entry: 1,
+            tagName: '入职登记表详情'
+          }
+        })
       } else if (type === 'LeaveList') {
         // 离职事项
         //

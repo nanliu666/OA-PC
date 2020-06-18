@@ -559,7 +559,7 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="InterviewEvaluation">
                     查看面试评价
                   </el-dropdown-item>
                   <el-dropdown-item command="toRegistrationForm">
@@ -1169,9 +1169,18 @@ export default {
       } else if (command === 'add') {
         this.$router.push('/personnel/editPerson')
       } else if (command === 'toRegistrationForm') {
-        this.$router.push('/personnel/candidate/registrationForm/', data.personId)
+        this.loopUpInterview(data)
+        // this.$router.push('/personnel/candidate/registrationForm/', data.personId)
       } else if (command === 'arrange') {
         this.handleArrange(data)
+      } else if (command === 'InterviewEvaluation') {
+        let params = {
+          personId: data.personId
+        }
+        this.$router.push({
+          path: '/todo/interviewDetail',
+          query: params
+        })
       }
     },
     handleSubmit(params) {

@@ -319,6 +319,7 @@ import {
   train,
   certificate
 } from './components/userInfo'
+import { cardid, HMCardValid, TWCardValid } from '@/util/validate'
 export default {
   name: 'RegistrationFormEdit',
   components: {},
@@ -334,7 +335,37 @@ export default {
     }
   },
   data() {
+    //  检验证件是否符合
+    let checkIdNo = (rule, value, callback) => {
+      let IdType = this.form.idType
+      switch (IdType) {
+        case 'IDCard':
+          if (value && cardid(value)[0]) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        case 'pass01':
+          if (value && !HMCardValid(value)) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        case 'pass02':
+          if (value && !TWCardValid(value)) {
+            callback(new Error('证件号码格式有误'))
+          } else {
+            callback()
+          }
+          break
+        default:
+          callback()
+      }
+    }
     return {
+      checkIdNo,
       infoForm,
       contactsform: [{ contacts: contacts, form: {} }],
       educationform: [{ education: education, form: {} }],
@@ -449,6 +480,9 @@ export default {
       deep: true
     }
   },
+  created() {
+    this.validataId()
+  },
   mounted() {
     this.$store.dispatch('CommonDict', 'idType').then((res) => {
       this.idType = res
@@ -484,6 +518,17 @@ export default {
     this.options(this.infoForm, 'native', provinceAndCityData)
   },
   methods: {
+    /**
+     * @author guanfenda
+     * @desc 处理验证
+     * */
+    validataId() {
+      this.infoForm.map((it) => {
+        if (it.prop === 'idNo') {
+          it.rules[0].validator = this.checkIdNo
+        }
+      })
+    },
     /**
      * author guanfenda
      * @desc 处理posion赋值
@@ -572,7 +617,7 @@ export default {
           work.map((it) => {
             if (it.workTime.length > 0) {
               it.beginWorkDate = it.workTime[0]
-              it.beginWorkDate = it.workTime[1]
+              it.endWorkDate = it.workTime[1]
             }
           })
           train.map((it) => {

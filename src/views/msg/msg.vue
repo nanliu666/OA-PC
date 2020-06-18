@@ -84,6 +84,7 @@
 </template>
 <script>
 import { getMsgList, creatSignReadMsg, creatDelReadMsg } from '@/api/msg/msg'
+
 import { mapGetters } from 'vuex'
 export default {
   name: 'Msg',
@@ -153,6 +154,7 @@ export default {
       this.msgQuery.userId = this.userId
       let res = await getMsgList(this.msgQuery)
       this.dataList = res.data
+
       this.page.total = res.totalNum
       this.loading = false
     },
