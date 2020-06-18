@@ -47,23 +47,23 @@
       </el-row>
 
       <el-form-item
-        v-for="domain in dynamicValidateForm.users"
-        :key="domain.id"
+        v-for="user in dynamicValidateForm.users"
+        :key="user.id"
       >
         <el-row
           :gutter="6"
           type="flex"
         >
           <el-col
-            v-if="domain.Rendering === 'Rendering'"
+            v-if="user.Rendering === 'Rendering'"
             :span="8"
           >
             <el-select
-              v-model="domain.userId"
+              v-model="user.userId"
               placeholder="请选择"
             >
               <el-input
-                v-model="domain.personnel"
+                v-model="personnel"
                 placeholder="姓名/工号"
                 @change="requeWorkList(5)"
               >
@@ -78,6 +78,7 @@
                 :key="item.name"
                 :label="item.name"
                 :value="item.userId"
+                :disabled="item.disabled"
               />
             </el-select>
           </el-col>
@@ -86,32 +87,32 @@
             :span="8"
           >
             <el-input
-              v-model="domain.name"
-              :disabled="domain.peopleDisabled"
+              v-model="user.name"
+              :disabled="user.peopleDisabled"
             />
           </el-col>
 
           <el-col :span="4">
             <el-input
-              :value="domain.olditem"
-              :disabled="domain.disabled"
+              :value="user.olditem"
+              :disabled="user.disabled"
             />
           </el-col>
           <el-col :span="4">
             <el-input
-              :value="domain.entryNum"
-              :disabled="domain.disabled"
+              :value="user.entryNum"
+              :disabled="user.disabled"
             />
           </el-col>
           <el-col :span="4">
             <el-input
-              :value="domain.candidateNum"
-              :disabled="domain.disabled"
+              :value="user.candidateNum"
+              :disabled="user.disabled"
             />
           </el-col>
           <el-col :span="4">
             <el-input-number
-              v-model="domain.taskNum"
+              v-model="user.taskNum"
               controls-position="right"
               :min="0"
               :max="Numberofpeople"
@@ -158,6 +159,7 @@ export default {
   },
   data() {
     return {
+      personnel: '',
       jumpnot: null,
       recruitmentId: '',
       Totalnumberpeople: 0,
@@ -167,7 +169,6 @@ export default {
         users: [
           {
             id: createUniqueID(),
-            personnel: '',
             name: '',
             peopleDisabled: true,
             disabled: true,
@@ -183,10 +184,10 @@ export default {
   },
   computed: {
     filteredUser() {
-      return this.options.filter(
-        (option) =>
-          !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-      )
+      return this.options.map((option) => ({
+        ...option,
+        disabled: this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+      }))
     }
   },
   methods: {
@@ -248,7 +249,8 @@ export default {
           return
         }
         this.dynamicValidateForm.users.push({
-          id: createUniqueID(),
+          name: '',
+          creatId: createUniqueID(),
           userId: '',
           taskNum: 0,
           disabled: true,
@@ -276,7 +278,7 @@ export default {
             userId: item.userId,
             taskNum: item.taskNum,
             // 利用已经生成的ID来判断当前分配状态是否为已经生成
-            operatorType: this.calStatus(item.id)
+            operatorType: item.id ? 'Update' : 'Add'
           }))
         putDistribution(parms).then(() => {
           this.$message({ message: '操作成功', type: 'success' })
@@ -289,13 +291,6 @@ export default {
           message: '请注意！分配需求人数要等与需求总人数',
           type: 'error'
         })
-      }
-    },
-    calStatus(id) {
-      if (id) {
-        return 'Update'
-      } else {
-        return 'Add'
       }
     }
   }

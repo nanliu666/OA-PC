@@ -1,14 +1,18 @@
 <template>
   <el-dialog
-    title="离开页面提醒"
+    title="提醒"
     :visible="visible"
     width="600px"
     :modal-append-to-body="false"
     @close="handleClose"
   >
     <p class="riskSpan">
-      <i class="el-icon-warning-outline" />
-      您有未保存的数据，直接离开将丢失数据，您是否要保存并离开？
+      <el-alert
+        title="您有未保存的数据，直接离开将丢失数据，您是否要保存并离开？"
+        type="warning"
+        :closable="false"
+        show-icon
+      />
     </p>
     <span
       slot="footer"
@@ -16,18 +20,13 @@
     >
       <el-button
         size="medium"
-        style="float: left;"
-        @click="doNotSave"
-      >不保存</el-button>
-      <el-button
-        size="medium"
         @click="handleClose"
       >取消</el-button>
       <el-button
         type="primary"
         size="medium"
-        @click="goBack"
-      >保存并离开</el-button>
+        @click="doNotSave"
+      >确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -52,7 +51,6 @@ export default {
     },
     handleClose() {
       this.$emit('update:visible', false)
-      this.goBack()
     },
     goBack() {
       this.$router.go(-1)
