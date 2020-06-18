@@ -54,7 +54,7 @@
         @click="close"
       >取 消</el-button>
       <el-button
-        v-loading="loading"
+        :loading="submitting"
         size="medium"
         type="primary"
         @click="handleSubmit"
@@ -77,7 +77,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      submitting: false,
       filterText: '',
       props: {
         disabled: (data) => data.type !== 'user' && data.users.length === 0,
@@ -167,6 +167,7 @@ export default {
       return result
     },
     handleSubmit() {
+      this.submitting = true
       createTagUser(
         this.tagId,
         this.diff(
@@ -178,6 +179,7 @@ export default {
           type: 'success',
           message: '操作成功!'
         })
+        this.submitting = false
         this.close()
         this.$emit('after-submit')
       })

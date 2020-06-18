@@ -85,7 +85,7 @@
       </el-button>
       <el-button
         v-if="!disabled"
-        v-loading="submiting"
+        :loading="submiting"
         type="primary"
         size="medium"
         @click="onClickSave"

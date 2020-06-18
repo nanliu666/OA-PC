@@ -97,7 +97,7 @@
           取消
         </el-button>
         <el-button
-          v-loading="submiting"
+          :loading="submiting"
           type="primary"
           size="medium"
           @click="onClickSave"
