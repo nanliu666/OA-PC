@@ -18,6 +18,7 @@
           >
             <el-tab-pane
               v-loading="treeLoading"
+              element-loading-text="正在加载中"
               label="组织架构"
               name="orgTree"
               class="fill"
