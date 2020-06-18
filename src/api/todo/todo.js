@@ -48,3 +48,17 @@ export const modifyResumeReject = (params) => {
 export const modifyResumePass = (params) => {
   return post('/user/v1/person/resume/pass', params)
 }
+
+// 员工离职交接事项查询接口
+
+export const getLeaveNote = (params) => {
+  return get('/user/v1/user/leave/note', params)
+}
+// 员工离职交接事项确认
+export const postConfirmleaveNote = (params) => {
+  return post('/user/v1/user/leave/note/confirm', params)
+}
+// 员工离职交接事项催一下接口
+export const postUrgeleaveNote = (params) => {
+  return post('/user/v1/user/leave/note/urge', params)
+}
