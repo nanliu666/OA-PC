@@ -5,10 +5,7 @@
       :back="back"
       :show-back="showBack"
     />
-    <basicContainer
-      v-loading="loading"
-      class="apply"
-    >
+    <basicContainer class="apply">
       <div class="step">
         <el-steps :active="active">
           <el-step title="基本信息" />
@@ -178,6 +175,7 @@
               <el-button
                 type="primary"
                 size="medium"
+                :loading="loading"
                 @click="onsubmit"
               >
                 提交

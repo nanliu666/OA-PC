@@ -57,7 +57,7 @@
             上一步
           </el-button>
           <el-button
-            v-loading="submitLoading"
+            :loading="submitLoading"
             size="medium"
             type="primary"
             @click="submitClick"
@@ -73,7 +73,7 @@
             上一步
           </el-button>
           <el-button
-            v-loading="sending"
+            :loading="sending"
             size="medium"
             type="primary"
             @click="sendOffer"

@@ -230,15 +230,18 @@ export default {
           this.selectList.map((i) => i.roleId),
           this.oldSelectList.map((i) => i.roleId)
         )
-      ).then(() => {
-        this.$message({
-          type: 'success',
-          message: '操作成功!'
+      )
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
+          this.close()
+          this.$emit('after-submit')
         })
-        this.submitting = false
-        this.close()
-        this.$emit('after-submit')
-      })
+        .finally(() => {
+          this.submitting = false
+        })
     },
     getRoleList() {
       getRoleList().then((data) => {

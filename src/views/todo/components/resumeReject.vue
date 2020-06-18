@@ -46,7 +46,7 @@
         @click="close"
       >取 消</el-button>
       <el-button
-        v-loading="loading"
+        :loading="loading"
         size="medium"
         type="primary"
         @click="handleSubmit"

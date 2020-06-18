@@ -303,6 +303,7 @@
             <el-button
               type="primary"
               size="medium"
+              :loading="submitting"
               @click="handleSubmit"
             >
               保存
@@ -331,6 +332,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       personId: null,
       recruitmentIdDisabled: false,
       form: {
@@ -515,14 +517,20 @@ export default {
         }
         params.provinceName = inputValue[0]
         params.cityName = inputValue[1]
-        submitFunc(params).then(() => {
-          this.$message.success('提交成功')
-          this.clear()
-          if (!shouldContinue) {
-            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-          }
-          this.$router.go(-1)
-        })
+        this.submitting = true
+        submitFunc(params)
+          .then(() => {
+            this.$message.success('提交成功')
+            this.clear()
+            this.submitting = false
+            if (!shouldContinue) {
+              this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+            }
+            this.$router.go(-1)
+          })
+          .catch(() => {
+            this.submitting = false
+          })
       })
     },
     clear() {

@@ -174,15 +174,18 @@ export default {
           this.selectList.map((i) => i.userId),
           this.oldSelectList.map((i) => i.userId)
         )
-      ).then(() => {
-        this.$message({
-          type: 'success',
-          message: '操作成功!'
+      )
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
+          this.close()
+          this.$emit('after-submit')
         })
-        this.submitting = false
-        this.close()
-        this.$emit('after-submit')
-      })
+        .finally(() => {
+          this.submitting = false
+        })
     },
     resolveTree(tree) {
       if (tree.length > 0) {
