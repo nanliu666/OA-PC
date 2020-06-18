@@ -184,7 +184,10 @@ export default {
   },
   methods: {
     init(data) {
-      this.form = { ...data }
+      Object.assign(this.form, data)
+      setTimeout(() => {
+        this.$refs.form.clearValidate()
+      }, 0)
     },
     editNoticeUserList() {
       this.$refs['workerPicker'].init(this.form.noticeUserList)

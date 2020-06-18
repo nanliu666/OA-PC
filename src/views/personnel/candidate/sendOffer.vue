@@ -148,6 +148,10 @@ export default {
     getOfferInfo() {
       getOfferInfo(this.personId).then((data) => {
         Object.assign(this.offerInfo, data, { personId: this.personId })
+        if (Object.keys(data).length === 0) {
+          return
+        }
+
         this.$refs['editOfferStepOne'].init({
           userId: data.userId,
           entryDate: data.entryDate,
