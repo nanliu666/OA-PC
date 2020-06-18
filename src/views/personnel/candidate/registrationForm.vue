@@ -22,14 +22,12 @@
           <div>{{ personInfo.status }}</div>
         </div>
         <div class="flex flex-items flex-flow">
-          <div>
+          <div v-if="!$route.query.entry">
             <template
               v-if="
-                (candidateInfo.status === '3' ||
-                  candidateInfo.status === '7' ||
-                  candidateInfo.status === '8') &&
+                ['3', '7', '8'].includes(candidateInfo.status) &&
                   data.interviewRegister === 0 &&
-                  this.emer.length === 0
+                  emer.length + familyData.length + EducationalData.length === 0
               "
             >
               <el-button
@@ -54,14 +52,14 @@
               >
                 打印
               </el-button>
-            </template> -->
+            </template>-->
             <template
               v-else-if="
-                (candidateInfo.status === '3' ||
-                  candidateInfo.status === '7' ||
-                  candidateInfo.status === '8') &&
+                ['3', '7', '8'].includes(candidateInfo.status) &&
                   data.interviewRegister === 0 &&
-                  this.emer.length > 0
+                  emer.length > 0 &&
+                  familyData.length > 0 &&
+                  EducationalData.length > 0
               "
             >
               <el-button
@@ -97,20 +95,20 @@
                   >
                     帮TA修改
                   </el-dropdown-item>
-                  <el-dropdown-item v-if="isEdit">
+                  <el-dropdown-item
+                    v-if="isEdit"
+                    command="modity"
+                  >
                     取消修改
                   </el-dropdown-item>
                   <!-- <el-dropdown-item>下载</el-dropdown-item>
-                  <el-dropdown-item>打印</el-dropdown-item> -->
+                  <el-dropdown-item>打印</el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
             <template
               v-else-if="
-                (candidateInfo.status === '3' ||
-                  candidateInfo.status === '7' ||
-                  candidateInfo.status === '8') &&
-                  data.interviewRegister === 1
+                ['3', '7', '8'].includes(candidateInfo.status) && data.interviewRegister == 1
               "
             >
               <el-button
@@ -132,7 +130,132 @@
                 style="margin-right: 15px;"
               >
                 打印
-              </el-button> -->
+              </el-button>-->
+            </template>
+            <!-- <el-button
+              v-if="!isEdit"
+              type="primary"
+              size="medium"
+              style="margin-right: 15px;"
+              @click="handlerEdit"
+            >
+              帮他修改
+            </el-button>
+            <el-button
+              v-if="isEdit"
+              type="primary"
+              size="medium"
+              style="margin-right: 15px;"
+              @click="handlerEdit"
+            >
+              取消修改
+            </el-button>-->
+          </div>
+          <div v-else>
+            <template
+              v-if="
+                ['3', '7', '8'].includes(candidateInfo.status) &&
+                  data.entryRegister === 0 &&
+                  !basic.bankNo
+              "
+            >
+              <el-button
+                type="primary"
+                size="medium"
+                style="margin-right: 15px;"
+                @click="handleSend"
+              >
+                重新发送入职登记表
+              </el-button>
+            </template>
+            <!-- <template v-else-if="candidateInfo.status === '0'">
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                下载
+              </el-button>
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                打印
+              </el-button>
+            </template>-->
+            <template
+              v-else-if="
+                ['3', '7', '8'].includes(candidateInfo.status) &&
+                  data.entryRegister === 0 &&
+                  basic.bankNo
+              "
+            >
+              <el-button
+                type="primary"
+                size="medium"
+                style="margin-right: 15px;"
+                @click="handlerConfirm"
+              >
+                {{ $route.query.entry ? '确认入职登记表' : '确认面试登记表' }}
+              </el-button>
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+                @click="handlerNotice"
+              >
+                通知TA修改
+              </el-button>
+              <el-dropdown
+                trigger="click"
+                @command="handleCommand"
+              >
+                <el-button
+                  type="primary"
+                  size="medium"
+                >
+                  更多
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    v-if="!isEdit"
+                    command="modity"
+                  >
+                    帮TA修改
+                  </el-dropdown-item>
+                  <el-dropdown-item
+                    v-if="isEdit"
+                    command="modity"
+                  >
+                    取消修改
+                  </el-dropdown-item>
+                  <!-- <el-dropdown-item>下载</el-dropdown-item>
+                  <el-dropdown-item>打印</el-dropdown-item>-->
+                </el-dropdown-menu>
+              </el-dropdown>
+            </template>
+            <template
+              v-else-if="['3', '7', '8'].includes(candidateInfo.status) && data.entryRegister == 1"
+            >
+              <el-button
+                type="primary"
+                size="medium"
+                disabled
+                style="margin-right: 15px;"
+              >
+                已确认
+              </el-button>
+              <!-- <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                下载
+              </el-button>
+              <el-button
+                size="medium"
+                style="margin-right: 15px;"
+              >
+                打印
+              </el-button>-->
             </template>
             <!-- <el-button
               v-if="!isEdit"
@@ -372,6 +495,7 @@
         :modity="modity"
         :data="data"
         @close="handleClose"
+        @refresh="getData"
       />
     </div>
     <notice-modify-register
@@ -384,7 +508,11 @@
 
 <script>
 import { getpersonInfo } from '@/api/personnel/selectedPerson'
-import { confirmEntryRegister, sendEntryRegister } from '@/api/personnel/entry'
+import {
+  confirmEntryRegister,
+  sendEntryRegister,
+  getCandidateAcceptDetail
+} from '@/api/personnel/entry'
 import {
   getPersonInfo as getCandidateInfo,
   postRegisterSend,
@@ -400,10 +528,10 @@ export default {
       modity: true,
       isEdit: false,
       personInfo: {
-        name: '张琪',
-        department: 'ucd部门',
-        position: 'ue设计师',
-        status: '面试中'
+        name: '',
+        department: '',
+        position: '',
+        status: ''
       },
       data: {},
       potions: {
@@ -733,6 +861,7 @@ export default {
         personId: this.$route.query.personId
       }
       getpersonInfo(params).then((res) => {
+        this.personInfo.name = res.name
         this.data = res
         for (let key in this.basic) {
           this.basic[key] = res[key]
@@ -756,8 +885,22 @@ export default {
         this.candidateInfo.interviewRegister = res.interviewRegister
         this.candidateInfo.entryRegister = res.entryRegister
       })
-      getCandidateInfo(params).then((res) => {
+      let getPersonInfo = this.$route.query.entry ? getCandidateAcceptDetail : getCandidateInfo
+      getPersonInfo(params).then((res) => {
         this.candidateInfo = Object.assign(this.candidateInfo, res)
+        this.personInfo.department = res.orgName
+        this.personInfo.position = res.jobName
+        this.personInfo.status = {
+          '0': '已淘汰',
+          '1': '待沟通',
+          '2': '初选通过',
+          '3': '面试中',
+          '4': '面试通过',
+          '5': '待发Offer',
+          '6': '已发Offer',
+          '7': '待入职',
+          '8': '放弃入职'
+        }[res.status]
       })
     },
     handleCommand(command) {

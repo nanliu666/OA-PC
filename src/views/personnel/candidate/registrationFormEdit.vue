@@ -18,13 +18,9 @@
         </div>
         <div class="flex flex-flow flex-justify-between">
           <div class="person_position flex flex-items flex-flow">
-            <div>
-              {{ personInfo.department }}
-            </div>
+            <div>{{ personInfo.department }}</div>
             <div>{{ personInfo.position }}</div>
-            <div>
-              {{ personInfo.status }}
-            </div>
+            <div>{{ personInfo.status }}</div>
           </div>
         </div>
       </div>
@@ -62,27 +58,25 @@
           :key="i"
           class="contactsform"
         >
-          <span
-            v-if="contactsform.length > 1"
-            class="delete"
-            @click="handleDelete(contacts, i)"
-          >
-            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
-          </span>
-          <!--          <inputArray-->
-          <!--            :ref="`contacts${i}`"-->
-          <!--            :info-form.sync="contacts.contacts"-->
-          <!--            :form="contacts.form"-->
-          <!--          />-->
-          <commonForm
-            :ref="`contacts${i}`"
-            :model="contacts.form"
-            :columns="contacts.contacts"
-          />
+          <div v-show="contacts.form.operatorType !== 'Del'">
+            <span
+              v-if="contactsform.length > 1"
+              class="delete"
+              @click="handleDelete(contacts, i, contactsform, 1)"
+            >
+              <el-link type="primary"> <i class="el-icon-delete" /> 删除 </el-link>
+            </span>
+
+            <commonForm
+              :ref="`contacts${i}`"
+              :model="contacts.form"
+              :columns="contacts.contacts"
+            />
+          </div>
         </div>
 
         <div
-          class="flex flex-justify flex-items add "
+          class="flex flex-justify flex-items add"
           @click="handlerAddContacts"
         >
           <i class="el-icon-plus" />添加紧急联系人
@@ -102,27 +96,24 @@
           :key="i"
           class="contactsform"
         >
-          <span
-            v-if="familyform.length > 1"
-            class="delete"
-            @click="handleDeleteFY(family, i)"
-          >
-            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
-          </span>
-          <commonForm
-            :ref="`family${i}`"
-            :model="family.form"
-            :columns="family.family"
-          />
-          <!--          <inputArray-->
-          <!--            :ref="`family${i}`"-->
-          <!--            :info-form.sync="family.family"-->
-          <!--            :form="family.form"-->
-          <!--          />-->
+          <div v-show="family.form.operatorType !== 'Del'">
+            <span
+              v-if="familyform.length > 1"
+              class="delete"
+              @click="handleDelete(family, i, familyform, 1)"
+            >
+              <el-link type="primary"> <i class="el-icon-delete" /> 删除 </el-link>
+            </span>
+            <commonForm
+              :ref="`family${i}`"
+              :model="family.form"
+              :columns="family.family"
+            />
+          </div>
         </div>
 
         <div
-          class="flex flex-justify flex-items add "
+          class="flex flex-justify flex-items add"
           @click="handlerAddFamilyform"
         >
           <i class="el-icon-plus" />添加紧急联系人
@@ -142,27 +133,24 @@
           :key="i"
           class="contactsform"
         >
-          <span
-            v-if="educationform.length > 1"
-            class="delete"
-            @click="handleDeleteED(education, i)"
-          >
-            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
-          </span>
-          <commonForm
-            :ref="`education$${i}`"
-            :model="education.form"
-            :columns="education.education"
-          />
-          <!--          <inputArray-->
-          <!--            :ref="`education${i}`"-->
-          <!--            :info-form.sync="education.education"-->
-          <!--            :form="education.form"-->
-          <!--          />-->
+          <div v-show="education.form.operatorType !== 'Del'">
+            <span
+              v-if="educationform.length > 1"
+              class="delete"
+              @click="handleDelete(education, i, educationform, 1)"
+            >
+              <el-link type="primary"> <i class="el-icon-delete" /> 删除 </el-link>
+            </span>
+            <commonForm
+              :ref="`education$${i}`"
+              :model="education.form"
+              :columns="education.education"
+            />
+          </div>
         </div>
 
         <div
-          class="flex flex-justify flex-items add "
+          class="flex flex-justify flex-items add"
           @click="handlerAddEducationform"
         >
           <i class="el-icon-plus" />添加教育经历
@@ -182,27 +170,23 @@
           :key="i"
           class="contactsform"
         >
-          <span
-            v-if="workform.length > 1"
-            class="delete"
-            @click="handleDeleteWK(work, i)"
-          >
-            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
-          </span>
-          <commonForm
-            :ref="`work${i}`"
-            :model="work.form"
-            :columns="work.work"
-          />
-          <!--          <inputArray-->
-          <!--            :ref="`education${i}`"-->
-          <!--            :info-form.sync="work.work"-->
-          <!--            :form="work.form"-->
-          <!--          />-->
+          <div v-show="work.form.operatorType !== 'Del'">
+            <span
+              class="delete"
+              @click="handleDelete(work, i, workform)"
+            >
+              <el-link type="primary"> <i class="el-icon-delete" /> 删除 </el-link>
+            </span>
+            <commonForm
+              :ref="`work${i}`"
+              :model="work.form"
+              :columns="work.work"
+            />
+          </div>
         </div>
 
         <div
-          class="flex flex-justify flex-items add "
+          class="flex flex-justify flex-items add"
           @click="handlerAddWorkform"
         >
           <i class="el-icon-plus" />添加工作经验
@@ -222,27 +206,23 @@
           :key="i"
           class="contactsform"
         >
-          <span
-            v-if="trainform.length > 1"
-            class="delete"
-            @click="handleDeleteTR(train, i)"
-          >
-            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
-          </span>
-          <commonForm
-            :ref="`train${i}`"
-            :model="train.form"
-            :columns="train.train"
-          />
-          <!--          <inputArray-->
-          <!--            :ref="`train${i}`"-->
-          <!--            :info-form.sync="train.train"-->
-          <!--            :form="train.form"-->
-          <!--          />-->
+          <div v-show="train.form.operatorType !== 'Del'">
+            <span
+              class="delete"
+              @click="handleDelete(train, i, trainform)"
+            >
+              <el-link type="primary"> <i class="el-icon-delete" /> 删除 </el-link>
+            </span>
+            <commonForm
+              :ref="`train${i}`"
+              :model="train.form"
+              :columns="train.train"
+            />
+          </div>
         </div>
 
         <div
-          class="flex flex-justify flex-items add "
+          class="flex flex-justify flex-items add"
           @click="handlerAddTrainform"
         >
           <i class="el-icon-plus" />添加培训经历
@@ -262,27 +242,23 @@
           :key="i"
           class="contactsform"
         >
-          <span
-            v-if="certificateform.length > 1"
-            class="delete"
-            @click="handleDeleteCE(certificate, i)"
-          >
-            <el-link type="primary"><i class="el-icon-delete" /> 删除</el-link>
-          </span>
-          <commonForm
-            :ref="`certificate${i}`"
-            :model="certificate.form"
-            :columns="certificate.certificate"
-          />
-          <!--          <inputArray-->
-          <!--            :ref="`certificate${i}`"-->
-          <!--            :info-form.sync="certificate.certificate"-->
-          <!--            :form="certificate.form"-->
-          <!--          />-->
+          <div v-show="certificate.form.operatorType !== 'Del'">
+            <span
+              class="delete"
+              @click="handleDelete(certificate, i, certificateform)"
+            >
+              <el-link type="primary"> <i class="el-icon-delete" /> 删除 </el-link>
+            </span>
+            <commonForm
+              :ref="`certificate${i}`"
+              :model="certificate.form"
+              :columns="certificate.certificate"
+            />
+          </div>
         </div>
 
         <div
-          class="flex flex-justify flex-items add "
+          class="flex flex-justify flex-items add"
           @click="handlerAddCEform"
         >
           <i class="el-icon-plus" />添加资格证书
@@ -367,12 +343,12 @@ export default {
     return {
       checkIdNo,
       infoForm,
-      contactsform: [{ contacts: contacts, form: {} }],
-      educationform: [{ education: education, form: {} }],
-      familyform: [{ family: family, form: {} }],
-      workform: [{ work: work, form: {} }],
-      trainform: [{ train: train, form: {} }],
-      certificateform: [{ certificate: certificate, form: {} }],
+      contactsform: [],
+      educationform: [],
+      familyform: [],
+      workform: [],
+      trainform: [],
+      certificateform: [],
       contacts,
       loading: false,
       ruleForm: {
@@ -455,7 +431,7 @@ export default {
             this.workform = []
             this.workform.push({ work: work, form: { ...it } })
           })
-        val.emer &&
+        val.train &&
           val.train.map((it) => {
             it.time = []
             it.beginDate && it.time.push(it.beginDate)
@@ -482,6 +458,60 @@ export default {
   },
   created() {
     this.validataId()
+    if (this.$route.query.entry) {
+      this.infoForm.push(
+        ...[
+          {
+            span: 10,
+            offset: 2,
+            prop: 'bankName',
+            itemType: 'input',
+            label: '开户银行名称',
+            props: {}
+          },
+          {
+            span: 10,
+            prop: 'bankNo',
+            itemType: 'input',
+            label: '开户银行账号',
+            props: {}
+          },
+          {
+            span: 10,
+            offset: 2,
+            prop: 'isFirstSs',
+            itemType: 'radio',
+            label: '本地首次缴纳社保',
+            options: [
+              {
+                label: '是',
+                value: 1
+              },
+              {
+                label: '否',
+                value: 0
+              }
+            ]
+          },
+          {
+            span: 10,
+            prop: 'isFirstEpf',
+            itemType: 'radio',
+            label: '本地首次缴纳公积金',
+            options: [
+              {
+                label: '是',
+                value: 1
+              },
+              {
+                label: '否',
+                value: 0
+              }
+            ]
+          }
+        ]
+      )
+    }
   },
   mounted() {
     this.$store.dispatch('CommonDict', 'idType').then((res) => {
@@ -543,13 +573,15 @@ export default {
     },
     /**
      * @author guanfenda
-     * 判断是否更新和修改
+     * 判断是否更新和修改、删除
      * */
     dataPush(form, type) {
       form.map((it) => {
         // 判断是否更新和修改
         if (it.form.id) {
-          it.form.operatorType = 'Update'
+          if (it.form.operatorType !== 'Del') {
+            it.form.operatorType = 'Update'
+          }
           type.push(it.form)
         } else {
           let isAdd = false
@@ -564,23 +596,18 @@ export default {
         }
       })
     },
-    /***
-     *
-     * @author guanfenda
-     * 判断是否删除
-     *
+    /**
+     * @author wuweiyan
+     * 统计数组中operatorType非del数量
      * */
-    datadelete(form, type) {
-      form.map((it) => {
-        // 判断是否更新和修改
-        let index = type.findIndex((item) => {
-          return it.id === item.id
-        })
-        if (index < 0) {
-          it.operatorType = 'Del'
-          type.push(it)
+    checkNoDel(arr) {
+      let num = 0
+      arr.forEach((item) => {
+        if (item.operatorType !== 'Del') {
+          num++
         }
       })
+      return num
     },
     /**
      * @author guanfenda
@@ -592,36 +619,45 @@ export default {
         .then(() => {
           let emer = []
           this.dataPush(this.contactsform, emer)
-          this.data.emer && this.datadelete(this.data.emer, emer)
+          // this.data.emer && this.datadelete(this.data.emer, emer)
           let family = []
           this.dataPush(this.familyform, family)
-          this.data.family && this.datadelete(this.data.family, family)
+          // this.data.family && this.datadelete(this.data.family, family)
           let education = []
           this.dataPush(this.educationform, education)
-          this.data.education && this.datadelete(this.data.education, education)
+          // this.data.education && this.datadelete(this.data.education, education)
           let work = []
           this.dataPush(this.workform, work)
-          this.data.work && this.datadelete(this.data.work, work)
+          // this.data.work && this.datadelete(this.data.work, work)
           let train = []
           this.dataPush(this.trainform, train)
-          this.data.train && this.datadelete(this.data.train, train)
+          // this.data.train && this.datadelete(this.data.train, train)
           let certificate = []
           this.dataPush(this.certificateform, certificate)
-          this.data.certificate && this.datadelete(this.data.certificate, certificate)
+          // this.data.certificate && this.datadelete(this.data.certificate, certificate)
           education.map((it) => {
-            if (it.educationTime.length > 0) {
+            if (it.educationTime === null) {
+              it.beginDate = ''
+              it.endDate = ''
+            } else if (it.educationTime.length > 0) {
               it.beginDate = it.educationTime[0]
               it.endDate = it.educationTime[1]
             }
           })
           work.map((it) => {
-            if (it.workTime.length > 0) {
+            if (it.workTime === null) {
+              it.beginWorkDate = ''
+              it.endWorkDate = ''
+            } else if (it.workTime.length > 0) {
               it.beginWorkDate = it.workTime[0]
               it.endWorkDate = it.workTime[1]
             }
           })
           train.map((it) => {
-            if (it.time.length > 0) {
+            if (it.time === null) {
+              it.beginDate = ''
+              it.endDate = ''
+            } else if (it.time.length > 0) {
               it.beginDate = it.time[0]
               it.endDate = it.time[1]
             }
@@ -640,63 +676,66 @@ export default {
             train: train,
             certificate: certificate
           }
+          if (this.checkNoDel(params.emer) === 0) {
+            this.$message.error('紧急联系人数量不足')
+            return
+          }
+          if (this.checkNoDel(params.family) === 0) {
+            this.$message.error('家庭成员数量不足')
+            return
+          }
+          if (this.checkNoDel(params.education) === 0) {
+            this.$message.error('教育信息不足数量不足')
+            return
+          }
           this.loading = true
           putpersonInfo(params).then(() => {
             this.loading = false
             this.$message.success('提交成功')
             this.$emit('close')
+            this.$emit('refresh')
           })
         })
-        .catch(() => {
+        .catch((error) => {
           this.loading = false
           this.$refs.form.scrollIntoView()
+          throw error
         })
     },
     close() {
       this.$emit('close')
     },
-    handleDelete(data, i) {
-      if (this.contactsform.length > 1) {
-        this.contactsform.splice(i, 1)
+    handleDelete(data, i, form, limit = 0) {
+      let num = 0
+      form.forEach((item) => {
+        if (item.form.operatorType !== 'Del') {
+          num += 1
+        }
+      })
+      if (num > limit && data.form.id) {
+        this.$set(data.form, 'operatorType', 'Del')
+        // data.form.operatorType = 'Del'
+      } else if (num > limit && !data.form.id) {
+        form.splice(i, 1)
+      } else {
+        this.$message.error('此项目至少添加一个')
       }
     },
     handlerAddContacts() {
       this.contactsform.push({ contacts: contacts, form: {} })
     },
-    handleDeleteFY(data, i) {
-      if (this.familyform.length > 1) {
-        this.familyform.splice(i, 1)
-      }
-    },
-    handleDeleteED(data, i) {
-      if (this.educationform.length > 1) {
-        this.educationform.splice(i, 1)
-      }
-    },
+
     handlerAddFamilyform() {
       this.familyform.push({ family: family, form: {} })
     },
     handlerAddEducationform() {
       this.educationform.push({ education: education, form: {} })
     },
-    handleDeleteWK(data, i) {
-      if (this.workform.length > 1) {
-        this.workform.splice(i, 1)
-      }
-    },
     handlerAddWorkform() {
       this.workform.push({ work: work, form: {} })
     },
-    handleDeleteTR(data, i) {
-      if (this.trainform.length > 1) {
-        this.trainform.splice(i, 1)
-      }
-    },
     handlerAddTrainform() {
       this.trainform.push({ train: train, form: {} })
-    },
-    handleDeleteCE(data, i) {
-      this.certificateform.length > 1 && this.certificateform.splice(i, 1)
     },
     handlerAddCEform() {
       this.certificateform.push({ certificate: certificate, form: {} })
@@ -802,8 +841,8 @@ export default {
       position: relative;
       .delete {
         position: absolute;
-        right: 10px;
-        top: 0px;
+        right: -70px;
+        top: 50%;
         z-index: 9000;
       }
     }
@@ -812,8 +851,8 @@ export default {
       padding-top: 15px;
       .delete {
         position: absolute;
-        right: 10px;
-        top: 10px;
+        right: -70px;
+        top: 50%;
       }
     }
   }

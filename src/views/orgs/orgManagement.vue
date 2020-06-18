@@ -2,7 +2,7 @@
   <div class="fill">
     <page-header title="组织机构管理">
       <el-dropdown
-        slot="menuRight"
+        slot="rightMenu"
         @command="handleCommand"
       >
         <el-button

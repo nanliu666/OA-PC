@@ -267,7 +267,8 @@ export default {
           label: '合同签订日期', // lable
           itemType: 'datePicker',
           prop: 'signDate',
-          span: 11
+          span: 11,
+          required: true
         },
         {
           prop: 'remark',
@@ -301,12 +302,16 @@ export default {
             ...this.form
           }
           this.loading = true
-          createContract(params).then(() => {
-            this.$message.success('签订成功')
-            this.loading = false
-            this.contractDialog = false
-            this.getPersonInfo()
-          })
+          createContract(params)
+            .then(() => {
+              this.$message.success('签订成功')
+              this.loading = false
+              this.contractDialog = false
+              this.getPersonInfo()
+            })
+            .catch(() => {
+              this.loading = false
+            })
         })
         .catch(() => {
           this.$message.error('请完善信息')

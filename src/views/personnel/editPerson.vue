@@ -63,7 +63,7 @@
                   label="姓名"
                   prop="name"
                 >
-                  <el-input v-model="form.name" />
+                  <el-input v-model.trim="form.name" />
                 </el-form-item>
               </el-col>
               <el-col
