@@ -122,10 +122,11 @@
                 :span="14"
                 class="btn-box"
               >
-                <el-form-item style="width:50%">
+                <el-form-item>
                   <el-button
                     type="primary"
                     size="medium"
+                    :loading="btnLoading"
                     @click="handelSubmit"
                   >
                     提交
@@ -189,7 +190,8 @@ export default {
         apprProgress: [{ validator: checkAppr, required: true }]
       },
       // 离职原因字典组
-      LeaveReason: []
+      LeaveReason: [],
+      btnLoading: false
     }
   },
   computed: {
@@ -219,6 +221,7 @@ export default {
         }
         // 检验通过
         this.queryInfo.userId = this.userId
+        this.btnLoading = true
         applyLeaveInfo(this.queryInfo)
           .then((res) => {
             if (res && res.id) {
@@ -229,6 +232,9 @@ export default {
             // this.$message.success('提交成功', 2000, this.$router.go(-1))
           })
           .catch(() => {})
+          .finally(() => {
+            this.btnLoading = false
+          })
       })
     },
     // goBack

@@ -206,7 +206,8 @@ export default {
     },
     // go录用评价
     goToInterEdit() {
-      let { id, name } = this.personData
+      let { name } = this.personData
+      let { id } = this.$route.query
       this.$router.push({
         path: '/todo/interviewEdit',
         query: { id, name }

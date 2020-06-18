@@ -43,7 +43,8 @@
                   slot="Pending"
                 >
                   <div class="placeholder-box">
-                    您当前没有待办事项，前往，<el-button
+                    您当前没有待办事项，前往
+                    <el-button
                       type="text"
                       size="medium"
                       @click="goTodoCenter"
@@ -78,7 +79,8 @@
                   slot="Warning"
                 >
                   <div class="placeholder-box">
-                    您当前没有待办事项，前往，<el-button
+                    您当前没有待办事项，前往
+                    <el-button
                       type="text"
                       size="medium"
                       @click="goTodoCenter"
@@ -293,7 +295,7 @@ export default {
         pageNo: '1',
         pageSize: '10',
         userId: '',
-        type: '',
+        type: null,
         isRead: null
       },
       msgWorkList: [],
@@ -330,11 +332,7 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return (
-        moment()
-          .startOf('day')
-          .diff(moment(row.endDate)) > 0
-      )
+      return moment().diff(moment(row.endDate)) > 0
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')

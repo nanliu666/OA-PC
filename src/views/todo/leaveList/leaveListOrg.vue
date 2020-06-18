@@ -47,7 +47,7 @@
       </div>
       <div class="main-wrap">
         <div class="tips-row">
-          {{ personData.userName }},请尽快为他办理以下离职交接事项并确认：
+          员工 {{ personData.userName }},请尽快为他办理以下离职交接事项并确认：
         </div>
         <div
           v-for="category in personData.data"
@@ -92,9 +92,7 @@ export default {
   methods: {
     loadingData() {
       this.loading = true
-      // let arrId = this.$route.query.id.split(',')
-      let str = '123,456'
-      let arrId = str.split(',')
+      let arrId = this.$route.query.id.split(',')
       this.leaveUserId = arrId[0]
       this.groupId = arrId[1]
       let params = {
@@ -113,7 +111,7 @@ export default {
     // 确认离职交接事项
     async confirmleaveNote() {
       let params = {
-        leaveUserId: this.leaveUserId,
+        groupId: this.groupId,
         userId: this.userId
       }
       try {
@@ -133,7 +131,7 @@ export default {
     // 催办
     async urgeleaveNote() {
       await postUrgeleaveNote({
-        leaveUserId: this.leaveUserId,
+        groupId: this.groupId,
         userId: this.userId
       })
       this.$message.success('催办成功')

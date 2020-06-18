@@ -24,9 +24,8 @@
             <div>
               <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
               <el-button
-                icon="el-icon-refresh"
+                icon="icon-basics-refresh-outlined"
                 size="medium"
-                type="primary"
                 @click="getTableList()"
               />
             </div>
@@ -189,7 +188,7 @@ export default {
           label: '审批编码',
           align: 'center',
           prop: 'apprNo',
-          width: '80px',
+          width: '130px',
           slot: true
         },
         {

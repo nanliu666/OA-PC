@@ -339,6 +339,7 @@
                 <el-button
                   type="primary"
                   size="medium"
+                  :loading="btnLoading"
                   @click="handelSubmit"
                 >
                   提交
@@ -442,7 +443,8 @@ export default {
             }
           }
         }
-      }
+      },
+      btnLoading: false
     }
   },
   watch: {
@@ -609,6 +611,7 @@ export default {
           jobName !== newJobName ||
           positionName !== newPositionName
         ) {
+          this.btnLoading = true
           changeApply(this.applyParams)
             .then((res) => {
               if (res && res.id) {
@@ -619,6 +622,9 @@ export default {
               }
             })
             .catch()
+            .finally(() => {
+              this.btnLoading = false
+            })
         } else {
           return this.$message.info('请输入人事异动的变更内容', 3000)
         }

@@ -757,7 +757,7 @@
         <el-button
           size="medium"
           type="primary"
-          :loading="loading"
+          :loading="btnloading"
           @click="handelConfirm"
         >确 定</el-button>
       </span>
@@ -874,7 +874,8 @@ export default {
       apprType: '',
       // 审批意见
       apprRemark: '',
-      loading: false
+      loading: false,
+      btnloading: false
     }
   },
   computed: {
@@ -1110,7 +1111,7 @@ export default {
     },
     // 点击确定审批
     async handelConfirm() {
-      this.loading = true
+      this.btnloading = true
       let { userId, id: nodeId } = this.progressList[this.activeStep]
       let { apprNo } = this.$route.query
       if (this.apprType === 'Reject') {
@@ -1137,7 +1138,7 @@ export default {
         })
       }
       this.dialogVisible = false
-      this.loading = false
+      this.btnloading = false
       this.goBack()
     },
     // 点击催一下
