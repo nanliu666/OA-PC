@@ -133,6 +133,7 @@ export default {
         groupId: [{ required: true, message: '请输入分组', trigger: 'change' }],
         details: [
           {
+            required: true,
             validator: (rule, value, callback) => {
               if (this.filterEmptyDetail(value).length === 0) {
                 callback(new Error('请至少输入一条交接事项明细'))
