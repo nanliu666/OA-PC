@@ -128,7 +128,8 @@ export default {
         {
           label: '审批编号',
           prop: 'apprNo',
-          slot: true
+          slot: true,
+          width: 150
         },
         {
           label: '标题',
@@ -136,31 +137,37 @@ export default {
         },
         {
           label: '审批类型',
+          width: 150,
           formatter: (row) => {
             return FormKeysCN[row.formKey]
           }
         },
         {
           label: '申请部门',
+          width: 150,
           prop: 'orgName'
         },
         {
           label: '申请时间',
+          width: 150,
           prop: 'applyTime',
           sortable: true
         },
         {
           label: '完成时间',
+          width: 150,
           prop: 'completeTime',
           sortable: true
         },
         {
           label: '当前状态',
+          width: 150,
           prop: 'status',
           slot: true
         },
         {
           label: '当前审批人',
+          width: 150,
           prop: 'approveName'
         }
       ],

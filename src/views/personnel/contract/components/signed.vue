@@ -123,21 +123,40 @@ export default {
       default: function() {
         return {}
       }
+    },
+    columns: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    tableConfig: {
+      type: Object,
+      default: function() {
+        return {
+          showHandler: true,
+          enablePagination: true,
+          enableMultiSelect: false,
+          handlerColumn: {
+            width: 120
+          }
+        }
+      }
     }
   },
   data() {
     return {
       data: [],
       WorkProperty: [],
-      ContractType: [],
-      tableConfig: {
-        showHandler: true,
-        enablePagination: true,
-        enableMultiSelect: false,
-        handlerColumn: {
-          width: 120
-        }
-      }
+      ContractType: []
+      // tableConfig: {
+      //   showHandler: true,
+      //   enablePagination: true,
+      //   enableMultiSelect: false,
+      //   handlerColumn: {
+      //     width: 120
+      //   }
+      // }
     }
   },
   watch: {

@@ -145,27 +145,30 @@ export default {
         {
           label: '期望薪资',
           prop: 'monthSalary',
-          width: 80
+          width: 120
         },
         {
           label: '性别',
           prop: 'sex',
-          width: 50,
+          width: 80,
           formatter(record) {
             return { '0': '女', '1': '男' }[record.sex] || ''
           }
         },
         {
           label: '手机号',
-          prop: 'phonenum'
+          prop: 'phonenum',
+          width: 120
         },
         {
           label: '邮箱',
-          prop: 'email'
+          prop: 'email',
+          width: 160
         },
         {
           label: '目前所在地',
           prop: 'address',
+          width: 160,
           formatter: (record) => {
             return `${record.provinceName}${record.cityName}`
           }
@@ -178,7 +181,8 @@ export default {
         },
         {
           label: '最近工作单位',
-          prop: 'lastCompany'
+          prop: 'lastCompany',
+          width: 160
         }
       ],
       data: [],

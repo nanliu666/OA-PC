@@ -94,13 +94,13 @@
               >
                 批量删除
               </el-button>
-              <el-button
-                size="medium"
-                type="text"
-                icon="el-icon-upload2"
-              >
-                批量导出
-              </el-button>
+              <!--              <el-button-->
+              <!--                size="medium"-->
+              <!--                type="text"-->
+              <!--                icon="el-icon-upload2"-->
+              <!--              >-->
+              <!--                批量导出-->
+              <!--              </el-button>-->
             </div>
             <el-button
               size="medium"

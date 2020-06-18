@@ -608,7 +608,7 @@ const res = {
             menuName: '面试评价',
             menuType: 'Menu',
             isOwn: 1,
-            isShow: 1,
+            isShow: 0,
             code: 'personnel_interivewDetails',
             alias: 'registrationFormEdit',
             path: '/personnel/candidate/interivewDetails',

@@ -231,7 +231,7 @@ export default {
         ...tableOptions,
         align: 'center',
         menuAlign: 'center',
-        selection: true,
+        selection: false,
         tip: false,
         index: true,
         indexLabel: '序号',
