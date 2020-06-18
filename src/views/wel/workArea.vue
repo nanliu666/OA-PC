@@ -330,7 +330,11 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return moment().diff(moment(row.endDate)) > 0
+      return (
+        moment()
+          .startOf('day')
+          .diff(moment(row.endDate)) > 0
+      )
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')

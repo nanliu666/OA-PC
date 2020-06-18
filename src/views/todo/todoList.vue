@@ -25,10 +25,13 @@
         :columns="columns"
         :data="tableData"
         :loading="loading"
+        @page-size-change="sizeChange"
+        @current-page-change="currentChange"
       >
         <div
           slot="title"
           slot-scope="{ row }"
+          class="title"
         >
           <el-button
             type="text"
@@ -181,8 +184,20 @@ export default {
     this.loadData()
   },
   methods: {
+    sizeChange(val) {
+      this.page.size = val
+      this.loadData()
+    },
+    currentChange(val) {
+      this.page.currentPage = val
+      this.loadData()
+    },
     ifShowWarn(row) {
-      return moment().diff(moment(row.endDate)) > 0
+      return (
+        moment()
+          .startOf('day')
+          .diff(moment(row.endDate)) > 0
+      )
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
@@ -294,6 +309,10 @@ export default {
 .basic-container--block {
   height: calc(100% - 82px);
   min-height: calc(100% - 82px);
+}
+.title {
+  display: flex;
+  align-items: center;
 }
 .memu {
   display: flex;
