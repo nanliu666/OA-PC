@@ -221,7 +221,8 @@ export let contacts = [
     prop: 'name',
     itemType: 'input',
     label: '紧急联系人姓名',
-    props: {}
+    props: {},
+    required: true
   },
   {
     span: 10,
@@ -243,7 +244,12 @@ export let contacts = [
     maxlength: 11,
     props: {
       onlyNumber: true
-    }
+    },
+    required: true,
+    rules: [
+      { required: true, validator: validatePhone, trigger: 'blur' },
+      { required: true, message: '请输入手机号码', trigger: 'blur' }
+    ]
   }
 ]
 export let family = [
@@ -264,7 +270,8 @@ export let family = [
     prop: 'name',
     itemType: 'input',
     label: '姓名',
-    props: {}
+    props: {},
+    required: true
   },
   {
     span: 10,
@@ -300,7 +307,12 @@ export let family = [
     itemType: 'input',
     label: '联系电话',
     maxlength: 2,
-    props: {}
+    props: {},
+    required: true,
+    rules: [
+      { required: true, validator: validatePhone, trigger: 'blur' },
+      { required: true, message: '请输入手机号码', trigger: 'blur' }
+    ]
   }
 ]
 export let education = [
@@ -309,7 +321,8 @@ export let education = [
     prop: 'educationTime',
     itemType: 'datePicker',
     type: 'daterange',
-    label: '受教育时间'
+    label: '受教育时间',
+    required: true
   },
   {
     span: 10,
@@ -336,7 +349,8 @@ export let education = [
     props: {
       label: 'dictValue',
       value: 'dictKey'
-    }
+    },
+    required: true
   },
   {
     span: 10,
@@ -356,7 +370,8 @@ export let work = [
     prop: 'workTime',
     itemType: 'datePicker',
     type: 'daterange',
-    label: '在职时间'
+    label: '在职时间',
+    required: true
   },
   {
     span: 10,
@@ -364,7 +379,8 @@ export let work = [
     prop: 'companyName',
     itemType: 'input',
     label: '单位名称',
-    props: {}
+    props: {},
+    required: true
   },
   {
     span: 10,
@@ -400,6 +416,27 @@ export let work = [
     props: {
       onlyNumber: true
     }
+  },
+  {
+    span: 10,
+    prop: 'isSecret',
+    itemType: 'radio',
+    label: '有无守密义务或竞业禁止义务',
+    options: [
+      {
+        label: '有',
+        value: 1
+      },
+      {
+        label: '无',
+        value: 0
+      }
+    ],
+    props: {
+      label: 'label',
+      value: 'value'
+    },
+    required: true
   }
 ]
 export let train = [
@@ -408,14 +445,16 @@ export let train = [
     prop: 'time',
     type: 'daterange',
     itemType: 'datePicker',
-    label: '培训日期'
+    label: '培训日期',
+    required: true
   },
   {
     span: 10,
     offset: 2,
     prop: 'name',
     itemType: 'input',
-    label: '培训课程'
+    label: '培训课程',
+    required: true
   },
   {
     span: 10,
@@ -429,7 +468,8 @@ export let certificate = [
     span: 10,
     prop: 'name',
     itemType: 'input',
-    label: '证书名称'
+    label: '证书名称',
+    required: true
   },
   {
     span: 10,

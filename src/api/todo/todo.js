@@ -15,6 +15,11 @@ export const getTodoList = (params) => {
 export const getInterviewInfo = (params) => {
   return get('/user/v1/person/interview/info', params)
 }
+//候选人面试详情查询接口
+export const getInterviewList = (params) => {
+  return get('/user/v1/person/interview/list', params)
+}
+// /user/v1/person/interview/list
 
 // 候选人面试详情评价提交
 export const postInterviewInfo = (params) => {

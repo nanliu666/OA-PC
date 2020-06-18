@@ -69,8 +69,8 @@
           <p>
             二、薪酬福利
             <br>
-            试用期薪资：{{ offerInfo.probationSalary }} 元/月 （税前） 转正薪资：{{
-              offerInfo.formalSalary
+            试用期薪资：{{ applyInfo.probationSalary }} 元/月 （税前） 转正薪资：{{
+              applyInfo.formalSalary
             }}
             元/月 （税前）
             <br>年终奖、过节慰问金等根据公司相关规定发放
@@ -117,6 +117,10 @@ export default {
       default: () => ({})
     },
     personInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    applyInfo: {
       type: Object,
       default: () => ({})
     },

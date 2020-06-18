@@ -79,7 +79,7 @@
                 <span
                   @click="handlerDeleteAll(selection)"
                 ><i class="el-icon-delete" /> 批量删除</span>
-                <span><i class="el-icon-folder" /> 批量导出</span>
+                <!--                <span><i class="el-icon-folder" /> 批量导出</span>-->
               </span>
             </template>
             <template
@@ -484,7 +484,7 @@ export default {
   cursor: pointer;
   padding: 10px;
   span:first-child {
-    border-right: 1px solid #999;
+    /*border-right: 1px solid #999;*/
     padding-right: 15px;
   }
   span {

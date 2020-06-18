@@ -38,7 +38,10 @@ $height: 56px;
 
 .top-menu {
   box-sizing: border-box;
-
+  .el-loading-spinner .circular {
+    width: 22px;
+    height: 22px;
+  }
   .el-menu-item {
     padding: 0 10px;
     border: none !important;

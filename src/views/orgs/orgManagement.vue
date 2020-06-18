@@ -2,7 +2,7 @@
   <div class="fill">
     <page-header title="组织机构管理">
       <el-dropdown
-        slot="menuRight"
+        slot="rightMenu"
         @command="handleCommand"
       >
         <el-button
@@ -94,13 +94,13 @@
               >
                 批量删除
               </el-button>
-              <el-button
-                size="medium"
-                type="text"
-                icon="el-icon-upload2"
-              >
-                批量导出
-              </el-button>
+              <!--              <el-button-->
+              <!--                size="medium"-->
+              <!--                type="text"-->
+              <!--                icon="el-icon-upload2"-->
+              <!--              >-->
+              <!--                批量导出-->
+              <!--              </el-button>-->
             </div>
             <el-button
               size="medium"

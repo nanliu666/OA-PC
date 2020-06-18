@@ -77,6 +77,7 @@
           <el-button
             type="primary"
             size="medium"
+            :loading="submitting"
             @click="onsubmit"
           >
             确 定
@@ -241,6 +242,7 @@ export default {
           let countyName = this.form.pathLabels[2]
 
           let params = {
+            id: this.row.id,
             name,
             phonenum,
             address,
@@ -251,20 +253,20 @@ export default {
             cityName,
             countyName
           }
+          let submitFunc = postAddresss
           if (this.row.id) {
-            params.id = this.row.id
-            putAddresss(params).then(() => {
-              this.$message.success('修改成功')
+            submitFunc = putAddresss
+          }
+          this.submitting = true
+          submitFunc(params)
+            .then(() => {
+              this.$message.success('提交成功')
               this.$emit('updataAddree')
               this.dialog = false
             })
-            return
-          }
-          postAddresss(params).then(() => {
-            this.$message.success('提交成功')
-            this.$emit('updataAddree')
-            this.dialog = false
-          })
+            .finally(() => {
+              this.submitting = false
+            })
         })
         .catch(() => {})
     },

@@ -176,6 +176,7 @@ export default {
     height: 100%;
     > .el-card__body {
       height: 100%;
+      overflow: auto;
     }
   }
 }
