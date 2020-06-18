@@ -34,7 +34,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  width: 240px;
+  width: 224px;
   height: 56px;
   // line-height: 56px;
   // background-color: #20222a;
