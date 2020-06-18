@@ -56,7 +56,7 @@
           <template v-else>
             <template v-if="personInfo.status === '1'">
               <el-button
-                v-if="$route.query.pushResume === '0'"
+                v-if="!pushResume"
                 type="primary"
                 size="medium"
                 @click="hadlePushAudit"
@@ -64,8 +64,9 @@
                 推送审核
               </el-button>
               <el-button
-                v-if="$route.query.pushResume === '1'"
-                type="text"
+                v-if="pushResume"
+                size="medium"
+                type="primary"
                 disabled
               >
                 已推送
@@ -560,7 +561,7 @@
     <push-audit-dialog
       ref="pushAuditDialog"
       :visible.sync="pushAuditDialog"
-      @refresh="init"
+      @refresh="pushAuditRefresh"
     />
     <change-job-dialog
       ref="changeJobDialog"
@@ -608,7 +609,8 @@ export default {
       row: {},
       loading: false,
       personId: null,
-      isTalent: null
+      isTalent: null,
+      pushResume: this.$route.query.pushResume === '1'
     }
   },
   created() {
@@ -633,6 +635,10 @@ export default {
     this.getPersonRecord()
   },
   methods: {
+    pushAuditRefresh() {
+      this.pushResume = true
+      this.init()
+    },
     handleTalentRecover() {
       this.$refs.changeJobDialog.init('add', this.personInfo)
     },

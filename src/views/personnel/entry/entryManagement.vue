@@ -349,6 +349,8 @@ export default {
   },
   created() {
     this.loadSearchOption()
+  },
+  activated() {
     this.loadData()
   },
   methods: {
