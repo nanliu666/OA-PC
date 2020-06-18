@@ -15,7 +15,8 @@ const user = {
     menu: getStore({ name: 'menu' }) || [],
     menuAll: getStore({ name: 'menuAll' }) || [],
     token: getStore({ name: 'token' }) || '',
-    refreshToken: getStore({ name: 'refreshToken' }) || ''
+    refreshToken: getStore({ name: 'refreshToken' }) || '',
+    menuLoading: false
   },
   actions: {
     //根据用户名登录
@@ -52,7 +53,9 @@ const user = {
     },
     GetUserPrivilege({ commit }, userId) {
       return new Promise((resolve) => {
+        commit('SET_MENU_LOADING', true)
         getUserPrivilege(userId).then((data) => {
+          commit('SET_MENU_LOADING', false)
           commit(
             'SET_ORGS',
             data.orgPrivileges.filter((org) => org.isOwn === 1)
@@ -190,6 +193,9 @@ const user = {
     SET_PRIVILEGES: (state, privileges) => {
       state.privileges = privileges
       setStore({ name: 'privileges', content: privileges, type: 'session' })
+    },
+    SET_MENU_LOADING: (state, menuLoading) => {
+      state.menuLoading = menuLoading
     }
   }
 }
