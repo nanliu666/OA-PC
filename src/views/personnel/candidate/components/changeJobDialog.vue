@@ -8,7 +8,6 @@
   >
     <el-form
       ref="ruleForm"
-      v-loading="loading"
       :model="form"
       :rules="rules"
       label-width="100px"
@@ -57,6 +56,7 @@
       <el-button
         type="primary"
         size="medium"
+        :loading="loading"
         @click="submit"
       >确定</el-button>
     </span>
@@ -156,7 +156,6 @@ export default {
         submitFunc(params)
           .then(() => {
             this.$message.success('操作成功')
-            this.loading = false
             Object.assign(this.$data.form, this.$options.data().form)
             this.$emit('refresh')
             this.$emit('update:visible', false)

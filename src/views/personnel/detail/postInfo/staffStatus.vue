@@ -112,7 +112,7 @@ export default {
       return typeWord
     },
     getWorkTime() {
-      let workAge = ''
+      let workAge = 0
       if (this.staffInfo.entryDate) {
         //计算司龄
         let fomatToMS = new Date().getTime() - new Date(this.staffInfo.entryDate).getTime()
@@ -121,12 +121,17 @@ export default {
         let year = Math.floor(totalDay / 365)
         let month = Math.floor((totalDay % 365) / 30)
         // let day = Math.floor(totalDay % 365 % 30)
-        workAge = year + '年' + month + '个月'
-        if (year == 0) {
+        if (year > 0 && month > 0) {
+          workAge = year + '年' + month + '个月'
+        }
+        if (year == 0 && month > 0) {
           workAge = month + '个月'
         }
-        if (month == 0) {
-          workAge = ''
+        if (year > 0 && month == 0) {
+          workAge = year + '年'
+        }
+        if (year == 0 && month == 0) {
+          workAge = '不满一个月'
         }
       }
       return workAge

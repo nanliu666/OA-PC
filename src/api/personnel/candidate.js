@@ -83,7 +83,7 @@ export const sendOffer = (params) => {
 }
 /**
  * 录用申请查询接口
- * @param {String} personId - 人员ID
+ * @param {String} applyId - 录用申请id
  * */
 export const getOfferApply = (id) => {
   return get('/user/v1/candidate/offer/apply', { id })

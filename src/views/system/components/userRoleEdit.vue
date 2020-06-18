@@ -71,7 +71,7 @@
           @click="close"
         >取 消</el-button>
         <el-button
-          v-loading="loading"
+          :loading="submitting"
           type="primary"
           size="medium"
           @click="handleSubmit"
@@ -105,7 +105,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      submitting: false,
       filterText: '',
       props: {
         disabled: (data) => !data.roleName || !this.genClosable(data),
@@ -223,20 +223,25 @@ export default {
       return result
     },
     handleSubmit() {
+      this.submitting = true
       modifyUserRole(
         this.user.userId,
         this.diff(
           this.selectList.map((i) => i.roleId),
           this.oldSelectList.map((i) => i.roleId)
         )
-      ).then(() => {
-        this.$message({
-          type: 'success',
-          message: '操作成功!'
+      )
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
+          this.close()
+          this.$emit('after-submit')
         })
-        this.close()
-        this.$emit('after-submit')
-      })
+        .finally(() => {
+          this.submitting = false
+        })
     },
     getRoleList() {
       getRoleList().then((data) => {

@@ -7,7 +7,7 @@
       append-to-body
       :before-close="handleClose"
     >
-      <div v-loading="loading">
+      <div>
         <div>
           <commonForm
             ref="form"
@@ -97,6 +97,7 @@
           <el-button
             type="primary"
             size="medium"
+            :loading="loading"
             @click="onsubmit"
           >
             确 定
