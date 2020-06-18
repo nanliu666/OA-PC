@@ -518,4 +518,7 @@ export default {
   margin-bottom: 16px;
   height: 72px;
 }
+/deep/ .el-input__icon.el-icon-search {
+  cursor: pointer;
+}
 </style>
