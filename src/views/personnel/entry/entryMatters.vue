@@ -88,10 +88,7 @@
       custom-class="contractDialog"
       @close="contractDialog = false"
     >
-      <div
-        v-loading="loading"
-        class="dialogContain"
-      >
+      <div class="dialogContain">
         <common-form
           ref="form"
           :model="form"
@@ -111,6 +108,7 @@
         <el-button
           size="medium"
           type="primary"
+          :loading="loading"
           @click="handleSubmit"
         >
           确 定

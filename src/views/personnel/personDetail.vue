@@ -747,7 +747,9 @@ export default {
           })
         })
       } else if (command === 'edit') {
-        this.$router.push('/personnel/editPerson?personId=' + this.personId + '&tagName=编辑信息')
+        this.$router.push(
+          '/personnel/editPerson?personId=' + this.personId + '&tagName=修改人员信息'
+        )
       } else if (command === 'toRegistrationForm') {
         this.$router.push('/personnel/candidate/registrationForm')
       } else if (command === 'arrange') {

@@ -1066,7 +1066,13 @@ export default {
     },
     handleExport() {},
     handleSendOffer(row) {
-      this.$router.push('/personnel/candidate/sendOffer?personId=' + row.personId)
+      this.$router.push({
+        path: '/personnel/candidate/sendOffer',
+        query: {
+          personId: row.personId,
+          applyId: row.applyId
+        }
+      })
     },
     toDetail(row) {
       if (row.status === '4') {
@@ -1164,7 +1170,7 @@ export default {
             })
         })
       } else if (command === 'edit') {
-        this.$router.push('/personnel/editPerson?personId=' + data.personId)
+        this.$router.push(`/personnel/editPerson?personId=${data.personId}&tagName=修改人员信息`)
       } else if (command === 'add') {
         this.$router.push('/personnel/editPerson')
       } else if (command === 'toRegistrationForm') {
