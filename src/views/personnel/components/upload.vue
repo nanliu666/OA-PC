@@ -146,7 +146,7 @@ export default {
 }
 .upload-name {
   position: relative;
-  background: repeating-linear-gradient(145deg, #115fd4 0, #ffffff 1px, #115fd4 0, #115fd4 12px);
+  background-image: url('../../../../public/img/bg/attachmentBg.png');
   border: 1px solid #73b9ff;
   border-bottom: none;
   border-radius: 4px 4px 0px 0px;

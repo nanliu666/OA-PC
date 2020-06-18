@@ -682,6 +682,7 @@
       :title="arrangeTitle"
       :dialog-visible.sync="arrangeDialog"
       :row="row"
+      @load="loadAllData"
     />
   </div>
 </template>
@@ -971,7 +972,6 @@ export default {
     }
   },
   created() {
-    this.getCandidateStatus()
     this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
       this.searchConfig.popoverOptions[2].options = res
       res.forEach((item) => {
@@ -990,12 +990,13 @@ export default {
       this.searchConfig.popoverOptions[1].config.treeParams.data.push(...res)
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
-    this.loadData()
   },
   activated() {
+    this.getCandidateStatus()
     this.loadData()
   },
   methods: {
+    //
     /***
      * @author guanfenda
      * @desc 查看面试登记表
@@ -1019,7 +1020,7 @@ export default {
       }
       postRegisterSend(params).then(() => {
         this.$message.success('发送成功')
-        this.loadData()
+        this.loadAllData()
       })
     },
     handleCheckEmploy(row) {
@@ -1067,7 +1068,13 @@ export default {
     },
     handleExport() {},
     handleSendOffer(row) {
-      this.$router.push('/personnel/candidate/sendOffer?personId=' + row.personId)
+      this.$router.push({
+        path: '/personnel/candidate/sendOffer',
+        query: {
+          personId: row.personId,
+          applyId: row.applyId
+        }
+      })
     },
     toDetail(row) {
       if (row.status === '4') {
@@ -1128,7 +1135,7 @@ export default {
       this.$refs.pushAuditDialog.pushAudit(data)
     },
     handleRefresh() {
-      this.loadData(1)
+      this.loadAllData(1)
     },
     columnChange() {
       this.columns = column.filter((item) => {
@@ -1165,7 +1172,7 @@ export default {
             })
         })
       } else if (command === 'edit') {
-        this.$router.push('/personnel/editPerson?personId=' + data.personId)
+        this.$router.push(`/personnel/editPerson?personId=${data.personId}&tagName=修改人员信息`)
       } else if (command === 'add') {
         this.$router.push('/personnel/editPerson')
       } else if (command === 'toRegistrationForm') {
@@ -1175,20 +1182,22 @@ export default {
         this.handleArrange(data)
       } else if (command === 'InterviewEvaluation') {
         let params = {
-          personId: data.personId
+          personId: data.personId,
+          orgName: data.orgName,
+          jobName: data.jobName,
+          name: data.name
         }
         this.$router.push({
-          path: '/todo/interviewDetail',
+          path: '/personnel/candidate/interivewDetails',
           query: params
         })
       }
     },
     handleSubmit(params) {
       this.searchParams = params
-      this.loadData()
+      this.loadAllData()
     },
     loadAllData(pageNo) {
-      Object.assign(this.$data.candidateStatus, this.$options.data().candidateStatus)
       this.getCandidateStatus()
       this.loadData(pageNo)
     },
@@ -1207,13 +1216,14 @@ export default {
     },
     currentChange(currentPage) {
       this.page.currentPage = currentPage
-      this.loadData()
+      this.loadAllData()
     },
     sizeChange(pageSize) {
       this.page.size = pageSize
-      this.loadData()
+      this.loadAllData()
     },
     getCandidateNum(state) {
+      // Object.assign(this.$data.candidateStatus, this.$options.data().candidateStatus)
       if (state === 'all') {
         let num = 0
         for (let key in this.candidateStatus) {
@@ -1230,7 +1240,7 @@ export default {
       this.$refs['searchPopover'].resetForm()
       this.searchParams = {}
       this.$refs.commonTable.clearSelection()
-      this.loadData()
+      this.loadAllData()
     },
     getCandidateStatus() {
       getCandidateStatusStat().then((res) => {

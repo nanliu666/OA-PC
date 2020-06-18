@@ -7,7 +7,7 @@
       append-to-body
       :before-close="handleClose"
     >
-      <div v-loading="loading">
+      <div>
         <div>
           <commonForm
             ref="form"
@@ -97,6 +97,7 @@
           <el-button
             type="primary"
             size="medium"
+            :loading="loading"
             @click="onsubmit"
           >
             确 定
@@ -354,6 +355,7 @@ export default {
               this.loading = false
               this.dialog = false
               this.$message.success('提交成功')
+              this.$emit('load')
             })
             .catch(() => {
               this.loading = false
@@ -364,6 +366,7 @@ export default {
             .then(() => {
               this.loading = false
               this.dialog = false
+              this.$emit('load')
               this.$message.success('提交成功')
             })
             .catch(() => {

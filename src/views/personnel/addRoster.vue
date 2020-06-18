@@ -5,7 +5,7 @@
       show-back
       :back="goBack"
     />
-    <basic-container v-loading="loading">
+    <basic-container>
       <el-row
         type="flex"
         justify="center"
@@ -34,7 +34,7 @@
                   label="姓名"
                   prop="name"
                 >
-                  <el-input v-model="form.name" />
+                  <el-input v-model.trim="form.name" />
                 </el-form-item>
               </el-col>
               <el-col
@@ -340,6 +340,7 @@
                   <el-button
                     type="primary"
                     size="medium"
+                    :loading="loading"
                     @click="handleSubmit"
                   >
                     保存
@@ -398,6 +399,7 @@
           <el-button
             type="primary"
             size="medium"
+            :loading="submitting"
             @click="handleCreateAddress"
           >确 定</el-button>
         </span>
@@ -456,6 +458,7 @@ export default {
         })
     }
     return {
+      submitting: false,
       form: {
         name: '',
         sex: '',
@@ -584,28 +587,36 @@ export default {
             countyName: inputValue[2],
             address: this.workAddressForm.address
           }
-
+          this.submitting = true
           if (this.workAddressForm.id) {
             params.id = this.workAddressForm.id
-            editWorkAddress(params).then(() => {
-              this.$message.success('修改成功')
-              this.workAddressForm = {}
-              this.dialogTableVisible = false
-              this.workAddress = []
-              this.addressPageNo = 1
-              this.noMoreAddress = false
-              this.loadWorkAddress()
-            })
+            editWorkAddress(params)
+              .then(() => {
+                this.$message.success('修改成功')
+                this.workAddressForm = {}
+                this.dialogTableVisible = false
+                this.workAddress = []
+                this.addressPageNo = 1
+                this.noMoreAddress = false
+                this.loadWorkAddress()
+              })
+              .finally(() => {
+                this.submitting = false
+              })
           } else {
-            createWorkAddress(params).then(() => {
-              this.$message.success('新建成功')
-              this.workAddressForm = {}
-              this.dialogTableVisible = false
-              this.workAddress = []
-              this.addressPageNo = 1
-              this.noMoreAddress = false
-              this.loadWorkAddress()
-            })
+            createWorkAddress(params)
+              .then(() => {
+                this.$message.success('新建成功')
+                this.workAddressForm = {}
+                this.dialogTableVisible = false
+                this.workAddress = []
+                this.addressPageNo = 1
+                this.noMoreAddress = false
+                this.loadWorkAddress()
+              })
+              .finally(() => {
+                this.submitting = false
+              })
           }
         } else {
           return false
@@ -695,12 +706,16 @@ export default {
             params.subOrg = Array.from(new Set(params.subOrg))
             params.subJob = Array.from(new Set(params.subJob))
             this.loading = true
-            createUser(params).then(() => {
-              this.$message.success('创建成功')
-              this.loading = false
-              Object.assign(this.$data.form, this.$options.data().form)
-              resolve()
-            })
+            createUser(params)
+              .then(() => {
+                this.$message.success('创建成功')
+                this.loading = false
+                Object.assign(this.$data.form, this.$options.data().form)
+                resolve()
+              })
+              .catch(() => {
+                this.loading = false
+              })
           } else {
             this.$message.error('请完善信息')
             reject()

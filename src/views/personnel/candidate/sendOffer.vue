@@ -31,6 +31,7 @@
         :work-address-list.sync="workAddressList"
         :person-info="personInfo"
         :offer-info="offerInfo"
+        :apply-info="applyInfo"
       />
       <div class="footer">
         <template v-if="active === 1">
@@ -56,7 +57,7 @@
             上一步
           </el-button>
           <el-button
-            v-loading="submitLoading"
+            :loading="submitLoading"
             size="medium"
             type="primary"
             @click="submitClick"
@@ -72,7 +73,7 @@
             上一步
           </el-button>
           <el-button
-            v-loading="sending"
+            :loading="sending"
             size="medium"
             type="primary"
             @click="sendOffer"
@@ -103,6 +104,8 @@ export default {
   data() {
     return {
       active: 1,
+      applyId: null,
+      applyInfo: {},
       personId: null,
       personInfo: {},
       offerInfo: {
@@ -137,6 +140,8 @@ export default {
     this.personId = this.$route.query.personId
     this.getPersonInfo()
     this.getOfferInfo()
+    this.applyId = this.$route.query.applyId
+    this.getOfferApplyInfo()
     this.active = 1
   },
   methods: {
@@ -148,6 +153,10 @@ export default {
     getOfferInfo() {
       getOfferInfo(this.personId).then((data) => {
         Object.assign(this.offerInfo, data, { personId: this.personId })
+        if (Object.keys(data).length === 0) {
+          return
+        }
+
         this.$refs['editOfferStepOne'].init({
           userId: data.userId,
           entryDate: data.entryDate,
@@ -211,7 +220,6 @@ export default {
         })
         .then(() => {
           this.$message.success('Offer提交成功')
-          that.getOfferApplyInfo()
           that.active += 1
         })
         .catch()
@@ -223,6 +231,7 @@ export default {
     },
     clear() {
       this.personInfo = {}
+      this.applyInfo = {}
       this.offerInfo = this.$options.data().offerInfo
       this.$refs['editOfferStepOne'] && this.$refs['editOfferStepOne'].clear()
       this.$refs['editOfferStepTwo'] && this.$refs['editOfferStepTwo'].clear()
@@ -255,9 +264,11 @@ export default {
       })
     },
     getOfferApplyInfo() {
-      getOfferApply(this.personId).then((ress) => {
-        this.offerInfo.probationSalary = ress.probationSalary
-        this.offerInfo.formalSalary = ress.formalSalary
+      if (!this.applyId) {
+        return
+      }
+      getOfferApply(this.applyId).then((res) => {
+        this.applyInfo = res
       })
     },
     sendOffer() {

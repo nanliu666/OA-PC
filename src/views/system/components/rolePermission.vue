@@ -85,6 +85,7 @@
       </el-button>
       <el-button
         v-if="!disabled"
+        :loading="submiting"
         type="primary"
         size="medium"
         @click="onClickSave"
@@ -146,6 +147,7 @@ export default {
   data() {
     return {
       loading: false,
+      submiting: false,
       orgPrivileges: [],
       menuPrivileges: [],
       menuProps: {
@@ -285,10 +287,15 @@ export default {
         menuPrivileges: menu,
         dataPrivileges
       }
-      updatePrivilege(params).then(() => {
-        this.$message.success('保存成功')
-        this.onClose()
-      })
+      this.submiting = true
+      updatePrivilege(params)
+        .then(() => {
+          this.$message.success('保存成功')
+        })
+        .finally(() => {
+          this.submiting = false
+          this.onClose()
+        })
     },
 
     // 根据原数据，添加operatorType字段，Add-添加，Del-删除

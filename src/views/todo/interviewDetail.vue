@@ -12,7 +12,8 @@
       >
         <div class="name-row">
           <div class="name-box">
-            {{ personData.name }} （ {{ personData.jobName }} ） 的面试
+            {{ personData.name }}
+            {{ personData.jobName ? `（ ${personData.jobName} ）` : '' }} 的面试
           </div>
           <div class="btn-box">
             <el-button
@@ -161,7 +162,7 @@ export default {
       // 面试信息
       interviewList: [
         {
-          label: '面试人:',
+          label: '面试官:',
           name: 'interviewName',
           detail: ''
         },
@@ -205,7 +206,8 @@ export default {
     },
     // go录用评价
     goToInterEdit() {
-      let { id, name } = this.InterviewInfo
+      let { name } = this.personData
+      let { id } = this.$route.query
       this.$router.push({
         path: '/todo/interviewEdit',
         query: { id, name }

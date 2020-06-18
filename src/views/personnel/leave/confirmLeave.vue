@@ -256,6 +256,7 @@
                 <el-button
                   type="primary"
                   size="medium"
+                  :loading="btnloading"
                   @click="handelConfirm"
                 >
                   确认离职
@@ -281,7 +282,7 @@ import {
 export default {
   data() {
     return {
-      userId: this.$route.query.userId,
+      userId: '',
       // userId: '1264805583983218689',
       companyId: '',
       groupLoading: false,
@@ -315,7 +316,8 @@ export default {
         ]
       },
       //离职原因选择组
-      selectLeaveReason: []
+      selectLeaveReason: [],
+      btnloading: false
     }
   },
   computed: {
@@ -330,9 +332,7 @@ export default {
   },
   created() {
     //   获取页面基本信息
-    this.initInfo({
-      userId: this.userId
-    })
+    this.initInfo()
     // 获取离职信息
     this.getLeave()
     // console.log(this.userId);
@@ -340,9 +340,12 @@ export default {
   },
   methods: {
     //   获取页面基本信息
-    async initInfo(params) {
+    async initInfo() {
+      this.userId = this.$route.query.userId
       // 获取员工信息
-      let { name, workNo, orgName, jobName, companyId } = await getStaffBasicInfo(params)
+      let { name, workNo, orgName, jobName, companyId } = await getStaffBasicInfo({
+        userId: this.userId
+      })
       this.companyId = companyId
       this.userInfo = {
         name,
@@ -388,11 +391,13 @@ export default {
     },
     // 点击确认离职
     async handelConfirm() {
+      this.btnloading = true
       await confirmLeave({
         ...this.confirmDataForm,
         userId: this.userId
       })
       this.$message.success('确认离职成功', 1000, this.$router.go(-1))
+      this.btnloading = false
     },
     // 获取离职原因选择组
     getLeaveReason() {

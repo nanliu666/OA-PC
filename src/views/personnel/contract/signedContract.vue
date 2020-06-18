@@ -18,10 +18,7 @@
         <div><span>职位：</span> {{ personInfo.jobName }}</div>
       </div>
     </div>
-    <div
-      v-loading="loading"
-      class="contain"
-    >
+    <div class="contain">
       <div class="title">
         合同信息
       </div>
@@ -41,6 +38,7 @@
           <el-button
             type="primary"
             size="medium"
+            :loading="loading"
             @click="onsubmit"
           >
             提交
@@ -146,7 +144,7 @@ export default {
         let params = {
           ...this.infoForm
         }
-        this.loading = false
+        this.loading = true
         if (this.infoForm.id) {
           putContractInfo(params).then(() => {
             this.$message.success('修改成功')

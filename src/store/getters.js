@@ -22,6 +22,7 @@ const getters = {
   privileges: (state) => state.user.privileges,
   menu: (state) => state.user.menu,
   menuAll: (state) => state.user.menuAll,
+  menuLoading: (state) => state.user.menuLoading,
   logsList: (state) => state.logs.logsList,
   logsLen: (state) => state.logs.logsList.length || 0,
   logsFlag: (state, getters) => getters.logsLen === 0,
