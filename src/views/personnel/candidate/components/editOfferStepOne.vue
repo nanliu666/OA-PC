@@ -45,6 +45,7 @@
           <lazy-select
             v-model="form.userId"
             :load="loadUser"
+            :option-list.sync="userList"
             placeholder="请选择入职联系人"
             :option-props="{
               label: 'name',
@@ -70,6 +71,7 @@
           <lazy-select
             v-model="form.workAddressId"
             :load="loadWorkAddress"
+            :option-list.sync="workAddressList"
             placeholder="请选择报道地址"
             :option-props="{
               label: 'address',
@@ -101,24 +103,41 @@ export default {
     return {
       form: {
         userId: null,
+        userName: null,
         entryDate: null,
         phonenum: null,
         workAddressId: null
       },
+      workAddressList: [],
+      userList: [],
       rules: {
         phonenum: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
           { pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }
         ],
-        workAddressId: [{ required: true, message: '请输入工作地址', trigger: 'change' }],
-        userId: [{ required: true, message: '请输入入职联系人', trigger: 'change' }],
+        workAddressId: [{ required: true, message: '请选择工作地址', trigger: 'change' }],
+        userId: [{ required: true, message: '请选择入职联系人', trigger: 'change' }],
         entryDate: [{ required: true, message: '请输入入职日期', trigger: 'blur' }]
       }
+    }
+  },
+  watch: {
+    workAddressList(val) {
+      this.$emit('update:workAddressList', val)
+    },
+    'form.userId': {
+      handler(val) {
+        this.form.userName = (this.userList.find((user) => user.userId === val) || {}).name
+      },
+      immediate: true
     }
   },
   methods: {
     init(data) {
       this.form = { ...data }
+      setTimeout(() => {
+        this.$refs.form.clearValidate()
+      }, 0)
     },
     inputNumber(value, key) {
       value = value.replace(/[^\d]/g, '')
