@@ -39,9 +39,13 @@ const navs = {
     ADD_TAG: (state, action) => {
       state.tag = action
       setStore({ name: 'tag', content: state.tag, type: 'session' })
-      if (state.tagList.some((ele) => ele.value === action.value)) return
-      state.tagList.push(action)
-      setFistTag(state.tagList)
+      let tag = state.tagList.find((ele) => ele.value === action.value)
+      if (tag) {
+        Object.assign(tag, action)
+      } else {
+        state.tagList.push(action)
+        setFistTag(state.tagList)
+      }
       setStore({ name: 'tagList', content: state.tagList, type: 'session' })
     },
     DEL_TAG: (state, action) => {
