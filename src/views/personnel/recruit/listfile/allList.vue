@@ -177,12 +177,12 @@
     <again
       ref="Again"
       :visible.sync="createAgain"
-      @refresh="getTableData()"
+      @refresh="refresNew()"
     />
     <assigned
       ref="Assigned"
       :visible.sync="createAssigned"
-      @refresh="getTableData()"
+      @refresh="refresNew()"
     />
   </div>
 </template>
