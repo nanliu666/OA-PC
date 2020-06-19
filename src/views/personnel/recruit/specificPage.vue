@@ -54,7 +54,7 @@
             分配详情
           </h3>
           <distri-buteall />
-          <div v-if="childData.entryNum !== 0">
+          <div>
             <h3 class="Header">
               已入职员工
             </h3>
