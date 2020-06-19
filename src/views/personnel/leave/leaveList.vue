@@ -104,7 +104,7 @@
             slot-scope="{ row }"
           >
             <el-button
-              v-if="isWaitLeave && row.approveStatus === 'Pass'"
+              v-if="isWaitLeave && row.approveStatus === 'Pass' && !row.leaveDate"
               size="medium"
               type="text"
               @click="handelConfirmLeave(row)"
