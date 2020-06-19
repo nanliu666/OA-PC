@@ -22,21 +22,31 @@
           <div class="title">
             候选人信息
           </div>
-          <inputArray
+          <commonForm
             ref="personInfo"
-            :info-form.sync="personInfo"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="personInfo"
           />
+          <!--          <inputArray-->
+          <!--            ref="personInfo"-->
+          <!--            :info-form.sync="personInfo"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
             录用信息
           </div>
-          <inputArray
+          <commonForm
             ref="employment"
-            :info-form.sync="employment"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="employment"
           />
+          <!--          <inputArray-->
+          <!--            ref="employment"-->
+          <!--            :info-form.sync="employment"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="footer">
           <div class="next flex flex-justify-between flex-items">
@@ -249,16 +259,17 @@ import {
   office,
   other
 } from './components/userInfo'
+
 import inputArray from './components/inputArray'
 import {
   getWorkAddress,
   getCompany,
   getJob,
   getposition,
-  getTree,
   postOfferApply,
   getRecruitmentDetail
 } from '@/api/personnel/selectedPerson'
+import { getOrgTreeSimple } from '@/api/org/org'
 
 export default {
   name: 'Apply',
@@ -334,16 +345,35 @@ export default {
     this.getposition()
     this.getTree()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
-      this.dataFilter(res, this.employment, 'workProperty', 'dictValue', 'dictKey')
+      // this.dataFilter(res, this.employment, 'workProperty', 'dictValue', 'dictKey')
+      this.options(this.employment, 'workProperty', res)
+      // console.log('res______',this.employment)
     })
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
-      this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'dictKey')
+      res
+      // this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'dictKey')
     })
     this.getRecruitment()
-
-    // ContractType
+    this.getOrgTree()
   },
   methods: {
+    getOrgTree() {
+      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
+        this.employment.find((item) => item.prop === 'orgId').props.treeParams.data = res
+      })
+    },
+    /**
+     * author guanfenda
+     * @desc 处理posion赋值
+     *
+     * */
+    options(data, prop, position) {
+      data.map((it) => {
+        if (it.prop === prop) {
+          it.options = position
+        }
+      })
+    },
     jumpMyApproval() {
       this.$router.push({
         path: '/approval/appr/waitAppr'
@@ -377,21 +407,10 @@ export default {
       })
       form.basicAttrs[index].value = dict
     },
-    getTree() {
-      let params = {
-        parentOrgId: '0'
-      }
-      getTree(params).then((res) => {
-        let index = ''
-        this.employment.basicAttrs.map((it, i) => {
-          if (it.props === 'orgId') index = i
-        })
-        this.employment.basicAttrs[index].value = res
-      })
-    },
     getposition() {
       getposition().then((res) => {
-        this.dataFilter(res, this.employment, 'positionId', 'name', 'id')
+        this.options(this.employment, 'positionId', res)
+        // this.dataFilter(res, this.employment, 'positionId', 'name', 'id')
       })
     },
     getJob() {
@@ -400,7 +419,9 @@ export default {
         orgId: ''
       }
       getJob(params).then((res) => {
-        this.dataFilter(res, this.employment, 'jobId', 'jobName', 'jobId')
+        // console.log(res)
+        this.options(this.employment, 'jobId', res)
+        // this.dataFilter(res, this.employment, 'jobId', 'jobName', 'jobId')
       })
     },
     getCompany() {
@@ -408,8 +429,9 @@ export default {
         parentOrgId: '0'
       }
       getCompany(params).then((res) => {
-        this.dataFilter(res, this.employment, 'companyId', 'orgName', 'orgId')
-        this.dataFilter(res, this.labour, 'companyId', 'orgName', 'orgId')
+        this.options(this.employment, 'companyId', res)
+        // this.dataFilter(res, this.employment, 'companyId', 'orgName', 'orgId')
+        // this.dataFilter(res, this.labour, 'companyId', 'orgName', 'orgId')
       })
     },
     getWorkAddress() {
@@ -418,7 +440,8 @@ export default {
         pageSize: 10000
       }
       getWorkAddress(params).then((res) => {
-        this.dataFilter(res.data, this.employment, 'workAddressId', 'address', 'id')
+        this.options(this.employment, 'workAddressId', res.data)
+        // this.dataFilter(res.data, this.employment, 'workAddressId', 'address', 'id')
       })
     },
     close() {
