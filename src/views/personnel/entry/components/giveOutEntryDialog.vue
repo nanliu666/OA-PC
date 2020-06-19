@@ -8,7 +8,6 @@
   >
     <el-form
       ref="ruleForm"
-      v-loading="loading"
       :model="form"
       :rules="rules"
       label-width="100px"
@@ -72,6 +71,7 @@
       <el-button
         type="primary"
         size="medium"
+        :loading="loading"
         @click="submit"
       >确定</el-button>
     </span>

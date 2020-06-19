@@ -18,10 +18,7 @@
         <div><span>职位：</span> {{ personInfo.jobName }}</div>
       </div>
     </div>
-    <div
-      v-loading="loading"
-      class="contain"
-    >
+    <div class="contain">
       <div class="title">
         合同信息
       </div>
@@ -61,6 +58,7 @@
           <el-button
             type="primary"
             size="medium"
+            :loading="loading"
             @click="onsubmit"
           >
             提交
@@ -161,20 +159,25 @@ export default {
           let params = {
             ...this.infoForm
           }
-          postContractApply(params).then((res) => {
-            // this.$message.success('提交成功')
-            if (res && res.id) {
-              this.$refs['apprProgress'].submit(res.id).then(() => {
-                this.$message({ type: 'success', message: '提交成功' })
-                setTimeout(() => {
-                  this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-                  this.$router.push({
-                    path: '/personnel/contract/contract'
-                  })
-                }, 2000)
-              })
-            }
-          })
+          this.loading = true
+          postContractApply(params)
+            .then((res) => {
+              // this.$message.success('提交成功')
+              if (res && res.id) {
+                this.$refs['apprProgress'].submit(res.id).then(() => {
+                  this.$message({ type: 'success', message: '提交成功' })
+                  setTimeout(() => {
+                    this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+                    this.$router.push({
+                      path: '/personnel/contract/contract'
+                    })
+                  }, 2000)
+                })
+              }
+            })
+            .finally(() => {
+              this.loading = false
+            })
         })
       })
     },

@@ -38,9 +38,8 @@
               <div>
                 <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
                 <el-button
-                  icon="el-icon-refresh"
+                  icon="icon-basics-refresh-outlined"
                   size="medium"
-                  type="primary"
                   @click="getDataList()"
                 />
               </div>
@@ -269,6 +268,7 @@
           type="primary"
           :disabled="isDisabled"
           size="medium"
+          :loading="btnLoading"
           @click="handelChangeLeave"
         >保存</el-button>
       </span>
@@ -539,7 +539,8 @@ export default {
       // 工作性质字典组
       workPropertyList: [],
       // 离职原因
-      leaveReason: []
+      leaveReason: [],
+      btnLoading: false
     }
   },
   computed: {
@@ -724,10 +725,11 @@ export default {
     },
     // 调整离职信息
     async handelChangeLeave() {
+      this.btnLoading = true
       await changeLeaveInfo(this.changeParams)
       this.$message.success('保存成功', 2000)
       this.getDataList()
-
+      this.btnLoading = false
       this.changeLeaveVisible = false
     },
 

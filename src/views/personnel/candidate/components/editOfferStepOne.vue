@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     init(data) {
-      this.form = { ...data }
+      Object.assign(this.form, data)
       setTimeout(() => {
         this.$refs.form.clearValidate()
       }, 0)
@@ -150,8 +150,7 @@ export default {
       return getWorkAddressList(params)
     },
     clear() {
-      this.$refs.form.clearValidate()
-      this.form = this.$options.data().form
+      this.$refs.form.resetFields()
     },
     validate() {
       return new Promise((resolve, reject) => {

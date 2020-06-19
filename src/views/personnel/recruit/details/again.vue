@@ -65,7 +65,7 @@
         <el-col :span="24">
           <el-form-item
             v-for="user in dynamicValidateForm.users"
-            :key="user.id"
+            :key="user.creatId"
           >
             <el-row
               :span="24"
@@ -90,9 +90,10 @@
 
                   <el-option
                     v-for="item in filteredUser"
-                    :key="item.name"
+                    :key="item.id"
                     :label="item.name"
                     :value="item.userId"
+                    :disabled="item.disabled"
                   />
                 </el-select>
               </el-col>
@@ -184,10 +185,10 @@ export default {
   },
   computed: {
     filteredUser() {
-      return this.options.filter(
-        (option) =>
-          !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-      )
+      return this.options.map((option) => ({
+        ...option,
+        disabled: this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+      }))
     }
   },
   watch: {
@@ -245,7 +246,7 @@ export default {
       this.dynamicValidateForm.users.push({
         userId: '',
         taskNum: 1,
-        id: createUniqueID()
+        creatId: createUniqueID()
       })
     },
     removeUsers(item) {

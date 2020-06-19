@@ -15,6 +15,11 @@ export const getTodoList = (params) => {
 export const getInterviewInfo = (params) => {
   return get('/user/v1/person/interview/info', params)
 }
+//候选人面试详情查询接口
+export const getInterviewList = (params) => {
+  return get('/user/v1/person/interview/list', params)
+}
+// /user/v1/person/interview/list
 
 // 候选人面试详情评价提交
 export const postInterviewInfo = (params) => {
@@ -42,4 +47,18 @@ export const modifyResumeReject = (params) => {
  * */
 export const modifyResumePass = (params) => {
   return post('/user/v1/person/resume/pass', params)
+}
+
+// 员工离职交接事项查询接口
+
+export const getLeaveNote = (params) => {
+  return get('/user/v1/user/leave/note', params)
+}
+// 员工离职交接事项确认
+export const postConfirmleaveNote = (params) => {
+  return post('/user/v1/user/leave/note/confirm', params)
+}
+// 员工离职交接事项催一下接口
+export const postUrgeleaveNote = (params) => {
+  return post('/user/v1/user/leave/note/urge', params)
 }

@@ -18,6 +18,7 @@
           >
             <el-tab-pane
               v-loading="treeLoading"
+              element-loading-text="正在加载中"
               label="组织架构"
               name="orgTree"
               class="fill"
@@ -176,6 +177,7 @@ export default {
     height: 100%;
     > .el-card__body {
       height: 100%;
+      overflow: auto;
     }
   }
 }

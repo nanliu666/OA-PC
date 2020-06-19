@@ -174,13 +174,13 @@ export default {
       () => {
         let siderBar = document.querySelector('.sidebar-erea')
         if (_this.box.scrollTop - _this.topValue > 0) {
-          if (_this.box.scrollTop >= 240) {
+          if (_this.box.scrollTop >= 224) {
             siderBar.style.position = 'fixed'
             siderBar.style.top = 100 + 'px'
             siderBar.style.right = 20 + 'px'
           }
         } else {
-          if (_this.box.scrollTop <= 240) {
+          if (_this.box.scrollTop <= 224) {
             siderBar.style.position = 'relative'
             siderBar.style.top = 0
           }

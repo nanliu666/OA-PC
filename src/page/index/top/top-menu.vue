@@ -1,6 +1,7 @@
 <template>
   <div class="top-menu">
     <el-menu
+      v-loading="menuLoading"
       :default-active="activeIndex"
       mode="horizontal"
       text-color="#333"
@@ -50,7 +51,7 @@ export default {
   },
   inject: ['index'],
   computed: {
-    ...mapGetters(['tagCurrent', 'menuAll'])
+    ...mapGetters(['tagCurrent', 'menuAll', 'menuLoading'])
   },
   methods: {
     openHome(itemHome) {

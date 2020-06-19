@@ -1,6 +1,5 @@
 <template>
   <el-dialog
-    v-loading="loading"
     :title="type === 'changeName' ? '修改名称' : '移动分类'"
     :visible.sync="visible"
     width="40%"
@@ -53,6 +52,7 @@
       <el-button
         type="primary"
         size="medium"
+        :loading="loading"
         @click="submit"
       >确定</el-button>
     </span>

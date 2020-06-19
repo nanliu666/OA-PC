@@ -77,7 +77,7 @@
         @click="close"
       >取 消</el-button>
       <el-button
-        v-loading="loading"
+        :loading="loading"
         size="medium"
         type="primary"
         @click="handleSubmit"
@@ -133,6 +133,7 @@ export default {
         groupId: [{ required: true, message: '请输入分组', trigger: 'change' }],
         details: [
           {
+            required: true,
             validator: (rule, value, callback) => {
               if (this.filterEmptyDetail(value).length === 0) {
                 callback(new Error('请至少输入一条交接事项明细'))

@@ -339,6 +339,7 @@
                 <el-button
                   type="primary"
                   size="medium"
+                  :loading="btnLoading"
                   @click="handelSubmit"
                 >
                   提交
@@ -442,7 +443,8 @@ export default {
             }
           }
         }
-      }
+      },
+      btnLoading: false
     }
   },
   watch: {
@@ -519,7 +521,7 @@ export default {
     getOrgName() {
       getOrganizationTree({ parentOrgId: '0' })
         .then((res) => {
-          this.subOrgOptions.config.treeParams.data.push(res)
+          // this.subOrgOptions.config.treeParams.data.push(res)
           this.$refs['orgTree'].treeDataUpdateFun(res)
           this.newOrgList = res
         })
@@ -609,15 +611,20 @@ export default {
           jobName !== newJobName ||
           positionName !== newPositionName
         ) {
+          this.btnLoading = true
           changeApply(this.applyParams)
             .then((res) => {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
-                  this.$message.success('提交成功', 3000, this.$router.go(-1))
+                  this.$message.success('提交成功', 3000)
+                  this.$router.go(-1)
                 })
               }
             })
             .catch()
+            .finally(() => {
+              this.btnLoading = false
+            })
         } else {
           return this.$message.info('请输入人事异动的变更内容', 3000)
         }

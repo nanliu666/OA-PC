@@ -32,6 +32,7 @@
                 >
                   <el-select
                     v-model="form.recruitmentId"
+                    :disabled="recruitmentIdDisabled"
                     placeholder="请选择应聘职位（对应招聘需求）"
                   >
                     <el-option
@@ -62,7 +63,7 @@
                   label="姓名"
                   prop="name"
                 >
-                  <el-input v-model="form.name" />
+                  <el-input v-model.trim="form.name" />
                 </el-form-item>
               </el-col>
               <el-col
@@ -300,8 +301,16 @@
               保存并继续添加
             </el-button>
             <el-button
+              v-else
+              size="medium"
+              @click="goBack"
+            >
+              取消
+            </el-button>
+            <el-button
               type="primary"
               size="medium"
+              :loading="submitting"
               @click="handleSubmit"
             >
               保存
@@ -330,8 +339,9 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       personId: null,
-      recruitmentId: null,
+      recruitmentIdDisabled: false,
       form: {
         recruitmentId: null,
         name: null,
@@ -405,16 +415,18 @@ export default {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
     await this.getRecruitment()
-    this.personId && this.getPersonInfo()
-    this.recruitmentId && (this.form.recruitmentId = this.recruitmentId)
+    this.getPersonInfo()
+    // this.recruitmentId && (this.form.recruitmentId = this.recruitmentId)
   },
-  activated() {
+  async activated() {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
-    this.recruitmentId = this.$route.query.recruitmentId
-    this.personId && this.getPersonInfo()
-    if (this.form.recruitmentId && this.recruitmentId != this.form.recruitmentId) {
+    await this.getPersonInfo()
+    if (this.$route.query.recruitmentId) {
+      this.recruitmentIdDisabled = true
       this.form.recruitmentId = this.$route.query.recruitmentId
+    } else {
+      this.recruitmentIdDisabled = false
     }
   },
   methods: {
@@ -448,34 +460,38 @@ export default {
       })
     },
     getPersonInfo() {
-      if (!this.personId) {
-        return
-      }
-      getPersonInfo(this.personId).then((data) => {
-        this.form = {
-          orgName: this.form.orgName,
-          name: data.name,
-          phonenum: data.phonenum,
-          sex: data.sex,
-          age: data.age,
-          email: data.email,
-          addressArr: [data.provinceCode, data.cityCode],
-          educationalLevel: data.educationalLevel,
-          university: data.university,
-          major: data.major,
-          workAge: data.workAge,
-          lastCompany: data.lastCompany,
-          recruitment: data.recruitment,
-          monthSalary: data.monthSalary,
-          resume: data.resumeUrl
-            ? [{ fileUrl: data.resumeUrl, localName: `${data.name}的简历` }]
-            : [],
-          attachment: data.attachmentUrl
-            ? [{ fileUrl: data.attachmentUrl, localName: data.attachmentName }]
-            : [],
-          remark: data.remark,
-          recruitmentId: data.recruitmentId
+      return new Promise((resolve) => {
+        if (!this.personId) {
+          resolve()
+          return
         }
+        getPersonInfo(this.personId).then((data) => {
+          this.form = {
+            orgName: this.form.orgName,
+            name: data.name,
+            phonenum: data.phonenum,
+            sex: data.sex,
+            age: data.age,
+            email: data.email,
+            addressArr: [data.provinceCode, data.cityCode],
+            educationalLevel: data.educationalLevel,
+            university: data.university,
+            major: data.major,
+            workAge: data.workAge,
+            lastCompany: data.lastCompany,
+            recruitment: data.recruitment,
+            monthSalary: data.monthSalary,
+            resume: data.resumeUrl
+              ? [{ fileUrl: data.resumeUrl, localName: `${data.name}的简历` }]
+              : [],
+            attachment: data.attachmentUrl
+              ? [{ fileUrl: data.attachmentUrl, localName: data.attachmentName }]
+              : [],
+            remark: data.remark,
+            recruitmentId: data.recruitmentId
+          }
+          resolve()
+        })
       })
     },
     handleSubmit(shouldContinue = false) {
@@ -508,14 +524,20 @@ export default {
         }
         params.provinceName = inputValue[0]
         params.cityName = inputValue[1]
-        submitFunc(params).then(() => {
-          this.$message.success('提交成功')
-          this.clear()
-          if (!shouldContinue) {
-            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-          }
-          this.$router.go(-1)
-        })
+        this.submitting = true
+        submitFunc(params)
+          .then(() => {
+            this.$message.success('提交成功')
+            this.clear()
+            this.submitting = false
+            if (!shouldContinue) {
+              this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+            }
+            this.$router.go(-1)
+          })
+          .catch(() => {
+            this.submitting = false
+          })
       })
     },
     clear() {
@@ -525,6 +547,7 @@ export default {
       })
     },
     goBack() {
+      this.clear()
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }
