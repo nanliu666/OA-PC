@@ -6,7 +6,8 @@ export const todoTypeCN = {
   InterviewRegister: '面试登记表',
   Entry: '入职办理',
   EntryRegister: '入职登记表',
-  LeaveList: '离职事项',
+  LeaveListUser: '离职事项',
+  LeaveListOrg: '离职事项',
   Leave: '离职办理'
 }
 

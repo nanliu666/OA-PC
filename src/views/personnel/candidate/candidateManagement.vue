@@ -972,7 +972,6 @@ export default {
     }
   },
   created() {
-    this.getCandidateStatus()
     this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
       this.searchConfig.popoverOptions[2].options = res
       res.forEach((item) => {
@@ -991,9 +990,9 @@ export default {
       this.searchConfig.popoverOptions[1].config.treeParams.data.push(...res)
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
-    this.loadData()
   },
   activated() {
+    this.getCandidateStatus()
     this.loadData()
   },
   methods: {
@@ -1021,7 +1020,7 @@ export default {
       }
       postRegisterSend(params).then(() => {
         this.$message.success('发送成功')
-        this.loadData()
+        this.loadAllData()
       })
     },
     handleCheckEmploy(row) {
@@ -1136,7 +1135,7 @@ export default {
       this.$refs.pushAuditDialog.pushAudit(data)
     },
     handleRefresh() {
-      this.loadData(1)
+      this.loadAllData(1)
     },
     columnChange() {
       this.columns = column.filter((item) => {
@@ -1196,10 +1195,9 @@ export default {
     },
     handleSubmit(params) {
       this.searchParams = params
-      this.loadData()
+      this.loadAllData()
     },
     loadAllData(pageNo) {
-      Object.assign(this.$data.candidateStatus, this.$options.data().candidateStatus)
       this.getCandidateStatus()
       this.loadData(pageNo)
     },
@@ -1218,13 +1216,14 @@ export default {
     },
     currentChange(currentPage) {
       this.page.currentPage = currentPage
-      this.loadData()
+      this.loadAllData()
     },
     sizeChange(pageSize) {
       this.page.size = pageSize
-      this.loadData()
+      this.loadAllData()
     },
     getCandidateNum(state) {
+      // Object.assign(this.$data.candidateStatus, this.$options.data().candidateStatus)
       if (state === 'all') {
         let num = 0
         for (let key in this.candidateStatus) {
@@ -1241,7 +1240,7 @@ export default {
       this.$refs['searchPopover'].resetForm()
       this.searchParams = {}
       this.$refs.commonTable.clearSelection()
-      this.loadData()
+      this.loadAllData()
     },
     getCandidateStatus() {
       getCandidateStatusStat().then((res) => {

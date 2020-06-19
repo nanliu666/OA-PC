@@ -63,7 +63,7 @@
                   label="姓名"
                   prop="name"
                 >
-                  <el-input v-model="form.name" />
+                  <el-input v-model.trim="form.name" />
                 </el-form-item>
               </el-col>
               <el-col
@@ -299,6 +299,13 @@
               @click="handleSubmit(true)"
             >
               保存并继续添加
+            </el-button>
+            <el-button
+              v-else
+              size="medium"
+              @click="goBack"
+            >
+              取消
             </el-button>
             <el-button
               type="primary"
@@ -540,6 +547,7 @@ export default {
       })
     },
     goBack() {
+      this.clear()
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }

@@ -38,7 +38,7 @@ export const refreshToken = (refresh_token, tenantId) =>
   })
 export const getUserPrivilege = (userId) => {
   return request({
-    url: '/api/sys/v1/user/privilege',
+    url: '/api/sys/v1/user/menu/privilege',
     method: 'get',
     params: {
       userId

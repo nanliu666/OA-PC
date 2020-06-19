@@ -43,7 +43,8 @@
                   slot="Pending"
                 >
                   <div class="placeholder-box">
-                    您当前没有待办事项，前往，<el-button
+                    您当前没有待办事项，前往
+                    <el-button
                       type="text"
                       size="medium"
                       @click="goTodoCenter"
@@ -78,7 +79,8 @@
                   slot="Warning"
                 >
                   <div class="placeholder-box">
-                    您当前没有待办事项，前往，<el-button
+                    您当前没有待办事项，前往
+                    <el-button
                       type="text"
                       size="medium"
                       @click="goTodoCenter"
@@ -293,7 +295,7 @@ export default {
         pageNo: '1',
         pageSize: '10',
         userId: '',
-        type: '',
+        type: null,
         isRead: null
       },
       msgWorkList: [],
@@ -306,7 +308,7 @@ export default {
   },
   created() {
     this.loadingToDoData()
-    // this.loadingMsgData()
+    this.loadingMsgData()
   },
   methods: {
     // 获取todoData
@@ -330,11 +332,7 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return (
-        moment()
-          .startOf('day')
-          .diff(moment(row.endDate)) > 0
-      )
+      return moment().diff(moment(row.endDate)) > 0
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
@@ -386,6 +384,22 @@ export default {
             id: bizId
           }
         })
+      } else if (type === 'LeaveListOrg') {
+        // 离职事项（部门）
+        this.$router.push({
+          path: '/todo/leaveListOrg',
+          query: {
+            id: bizId
+          }
+        })
+      } else if (type === 'LeaveListUser') {
+        // 离职事项（员工）
+        this.$router.push({
+          path: '/todo/LeaveListUser',
+          query: {
+            id: bizId
+          }
+        })
       } else if (type === 'InterviewRegister') {
         // 面试登记表
         this.$router.push({
@@ -407,12 +421,6 @@ export default {
             tagName: '入职登记表详情'
           }
         })
-      } else if (type === 'LeaveList') {
-        // 离职事项
-        //
-      } else if (type === 'Leave') {
-        // 离职办理
-        //
       }
     },
     async loadingMsgData() {

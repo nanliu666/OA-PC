@@ -1,13 +1,11 @@
 <template>
-  <div style="height">
+  <div>
     <page-header
       title="新建招聘需求"
-      class="pageHeader"
       show-back
     />
     <basic-container>
       <el-row
-        v-loading="loading"
         type="flex"
         justify="center"
         style="padding-top:40px;"
@@ -20,27 +18,24 @@
           :xs="22"
         >
           <h4>招聘信息</h4>
-          <inputArray
-            ref="personInfo"
-            :info-form.sync="NewRequirement"
-            :form.sync="infoForm"
-          />
-
-          <h4>审批流程</h4>
-          <el-form
-            ref="apprForm"
-            :model="infoForm"
-            :rules="rules"
+          <common-form
+            ref="form"
+            :v-loading="loading"
+            :model="form"
+            :columns="columns"
           >
-            <el-form-item prop="apprProgress">
+            <num-interval
+              slot="minSalary"
+              v-model="range"
+            />
+            <template slot="progress">
               <appr-progress
                 ref="apprProgress"
                 form-key="Recruitment"
               />
-            </el-form-item>
-          </el-form>
-
-          <template style="margin: 0 auto;">
+            </template>
+          </common-form>
+          <div class="page-bottom">
             <el-button
               size="medium"
               @click="handleEditRole"
@@ -50,11 +45,12 @@
             <el-button
               type="primary"
               size="medium"
-              @click="handleTownext"
+              :loading="loading"
+              @click="handleSubmit"
             >
               提交
             </el-button>
-          </template>
+          </div>
         </el-col>
       </el-row>
     </basic-container>
@@ -65,20 +61,18 @@
     />
   </div>
 </template>
-
 <script>
 import { mapGetters } from 'vuex'
-import { NewRequirement } from '@/views/personnel/recruit/components/userInfo'
-import { getStaffBasicInfo } from '@/api/personalInfo'
 import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
+import { getOrgTreeSimple } from '@/api/org/org'
 import { getRecruitmentDetail } from '@/api/personnel/recruitment'
-
+import { getStaffBasicInfo } from '@/api/personalInfo'
 export default {
-  name: 'RecruitmentNeeds',
+  name: 'Newrequirement',
   components: {
+    ApprProgress: () => import('@/components/appr-progress/apprProgress'),
     CancelEdit: () => import('@/views/personnel/recruit/details/cancelEdit'),
-    InputArray: () => import('@/views/personnel/candidate/components/inputArray'),
-    ApprProgress: () => import('@/components/appr-progress/apprProgress')
+    NumInterval: () => import('@/components/numInterval/numInterval')
   },
   data() {
     var checkAppr = (rule, value, callback) => {
@@ -89,106 +83,323 @@ export default {
       }
     }
     return {
+      dialogVisible: false,
       loading: false,
-      NewRequirement,
-      infoForm: {
-        positionId: null,
+      personId: null,
+      form: {
         companyId: null,
         companyName: null,
-        userId: '',
-        workProperty: null,
+        orgId: null,
+        jobId: null,
         needNum: 1,
-        emerType: null,
-        minSalary: null,
-        maxSalary: null,
-        workYear: null,
-        educationalLevel: null,
+        joinDate: null,
         requirement: null,
+        duty: null,
         reason: null,
         reasonNote: null,
-        remark: null
+        remark: null,
+        userId: null,
+        minSalary: null,
+        maxSalary: null
       },
-      dialogVisible: false,
-      rules: {
-        apprProgress: [{ validator: checkAppr }]
-      }
+      range: {
+        min: '',
+        max: ''
+      },
+      reasonNote: {
+        span: 24,
+        label: '原因补充说明',
+        prop: 'reasonNote',
+        itemType: 'input',
+        type: 'textarea',
+        maxlength: 200,
+        showWordLimit: true
+      },
+      columns: [
+        {
+          prop: 'companyName',
+          itemType: 'input',
+          label: '申请公司',
+          options: [],
+          disabled: true,
+          required: true,
+          rules: [{ required: true, message: '请输入公司名称', trigger: 'blur' }],
+          placeholder: '若为空请联系管理员'
+        },
+        {
+          prop: 'orgId',
+          itemType: 'treeSelect',
+          label: '用人部门',
+          props: {
+            selectParams: {
+              placeholder: '请选择用人部门',
+              multiple: false
+            },
+            treeParams: {
+              data: [],
+              'check-strictly': true,
+              'default-expand-all': false,
+              'expand-on-click-node': false,
+              clickParent: true,
+              filterable: false,
+              props: {
+                children: 'children',
+                label: 'orgName',
+                disabled: 'disabled',
+                value: 'orgId'
+              }
+            }
+          },
+          offset: 4,
+          equired: true,
+          rules: [{ required: true, message: '请选择用人部门', trigger: 'blur' }],
+          placeholder: '请选择用人部门'
+        },
+        {
+          prop: 'jobId',
+          itemType: 'select',
+          label: '职位',
+          options: [],
+          props: {
+            label: 'jobName',
+            value: 'jobId'
+          },
+          required: true,
+          rules: [{ required: true, message: '请选择职位', trigger: 'blur' }],
+          placeholder: '请优先选择合适的用人部门'
+        },
+        {
+          offset: 4,
+          prop: 'positionId',
+          itemType: 'select',
+          label: '岗位',
+          options: [],
+          props: {
+            label: 'name',
+            value: 'id'
+          },
+          placeholder: '请选择职位'
+        },
+        {
+          prop: 'workProperty',
+          itemType: 'select',
+          label: '工作性质',
+          options: [],
+          props: {
+            label: 'dictValue',
+            value: 'dictKey'
+          },
+          required: true,
+          rules: [{ required: true, message: '请选择工作性质', trigger: 'blur' }]
+        },
+        {
+          offset: 4,
+          prop: 'needNum',
+          itemType: 'input',
+          label: '需求人数',
+          options: [],
+          props: {
+            onlyNumber: true
+          },
+          required: true,
+          rules: [{ required: true, message: '请输入需求人数', trigger: 'blur' }]
+        },
+        {
+          prop: 'joinDate',
+          itemType: 'datePicker',
+          label: '到岗日期',
+          options: [],
+          required: true,
+          rules: [{ required: true, message: '请选择到岗日期', trigger: 'blur' }]
+        },
+        {
+          offset: 4,
+          prop: 'emerType',
+          itemType: 'select',
+          label: '紧急程度',
+          options: [],
+          props: {
+            label: 'dictValue',
+            value: 'dictKey'
+          },
+          required: true,
+          rules: [{ required: true, message: '请选择紧急程度', trigger: 'blur' }]
+        },
+        {
+          prop: 'minSalary',
+          itemType: 'slot',
+          label: '薪酬范围',
+          field: 'minSalary,maxSalary'
+        },
+        {
+          offset: 4,
+          prop: 'workYear',
+          itemType: 'select',
+          label: '工作年限',
+          options: [],
+          props: {
+            label: 'dictValue',
+            value: 'dictKey'
+          }
+        },
+        {
+          prop: 'educationalLevel',
+          itemType: 'select',
+          label: '学历要求',
+          options: [],
+          props: {
+            label: 'dictValue',
+            value: 'dictKey'
+          }
+        },
+        {
+          span: 24,
+          label: '职位要求',
+          prop: 'requirement',
+          itemType: 'input',
+          type: 'textarea',
+          maxlength: 200,
+          showWordLimit: true
+        },
+        {
+          span: 24,
+          label: '工作职责',
+          prop: 'duty',
+          itemType: 'input',
+          type: 'textarea',
+          maxlength: 200,
+          showWordLimit: true
+        },
+        {
+          span: 24,
+          label: '招聘原因',
+          prop: 'reason',
+          itemType: 'radio',
+          props: {
+            label: 'dictValue',
+            value: 'dictKey'
+          },
+          required: true,
+          rules: [{ required: true, message: '请选择招聘原因', trigger: 'blur' }]
+        },
+        {
+          span: 24,
+          label: '申请理由',
+          prop: 'remark',
+          itemType: 'input',
+          type: 'textarea',
+          maxlength: 200,
+          showWordLimit: true
+        },
+        {
+          props: {
+            hideColon: true
+          },
+          span: 24,
+          label: '审批流程',
+          prop: 'progress',
+          itemType: 'slot',
+          rules: [{ validator: checkAppr }]
+        }
+      ]
     }
   },
-
   computed: {
     ...mapGetters(['userId'])
   },
   watch: {
-    'infoForm.reason': function(newval) {
-      if (newval === 'Other') {
-        this.$refs.personInfo.explainshow = true
-      } else {
-        this.$refs.personInfo.explainshow = false
+    'form.orgId': function(val) {
+      if (val) {
+        getJobInfo({ orgId: val }).then((res) => {
+          this.columns.find((item) => item.prop === 'jobId').options = res
+        })
       }
     },
-    'infoForm.orgId': function(newval) {
-      getJobInfo({ orgId: newval }).then((res) => {
-        this.dataFilter(res, this.NewRequirement, 'jobId', 'jobName', 'jobId')
-      })
+    'form.reason': function(val) {
+      let indexOfNumr = this.columns.findIndex((item) => item.prop === 'reason') + 1
+      if (val === 'Other') {
+        this.columns.splice(indexOfNumr, 0, this.reasonNote)
+      } else {
+        //  清除页面表单不保留数据
+        this.columns = this.columns.filter((item) => item.prop !== 'reasonNote')
+      }
     }
   },
+  async created() {
+    this.getUseInformation()
+    this.dictionaryGroup()
+    await this.getPost()
+    this.loadOrgData()
+  },
+
   activated() {
     if (this.$route.query.id) {
       this.ReplicationCache(this.$route.query.id)
     }
     this.getUseInformation()
   },
-  mounted() {
-    this.getUseInformation()
-    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'workProperty', 'dictValue', 'dictKey')
-    })
-    this.$store.dispatch('CommonDict', 'RecruitmentReason').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'reason', 'dictValue', 'dictKey')
-    })
-
-    this.$store.dispatch('CommonDict', 'workYear').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'workYear', 'dictValue', 'dictKey')
-    })
-    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'emerType', 'dictValue', 'dictKey')
-    })
-    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
-      this.dataFilter(res, this.NewRequirement, 'educationalLevel', 'dictValue', 'dictKey')
-    })
-
-    this.SaveState()
-  },
   methods: {
-    SaveState() {
-      if (this.$route.query.id) {
-        this.ReplicationCache(this.$route.query.id)
-      }
+    handleEditRole() {
+      this.dialogVisible = true
     },
-    onSubmit() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          submitEewly().then(this.$message({ type: 'success', message: '操作成功' }))
-        }
-      })
-    },
-    dataFilter(res, form, props, label, value) {
-      let index = ''
-      let dict = []
-      res &&
-        res.map((it) => {
-          dict.push({ label: it[label], value: it[value] })
+    handleSubmit() {
+      this.$refs['form'].validate().then(() => {
+        this.form.userId = this.userId
+        this.form.minSalary = this.range.min
+        this.form.maxSalary = this.range.max
+        this.loading = true
+        submitEewly(this.form).then((res) => {
+          if (res && res.id) {
+            this.$refs['apprProgress'].submit(res.id).then(() => {
+              this.loading = false
+              this.$message({ type: 'success', message: '提交成功' })
+              this.goBack()
+            })
+          }
         })
-      form.basicAttrs.map((it, i) => {
-        if (it.props === props) index = i
       })
-      form.basicAttrs[index].value = dict
     },
+    loadOrgData() {
+      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
+        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data.push(...res)
+      })
+    },
+    dictionaryGroup() {
+      // 需要向vuex请求的字典组数据
+      const Dictionary = [
+        { label: 'WorkProperty', prop: 'workProperty' },
+        { label: 'EmerType', prop: 'emerType' },
+        { label: 'WorkYear', prop: 'workYear' },
+        { label: 'EducationalLevel', prop: 'educationalLevel' },
+        { label: 'RecruitmentReason', prop: 'reason' }
+      ]
+      Dictionary.forEach((DictItem) => {
+        this.$store.dispatch('CommonDict', DictItem.label).then((res) => {
+          this.columns.find((item) => item.prop === DictItem.prop).options = res
+        })
+      })
+    },
+    getPost() {
+      getPost().then((res) => {
+        this.columns.find((item) => item.prop === 'positionId').options = res
+      })
+    },
+
+    ReplicationCache(id) {
+      getRecruitmentDetail(id).then((res) => {
+        if (res && res.minSalary && res.maxSalary) {
+          this.range.min = res.minSalary
+          this.range.max = res.maxSalary
+        }
+        this.form = res
+      })
+    },
+
     getUseInformation() {
       if (this && this.userId) {
         getStaffBasicInfo({ userId: this.userId }).then((res) => {
-          this.infoForm.companyName = res.companyName
-          this.infoForm.companyId = res.companyId
+          this.form.companyName = res.companyName
+          this.form.companyId = res.companyId
         })
       } else {
         this.$message({
@@ -197,92 +408,38 @@ export default {
           type: 'warning'
         })
       }
-
-      getPost().then((res) => {
-        this.dataFilter(res, this.NewRequirement, 'positionId', 'name', 'id')
-      })
     },
-    handleTownext() {
-      return Promise.all(
-        ['personInfo'].map((it) => {
-          return new Promise((resolve) => {
-            let form = this.$refs[it].submitForm()
-            resolve(form)
-          })
-        })
-      ).then((res) => {
-        if (res.includes(false)) return
-        if (
-          this.infoForm.maxSalary &&
-          this.infoForm.minSalary &&
-          Number(this.infoForm.maxSalary) <= Number(this.infoForm.minSalary)
-        ) {
-          this.$message.error('最大薪资不可小于最小薪资范围')
-          return
-        }
-        this.$refs['apprForm'].validate((valid) => {
-          if (valid) {
-            this.infoForm.userId = this.userId
-            this.loading = true
-            submitEewly(this.infoForm).then((res) => {
-              if (res && res.id) {
-                this.$refs['apprProgress'].submit(res.id).then(() => {
-                  this.loading = false
-                  this.$message({ type: 'success', message: '提交成功' })
-                  this.goBack()
-                })
-              }
-            })
-          }
-        })
-      })
-    },
-    handleEditRole() {
-      this.$refs.CancelEdit.init()
+    goBack() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     },
     isDoNotSave() {
-      for (let key in this.infoForm) {
+      for (let key in this.form) {
         const allFruit = ['needNum', 'companyName']
         if (allFruit.includes(key)) {
           // 置空页面数据
         } else {
-          this.infoForm[key] = null
+          this.form[key] = null
         }
       }
-    },
-    ReplicationCache(id) {
-      getRecruitmentDetail(id).then((res) => {
-        this.infoForm = res
-      })
-    },
-    goBack() {
-      this.isDoNotSave()
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-      this.$router.go(-1)
+      setTimeout(() => {
+        this.$refs['form'].clearValidate()
+      }, 0)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.pageHeader {
-  height: 48px;
-  line-height: 48px;
-  font-size: 18px;
+.el-cascader,
+.el-select {
+  width: 100%;
 }
-.dialogForm {
-  .el-form-item {
-    .el-form-item__content {
-      .el-cascader {
-        width: 100%;
-      }
-    }
-  }
+.el-col {
+  margin-bottom: 0;
 }
-.levelOptions {
-  width: 6px;
-  height: 6px;
-  border-radius: 100px;
-  color: blue;
+.page-bottom {
+  display: inline-block;
+  padding-bottom: 20px;
 }
 </style>

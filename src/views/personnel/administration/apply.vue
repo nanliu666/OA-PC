@@ -96,9 +96,10 @@
               取消
             </el-button>
             <el-button
+              :loading="loading"
               type="primary"
               size="medium"
-              @click="submitForm('apply')"
+              @click="submitForm()"
             >
               提交
             </el-button>
@@ -127,6 +128,7 @@ export default {
       }
     }
     return {
+      loading: false,
       inputdisabled: true,
       apply: {
         entryDate: '暂无数据',
@@ -155,21 +157,18 @@ export default {
     })
   },
   methods: {
-    configurationData(params) {
-      params.userId = this.userId
-      params.summary = this.apply.summary
-      params.advise = this.apply.advise
-      params.entryDate = this.apply.entryDate
-      params.formalDate = this.apply.formalDate
-      return params
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    submitForm(params = {}) {
+      this.$refs['apply'].validate((valid) => {
         if (valid) {
-          let params = {}
-          this.configurationData(params)
-          createApply(params)
-            .then((res) => {
+          params.userId = this.userId
+          params.summary = this.apply.summary
+          params.advise = this.apply.advise
+          params.entryDate = this.apply.entryDate
+          params.formalDate = this.apply.formalDate
+          this.loading = true
+          if (params && params.formalDate && params.entryDate) {
+            createApply(params).then((res) => {
+              this.loading = false
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
                   this.$message({ type: 'success', message: '提交成功' })
@@ -177,7 +176,14 @@ export default {
                 })
               }
             })
-            .catch()
+          } else {
+            this.$message({
+              showClose: true,
+              message: '该用户不符合,或者已经转正,无需提交',
+              type: 'warning'
+            })
+            this.goBack()
+          }
         } else {
           return false
         }
@@ -189,8 +195,8 @@ export default {
       this.$router.go(-1)
     },
     resetForm() {
-      this.apply.advise = ''
-      this.apply.summary = ''
+      this.apply.advise = null
+      this.apply.summary = null
     }
   }
 }
