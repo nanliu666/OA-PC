@@ -28,9 +28,9 @@
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="职位要求">
+                <el-form-item label="申请时间">
                   <span class="distance">
-                    {{ personnel.requirement }}
+                    {{ personnel.createTime }}
                   </span>
                 </el-form-item>
               </el-col>
@@ -117,6 +117,15 @@
             </el-row>
             <el-row>
               <el-col :span="24">
+                <el-form-item label="职位要求">
+                  <span class="distance">
+                    {{ personnel.requirement }}
+                  </span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
                 <el-form-item label="工作职责">
                   <span class="distance">
                     {{ personnel.duty }}
@@ -124,7 +133,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
             <el-row>
               <el-col :span="24">
                 <el-form-item label="招聘原因">

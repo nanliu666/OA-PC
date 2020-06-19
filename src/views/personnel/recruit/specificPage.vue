@@ -30,8 +30,8 @@
         </el-col>
 
         <el-col :span="6">
-          <span class="nodetitle">到岗时间:</span>
-          <span>{{ user.joinDate }}</span>
+          <span class="nodetitle">提交时间:</span>
+          <span>{{ user.createTime }}</span>
         </el-col>
 
         <el-col :span="6">
