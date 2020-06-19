@@ -75,25 +75,25 @@
                 <el-select
                   v-model="user.userId"
                   placeholder="请选择"
+                  @visible-change="requeWorkList(user)"
                 >
                   <el-input
                     v-model="personnel"
+                    v-loading="loading"
                     placeholder="姓名/工号"
-                    @change="requeWorkList(15)"
+                    @change="requeWorkList(user)"
                   >
                     <i
                       slot="prefix"
                       class="el-input__icon el-icon-search"
-                      @click="requeWorkList(15)"
+                      @click="requeWorkList(user)"
                     />
                   </el-input>
-
                   <el-option
-                    v-for="item in filteredUser"
-                    :key="item.id"
+                    v-for="item in user.options"
+                    :key="item.userId"
                     :label="item.name"
                     :value="item.userId"
-                    :disabled="item.disabled"
                   />
                 </el-select>
               </el-col>
@@ -158,6 +158,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       personnel: null,
       recruitmentId: '',
       isDelete: false,
@@ -181,14 +182,6 @@ export default {
         ]
       },
       options: []
-    }
-  },
-  computed: {
-    filteredUser() {
-      return this.options.map((option) => ({
-        ...option,
-        disabled: this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-      }))
     }
   },
   watch: {
@@ -219,7 +212,6 @@ export default {
       this.Totalnumberpeople = needNum
       this.Assigned = entryNum
       this.Numberofpeople = needNum - entryNum
-      await this.requeWorkList(15)
       this.$emit('update:visible', true)
     },
     handleClose() {
@@ -234,9 +226,15 @@ export default {
       }
     },
     requeWorkList(page) {
-      getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
-        this.options = res.data
+      this.loading = true
+      getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
+        page.options = res.data.filter(
+          (option) =>
+            !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+        )
+        this.loading = false
       })
+      this.personnel = null
     },
     addDomain() {
       if (this.dynamicValidateForm.users.some((user) => !user.userId)) {

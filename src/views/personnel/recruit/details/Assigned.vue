@@ -61,24 +61,25 @@
             <el-select
               v-model="user.userId"
               placeholder="请选择"
+              @visible-change="requeWorkList(user)"
             >
               <el-input
                 v-model="personnel"
+                v-loading="loading"
                 placeholder="姓名/工号"
-                @change="requeWorkList(5)"
+                @change="requeWorkList(user)"
               >
                 <i
                   slot="prefix"
                   class="el-input__icon el-icon-search"
-                  @click="requeWorkList(5)"
+                  @click="requeWorkList(user)"
                 />
               </el-input>
               <el-option
-                v-for="item in filteredUser"
-                :key="item.name"
+                v-for="item in user.options"
+                :key="item.userId"
                 :label="item.name"
                 :value="item.userId"
-                :disabled="item.disabled"
               />
             </el-select>
           </el-col>
@@ -159,6 +160,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       personnel: '',
       jumpnot: null,
       recruitmentId: '',
@@ -174,20 +176,12 @@ export default {
             disabled: true,
             entryNum: 0,
             candidateNum: 0,
-            taskNum: 0
+            taskNum: 0,
+            options: []
           }
         ]
       },
-      options: []
-      // 用于捕获用户userId的数组
-    }
-  },
-  computed: {
-    filteredUser() {
-      return this.options.map((option) => ({
-        ...option,
-        disabled: this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-      }))
+      options: [] // 用于捕获用户userId的数组
     }
   },
   methods: {
@@ -196,7 +190,7 @@ export default {
       this.$router.go(-1)
       this.handleClose()
     },
-    async init(row) {
+    init(row) {
       let { id, entryNum, needNum, jumpnot } = row
       this.jumpnot = jumpnot
       this.recruitmentId = id
@@ -204,13 +198,18 @@ export default {
       this.Assigned = entryNum
       this.Numberofpeople = needNum - entryNum
       this.$emit('update:visible', true)
-      await this.requeWorkList()
-      await this.queryData(this.recruitmentId)
+      this.queryData(this.recruitmentId)
     },
     requeWorkList(page) {
-      getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
-        this.options = res.data
+      this.loading = true
+      getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
+        page.options = res.data.filter(
+          (option) =>
+            !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+        )
+        this.loading = false
       })
+      this.personnel = null
     },
     queryData(mentId) {
       queryDistribution({ recruitmentId: mentId }).then((res) => {
@@ -225,7 +224,7 @@ export default {
       })
     },
     handleClose() {
-      if (typeof this.dynamicValidateForm.users !== 'undefined') {
+      if (this.dynamicValidateForm.users) {
         let itemArr = this.dynamicValidateForm.users.splice(0, 1)
         itemArr[0].userId = null
         this.dynamicValidateForm.users = itemArr
@@ -254,7 +253,8 @@ export default {
           userId: '',
           taskNum: 0,
           disabled: true,
-          Rendering: 'Rendering'
+          Rendering: 'Rendering',
+          options: []
         })
       }
     },
