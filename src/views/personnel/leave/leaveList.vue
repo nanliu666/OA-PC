@@ -104,7 +104,7 @@
             slot-scope="{ row }"
           >
             <el-button
-              v-if="isWaitLeave"
+              v-if="isWaitLeave && row.approveStatus === 'Pass'"
               size="medium"
               type="text"
               @click="handelConfirmLeave(row)"
@@ -112,6 +112,7 @@
               确认离职
             </el-button>
             <el-button
+              v-if="row.leaveDate"
               size="medium"
               type="text"
               @click="handelGetLeaveCert(row.userId)"
@@ -119,7 +120,7 @@
               开具离职证明
             </el-button>
             <el-button
-              v-if="isWaitLeave"
+              v-if="isWaitLeave && !row.leaveDate"
               size="medium"
               type="text"
               @click="showChangeDialog(row)"
@@ -127,7 +128,7 @@
               调整离职信息
             </el-button>
             <el-dropdown
-              v-if="isWaitLeave"
+              v-if="isWaitLeave && row.approveStatus !== 'Pass'"
               @command="handleCommand($event, row.userId)"
             >
               <el-button
@@ -434,7 +435,7 @@ export default {
         uniqueKey: 'userId',
         showHandler: true,
         handlerColumn: {
-          minWidth: 300
+          minWidth: 200
         }
       },
       // 搜索框配置
