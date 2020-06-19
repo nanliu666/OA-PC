@@ -147,13 +147,9 @@ export default {
     ...mapGetters(['userId'])
   },
   mounted() {
-    let params = {
-      userId: this.userId
-    }
-    getStaffBasicInfo(params).then((res) => {
-      let { formalDate, entryDate } = res
-      this.apply.entryDate = entryDate
-      this.apply.formalDate = formalDate
+    getStaffBasicInfo({ userId: this.userId }).then((res) => {
+      this.apply.entryDate = res.entryDate
+      this.apply.formalDate = res.formalDate
     })
   },
   methods: {

@@ -38,7 +38,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="申请公司">
-                  <span class="distance">{{ personnel.orgName }}</span>
+                  <span class="distance">{{ personnel.companyName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
