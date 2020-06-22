@@ -11,13 +11,16 @@
       <div class="header">
         <div class="name-row">
           <div class="name-box">
-            {{ personData.userName }} 的离职交接事项
+            {{ listData.userName }} 的离职交接事项
           </div>
-          <div class="btn-box">
+          <div
+            v-if="listData.status === 'UnConfirm'"
+            class="btn-box"
+          >
             <el-button
               type="primary"
               size="medium"
-              :disabled="personData.status === 'Confirmed'"
+              :loading="btnLoading"
               @click="confirmleaveNote"
             >
               确认
@@ -32,25 +35,25 @@
         </div>
         <div class="info-row">
           <div>
-            发起人: <span>{{ personData.userName }}</span>
+            发起人: <span>{{ listData.userName }}</span>
           </div>
           <div>
-            发起时间: <span>{{ personData.createTime }}</span>
+            发起时间: <span>{{ listData.createTime }}</span>
           </div>
           <div>
             状态:
             <span class="status-box">{{
-              personData.status === 'UnConfirm' ? '待确认' : '已确认'
+              listData.status === 'UnConfirm' ? '待确认' : '已确认'
             }}</span>
           </div>
         </div>
       </div>
       <div class="main-wrap">
         <div class="tips-row">
-          员工 {{ personData.userName }},请尽快为他办理以下离职交接事项并确认：
+          员工 {{ listData.userName }},请尽快为他办理以下离职交接事项并确认：
         </div>
         <div
-          v-for="category in personData.data"
+          v-for="category in listData.data"
           :key="category.categoryId"
           class="category-box"
         >
@@ -80,7 +83,8 @@ export default {
       loading: false,
       leaveUserId: '',
       groupId: '',
-      personData: {}
+      listData: {},
+      btnLoading: false
     }
   },
   computed: {
@@ -89,6 +93,7 @@ export default {
   created() {
     this.loadingData()
   },
+
   methods: {
     loadingData() {
       this.loading = true
@@ -102,7 +107,7 @@ export default {
       }
       getLeaveNote(params)
         .then((res) => {
-          this.personData = res
+          this.listData = res[0]
         })
         .finally(() => {
           this.loading = false
@@ -112,7 +117,7 @@ export default {
     async confirmleaveNote() {
       let params = {
         groupId: this.groupId,
-        userId: this.userId
+        userId: this.leaveUserId
       }
       try {
         await this.$confirm('您确认该员工离职交接事项已完成吗？', '确认离职事项交接完成？', {
@@ -121,6 +126,7 @@ export default {
           type: 'warning'
         })
         await postConfirmleaveNote(params)
+        this.loadingData()
         this.$message.success('确认成功')
       } catch (error) {
         if (error !== 'cancel') {
