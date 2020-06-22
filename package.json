@@ -7,7 +7,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && npm run compress",
     "lint": "eslint --fix --ext .vue,.js src/ &&　prettier src/**/*.scss --write",
-    "analyz": "npm_config_report=true npm run build",
+    "analyz": "vue-cli-service build --report",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "compress": "node src/util/compress.js"

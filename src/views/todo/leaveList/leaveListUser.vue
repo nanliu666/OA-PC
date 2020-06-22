@@ -11,20 +11,20 @@
       <div class="header">
         <div class="name-row">
           <div class="name-box">
-            {{ personData.userName }} 的离职交接事项
+            {{ leaveNoteData.userName }} 的离职交接事项
           </div>
         </div>
         <div class="info-row">
           <div>
-            发起人: <span>{{ personData.userName }}</span>
+            发起人: <span>{{ leaveNoteData.userName }}</span>
           </div>
           <div>
-            发起时间: <span>{{ personData.createTime }}</span>
+            发起时间: <span>{{ leaveNoteData.createTime }}</span>
           </div>
           <div>
             状态:
             <span class="status-box">{{
-              personData.status === 'UnConfirm' ? '待确认' : '已确认'
+              leaveNoteData.status === 'UnConfirm' ? '待确认' : '已确认'
             }}</span>
           </div>
         </div>
@@ -34,7 +34,7 @@
           您的离职申请已通过，请在离职前尽快与相关部门办理以下离职交接事项：
         </div>
         <div
-          v-for="category in personData.data"
+          v-for="category in leaveNoteData.data"
           :key="category.categoryId"
           class="category-box"
         >
@@ -64,7 +64,7 @@ export default {
       loading: false,
       leaveUserId: '',
       groupId: '',
-      personData: {}
+      leaveNoteData: {}
     }
   },
   computed: {
@@ -83,7 +83,7 @@ export default {
       }
       getLeaveNote(params)
         .then((res) => {
-          this.personData = res
+          this.leaveNoteData = res[0]
         })
         .finally(() => {
           this.loading = false
