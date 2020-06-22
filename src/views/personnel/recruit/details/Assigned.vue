@@ -11,16 +11,16 @@
       :gutter="52"
     >
       <el-col :span="6">
-        待分配: <span id="assigned">{{ Numberofpeople }}</span>
+        需求总数: <span id="assigned">{{ Totalnumberpeople }}</span>
       </el-col>
-      <!-- <el-col :span="8">
+      <el-col :span="8">
         <span class="demandSize">
-          已分配: <span id="assigned">{{ Assigned }}</span></span>
+          已分配: <span id="assigned">{{ distribution }}</span></span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
           待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
-      </el-col> -->
+      </el-col>
     </el-row>
 
     <el-form
@@ -65,7 +65,6 @@
             >
               <el-input
                 v-model="personnel"
-                v-loading="loading"
                 placeholder="姓名/工号"
                 @change="requeWorkList(user)"
               >
@@ -116,7 +115,7 @@
               v-model="user.taskNum"
               controls-position="right"
               :min="0"
-              :max="Numberofpeople"
+              :max="Totalnumberpeople"
             />
           </el-col>
         </el-row>
@@ -160,6 +159,7 @@ export default {
   },
   data() {
     return {
+      distribution: null,
       personnel: '',
       jumpnot: null,
       recruitmentId: '',
@@ -189,15 +189,23 @@ export default {
       this.$router.go(-1)
       this.handleClose()
     },
-    init(row) {
-      let { id, entryNum, needNum, jumpnot } = row
+    async init(row) {
+      this.distribution = null
+      await queryDistribution({ recruitmentId: row.id }).then((res) => {
+        res.forEach((item) => {
+          item.olditem = item.taskNum
+          this.distribution += item.taskNum
+          item.peopleDisabled = true
+          item.disabled = true
+        })
+        this.dynamicValidateForm.users = res
+      })
+      let { id, needNum, jumpnot } = row
       this.jumpnot = jumpnot
       this.recruitmentId = id
       this.Totalnumberpeople = needNum
-      this.Assigned = entryNum
-      this.Numberofpeople = needNum - entryNum
+      this.Numberofpeople = needNum - this.distribution
       this.$emit('update:visible', true)
-      this.queryData(this.recruitmentId)
     },
     requeWorkList(page) {
       getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
@@ -208,18 +216,7 @@ export default {
       })
       this.personnel = null
     },
-    queryData(mentId) {
-      queryDistribution({ recruitmentId: mentId }).then((res) => {
-        if (res.length !== 0) {
-          res.forEach((item) => {
-            item.olditem = item.taskNum
-            item.peopleDisabled = true
-            item.disabled = true
-          })
-          this.dynamicValidateForm.users = res
-        }
-      })
-    },
+
     handleClose() {
       if (this.dynamicValidateForm.users) {
         let itemArr = this.dynamicValidateForm.users.splice(0, 1)
@@ -267,10 +264,10 @@ export default {
     onSubmitted(parms = {}) {
       // 判断人数是否相当
       let total = this.calWhetherBeyond()
-      if (total === this.Numberofpeople) {
+      if (total === this.Totalnumberpeople) {
         parms.recruitmentId = this.recruitmentId
         parms.users = this.dynamicValidateForm.users
-          .filter((item) => item.userId)
+          .filter((item) => item.userId || item.taskNum)
           .map((item) => ({
             userId: item.userId,
             taskNum: item.taskNum,
