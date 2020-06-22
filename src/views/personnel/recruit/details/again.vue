@@ -103,7 +103,7 @@
                   controls-position="right"
                   :min="1"
                   :max="Numberofpeople"
-                  style="margin-right: 5px;"
+                  style="margin-left: 5px;"
                 />
               </el-col>
               <el-button
