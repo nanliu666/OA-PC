@@ -61,7 +61,8 @@ export default {
         },
         {
           label: '个人邮箱',
-          prop: 'email'
+          prop: 'email',
+          minWidth: '160px'
         },
 
         {

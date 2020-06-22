@@ -316,7 +316,7 @@ export default {
     jumpApproval(apprNo) {
       this.$router.push({
         path: '/approval/appr/apprDetail',
-        query: { formKey: 'UserFormalInfo ', apprNo: apprNo }
+        query: { formKey: 'UserFormalInfo', apprNo: apprNo }
       })
     },
     decorator(params) {
