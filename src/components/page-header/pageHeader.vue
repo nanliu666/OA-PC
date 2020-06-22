@@ -57,11 +57,11 @@ export default {
 .title {
   font-weight: bold;
   font-size: 18px;
-  padding: 14px 0 16px;
+  padding: 24px 0 16px;
   line-height: 28px;
 }
 .button--wr {
-  padding-bottom: 18px;
-  padding-top: 6px;
+  padding-bottom: 16px;
+  padding-top: 16px;
 }
 </style>
