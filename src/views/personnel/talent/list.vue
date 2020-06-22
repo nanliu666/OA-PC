@@ -42,11 +42,12 @@
             </div>
             <div>
               <el-button
+                type="text"
+                class="refresh"
+                icon="icon-basics-refresh-outlined"
                 size="medium"
                 @click="loadData"
-              >
-                <i class="el-icon-refresh" />
-              </el-button>
+              />
             </div>
           </div>
         </template>
@@ -299,5 +300,8 @@ export default {
 .menu-wr {
   display: flex;
   justify-content: space-between;
+}
+.refresh {
+  color: #a0a8ae;
 }
 </style>
