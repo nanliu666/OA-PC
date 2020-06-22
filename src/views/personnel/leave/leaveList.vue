@@ -120,7 +120,7 @@
               开具离职证明
             </el-button>
             <el-button
-              v-if="isWaitLeave && !row.leaveDate"
+              v-if="isWaitLeave"
               size="medium"
               type="text"
               @click="showChangeDialog(row)"
@@ -211,6 +211,7 @@
                     type="date"
                     placeholder="选择日期"
                     style="width:100%"
+                    value-format="yyyy-MM-dd"
                   />
                 </el-form-item>
               </el-col>
@@ -320,7 +321,7 @@ export default {
           label: '审批编码',
           align: 'center',
           prop: 'apprNo',
-          width: '80px',
+          width: '130px',
           slot: true
         },
         {
@@ -435,7 +436,7 @@ export default {
         uniqueKey: 'userId',
         showHandler: true,
         handlerColumn: {
-          minWidth: 200
+          minWidth: 220
         }
       },
       // 搜索框配置
