@@ -31,6 +31,29 @@
               <div class="title">
                 面试信息
               </div>
+              <div
+                v-if="item.status === 'Pass'"
+                class="iconfont"
+              >
+                <svg
+                  class="imgs icon"
+                  aria-hidden="true"
+                >
+                  <use xlink:href="#icon-adopt-outlined" />
+                </svg>
+              </div>
+              <div
+                v-else
+                class="iconfont"
+              >
+                <svg
+                  class="imgs icon"
+                  aria-hidden="true"
+                >
+                  <use xlink:href="#icon-eliminate-outlined" />
+                </svg>
+              </div>
+
               <div class="basic">
                 <div class="flexs">
                   <div
@@ -307,6 +330,15 @@ export default {
   background: #ffffff;
   border-radius: 4px;
   padding: 0px 24px 15px 24px;
+  position: relative;
+  .iconfont {
+    .icon {
+      position: absolute;
+      top: 0;
+      right: 100px;
+      font-size: 100px;
+    }
+  }
 
   .attribute {
     div {
