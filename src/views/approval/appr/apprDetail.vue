@@ -705,7 +705,7 @@
         class="cancel-btn-box"
       >
         <el-button
-          v-if="!isShowCancel"
+          v-if="!isShowCancel && isUser"
           type="primary"
           size="medium"
           :disabled="!isUser"
@@ -713,22 +713,36 @@
         >
           撤回
         </el-button>
-        <el-button
+        <el-tooltip
           v-if="isShowBtns"
-          type="primary"
-          size="medium"
-          @click="handelClick('Reject')"
+          effect="dark"
+          content="拒绝审批后，该审批将终止"
+          :enterable="false"
+          placement="top"
         >
-          拒绝
-        </el-button>
-        <el-button
+          <el-button
+            type="primary"
+            size="medium"
+            @click="handelClick('Reject')"
+          >
+            拒绝
+          </el-button>
+        </el-tooltip>
+        <el-tooltip
           v-if="isShowBtns"
-          type="primary"
-          size="medium"
-          @click="handelClick('Pass')"
+          effect="dark"
+          content="同意该审批，审批将继续向下流转"
+          :enterable="false"
+          placement="top"
         >
-          同意
-        </el-button>
+          <el-button
+            type="primary"
+            size="medium"
+            @click="handelClick('Pass')"
+          >
+            同意
+          </el-button>
+        </el-tooltip>
       </div>
     </basic-container>
 
@@ -964,6 +978,7 @@ export default {
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
+      // console.log(this.$route.query);
       let res = await getApplyDetail(this.$route.query)
       this.ApplyInfo = res
     },
@@ -982,7 +997,7 @@ export default {
       } else if (formKey === 'UserContractInfo') {
         res = await getContractApply({ id: formId })
       } else if (formKey === 'UserLeaveInfo') {
-        res = await getLeaveApply({ id: formId, userId: this.userId })
+        res = await getLeaveApply({ id: formId, userId: this.ApplyInfo.userId })
       } else if (formKey === 'UserChangeInfo') {
         res = await getChangeApply({ id: formId })
       } else if (formKey === 'RecruitmentChangeNum') {
@@ -1144,7 +1159,7 @@ export default {
     // 点击催一下
     async handelUrge(params) {
       let { userId, id: nodeId } = params
-      let { apprNo } = this.$route.query
+      let { apprNo } = this.ApplyInfo
       await createdUrge({ userId, nodeId, apprNo })
       this.$message({
         type: 'success',
