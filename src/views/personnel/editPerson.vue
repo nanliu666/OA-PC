@@ -25,7 +25,10 @@
             size="medium"
           >
             <el-row>
-              <el-col :span="10">
+              <el-col
+                v-if="!form.recruitmentId"
+                :span="10"
+              >
                 <el-form-item
                   label="关联应聘职位"
                   prop="recruitmentId"
@@ -45,6 +48,7 @@
                 </el-form-item>
               </el-col>
               <el-col
+                v-if="!form.recruitmentId"
                 :span="10"
                 :offset="4"
               >
@@ -164,7 +168,7 @@
                   label="毕业专业"
                   prop="major"
                 >
-                  <el-input v-model="form.major" />
+                  <el-input v-model.trim="form.major" />
                 </el-form-item>
               </el-col>
               <el-col
@@ -187,7 +191,7 @@
                   label="最近工作单位"
                   prop="lastCompany"
                 >
-                  <el-input v-model="form.lastCompany" />
+                  <el-input v-model.trim="form.lastCompany" />
                 </el-form-item>
               </el-col>
               <el-col
@@ -283,7 +287,7 @@
                   prop="remark"
                 >
                   <el-input
-                    v-model="form.remark"
+                    v-model.trim="form.remark"
                     type="textarea"
                     :autosize="{ minRows: 2, maxRows: 4 }"
                     placeholder="请输入"

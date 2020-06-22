@@ -143,7 +143,7 @@
                 重新安排面试
               </el-button>
               <el-button
-                v-if="personInfo.interview === '0'"
+                v-if="personInfo.interview === 0"
                 type="primary"
                 size="medium"
                 @click="handleSend"
@@ -151,19 +151,12 @@
                 发送面试登记表
               </el-button>
               <el-button
-                v-if="personInfo.interview === '1'"
+                v-if="personInfo.interview === 1"
                 type="primary"
                 size="medium"
                 @click="loopUpInterview"
               >
                 查看面试登记表
-              </el-button>
-              <el-button
-                type="primary"
-                size="medium"
-                @click="handleSend"
-              >
-                发送面试登记表
               </el-button>
               <el-dropdown @command="handleCommand">
                 <el-button
@@ -189,7 +182,7 @@
             <!-- 面试通过 -->
             <template v-if="personInfo.status === '4'">
               <el-button
-                v-if="$route.query.applyId === ''"
+                v-if="!$route.query.applyId"
                 type="primary"
                 size="medium"
                 @click="handleApplyEmploy(row)"
@@ -220,7 +213,10 @@
                   <i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="arrange">
+                  <el-dropdown-item
+                    v-if="!$route.query.applyId"
+                    command="arrange"
+                  >
                     安排复试
                   </el-dropdown-item>
                   <el-dropdown-item command="edit">
@@ -568,6 +564,13 @@
       :visible.sync="changeJobDialog"
       @refresh="init"
     />
+    <arrange
+      v-if="arrangeDialog"
+      :title="arrangeTitle"
+      :dialog-visible.sync="arrangeDialog"
+      :row="row"
+      @load="init"
+    />
   </div>
 </template>
 <script>
@@ -575,7 +578,7 @@ import PageHeader from '@/components/page-header/pageHeader'
 import WeedOutDialog from './candidate/components/weedOutDialog'
 import PushAuditDialog from './candidate/components/pushAuditDialog'
 import ChangeJobDialog from './candidate/components/changeJobDialog'
-// import arrange from './candidate/components/arrangeInterview'
+import Arrange from './candidate/components/arrangeInterview'
 import {
   getPersonInfo,
   getPersonRecord,
@@ -586,7 +589,7 @@ import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 
 export default {
   name: 'Detail',
-  components: { PageHeader, WeedOutDialog, PushAuditDialog, ChangeJobDialog },
+  components: { PageHeader, WeedOutDialog, PushAuditDialog, ChangeJobDialog, Arrange },
   data() {
     return {
       personInfo: {},
@@ -686,6 +689,11 @@ export default {
     },
     handleArrange() {
       this.arrangeDialog = true
+      if (this.personInfo.status === '2') {
+        this.arrangeTitle = '安排面试'
+      } else {
+        this.arrangeTitle = '重新安排面试'
+      }
       this.row = JSON.parse(JSON.stringify(this.personInfo))
     },
     init() {
