@@ -160,7 +160,6 @@ export default {
   },
   data() {
     return {
-      loading: true,
       personnel: '',
       jumpnot: null,
       recruitmentId: '',
@@ -201,13 +200,11 @@ export default {
       this.queryData(this.recruitmentId)
     },
     requeWorkList(page) {
-      this.loading = true
       getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
         page.options = res.data.filter(
           (option) =>
             !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
         )
-        this.loading = false
       })
       this.personnel = null
     },
@@ -308,17 +305,10 @@ export default {
 .textForm {
   margin-top: 10px;
 }
-// .demandSize {
-//   display: block;
-//   font-size: 12px;
-//   color: #718199;
-//   line-height: 18px;
-//   text-align: center;
-// }
+
 #assigned {
   color: #1989fa;
 }
-
 .department {
   font-size: 14px;
   color: #212a3f;

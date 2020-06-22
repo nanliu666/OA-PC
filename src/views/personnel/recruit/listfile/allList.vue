@@ -430,7 +430,6 @@ export default {
       // 有关页面发送API请求化时 请求参数格式化
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
-      params.userId = this.userId
       params.progress = this.params.progress
       this.loading = true
       getAllRecruitment(params).then((res) => {

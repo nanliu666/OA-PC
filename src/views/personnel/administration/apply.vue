@@ -175,7 +175,7 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: '该用户不符合,或者已经转正,无需提交',
+              message: '您的账户不符合,或者已经转正,无需提交',
               type: 'warning'
             })
             this.goBack()

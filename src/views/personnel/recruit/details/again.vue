@@ -215,7 +215,7 @@ export default {
       this.$emit('update:visible', true)
     },
     handleClose() {
-      if (typeof this.dynamicValidateForm.users !== 'undefined') {
+      if (this.dynamicValidateForm.users) {
         let itemArr = this.dynamicValidateForm.users.splice(0, 1)
         itemArr[0].userId = null
         this.dynamicValidateForm.users = itemArr
