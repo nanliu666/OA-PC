@@ -69,6 +69,7 @@ const user = {
             (node) => node.isOwn === 1 && node.menuType !== 'Button'
           )
           sortTree(menuAll, (a, b) => a.sort - b.sort)
+          commit('SET_MENU', menuAll[0].children)
           commit('SET_MENU_ALL', menuAll)
           commit(
             'SET_PRIVILEGES',
