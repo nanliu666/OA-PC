@@ -74,8 +74,9 @@
               <el-col :span="12">
                 <el-select
                   v-model="user.userId"
+                  v-loading="user.loading"
                   placeholder="请选择"
-                  @visible-change="requeWorkList(user)"
+                  @visible-change="requeUserList(user)"
                 >
                   <el-input
                     v-model="personnel"
@@ -145,9 +146,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { taskDistribution } from '@/api/personnel/recruitment'
+import { getStaffBasicInfo } from '@/api/personalInfo'
 import { getUserWorkList } from '@/api/org/org'
 import { createUniqueID } from '@/util/util'
+import { getOrgUserList } from '@/api/system/user'
 export default {
   name: 'Again',
   props: {
@@ -158,6 +162,7 @@ export default {
   },
   data() {
     return {
+      orgId: null,
       loading: false,
       personnel: null,
       recruitmentId: '',
@@ -177,12 +182,16 @@ export default {
           {
             id: createUniqueID(),
             userId: null,
-            taskNum: 1
+            taskNum: 1,
+            options: [],
+            loading: false
           }
         ]
-      },
-      options: []
+      }
     }
+  },
+  computed: {
+    ...mapGetters(['userId'])
   },
   watch: {
     'dynamicValidateForm.users.length': function(newval) {
@@ -204,7 +213,7 @@ export default {
       this.$router.go(-1)
       this.handleClose()
     },
-    async init(row) {
+    init(row) {
       this.list = row
       let { id, entryNum, needNum, jumpnot } = row
       this.jumpnot = jumpnot
@@ -213,6 +222,9 @@ export default {
       this.Assigned = entryNum
       this.Numberofpeople = needNum - entryNum
       this.$emit('update:visible', true)
+      getStaffBasicInfo({ userId: this.userId }).then((res) => {
+        this.orgId = res.orgId
+      })
     },
     handleClose() {
       if (this.dynamicValidateForm.users) {
@@ -226,15 +238,20 @@ export default {
       }
     },
     requeWorkList(page) {
-      this.loading = true
       getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
+        page.options = res.data
+      })
+      this.personnel = null
+    },
+    requeUserList(page) {
+      page.loading = true
+      getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId }).then((res) => {
         page.options = res.data.filter(
           (option) =>
             !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
         )
-        this.loading = false
+        page.loading = false
       })
-      this.personnel = null
     },
     addDomain() {
       if (this.dynamicValidateForm.users.some((user) => !user.userId)) {
@@ -244,7 +261,9 @@ export default {
       this.dynamicValidateForm.users.push({
         userId: '',
         taskNum: 1,
-        creatId: createUniqueID()
+        creatId: createUniqueID(),
+        options: [],
+        loading: false
       })
     },
     removeUsers(item) {

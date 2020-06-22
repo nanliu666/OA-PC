@@ -60,8 +60,9 @@
           >
             <el-select
               v-model="user.userId"
+              v-loading="user.loading"
               placeholder="请选择"
-              @visible-change="requeWorkList(user)"
+              @visible-change="requeUserList(user)"
             >
               <el-input
                 v-model="personnel"
@@ -146,9 +147,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { getStaffBasicInfo } from '@/api/personalInfo'
 import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
 import { createUniqueID } from '@/util/util'
+import { getOrgUserList } from '@/api/system/user'
 export default {
   name: 'Assigned',
   props: {
@@ -157,8 +161,12 @@ export default {
       default: false
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   data() {
     return {
+      orgId: null,
       distribution: null,
       personnel: '',
       jumpnot: null,
@@ -183,6 +191,8 @@ export default {
       options: [] // 用于捕获用户userId的数组
     }
   },
+
+  mounted() {},
   methods: {
     doNotSave() {
       this.$emit('isDoNotSave')
@@ -200,6 +210,11 @@ export default {
         })
         this.dynamicValidateForm.users = res
       })
+
+      await getStaffBasicInfo({ userId: this.userId }).then((res) => {
+        this.orgId = res.orgId
+      })
+
       let { id, needNum, jumpnot } = row
       this.jumpnot = jumpnot
       this.recruitmentId = id
@@ -209,14 +224,22 @@ export default {
     },
     requeWorkList(page) {
       getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
-        page.options = res.data.filter(
-          (option) =>
-            !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-        )
+        page.options = res.data
       })
       this.personnel = null
     },
-
+    requeUserList(page) {
+      if (page.options) {
+        page.loading = true
+        getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId }).then((res) => {
+          page.options = res.data.filter(
+            (option) =>
+              !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+          )
+          page.loading = false
+        })
+      }
+    },
     handleClose() {
       if (this.dynamicValidateForm.users) {
         let itemArr = this.dynamicValidateForm.users.splice(0, 1)
@@ -242,6 +265,7 @@ export default {
           return
         }
         this.dynamicValidateForm.users.push({
+          loading: false,
           name: '',
           creatId: createUniqueID(),
           userId: '',
