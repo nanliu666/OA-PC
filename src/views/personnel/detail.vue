@@ -78,7 +78,7 @@
                   </div>
                 </el-col>
               </el-row>
-              <el-row :gutter="20">
+              <!-- <el-row :gutter="20">
                 <el-col :span="24">
                   <div class="grid-content bg-purple">
                     <span>标签：</span>
@@ -90,7 +90,7 @@
                     }}</span>
                   </div>
                 </el-col>
-              </el-row>
+              </el-row> -->
             </el-main>
           </el-container>
         </div>
