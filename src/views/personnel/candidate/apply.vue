@@ -22,21 +22,31 @@
           <div class="title">
             候选人信息
           </div>
-          <inputArray
+          <commonForm
             ref="personInfo"
-            :info-form.sync="personInfo"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="personInfo"
           />
+          <!--          <inputArray-->
+          <!--            ref="personInfo"-->
+          <!--            :info-form.sync="personInfo"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
             录用信息
           </div>
-          <inputArray
+          <commonForm
             ref="employment"
-            :info-form.sync="employment"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="employment"
           />
+          <!--          <inputArray-->
+          <!--            ref="employment"-->
+          <!--            :info-form.sync="employment"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="footer">
           <div class="next flex flex-justify-between flex-items">
@@ -64,51 +74,76 @@
           <div class="title">
             薪资
           </div>
-          <inputArray
+          <commonForm
             ref="salary"
-            :info-form.sync="salary"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="salary"
           />
+          <!--          <inputArray-->
+          <!--            ref="salary"-->
+          <!--            :info-form.sync="salary"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
             劳动合同
           </div>
-          <inputArray
+          <commonForm
             ref="labour"
-            :info-form.sync="labour"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="labour"
           />
+          <!--          <inputArray-->
+          <!--            ref="labour"-->
+          <!--            :info-form.sync="labour"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
             五险一金
           </div>
-          <inputArray
+          <commonForm
             ref="fiveRisks"
-            :info-form.sync="fiveRisks"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="fiveRisks"
           />
+          <!--          <inputArray-->
+          <!--            ref="fiveRisks"-->
+          <!--            :info-form.sync="fiveRisks"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
             办公安排
           </div>
-          <inputArray
+          <commonForm
             ref="office"
-            :info-form.sync="office"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="office"
           />
+          <!--          <inputArray-->
+          <!--            ref="office"-->
+          <!--            :info-form.sync="office"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
             其他
           </div>
-          <inputArray
+          <commonForm
             ref="other"
-            :info-form.sync="other"
-            :form.sync="infoForm"
+            :model="infoForm"
+            :columns="other"
           />
+          <!--          <inputArray-->
+          <!--            ref="other"-->
+          <!--            :info-form.sync="other"-->
+          <!--            :form.sync="infoForm"-->
+          <!--          />-->
         </div>
         <div class="footer">
           <div class="next flex flex-justify-between flex-items">
@@ -140,10 +175,10 @@
           </div>
           <div class="flow">
             <div class=" flex-flow flex flex-justify-start flex-items">
-              <div class="spot" />
-              <div class="person">
-                审批人
-              </div>
+              <!--              <div class="spot" />-->
+              <!--              <div class="person">-->
+              <!--                审批人-->
+              <!--              </div>-->
               <apprProgress
                 ref="apprProgress"
                 form-key="PersonOfferApply"
@@ -249,21 +284,20 @@ import {
   office,
   other
 } from './components/userInfo'
-import inputArray from './components/inputArray'
 import {
   getWorkAddress,
   getCompany,
   getJob,
   getposition,
-  getTree,
   postOfferApply,
   getRecruitmentDetail
 } from '@/api/personnel/selectedPerson'
+import { getOrgTreeSimple } from '@/api/org/org'
+import { CodeToText } from 'element-china-area-data'
 
 export default {
   name: 'Apply',
   components: {
-    inputArray,
     apprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   data() {
@@ -332,18 +366,34 @@ export default {
     this.getWorkAddress()
     this.getJob()
     this.getposition()
-    this.getTree()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
-      this.dataFilter(res, this.employment, 'workProperty', 'dictValue', 'dictKey')
+      this.options(this.employment, 'workProperty', res)
     })
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
-      this.dataFilter(res, this.labour, 'contractType', 'dictValue', 'dictKey')
+      res
+      this.options(this.labour, 'contractType', res)
     })
     this.getRecruitment()
-
-    // ContractType
+    this.getOrgTree()
   },
   methods: {
+    getOrgTree() {
+      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
+        this.employment.find((item) => item.prop === 'orgId').props.treeParams.data = res
+      })
+    },
+    /**
+     * author guanfenda
+     * @desc 处理posion赋值
+     *
+     * */
+    options(data, prop, position) {
+      data.map((it) => {
+        if (it.prop === prop) {
+          it.options = position
+        }
+      })
+    },
     jumpMyApproval() {
       this.$router.push({
         path: '/approval/appr/waitAppr'
@@ -377,21 +427,9 @@ export default {
       })
       form.basicAttrs[index].value = dict
     },
-    getTree() {
-      let params = {
-        parentOrgId: '0'
-      }
-      getTree(params).then((res) => {
-        let index = ''
-        this.employment.basicAttrs.map((it, i) => {
-          if (it.props === 'orgId') index = i
-        })
-        this.employment.basicAttrs[index].value = res
-      })
-    },
     getposition() {
       getposition().then((res) => {
-        this.dataFilter(res, this.employment, 'positionId', 'name', 'id')
+        this.options(this.employment, 'positionId', res)
       })
     },
     getJob() {
@@ -400,7 +438,7 @@ export default {
         orgId: ''
       }
       getJob(params).then((res) => {
-        this.dataFilter(res, this.employment, 'jobId', 'jobName', 'jobId')
+        this.options(this.employment, 'jobId', res)
       })
     },
     getCompany() {
@@ -408,8 +446,8 @@ export default {
         parentOrgId: '0'
       }
       getCompany(params).then((res) => {
-        this.dataFilter(res, this.employment, 'companyId', 'orgName', 'orgId')
-        this.dataFilter(res, this.labour, 'companyId', 'orgName', 'orgId')
+        this.options(this.employment, 'companyId', res)
+        this.options(this.labour, 'companyId', res)
       })
     },
     getWorkAddress() {
@@ -418,7 +456,7 @@ export default {
         pageSize: 10000
       }
       getWorkAddress(params).then((res) => {
-        this.dataFilter(res.data, this.employment, 'workAddressId', 'address', 'id')
+        this.options(this.employment, 'workAddressId', res.data)
       })
     },
     close() {
@@ -444,29 +482,50 @@ export default {
       this.active -= 1
     },
     handleNext() {
-      // this.active =1
       return Promise.all(
         ['personInfo', 'employment'].map((it) => {
           return new Promise((resolve) => {
-            let form = this.$refs[it].submitForm()
-            resolve(form)
+            this.$refs[it]
+              .validate()
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                this.$refs[it].scrollIntoView()
+              })
           })
         })
-      ).then((res) => {
-        if (res.includes(false)) return
+      ).then(() => {
         this.active = 1
       })
+      // this.active =1
+      // return Promise.all(
+      //   ['personInfo', 'employment'].map((it) => {
+      //     return new Promise((resolve) => {
+      //       let form = this.$refs[it].submitForm()
+      //       resolve(form)
+      //     })
+      //   })
+      // ).then((res) => {
+      //   if (res.includes(false)) return
+      //   this.active = 1
+      // })
     },
     handleTownext() {
       return Promise.all(
-        ['salary', 'labour', 'fiveRisks', 'office', 'other'].map((it) => {
+        ['salary', 'labour'].map((it) => {
           return new Promise((resolve) => {
-            let form = this.$refs[it].submitForm()
-            resolve(form)
+            this.$refs[it]
+              .validate()
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                this.$refs[it].scrollIntoView()
+              })
           })
         })
-      ).then((res) => {
-        if (res.includes(false)) return
+      ).then(() => {
         this.active = 2
       })
     },
@@ -480,9 +539,9 @@ export default {
         return
       }
       let workProvinceCode = this.infoForm.city[0],
-        workProvinceName = this.infoForm.pathLabels[0] || this.infoForm.workProvinceName,
+        workProvinceName = CodeToText[this.infoForm.city[0]],
         workCityCode = this.infoForm.city[1],
-        workCityName = this.infoForm.pathLabels[1] || this.infoForm.workCityName,
+        workCityName = CodeToText[this.infoForm.city[1]],
         risks = this.infoForm.risks,
         isYangl = risks.includes('isYangl') ? 1 : 0,
         isYil = risks.includes('isYil') ? 1 : 0,
@@ -526,16 +585,6 @@ export default {
         path: '/approval/appr/apprDetail',
         query: params
       })
-      // return
-      // let params = {
-      //   ...this.$route.query,
-      //   applyId: this.applyId
-      // }
-      // this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-      // this.$router.push({
-      //   path: '/personnel/candidate/applyDetail',
-      //   query: params
-      // })
     },
     back() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
@@ -562,11 +611,13 @@ export default {
     font-size: 16px;
   }
 }
+
 .title {
   font-size: 16px;
   font-weight: 800;
   margin-bottom: 15px;
 }
+
 .contain {
   margin-top: 50px;
   min-height: 300px;
@@ -582,11 +633,13 @@ export default {
     padding: 0 200px;
   }
 }
+
 .success {
   height: 600px;
   width: 600px;
   margin: 0 auto;
 }
+
 .back {
   cursor: pointer;
 }
@@ -595,6 +648,7 @@ export default {
   /*margin-bottom: 100px;*/
   /*margin-top: 30px;*/
   padding: 0 200px;
+
   .line {
     border-left: 1px solid #1e9fff;
     min-height: 120px;
@@ -603,9 +657,11 @@ export default {
     display: -webkit-flex;
     flex-flow: row wrap !important;
   }
+
   .line:last-child {
     border-left: 1px solid transparent;
   }
+
   .spot {
     display: inline-block;
     width: 10px;
@@ -614,6 +670,7 @@ export default {
     background: #1e9fff;
     margin-left: -5px;
   }
+
   .person {
     margin: 0 20px;
   }

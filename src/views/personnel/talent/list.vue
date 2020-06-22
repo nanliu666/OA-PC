@@ -168,7 +168,7 @@ export default {
         {
           label: '目前所在地',
           prop: 'address',
-          width: 160,
+          minWidth: 160,
           formatter: (record) => {
             return `${record.provinceName}${record.cityName}`
           }
@@ -182,7 +182,7 @@ export default {
         {
           label: '最近工作单位',
           prop: 'lastCompany',
-          width: 160
+          minWidth: 160
         }
       ],
       data: [],

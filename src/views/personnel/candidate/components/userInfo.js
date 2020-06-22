@@ -1,4 +1,5 @@
-import { isMobile, isEmail } from '@/util/validate'
+import { isMobile } from '@/util/validate'
+import { provinceAndCityData } from 'element-china-area-data'
 
 let sixList = [
   {
@@ -21,13 +22,13 @@ let marriageList = [
   }
 ]
 // isEmail
-const validateEmail = (rule, value, callback) => {
-  if (!isEmail(value)) {
-    callback(new Error('邮箱不正确'))
-  } else {
-    callback()
-  }
-}
+// const validateEmail = (rule, value, callback) => {
+//   if (!isEmail(value)) {
+//     callback(new Error('邮箱不正确'))
+//   } else {
+//     callback()
+//   }
+// }
 const validatePhone = (rule, value, callback) => {
   if (!isMobile(value)) {
     callback(new Error('手机号码格式不正确'))
@@ -81,7 +82,7 @@ export let infoForm = [
     label: '邮箱',
     props: {},
     rules: [
-      { required: true, validator: validateEmail, trigger: 'blur' },
+      // {required: true, validator: validateEmail, trigger: 'blur'},
       { required: true, message: '请输入邮箱', trigger: 'blur' }
     ],
 
@@ -492,48 +493,58 @@ export let certificate = [
     label: '发证日期'
   }
 ]
+export let personInfo = [
+  {
+    span: 10,
+    prop: 'userName',
+    itemType: 'input',
+    label: '姓名',
+    required: true
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'sex',
+    itemType: 'radio',
+    filterable: true,
+    label: '性别',
+    options: sixList,
+    props: {
+      label: 'label',
+      value: 'value'
+    },
+    required: true
+  },
+  {
+    span: 10,
+    prop: 'phonenum',
+    itemType: 'input',
+    label: '手机号码',
+    disabled: true,
+    maxlength: 11,
+    props: {
+      onlyNumber: true
+    },
+    rules: [
+      // {required: true, validator: validatePhone, trigger: 'blur'},
+      { required: true, message: '请输入手机号码', trigger: 'blur' }
+    ]
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'email',
+    itemType: 'input',
+    label: '邮箱',
+    props: {},
+    rules: [
+      // {required: true, validator: validateEmail, trigger: 'blur'},
+      { required: true, message: '请输入邮箱', trigger: 'blur' }
+    ],
 
-export let personInfo = {
-  basicAttrs: [
-    {
-      attrId: '1', // ：key唯一值
-      attrName: '姓名：', // lable
-      disabled: true,
-      dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请填写工号', // 提示必填提示
-      props: 'userName'
-    },
-    {
-      attrId: '2', // ：key唯一值
-      attrName: '性别：', // lable
-      disabled: true,
-      value: sixList,
-      dataType: 1, // 当inType=1时生效
-      inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请填写工号', // 提示必填提示
-      props: 'sex'
-    },
-    {
-      attrId: '3', // ：key唯一值
-      attrName: '手机号：', // lable
-      disabled: true,
-      dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请填写工号', // 提示必填提示
-      props: 'phonenum'
-    },
-    {
-      attrId: '4', // ：key唯一值
-      attrName: '邮箱：', // lable
-      disabled: true,
-      dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请填写工号', // 提示必填提示
-      props: 'email'
-    }
-  ]
-}
+    required: true
+  }
+]
 let probation = [
   {
     value: 0,
@@ -564,161 +575,173 @@ let probation = [
     label: '6个月'
   }
 ]
-export let employment = {
-  basicAttrs: [
-    {
-      attrId: '1', // ：key唯一值
-      attrName: '预计入职日期：', // lable
-      value: '', // 单选框多选框的potion的值
-      inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请选择预计入职日期', // 提示必填提示
-      props: 'entryDate',
-      rules: [
-        {
-          required: true,
-          message: '请选择预计入职日期',
-          trigger: 'change'
+export let employment = [
+  {
+    span: 10,
+    prop: 'entryDate',
+    itemType: 'datePicker',
+    label: '预计入职日期',
+    required: true,
+    rules: [
+      {
+        required: true,
+        message: '请选择预计入职日期',
+        trigger: 'change'
+      }
+    ]
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'probation',
+    options: probation,
+    itemType: 'select',
+    label: '试用期',
+    props: {
+      label: 'label',
+      value: 'value'
+    },
+    required: true
+  },
+  {
+    span: 10,
+    prop: 'companyId',
+    options: [],
+    itemType: 'select',
+    label: '入职公司',
+    disabled: true,
+    props: {
+      label: 'orgName',
+      value: 'orgId'
+    },
+    required: true
+  },
+  {
+    disabled: true,
+    span: 10,
+    prop: 'orgId',
+    itemType: 'treeSelect',
+    label: '部门',
+    offset: 2,
+    props: {
+      selectParams: {
+        placeholder: '请选择部门',
+        multiple: false
+      },
+      treeParams: {
+        data: [],
+        'check-strictly': true,
+        'default-expand-all': false,
+        'expand-on-click-node': false,
+        clickParent: true,
+        filterable: false,
+        props: {
+          children: 'children',
+          label: 'orgName',
+          disabled: 'disabled',
+          value: 'orgId'
         }
-      ]
-    },
-    {
-      attrId: '2', // ：key唯一值
-      attrName: '试用期：', // lable
-      value: probation, // 单选框多选框的potion的值
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请选择试用期', // 提示必填提示
-      props: 'probation',
-      rules: [
-        {
-          required: true,
-          message: '请选择试用期',
-          trigger: 'change'
-        }
-      ]
-    },
-    {
-      attrId: '3', // ：key唯一值
-      attrName: '入职公司：', // lable
-      disabled: true,
-      value: '',
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请选择入职公司', // 提示必填提示
-      props: 'companyId',
-      rules: [
-        {
-          required: true,
-          message: '请选择入职公司',
-          trigger: 'change'
-        }
-      ]
-    },
-    {
-      attrId: '4', // ：key唯一值
-      attrName: '部门：', // lable
-      value: [], // 单选框多选框的potion的值
-      inType: 11, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请选择部门', // 提示必填提示
-      disabled: true,
-      props: 'orgId',
-      rules: [
-        {
-          required: true,
-          message: '请选择部门',
-          trigger: 'blur'
-        }
-      ]
-    },
-    {
-      attrId: '5', // ：key唯一值
-      attrName: '职位：', // lable
-      disabled: true,
-      value: '',
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '职位', // 提示必填提示
-      props: 'jobId',
-      rules: [
-        {
-          required: true,
-          message: '请选择职位',
-          trigger: 'change'
-        }
-      ]
-    },
-    {
-      attrId: '6', // ：key唯一值
-      attrName: '岗位：', // lable
-      value: '', // 单选框多选框的potion的值
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '岗位', // 提示必填提示
-      props: 'positionId'
-    },
-    {
-      attrId: '7', // ：key唯一值
-      attrName: '工作性质：', // lable
-      value: '', // 单选框多选框的potion的值
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '工作性质', // 提示必填提示
-      props: 'workProperty',
-      rules: [
-        {
-          required: true,
-          message: '请选择工作性质',
-          trigger: 'change'
-        }
-      ]
-    },
-    {
-      attrId: '8', // ：key唯一值
-      attrName: '工作地址：', // lable
-      value: '', // 单选框多选框的potion的值
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '工作地址', // 提示必填提示
-      props: 'workAddressId'
-    },
-    {
-      attrId: '9', // ：key唯一值
-      attrName: '工作城市：', // lable
-      value: '', // 单选框多选框的potion的值
-      inType: 8, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '工作城市', // 提示必填提示
-      props: 'city'
+      }
     }
-  ]
-}
-export let salary = {
-  basicAttrs: [
-    {
-      attrId: '1', // ：key唯一值
-      attrName: '试用期月薪：', // lable
-      dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '试用期月薪', // 提示必填提示
-      props: 'probationSalary',
-      rules: [
-        {
-          required: true,
-          message: '请输入试用期月薪',
-          trigger: 'change'
-        }
-      ]
+  },
+  {
+    span: 10,
+    prop: 'jobId',
+    options: [],
+    itemType: 'select',
+    label: '职位',
+    disabled: true,
+    props: {
+      label: 'jobName',
+      value: 'jobId'
     },
-    {
-      attrId: '2', // ：key唯一值
-      attrName: '转正月薪：', // lable
-      dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '转正月薪', // 提示必填提示
-      props: 'formalSalary',
-      rules: [
-        {
-          required: true,
-          message: '请输入转正月薪',
-          trigger: 'change'
-        }
-      ]
+    required: true
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'positionId',
+    options: [],
+    itemType: 'select',
+    label: '岗位',
+    props: {
+      label: 'name',
+      value: 'id'
     }
-  ]
-}
+  },
+  {
+    span: 10,
+    prop: 'workProperty',
+    options: [],
+    itemType: 'select',
+    label: '工作性质',
+    props: {
+      label: 'dictValue',
+      value: 'dictKey'
+    },
+    required: true
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'workAddressId',
+    options: [],
+    itemType: 'select',
+    label: '工作地址',
+    props: {
+      label: 'address',
+      value: 'id'
+    }
+  },
+  {
+    span: 10,
+    prop: 'city',
+    options: provinceAndCityData,
+    itemType: 'cascader',
+    label: '工作城市',
+    props: {
+      label: 'label',
+      value: 'value'
+    }
+  }
+]
+export let salary = [
+  {
+    span: 10,
+    prop: 'probationSalary',
+    itemType: 'input',
+    label: '试用期月薪',
+    props: {
+      onlyNumber: true
+    },
+    rules: [
+      {
+        required: true,
+        message: '请输入试用期月薪',
+        trigger: 'change'
+      }
+    ],
+    required: true
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'formalSalary',
+    itemType: 'input',
+    label: '转正月薪',
+    props: {
+      onlyNumber: true
+    },
+    rules: [
+      {
+        required: true,
+        message: '请输入转正月薪',
+        trigger: 'change'
+      }
+    ],
+    required: true
+  }
+]
 let years = [
   {
     value: 1,
@@ -769,82 +792,61 @@ let years = [
     label: '12年'
   }
 ]
-export let labour = {
-  basicAttrs: [
-    {
-      attrId: '1', // ：key唯一值
-      attrName: '合同公司：', // lable
-      disabled: true,
-      value: '', // 单选框多选框的potion的值
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '合同公司', // 提示必填提示
-      props: 'companyId',
-      rules: [
-        {
-          required: true,
-          message: '请输入合同公司',
-          trigger: 'change'
-        }
-      ]
-    },
-    {
-      attrId: '2', // ：key唯一值
-      attrName: '合同类型：', // lable
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '合同类型', // 提示必填提示
-      props: 'contractType',
-      rules: [
-        {
-          required: true,
-          message: '请选择合同类型',
-          trigger: 'change'
-        }
-      ]
-    },
-    {
-      attrId: '3', // ：key唯一值
-      attrName: '合同期限：', // lable
-      value: years, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '合同期限', // 提示必填提示
-      props: 'contractPeriod'
-    },
-    {
-      attrId: '4', // ：key唯一值
-      attrName: '合同开始日期：', // lable
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '合同开始日期', // 提示必填提示
-      props: 'contractBeginDate',
-      rules: [
-        {
-          required: true,
-          message: '请输入合同开始日期',
-          trigger: 'change'
-        }
-      ]
-    },
-    {
-      attrId: '5', // ：key唯一值
-      attrName: '合同结束日期：', // lable
-      value: '', // 单选框多选框的potion的值
-      inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '合同结束日期', // 提示必填提示
-      props: 'contractEndDate',
-      rules: [
-        {
-          required: true,
-          message: '请输入合同结束日期',
-          trigger: 'change'
-        }
-      ]
+export let labour = [
+  {
+    span: 10,
+    prop: 'companyId',
+    options: [],
+    itemType: 'select',
+    label: '合同公司',
+    disabled: true,
+    required: true,
+    props: {
+      label: 'orgName',
+      value: 'orgId'
     }
-  ]
-}
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'contractType',
+    options: [],
+    itemType: 'select',
+    label: '合同类型',
+    required: true,
+    props: {
+      label: 'dictValue',
+      value: 'dictKey'
+    }
+  },
+  {
+    span: 10,
+    prop: 'contractPeriod',
+    options: years,
+    itemType: 'select',
+    label: '合同期限',
+    props: {
+      label: 'label',
+      value: 'value'
+    }
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'contractBeginDate',
+    itemType: 'datePicker',
+    label: '合同开始日期',
+    required: true
+  },
+  {
+    span: 10,
+    prop: 'contractEndDate',
+    itemType: 'datePicker',
+    label: '合同结束日期',
+    required: true
+  }
+]
+
 let isRisks = [
   {
     label: '是',
@@ -864,38 +866,41 @@ let orther = [
   { label: '生育保险', value: 'isShengy' },
   { label: '住房公积金', value: 'isGjj' }
 ]
-export let fiveRisks = {
-  basicAttrs: [
-    {
-      attrId: '1', // ：key唯一值
-      attrName: '是否缴纳社会保险：', // lable
-      value: isRisks, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '缴纳社会保险', // 提示必填提示
-      props: 'isShbx'
-    },
-    {
-      attrId: '2', // ：key唯一值
-      attrName: '社会保险基数：', // lable
-      value: '', // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '社会保险基数', // 提示必填提示
-      props: 'baseMoney'
-    },
-    {
-      attrId: '3', // ：key唯一值
-      attrName: '其他：', // lable
-      value: orther, // 单选框多选框的potion的值
-      dataType: 1, // 当inType=1时生效
-      inType: 9, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '其他', // 提示必填提示
-      props: 'risks',
-      span: 24
+export let fiveRisks = [
+  {
+    span: 10,
+    prop: 'isShbx',
+    itemType: 'radio',
+    filterable: true,
+    label: '是否缴纳社会保险',
+    options: isRisks,
+    props: {
+      label: 'label',
+      value: 'value'
     }
-  ]
-}
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'baseMoney',
+    itemType: 'input',
+    label: '社会保险基数',
+    props: {
+      onlyNumber: true
+    }
+  },
+  {
+    span: 24,
+    prop: 'risks',
+    itemType: 'checkbox',
+    options: orther,
+    label: '其他',
+    props: {
+      label: 'label',
+      value: 'value'
+    }
+  }
+]
 let OfficeSpace = [
   {
     label: '无安排',
@@ -929,70 +934,78 @@ let phoneConfig = [
     value: '分机不带长途'
   }
 ]
-export let office = {
-  basicAttrs: [
-    {
-      attrId: '1', // ：key唯一值
-      attrName: '办公位安排：', // lable
-      value: OfficeSpace, // 单选框多选框的potion的值
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '办公位安排', // 提示必填提示
-      props: 'officeSpace'
-    },
-    {
-      attrId: '2', // ：key唯一值
-      attrName: '电话配备：', // lable
-      value: phoneConfig, // 单选框多选框的potion的值
-      inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '电话配备', // 提示必填提示
-      props: 'telphone'
-    },
-    {
-      attrId: '3', // ：key唯一值
-      attrName: '是否电脑配置：', // lable
-      value: isRisks, // 单选框多选框的potion的值
-      inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '是否电脑配置', // 提示必填提示
-      props: 'isComputer',
-      span: 12
-    },
-    {
-      attrId: '4', // ：key唯一值
-      attrName: '其他：', // lable
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '其他', // 提示必填提示
-      props: 'other',
-      span: 12
+export let office = [
+  {
+    span: 10,
+    prop: 'officeSpace',
+    options: OfficeSpace,
+    itemType: 'select',
+    label: '办公位安排',
+    props: {
+      label: 'label',
+      value: 'value'
     }
-  ]
-}
-export let other = {
-  basicAttrs: [
-    {
-      attrId: '1', // ：key唯一值
-      attrName: '是否安排住房：', // lable
-      value: isRisks, // 单选框多选框的potion的值
-      inType: 7, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '是否安排住房', // 提示必填提示
-      props: 'isHouse',
-      span: 12
-    },
-    {
-      attrId: '2', // ：key唯一值
-      attrName: '住房标准：', // lable
-      value: '', // 单选框多选框的potion的值
-      inType: 1, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '住房标准', // 提示必填提示
-      props: 'houseStandard',
-      span: 12
-    },
-    {
-      attrId: '3', // ：key唯一值
-      attrName: '备注：', // lable
-      inType: 10, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '备注', // 提示必填提示
-      props: 'remark',
-      span: 12
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'telphone',
+    itemType: 'select',
+    options: phoneConfig,
+    label: '电话配备',
+    props: {
+      label: 'label',
+      value: 'value'
     }
-  ]
-}
+  },
+  {
+    span: 10,
+    prop: 'isComputer',
+    itemType: 'radio',
+    filterable: true,
+    label: '是否电脑配置',
+    options: isRisks,
+    props: {
+      label: 'label',
+      value: 'value'
+    }
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'other',
+    itemType: 'input',
+    label: '其他',
+    props: {}
+  }
+]
+export let other = [
+  {
+    span: 10,
+    prop: 'isHouse',
+    itemType: 'radio',
+    filterable: true,
+    label: '是否安排住房',
+    options: isRisks,
+    props: {
+      label: 'label',
+      value: 'value'
+    }
+  },
+  {
+    span: 10,
+    offset: 2,
+    prop: 'houseStandard',
+    itemType: 'input',
+    label: '住房标准',
+    props: {}
+  },
+  {
+    span: 10,
+    prop: 'remark',
+    itemType: 'input',
+    type: 'textarea',
+    label: '备注',
+    props: {}
+  }
+]

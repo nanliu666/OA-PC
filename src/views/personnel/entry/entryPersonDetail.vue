@@ -208,7 +208,7 @@
               >
                 <el-form-item label="工作地址:">
                   <span class="info-item-value">
-                    {{ applyInfo.workProviceName + applyInfo.workCityName + applyInfo.address }}
+                    {{ applyInfo.workProvinceName + applyInfo.workCityName + applyInfo.address }}
                   </span>
                 </el-form-item>
               </el-col>
@@ -218,7 +218,7 @@
               >
                 <el-form-item label="工作城市:">
                   <span class="info-item-value">
-                    {{ applyInfo.workProviceName + applyInfo.workCityName }}
+                    {{ applyInfo.workProvinceName + applyInfo.workCityName }}
                   </span>
                 </el-form-item>
               </el-col>
