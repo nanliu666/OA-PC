@@ -824,7 +824,7 @@ export default {
       let params = ''
       switch (key) {
         case 'sex':
-          params = data === 1 ? '男' : '女'
+          params = data === 1 ? '男' : data === 0 ? '女' : ''
           break
         case 'idType':
           params = this.value(this.idType, data)
@@ -836,7 +836,7 @@ export default {
           params = this.value(this.nation, data)
           break
         case 'marriage':
-          params = data === 1 ? '已婚' : '未婚'
+          params = data === 1 ? '已婚' : data === 1 ? '未婚' : ''
           break
         case 'politicalStatus':
           params = this.value(this.PoliticalStatus, data)
@@ -861,7 +861,6 @@ export default {
         personId: this.$route.query.personId
       }
       getpersonInfo(params).then((res) => {
-        this.personInfo.name = res.name
         this.data = res
         for (let key in this.basic) {
           this.basic[key] = res[key]
@@ -889,6 +888,7 @@ export default {
       getPersonInfo(params).then((res) => {
         this.candidateInfo = Object.assign(this.candidateInfo, res)
         this.personInfo.department = res.orgName
+        this.personInfo.name = res.name
         this.personInfo.position = res.jobName
         this.personInfo.status = {
           '0': '已淘汰',
