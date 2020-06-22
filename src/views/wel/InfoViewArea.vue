@@ -167,6 +167,7 @@ export default {
     async loadingUserInfo() {
       this.loading = true
       let res = await getStaffBasicInfo({ userId: this.userInfo.user_id })
+      this.$store.dispatch('set_info', res)
       this.info = res
       this.loading = false
     }

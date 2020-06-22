@@ -54,6 +54,11 @@ export default {
   methods: {
     jump(formKey) {
       if (formKey === this.showData[0]) {
+        if (this.$store.getters.status === 'Formal' || this.$store.getters.status === 'WaitLeave') {
+          //员工状态，Try-试用期，Formal-正式，Leaved-已离职，WaitLeave-待离职
+          this.$message.warning('你已经转证成功')
+          return
+        }
         this.$router.push({
           path: '/personnel/administration/apply'
         })

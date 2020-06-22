@@ -11,6 +11,7 @@ const user = {
     userInfo: getStore({ name: 'userInfo' }) || [],
     privileges: getStore({ name: 'privileges' }) || [],
     orgs: getStore({ name: 'orgs' }) || [],
+    info: getStore({ name: 'info' }) || [],
     roles: [],
     menu: getStore({ name: 'menu' }) || [],
     menuAll: getStore({ name: 'menuAll' }) || [],
@@ -19,6 +20,9 @@ const user = {
     menuLoading: false
   },
   actions: {
+    set_info: ({ commit }, info) => {
+      commit('SET_INFO', info)
+    },
     //根据用户名登录
     LoginByUsername({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
@@ -157,6 +161,10 @@ const user = {
     }
   },
   mutations: {
+    SET_INFO: (state, info) => {
+      state.info = info
+      setStore({ name: 'info', content: state.info, type: 'session' })
+    },
     SET_TOKEN: (state, token) => {
       setToken(token)
       state.token = token

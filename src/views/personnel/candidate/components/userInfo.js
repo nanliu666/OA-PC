@@ -499,6 +499,7 @@ export let personInfo = [
     prop: 'userName',
     itemType: 'input',
     label: '姓名',
+    disabled: true,
     required: true
   },
   {
@@ -507,6 +508,7 @@ export let personInfo = [
     prop: 'sex',
     itemType: 'radio',
     filterable: true,
+    disabled: true,
     label: '性别',
     options: sixList,
     props: {
@@ -535,6 +537,7 @@ export let personInfo = [
     offset: 2,
     prop: 'email',
     itemType: 'input',
+    disabled: true,
     label: '邮箱',
     props: {},
     rules: [
