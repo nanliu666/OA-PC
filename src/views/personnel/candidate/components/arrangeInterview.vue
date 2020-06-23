@@ -288,7 +288,7 @@ export default {
     },
     row: {
       handler: function(data) {
-        this.form.userName = data.userName
+        this.form.userName = data.name
         this.form.personId = data.personId
         this.form.recruitmentId = data.recruitmentId
       },

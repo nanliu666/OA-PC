@@ -74,6 +74,9 @@ import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { signedData } from './components/contractData'
 import { getCompany } from '@/api/personnel/selectedPerson'
 import { postContractApply } from '@/api/personnel/contart'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 
 export default {
   name: 'Renewal',
@@ -89,7 +92,18 @@ export default {
         callback()
       }
     }
+    let validate = (rule, value, callback) => {
+      let beginDate = moment(this.infoForm.beginDate).valueOf()
+      let endDate = moment(this.infoForm.endDate).valueOf()
+      if (beginDate > endDate) {
+        // this.infoForm.endDate = ''
+        callback(new Error('合同结束日期要大于合同起始日期'))
+      } else {
+        callback()
+      }
+    }
     return {
+      rule: { required: true, validator: validate, trigger: 'change' },
       apply: {
         apprProgress: '',
         note: ''
@@ -126,6 +140,38 @@ export default {
       }
     }
   },
+  watch: {
+    'infoForm.beginDate': {
+      handler(val) {
+        // beginDate: '',
+        //   endDate: '',
+        if (val && this.infoForm.period) {
+          this.infoForm.endDate = moment(val)
+            .add(this.infoForm.period, 'Y')
+            .format('YYYY-MM-DD')
+        } else if (val && !this.infoForm.period) {
+          let beginDate = moment(this.infoForm.beginDate).valueOf()
+          let endDate = moment(this.infoForm.endDate).valueOf()
+          if (beginDate > endDate) {
+            this.infoForm.endDate = ''
+          }
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'infoForm.period': {
+      handler(val) {
+        if (val && this.infoForm.beginDate) {
+          this.infoForm.endDate = moment(this.infoForm.beginDate)
+            .add(this.infoForm.period, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   mounted() {
     this.infoForm.userId = this.$route.query.userId
     this.infoForm.contractId = this.$route.query.contractId
@@ -136,6 +182,8 @@ export default {
       ...this.$route.query
     }
     this.getCompany()
+
+    this.signedData.basicAttrs.find((it) => it.props === 'endDate').rules.push(this.rule)
   },
   methods: {
     handleBack() {

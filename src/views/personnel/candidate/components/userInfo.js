@@ -496,7 +496,7 @@ export let certificate = [
 export let personInfo = [
   {
     span: 10,
-    prop: 'userName',
+    prop: 'name',
     itemType: 'input',
     label: '姓名',
     disabled: true,
@@ -596,6 +596,7 @@ export let employment = [
   {
     span: 10,
     offset: 2,
+    clearable: true,
     prop: 'probation',
     options: probation,
     itemType: 'select',
@@ -839,6 +840,13 @@ export let labour = [
     prop: 'contractBeginDate',
     itemType: 'datePicker',
     label: '合同开始日期',
+    rules: [
+      {
+        required: true,
+        message: '请选择合同开始日期',
+        trigger: 'change'
+      }
+    ],
     required: true
   },
   {
@@ -846,6 +854,13 @@ export let labour = [
     prop: 'contractEndDate',
     itemType: 'datePicker',
     label: '合同结束日期',
+    rules: [
+      {
+        required: true,
+        message: '请选择合同结束日期',
+        trigger: 'change'
+      }
+    ],
     required: true
   }
 ]

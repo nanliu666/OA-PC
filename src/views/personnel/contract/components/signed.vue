@@ -125,9 +125,9 @@ export default {
       }
     },
     columns: {
-      type: Object,
+      type: Array,
       default: function() {
-        return {}
+        return []
       }
     },
     tableConfig: {

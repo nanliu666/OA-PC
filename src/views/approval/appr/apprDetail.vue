@@ -1106,7 +1106,7 @@ export default {
 
     // 撤回申请
     async handelCancel() {
-      let { apprNo } = this.$route.query
+      let { apprNo } = this.ApplyInfo
       let res = await this.$confirm('确定撤销申请吗?', '撤销申请', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

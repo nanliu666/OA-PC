@@ -1044,8 +1044,9 @@ export default {
         path: '/personnel/candidate/apply',
         query: {
           personId: row.personId,
-          userName: row.userName,
+          name: row.name,
           sex: row.sex,
+          applyId: row.applyId,
           email: row.email,
           phonenum: row.phonenum,
           recruitmentId: row.recruitmentId
@@ -1197,6 +1198,8 @@ export default {
           path: '/personnel/candidate/interivewDetails',
           query: params
         })
+      } else if (command === 'reApply') {
+        this.handleApplyEmploy(data)
       }
     },
     handleSubmit(params) {
