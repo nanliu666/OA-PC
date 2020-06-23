@@ -1228,6 +1228,7 @@ export default {
       this.loadData(pageNo)
     },
     loadData(pageNo) {
+      if (this.loading) return
       let params = { ...this.searchParams }
       if (pageNo) this.page.currentPage = pageNo
       params.pageNo = this.page.currentPage
