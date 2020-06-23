@@ -28,6 +28,36 @@
               type="text"
               @click="getTableData"
             />
+            <el-popover
+              placement="bottom"
+              width="40"
+              trigger="click"
+              style="margin:0 12px"
+            >
+              <div class="checkColumn">
+                <el-checkbox-group
+                  v-model="checkColumn"
+                  @change="columnChange"
+                >
+                  <el-checkbox
+                    v-for="item in originColumn"
+                    :key="item.prop"
+                    :label="item.prop"
+                    :disabled="item.prop === 'name' || item.prop === 'jobName'"
+                    class="originColumn"
+                  >
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <el-button
+                slot="reference"
+                icon="el-icon-setting"
+                size="medium"
+                class="topBtn"
+                type="text"
+              />
+            </el-popover>
           </div>
         </div>
       </template>
@@ -78,6 +108,65 @@ import { mapGetters } from 'vuex'
 import { setRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+
+const column = [
+  {
+    label: '姓名',
+    prop: 'name',
+    slot: true
+  },
+  {
+    label: '需求编号',
+    prop: 'id',
+    slot: true,
+    minWidth: '140px'
+  },
+  {
+    label: '职位',
+    prop: 'jobName',
+    minWidth: '120px'
+  },
+  {
+    label: '岗位',
+    prop: 'positionName',
+    minWidth: '120px'
+  },
+  {
+    label: '紧急程度',
+    prop: 'emerType',
+    minWidth: '120px',
+    slot: true
+  },
+  {
+    label: '分配人',
+    prop: 'userName',
+    minWidth: '120px'
+  },
+  {
+    label: '分配时间',
+    prop: 'createTime',
+    minWidth: '120px'
+  },
+  {
+    label: '任务数',
+    prop: 'taskNum'
+  },
+  {
+    label: '已入职',
+    prop: 'entryNum'
+  },
+  {
+    label: '招聘进度',
+    prop: 'accuracy',
+    minWidth: '120px',
+    slot: true
+  },
+  {
+    label: '候选人数',
+    prop: 'candidateNum'
+  }
+]
+
 export default {
   name: 'DetailsList',
   components: {
@@ -85,6 +174,8 @@ export default {
   },
   data() {
     return {
+      checkColumn: ['id', 'jobName', 'orgName', 'positionName', 'userNum', 'workNum', 'remark'],
+      originColumn: column,
       loading: false,
       searchConfig: {
         requireOptions: [
@@ -227,6 +318,7 @@ export default {
           prop: 'candidateNum'
         }
       ],
+
       tableConfig: {
         showHandler: true,
         showIndexColumn: false,
@@ -254,7 +346,18 @@ export default {
       ],
       WorkYear: [],
       getLevel: [],
-      emerType: []
+      emerType: [],
+      option: {
+        headerAlign: 'center',
+        align: 'center',
+        border: false,
+        menuWidth: 180,
+        defaultExpandAll: true,
+        selection: true,
+        formHeight: 20,
+        rowKey: 'orgId',
+        column: column
+      }
     }
   },
   computed: {
@@ -367,6 +470,11 @@ export default {
     },
     percentage(row) {
       return (row.percentage = claAccuracy(row.taskNum, row.entryNum))
+    },
+    columnChange() {
+      this.column = column.filter((item) => {
+        return this.checkColumn.indexOf(item.prop) > -1
+      })
     }
   }
 }

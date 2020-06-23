@@ -554,6 +554,7 @@ export default {
     getReasonList(index) {
       this.$store.dispatch('CommonDict', 'ChangeReason').then((res) => {
         this.handelReason(res, index)
+        this.$refs.applyForm.clearValidate('reason')
       })
     },
     // // 处理异动原因select框数据

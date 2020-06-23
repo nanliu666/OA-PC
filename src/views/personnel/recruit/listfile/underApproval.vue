@@ -31,7 +31,7 @@
         </div>
       </template>
       <template
-        slot="id"
+        slot="apprNo"
         slot-scope="{ row }"
       >
         <el-button
@@ -39,7 +39,7 @@
           size="medium"
           @click="jumpToDetail(row)"
         >
-          {{ row.id }}
+          {{ row.apprNo }}
         </el-button>
       </template>
 
@@ -81,7 +81,7 @@ export default {
       columns: [
         {
           label: '审批编号',
-          prop: 'id',
+          prop: 'apprNo',
           slot: true,
           minWidth: '120px'
         },

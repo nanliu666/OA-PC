@@ -75,7 +75,7 @@ export default {
   computed: {
     ...mapGetters(['userInfo']),
     title() {
-      return `${this.userInfo.nick_name}发起了${FormKeysCN[this.formKey]}审批`
+      return `${this.userInfo.nick_name}发起的${FormKeysCN[this.formKey]}审批`
     }
   },
   watch: {

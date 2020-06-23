@@ -124,7 +124,7 @@
                   <el-tooltip
                     v-for="item in msgWorkList"
                     :key="item.id"
-                    open-delay="500"
+                    :open-delay="500"
                     :enterable="false"
                     :content="item.content"
                     placement="top"
@@ -166,7 +166,7 @@
                   <el-tooltip
                     v-for="item in msgSystemList"
                     :key="item.id"
-                    open-delay="500"
+                    :open-delay="500"
                     :enterable="false"
                     effect="dark"
                     :content="item.content"
@@ -335,7 +335,7 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return moment().diff(moment(row.endDate)) > 0
+      return row.status === 'UnFinished' && moment().diff(moment(row.endDate)) > 0
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
@@ -368,7 +368,8 @@ export default {
         this.$router.push({
           path: '/approval/appr/apprDetail',
           query: {
-            apprNo: bizId
+            apprNo: bizId,
+            toDoList: true
           }
         })
       } else if (type === 'Recruitment') {
