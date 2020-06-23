@@ -6,6 +6,7 @@
     :rules="loginRules"
     :model="loginForm"
     label-width="0"
+    size="medium"
   >
     <!-- <el-form-item v-if="tenantMode" prop="tenantId">
       <el-input
@@ -22,7 +23,6 @@
     <el-form-item prop="username">
       <el-input
         v-model="loginForm.username"
-        size="small"
         auto-complete="off"
         :placeholder="$t('login.username')"
         @keyup.enter.native="handleLogin"
@@ -36,7 +36,6 @@
     <el-form-item prop="password">
       <el-input
         v-model="loginForm.password"
-        size="small"
         :type="passwordType"
         auto-complete="off"
         :placeholder="$t('login.password')"
@@ -61,7 +60,6 @@
         <el-col :span="16">
           <el-input
             v-model="loginForm.code"
-            size="small"
             auto-complete="off"
             :placeholder="$t('login.code')"
             @keyup.enter.native="handleLogin"

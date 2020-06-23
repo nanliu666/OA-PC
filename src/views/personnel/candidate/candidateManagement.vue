@@ -562,6 +562,12 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
+                  <el-dropdown-item
+                    v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
+                    command="reApply"
+                  >
+                    重新申请
+                  </el-dropdown-item>
                   <el-dropdown-item command="InterviewEvaluation">
                     查看面试评价
                   </el-dropdown-item>
@@ -1041,8 +1047,9 @@ export default {
         path: '/personnel/candidate/apply',
         query: {
           personId: row.personId,
-          userName: row.userName,
+          name: row.name,
           sex: row.sex,
+          applyId: row.applyId,
           email: row.email,
           phonenum: row.phonenum,
           recruitmentId: row.recruitmentId
@@ -1150,7 +1157,21 @@ export default {
     },
     handleCommand(command, data) {
       if (command === 'changeJob') {
-        this.$refs.changeJobDialog.changeJob(data)
+        if (data.pushResume === 1) {
+          this.$confirm(
+            '该候选人已给用人部门推送简历审核，更改应聘职位后原审核推送将自动撤回，您确认要更改吗？',
+            '确认更改应聘职位？',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }
+          ).then(() => {
+            this.$refs.changeJobDialog.changeJob(data)
+          })
+        } else {
+          this.$refs.changeJobDialog.changeJob(data)
+        }
       } else if (command === 'weedOut') {
         this.$refs.weedOutgDialog.out(data)
       } else if (command === 'offerChange') {
@@ -1194,6 +1215,8 @@ export default {
           path: '/personnel/candidate/interivewDetails',
           query: params
         })
+      } else if (command === 'reApply') {
+        this.handleApplyEmploy(data)
       }
     },
     handleSubmit(params) {

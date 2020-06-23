@@ -25,10 +25,7 @@
             size="medium"
           >
             <el-row>
-              <el-col
-                v-if="!form.recruitmentId"
-                :span="10"
-              >
+              <el-col :span="10">
                 <el-form-item
                   label="关联应聘职位"
                   prop="recruitmentId"
@@ -41,14 +38,13 @@
                     <el-option
                       v-for="item in recruitmentList"
                       :key="item.id"
-                      :label="item.jobName"
+                      :label="`${item.jobName}(${item.id})`"
                       :value="item.id"
                     />
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col
-                v-if="!form.recruitmentId"
                 :span="10"
                 :offset="4"
               >
@@ -315,7 +311,7 @@
               type="primary"
               size="medium"
               :loading="submitting"
-              @click="handleSubmit"
+              @click="handleSubmit(false)"
             >
               保存
             </el-button>
@@ -366,7 +362,7 @@ export default {
       },
       rules: {
         recruitmentId: [{ required: true, message: '请选择招聘需求', trigger: 'change' }],
-        name: [{ required: true, message: '请输入姓名', trigger: 'input' }],
+        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
         sex: [{ required: true, message: '请选择性别', trigger: 'change' }],
         age: [{ required: true, message: '请输入年龄', trigger: 'blur' }],
         phonenum: [
@@ -375,15 +371,15 @@ export default {
         ],
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur'] }
         ],
         addressArr: [{ required: true, message: '请选择所在地址', trigger: 'change' }],
         educationalLevel: [{ required: true, message: '请选择学历', trigger: 'change' }],
-        university: [{ required: true, message: '请输入毕业学校', trigger: 'input' }],
-        major: [{ required: true, message: '请输入毕业专业', trigger: 'input' }],
-        workAge: [{ required: true, message: '请输入工作年限', trigger: 'input' }],
+        university: [{ required: true, message: '请输入毕业学校', trigger: 'blur' }],
+        major: [{ required: true, message: '请输入毕业专业', trigger: 'blur' }],
+        workAge: [{ required: true, message: '请输入工作年限', trigger: 'blur' }],
         recruitment: [{ required: true, message: '请选择招聘渠道', trigger: 'change' }],
-        monthSalary: [{ required: true, message: '请输入期望月薪', trigger: 'input' }]
+        monthSalary: [{ required: true, message: '请输入期望月薪', trigger: 'blur' }]
       },
       provinceAndCityData,
       educationalLevelOptions: [],
@@ -426,12 +422,16 @@ export default {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
     await this.getPersonInfo()
-    if (this.$route.query.recruitmentId) {
+    if (this.form.recruitmentId || this.$route.query.recruitmentId) {
       this.recruitmentIdDisabled = true
       this.form.recruitmentId = this.$route.query.recruitmentId
     } else {
       this.recruitmentIdDisabled = false
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    this.clear()
+    next()
   },
   methods: {
     inputNumber(value, key) {
@@ -536,8 +536,8 @@ export default {
             this.submitting = false
             if (!shouldContinue) {
               this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+              this.$router.go(-1)
             }
-            this.$router.go(-1)
           })
           .catch(() => {
             this.submitting = false

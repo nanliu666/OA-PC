@@ -470,7 +470,7 @@ export default {
         },
         {
           label: '合同公司',
-          width: 120,
+          width: 150,
           prop: 'contractName'
         },
         {
@@ -498,6 +498,11 @@ export default {
         {
           label: '合同结束日期',
           prop: 'endContractDate',
+          width: 120
+        },
+        {
+          label: '合同签订次数',
+          prop: 'signNum',
           width: 120
         }
       ],
@@ -568,6 +573,30 @@ export default {
       },
       endDate: '',
       endDateTodo: ''
+    }
+  },
+  watch: {
+    'infoForm.contractBeginDate': {
+      handler(val) {
+        if (val && this.infoForm.contractPeriod) {
+          this.infoForm.contractEndDate = moment(val)
+            .add(this.infoForm.contractPeriod, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'infoForm.contractPeriod': {
+      handler(val) {
+        if (val && this.infoForm.contractBeginDate) {
+          this.infoForm.contractEndDate = moment(this.infoForm.contractBeginDate)
+            .add(this.infoForm.contractPeriod, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   mounted() {

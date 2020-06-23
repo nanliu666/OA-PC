@@ -218,7 +218,7 @@ export default {
           options: [],
           props: {
             label: 'orgName',
-            value: 'orgId'
+            value: 'orgName'
           },
           span: 11,
           offset: 2,

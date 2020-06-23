@@ -4,6 +4,7 @@
     <basic-container>
       <el-tabs
         v-model="status"
+        :before-leave="handleBeforeClick"
         @tab-click="handleTabClick"
       >
         <el-tab-pane
@@ -391,6 +392,9 @@ export default {
     closeNav() {
       this.navShow = false
     },
+    handleBeforeClick() {
+      if (this.loading) return false
+    },
     handleTabClick() {
       this.columns = column.concat(
         this.status === '7'
@@ -456,11 +460,15 @@ export default {
         params.status = this.status
       }
       this.loading = true
-      getDataFun(params).then((res) => {
-        this.page.total = res.totalNum
-        this.data = res.data
-        this.loading = false
-      })
+      getDataFun(params)
+        .then((res) => {
+          this.page.total = res.totalNum
+          this.data = res.data
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     currentChange(currentPage) {
       this.page.currentPage = currentPage

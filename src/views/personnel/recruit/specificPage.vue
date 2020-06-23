@@ -9,10 +9,28 @@
       v-loading="loading"
       style="margin-button: 40px"
     >
-      <el-row :gutter="24">
-        <el-col class="fullName">
+      <el-row type="flex">
+        <el-col
+          class="fullName"
+          :span="3"
+        >
           {{ user.userName }}提交的招聘需求
         </el-col>
+        <!-- 当页面是全部招聘状态打开页面标签描述 -->
+        <template v-if="$route.query.status === 'aRequirements'">
+          <el-col :span="2">
+            <el-tag
+              v-if="childData.status === 'UnHandle'"
+              type="danger"
+            >
+              待分配
+            </el-tag>
+
+            <el-tag v-else>
+              已分配
+            </el-tag>
+          </el-col>
+        </template>
       </el-row>
       <el-row
         :gutter="24"
@@ -23,17 +41,28 @@
           <span class="nodetitle">需求编号:</span>
           <span>{{ user.id }}</span>
         </el-col>
+        <template v-if="$route.query.status === 'iSubmit'">
+          <el-col :span="6">
+            <span class="nodetitle">分配人:</span>
+            <span>{{ user.userName }}</span>
+          </el-col>
 
-        <el-col :span="6">
-          <span class="nodetitle">提交人:</span>
-          <span>{{ user.userName }}</span>
-        </el-col>
+          <el-col :span="6">
+            <span class="nodetitle">分配时间:</span>
+            <span>{{ user.createTime }}</span>
+          </el-col>
+        </template>
+        <template v-else>
+          <el-col :span="6">
+            <span class="nodetitle">提交人:</span>
+            <span>{{ user.userName }}</span>
+          </el-col>
 
-        <el-col :span="6">
-          <span class="nodetitle">到岗时间:</span>
-          <span>{{ user.joinDate }}</span>
-        </el-col>
-
+          <el-col :span="6">
+            <span class="nodetitle">提交时间:</span>
+            <span>{{ user.createTime }}</span>
+          </el-col>
+        </template>
         <el-col :span="6">
           <span class="nodetitle">状态:</span>
           <span style="color: #207EFA">{{
@@ -53,8 +82,8 @@
           <h3 class="Header">
             分配详情
           </h3>
-          <distri-buteall />
-          <div v-if="childData.entryNum !== 0">
+          <distri-buteall :child-data="childData" />
+          <div>
             <h3 class="Header">
               已入职员工
             </h3>
@@ -73,7 +102,7 @@
             分配详情
           </h3>
           <distri-buteall />
-          <div v-if="childData.status === 'Handled' || childData.entryNum !== 0">
+          <div v-if="childData.status === 'Handled'">
             <h3 class="Header">
               已入职员工
             </h3>
@@ -168,11 +197,15 @@ export default {
   methods: {
     getData() {
       this.loading = true
-      getRecruitmentDetail(this.$route.query.id).then((res) => {
-        this.loading = false
-        this.user = res
-        this.childData = res
-      })
+      getRecruitmentDetail(this.$route.query.id)
+        .then((res) => {
+          this.loading = false
+          this.user = res
+          this.childData = res
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     JumpCandidate() {
       this.$router.push({
@@ -186,7 +219,6 @@ export default {
 
 <style lang="scss" scoped>
 .pageHeader {
-  height: 48px;
   line-height: 48px;
   font-size: 18px;
 }

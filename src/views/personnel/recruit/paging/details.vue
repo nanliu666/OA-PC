@@ -28,9 +28,9 @@
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="职位要求">
+                <el-form-item label="申请时间">
                   <span class="distance">
-                    {{ personnel.requirement }}
+                    {{ personnel.createTime }}
                   </span>
                 </el-form-item>
               </el-col>
@@ -38,7 +38,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="申请公司">
-                  <span class="distance">{{ personnel.orgName }}</span>
+                  <span class="distance">{{ personnel.companyName }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -84,23 +84,6 @@
             </el-row>
             <el-row>
               <el-col :span="10">
-                <el-form-item label="工作年限">
-                  <span class="distance">{{ calWorkYear(personnel.workYear) }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col
-                :span="10"
-                :offset="4"
-              >
-                <el-form-item label="学历要求">
-                  <span class="distance">{{
-                    calEducationalLevel(personnel.educationalLevel)
-                  }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="10">
                 <el-form-item label="到岗日期">
                   <span class="distance">{{ personnel.joinDate }}</span>
                 </el-form-item>
@@ -116,6 +99,39 @@
               </el-col>
             </el-row>
             <el-row>
+              <el-col :span="10">
+                <el-form-item label="工作性质">
+                  <span class="distance">{{ calWorkProperty(personnel.workProperty) }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="10"
+                :offset="4"
+              >
+                <el-form-item label="工作经验要求">
+                  <span class="distance">{{ calWorkYear(personnel.workYear) }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="学历要求">
+                  <span class="distance">{{
+                    calEducationalLevel(personnel.educationalLevel)
+                  }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="职位要求">
+                  <span class="distance">
+                    {{ personnel.requirement }}
+                  </span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="24">
                 <el-form-item label="工作职责">
                   <span class="distance">
@@ -124,7 +140,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
             <el-row>
               <el-col :span="24">
                 <el-form-item label="招聘原因">
@@ -245,27 +260,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header-wrap {
-  margin-top: 20px;
-  .name-box {
-    display: flex;
-    justify-content: center;
-    margin-top: 36px;
-    span {
-      font-size: 30px;
-    }
-  }
-  .info-row {
-    display: flex;
-    justify-content: space-around;
-    margin: 26px 0;
-    div {
-      margin: 0 30px;
-    }
-  }
-}
-
 .distance {
   margin-left: 10px;
+}
+
+/deep/ .el-form-item__label {
+  width: 108px !important;
+  text-align: left;
 }
 </style>

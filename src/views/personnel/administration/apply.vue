@@ -147,13 +147,9 @@ export default {
     ...mapGetters(['userId'])
   },
   mounted() {
-    let params = {
-      userId: this.userId
-    }
-    getStaffBasicInfo(params).then((res) => {
-      let { formalDate, entryDate } = res
-      this.apply.entryDate = entryDate
-      this.apply.formalDate = formalDate
+    getStaffBasicInfo({ userId: this.userId }).then((res) => {
+      this.apply.entryDate = res.entryDate
+      this.apply.formalDate = res.formalDate
     })
   },
   methods: {
@@ -179,7 +175,7 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: '该用户不符合,或者已经转正,无需提交',
+              message: '您的账户不符合,或者已经转正,无需提交',
               type: 'warning'
             })
             this.goBack()

@@ -27,11 +27,6 @@
             :model="infoForm"
             :columns="personInfo"
           />
-          <!--          <inputArray-->
-          <!--            ref="personInfo"-->
-          <!--            :info-form.sync="personInfo"-->
-          <!--            :form.sync="infoForm"-->
-          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
@@ -42,11 +37,6 @@
             :model="infoForm"
             :columns="employment"
           />
-          <!--          <inputArray-->
-          <!--            ref="employment"-->
-          <!--            :info-form.sync="employment"-->
-          <!--            :form.sync="infoForm"-->
-          <!--          />-->
         </div>
         <div class="footer">
           <div class="next flex flex-justify-between flex-items">
@@ -79,11 +69,6 @@
             :model="infoForm"
             :columns="salary"
           />
-          <!--          <inputArray-->
-          <!--            ref="salary"-->
-          <!--            :info-form.sync="salary"-->
-          <!--            :form.sync="infoForm"-->
-          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
@@ -94,11 +79,6 @@
             :model="infoForm"
             :columns="labour"
           />
-          <!--          <inputArray-->
-          <!--            ref="labour"-->
-          <!--            :info-form.sync="labour"-->
-          <!--            :form.sync="infoForm"-->
-          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
@@ -109,11 +89,6 @@
             :model="infoForm"
             :columns="fiveRisks"
           />
-          <!--          <inputArray-->
-          <!--            ref="fiveRisks"-->
-          <!--            :info-form.sync="fiveRisks"-->
-          <!--            :form.sync="infoForm"-->
-          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
@@ -124,11 +99,6 @@
             :model="infoForm"
             :columns="office"
           />
-          <!--          <inputArray-->
-          <!--            ref="office"-->
-          <!--            :info-form.sync="office"-->
-          <!--            :form.sync="infoForm"-->
-          <!--          />-->
         </div>
         <div class="content">
           <div class="title">
@@ -139,11 +109,6 @@
             :model="infoForm"
             :columns="other"
           />
-          <!--          <inputArray-->
-          <!--            ref="other"-->
-          <!--            :info-form.sync="other"-->
-          <!--            :form.sync="infoForm"-->
-          <!--          />-->
         </div>
         <div class="footer">
           <div class="next flex flex-justify-between flex-items">
@@ -175,10 +140,6 @@
           </div>
           <div class="flow">
             <div class=" flex-flow flex flex-justify-start flex-items">
-              <!--              <div class="spot" />-->
-              <!--              <div class="person">-->
-              <!--                审批人-->
-              <!--              </div>-->
               <apprProgress
                 ref="apprProgress"
                 form-key="PersonOfferApply"
@@ -290,18 +251,32 @@ import {
   getJob,
   getposition,
   postOfferApply,
-  getRecruitmentDetail
+  getRecruitmentDetail,
+  getOfferApply
 } from '@/api/personnel/selectedPerson'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { CodeToText } from 'element-china-area-data'
-
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 export default {
   name: 'Apply',
   components: {
     apprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   data() {
+    let validate = (rule, value, callback) => {
+      let beginDate = moment(this.infoForm.contractBeginDate).valueOf()
+      let endDate = moment(this.infoForm.contractEndDate).valueOf()
+      if (beginDate > endDate) {
+        // this.infoForm.endDate = ''
+        callback(new Error('合同结束日期要大于合同起始日期'))
+      } else {
+        callback()
+      }
+    }
     return {
+      rule: { required: true, validator: validate, trigger: 'change' },
       showBack: true,
       apprNo: '',
       applyId: '',
@@ -345,11 +320,35 @@ export default {
         workAddressId: '',
         city: [],
         risks: [],
-        userName: '',
+        name: '',
         sex: 0,
         phonenum: '',
         email: ''
       }
+    }
+  },
+  watch: {
+    'infoForm.contractBeginDate': {
+      handler(val) {
+        if (val && this.infoForm.contractPeriod) {
+          this.infoForm.contractEndDate = moment(val)
+            .add(this.infoForm.contractPeriod, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'infoForm.contractPeriod': {
+      handler(val) {
+        if (val && this.infoForm.contractBeginDate) {
+          this.infoForm.contractEndDate = moment(this.infoForm.contractBeginDate)
+            .add(this.infoForm.contractPeriod, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   async mounted() {
@@ -375,8 +374,37 @@ export default {
     })
     this.getRecruitment()
     this.getOrgTree()
+    if (this.$route.query.applyId) {
+      this.getOfferApply()
+    }
+    this.labour.find((it) => it.prop === 'contractEndDate').rules.push(this.rule)
   },
   methods: {
+    /**
+     *  @author guanfenda
+     *  @desc 获取详情
+     * */
+    getOfferApply() {
+      let params = {
+        id: this.$route.query.applyId
+      }
+      getOfferApply(params).then((res) => {
+        this.infoForm = {
+          ...this.infoForm,
+          ...res
+        }
+        this.infoForm.city = []
+        res.provinceCode && this.infoForm.city.push(res.provinceCode)
+        res.cityCode && this.infoForm.city.push(res.cityCode)
+        let risks = ['isYangl', 'isYil', 'isGs', 'isShiy', 'isShengy', 'isGjj']
+        this.infoForm.risks = []
+        risks.map((it) => {
+          if (this.infoForm[it] === 1) {
+            this.infoForm.risks.push(it)
+          }
+        })
+      })
+    },
     getOrgTree() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
         this.employment.find((item) => item.prop === 'orgId').props.treeParams.data = res
@@ -498,18 +526,6 @@ export default {
       ).then(() => {
         this.active = 1
       })
-      // this.active =1
-      // return Promise.all(
-      //   ['personInfo', 'employment'].map((it) => {
-      //     return new Promise((resolve) => {
-      //       let form = this.$refs[it].submitForm()
-      //       resolve(form)
-      //     })
-      //   })
-      // ).then((res) => {
-      //   if (res.includes(false)) return
-      //   this.active = 1
-      // })
     },
     handleTownext() {
       return Promise.all(

@@ -11,16 +11,16 @@
       :gutter="52"
     >
       <el-col :span="6">
-        待分配: <span id="assigned">{{ Numberofpeople }}</span>
+        需求总数: <span id="assigned">{{ Totalnumberpeople }}</span>
       </el-col>
-      <!-- <el-col :span="8">
+      <el-col :span="8">
         <span class="demandSize">
-          已分配: <span id="assigned">{{ Assigned }}</span></span>
+          已分配: <span id="assigned">{{ distribution }}</span></span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
           待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
-      </el-col> -->
+      </el-col>
     </el-row>
 
     <el-form
@@ -60,25 +60,30 @@
           >
             <el-select
               v-model="user.userId"
+              v-loading="user.loading"
               placeholder="请选择"
+              @visible-change="
+                (isBoolean) => {
+                  requeUserList(user, isBoolean)
+                }
+              "
             >
               <el-input
                 v-model="personnel"
                 placeholder="姓名/工号"
-                @change="requeWorkList(5)"
+                @change="requeWorkList(user)"
               >
                 <i
                   slot="prefix"
                   class="el-input__icon el-icon-search"
-                  @click="requeWorkList(5)"
+                  @click="requeWorkList(user)"
                 />
               </el-input>
               <el-option
-                v-for="item in filteredUser"
-                :key="item.name"
+                v-for="item in user.options"
+                :key="item.userId"
                 :label="item.name"
                 :value="item.userId"
-                :disabled="item.disabled"
               />
             </el-select>
           </el-col>
@@ -115,7 +120,7 @@
               v-model="user.taskNum"
               controls-position="right"
               :min="0"
-              :max="Numberofpeople"
+              :max="Totalnumberpeople"
             />
           </el-col>
         </el-row>
@@ -146,9 +151,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { getStaffBasicInfo } from '@/api/personalInfo'
 import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
 import { createUniqueID } from '@/util/util'
+import { getOrgUserList } from '@/api/system/user'
 export default {
   name: 'Assigned',
   props: {
@@ -157,8 +165,13 @@ export default {
       default: false
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   data() {
     return {
+      orgId: null,
+      distribution: null,
       personnel: '',
       jumpnot: null,
       recruitmentId: '',
@@ -174,22 +187,16 @@ export default {
             disabled: true,
             entryNum: 0,
             candidateNum: 0,
-            taskNum: 0
+            taskNum: 0,
+            options: []
           }
         ]
       },
-      options: []
-      // 用于捕获用户userId的数组
+      options: [] // 用于捕获用户userId的数组
     }
   },
-  computed: {
-    filteredUser() {
-      return this.options.map((option) => ({
-        ...option,
-        disabled: this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-      }))
-    }
-  },
+
+  mounted() {},
   methods: {
     doNotSave() {
       this.$emit('isDoNotSave')
@@ -197,35 +204,54 @@ export default {
       this.handleClose()
     },
     async init(row) {
-      let { id, entryNum, needNum, jumpnot } = row
+      this.distribution = null
+      await queryDistribution({ recruitmentId: row.id }).then((res) => {
+        res.forEach((item) => {
+          item.olditem = item.taskNum
+          this.distribution += item.taskNum
+          item.peopleDisabled = true
+          item.disabled = true
+        })
+        this.dynamicValidateForm.users = res
+      })
+
+      await getStaffBasicInfo({ userId: this.userId }).then((res) => {
+        this.orgId = res.orgId
+      })
+
+      let { id, needNum, jumpnot } = row
       this.jumpnot = jumpnot
       this.recruitmentId = id
       this.Totalnumberpeople = needNum
-      this.Assigned = entryNum
-      this.Numberofpeople = needNum - entryNum
+      this.Numberofpeople = needNum - this.distribution
       this.$emit('update:visible', true)
-      await this.requeWorkList()
-      await this.queryData(this.recruitmentId)
     },
     requeWorkList(page) {
-      getUserWorkList({ pageNo: 1, pageSize: page }).then((res) => {
-        this.options = res.data
+      getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
+        page.options = res.data
       })
+      this.personnel = null
     },
-    queryData(mentId) {
-      queryDistribution({ recruitmentId: mentId }).then((res) => {
-        if (res.length !== 0) {
-          res.forEach((item) => {
-            item.olditem = item.taskNum
-            item.peopleDisabled = true
-            item.disabled = true
-          })
-          this.dynamicValidateForm.users = res
+    requeUserList(page, isBoolean) {
+      if (isBoolean) {
+        if (page.options) {
+          page.loading = true
+          getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId })
+            .then((res) => {
+              page.options = res.data.filter(
+                (option) =>
+                  !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+              )
+              page.loading = false
+            })
+            .catch(() => {
+              page.loading = false
+            })
         }
-      })
+      }
     },
     handleClose() {
-      if (typeof this.dynamicValidateForm.users !== 'undefined') {
+      if (this.dynamicValidateForm.users) {
         let itemArr = this.dynamicValidateForm.users.splice(0, 1)
         itemArr[0].userId = null
         this.dynamicValidateForm.users = itemArr
@@ -249,12 +275,14 @@ export default {
           return
         }
         this.dynamicValidateForm.users.push({
+          loading: false,
           name: '',
           creatId: createUniqueID(),
           userId: '',
           taskNum: 0,
           disabled: true,
-          Rendering: 'Rendering'
+          Rendering: 'Rendering',
+          options: []
         })
       }
     },
@@ -270,10 +298,10 @@ export default {
     onSubmitted(parms = {}) {
       // 判断人数是否相当
       let total = this.calWhetherBeyond()
-      if (total === this.Numberofpeople) {
+      if (total === this.Totalnumberpeople) {
         parms.recruitmentId = this.recruitmentId
         parms.users = this.dynamicValidateForm.users
-          .filter((item) => item.userId)
+          .filter((item) => item.userId || item.taskNum)
           .map((item) => ({
             userId: item.userId,
             taskNum: item.taskNum,
@@ -308,17 +336,10 @@ export default {
 .textForm {
   margin-top: 10px;
 }
-// .demandSize {
-//   display: block;
-//   font-size: 12px;
-//   color: #718199;
-//   line-height: 18px;
-//   text-align: center;
-// }
+
 #assigned {
   color: #1989fa;
 }
-
 .department {
   font-size: 14px;
   color: #212a3f;
