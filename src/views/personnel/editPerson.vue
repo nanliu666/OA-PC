@@ -25,10 +25,7 @@
             size="medium"
           >
             <el-row>
-              <el-col
-                v-if="!form.recruitmentId"
-                :span="10"
-              >
+              <el-col :span="10">
                 <el-form-item
                   label="关联应聘职位"
                   prop="recruitmentId"
@@ -41,14 +38,13 @@
                     <el-option
                       v-for="item in recruitmentList"
                       :key="item.id"
-                      :label="item.jobName"
+                      :label="`${item.jobName}(${item.id})`"
                       :value="item.id"
                     />
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col
-                v-if="!form.recruitmentId"
                 :span="10"
                 :offset="4"
               >
@@ -426,7 +422,7 @@ export default {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
     await this.getPersonInfo()
-    if (this.$route.query.recruitmentId) {
+    if (this.form.recruitmentId || this.$route.query.recruitmentId) {
       this.recruitmentIdDisabled = true
       this.form.recruitmentId = this.$route.query.recruitmentId
     } else {
