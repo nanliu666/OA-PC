@@ -43,7 +43,7 @@
                     v-for="item in originColumn"
                     :key="item.prop"
                     :label="item.prop"
-                    :disabled="item.prop === 'name' || item.prop === 'jobName'"
+                    :disabled="item.prop === 'id' || item.prop === 'jobName'"
                     class="originColumn"
                   >
                     {{ item.label }}
@@ -110,11 +110,6 @@ import { getOrgTreeSimple } from '@/api/org/org'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 
 const column = [
-  {
-    label: '姓名',
-    prop: 'name',
-    slot: true
-  },
   {
     label: '需求编号',
     prop: 'id',
@@ -472,7 +467,7 @@ export default {
       return (row.percentage = claAccuracy(row.taskNum, row.entryNum))
     },
     columnChange() {
-      this.column = column.filter((item) => {
+      this.columns = column.filter((item) => {
         return this.checkColumn.indexOf(item.prop) > -1
       })
     }
