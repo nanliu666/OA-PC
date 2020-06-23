@@ -46,7 +46,7 @@
                     size="medium"
                     controls-position="right"
                     :min="1"
-                    @input="inputNumber(users.changneedNum, $event)"
+                    :precision="0"
                   />
                 </el-form-item>
               </el-col>
@@ -179,12 +179,6 @@ export default {
     goBack() {
       this.$router.go(-1)
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-    },
-    inputNumber(value) {
-      if (value) {
-        var infoPlist = value.toString()
-        this.users.changneedNum = infoPlist.replace(/[^\d]/g, '')
-      }
     }
   }
 }
@@ -226,5 +220,9 @@ export default {
 /deep/ .el-select--medium,
 .el-input-number {
   width: 100% !important;
+}
+
+.pageHeader {
+  height: 68px;
 }
 </style>

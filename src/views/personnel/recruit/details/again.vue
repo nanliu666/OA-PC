@@ -109,6 +109,7 @@
                   :min="1"
                   :max="Numberofpeople"
                   style="margin-left: 5px;"
+                  :precision="0"
                 />
               </el-col>
               <el-button

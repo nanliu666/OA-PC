@@ -122,6 +122,7 @@
               controls-position="right"
               :min="0"
               :max="Totalnumberpeople"
+              :precision="0"
             />
           </el-col>
         </el-row>
