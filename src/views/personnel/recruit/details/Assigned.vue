@@ -62,7 +62,11 @@
               v-model="user.userId"
               v-loading="user.loading"
               placeholder="请选择"
-              @visible-change="requeUserList(user)"
+              @visible-change="
+                (isBoolean) => {
+                  requeUserList(user, isBoolean)
+                }
+              "
             >
               <el-input
                 v-model="personnel"
@@ -228,16 +232,22 @@ export default {
       })
       this.personnel = null
     },
-    requeUserList(page) {
-      if (page.options) {
-        page.loading = true
-        getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId }).then((res) => {
-          page.options = res.data.filter(
-            (option) =>
-              !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-          )
-          page.loading = false
-        })
+    requeUserList(page, isBoolean) {
+      if (isBoolean) {
+        if (page.options) {
+          page.loading = true
+          getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId })
+            .then((res) => {
+              page.options = res.data.filter(
+                (option) =>
+                  !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+              )
+              page.loading = false
+            })
+            .catch(() => {
+              page.loading = false
+            })
+        }
       }
     },
     handleClose() {
