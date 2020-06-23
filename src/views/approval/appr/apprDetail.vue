@@ -10,7 +10,15 @@
       <!-- 申请信息 -->
       <div class="apply-info-wrap">
         <div class="title">
-          {{ ApplyInfo.userName }}提交的{{ title }}申请
+          <div>{{ ApplyInfo.userName }}提交的{{ title }}申请</div>
+          <el-button
+            v-if="isReapply"
+            type="primary"
+            size="medium"
+            @click="goToReapply"
+          >
+            重新申请
+          </el-button>
         </div>
         <div class="info">
           <div class="num-box">
@@ -203,7 +211,9 @@
           </div>
           <div class="detail-item">
             <div>工作城市 :</div>
-            <div>{{ applyData.workProviceName + applyData.workCityName }}</div>
+            <div>
+              {{ applyData.workProvinceName + applyData.workCityName }}
+            </div>
           </div>
           <div class="detail-item">
             <div>试用期月薪 :</div>
@@ -893,9 +903,9 @@ export default {
     }
   },
   computed: {
-    // // 标题
+    // 标题
     title() {
-      return FormKeysCN[this.apprInfo.formKey]
+      return FormKeysCN[this.ApplyInfo.formKey]
     },
     // 撤回是否可用
     isShowCancel() {
@@ -960,6 +970,9 @@ export default {
         }
       }
     },
+    isReapply() {
+      return this.ApplyInfo.formKey === 'PersonOfferApply' && (this.isCancel || this.isReject)
+    },
     ...mapGetters(['userId'])
   },
   async created() {
@@ -974,7 +987,6 @@ export default {
     this.getApprProgress()
     this.getCommonDict()
   },
-
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
@@ -1106,7 +1118,7 @@ export default {
 
     // 撤回申请
     async handelCancel() {
-      let { apprNo } = this.$route.query
+      let { apprNo } = this.ApplyInfo
       let res = await this.$confirm('确定撤销申请吗?', '撤销申请', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1167,16 +1179,36 @@ export default {
       })
       this.dialogVisible = false
     },
+    // 重新申请
+    goToReapply() {
+      let { personId } = this.applyData
+      let { formId } = this.ApplyInfo
+
+      this.$router.push({
+        path: '/personnel/candidate/apply',
+        query: {
+          personId,
+          recruitmentId: formId
+        }
+      })
+    },
     // goback
     goBack() {
+      // 返回
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       if (this.$route.query.page) {
         this.$router.push({
           path: '/personnel/candidate/candidateManagement'
         })
-        this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
         return
       }
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      //   返回代办列表
+      if (this.$route.query.toDoList) {
+        this.$router.replace({
+          path: '/todo/todoList'
+        })
+        return
+      }
       this.$router.go(-1)
     }
   }
@@ -1187,7 +1219,8 @@ export default {
 // 用户提交的申请
 .apply-info-wrap {
   .title {
-    font-family: PingFangSC-Medium;
+    display: flex;
+    justify-content: space-between;
     font-size: 18px;
     color: #333333;
     font-weight: bold;
