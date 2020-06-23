@@ -120,7 +120,7 @@
               开具离职证明
             </el-button>
             <el-button
-              v-if="isWaitLeave"
+              v-if="isWaitLeave && !row.leaveDate"
               size="medium"
               type="text"
               @click="showChangeDialog(row)"
@@ -128,7 +128,7 @@
               调整离职信息
             </el-button>
             <el-dropdown
-              v-if="isWaitLeave && row.approveStatus !== 'Pass'"
+              v-if="isWaitLeave && row.approveStatus !== 'Pass' && !row.leaveDate"
               @command="handleCommand($event, row.userId)"
             >
               <el-button
@@ -150,7 +150,8 @@
             slot-scope="{ row }"
           >
             <div>
-              <span>{{ row.leaveDate }}</span>
+              <!-- leaveDate实际离职日期  lastDate预计离职日期 -->
+              <span>{{ row.leaveDate || row.lastDate }}</span>
               <span v-if="row.leaveDate">
                 <el-tag
                   type="info"
@@ -389,7 +390,6 @@ export default {
         },
         {
           label: '离职日期',
-          align: 'center',
           prop: 'leaveDate',
           slot: true,
           width: '150px'

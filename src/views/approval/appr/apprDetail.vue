@@ -85,7 +85,7 @@
       >
         <!-- 招聘审批详情 -->
         <div
-          v-if="apprInfo.formKey === 'Recruitment'"
+          v-if="ApplyInfo.formKey === 'Recruitment'"
           class="detail-box"
         >
           <div class="detail-item">
@@ -173,7 +173,7 @@
 
         <!-- 录用审批详情 -->
         <div
-          v-else-if="apprInfo.formKey === 'PersonOfferApply'"
+          v-else-if="ApplyInfo.formKey === 'PersonOfferApply'"
           class="detail-box"
         >
           <div class="detail-item">
@@ -307,7 +307,7 @@
 
         <!-- 转正审批详情 -->
         <div
-          v-else-if="apprInfo.formKey === 'UserFormalInfo'"
+          v-else-if="ApplyInfo.formKey === 'UserFormalInfo'"
           class="detail-box"
         >
           <div class="detail-item">
@@ -334,7 +334,7 @@
         </div>
         <!-- 员工合同续签审批详情 -->
         <div
-          v-else-if="apprInfo.formKey === 'UserContractInfo'"
+          v-else-if="ApplyInfo.formKey === 'UserContractInfo'"
           class="detail-box"
         >
           <div class="detail-item">
@@ -378,7 +378,7 @@
 
         <!-- 员工离职信息审批详情 -->
         <div
-          v-else-if="apprInfo.formKey === 'UserLeaveInfo'"
+          v-else-if="ApplyInfo.formKey === 'UserLeaveInfo'"
           class="detail-box"
         >
           <div class="detail-item">
@@ -411,7 +411,7 @@
 
         <!-- 人事异动申请审批详情 -->
         <div
-          v-else-if="apprInfo.formKey === 'UserChangeInfo'"
+          v-else-if="ApplyInfo.formKey === 'UserChangeInfo'"
           class="detail-box"
         >
           <div class="detail-item">
@@ -470,7 +470,7 @@
         </div>
         <!-- 更改需求人数审批详情 -->
         <div
-          v-else-if="apprInfo.formKey === 'RecruitmentChangeNum'"
+          v-else-if="ApplyInfo.formKey === 'RecruitmentChangeNum'"
           class="detail-box"
         >
           <div class="detail-item">
@@ -855,13 +855,8 @@ export default {
   data() {
     return {
       // apprNo formId formKey  用户提交的申请
-      apprInfo: this.$route.query,
-      ApplyInfo: {
-        apprNo: '',
-        userName: '',
-        applyTime: '',
-        status: ''
-      },
+      // apprInfo: this.$route.query,
+      ApplyInfo: {},
       // 申请详情
       // 控制申请详情是否显示
       show: false,
@@ -990,7 +985,6 @@ export default {
   methods: {
     // 获取用户申请详情
     async getApplyInfo() {
-      // console.log(this.$route.query);
       let res = await getApplyDetail(this.$route.query)
       this.ApplyInfo = res
     },
@@ -1185,10 +1179,11 @@ export default {
       let { formId } = this.ApplyInfo
 
       this.$router.push({
+        // 缺招聘ID
         path: '/personnel/candidate/apply',
         query: {
           personId,
-          recruitmentId: formId
+          applyId: formId
         }
       })
     },
