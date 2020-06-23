@@ -137,7 +137,8 @@ export default {
       tableConfig: {
         showHandler: false,
         enablePagination: true,
-        showIndexColumn: false
+        showIndexColumn: false,
+        showHeader: false
       },
       columns: [
         {
