@@ -51,8 +51,9 @@
       <span class="demandSize"> 招聘进度</span>
       <span class="content isBurl">{{ `${user.progress}%` }}</span>
     </el-col>
-
+    <!-- 判断当前页面是否 -->
     <el-col
+      v-if="$route.query.status !== 'aRequirements'"
       :span="8"
       class=" bronone frame"
     >
