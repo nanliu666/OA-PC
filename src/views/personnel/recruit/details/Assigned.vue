@@ -314,11 +314,14 @@ export default {
             // 利用已经生成的ID来判断当前分配状态是否为已经生成
             operatorType: item.id ? 'Update' : 'Add'
           }))
-        putDistribution(parms).then(() => {
-          this.$message({ message: '操作成功', type: 'success' })
-        })
-        this.$emit('update:visible', false)
-        this.$emit('refresh')
+        putDistribution(parms)
+          .then(() => {
+            this.$message({ message: '操作成功', type: 'success' })
+            this.refresh()
+          })
+          .catch(() => {
+            this.refresh()
+          })
       } else {
         this.$message({
           showClose: true,
@@ -326,6 +329,10 @@ export default {
           type: 'error'
         })
       }
+    },
+    refresh() {
+      this.$emit('update:visible', false)
+      this.$emit('refresh')
     }
   }
 }

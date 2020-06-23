@@ -311,11 +311,14 @@ export default {
           users: users
             .filter((item) => item.userId)
             .map((user) => ({ userId: user.userId, taskNum: user.taskNum }))
-        }).then(() => {
-          this.$message({ message: '操作成功', type: 'success' })
         })
-        this.$emit('update:visible', false)
-        this.$emit('refresh')
+          .then(() => {
+            this.$message({ message: '操作成功', type: 'success' })
+            this.refresh()
+          })
+          .catch(() => {
+            this.refresh()
+          })
       }
     },
     calWorkYear(type) {
@@ -326,6 +329,11 @@ export default {
         }
       })
       return typeWord
+    },
+
+    refresh() {
+      this.$emit('update:visible', false)
+      this.$emit('refresh')
     }
   }
 }
