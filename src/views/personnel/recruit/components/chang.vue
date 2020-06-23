@@ -2,7 +2,6 @@
   <div>
     <page-header
       title="更改需求人数"
-      class="pageHeader"
       show-back
     />
     <basic-container>
@@ -46,6 +45,7 @@
                     size="medium"
                     controls-position="right"
                     :min="1"
+                    :precision="0"
                   />
                 </el-form-item>
               </el-col>
@@ -183,13 +183,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.pageHeader {
-  height: 48px;
-  line-height: 48px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
 .el-form-item {
   width: 48%;
 }

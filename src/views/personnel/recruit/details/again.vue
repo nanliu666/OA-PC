@@ -109,6 +109,7 @@
                   :min="1"
                   :max="Numberofpeople"
                   style="margin-left: 5px;"
+                  :precision="0"
                 />
               </el-col>
               <el-button
@@ -310,11 +311,14 @@ export default {
           users: users
             .filter((item) => item.userId)
             .map((user) => ({ userId: user.userId, taskNum: user.taskNum }))
-        }).then(() => {
-          this.$message({ message: '操作成功', type: 'success' })
         })
-        this.$emit('update:visible', false)
-        this.$emit('refresh')
+          .then(() => {
+            this.$message({ message: '操作成功', type: 'success' })
+            this.refresh()
+          })
+          .catch(() => {
+            this.refresh()
+          })
       }
     },
     calWorkYear(type) {
@@ -325,18 +329,17 @@ export default {
         }
       })
       return typeWord
+    },
+
+    refresh() {
+      this.$emit('update:visible', false)
+      this.$emit('refresh')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.pageHeader {
-  height: 48px;
-  line-height: 48px;
-  font-size: 18px;
-}
-
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #ccc;
 }
