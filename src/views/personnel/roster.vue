@@ -233,8 +233,6 @@ export default {
         menuAlign: 'center',
         selection: false,
         tip: false,
-        index: true,
-        indexLabel: '序号',
         menu: false,
         column: [
           {

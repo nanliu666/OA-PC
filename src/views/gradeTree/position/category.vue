@@ -149,6 +149,7 @@ export default {
       row: {},
       data: [],
       tableConfig: {
+        showIndexColumn: false,
         showHandler: true,
         enableMultiSelect: true
       },
