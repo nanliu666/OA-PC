@@ -194,6 +194,7 @@ export default {
     },
     ifShowWarn(row) {
       return (
+        row.status === 'UnFinished' &&
         moment()
           .startOf('day')
           .diff(moment(row.endDate)) > 0

@@ -526,7 +526,7 @@
             <!-- 面试通过 -->
             <template v-if="row.status === '4'">
               <el-button
-                v-if="row.applyId === ''"
+                v-if="!row.applyId"
                 type="text"
                 @click="handleApplyEmploy(row)"
               >
@@ -553,11 +553,20 @@
                   <i class="el-icon-arrow-down el-icon-more" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="arrange">
+                  <el-dropdown-item
+                    v-if="!row.applyId"
+                    command="arrange"
+                  >
                     安排复试
                   </el-dropdown-item>
                   <el-dropdown-item command="edit">
                     编辑
+                  </el-dropdown-item>
+                  <el-dropdown-item
+                    v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
+                    command="reApply"
+                  >
+                    重新申请
                   </el-dropdown-item>
                   <el-dropdown-item command="InterviewEvaluation">
                     查看面试评价
@@ -1038,8 +1047,9 @@ export default {
         path: '/personnel/candidate/apply',
         query: {
           personId: row.personId,
-          userName: row.userName,
+          name: row.name,
           sex: row.sex,
+          applyId: row.applyId,
           email: row.email,
           phonenum: row.phonenum,
           recruitmentId: row.recruitmentId
@@ -1191,6 +1201,8 @@ export default {
           path: '/personnel/candidate/interivewDetails',
           query: params
         })
+      } else if (command === 'reApply') {
+        this.handleApplyEmploy(data)
       }
     },
     handleSubmit(params) {

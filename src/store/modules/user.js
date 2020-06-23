@@ -11,6 +11,7 @@ const user = {
     userInfo: getStore({ name: 'userInfo' }) || [],
     privileges: getStore({ name: 'privileges' }) || [],
     orgs: getStore({ name: 'orgs' }) || [],
+    info: getStore({ name: 'info' }) || [],
     roles: [],
     menu: getStore({ name: 'menu' }) || [],
     menuAll: getStore({ name: 'menuAll' }) || [],
@@ -19,6 +20,9 @@ const user = {
     menuLoading: false
   },
   actions: {
+    set_info: ({ commit }, info) => {
+      commit('SET_INFO', info)
+    },
     //根据用户名登录
     LoginByUsername({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
@@ -52,29 +56,34 @@ const user = {
       })
     },
     GetUserPrivilege({ commit }, userId) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         commit('SET_MENU_LOADING', true)
-        getUserPrivilege(userId).then((data) => {
-          commit('SET_MENU_LOADING', false)
-          commit(
-            'SET_ORGS',
-            data.orgPrivileges.filter((org) => org.isOwn === 1)
-          )
-          const menuAll = filterTree(
-            data.menuPrivileges,
-            (node) => node.isOwn === 1 && node.menuType !== 'Button'
-          )
-          sortTree(menuAll, (a, b) => a.sort - b.sort)
-          commit('SET_MENU', menuAll[0].children)
-          commit('SET_MENU_ALL', menuAll)
-          commit(
-            'SET_PRIVILEGES',
-            flatTree(data.menuPrivileges)
-              .filter((node) => node.isOwn === 1 && node.menuType === 'Button')
-              .map((item) => item.path)
-          )
-          resolve(menuAll)
-        })
+        getUserPrivilege(userId)
+          .then((data) => {
+            commit('SET_MENU_LOADING', false)
+            commit(
+              'SET_ORGS',
+              data.orgPrivileges.filter((org) => org.isOwn === 1)
+            )
+            const menuAll = filterTree(
+              data.menuPrivileges,
+              (node) => node.isOwn === 1 && node.menuType !== 'Button'
+            )
+            sortTree(menuAll, (a, b) => a.sort - b.sort)
+            commit('SET_MENU', menuAll[0].children)
+            commit('SET_MENU_ALL', menuAll)
+            commit(
+              'SET_PRIVILEGES',
+              flatTree(data.menuPrivileges)
+                .filter((node) => node.isOwn === 1 && node.menuType === 'Button')
+                .map((item) => item.path)
+            )
+            resolve(menuAll)
+          })
+          .catch((err) => {
+            commit('SET_MENU_LOADING', false)
+            reject(err)
+          })
       })
     },
     //根据手机号登录
@@ -158,6 +167,10 @@ const user = {
     }
   },
   mutations: {
+    SET_INFO: (state, info) => {
+      state.info = info
+      setStore({ name: 'info', content: state.info, type: 'session' })
+    },
     SET_TOKEN: (state, token) => {
       setToken(token)
       state.token = token

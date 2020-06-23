@@ -64,7 +64,18 @@ export default {
     inputArray
   },
   data() {
+    let validate = (rule, value, callback) => {
+      let beginDate = moment(this.infoForm.beginDate).valueOf()
+      let endDate = moment(this.infoForm.endDate).valueOf()
+      if (beginDate > endDate) {
+        callback(new Error('合同结束日期要大于合同起始日期'))
+        // this.infoForm.endDate = ''
+      } else {
+        callback()
+      }
+    }
     return {
+      rule: { required: true, validator: validate, trigger: 'change' },
       personInfo: {
         telephone: '150899544444',
         orgName: '行政部',
@@ -85,6 +96,36 @@ export default {
       }
     }
   },
+  watch: {
+    'infoForm.beginDate': {
+      handler(val) {
+        if (val && this.infoForm.period) {
+          this.infoForm.endDate = moment(val)
+            .add(this.infoForm.period, 'Y')
+            .format('YYYY-MM-DD')
+        } else if (val && !this.infoForm.period) {
+          let beginDate = moment(this.infoForm.beginDate).valueOf()
+          let endDate = moment(this.infoForm.endDate).valueOf()
+          if (beginDate > endDate) {
+            this.infoForm.endDate = ''
+          }
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'infoForm.period': {
+      handler(val) {
+        if (val && this.infoForm.beginDate) {
+          this.infoForm.endDate = moment(this.infoForm.beginDate)
+            .add(this.infoForm.period, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   mounted() {
     this.infoForm.userId = this.$route.query.userId
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
@@ -95,8 +136,7 @@ export default {
     }
     this.getCompany()
     this.getContractInfo()
-    // var day = moment("1995-12-25").valueOf()
-    // console.log(day)
+    this.signedData.basicAttrs.find((it) => it.props === 'endDate').rules.push(this.rule)
   },
   methods: {
     handleBack() {

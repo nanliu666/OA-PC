@@ -160,6 +160,7 @@ export default {
   height: calc(100% - 58px);
   .el-card {
     height: 100%;
+    position: relative;
   }
 }
 /deep/ .el-tree-node__expand-icon {

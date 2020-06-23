@@ -3,6 +3,7 @@ const getters = {
   language: (state) => state.common.language,
   website: (state) => state.common.website,
   userInfo: (state) => state.user.userInfo,
+  status: (state) => state.user.info.status,
   userId: (state) => state.user.userInfo.user_id,
   companyId: (state) => state.user.userInfo.company_id,
   colorName: (state) => state.common.colorName,

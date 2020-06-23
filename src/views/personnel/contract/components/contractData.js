@@ -101,15 +101,15 @@ export let signedData = {
     },
     {
       attrId: '5', // ：key唯一值
-      attrName: '合同起止日期：', // lable
+      attrName: '合同起始日期：', // lable
       inType: 4, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
-      message: '请选择合同起止日期', // 提示必填提示
+      message: '请选择合同起始日期', // 提示必填提示
       props: 'beginDate',
       span: 12,
       rules: [
         {
           required: true,
-          message: '请选择合同起止日期',
+          message: '请选择合同起始日期',
           trigger: 'change'
         }
       ]
@@ -124,7 +124,7 @@ export let signedData = {
       rules: [
         {
           required: true,
-          message: '请选择合同起止日期',
+          message: '请选择合同结束日期',
           trigger: 'change'
         }
       ]
@@ -139,7 +139,7 @@ export let signedData = {
       rules: [
         {
           required: true,
-          message: '请选择合同起止日期',
+          message: '请选择合同签订日期',
           trigger: 'change'
         }
       ]
