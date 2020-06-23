@@ -23,10 +23,10 @@
           </div>
           <div class="resetEdge">
             <el-button
-              icon="el-icon-refresh-right"
-              size="medium"
-              class="topBtn"
               type="text"
+              class="refresh"
+              icon="icon-basics-refresh-outlined"
+              size="medium"
               @click="getTableData"
             />
           </div>
@@ -578,5 +578,8 @@ export default {
 
 .isRed {
   color: #ff6464;
+}
+.refresh {
+  color: #a0a8ae;
 }
 </style>

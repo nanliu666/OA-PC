@@ -128,7 +128,7 @@
               调整离职信息
             </el-button>
             <el-dropdown
-              v-if="isWaitLeave && row.approveStatus !== 'Pass' && !row.leaveDate"
+              v-if="isWaitLeave && !row.leaveDate"
               @command="handleCommand($event, row.userId)"
             >
               <el-button
