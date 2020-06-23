@@ -193,4 +193,8 @@ export default {
     color: #a0a8ae;
   }
 }
+
+.refresh {
+  color: #a0a8ae;
+}
 </style>

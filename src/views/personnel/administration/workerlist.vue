@@ -389,4 +389,8 @@ export default {
   font-size: 14px;
   border-radius: 4px;
 }
+
+.refresh {
+  color: #a0a8ae;
+}
 </style>

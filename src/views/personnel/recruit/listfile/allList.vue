@@ -579,4 +579,7 @@ export default {
 .isRed {
   color: #ff6464;
 }
+.refresh {
+  color: #a0a8ae;
+}
 </style>

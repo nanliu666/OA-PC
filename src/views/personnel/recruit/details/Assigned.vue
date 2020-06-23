@@ -16,7 +16,7 @@
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
-          待分配: <span id="assigned">{{ 0 > noAssignedCount ? 0 : noAssignedCount }}</span></span>
+          待分配: <span id="assigned">{{ noAssignedCount }}</span></span>
       </el-col>
 
       <el-col :span="8">
