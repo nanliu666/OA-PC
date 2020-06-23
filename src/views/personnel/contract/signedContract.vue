@@ -53,9 +53,10 @@
 import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { signedData } from './components/contractData'
 import { getCompany } from '@/api/personnel/selectedPerson'
-import { putContractInfo, getContractInfo, postContractInfo } from '@/api/personnel/contart'
+import { putContractInfo, postContractInfo, getContractLatest } from '@/api/personnel/contart'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
+
 moment.locale('zh-cn')
 
 export default {
@@ -75,6 +76,7 @@ export default {
       }
     }
     return {
+      initData: {},
       rule: { required: true, validator: validate, trigger: 'change' },
       personInfo: {
         telephone: '150899544444',
@@ -135,40 +137,28 @@ export default {
       ...this.$route.query
     }
     this.getCompany()
-    this.getContractInfo()
     this.signedData.basicAttrs.find((it) => it.props === 'endDate').rules.push(this.rule)
+    this.getContractLatest()
   },
   methods: {
+    /**
+     * @author guanfenda
+     * @desc 用户已签订最新合同信息查询接口
+     * */
+    getContractLatest() {
+      let params = {
+        userId: this.$route.query.userId
+      }
+      getContractLatest(params).then((res) => {
+        this.infoForm = {
+          ...res
+        }
+      })
+    },
     handleBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/personnel/contract/contract'
-      })
-    },
-    getContractInfo() {
-      let params = {
-        userId: this.$route.query.userId
-      }
-      getContractInfo(params).then((res) => {
-        if (res && res.length > 0) {
-          let item = Math.max.apply(
-            Math,
-            res.map(function(item) {
-              var time = moment(item.beginDate).valueOf()
-              return time
-            })
-          )
-          let newContart = {}
-          res.map((it) => {
-            let time = moment(it.beginDate).valueOf()
-            if (item === time) {
-              newContart = it
-            }
-          })
-          this.infoForm = {
-            ...newContart
-          }
-        }
       })
     },
     onsubmit() {
@@ -249,6 +239,7 @@ export default {
   font-weight: bold;
   padding-top: 14px;
 }
+
 .person {
   background: #ffffff;
   border-radius: 4px;
@@ -269,6 +260,7 @@ export default {
     color: #757c85;
     line-height: 20px;
     margin-top: 5px;
+
     div {
       margin-right: 20px;
     }
@@ -309,14 +301,17 @@ export default {
     }
   }
 }
+
 .contain {
   background: #fff;
   margin-top: 20px;
   padding: 20px 100px;
   min-height: 100px;
+
   .title {
     font-size: 16px;
   }
+
   .content {
     margin-top: 10px;
     /*padding: 0 200px;*/
@@ -326,6 +321,7 @@ export default {
     }
   }
 }
+
 .footer {
   margin-top: 20px;
 }

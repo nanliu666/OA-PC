@@ -57,3 +57,10 @@ export const postContractTodo = (params) => {
  *
  * */
 export const postContractApply = (params) => post('/user/v1/user/contract/apply', params)
+/**
+ * @author guanfenda
+ *
+ *@desc 用户已签订最新合同信息查询接口
+ *
+ * */
+export const getContractLatest = (params) => get('/user/v1/user/contract/latest', params)
