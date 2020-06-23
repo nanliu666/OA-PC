@@ -40,14 +40,47 @@
                 >
                   <span>{{ getStatus() }}</span>
                 </el-button>
-                <el-button
-                  plain
-                  class="personnel-change-btn"
-                  size="medium"
-                  @click="jumpToApply(allInfo.userId)"
-                >
-                  <span>人事异动</span>
-                </el-button>
+                <div class="personnel-change-btn">
+                  <template v-if="allInfo.status === 'Try' || allInfo.status === 'Formal'">
+                    <el-button
+                      type="info"
+                      size="medium"
+                      @click="jumpToApply(allInfo.userId)"
+                    >
+                      人事异动
+                    </el-button>
+                  </template>
+                  <template v-if="allInfo.status === 'WaitLeave'">
+                    <el-button
+                      type="primary"
+                      size="medium"
+                      @click="jumpToLeave"
+                    >
+                      确认离职
+                    </el-button>
+                    <el-button
+                      size="medium"
+                      @click="toChangeLeaveInfo"
+                    >
+                      调整离职信息
+                    </el-button>
+                    <el-button
+                      size="medium"
+                      @click="giveupLeave"
+                    >
+                      放弃离职
+                    </el-button>
+                  </template>
+                  <template v-if="allInfo.status === 'Leaved'">
+                    <el-button
+                      type="primary"
+                      size="medium"
+                      @click="jumpToLeavePrintProve"
+                    >
+                      开具离职证明
+                    </el-button>
+                  </template>
+                </div>
               </div>
               <el-row :gutter="20">
                 <el-col :span="6">
@@ -91,6 +124,20 @@
                   </div>
                 </el-col>
               </el-row> -->
+              <nav
+                v-show="allInfo.status === 'WaitLeave' && leaveNavShow"
+                class="nav"
+              >
+                <span>
+                  <i class="el-icon-warning" /> 提示：该员工因
+                  {{ LeaveReason[leaveInfo.reason] }} 预计 {{ leaveInfo.lastDate }} 在离职。
+                </span>
+                <span
+                  class="el-icon-close"
+                  style="color:#207EFA;font-size: 20px;cursor:pointer"
+                  @click="closeNav"
+                />
+              </nav>
             </el-main>
           </el-container>
         </div>
@@ -140,6 +187,8 @@
 </template>
 <script>
 import { getStaffBasicInfo } from '../../api/personalInfo.js'
+import { getLeaveApply } from '@/api/approval/approval'
+import { giveupLeave } from '@/api/leave/leave'
 import postInfo from './detail/postInfo/index'
 import personalInfo from './detail/staffInfo/index'
 import actionRecord from './components/actionRecord'
@@ -162,8 +211,16 @@ export default {
       circleUrl: '',
       allInfo: {},
       box: null,
-      topValue: 0
+      topValue: 0,
+      leaveNavShow: true,
+      leaveInfo: {},
+      LeaveReason: {}
     }
+  },
+  beforeRouteLeave(to, form, next) {
+    document.querySelector('.sidebar-erea').style.position = 'relative'
+    document.querySelector('.sidebar-erea').style.top = '0px'
+    next()
   },
   mounted() {
     let _this = this
@@ -191,14 +248,28 @@ export default {
     )
   },
   created() {
-    this.getBasicInfo()
     this.getCSS()
   },
   activated() {
     this.getBasicInfo()
+    this.leaveNavShow = true
   },
-
   methods: {
+    jumpToLeavePrintProve() {
+      this.$router.push('/personnel/leave/proveLeave?userId=' + this.allInfo.userId)
+    },
+    jumpToLeave() {
+      this.$router.push('/personnel/leave/confirmLeave?userId=' + this.allInfo.userId)
+    },
+    giveupLeave() {
+      giveupLeave({ id: this.leaveInfo.id }).then(() => {
+        this.$message.success('操作成功')
+        this.getBasicInfo()
+      })
+    },
+    closeNav() {
+      this.leaveNavShow = false
+    },
     getCSS() {
       return require('./detail/staffInfo.scss')
     },
@@ -224,6 +295,16 @@ export default {
       }
       getStaffBasicInfo(params).then((res) => {
         this.allInfo = res
+        res.status === 'WaitLeave' &&
+          getLeaveApply(params).then((response) => {
+            this.leaveInfo = response
+          })
+        res.status === 'WaitLeave' &&
+          this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
+            res.forEach((item) => {
+              this.LeaveReason[item.dictKey] = item.dictValue
+            })
+          })
       })
     },
     goBack() {
@@ -254,7 +335,7 @@ export default {
   padding-left: 6px;
 }
 .grid-content {
-  .el-button {
+  > .el-button {
     background: rgba(113, 129, 153, 0.1) !important;
     border-radius: 4px !important;
     width: 44px !important;
@@ -337,17 +418,36 @@ export default {
   position: relative;
   .personnel-change-btn {
     cursor: pointer;
-    background: #ffffff !important;
-    border-radius: 4px !important;
-    width: 70px !important;
-    height: 30px !important;
-    padding: 5px !important;
-    border: 1px solid #666 !important;
-    color: #666;
+    // background: #ffffff !important;
+    // border-radius: 4px !important;
+    // width: 70px !important;
+    // height: 30px !important;
+    // padding: 5px !important;
+    // border: 1px solid #666 !important;
+    // color: #666;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     right: 50px;
   }
+}
+.nav {
+  display: flex;
+  display: -ms-flex;
+  display: -moz-box;
+  display: -webkit-flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 26px;
+  padding: 5px 20px;
+  margin-top: 8px;
+  height: 40px;
+  margin-right: 50px;
+  background: #edf8ff;
+  border: 1px solid #73b9ff;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 </style>
