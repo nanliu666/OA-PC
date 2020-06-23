@@ -23,17 +23,28 @@
           <span class="nodetitle">需求编号:</span>
           <span>{{ user.id }}</span>
         </el-col>
+        <template v-if="$route.query.status === 'iSubmit'">
+          <el-col :span="6">
+            <span class="nodetitle">分配人:</span>
+            <span>{{ user.userName }}</span>
+          </el-col>
 
-        <el-col :span="6">
-          <span class="nodetitle">提交人:</span>
-          <span>{{ user.userName }}</span>
-        </el-col>
+          <el-col :span="6">
+            <span class="nodetitle">分配时间:</span>
+            <span>{{ user.createTime }}</span>
+          </el-col>
+        </template>
+        <template v-else>
+          <el-col :span="6">
+            <span class="nodetitle">提交人:</span>
+            <span>{{ user.userName }}</span>
+          </el-col>
 
-        <el-col :span="6">
-          <span class="nodetitle">到岗时间:</span>
-          <span>{{ user.joinDate }}</span>
-        </el-col>
-
+          <el-col :span="6">
+            <span class="nodetitle">提交时间:</span>
+            <span>{{ user.createTime }}</span>
+          </el-col>
+        </template>
         <el-col :span="6">
           <span class="nodetitle">状态:</span>
           <span style="color: #207EFA">{{
@@ -54,7 +65,7 @@
             分配详情
           </h3>
           <distri-buteall />
-          <div v-if="childData.entryNum !== 0">
+          <div>
             <h3 class="Header">
               已入职员工
             </h3>

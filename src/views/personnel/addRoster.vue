@@ -381,7 +381,7 @@
             prop="address"
           >
             <el-input
-              v-model="workAddressForm.address"
+              v-model.trim="workAddressForm.address"
               type="textarea"
               :rows="2"
               placeholder="请输入详细地址，例如街道名称、门牌号码、楼层和房间号等详细地址"

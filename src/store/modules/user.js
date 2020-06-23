@@ -56,29 +56,34 @@ const user = {
       })
     },
     GetUserPrivilege({ commit }, userId) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         commit('SET_MENU_LOADING', true)
-        getUserPrivilege(userId).then((data) => {
-          commit('SET_MENU_LOADING', false)
-          commit(
-            'SET_ORGS',
-            data.orgPrivileges.filter((org) => org.isOwn === 1)
-          )
-          const menuAll = filterTree(
-            data.menuPrivileges,
-            (node) => node.isOwn === 1 && node.menuType !== 'Button'
-          )
-          sortTree(menuAll, (a, b) => a.sort - b.sort)
-          commit('SET_MENU', menuAll[0].children)
-          commit('SET_MENU_ALL', menuAll)
-          commit(
-            'SET_PRIVILEGES',
-            flatTree(data.menuPrivileges)
-              .filter((node) => node.isOwn === 1 && node.menuType === 'Button')
-              .map((item) => item.path)
-          )
-          resolve(menuAll)
-        })
+        getUserPrivilege(userId)
+          .then((data) => {
+            commit('SET_MENU_LOADING', false)
+            commit(
+              'SET_ORGS',
+              data.orgPrivileges.filter((org) => org.isOwn === 1)
+            )
+            const menuAll = filterTree(
+              data.menuPrivileges,
+              (node) => node.isOwn === 1 && node.menuType !== 'Button'
+            )
+            sortTree(menuAll, (a, b) => a.sort - b.sort)
+            commit('SET_MENU', menuAll[0].children)
+            commit('SET_MENU_ALL', menuAll)
+            commit(
+              'SET_PRIVILEGES',
+              flatTree(data.menuPrivileges)
+                .filter((node) => node.isOwn === 1 && node.menuType === 'Button')
+                .map((item) => item.path)
+            )
+            resolve(menuAll)
+          })
+          .catch((err) => {
+            commit('SET_MENU_LOADING', false)
+            reject(err)
+          })
       })
     },
     //根据手机号登录
