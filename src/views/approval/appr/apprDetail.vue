@@ -1185,10 +1185,11 @@ export default {
       let { formId } = this.ApplyInfo
 
       this.$router.push({
+        // 缺招聘ID
         path: '/personnel/candidate/apply',
         query: {
           personId,
-          recruitmentId: formId
+          applyId: formId
         }
       })
     },
