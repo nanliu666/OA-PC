@@ -77,7 +77,7 @@
             :push="2"
           >
             <el-form-item label="现合同期限:">
-              <span class="info-item-value">{{ compactInfo[0].period }}年</span>
+              <span class="info-item-value">{{ getPeriod(compactInfo[0].period) }}</span>
             </el-form-item>
           </el-col>
           <el-col
@@ -161,7 +161,7 @@
             :push="4"
           >
             <el-form-item label="合同期限:">
-              <span class="info-item-value">{{ item.period }}年</span>
+              <span class="info-item-value">{{ getPeriod(item.period) }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -315,6 +315,9 @@ export default {
   },
 
   methods: {
+    getPeriod(period) {
+      return period && period > 0 ? period + '年' : ''
+    },
     matchContractType(type) {
       let dictValue = ''
       this.contractType.forEach((item) => {

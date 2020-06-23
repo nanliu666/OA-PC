@@ -45,7 +45,7 @@
             :push="4"
           >
             <el-form-item label="试用期:">
-              <span class="info-item-value">{{ staffInfo.probation + '个月' }}</span>
+              <span class="info-item-value">{{ getProbation(staffInfo.probation) }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -102,6 +102,9 @@ export default {
     })
   },
   methods: {
+    getProbation(probation) {
+      return probation && probation > 0 ? probation + '个月' : ''
+    },
     getWorkProperty(type) {
       let typeWord
       this.WorkProperty.forEach((item) => {
