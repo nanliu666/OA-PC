@@ -95,8 +95,8 @@ export default {
 
 <style lang="scss" scoped>
 .basic-container--block {
-  height: calc(100% - 82px);
-  min-height: calc(100% - 82px);
+  height: calc(100% - 92px);
+  min-height: calc(100% - 92px);
 }
 
 // 头部
