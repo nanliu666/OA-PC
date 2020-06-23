@@ -51,10 +51,10 @@
           尊敬的 <b>{{ personInfo.name }}</b>先生/女士：
           <br>
           <span>部门：</span>
-          {{ offerInfo.orgName }}
+          {{ applyInfo.orgName }}
           <br>
           <span>职位：</span>
-          {{ offerInfo.jobName }}
+          {{ applyInfo.jobName }}
           <p>
             一、报道事宜
             <br>
