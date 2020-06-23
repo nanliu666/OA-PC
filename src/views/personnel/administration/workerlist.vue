@@ -28,10 +28,10 @@
             </div>
             <div class="edge">
               <el-button
-                icon="el-icon-refresh-right"
-                size="medium"
-                class="topBtn"
                 type="text"
+                class="refresh"
+                icon="icon-basics-refresh-outlined"
+                size="medium"
                 @click="getTableData"
               />
             </div>
