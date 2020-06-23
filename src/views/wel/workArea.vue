@@ -124,6 +124,7 @@
                   <el-tooltip
                     v-for="item in msgWorkList"
                     :key="item.id"
+                    :open-delay="500"
                     :enterable="false"
                     :content="item.content"
                     placement="top"
@@ -138,13 +139,13 @@
                             v-if="item.isRead === 0"
                             class="icon"
                           />
-                          <span>{{ item.title }}</span>
+                          <!-- <span>{{ item.title }}</span> -->
                         </div>
                         <div class="detail">
                           {{ item.content }}
                         </div>
                         <div class="time">
-                          {{ item.createTime }}
+                          {{ item.createTime | filterDate }}
                         </div>
                       </div>
                     </div>
@@ -165,6 +166,7 @@
                   <el-tooltip
                     v-for="item in msgSystemList"
                     :key="item.id"
+                    :open-delay="500"
                     :enterable="false"
                     effect="dark"
                     :content="item.content"
@@ -186,7 +188,7 @@
                           {{ item.content }}
                         </div>
                         <div class="time">
-                          {{ item.createTime }}
+                          {{ item.createTime | filterDate }}
                         </div>
                       </div>
                     </div>
@@ -270,8 +272,9 @@ export default {
       toDoActiveName: 'Pending',
       // 请求参数
       todoQuery: {
-        pageNo: '1',
-        pageSize: '10',
+        userId: '',
+        pageNo: '',
+        pageSize: '',
         isWarn: '',
         status: 'UnFinished'
       },
@@ -332,7 +335,7 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return moment().diff(moment(row.endDate)) > 0
+      return row.status === 'UnFinished' && moment().diff(moment(row.endDate)) > 0
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
@@ -363,9 +366,10 @@ export default {
       } else if (type === 'Approve') {
         // 审批
         this.$router.push({
-          path: '/approval/appr',
+          path: '/approval/appr/apprDetail',
           query: {
-            apprNo: bizId
+            apprNo: bizId,
+            toDoList: true
           }
         })
       } else if (type === 'Recruitment') {

@@ -405,43 +405,43 @@ export default {
         this.form.native = []
         val.nativeProvinceCode && this.form.native.push(val.nativeProvinceCode)
         val.nativeCityCode && this.form.native.push(val.nativeCityCode)
+        if (val.emer) this.contactsform = []
         val.emer &&
           val.emer.map((it) => {
-            this.contactsform = []
             this.contactsform.push({ contacts: contacts, form: { ...it } })
           })
+        if (val.family) this.familyform = []
         val.family &&
           val.family.map((it) => {
-            this.familyform = []
             this.familyform.push({ family: family, form: { ...it } })
           })
+        if (val.education) this.educationform = []
         val.education &&
           val.education.map((it) => {
             it.educationTime = []
             it.beginDate && it.educationTime.push(it.beginDate)
             it.endDate && it.educationTime.push(it.endDate)
-            this.educationform = []
             this.educationform.push({ education: education, form: { ...it } })
           })
+        if (val.work) this.workform = []
         val.work &&
           val.work.map((it) => {
             it.workTime = []
             it.beginWorkDate && it.workTime.push(it.beginWorkDate)
             it.endWorkDate && it.workTime.push(it.endWorkDate)
-            this.workform = []
             this.workform.push({ work: work, form: { ...it } })
           })
+        if (val.train) this.trainform = []
         val.train &&
           val.train.map((it) => {
             it.time = []
             it.beginDate && it.time.push(it.beginDate)
             it.endDate && it.time.push(it.endDate)
-            this.trainform = []
             this.trainform.push({ train: train, form: { ...it } })
           })
+        if (val.certificate) this.certificateform = []
         val.certificate &&
           val.certificate.map((it) => {
-            this.certificateform = []
             this.certificateform.push({ certificate: certificate, form: { ...it } })
           })
       },

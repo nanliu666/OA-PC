@@ -325,7 +325,7 @@ export default {
   .icon-tips-plus-outlined {
     color: #a0a8ae;
     border-radius: 1px;
-    font: size 16px;
+    font-size: 16px;
   }
 }
 

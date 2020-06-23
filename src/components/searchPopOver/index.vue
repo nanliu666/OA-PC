@@ -17,6 +17,7 @@
           :placeholder="item.config.placeholder || '请输入' + item.label"
           :suffix-icon="item.config && item.config['suffix-icon']"
           class="elInput"
+          @keyup.enter.native="change"
           @change="change"
         />
         <el-select

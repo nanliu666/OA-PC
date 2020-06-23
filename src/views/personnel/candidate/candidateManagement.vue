@@ -526,7 +526,7 @@
             <!-- 面试通过 -->
             <template v-if="row.status === '4'">
               <el-button
-                v-if="row.applyId === ''"
+                v-if="!row.applyId"
                 type="text"
                 @click="handleApplyEmploy(row)"
               >
@@ -553,7 +553,10 @@
                   <i class="el-icon-arrow-down el-icon-more" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="arrange">
+                  <el-dropdown-item
+                    v-if="!row.applyId"
+                    command="arrange"
+                  >
                     安排复试
                   </el-dropdown-item>
                   <el-dropdown-item command="edit">

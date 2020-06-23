@@ -61,7 +61,7 @@
           <el-input
             v-model="form.phonenum"
             maxlength="11"
-            @input="(v) => inputNumber(v, 'phonenum')"
+            disabled
           />
         </el-form-item>
         <el-form-item
@@ -111,10 +111,10 @@ export default {
       workAddressList: [],
       userList: [],
       rules: {
-        phonenum: [
-          { required: true, message: '请输入手机号码', trigger: 'blur' },
-          { pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }
-        ],
+        // phonenum: [
+        //   { required: true, message: '请输入手机号码', trigger: 'blur' },
+        //   { pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }
+        // ],
         workAddressId: [{ required: true, message: '请选择工作地址', trigger: 'change' }],
         userId: [{ required: true, message: '请选择入职联系人', trigger: 'change' }],
         entryDate: [{ required: true, message: '请输入入职日期', trigger: 'blur' }]
@@ -127,7 +127,9 @@ export default {
     },
     'form.userId': {
       handler(val) {
-        this.form.userName = (this.userList.find((user) => user.userId === val) || {}).name
+        let user = this.userList.find((user) => user.userId === val) || {}
+        this.form.userName = user.name
+        this.form.phonenum = user.phonenum
       },
       immediate: true
     }

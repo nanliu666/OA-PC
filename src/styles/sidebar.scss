@@ -56,7 +56,6 @@
   .el-submenu.is-opened {
     > .el-submenu__title {
       background: rgba(5, 67, 173, 0.5);
-
       > span {
         color: #fff;
       }
@@ -86,6 +85,9 @@
 
   .el-menu-item,
   .el-submenu__title {
+    height: 50px;
+    line-height: 50px;
+
     i {
       margin-right: 10px;
     }

@@ -18,7 +18,7 @@
         label="文件名称"
         prop="name"
       >
-        <el-input v-model="form.name" />
+        <el-input v-model.trim="form.name" />
       </el-form-item>
       <el-form-item
         v-if="type !== 'changeName'"

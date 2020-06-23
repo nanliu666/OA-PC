@@ -194,6 +194,7 @@ export default {
     },
     ifShowWarn(row) {
       return (
+        row.status === 'UnFinished' &&
         moment()
           .startOf('day')
           .diff(moment(row.endDate)) > 0
@@ -216,7 +217,7 @@ export default {
       } else if (row.type === 'Approve') {
         // 审批
         this.$router.push({
-          path: '/approval/appr',
+          path: '/approval/appr/apprDetail',
           query: {
             apprNo: row.bizId
           }

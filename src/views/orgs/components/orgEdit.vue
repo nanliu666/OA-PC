@@ -19,7 +19,7 @@
         label="组织名称"
         prop="orgName"
       >
-        <el-input v-model="form.orgName" />
+        <el-input v-model.trim="form.orgName" />
       </el-form-item>
       <el-form-item
         v-if="type === 'edit'"
