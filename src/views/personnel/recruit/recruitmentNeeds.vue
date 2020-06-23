@@ -310,9 +310,11 @@ export default {
   watch: {
     'form.orgId': function(val) {
       if (val) {
+        this.form.jobId = null
         getJobInfo({ orgId: val }).then((res) => {
           this.columns.find((item) => item.prop === 'jobId').options = res
         })
+        this.closeRules()
       }
     },
     'form.reason': function(val) {
@@ -422,6 +424,10 @@ export default {
           this.form[key] = null
         }
       }
+      this.closeRules()
+    },
+    // 关闭页面element表单校验
+    closeRules() {
       setTimeout(() => {
         this.$refs['form'].clearValidate()
       }, 0)

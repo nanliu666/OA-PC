@@ -18,21 +18,39 @@
           />
         </template>
       </common-table>
+
+      <el-button
+        v-if="data.length === 0"
+        type="primary"
+        size="medium"
+        class="operationButon"
+        @click="DistributionContent()"
+      >
+        立即分配
+      </el-button>
     </basic-container>
+    <Again
+      ref="Again"
+      :visible.sync="createAgain"
+      @dataJump="dataJump"
+    />
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import { queryDistribution } from '@/api/personnel/recruitment'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+import Again from '@/views/personnel/recruit/details/again'
 export default {
   name: 'Distributeall',
-  props: [],
+  components: {
+    Again
+  },
+  props: ['childData'],
   data() {
     return {
       loading: true,
       management: [],
-      childData: [],
       user: {
         joinDate: null,
         userName: null,
@@ -65,7 +83,8 @@ export default {
           slot: true
         }
       ],
-      nodeData: null
+      nodeData: null,
+      createAgain: false
     }
   },
   computed: {
@@ -78,13 +97,26 @@ export default {
   },
   methods: {
     recruitmentSituation() {
-      queryDistribution({ recruitmentId: this.$route.query.id }).then((res) => {
-        this.loading = false
-        this.data = res.map((item) => ({
-          ...item,
-          nodeData: claAccuracy(item.taskNum, item.entryNum)
-        }))
-      })
+      queryDistribution({ recruitmentId: this.$route.query.id })
+        .then((res) => {
+          this.loading = false
+          this.data = res.map((item) => ({
+            ...item,
+            nodeData: claAccuracy(item.taskNum, item.entryNum)
+          }))
+        })
+        .catch(() => {
+          this.loading = false
+        })
+    },
+
+    dataJump() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.push({ path: '/personnel/recruit/recruitList' })
+    },
+    DistributionContent() {
+      this.$set(this.childData, 'jumpnot', true)
+      this.$refs.Again.init(this.childData)
     }
   }
 }
@@ -144,5 +176,12 @@ export default {
     display: flex;
     flex-direction: row-reverse;
   }
+}
+
+.operationButon {
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  top: 10px;
 }
 </style>
