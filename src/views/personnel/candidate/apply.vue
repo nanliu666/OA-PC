@@ -123,6 +123,12 @@
             </div>
             <div>
               <el-button
+                size="medium"
+                @click="close"
+              >
+                取消
+              </el-button>
+              <el-button
                 type="primary"
                 size="medium"
                 @click="handleTownext"
@@ -494,6 +500,10 @@ export default {
         type: 'warning'
       })
         .then(() => {
+          this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+          this.$router.push({
+            path: '/personnel/candidate/candidateManagement'
+          })
           this.$message({
             type: 'success',
             message: '取消申请!'

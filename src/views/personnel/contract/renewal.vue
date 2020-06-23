@@ -73,7 +73,7 @@
 import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { signedData } from './components/contractData'
 import { getCompany } from '@/api/personnel/selectedPerson'
-import { postContractApply } from '@/api/personnel/contart'
+import { getContractLatest, postContractApply } from '@/api/personnel/contart'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
@@ -97,13 +97,25 @@ export default {
       let endDate = moment(this.infoForm.endDate).valueOf()
       if (beginDate > endDate) {
         // this.infoForm.endDate = ''
-        callback(new Error('合同结束日期要大于合同起始日期'))
+        callback(new Error('合同开始日期要小于合同结束日期'))
+      } else {
+        callback()
+      }
+    }
+    let validateStartTime = (rule, value, callback) => {
+      let oldEndDate = moment(this.initData.endDate).valueOf()
+      let newVBeginDate = moment(this.infoForm.beginDate).valueOf()
+      if (oldEndDate > newVBeginDate) {
+        // this.infoForm.endDate = ''
+        callback(new Error('合同的开始日期不能早于上一份合同的结束日期'))
       } else {
         callback()
       }
     }
     return {
+      initData: {},
       rule: { required: true, validator: validate, trigger: 'change' },
+      startTime: { required: true, validator: validateStartTime, trigger: 'blur' },
       apply: {
         apprProgress: '',
         note: ''
@@ -182,10 +194,26 @@ export default {
       ...this.$route.query
     }
     this.getCompany()
-
     this.signedData.basicAttrs.find((it) => it.props === 'endDate').rules.push(this.rule)
+    this.signedData.basicAttrs.find((it) => it.props === 'beginDate').rules.push(this.startTime)
+    this.getContractLatest()
   },
   methods: {
+    /**
+     * @author guanfenda
+     * @desc 用户已签订最新合同信息查询接口
+     * */
+    getContractLatest() {
+      let params = {
+        userId: this.$route.query.userId
+      }
+      getContractLatest(params).then((res) => {
+        this.initData = res
+        this.infoForm = {
+          ...res
+        }
+      })
+    },
     handleBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
