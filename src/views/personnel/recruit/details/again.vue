@@ -36,11 +36,11 @@
     >
       <el-col :span="8">
         <span class="demandSize">
-          已分配: <span id="assigned">{{ Assigned }}</span></span>
+          已分配: <span id="assigned">{{ assignedCount }}</span></span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
-          待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
+          待分配: <span id="assigned">{{ noAssignedCount }}</span></span>
       </el-col>
 
       <el-col :span="8">
@@ -76,7 +76,11 @@
                   v-model="user.userId"
                   v-loading="user.loading"
                   placeholder="请选择"
-                  @visible-change="requeUserList(user)"
+                  @visible-change="
+                    (isBoolean) => {
+                      requeUserList(user, isBoolean)
+                    }
+                  "
                 >
                   <el-input
                     v-model="personnel"
@@ -162,6 +166,7 @@ export default {
   },
   data() {
     return {
+      tltoTaskNum: null,
       orgId: null,
       loading: false,
       personnel: null,
@@ -191,7 +196,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId']),
+    assignedCount: function() {
+      return this.dynamicValidateForm.users.reduce((total, item) => total + item.taskNum, 0)
+    },
+    noAssignedCount() {
+      return this.Totalnumberpeople - this.assignedCount
+    }
   },
   watch: {
     'dynamicValidateForm.users.length': function(newval) {
@@ -243,15 +254,21 @@ export default {
       })
       this.personnel = null
     },
-    requeUserList(page) {
-      page.loading = true
-      getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId }).then((res) => {
-        page.options = res.data.filter(
-          (option) =>
-            !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
-        )
-        page.loading = false
-      })
+    requeUserList(page, isBoolean) {
+      if (isBoolean) {
+        page.loading = true
+        getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId })
+          .then((res) => {
+            page.loading = false
+            page.options = res.data.filter(
+              (option) =>
+                !this.dynamicValidateForm.users.map((user) => user.userId).includes(option.userId)
+            )
+          })
+          .catch(() => {
+            page.loading = false
+          })
+      }
     },
     addDomain() {
       if (this.dynamicValidateForm.users.some((user) => !user.userId)) {

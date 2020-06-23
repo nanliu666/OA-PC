@@ -9,10 +9,28 @@
       v-loading="loading"
       style="margin-button: 40px"
     >
-      <el-row :gutter="24">
-        <el-col class="fullName">
+      <el-row type="flex">
+        <el-col
+          class="fullName"
+          :span="3"
+        >
           {{ user.userName }}提交的招聘需求
         </el-col>
+        <!-- 当页面是全部招聘状态打开页面标签描述 -->
+        <template v-if="$route.query.status === 'aRequirements'">
+          <el-col :span="2">
+            <el-tag
+              v-if="childData.status === 'UnHandle'"
+              type="danger"
+            >
+              待分配
+            </el-tag>
+
+            <el-tag v-else>
+              已分配
+            </el-tag>
+          </el-col>
+        </template>
       </el-row>
       <el-row
         :gutter="24"
@@ -64,7 +82,7 @@
           <h3 class="Header">
             分配详情
           </h3>
-          <distri-buteall />
+          <distri-buteall :child-data="childData" />
           <div>
             <h3 class="Header">
               已入职员工
@@ -84,7 +102,7 @@
             分配详情
           </h3>
           <distri-buteall />
-          <div v-if="childData.status === 'Handled' || childData.entryNum !== 0">
+          <div v-if="childData.status === 'Handled'">
             <h3 class="Header">
               已入职员工
             </h3>
@@ -179,11 +197,15 @@ export default {
   methods: {
     getData() {
       this.loading = true
-      getRecruitmentDetail(this.$route.query.id).then((res) => {
-        this.loading = false
-        this.user = res
-        this.childData = res
-      })
+      getRecruitmentDetail(this.$route.query.id)
+        .then((res) => {
+          this.loading = false
+          this.user = res
+          this.childData = res
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     JumpCandidate() {
       this.$router.push({
@@ -197,7 +219,6 @@ export default {
 
 <style lang="scss" scoped>
 .pageHeader {
-  height: 48px;
   line-height: 48px;
   font-size: 18px;
 }
