@@ -1134,7 +1134,7 @@ export default {
     async handelConfirm() {
       this.btnloading = true
       let { userId, id: nodeId } = this.progressList[this.activeStep]
-      let { apprNo } = this.$route.query
+      let { apprNo } = this.ApplyInfo
       if (this.apprType === 'Reject') {
         await createdRejectAppr({
           userId,
