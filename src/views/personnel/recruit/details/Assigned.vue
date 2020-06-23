@@ -10,16 +10,17 @@
       type="flex"
       :gutter="52"
     >
-      <el-col :span="6">
-        需求总数: <span id="assigned">{{ Totalnumberpeople }}</span>
+      <el-col :span="8">
+        <span class="demandSize">
+          已分配: <span id="assigned">{{ assignedCount }}</span></span>
       </el-col>
       <el-col :span="8">
         <span class="demandSize">
-          已分配: <span id="assigned">{{ distribution }}</span></span>
+          待分配: <span id="assigned">{{ 0 > noAssignedCount ? 0 : noAssignedCount }}</span></span>
       </el-col>
+
       <el-col :span="8">
-        <span class="demandSize">
-          待分配: <span id="assigned">{{ Numberofpeople }}</span></span>
+        <span class="demandSize">需求总数:{{ Totalnumberpeople }}</span>
       </el-col>
     </el-row>
 
@@ -166,7 +167,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId']),
+    assignedCount: function() {
+      return this.dynamicValidateForm.users.reduce((total, item) => total + item.taskNum, 0)
+    },
+    noAssignedCount() {
+      return this.Totalnumberpeople - this.assignedCount
+    }
   },
   data() {
     return {
@@ -176,7 +183,6 @@ export default {
       jumpnot: null,
       recruitmentId: '',
       Totalnumberpeople: 0,
-      Numberofpeople: 0,
       Assigned: 0,
       dynamicValidateForm: {
         users: [
@@ -223,7 +229,6 @@ export default {
       this.jumpnot = jumpnot
       this.recruitmentId = id
       this.Totalnumberpeople = needNum
-      this.Numberofpeople = needNum - this.distribution
       this.$emit('update:visible', true)
     },
     requeWorkList(page) {
