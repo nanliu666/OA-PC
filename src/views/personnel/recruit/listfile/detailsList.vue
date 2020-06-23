@@ -265,7 +265,8 @@ export default {
         }
       ],
       workProperty: {},
-      EmerType: {}
+      EmerType: {},
+      searchParams: {}
     }
   },
   computed: {
@@ -330,6 +331,7 @@ export default {
       })
     },
     handleSubmit(params) {
+      this.searchParams = params
       this.getTableData(params)
     },
     jumpToDetail(row) {
@@ -344,10 +346,9 @@ export default {
         query: { id: id }
       })
     },
-
     currentPageChange(param) {
       this.page.currentPage = param
-      this.getTableData()
+      this.getTableData(this.searchParams)
     },
     sizeChange(pageSize) {
       this.page.size = pageSize
