@@ -11,7 +11,7 @@
           width="90px"
           height="60px"
         >
-          <div class="info-image">
+          <!--<div class="info-image">
             <el-upload
               action=""
               class="avatar-uploader"
@@ -33,7 +33,7 @@
                 class="el-icon-plus avatar-uploader-icon"
               />
             </el-upload>
-            <!-- 进度条 -->
+
             <div
               v-if="uploading"
               class="action-upload"
@@ -43,6 +43,10 @@
                 :percentage="uploadPercent"
               />
             </div>
+          </div> -->
+          <!-- 默认图像 -->
+          <div class="info-image">
+            <i class="icon-usercircle" />
           </div>
         </el-aside>
         <el-main>
@@ -499,10 +503,10 @@ export default {
           that.uploading = false
           that.$message.error(err.message)
         },
-        complete() {
+        complete(data) {
           that.uploading = false
           that.$message.success('上传成功')
-          that.getUserAllInfo()
+          that.perosonnalInfo.avatarUrl = data.url
           that.uploadPercent = 0
         }
       })
@@ -585,6 +589,11 @@ li {
   width: 64px;
   height: 64px;
   border-radius: 32px;
+  .icon-usercircle {
+    font-size: 68px;
+    vertical-align: middle;
+    color: #cfd3d6;
+  }
   .avatar-uploader {
     text-align: center;
     line-height: 64px;
