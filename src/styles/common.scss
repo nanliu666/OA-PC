@@ -84,3 +84,9 @@ ul {
   color: #757c85;
   cursor: pointer;
 }
+
+.text-over-length {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

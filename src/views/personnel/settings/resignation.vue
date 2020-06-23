@@ -41,7 +41,7 @@
             slot="title"
             class="group-title"
           >
-            <div class="name">
+            <div class="name text-over-length">
               {{ group.name }}
             </div>
             <div class="handover">
@@ -82,7 +82,7 @@
                 slot="title"
                 class="category-title"
               >
-                <div class="name">
+                <div class="name text-over-length">
                   {{ category.categoryName }}
                 </div>
                 <div class="buttons__wrap">
