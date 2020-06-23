@@ -25,6 +25,7 @@
             <el-button
               type="text"
               class="refresh"
+              style="font-size: 16px"
               icon="icon-basics-refresh-outlined"
               size="medium"
               @click="getTableData"
@@ -583,5 +584,7 @@ export default {
 }
 .refresh {
   color: #a0a8ae;
+  font-size: 16px !important;
+  cursor: pointer;
 }
 </style>
