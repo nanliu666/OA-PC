@@ -340,12 +340,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pageHeader {
-  height: 48px;
-  line-height: 48px;
-  font-size: 18px;
-}
-
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #ccc;
 }
