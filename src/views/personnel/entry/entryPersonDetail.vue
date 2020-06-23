@@ -33,6 +33,7 @@
             </el-button>
             <el-button
               v-if="!personInfo.register"
+              type="primary"
               size="medium"
               @click="handleSend"
             >
@@ -40,7 +41,7 @@
             </el-button>
             <el-button
               v-if="personInfo.register"
-              type="text"
+              type="primary"
               @click="handleViewRegister"
             >
               查看入职登记表

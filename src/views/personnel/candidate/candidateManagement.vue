@@ -1150,7 +1150,21 @@ export default {
     },
     handleCommand(command, data) {
       if (command === 'changeJob') {
-        this.$refs.changeJobDialog.changeJob(data)
+        if (data.pushResume === 1) {
+          this.$confirm(
+            '该候选人已给用人部门推送简历审核，更改应聘职位后原审核推送将自动撤回，您确认要更改吗？',
+            '确认更改应聘职位？',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }
+          ).then(() => {
+            this.$refs.changeJobDialog.changeJob(data)
+          })
+        } else {
+          this.$refs.changeJobDialog.changeJob(data)
+        }
       } else if (command === 'weedOut') {
         this.$refs.weedOutgDialog.out(data)
       } else if (command === 'offerChange') {

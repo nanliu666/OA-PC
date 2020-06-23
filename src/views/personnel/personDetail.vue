@@ -529,7 +529,7 @@
         <div class="title">
           候选人动态
         </div>
-        <el-timeline :reverse="true">
+        <el-timeline>
           <el-timeline-item
             v-for="(item, index) in stepsData"
             :key="index"

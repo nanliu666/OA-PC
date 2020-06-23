@@ -141,6 +141,11 @@ export default {
   mounted() {
     this.box = document.querySelector('.staff-detail-info')
   },
+  beforeRouteLeave(to, form, next) {
+    document.querySelector('.flow-line').style.top = -2 + 'px'
+    this.filterNavItemActive = 0
+    next()
+  },
   methods: {
     goAnchor(selector, index, event) {
       //设置跟随线的位置

@@ -764,9 +764,10 @@ export default {
     loadSelectData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
         this.subOrgOptions.config.treeParams.data = res
-        this.$refs['orgTree'].forEach((item) => {
-          item.treeDataUpdateFun(res)
-        })
+        this.$refs['orgTree'] &&
+          this.$refs['orgTree'].forEach((item) => {
+            item.treeDataUpdateFun(res)
+          })
       })
       getOrgPosition().then((res) => {
         this.positionOptions = res
