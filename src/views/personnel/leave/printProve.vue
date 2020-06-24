@@ -10,28 +10,28 @@
         <el-button
           type="primary"
           size="medium"
-          @click="handelClick"
+          @click="handelClick('#print-prove')"
         >
           打印
         </el-button>
-        <el-button
-          size="medium"
-          @click="handelClick"
-        >
-          下载
-        </el-button>
+        <!-- <el-button size="medium" @click="handelClick">
+					下载
+				</el-button> -->
       </div>
     </div>
     <div>
-      <div class="main">
+      <div
+        id="print-prove"
+        class="main"
+      >
         <div>
           <h3 style="text-align:center">
             离 职 证 明
           </h3>
           <div class="detail-wrap">
             <p class="detail">
-              {{ userInfo.name }}（身份证号： {{ userInfo.idNo }}）于
-              {{ userInfo.entryDate }}入职我公司，在我公 司，在我公司
+              {{ userInfo.name }} {{ userInfo.idNo ? `（身份证号： ${userInfo.idNo} ）` : '' }} 于
+              {{ userInfo.entryDate }}入职我公司，在我公司
               <span class="item">{{ userInfo.orgName }}</span> 任
               <span class="item"> {{ userInfo.jobName }}</span>。现协商解除劳动合同关系，并于
               <span class="item">{{ userInfo.relieveDate }}</span> 日协商解除，不再履行。自
@@ -103,8 +103,15 @@ export default {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     },
-    handelClick() {
-      this.$message.info('该功能正在开发中')
+    handelClick(ele) {
+      document.body.innerHTML = document.querySelector(ele).outerHTML
+      setTimeout(() => {
+        //打印
+        window.print()
+        //刷新页面
+        window.location.reload()
+      }, 20)
+      // this.$message.info('该功能正在开发中')
     },
     async lodingData() {
       this.loading = true
@@ -112,7 +119,8 @@ export default {
         userId: this.$route.query.userId
       })
       this.userInfo = res
-      let printDate = new Date(this.$route.query.printDate)
+      let data = this.$route.query.printDate * 1
+      let printDate = new Date(data)
       let year = printDate.getFullYear()
       let mon = printDate.getMonth() + 1
       let day = printDate.getDate()
@@ -123,7 +131,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped media="print">
 .btn-wrap {
   display: flex;
   justify-content: flex-end;
@@ -177,5 +185,9 @@ export default {
       border-bottom: 1px solid #000;
     }
   }
+}
+@page {
+  size: auto; /* auto is the initial value */
+  margin: 0mm; /* this affects the margin in the printer settings */
 }
 </style>
