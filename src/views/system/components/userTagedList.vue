@@ -107,6 +107,7 @@ export default {
         showHandler: true,
         enableMultiSelect: true,
         enablePagination: true,
+        showIndexColumn: false,
         uniqueKey: 'userId'
       },
       columns: [

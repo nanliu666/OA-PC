@@ -6,7 +6,7 @@
     <page-header title="系统字典" />
     <el-col
       :span="12"
-      style="height:calc(100% - 82px)"
+      style="height:calc(100% - 92px)"
     >
       <basic-container block>
         <div
@@ -59,7 +59,7 @@
     </el-col>
     <el-col
       :span="12"
-      style="height:calc(100% - 82px)"
+      style="height:calc(100% - 92px)"
     >
       <basic-container block>
         <div

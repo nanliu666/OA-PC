@@ -3,6 +3,7 @@
     <el-form
       :inline="true"
       class="demo-form-inline"
+      @submit.native.prevent
     >
       <el-form-item
         v-for="item in requireOptions"
