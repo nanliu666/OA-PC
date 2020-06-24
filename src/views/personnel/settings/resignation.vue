@@ -18,13 +18,12 @@
         </el-button>
       </template>
     </page-header>
+    <el-alert
+      title="使用指南：为了便于员工离职办理更顺畅，可以提前维护员工离职需要处理的事项，通知到各个干系人做准备"
+      type="info"
+      style=" margin-bottom: 16px;"
+    />
     <basic-container block>
-      <el-alert
-        title="使用指南：为了便于员工离职办理更顺畅，可以提前维护员工离职需要处理的事项，通知到各个干系人做准备"
-        type="info"
-        show-icon
-        style=" margin-bottom: 16px;"
-      />
       <el-collapse
         v-if="groupList.length > 0"
         v-model="activeGroupIDList"
@@ -41,7 +40,7 @@
             slot="title"
             class="group-title"
           >
-            <div class="name">
+            <div class="name text-over-length">
               {{ group.name }}
             </div>
             <div class="handover">
@@ -82,7 +81,7 @@
                 slot="title"
                 class="category-title"
               >
-                <div class="name">
+                <div class="name text-over-length">
                   {{ category.categoryName }}
                 </div>
                 <div class="buttons__wrap">
@@ -288,6 +287,12 @@ export default {
 /deep/ .groups .el-button {
   padding: 0;
 }
+
+/deep/ .el-alert--info {
+  background: #edf8ff 100%;
+  border: 1px solid #73b9ff;
+  color: #0e001c;
+}
 .groups {
   min-height: 300px;
 }
@@ -342,7 +347,7 @@ export default {
 }
 
 .basic-container--block {
-  height: calc(100% - 82px);
-  min-height: calc(100% - 82px);
+  height: calc(100% - 92px);
+  min-height: calc(100% - 92px);
 }
 </style>

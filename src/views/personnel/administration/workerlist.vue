@@ -281,7 +281,8 @@ export default {
       page: { currentPage: 1, size: 10, total: 0 },
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
-      }
+      },
+      searchParams: {}
     }
   },
   created() {
@@ -305,6 +306,7 @@ export default {
       })
     },
     handleSubmit(params) {
+      this.searchParams = params
       this.getTableData(params)
     },
     handleEditRole(row) {
@@ -339,7 +341,7 @@ export default {
 
     currentPageChange(param) {
       this.page.currentPage = param
-      this.getTableData()
+      this.getTableData(this.searchParams)
     },
     sizeChange(pageSize) {
       this.page.size = pageSize

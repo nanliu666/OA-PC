@@ -19,21 +19,20 @@
               @submit="handleSearch"
             />
             <div>
-              <el-button
+              <!-- <el-button
                 size="medium"
                 icon="el-icon-upload2"
               >
                 导出
-              </el-button>
-              <el-button
-                size="medium"
-                icon="el-icon-refresh-right"
+              </el-button> -->
+              <i
+                class="icon-basics-refresh-outlined  refresh"
                 @click="getTableList"
               />
-              <el-button
+              <!-- <el-button
                 size="medium"
                 icon="el-icon-s-tools"
-              />
+              /> -->
             </div>
           </div>
         </template>
@@ -240,5 +239,11 @@ export default {
 .search-box {
   display: flex;
   justify-content: space-between;
+}
+.refresh {
+  color: #a0a8ae;
+  font-size: 16px;
+  line-height: 40px;
+  cursor: pointer;
 }
 </style>

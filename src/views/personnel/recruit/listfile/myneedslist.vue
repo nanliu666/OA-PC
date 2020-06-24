@@ -352,7 +352,8 @@ export default {
         formHeight: 20,
         rowKey: 'orgId',
         column: column
-      }
+      },
+      searchParams: {}
     }
   },
   computed: {
@@ -430,6 +431,7 @@ export default {
     },
 
     handleSubmit(params) {
+      this.searchParams = params
       this.getTableData(params)
     },
     jumpToDetail(id) {
@@ -441,7 +443,7 @@ export default {
 
     currentPageChange(param) {
       this.page.currentPage = param
-      this.getTableData()
+      this.getTableData(this.searchParams)
     },
     sizeChange(pageSize) {
       this.page.size = pageSize

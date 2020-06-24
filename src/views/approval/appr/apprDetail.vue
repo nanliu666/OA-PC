@@ -608,10 +608,14 @@
               <template slot="description">
                 <div class="description-box">
                   <div class="img-box">
-                    <img
+                    <!-- <img
                       src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
                       alt=""
-                    >
+                    > -->
+                    <el-avatar
+                      :size="size"
+                      :src="circleUrl"
+                    />
                   </div>
                   <div class="detail-box">
                     <div>
@@ -664,10 +668,14 @@
               <template slot="description">
                 <div class="description-box">
                   <div class="img-box">
-                    <img
+                    <!-- <img
                       src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
                       alt=""
-                    >
+                    > -->
+                    <el-avatar
+                      :size="size"
+                      :src="circleUrl"
+                    />
                   </div>
                   <div class="detail-box">
                     <div>
@@ -694,10 +702,14 @@
               <template slot="description">
                 <div class="description-box">
                   <div class="img-box">
-                    <img
+                    <!-- <img
                       src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
                       alt=""
-                    >
+                    > -->
+                    <el-avatar
+                      :size="size"
+                      :src="circleUrl"
+                    />
                   </div>
                   <div class="detail-box">
                     <div>{{ recordList.userName }}<span class="initiateAppl">发起审批</span></div>
@@ -894,7 +906,10 @@ export default {
       // 审批意见
       apprRemark: '',
       loading: false,
-      btnloading: false
+      btnloading: false,
+      // 头像配置
+      size: 'medium',
+      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
     }
   },
   computed: {
@@ -1439,12 +1454,16 @@ export default {
     display: flex;
     margin-bottom: 50px;
     .img-box {
-      width: 48px;
-      height: 48px;
-      img {
-        width: 48px;
-        height: 48px;
-        border-radius: 100%;
+      width: 63px;
+      height: 63px;
+      // img {
+      //   width: 48px;
+      //   height: 48px;
+      //   border-radius: 100%;
+      // }
+      .el-avatar {
+        width: 63px;
+        height: 63px;
       }
     }
     .detail-box {

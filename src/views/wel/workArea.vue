@@ -134,14 +134,15 @@
                         class="item-row new-item-tips"
                         :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
                       >
-                        <div class="title">
-                          <div
-                            v-if="item.isRead === 0"
-                            class="icon"
-                          />
-                          <!-- <span>{{ item.title }}</span> -->
-                        </div>
+                        <!-- <div class="title"> -->
+                        <!-- <div v-if="item.isRead === 0" class="icon" /> -->
+                        <!-- <span>{{ item.title }}</span> -->
+                        <!-- </div> -->
                         <div class="detail">
+                          <div
+                            class="icon"
+                            :class="item.isRead === 0 ? '' : 'no-read'"
+                          />
                           {{ item.content }}
                         </div>
                         <div class="time">
@@ -177,14 +178,15 @@
                         class="item-row new-item-tips"
                         :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
                       >
-                        <div class="title">
-                          <div
-                            v-if="item.isRead === 0"
-                            class="icon"
-                          />
-                          <span>{{ item.title }}</span>
-                        </div>
+                        <!-- <div class="title">
+													<div v-if="item.isRead === 0" class="icon"  />
+													<span>{{ item.title }}</span>
+												</div> -->
                         <div class="detail">
+                          <div
+                            class="icon"
+                            :class="item.isRead === 0 ? '' : 'no-read'"
+                          />
                           {{ item.content }}
                         </div>
                         <div class="time">
@@ -593,14 +595,14 @@ export default {
     left: 24px;
   }
   // 公共样式
-  .title {
-    min-width: 100px;
-    font-family: PingFangSC-Medium;
-    font-size: 14px;
-    line-height: 43px;
-    color: #718199;
-    display: inline-block;
-  }
+  // .title {
+  // 	min-width: 100px;
+  // 	font-family: PingFangSC-Medium;
+  // 	font-size: 14px;
+  // 	line-height: 43px;
+  // 	color: #718199;
+  // 	display: inline-block;
+  // }
   .time {
     margin-left: 24px;
     font-size: 14px;
@@ -608,7 +610,6 @@ export default {
     line-height: 43px;
     display: inline-block;
     min-width: 80px;
-    display: inline-block;
   }
   .detail {
     font-family: PingFangSC-Regular;
@@ -617,7 +618,7 @@ export default {
     display: inline-block;
     text-align: start;
     width: 70%;
-    padding-left: 24px;
+    // padding-left: 24px;
     // 。。。
     overflow: hidden;
     text-overflow: ellipsis;
@@ -626,13 +627,19 @@ export default {
 
   .new-item-tips {
     border-bottom: solid 1px #eeeeee;
-    .title {
-      width: 98px;
-      // span {
-      // 	display: inline-block;
-      // 	vertical-align: middle;
-      // }
-      // 小红点
+    // .title {
+    // 	.icon {
+    // 		margin-right: 8px;
+    // 		width: 6px;
+    // 		height: 6px;
+    // 		border-radius: 100%;
+    // 		background: #ff6464 100%;
+    // 		display: inline-block;
+    // 		vertical-align: middle;
+    // 	}
+    // }
+    .detail {
+      color: #202940;
       .icon {
         margin-right: 8px;
         width: 6px;
@@ -643,21 +650,21 @@ export default {
         vertical-align: middle;
       }
     }
-    .detail {
-      color: #202940;
-    }
     .time {
       color: #000000;
     }
   }
   .new-item {
     border-bottom: solid 1px #eeeeee;
-    .title {
-      padding-left: 14px;
-      box-sizing: border-box;
-    }
+    // .title {
+    // 	padding-left: 14px;
+    // 	box-sizing: border-box;
+    // }
     .detail {
       color: #718199;
+      .no-read {
+        background: #ffffff 100%;
+      }
     }
     .time {
       color: #718199;

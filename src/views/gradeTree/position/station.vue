@@ -145,6 +145,7 @@ export default {
       data: [],
       tableConfig: {
         showHandler: true,
+        showIndexColumn: false,
         enableMultiSelect: true
       },
       columns: [

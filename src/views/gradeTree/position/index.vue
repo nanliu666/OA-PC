@@ -195,6 +195,7 @@ export default {
         showHandler: true,
         enableMultiSelect: true,
         enablePagination: true,
+        showIndexColumn: false,
         handlerColumn: {
           width: 200
         }
