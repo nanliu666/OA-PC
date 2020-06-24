@@ -522,4 +522,7 @@ export default {
     margin-left: 10px;
   }
 }
+/deep/.el-tree-node__content {
+  line-height: 36px;
+}
 </style>
