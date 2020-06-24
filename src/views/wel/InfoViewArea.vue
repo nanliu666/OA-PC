@@ -8,12 +8,7 @@
       <!-- 头像 -->
       <div class="avatar-row ">
         <div class="avatar-img">
-          <!-- <img
-            src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
-            alt=""
-          > -->
           <i class="icon-usercircle" />
-          <!-- <span class="add-btn">+</span> -->
         </div>
       </div>
       <!-- 姓名 -->
@@ -96,7 +91,7 @@
             @click="jumpToAddUser"
           >
             <div class="icon-box add">
-              <i class="icon-tips-plus-outlined" />
+              +
             </div>
             <span>添加员工</span>
           </div>
@@ -177,9 +172,6 @@ export default {
 
 <style lang="scss" scoped>
 .info-wrap {
-  // position: fixed;
-  // left: 32px;
-  // top: 64px;
   height: 90vh;
   width: 100%;
 
@@ -199,32 +191,13 @@ export default {
       height: 116px;
       width: 116px;
       border-radius: 100%;
-      // border: 5px solid #ececf3;
+
       position: relative;
-      // img {
-      // 	width: 116px;
-      // 	height: 116px;
-      // 	border-radius: 100%;
-      // }
+
       .icon-usercircle {
         font-size: 116px;
         vertical-align: middle;
         color: #cfd3d6;
-      }
-      .add-btn {
-        display: inline-block;
-        text-align: center;
-        line-height: 18px;
-        border-radius: 100%;
-        border: solid 2px #ffffff;
-        width: 18px;
-        height: 18px;
-        color: #ffffff;
-        background: #207efa 100%;
-        position: absolute;
-        right: 0;
-        top: 70%;
-        cursor: pointer;
       }
     }
   }
@@ -232,7 +205,6 @@ export default {
   .name-row {
     margin-top: 8px;
     span {
-      font-family: PingFangSC-Medium;
       font-size: 16px;
       color: #202940;
       line-height: 24px;
@@ -242,9 +214,11 @@ export default {
   .org-row {
     margin-top: 4px;
     :nth-child(2) {
-      vertical-align: text-bottom;
+      padding: 0 7px;
+      vertical-align: middle;
     }
-    font-family: PingFangSC-Regular;
+    display: flex;
+    align-items: center;
     font-size: 12px;
     color: #a0a8ae;
     line-height: 18px;
@@ -320,14 +294,10 @@ export default {
   height: 32px;
 }
 .add {
-  border: 1px solid #e3e7e9;
+  border: 1px dashed #e3e7e9;
   border-radius: 24px;
-  border-radius: 24px;
-  .icon-tips-plus-outlined {
-    color: #a0a8ae;
-    border-radius: 1px;
-    font-size: 16px;
-  }
+  font-size: 24px;
+  color: #a0a8ae;
 }
 
 // 工作概览

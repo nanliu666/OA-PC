@@ -262,7 +262,22 @@ export default {
   height: calc(100% - 92px);
   min-height: calc(100% - 92px);
 }
+/deep/.el-input__inner {
+  border-color: #fff;
+}
+/deep/ .el-input__inner:hover {
+  border-color: #fff;
+}
 
+/deep/.el-select .el-input .el-input__inner {
+  border-color: #fff;
+}
+/deep/.el-select .el-input__inner:focus {
+  border-color: #fff;
+}
+.el-select {
+  width: 120px;
+}
 .memu {
   display: flex;
   justify-content: space-between;
