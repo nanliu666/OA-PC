@@ -1,8 +1,7 @@
 <template>
-  <div style="height:100%;width: 100% ">
-    <div class="header">
-      <div>职位管理</div>
-      <div>
+  <div>
+    <page-header title="职位管理">
+      <template slot="rightMenu">
         <el-button
           type="primary"
           size="medium"
@@ -10,8 +9,8 @@
         >
           新建职位
         </el-button>
-      </div>
-    </div>
+      </template>
+    </page-header>
     <nav
       v-if="show"
       class="nav"
@@ -509,20 +508,7 @@ export default {
     }
   }
 }
-.header {
-  display: flex;
-  display: -ms-flex;
-  display: -moz-box;
-  display: -webkit-flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  color: #202940;
-  line-height: 28px;
-  font-weight: bold;
-  padding-top: 14px;
-}
+
 .nav {
   display: flex;
   display: -ms-flex;
@@ -533,7 +519,7 @@ export default {
   align-items: center;
   line-height: 26px;
   padding: 5px 20px;
-  margin-top: 8px;
+  margin-top: -6px;
   background: #edf8ff;
   border: 1px solid #73b9ff;
   border-radius: 4px;
