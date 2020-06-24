@@ -292,7 +292,5 @@ export default {
       background: #ff6464;
     }
   }
-  .time {
-  }
 }
 </style>
