@@ -119,7 +119,7 @@ export default {
         userId: this.$route.query.userId
       })
       this.userInfo = res
-      let data = this.$route.query.printDate * 1
+      let data = +this.$route.query.printDate
       let printDate = new Date(data)
       let year = printDate.getFullYear()
       let mon = printDate.getMonth() + 1
