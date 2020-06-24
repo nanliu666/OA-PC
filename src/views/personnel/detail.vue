@@ -12,7 +12,7 @@
 						<i class="el-icon-arrow-left" @click="goBack" />
 					</span>
 					<span>个人信息</span>
-				</div> -->
+        </div>-->
         <div class="staff-survey">
           <el-container class="survey-inner-container">
             <el-aside width="100px">
@@ -29,7 +29,7 @@
             </el-aside>
             <el-main>
               <div
-                class="grid-content relative-box "
+                class="grid-content relative-box"
                 style="line-height: 50px;"
               >
                 <span class="staff-name">{{ allInfo.name }}</span>
@@ -123,13 +123,14 @@
                     }}</span>
                   </div>
                 </el-col>
-              </el-row> -->
+              </el-row>-->
               <nav
                 v-show="allInfo.status === 'WaitLeave' && leaveNavShow"
                 class="nav"
               >
                 <span>
-                  <i class="el-icon-warning" /> 提示：该员工因
+                  <i class="el-icon-warning" />
+                  提示：该员工因
                   {{ LeaveReason[leaveInfo.reason] }} 预计 {{ leaveInfo.lastDate }} 在离职。
                 </span>
                 <span
@@ -183,6 +184,11 @@
         </div>
       </div>
     </basic-container>
+    <leaveDialog
+      ref="leaveDialogRef"
+      :refresh="getBasicInfo"
+      :leave-reason="LeaveReasonDict"
+    />
   </div>
 </template>
 <script>
@@ -193,13 +199,15 @@ import postInfo from './detail/postInfo/index'
 import personalInfo from './detail/staffInfo/index'
 import actionRecord from './components/actionRecord'
 import uploadData from './components/uploadData'
+import leaveDialog from '@/views/personnel/leave/components/leaveDialog'
 export default {
   name: 'UserDetail',
   components: {
     personalInfo,
     postInfo,
     actionRecord,
-    uploadData
+    uploadData,
+    leaveDialog
   },
   data() {
     return {
@@ -214,7 +222,8 @@ export default {
       topValue: 0,
       leaveNavShow: true,
       leaveInfo: {},
-      LeaveReason: {}
+      LeaveReason: {},
+      LeaveReasonDict: []
     }
   },
   beforeRouteLeave(to, form, next) {
@@ -261,6 +270,9 @@ export default {
     jumpToLeave() {
       this.$router.push('/personnel/leave/confirmLeave?userId=' + this.allInfo.userId)
     },
+    toChangeLeaveInfo() {
+      this.$refs.leaveDialogRef.showChangeDialog(this.allInfo)
+    },
     giveupLeave() {
       giveupLeave({ id: this.leaveInfo.id }).then(() => {
         this.$message.success('操作成功')
@@ -301,6 +313,7 @@ export default {
           })
         res.status === 'WaitLeave' &&
           this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
+            this.LeaveReasonDict = res
             res.forEach((item) => {
               this.LeaveReason[item.dictKey] = item.dictValue
             })
