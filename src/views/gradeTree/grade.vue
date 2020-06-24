@@ -1,198 +1,202 @@
 <template>
-  <div
-    v-loading="loading"
-    element-loading-text="正在查询构建组织架构图，请稍等..."
-    class="grade"
-  >
-    <div class="header">
-      <div
-        v-show="editStatus"
-        class="nav"
-      >
-        <span style="width: 170px;display: inline-block;">
-          组织架构图
-          <el-tooltip
-            placement="top"
-            effect="dark"
-          >
-            <div slot="content">
-              1.架构图是将企业组织、职位和员工以结构层级图呈现。<br>2.对架构图的编辑将同步更新到【组织管理】和【职位管理】。
-            </div>
-            <i class="el-icon-question" /> </el-tooltip></span>
-        <avue-form
-          v-model="orgForm"
-          :option="option"
-          @submit="submit"
-        />
-      </div>
-      <div
-        v-show="!editStatus"
-        class="back flex flex-flow-column flex-justify-start"
-      >
-        <div class="flex flex-items flex-flow">
-          <el-link
-            type="primary"
-            style="font-size: 16px"
-            @click="back"
-          >
-            返回
-          </el-link><span style="padding:0 10px">|</span>编辑架构图
-        </div>
-
-        <div
-          v-if="orgForm.$orgId"
-          style="margin-top:15px"
-        >
-          {{ orgForm.$orgId }} <span class="el-icon-caret-bottom" />
-        </div>
-      </div>
-      <div v-if="editStatus">
-        <el-button
-          type="primary"
-          size="medium"
-          @click="isEdit_"
-        >
-          <i class="el-icon-edit-outline el-icon--right" /> 编辑架构图
-        </el-button>
-        <el-button
-          size="medium"
-          @click="downloadImage"
-        >
-          <span
-            style="display: inline-block; width: 93px"
-          ><i class="el-icon-download el-icon--right" />下载</span>
-        </el-button>
-      </div>
-      <div v-else>
-        <el-button
-          size="medium"
-          type="primary"
-          @click="sort"
-        >
-          <span style="display: inline-block; width: 93px">保存视图</span>
-        </el-button>
-      </div>
-    </div>
-    <div class="canvas">
-      <div
-        id="myDiagramDiv"
-        class="myDiagramDiv"
-      />
-    </div>
-
-    <ul
-      id="contextMenu"
-      class="ctxmenu"
+  <div style="height: 100%;width: 100%;">
+    <page-header title="组织架构图" />
+    <div
+      v-loading="loading"
+      element-loading-text="正在查询构建组织架构图，请稍等..."
+      class="grade"
     >
-      <li
-        id="newOrg"
-        class="menu-item"
-        @click="create($event)"
-      >
-        新建子组织
-      </li>
-      <li
-        id="newPosition"
-        class="menu-item"
-        @click="create($event)"
-      >
-        新建直属职位
-      </li>
-      <li
-        id="edit"
-        class="menu-item"
-        @click="create($event)"
-      >
-        编辑
-      </li>
-      <li
-        id="delete"
-        class="menu-item"
-        @click="cxcommand($event, 'delete')"
-      >
-        删除
-      </li>
-    </ul>
-    <div class="scale">
-      <div class="flex">
+      <div class="headers">
         <div
-          id="centerRoot"
-          class="el-icon-rank"
-        />
-        <div
-          id="zoom-out"
-          class="el-icon-zoom-out"
-        />
-        <div
-          id="zoom-in"
-          class="el-icon-zoom-in"
-        />
-      </div>
-    </div>
-    <p />
-    <div />
-    <div v-if="dialogVisible">
-      <el-dialog
-        title="提示"
-        :visible.sync="dialogVisible"
-        :modal-append-to-body="false"
-        width="30%"
-      >
-        <span>
-          <el-form
-            ref="form"
-            :model="form"
-            label-width="80px"
-          >
-            <el-form-item label="公司名称">
-              <el-input
-                v-model="form.name"
-                placeholder="placeholder"
-              />
-            </el-form-item>
-            <el-form-item label="说明">
-              <el-input
-                v-model="form.userName"
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 5 }"
-                placeholder="placeholder"
-              />
-            </el-form-item>
-          </el-form>
-        </span>
-        <span
-          slot="footer"
-          class="dialog-footer"
+          v-show="editStatus"
+          class="nav"
         >
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <span style="width: 170px;display: inline-block;margin-top:7px">
+            组织架构图
+            <el-tooltip
+              placement="top"
+              effect="dark"
+            >
+              <div slot="content">
+                1.架构图是将企业组织、职位和员工以结构层级图呈现。<br>2.对架构图的编辑将同步更新到【组织管理】和【职位管理】。
+              </div>
+              <i class="el-icon-question" /> </el-tooltip></span>
+          <avue-form
+            v-model="orgForm"
+            :option="option"
+            @submit="submit"
+          />
+        </div>
+        <div
+          v-show="!editStatus"
+          class="back flex flex-flow-column flex-justify-start"
+        >
+          <div class="flex flex-items flex-flow">
+            <el-link
+              type="primary"
+              style="font-size: 16px"
+              @click="back"
+            >
+              返回
+            </el-link>
+            <span style="padding:0 10px">|</span>编辑架构图
+          </div>
+          <div
+            v-if="orgForm.$orgId"
+            style="margin-top:15px"
+          >
+            {{ orgForm.$orgId }} <span class="el-icon-caret-bottom" />
+          </div>
+        </div>
+        <div v-if="editStatus">
           <el-button
             type="primary"
-            @click="handleModity"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
+            size="medium"
+            @click="isEdit_"
+          >
+            <i class="el-icon-edit-outline el-icon--right" /> 编辑架构图
+          </el-button>
+          <el-button
+            size="medium"
+            @click="downloadImage"
+          >
+            <span
+              style="display: inline-block; width: 93px"
+            ><i class="el-icon-download el-icon--right" />下载</span>
+          </el-button>
+        </div>
+        <div v-else>
+          <el-button
+            size="medium"
+            type="primary"
+            @click="sort"
+          >
+            <span style="display: inline-block; width: 93px">保存视图</span>
+          </el-button>
+        </div>
+      </div>
+      <div class="canvas">
+        <div
+          id="myDiagramDiv"
+          class="myDiagramDiv"
+        />
+      </div>
+
+      <ul
+        id="contextMenu"
+        class="ctxmenu"
+      >
+        <li
+          id="newOrg"
+          class="menu-item"
+          @click="create($event)"
+        >
+          新建子组织
+        </li>
+        <li
+          id="newPosition"
+          class="menu-item"
+          @click="create($event)"
+        >
+          新建直属职位
+        </li>
+        <li
+          id="edit"
+          class="menu-item"
+          @click="create($event)"
+        >
+          编辑
+        </li>
+        <li
+          id="delete"
+          class="menu-item"
+          @click="cxcommand($event, 'delete')"
+        >
+          删除
+        </li>
+      </ul>
+      <div class="scale">
+        <div class="flex">
+          <div
+            id="centerRoot"
+            class="el-icon-rank"
+          />
+          <div
+            id="zoom-out"
+            class="el-icon-zoom-out"
+          />
+          <div
+            id="zoom-in"
+            class="el-icon-zoom-in"
+          />
+        </div>
+      </div>
+      <p />
+      <div />
+      <div v-if="dialogVisible">
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          :modal-append-to-body="false"
+          width="30%"
+        >
+          <span>
+            <el-form
+              ref="form"
+              :model="form"
+              label-width="80px"
+            >
+              <el-form-item label="公司名称">
+                <el-input
+                  v-model="form.name"
+                  placeholder="placeholder"
+                />
+              </el-form-item>
+              <el-form-item label="说明">
+                <el-input
+                  v-model="form.userName"
+                  type="textarea"
+                  :autosize="{ minRows: 2, maxRows: 5 }"
+                  placeholder="placeholder"
+                />
+              </el-form-item>
+            </el-form>
+          </span>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button
+              type="primary"
+              @click="handleModity"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+      <position-dialog
+        v-if="positionDialog"
+        :dialog-visible.sync="positionDialog"
+        :title="title"
+        :is-edit="isEdit"
+        :org-data="selData"
+        @onsubmit="positionOnsubmit"
+      />
+      <orgDialog
+        v-if="orgDialog"
+        :dialog-visible.sync="orgDialog"
+        :title="title"
+        :is-edit="isEdit"
+        :org-data="selData"
+        @onsubmit="orgOnsubmit"
+      />
     </div>
-    <position-dialog
-      v-if="positionDialog"
-      :dialog-visible.sync="positionDialog"
-      :title="title"
-      :is-edit="isEdit"
-      :org-data="selData"
-      @onsubmit="positionOnsubmit"
-    />
-    <orgDialog
-      v-if="orgDialog"
-      :dialog-visible.sync="orgDialog"
-      :title="title"
-      :is-edit="isEdit"
-      :org-data="selData"
-      @onsubmit="orgOnsubmit"
-    />
   </div>
 </template>
 
 <script>
 import go from 'gojs'
+
 const $ = go.GraphObject.make
 import html2canvas from 'html2canvas'
 import positionDialog from './compoents/positionDialog'
@@ -489,25 +493,30 @@ export default {
           }
         })
       }
+
       function mayWorkFor(node1, node2) {
         if (!(node1 instanceof go.Node)) return false // must be a Node
         if (node1 === node2) return false // cannot work for yourself
         if (node2.isInTreeOf(node1)) return false // cannot work for someone who works for you
         return true
       }
+
       // define the Node template
       var myContextMenu = $(go.HTMLInfo, {
         show: showContextMenu.bind(this),
         hide: hideContextMenu
       })
+
       function hideContextMenu() {
         cxElement.classList.remove('show-menu')
         window.removeEventListener('click', hideCX, true)
       }
+
       function showContextMenu(obj, diagram) {
         if (this.editStatus) return
         var hasMenuItem = true
         that.selData = obj.data
+
         function maybeShowItem(elt, pred, id) {
           switch (id) {
             case 'newOrg':
@@ -523,6 +532,7 @@ export default {
               deletes(pred)
               break
           }
+
           function newOrg() {
             if (pred.type !== that.type[4]) {
               elt.style.display = 'block'
@@ -531,6 +541,7 @@ export default {
               elt.style.display = 'none'
             }
           }
+
           function newPosition() {
             elt.style.display = 'block'
           }
@@ -547,6 +558,7 @@ export default {
             }
           }
         }
+
         maybeShowItem(document.getElementById('newOrg'), obj.data, 'newOrg')
         maybeShowItem(document.getElementById('newPosition'), obj.data, 'newPosition')
         maybeShowItem(document.getElementById('edit'), obj.data, 'edit')
@@ -559,11 +571,13 @@ export default {
         }
         window.addEventListener('click', hideCX, true)
       }
+
       function hideCX() {
         if (that.myDiagram.currentTool instanceof go.ContextMenuTool) {
           that.myDiagram.currentTool.doCancel()
         }
       }
+
       go.Shape.defineFigureGenerator('RoundedTopRectangle', function(shape, w, h) {
         // 这个图像获取了一个参数，角的尺寸
         var p1 = 5 // 默认的角尺寸
@@ -1026,25 +1040,30 @@ export default {
 .avue-view {
   height: auto;
 }
+
 .grade {
+  height: 100%;
+  width: 100%;
   background: #ffffff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
   padding: 0px !important;
   /*min-height: calc(100% - 64px);*/
-  width: calc(100% - 64px);
-  margin-left: 30px;
-  margin-bottom: 50px;
+  /*width: calc(100% - 64px);*/
+  /*margin-left: 30px;*/
+  /*margin-bottom: 50px;*/
   position: relative;
   height: 100%;
   /*margin: 20px !important;*/
-  /*padding: 0 !important;*/
-  /*background: #fff;*/
+  padding: 0 !important;
+  background: #fff;
 }
+
 .canvas {
   height: 100%;
   width: 100%;
   position: relative;
+
   .mask {
     position: absolute;
     left: 0;
@@ -1055,7 +1074,8 @@ export default {
     z-index: 999;
   }
 }
-.header {
+
+.headers {
   display: flex;
   display: -webkit-flex;
   display: -moz-box;
@@ -1066,18 +1086,22 @@ export default {
   /*line-height: 60px;*/
   padding: 20px 30px;
 }
+
 .go {
   overflow: scroll;
   height: 600px;
   width: 606px;
+
   .ces {
     height: 600px;
     width: 1200px;
   }
 }
+
 .myDiagramDiv {
   height: calc(100% - 250px);
 }
+
 #myDiagramDiv {
   background-color: rgba(220, 239, 254, 0.3);
   /*background:  #DCEFFE;*/
@@ -1088,6 +1112,7 @@ export default {
   width: 100%;
   overflow: scroll;
 }
+
 .scale {
   z-index: 999999999999999;
   position: absolute;
@@ -1096,15 +1121,18 @@ export default {
   display: flex;
   display: -webkit-flex;
   flex-flow: column nowrap;
+
   .flex {
     display: flex;
     display: -webkit-flex;
     flex-flow: row nowrap;
+
     div {
       margin: 0 10px;
       color: #757c85;
     }
   }
+
   div {
     margin: 8px 0;
     font-size: 28px;
@@ -1125,6 +1153,7 @@ export default {
   background-color: #ffffff;
   border-radius: 4px;
 }
+
 .menu-item {
   display: block;
   position: relative;
@@ -1135,6 +1164,7 @@ export default {
   color: rgba(0, 0, 0, 0.87);
   cursor: pointer;
 }
+
 .menu-item::before {
   position: absolute;
   top: 0;
@@ -1146,18 +1176,22 @@ export default {
   height: 100%;
   background-color: #000000;
 }
+
 .menu-item:hover::before {
   opacity: 0.04;
 }
+
 .menu .menu {
   top: -8px;
   left: 100%;
 }
+
 .show-menu,
 .menu-item:hover .ctxmenu {
   display: block;
   opacity: 1;
 }
+
 .nav {
   display: flex;
   display: -webkit-flex;

@@ -134,6 +134,7 @@ export default {
         line-height: 48px;
         height: 48px;
         width: 48px;
+        margin-right: 0px;
         /*border-radius: 50%;*/
         display: inline-block;
         font-size: 32px;

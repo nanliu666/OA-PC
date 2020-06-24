@@ -1,8 +1,7 @@
 <template>
-  <div style="height:100%;width: 100% ">
-    <div class="header">
-      <div>职位管理</div>
-      <div>
+  <div>
+    <page-header title="职位管理">
+      <template slot="rightMenu">
         <el-button
           type="primary"
           size="medium"
@@ -10,8 +9,8 @@
         >
           新建职位
         </el-button>
-      </div>
-    </div>
+      </template>
+    </page-header>
     <nav
       v-if="show"
       class="nav"
@@ -28,7 +27,7 @@
         <el-container style="height: 100%">
           <el-aside
             class="aside"
-            style="width: 240px;"
+            style="width: 230px;"
           >
             <div class="aside_header">
               <span>职位类别</span>
@@ -81,24 +80,35 @@
                       <el-input
                         v-model="form.name"
                         placeholder="职位名称"
-                        size="medium"
-                        class="input-with-select"
-                      >
-                        <el-button
-                          slot="append"
-                          icon="el-icon-search"
-                          @click="search"
-                        />
-                      </el-input>
+                        suffix-icon="el-icon-search"
+                        style="width:200px;margin-right:12px;"
+                        @change="search"
+                      />
+                      <!--                      <el-input-->
+                      <!--                        v-model="form.name"-->
+                      <!--                        placeholder="职位名称"-->
+                      <!--                        size="medium"-->
+                      <!--                        class="input-with-select"-->
+                      <!--                      >-->
+                      <!--                        <el-button-->
+                      <!--                          slot="append"-->
+                      <!--                          icon="el-icon-search"-->
+                      <!--                          @click="search"-->
+                      <!--                        />-->
+                      <!--                      </el-input>-->
                     </div>
                     <div>
-                      <el-button
-                        type="primary"
-                        size="medium"
+                      <i
+                        class="icon  el-icon-refresh-right"
                         @click="getJobData({ pageNo: params.pageNo })"
-                      >
-                        <i class="el-icon-refresh" />
-                      </el-button>
+                      />
+                      <!--                      <el-button-->
+                      <!--                        type="primary"-->
+                      <!--                        size="medium"-->
+                      <!--                        @click="getJobData({ pageNo: params.pageNo })"-->
+                      <!--                      >-->
+                      <!--                        <i class="el-icon-refresh" />-->
+                      <!--                      </el-button>-->
                     </div>
                   </div>
                 </template>
@@ -474,7 +484,7 @@ export default {
   margin-top: 20px;
   ul {
     list-style: none;
-    padding: 0 10px;
+    padding: 0 10px 0 0;
     margin-top: 10px;
     line-height: 34px;
     li {
@@ -498,20 +508,7 @@ export default {
     }
   }
 }
-.header {
-  display: flex;
-  display: -ms-flex;
-  display: -moz-box;
-  display: -webkit-flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  color: #202940;
-  line-height: 28px;
-  font-weight: bold;
-  padding-top: 14px;
-}
+
 .nav {
   display: flex;
   display: -ms-flex;
@@ -522,7 +519,7 @@ export default {
   align-items: center;
   line-height: 26px;
   padding: 5px 20px;
-  margin-top: 8px;
+  margin-top: -6px;
   background: #edf8ff;
   border: 1px solid #73b9ff;
   border-radius: 4px;
@@ -537,7 +534,7 @@ export default {
   align-items: center;
   flex-flow: row nowrap;
   justify-content: space-between;
-  margin: 0 10px 0px 10px;
+  margin: 0 10px 0px 0px;
   padding-bottom: 10px;
   font-size: 18px;
   border-bottom: 1px solid #efefef;
@@ -588,5 +585,10 @@ export default {
 }
 .handler {
   width: 200px;
+}
+.icon {
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
 }
 </style>

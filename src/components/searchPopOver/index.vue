@@ -491,7 +491,7 @@ export default {
   text-align: right;
 }
 .el-form-item {
-  padding-right: 24px;
+  padding-right: 0px;
 }
 
 /deep/ .el-form-item__label {
@@ -522,5 +522,8 @@ export default {
 }
 /deep/ .el-input__icon.el-icon-search {
   cursor: pointer;
+}
+/deep/ .el-form--inline .el-form-item {
+  margin-right: 16px;
 }
 </style>
