@@ -1281,8 +1281,8 @@ export default {
 
 <style lang="scss" scoped>
 .basic-container--block {
-  height: calc(100% - 82px - 116px);
-  min-height: calc(100% - 82px - 116px);
+  height: calc(100% - 92px - 116px);
+  min-height: calc(100% - 92px - 116px);
 }
 
 .topBtn {

@@ -40,15 +40,10 @@
                 @submit="handleSubmit"
               />
             </div>
-            <div>
-              <el-button
-                type="text"
-                class="refresh"
-                icon="icon-basics-refresh-outlined"
-                size="medium"
-                @click="loadData"
-              />
-            </div>
+            <i
+              class="icon-basics-refresh-outlined refresh"
+              @click="loadData"
+            />
           </div>
         </template>
         <template
@@ -125,6 +120,7 @@ export default {
       tableConfig: {
         showHandler: true,
         // enableMultiSelect: true,
+        showIndexColumn: false,
         enablePagination: true,
         handlerColumn: {
           width: '180'
@@ -303,5 +299,8 @@ export default {
 }
 .refresh {
   color: #a0a8ae;
+  font-size: 16px;
+  line-height: 40px;
+  cursor: pointer;
 }
 </style>

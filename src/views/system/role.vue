@@ -479,8 +479,8 @@ export default {
 
 <style lang="scss" scoped>
 /deep/ .basic-container--block {
-  height: calc(100% - 82px);
-  min-height: calc(100% - 82px);
+  height: calc(100% - 92px);
+  min-height: calc(100% - 92px);
   > .el-card {
     height: 100%;
     > .el-card__body {

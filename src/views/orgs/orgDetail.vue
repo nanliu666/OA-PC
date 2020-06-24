@@ -218,7 +218,7 @@ export default {
   font-size: 18px;
 }
 .basic-container--block {
-  height: calc(100% - 82px);
+  height: calc(100% - 92px);
 }
 .container {
   display: flex;
