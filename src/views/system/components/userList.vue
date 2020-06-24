@@ -316,6 +316,7 @@ export default {
 .icon {
   padding-left: 12px;
   font-size: 18px;
+  color: #a0a8ae;
   cursor: pointer;
 }
 </style>

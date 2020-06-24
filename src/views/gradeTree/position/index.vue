@@ -28,7 +28,7 @@
         <el-container style="height: 100%">
           <el-aside
             class="aside"
-            style="width: 240px;"
+            style="width: 230px;"
           >
             <div class="aside_header">
               <span>职位类别</span>
@@ -81,24 +81,35 @@
                       <el-input
                         v-model="form.name"
                         placeholder="职位名称"
-                        size="medium"
-                        class="input-with-select"
-                      >
-                        <el-button
-                          slot="append"
-                          icon="el-icon-search"
-                          @click="search"
-                        />
-                      </el-input>
+                        suffix-icon="el-icon-search"
+                        style="width:200px;margin-right:12px;"
+                        @change="search"
+                      />
+                      <!--                      <el-input-->
+                      <!--                        v-model="form.name"-->
+                      <!--                        placeholder="职位名称"-->
+                      <!--                        size="medium"-->
+                      <!--                        class="input-with-select"-->
+                      <!--                      >-->
+                      <!--                        <el-button-->
+                      <!--                          slot="append"-->
+                      <!--                          icon="el-icon-search"-->
+                      <!--                          @click="search"-->
+                      <!--                        />-->
+                      <!--                      </el-input>-->
                     </div>
                     <div>
-                      <el-button
-                        type="primary"
-                        size="medium"
+                      <i
+                        class="icon  el-icon-refresh-right"
                         @click="getJobData({ pageNo: params.pageNo })"
-                      >
-                        <i class="el-icon-refresh" />
-                      </el-button>
+                      />
+                      <!--                      <el-button-->
+                      <!--                        type="primary"-->
+                      <!--                        size="medium"-->
+                      <!--                        @click="getJobData({ pageNo: params.pageNo })"-->
+                      <!--                      >-->
+                      <!--                        <i class="el-icon-refresh" />-->
+                      <!--                      </el-button>-->
                     </div>
                   </div>
                 </template>
@@ -473,7 +484,7 @@ export default {
   margin-top: 20px;
   ul {
     list-style: none;
-    padding: 0 10px;
+    padding: 0 10px 0 0;
     margin-top: 10px;
     line-height: 34px;
     li {
@@ -536,7 +547,7 @@ export default {
   align-items: center;
   flex-flow: row nowrap;
   justify-content: space-between;
-  margin: 0 10px 0px 10px;
+  margin: 0 10px 0px 0px;
   padding-bottom: 10px;
   font-size: 18px;
   border-bottom: 1px solid #efefef;
@@ -587,5 +598,10 @@ export default {
 }
 .handler {
   width: 200px;
+}
+.icon {
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
 }
 </style>

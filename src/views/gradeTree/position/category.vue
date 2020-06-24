@@ -48,31 +48,35 @@
                   <el-input
                     v-model="form.name"
                     placeholder="职位类别名称"
-                    size="medium"
-                    class="input-with-select"
-                  >
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click="search"
-                    />
-                  </el-input>
+                    suffix-icon="el-icon-search"
+                    style="width:200px;margin-right:12px;"
+                    @change="search"
+                  />
+                  <!--                  <el-input-->
+                  <!--                    v-model="form.name"-->
+                  <!--                    placeholder="职位类别名称"-->
+                  <!--                    size="medium"-->
+                  <!--                    class="input-with-select"-->
+                  <!--                  >-->
+                  <!--                    <el-button-->
+                  <!--                      slot="append"-->
+                  <!--                      icon="el-icon-search"-->
+                  <!--                      @click="search"-->
+                  <!--                    />-->
+                  <!--                  </el-input>-->
                 </div>
                 <div>
-                  <el-button
-                    type="primary"
-                    size="medium"
-                    @click="handleExport"
-                  >
-                    <i class="el-icon-upload2" /> 导出
-                  </el-button>
-                  <el-button
-                    type="primary"
-                    size="medium"
+                  <!--                  <el-button-->
+                  <!--                    type="primary"-->
+                  <!--                    size="medium"-->
+                  <!--                    @click="getData"-->
+                  <!--                  >-->
+                  <!--                    <i class="el-icon-refresh" />-->
+                  <!--                  </el-button>-->
+                  <i
+                    class="icon  el-icon-refresh-right"
                     @click="getData"
-                  >
-                    <i class="el-icon-refresh" />
-                  </el-button>
+                  />
                 </div>
               </div>
             </template>
@@ -540,5 +544,10 @@ export default {
 
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+.icon {
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
 }
 </style>

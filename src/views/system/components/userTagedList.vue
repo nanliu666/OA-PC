@@ -26,22 +26,34 @@
         </el-button>
       </template>
       <template slot="topMenu">
-        <el-input
-          v-model="query.name"
-          placeholder="姓名/工号"
-          suffix-icon="el-icon-search"
-          style="width:200px;margin-right:12px;"
-          @change="currentChange(1)"
-        />
-        <el-button
-          type="primary"
-          size="medium"
-          style="float:right;"
-          plain
-          @click="handleEditTagUser"
-        >
-          添加员工
-        </el-button>
+        <div class="flex flex-flow flex-justify-between flex-items">
+          <el-input
+            v-model="query.name"
+            placeholder="姓名/工号"
+            suffix-icon="el-icon-search"
+            style="width:200px;margin-right:12px;"
+            @change="currentChange(1)"
+          />
+          <!--        <el-button-->
+          <!--          type="primary"-->
+          <!--          size="medium"-->
+          <!--          style="float:right;"-->
+          <!--          plain-->
+          <!--          @click="handleEditTagUser"-->
+          <!--        >-->
+          <!--          添加员工-->
+          <!--        </el-button>-->
+          <div>
+            <span
+              class="addUser"
+              @click="handleEditTagUser"
+            >添加员工</span>
+            <span
+              class="icon  el-icon-refresh-right"
+              @click="loadData"
+            />
+          </div>
+        </div>
       </template>
       <template
         slot="handler"
@@ -205,4 +217,20 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.addUser {
+  font-size: 14px;
+  display: inline-block;
+  color: #757c85;
+  line-height: 14px;
+  cursor: pointer;
+  padding-right: 12px;
+  border-right: 0.5px solid #e9e9e9;
+}
+.icon {
+  padding-left: 12px;
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
+}
+</style>

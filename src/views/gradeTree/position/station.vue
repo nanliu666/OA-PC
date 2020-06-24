@@ -41,7 +41,6 @@
             :config="tableConfig"
             :columns="columns"
             :loading="loading"
-            @current-page-change="currentPageChange"
             @page-size-change="sizeChange"
           >
             <template slot="topMenu">
@@ -50,24 +49,35 @@
                   <el-input
                     v-model="form.name"
                     placeholder="岗位名称"
-                    size="medium"
-                    class="input-with-select"
-                  >
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click="search"
-                    />
-                  </el-input>
+                    suffix-icon="el-icon-search"
+                    style="width:200px;margin-right:12px;"
+                    @change="search"
+                  />
+                  <!--                  <el-input-->
+                  <!--                    v-model="form.name"-->
+                  <!--                    placeholder="岗位名称"-->
+                  <!--                    size="medium"-->
+                  <!--                    class="input-with-select"-->
+                  <!--                  >-->
+                  <!--                    <el-button-->
+                  <!--                      slot="append"-->
+                  <!--                      icon="el-icon-search"-->
+                  <!--                      @change="search"-->
+                  <!--                    />-->
+                  <!--                  </el-input>-->
                 </div>
                 <div>
-                  <el-button
-                    type="primary"
-                    size="medium"
+                  <i
+                    class="icon  el-icon-refresh-right"
                     @click="getData"
-                  >
-                    <i class="el-icon-refresh" />
-                  </el-button>
+                  />
+                  <!--                  <el-button-->
+                  <!--                    type="primary"-->
+                  <!--                    size="medium"-->
+                  <!--                    @click="getData"-->
+                  <!--                  >-->
+                  <!--                    <i class="icon  el-icon-refresh-right" />-->
+                  <!--                  </el-button>-->
                 </div>
               </div>
             </template>
@@ -498,5 +508,10 @@ export default {
 
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+.icon {
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
 }
 </style>
