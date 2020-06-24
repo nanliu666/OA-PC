@@ -2,7 +2,7 @@
   <div>
     <el-form
       :inline="true"
-      class="demo-form-inline"
+      class="require-form"
       @submit.native.prevent
     >
       <el-form-item
@@ -129,6 +129,8 @@
         <el-button
           type="primary"
           size="medium"
+          class="button-search"
+          icon="icon-basics-filter-outlined"
           @click="submitSearch"
         >
           搜索
@@ -147,7 +149,7 @@
           <div>
             <el-form
               size="small"
-              class="demo-form-inline"
+              class="popover-form"
               label-position="top"
             >
               <el-row justify="start">
@@ -409,41 +411,39 @@ export default {
     // 生成搜索参数
     produceSearchParams() {
       let params = {}
-      let tagsArr = []
+      let tagsArr = [...this.requireOptions, ...this.popoverOptions]
       // 筛选出有值的选项
-      this.screenValueArr(tagsArr)
+      // this.screenValueArr(tagsArr)
       tagsArr.forEach((item) => {
-        if (item.data) {
-          if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
-            params[item.field] = item.data
-          } else if (item.type === 'numInterval') {
-            params[item.field.split(',')[0]] = item.data.min
-            params[item.field.split(',')[1]] = item.data.max
-          } else if (item.type === 'treeSelect' || item.type === 'select') {
-            if (
-              (item.type === 'select' && item.config && item.config.multiple) ||
-              (item.type === 'treeSelect' && item.config.selectParams.multiple)
-            ) {
-              params[item.field] = item.data
-            } else {
-              params[item.field] = item.data
-            }
-          } else if (item.type === 'cascader') {
-            // params[item.field] = item.data[item.data.length - 1]
-            item.field.split(',').forEach((it, idx) => {
-              params[it] = item.data[idx]
-            })
-          } else if (
-            item.type === 'dataPicker' &&
-            item.config &&
-            item.config.type.indexOf('range') > -1
+        if (item.type === 'input' || item.type === 'timeSelect' || item.type === 'timePicker') {
+          params[item.field] = item.data
+        } else if (item.type === 'numInterval') {
+          params[item.field.split(',')[0]] = item.data ? item.data.min : null
+          params[item.field.split(',')[1]] = item.data ? item.data.max : null
+        } else if (item.type === 'treeSelect' || item.type === 'select') {
+          if (
+            (item.type === 'select' && item.config && item.config.multiple) ||
+            (item.type === 'treeSelect' && item.config.selectParams.multiple)
           ) {
-            item.field.split(',').forEach((it, idx) => {
-              params[it] = item.data[idx]
-            })
+            params[item.field] = item.data
           } else {
             params[item.field] = item.data
           }
+        } else if (item.type === 'cascader') {
+          // params[item.field] = item.data[item.data.length - 1]
+          item.field.split(',').forEach((it, idx) => {
+            params[it] = item.data[idx]
+          })
+        } else if (
+          item.type === 'dataPicker' &&
+          item.config &&
+          item.config.type.indexOf('range') > -1
+        ) {
+          item.field.split(',').forEach((it, idx) => {
+            params[it] = item.data ? item.data[idx] : null
+          })
+        } else {
+          params[item.field] = item.data
         }
       })
       return params
@@ -490,8 +490,22 @@ export default {
   margin: 0 auto;
   text-align: right;
 }
-.el-form-item {
-  padding-right: 0px;
+
+/deep/.button-search {
+  i {
+    font-size: 14px;
+  }
+}
+
+.require-form {
+  .el-form-item {
+    padding-right: 6px;
+  }
+}
+.popover-form {
+  .el-form-item {
+    padding-right: 24px;
+  }
 }
 
 /deep/ .el-form-item__label {
@@ -522,8 +536,5 @@ export default {
 }
 /deep/ .el-input__icon.el-icon-search {
   cursor: pointer;
-}
-/deep/ .el-form--inline .el-form-item {
-  margin-right: 16px;
 }
 </style>
