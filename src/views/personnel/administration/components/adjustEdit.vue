@@ -11,7 +11,7 @@
     </p>
 
     <div
-      v-if="isReject.length"
+      v-if="isReject.length && isReject.remark"
       class="comments"
     >
       <span class="commentsSpan">审批意见：</span>
