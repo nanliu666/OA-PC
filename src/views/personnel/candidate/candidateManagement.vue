@@ -1228,17 +1228,22 @@ export default {
       this.loadData(pageNo)
     },
     loadData(pageNo) {
+      if (this.loading) return
       let params = { ...this.searchParams }
       if (pageNo) this.page.currentPage = pageNo
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
       params.status = this.tabStatus === 'all' ? '' : this.tabStatus
       this.loading = true
-      getCandidateList(params).then((res) => {
-        this.page.total = res.totalNum
-        this.data = res.data
-        this.loading = false
-      })
+      getCandidateList(params)
+        .then((res) => {
+          this.page.total = res.totalNum
+          this.data = res.data
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     currentChange(currentPage) {
       this.page.currentPage = currentPage
@@ -1261,6 +1266,7 @@ export default {
       }
     },
     tabClick(status) {
+      if (this.loading) return
       this.tabStatus = status
       this.page.currentPage = 1
       this.$refs['searchPopover'].resetForm()

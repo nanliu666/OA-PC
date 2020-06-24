@@ -16,7 +16,7 @@
           <el-dropdown-item command="add">
             单个添加员工
           </el-dropdown-item>
-          <el-dropdown-item>Excel导入员工</el-dropdown-item>
+          <!-- <el-dropdown-item>Excel导入员工</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
     </page-header>
