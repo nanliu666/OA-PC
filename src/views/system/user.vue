@@ -183,7 +183,7 @@ export default {
 .content {
   width: calc(100% - 250px);
 }
-/deep/.el-tree-node__content {
+.fill /deep/.el-tree-node__content {
   line-height: 36px;
 }
 </style>
