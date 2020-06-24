@@ -508,6 +508,24 @@
                 :span="8"
                 class="key"
               >
+                简历：
+              </el-col>
+              <el-col
+                :span="16"
+                class="value"
+              >
+                <a
+                  class="attachmentUrl"
+                  target="_blank"
+                  :href="personInfo.resumeUrl"
+                >
+                  {{ personInfo.name }}的简历
+                </a>
+              </el-col>
+              <el-col
+                :span="8"
+                class="key"
+              >
                 附件：
               </el-col>
               <el-col
@@ -516,6 +534,7 @@
               >
                 <a
                   class="attachmentUrl"
+                  target="_blank"
                   :href="personInfo.attachmentUrl"
                 >
                   {{ personInfo.attachmentName }}
