@@ -49,6 +49,7 @@
             <el-button
               type="text"
               size="medium"
+              :disabled="isAllread"
               @click="signAllReadMsg"
             >
               标记所有为已读
@@ -57,19 +58,23 @@
             <el-button
               type="text"
               size="medium"
+              :disabled="!hasRead"
               @click="delAllReadedMsg"
             >
               删除所有已读消息
             </el-button>
           </div>
         </div>
-
+        <!-- 内容区 -->
         <div
           slot="content"
           slot-scope="{ row }"
           class="row-box"
         >
-          <div class="content">
+          <div
+            class="content"
+            @click="jumpMsgDetail(row)"
+          >
             <span
               class="icon"
               :class="!row.isRead ? 'no-read' : ''"
@@ -82,6 +87,15 @@
         </div>
       </common-table>
     </basic-container>
+
+    <el-dialog
+      :visible.sync="dialogVisible"
+      width="600px"
+      :modal="false"
+      :before-close="handleClose"
+    >
+      <span>{{ msgInfo }}</span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -123,7 +137,8 @@ export default {
       tableConfig: {
         showHandler: false,
         enablePagination: true,
-        showIndexColumn: false
+        showIndexColumn: false,
+        showHeader: false
       },
       columns: [
         {
@@ -132,7 +147,13 @@ export default {
           slot: true
         }
       ],
-      loading: false
+      loading: false,
+      // 页面消息是否全部已读
+      isAllread: false,
+      // 页面是否有已读
+      hasRead: true,
+      msgInfo: '',
+      dialogVisible: false
     }
   },
   computed: {
@@ -156,7 +177,12 @@ export default {
       this.msgQuery.userId = this.userId
       let res = await getMsgList(this.msgQuery)
       this.dataList = res.data
-
+      this.isAllread = this.dataList.every((item) => {
+        return item.isRead === 1
+      })
+      this.hasRead = this.dataList.some((item) => {
+        return item.isRead === 1
+      })
       this.page.total = res.totalNum
       this.loading = false
     },
@@ -210,6 +236,22 @@ export default {
           throw error
         }
       }
+    },
+    async jumpMsgDetail(row) {
+      if (row.isRead) {
+        return
+      }
+      await creatSignReadMsg({
+        userId: this.userId,
+        id: row.id
+      })
+      this.msgInfo = row.content
+      this.dialogVisible = true
+    },
+    handleClose() {
+      this.loadingData()
+      this.dialogVisible = false
+      this.msgInfo = ''
     }
   }
 }
@@ -220,7 +262,22 @@ export default {
   height: calc(100% - 92px);
   min-height: calc(100% - 92px);
 }
+/deep/.el-input__inner {
+  border-color: #fff;
+}
+/deep/ .el-input__inner:hover {
+  border-color: #fff;
+}
 
+/deep/.el-select .el-input .el-input__inner {
+  border-color: #fff;
+}
+/deep/.el-select .el-input__inner:focus {
+  border-color: #fff;
+}
+.el-select {
+  width: 120px;
+}
 .memu {
   display: flex;
   justify-content: space-between;
@@ -231,7 +288,13 @@ export default {
   justify-content: space-between;
   padding: 0 20px;
   .content {
-    line-height: 42px;
+    flex: 1;
+    min-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    cursor: pointer;
     .icon {
       display: inline-block;
       width: 6px;

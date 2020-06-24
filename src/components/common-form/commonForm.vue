@@ -107,6 +107,12 @@
             v-bind="itemAttrs(column)"
             :name="column.prop"
           />
+          <div
+            v-if="column.desc"
+            class="desc"
+          >
+            {{ column.desc }}
+          </div>
         </el-form-item>
       </el-col>
     </el-row>
@@ -245,5 +251,11 @@ export default {
 }
 /deep/ .el-form-item__content {
   min-height: 35px;
+}
+.desc {
+  line-height: 18px;
+  color: #757c85;
+  padding-top: 6px;
+  min-height: 36px;
 }
 </style>
