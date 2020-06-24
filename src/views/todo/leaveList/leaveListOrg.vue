@@ -38,7 +38,7 @@
             发起人: <span>{{ listData.userName }}</span>
           </div>
           <div>
-            发起时间: <span>{{ listData.createTime }}</span>
+            发起时间: <span>{{ listData.createTime | dataFliter }}</span>
           </div>
           <div>
             状态:
@@ -78,6 +78,36 @@ import { getLeaveNote, postConfirmleaveNote, postUrgeleaveNote } from '@/api/tod
 import { mapGetters } from 'vuex'
 export default {
   name: 'LeaveListOrg',
+  filters: {
+    dataFliter(time) {
+      if (!time) {
+        return
+      }
+      let dateStr = time.split(' ')
+      let strGMT =
+        dateStr[0] +
+        ' ' +
+        dateStr[1] +
+        ' ' +
+        dateStr[2] +
+        ' ' +
+        dateStr[5] +
+        ' ' +
+        dateStr[3] +
+        ' GMT+0800'
+      let date = new Date(Date.parse(strGMT))
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let dates = date.getDate()
+      let h = date.getHours()
+      let m = date.getMinutes()
+      let s = date.getSeconds()
+      h = h < 10 ? '0' + h : h
+      m = m < 10 ? '0' + m : m
+      s = s < 10 ? '0' + s : s
+      return `${year}-${month}-${dates}  ${h}:${m}:${s}`
+    }
+  },
   data() {
     return {
       loading: false,

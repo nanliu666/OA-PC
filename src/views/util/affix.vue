@@ -36,7 +36,7 @@
 export default {}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .affix {
   position: relative;
   background-color: #fff;

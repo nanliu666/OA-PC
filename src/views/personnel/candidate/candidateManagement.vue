@@ -435,7 +435,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="changeJob">
@@ -469,7 +469,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="edit">
@@ -508,7 +508,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="weedOut">
@@ -550,7 +550,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -599,7 +599,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="edit">
@@ -630,7 +630,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="offerChange">
@@ -658,7 +658,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <!-- <el-dropdown-item command>
@@ -744,7 +744,8 @@ const column = [
   {
     label: '年龄',
     prop: 'age',
-    width: 50
+    width: 80,
+    sortable: true
   },
   {
     label: '手机号',
@@ -794,7 +795,9 @@ const column = [
   {
     label: '期望月薪',
     prop: 'monthSalary',
-    slot: true
+    slot: true,
+    width: 110,
+    sortable: true
   },
   {
     label: '备注',
@@ -1228,17 +1231,22 @@ export default {
       this.loadData(pageNo)
     },
     loadData(pageNo) {
+      if (this.loading) return
       let params = { ...this.searchParams }
       if (pageNo) this.page.currentPage = pageNo
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
       params.status = this.tabStatus === 'all' ? '' : this.tabStatus
       this.loading = true
-      getCandidateList(params).then((res) => {
-        this.page.total = res.totalNum
-        this.data = res.data
-        this.loading = false
-      })
+      getCandidateList(params)
+        .then((res) => {
+          this.page.total = res.totalNum
+          this.data = res.data
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     currentChange(currentPage) {
       this.page.currentPage = currentPage
@@ -1261,6 +1269,7 @@ export default {
       }
     },
     tabClick(status) {
+      if (this.loading) return
       this.tabStatus = status
       this.page.currentPage = 1
       this.$refs['searchPopover'].resetForm()
@@ -1394,5 +1403,9 @@ export default {
     flex: 1;
     text-align: left;
   }
+}
+
+.icon-basics-more-outlined {
+  color: #a1a7ae;
 }
 </style>

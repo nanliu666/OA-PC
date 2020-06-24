@@ -3,7 +3,7 @@
     v-loading="loading"
     :title="type === 'create' ? '新建组织' : type === 'createChild' ? '新建子组织' : '编辑组织'"
     :visible.sync="visible"
-    width="30%"
+    width="550px"
     :modal-append-to-body="false"
     @close="handleClose"
   >

@@ -23,9 +23,8 @@
             />
             <div>
               <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
-              <el-button
-                icon="icon-basics-refresh-outlined"
-                size="medium"
+              <i
+                class="icon-basics-refresh-outlined  refresh"
                 @click="getTableList()"
               />
             </div>
@@ -403,5 +402,11 @@ export default {
 .search-box {
   display: flex;
   justify-content: space-between;
+}
+.refresh {
+  color: #a0a8ae;
+  font-size: 16px;
+  line-height: 40px;
+  cursor: pointer;
 }
 </style>

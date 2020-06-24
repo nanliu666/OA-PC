@@ -48,6 +48,24 @@
   </div>
 </template>
 <script>
+const options = [
+  {
+    value: 'A',
+    label: 'A'
+  },
+  {
+    value: 'B',
+    label: 'B'
+  },
+  {
+    value: 'C',
+    label: 'C'
+  },
+  {
+    value: 'D',
+    label: 'D'
+  }
+]
 import { postInterviewInfo } from '@/api/todo/todo'
 export default {
   data() {
@@ -80,24 +98,8 @@ export default {
           prop: 'workBackground',
           itemType: 'select',
           label: '工作背景',
-          options: [
-            {
-              value: 'A',
-              label: 'A'
-            },
-            {
-              value: 'B',
-              label: 'B'
-            },
-            {
-              value: 'C',
-              label: 'C'
-            },
-            {
-              value: 'D',
-              label: 'D'
-            }
-          ],
+          options: options,
+          desc: '是否具备丰富的行业经验，了解行业的发展状况，职业背景好',
           required: true
         },
         {
@@ -105,48 +107,16 @@ export default {
           itemType: 'select',
           label: '工作经验',
           offset: 4,
-          options: [
-            {
-              value: 'A',
-              label: 'A'
-            },
-            {
-              value: 'B',
-              label: 'B'
-            },
-            {
-              value: 'C',
-              label: 'C'
-            },
-            {
-              value: 'D',
-              label: 'D'
-            }
-          ],
+          desc: '以往的工作经验是否与本岗位要求一致',
+          options: options,
           required: true
         },
         {
           prop: 'knowledge',
           itemType: 'select',
           label: '岗位知识',
-          options: [
-            {
-              value: 'A',
-              label: 'A'
-            },
-            {
-              value: 'B',
-              label: 'B'
-            },
-            {
-              value: 'C',
-              label: 'C'
-            },
-            {
-              value: 'D',
-              label: 'D'
-            }
-          ],
+          desc: '是否精通本岗位所需专业知识，业务技能熟练，对岗位理解深刻而独到',
+          options: options,
           required: true
         },
         {
@@ -154,48 +124,16 @@ export default {
           itemType: 'select',
           label: '教育培训',
           offset: 4,
-          options: [
-            {
-              value: 'A',
-              label: 'A'
-            },
-            {
-              value: 'B',
-              label: 'B'
-            },
-            {
-              value: 'C',
-              label: 'C'
-            },
-            {
-              value: 'D',
-              label: 'D'
-            }
-          ],
+          desc: '是否接受过本岗位需要的系统培训，教育背景好',
+          options: options,
           required: true
         },
         {
           prop: 'specialty',
           itemType: 'select',
           label: '专业特长',
-          options: [
-            {
-              value: 'A',
-              label: 'A'
-            },
-            {
-              value: 'B',
-              label: 'B'
-            },
-            {
-              value: 'C',
-              label: 'C'
-            },
-            {
-              value: 'D',
-              label: 'D'
-            }
-          ],
+          desc: '是否具备一定的专业特长，有益于本岗位工作',
+          options: options,
           required: true
         },
         {

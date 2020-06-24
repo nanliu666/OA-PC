@@ -1,6 +1,9 @@
 <template>
   <div>
-    <el-form :inline="true">
+    <el-form
+      :inline="true"
+      class="demo-form-inline"
+    >
       <el-form-item>
         <el-input
           v-model="fuzzySearch"
@@ -33,7 +36,7 @@
           @click="handleRefresh"
         />
       </el-form-item>
-      <el-form-item style="float: right">
+      <!-- <el-form-item style="float: right">
         <el-button
           type="text"
           icon="el-icon-upload2"
@@ -43,7 +46,7 @@
         >
           导出
         </el-button>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <div :class="showCollapse ? 'collapse-box' : ''">
       <el-collapse-transition>
@@ -452,6 +455,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.demo-form-inline {
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
 .topBtn {
   font-family: 'PingFangSC-Regular';
   font-size: 14px;
