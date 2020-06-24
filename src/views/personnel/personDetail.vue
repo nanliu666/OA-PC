@@ -313,7 +313,7 @@
               >
                 恢复为候选人
               </el-button>
-              <el-dropdown @command="handleCommand">
+              <!-- <el-dropdown @command="handleCommand">
                 <el-button
                   size="medium"
                   style="margin-left: 16px"
@@ -322,11 +322,11 @@
                   <i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <!-- <el-dropdown-item command>
+                  <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                </el-dropdown-item>
                 </el-dropdown-menu>
-              </el-dropdown>
+              </el-dropdown> -->
             </template>
           </template>
         </div>
