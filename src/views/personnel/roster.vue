@@ -23,44 +23,92 @@
     <div class="state">
       <div class="on">
         <div
-          :class="tabStatus === 'onJob' ? 'current' : ''"
+          class="onItem"
           @click="tabClick('onJob')"
         >
-          在职
-          {{ personStatistics.Formal + personStatistics.Try + personStatistics.WaitLeave }}
-          人
+          <div class="status">
+            <div
+              :id="tabStatus === 'onJob' ? 'current' : ''"
+              class="statusWork"
+            >
+              在职
+            </div>
+            <div
+              :id="tabStatus === 'onJob' ? 'current' : ''"
+              class="statusNum"
+            >
+              {{ personStatistics.Formal + personStatistics.Try + personStatistics.WaitLeave }}人
+            </div>
+          </div>
           <div
             v-show="tabStatus === 'onJob'"
             class="bottomBox"
           />
         </div>
         <div
-          :class="tabStatus === 'Formal' ? 'current' : ''"
+          class="onItem"
           @click="tabClick('Formal')"
         >
-          正式 {{ personStatistics.Formal }} 人
+          <div class="status">
+            <div
+              :id="tabStatus === 'Formal' ? 'current' : ''"
+              class="statusWork"
+            >
+              正式
+            </div>
+            <div
+              :id="tabStatus === 'Formal' ? 'current' : ''"
+              class="statusNum"
+            >
+              {{ personStatistics.Formal }}人
+            </div>
+          </div>
           <div
             v-show="tabStatus === 'Formal'"
             class="bottomBox"
           />
         </div>
-
         <div
-          :class="tabStatus === 'Try' ? 'current' : ''"
+          class="onItem"
           @click="tabClick('Try')"
         >
-          试用期 {{ personStatistics.Try }} 人
+          <div class="status">
+            <div
+              :id="tabStatus === 'Try' ? 'current' : ''"
+              class="statusWork"
+            >
+              试用期
+            </div>
+            <div
+              :id="tabStatus === 'Try' ? 'current' : ''"
+              class="statusNum"
+            >
+              {{ personStatistics.Try }}人
+            </div>
+          </div>
           <div
             v-show="tabStatus === 'Try'"
             class="bottomBox"
           />
         </div>
-
         <div
-          :class="tabStatus === 'WaitLeave' ? 'current' : ''"
+          class="onItem"
           @click="tabClick('WaitLeave')"
         >
-          待离职 {{ personStatistics.WaitLeave }} 人
+          <div class="status">
+            <div
+              :id="tabStatus === 'WaitLeave' ? 'current' : ''"
+              class="statusWork"
+            >
+              待离职
+            </div>
+            <div
+              :id="tabStatus === 'WaitLeave' ? 'current' : ''"
+              class="statusNum"
+            >
+              {{ personStatistics.WaitLeave }}人
+            </div>
+          </div>
           <div
             v-show="tabStatus === 'WaitLeave'"
             class="bottomBox"
@@ -69,10 +117,25 @@
       </div>
       <div class="left">
         <div
-          :class="tabStatus === 'Leaved' ? 'current' : ''"
+          :id="tabStatus === 'Leaved' ? 'current' : ''"
+          class="onItem"
           @click="tabClick('Leaved')"
         >
-          已离职 {{ personStatistics.Leaved }} 人
+          <div class="status">
+            <div
+              :id="tabStatus === 'Leaved' ? 'current' : ''"
+              class="statusWork"
+            >
+              已离职
+            </div>
+            <div
+              :id="tabStatus === 'Leaved' ? 'current' : ''"
+              class="statusNum"
+            >
+              {{ personStatistics.Leaved }}人
+            </div>
+          </div>
+
           <div
             v-show="tabStatus === 'Leaved'"
             class="bottomBox"
@@ -81,20 +144,22 @@
       </div>
     </div>
     <basic-container block>
-      <search-component
-        ref="searchComponent"
-        :show-status="tabStatus === 'onJob'"
-        @seacrh="handleSearch"
-        @export="handleExport"
-      />
-      <avue-crud
+      <common-table
         v-model="obj"
         :data="data"
-        :option="option"
+        :columns="option.column"
         :page.sync="page"
         @size-change="sizeChange"
         @current-change="currentChange"
       >
+        <template slot="topMenu">
+          <search-component
+            ref="searchComponent"
+            :show-status="tabStatus === 'onJob'"
+            @seacrh="handleSearch"
+            @export="handleExport"
+          />
+        </template>
         <template
           slot="name"
           slot-scope="{ row }"
@@ -186,7 +251,7 @@
             </el-dropdown-menu>
           </el-dropdown>
         </template>
-      </avue-crud>
+      </common-table>
     </basic-container>
   </div>
 </template>
@@ -223,7 +288,9 @@ export default {
         pageSize: 10,
         pagerCount: 5,
         total: 200,
-        currentPage: 1
+        currentPage: 1,
+        background: false,
+        layout: 'prev, pager, next, sizes, jumper,total'
       },
       searchParams: {},
       data: [],
@@ -236,6 +303,7 @@ export default {
         index: true,
         indexLabel: '序号',
         menu: false,
+        size: 'medium',
         column: [
           {
             label: '姓名',
@@ -367,26 +435,37 @@ export default {
     border-radius: 4px;
     margin-right: 20px;
     display: flex;
-    > div {
+    .onItem {
       flex: 1;
       text-align: center;
       height: 46px;
       margin: 30px 0;
-      line-height: 46px;
       border-right: 1px solid #e3e7e9;
       cursor: pointer;
+      .status {
+        .statusWork {
+          font-size: 12px;
+          color: #718199;
+          line-height: 18px;
+        }
+        .statusNum {
+          font-size: 16px;
+          color: #202940;
+          line-height: 24px;
+        }
+      }
       .bottomBox {
         height: 2px;
         width: 68px;
         background: #207efa;
         margin: 0 auto;
-        margin-top: 28px;
+        margin-top: 32px;
       }
     }
     :last-of-type {
       border-right: 0;
     }
-    .current {
+    #current {
       color: #207efa;
     }
   }
@@ -394,24 +473,38 @@ export default {
     flex: 1;
     background: #ffffff;
     border-radius: 4px;
-    > div {
+    .onItem {
       flex: 1;
       text-align: center;
       height: 46px;
       margin: 30px 0;
-      line-height: 46px;
       cursor: pointer;
+      .status {
+        .statusWork {
+          font-size: 12px;
+          color: #718199;
+          line-height: 18px;
+        }
+        .statusNum {
+          font-size: 16px;
+          color: #202940;
+          line-height: 24px;
+        }
+      }
       .bottomBox {
         height: 2px;
         width: 68px;
         background: #207efa;
         margin: 0 auto;
-        margin-top: 28px;
+        margin-top: 32px;
       }
     }
-    .current {
-      color: #207efa;
+    #current {
+      color: #207efa !important;
     }
   }
+}
+/deep/ .top-menu {
+  height: inherit;
 }
 </style>

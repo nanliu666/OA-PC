@@ -1,6 +1,9 @@
 <template>
   <div>
-    <el-form :inline="true">
+    <el-form
+      :inline="true"
+      class="demo-form-inline"
+    >
       <el-form-item>
         <el-input
           v-model="fuzzySearch"
@@ -452,6 +455,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.demo-form-inline {
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
 .topBtn {
   font-family: 'PingFangSC-Regular';
   font-size: 14px;

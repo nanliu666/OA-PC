@@ -435,7 +435,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="changeJob">
@@ -469,7 +469,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="edit">
@@ -508,7 +508,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="weedOut">
@@ -550,7 +550,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
@@ -599,7 +599,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="edit">
@@ -630,7 +630,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="offerChange">
@@ -658,7 +658,7 @@
                   type="text"
                   style="margin-left: 10px"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <!-- <el-dropdown-item command>
@@ -744,7 +744,8 @@ const column = [
   {
     label: '年龄',
     prop: 'age',
-    width: 50
+    width: 80,
+    sortable: true
   },
   {
     label: '手机号',
@@ -794,7 +795,9 @@ const column = [
   {
     label: '期望月薪',
     prop: 'monthSalary',
-    slot: true
+    slot: true,
+    width: 110,
+    sortable: true
   },
   {
     label: '备注',
@@ -1400,5 +1403,9 @@ export default {
     flex: 1;
     text-align: left;
   }
+}
+
+.icon-basics-more-outlined {
+  color: #a1a7ae;
 }
 </style>
