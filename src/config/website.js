@@ -18,7 +18,7 @@ export default {
   //配置首页不可关闭
   isFirstPage: false,
   fistPage: {
-    label: '首页',
+    label: '工作台',
     value: '/wel/index',
     params: {},
     query: {},

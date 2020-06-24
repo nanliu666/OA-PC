@@ -28,8 +28,10 @@ html {
 }
 * {
   outline: none;
-  font-family: 'DIN Alternate', 'Helvetica', 'PingFang SC', 'Microsoft YaHei', 微软雅黑, Arial,
-    sans-serif;
+  font-family: 'Helvetica', 'PingFang SC', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif;
+}
+.din-num {
+  font-family: 'DIN Alternate';
 }
 ul {
   list-style: none;
