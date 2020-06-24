@@ -30,6 +30,7 @@
               <el-button
                 type="text"
                 class="refresh"
+                style="font-size: 16px"
                 icon="icon-basics-refresh-outlined"
                 size="medium"
                 @click="getTableData"
@@ -90,9 +91,7 @@
             {{ row.apprNo }}
           </el-button>
         </template>
-
         <template
-          v-if="row.approveStatus === 'Cancel'"
           slot="handler"
           slot-scope="{ row }"
         >
@@ -310,7 +309,15 @@ export default {
       this.getTableData(params)
     },
     handleEditRole(row) {
-      this.$refs.adjustEdit.init(row)
+      if (row.approveStatus == 'Approve' || row.approveStatus == 'Pass') {
+        this.$message({
+          showClose: true,
+          message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
+          type: 'warning'
+        })
+      } else {
+        this.$refs.adjustEdit.init(row)
+      }
     },
     jumpToDetail(row) {
       this.$router.push('/personnel/detail/' + row.userId)

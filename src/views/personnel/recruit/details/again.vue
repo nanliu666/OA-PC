@@ -299,13 +299,8 @@ export default {
     },
     onSubmitted(users) {
       let accumulation = this.calWhetherBeyond()
-      if (accumulation !== this.Numberofpeople) {
-        this.$message({
-          showClose: true,
-          message: '请注意！分配需求人数要等与需求总人数',
-          type: 'error'
-        })
-      } else {
+      debugger
+      if (accumulation === this.Totalnumberpeople) {
         taskDistribution({
           recruitmentId: this.recruitmentId,
           users: users
@@ -319,6 +314,12 @@ export default {
           .catch(() => {
             this.refresh()
           })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '请注意！分配需求人数要等与需求总人数',
+          type: 'error'
+        })
       }
     },
     calWorkYear(type) {

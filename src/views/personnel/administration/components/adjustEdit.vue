@@ -9,7 +9,17 @@
     <p class="riskSpan">
       TIPS：如调整试用期，计划转正日期将自动根据入职日期和试用期计算。试用期约定和合同签订有关，请勿随意变更避免出现用工风险。
     </p>
+
+    <div
+      v-if="isReject.length && isReject.remark"
+      class="comments"
+    >
+      <span class="commentsSpan">审批意见：</span>
+      <span class="isRed">{{ isReject.remark }}</span>
+    </div>
+
     <el-row
+      class="probationPeriod"
       type="flex"
       :gutter="20"
     >
@@ -74,6 +84,7 @@
 
 <script>
 import { putProbation } from '@/api/personnel/person'
+import { getApplyRecord } from '@/api/approval/approval'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
@@ -127,6 +138,7 @@ export default {
           value: 6
         }
       ],
+      isReject: {},
       rules: {
         probation: [{ required: true, message: '请输入对应时间', trigger: 'blur' }]
       }
@@ -146,13 +158,18 @@ export default {
         return this.handleClose()
       })
     },
-    init(row) {
+    async init(row) {
       let { formalDate, probation, userId, entryDate } = row
       this.entryDate = entryDate
       this.oldProbation = probation
       this.oldProbationDate = formalDate
       this.newEntryDate = entryDate
       this.userId = userId
+      if (row.apprNo) {
+        await getApplyRecord({ apprNo: row.apprNo }).then((res) => {
+          this.isReject = res.filter((item) => item.result === 'Reject')
+        })
+      }
       this.$emit('update:visible', true)
     },
     calcDate(monthCount) {
@@ -199,14 +216,33 @@ export default {
 }
 
 .riskSpan {
-  padding-bottom: 10px;
+  padding-bottom: 16px;
   border-bottom: 1px solid #ccc;
+  margin: 0;
 }
 
 /deep/ .el-dialog__body {
-  padding: 30px 35px;
+  padding: 24px 35px;
   color: #606266;
   font-size: 14px;
   word-break: break-all;
+}
+
+.comments {
+  margin: 5px auto;
+  background: rgba(113, 129, 153, 0.1);
+  border-radius: 4px;
+  padding: 0 15px;
+  .commentsSpan {
+    line-height: 34px;
+    font-size: 14px;
+  }
+  .isRed {
+    color: #ff0000;
+  }
+}
+
+.probationPeriod {
+  margin: 5px 0;
 }
 </style>

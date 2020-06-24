@@ -23,6 +23,7 @@
             <el-button
               type="text"
               class="refresh"
+              style="font-size: 16px"
               icon="icon-basics-refresh-outlined"
               size="medium"
               @click="getTableData"
