@@ -277,7 +277,7 @@
                 </div>
                 <el-button
                   slot="reference"
-                  icon="el-icon-setting"
+                  icon="iconfont icon-basics-setup-outlined"
                   size="medium"
                   class="topBtn"
                   type="text"
@@ -1398,10 +1398,22 @@ export default {
 
 /deep/ .handlerRow {
   display: flex;
-  justify-content: flex-start;
-  .el-button--text {
-    flex: 1;
-    text-align: left;
+  justify-content: flex-end;
+  > .el-button--text {
+    text-align: center;
+    padding: 0 8px;
+    margin-left: 0px;
+    position: relative;
+    &::after {
+      content: '';
+      width: 1px;
+      height: 10px;
+      background-color: #e3e7e9;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
   }
 }
 
