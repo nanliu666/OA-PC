@@ -227,8 +227,11 @@ export default {
     }
   },
   beforeRouteLeave(to, form, next) {
-    document.querySelector('.sidebar-erea').style.position = 'relative'
-    document.querySelector('.sidebar-erea').style.top = '0px'
+    if (document.querySelector('.sidebar-erea')) {
+      document.querySelector('.sidebar-erea').style.position = 'relative'
+      document.querySelector('.sidebar-erea').style.top = '0px'
+    }
+
     next()
   },
   mounted() {
