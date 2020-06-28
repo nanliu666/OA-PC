@@ -2,7 +2,7 @@
   <el-dialog
     title="重新分配招聘需求"
     :visible="visible"
-    width="1200px"
+    width="1200"
     :modal-append-to-body="false"
     @close="handleClose"
   >
@@ -338,14 +338,9 @@ export default {
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #ccc;
 }
-
 /deep/ .el-dialog__body {
   padding: 30px 35px;
 }
-.textForm {
-  margin-top: 10px;
-}
-
 #assigned {
   color: #1989fa;
 }
@@ -356,11 +351,18 @@ export default {
   font-weight: 600;
 }
 
-/deep/ .el-input__inner {
-  width: 100% !important;
-}
+/deep/ .textForm {
+  margin-top: 10px;
+  .el-input__inner {
+    width: 100% !important;
+  }
 
-/deep/ .el-select {
-  width: 100% !important;
+  .el-select {
+    width: 100% !important;
+  }
+
+  .el-input-number {
+    width: 100% !important ;
+  }
 }
 </style>
