@@ -116,47 +116,47 @@ export default {
       //面试评价信息
       evaluateList: [
         {
-          label: '工作背景:',
+          label: '工作背景',
           name: 'workBackground',
           detail: ''
         },
         {
-          label: '工作经验:',
+          label: '工作经验',
           name: 'workExperience',
           detail: ''
         },
         {
-          label: '岗位知识:',
+          label: '岗位知识',
           name: 'knowledge',
           detail: ''
         },
         {
-          label: '教育培训:',
+          label: '教育培训',
           name: 'train',
           detail: ''
         },
         {
-          label: '专业特长:',
+          label: '专业特长',
           name: 'specialty',
           detail: ''
         },
         {
-          label: '面试评价:',
+          label: '面试评价',
           name: 'evaluation',
           detail: ''
         },
         {
-          label: '综合打分:',
+          label: '综合打分',
           name: 'score',
           detail: ''
         },
         {
-          label: '录用建议:',
+          label: '录用建议',
           name: 'status',
           detail: ''
         },
         {
-          label: '评价时间:',
+          label: '评价时间',
           name: 'evaluateTime',
           detail: ''
         }
@@ -164,22 +164,22 @@ export default {
       // 面试信息
       interviewList: [
         {
-          label: '面试人:',
+          label: '面试人',
           name: 'interviewName',
           detail: ''
         },
         {
-          label: '面试时间:',
+          label: '面试时间',
           name: 'interviewTime',
           detail: ''
         },
         {
-          label: '面试方式:',
+          label: '面试方式',
           name: 'interviewType',
           detail: ''
         },
         {
-          label: '面试地址:',
+          label: '面试地址',
           name: 'address',
           detail: ''
         }

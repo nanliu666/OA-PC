@@ -78,9 +78,7 @@ export default {
       if (!validatenull(this.socialForm.state)) {
         const loading = this.$loading({
           lock: true,
-          text: `${
-            this.socialForm.state === 'WX' ? '微信' : 'QQ'
-          }登录中,请稍后。。。`,
+          text: `${this.socialForm.state === 'WX' ? '微信' : 'QQ'}登录中,请稍后。。。`,
           spinner: 'el-icon-loading'
         })
         setTimeout(() => {
@@ -105,6 +103,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/styles/login.scss';
 </style>

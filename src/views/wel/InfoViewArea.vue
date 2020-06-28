@@ -347,4 +347,9 @@ export default {
     }
   }
 }
+#icon-remind-bicolor {
+  path {
+    fill: rgb(255, 255, 255) !important;
+  }
+}
 </style>

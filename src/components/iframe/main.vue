@@ -28,9 +28,7 @@ export default {
   computed: {
     ...mapGetters(['screen']),
     src() {
-      return this.$route.query.src
-        ? this.$route.query.src.replace('$', '#')
-        : this.urlPath
+      return this.$route.query.src ? this.$route.query.src.replace('$', '#') : this.urlPath
     }
   },
   watch: {
@@ -68,10 +66,7 @@ export default {
     load() {
       this.show()
       var flag = true //URL是否包含问号
-      if (
-        this.$route.query.src !== undefined &&
-        this.$route.query.src.indexOf('?') === -1
-      ) {
+      if (this.$route.query.src !== undefined && this.$route.query.src.indexOf('?') === -1) {
         flag = false
       }
       var list = []
@@ -82,13 +77,9 @@ export default {
       }
       list = list.join('&').toString()
       if (flag) {
-        this.$route.query.src = `${this.$route.query.src}${
-          list.length > 0 ? `&list` : ''
-        }`
+        this.$route.query.src = `${this.$route.query.src}${list.length > 0 ? `&list` : ''}`
       } else {
-        this.$route.query.src = `${this.$route.query.src}${
-          list.length > 0 ? `?list` : ''
-        }`
+        this.$route.query.src = `${this.$route.query.src}${list.length > 0 ? `?list` : ''}`
       }
       //超时3s自动隐藏等待狂，加强用户体验
       let time = 3
@@ -104,8 +95,7 @@ export default {
     //iframe窗口初始化
     iframeInit() {
       const iframe = this.$refs.iframe
-      const clientHeight =
-        document.documentElement.clientHeight - (screen > 1 ? 200 : 130)
+      const clientHeight = document.documentElement.clientHeight - (screen > 1 ? 200 : 130)
       if (!iframe) return
       iframe.style.height = `${clientHeight}px`
       if (iframe.attachEvent) {
@@ -128,7 +118,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .iframe {
   width: 100%;
   height: 100%;

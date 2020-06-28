@@ -454,7 +454,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @media screen and (max-width: 990px) {
   .popover-class {
     left: 30px !important;
