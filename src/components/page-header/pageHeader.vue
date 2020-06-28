@@ -3,7 +3,7 @@
     <span class="title">
       <i
         v-if="showBack"
-        class="el-icon-arrow-left"
+        class="icon-arrow-left-outlined"
         style="margin-right:12px;cursor: pointer;"
         @click="goBack"
       />
