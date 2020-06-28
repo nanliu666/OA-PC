@@ -30,7 +30,7 @@
             target="_blank"
             :href="personData.attachmentUrl"
           >
-            {{ personData.attachmentName }}
+            {{ personData.attachmentName || '附件' }}
           </el-link>
           <span v-else>{{
             item.formatter ? item.formatter(personData) : personData[item.prop]
