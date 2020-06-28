@@ -144,29 +144,33 @@ import topMenu from './top-menu'
 // import topNotice from './top-notice'
 // import topLang from './top-lang'
 // import logo from '../logo'
-const userCenterMenu = [
-  {
-    menuId: '312122',
-    menuName: '个人信息',
-    menuType: 'Menu',
-    isOwn: 1,
-    isShow: 1,
-    code: 'userinfo',
-    alias: 'userInfo',
-    path: '/info/index',
-    children: []
-  },
-  {
-    menuId: '312123',
-    menuName: '安全设置',
-    isOwn: 1,
-    isShow: 1,
-    code: 'user_securitySetting',
-    alias: 'securitySetting',
-    path: '/info/securitySetting',
-    children: []
-  }
-]
+const userCenterMenu = {
+  menuName: '个人中心',
+  menuType: 'Dir',
+  children: [
+    {
+      menuId: '312122',
+      menuName: '个人信息',
+      menuType: 'Menu',
+      isOwn: 1,
+      isShow: 1,
+      code: 'userinfo',
+      alias: 'userInfo',
+      path: '/info/index',
+      children: []
+    },
+    {
+      menuId: '312123',
+      menuName: '安全设置',
+      isOwn: 1,
+      isShow: 1,
+      code: 'user_securitySetting',
+      alias: 'securitySetting',
+      path: '/info/securitySetting',
+      children: []
+    }
+  ]
+}
 export default {
   name: 'Top',
   components: {

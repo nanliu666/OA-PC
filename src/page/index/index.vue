@@ -117,7 +117,7 @@ export default {
     },
     //打开菜单
     openMenu(item = {}) {
-      this.$store.dispatch('SetMenu', item.children)
+      this.$store.dispatch('SetMenu', item)
       let path = this.getFirstPath(item.children, 0, true)
       if (this.$route.path !== path) {
         this.$router.push({
