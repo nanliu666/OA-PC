@@ -569,6 +569,7 @@ export default {
       span {
         display: flex;
         align-items: center;
+        min-width: 63px;
         justify-content: center;
         background: #ff8b8a;
         border-radius: 4px;
