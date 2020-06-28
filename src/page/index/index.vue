@@ -9,13 +9,16 @@
       <top ref="top" />
     </div>
     <div class="avue-layout">
-      <div class="avue-left">
+      <div
+        v-if="!isFullscreen"
+        class="avue-left"
+      >
         <!-- 左侧导航栏 -->
         <sidebar />
       </div>
-      <div class="avue-main">
+      <div :class="['avue-main', { 'avue-main--fullscreen avue-main--notag': isFullscreen }]">
         <!-- 顶部标签卡 -->
-        <tags />
+        <tags v-if="!isFullscreen" />
         <transition name="fade-scale">
           <search
             v-show="isSearch"
@@ -85,7 +88,12 @@ export default {
       refreshTime: ''
     }
   },
-  computed: mapGetters(['isMenu', 'isLock', 'isCollapse', 'website', 'menu']),
+  computed: {
+    ...mapGetters(['isMenu', 'isLock', 'isCollapse', 'website', 'menu']),
+    isFullscreen() {
+      return this.$route.meta.fullscreen
+    }
+  },
   created() {
     //实时检测刷新token
     this.refreshToken()
