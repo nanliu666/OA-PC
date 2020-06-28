@@ -1,13 +1,18 @@
 <template>
   <div style="height: 100%">
-    <div class="header">
+    <pageHeader
+      :back="() => this.handleBack()"
+      show-back
+      title="续签合同"
+    />
+    <!-- <div class="header">
       <div @click="handleBack">
         <i
           class="el-icon-arrow-left"
           style="font-weight: 800"
         /> 续签合同
       </div>
-    </div>
+    </div> -->
     <div class="person">
       <div class="name">
         {{ personInfo.name }}（{{ personInfo.workNo }})
