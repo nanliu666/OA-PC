@@ -97,10 +97,11 @@ export default {
   mounted() {
     this.box = document.querySelector('.staff-detail-info')
   },
-  beforeRouteLeave(to, form, next) {
-    this.filterNavItemActive = 0
+  activated() {
     document.querySelector('.flow-line').style.top = -2 + 'px'
-    next()
+  },
+  deactivated() {
+    this.filterNavItemActive = 0
   },
   methods: {
     goAnchor(selector, index, event) {

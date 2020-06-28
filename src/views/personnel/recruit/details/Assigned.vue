@@ -178,8 +178,7 @@ export default {
   },
   data() {
     return {
-      orgId: null,
-      distribution: null,
+      orgId: '',
       personnel: '',
       jumpnot: null,
       recruitmentId: '',
@@ -195,42 +194,39 @@ export default {
             entryNum: 0,
             candidateNum: 0,
             taskNum: 0,
+            // 用于捕获用户userId的数组
             options: []
           }
         ]
-      },
-      options: [] // 用于捕获用户userId的数组
+      }
     }
   },
-
-  mounted() {},
+  mounted() {
+    getStaffBasicInfo({ userId: this.userId }).then((res) => {
+      this.orgId = res.orgId
+    })
+  },
   methods: {
     doNotSave() {
       this.$emit('isDoNotSave')
       this.$router.go(-1)
       this.handleClose()
     },
-    async init(row) {
-      this.distribution = null
-      await queryDistribution({ recruitmentId: row.id }).then((res) => {
-        res.forEach((item) => {
-          item.olditem = item.taskNum
-          this.distribution += item.taskNum
-          item.peopleDisabled = true
-          item.disabled = true
-        })
-        this.dynamicValidateForm.users = res
-      })
-
-      await getStaffBasicInfo({ userId: this.userId }).then((res) => {
-        this.orgId = res.orgId
-      })
-
+    init(row) {
       let { id, needNum, jumpnot } = row
       this.jumpnot = jumpnot
       this.recruitmentId = id
       this.Totalnumberpeople = needNum
       this.$emit('update:visible', true)
+      queryDistribution({ recruitmentId: row.id }).then((res) => {
+        this.dynamicValidateForm.users = res.map((item) => ({
+          ...item,
+          olditem: item.taskNum,
+          taskNum: item.taskNum - item.entryNum,
+          peopleDisabled: true,
+          disabled: true
+        }))
+      })
     },
     requeWorkList(page) {
       getUserWorkList({ pageNo: 1, pageSize: 15, search: this.personnel }).then((res) => {
