@@ -44,6 +44,7 @@
                 :rules="identity.rules"
                 :model="identity.form"
                 label-width="0"
+                size="medium"
               >
                 <el-form-item
                   label="手机号码"
@@ -453,10 +454,11 @@ export default {
   font-size: 14px;
   color: #202940;
   line-height: 14px;
+  margin-bottom: 24px;
 }
 .identity-test .test-code-input {
   width: calc(100% - 117px);
-  margin-right: 5px;
+  margin-right: 16px;
 }
 .form-containner {
   /deep/ .el-input__inner {
@@ -472,7 +474,7 @@ export default {
 }
 .get-test-code,
 .count-down-time {
-  width: 112px;
+  width: 100px;
   padding: 0 !important;
   font-size: 14px;
 }
@@ -488,7 +490,7 @@ export default {
 }
 
 .form-containner .el-form-item {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 .form-containner .el-form-item__label {
   height: 45px;
