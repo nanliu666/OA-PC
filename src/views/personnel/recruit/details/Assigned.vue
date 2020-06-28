@@ -63,6 +63,8 @@
               v-model="user.userId"
               v-loading="user.loading"
               placeholder="请选择"
+              no-data-text="加载中...."
+              filterable
               @visible-change="
                 (isBoolean) => {
                   requeUserList(user, isBoolean)
