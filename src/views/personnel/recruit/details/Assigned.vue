@@ -173,11 +173,11 @@ export default {
     assignedCount: function() {
       return this.dynamicValidateForm.users.reduce((total, item) => total + item.taskNum, 0)
     },
-    entryNum: function() {
+    getIntoCount: function() {
       return this.dynamicValidateForm.users.reduce((total, item) => total + item.entryNum, 0)
     },
     noAssignedCount() {
-      return this.Totalnumberpeople - (this.assignedCount + this.entryNum)
+      return this.Totalnumberpeople - (this.assignedCount + this.getIntoCount)
     }
   },
   data() {
