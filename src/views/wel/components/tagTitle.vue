@@ -4,8 +4,8 @@
       <span>{{ title }}</span>
       <i
         v-if="icon"
-        class="el-icon-arrow-right"
-        style="margin-right:12px;cursor: pointer;"
+        class="icon-arrow-right-outlined"
+        style="margin-right:12px;cursor: pointer; "
         @click="handelClick"
       />
     </span>
@@ -45,6 +45,10 @@ export default {
   font-size: 18px;
   padding: 14px 0 16px;
   line-height: 28px;
+  color: #202940;
+  .icon-arrow-right-outlined:before {
+    color: #a0a8ae;
+  }
 }
 .button--wr {
   padding-bottom: 18px;
