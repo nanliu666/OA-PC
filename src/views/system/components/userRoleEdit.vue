@@ -270,7 +270,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .el-dialog__body {
   padding-top: 10px;
 }

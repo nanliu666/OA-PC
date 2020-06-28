@@ -88,7 +88,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .lock-container {
   height: 100%;
   display: flex;

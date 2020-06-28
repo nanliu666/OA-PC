@@ -19,7 +19,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .fade-leave-active {
   transition: opacity 0.2s;
 }

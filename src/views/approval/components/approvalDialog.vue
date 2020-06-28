@@ -236,7 +236,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .content-wr {
   display: flex;
   border: 1px solid #efefef;
