@@ -269,6 +269,7 @@
             slot="reference"
             type="primary"
             size="medium"
+            icon="icon-basics-filter-outlined"
             class="select-btn"
           >
             筛选
@@ -519,5 +520,9 @@ export default {
 }
 /deep/ .el-input__icon.el-icon-search {
   cursor: pointer;
+}
+
+/deep/ .icon-basics-filter-outlined {
+  font-size: 14px;
 }
 </style>

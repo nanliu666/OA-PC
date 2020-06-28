@@ -177,6 +177,16 @@ export default {
           width: 80
         },
         {
+          label: '毕业学校',
+          prop: 'university',
+          width: 120
+        },
+        {
+          label: '工作年限',
+          prop: 'workAge',
+          width: 80
+        },
+        {
           label: '最近工作单位',
           prop: 'lastCompany',
           minWidth: 160

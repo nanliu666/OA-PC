@@ -8,11 +8,8 @@
         v-model="searchInput"
         size="medium"
         placeholder="请输入内容"
-      >
-        <template slot="append">
-          <i class="el-icon-search" />
-        </template>
-      </el-input>
+        suffix-icon="el-icon-search"
+      />
     </div>
     <el-tree
       ref="tree"

@@ -29,38 +29,22 @@
                 ><i class="el-icon-delete" />批量删除</span>
               </template>
               <template slot="topMenu">
-                <div class="search-bar">
-                  <el-form
-                    ref="form"
-                    :model="form"
-                    label-width="80px"
+                <div class="flex flex-flow flex-justify-between flex-items">
+                  <el-input
+                    v-model="form.roleName"
                     size="medium"
-                    :inline="true"
-                  >
-                    <el-form-item>
-                      <el-input
-                        v-model="form.roleName"
-                        size="medium"
-                        placeholder="角色名称"
-                      >
-                        <template slot="append">
-                          <i class="el-icon-search" />
-                        </template>
-                      </el-input>
-                    </el-form-item>
-                  </el-form>
+                    placeholder="角色名称"
+                    suffix-icon="el-icon-search"
+                    style="width:200px;margin-right:12px;"
+                  />
                   <div>
-                    <el-button
-                      type="primary"
-                      size="medium"
+                    <span
+                      class="addUser"
                       :disabled="!options.currentId"
                       @click="onHandleEdit('add')"
-                    >
-                      新建角色
-                    </el-button>
-                    <el-button
-                      icon="el-icon-refresh"
-                      size="medium"
+                    >新建角色</span>
+                    <span
+                      class="icon  el-icon-refresh-right"
                       @click="loadRoleData"
                     />
                   </div>
@@ -524,5 +508,20 @@ export default {
 }
 /deep/.el-tree-node__content {
   line-height: 36px;
+}
+.addUser {
+  font-size: 14px;
+  display: inline-block;
+  color: #757c85;
+  line-height: 14px;
+  cursor: pointer;
+  padding-right: 12px;
+  border-right: 0.5px solid #e9e9e9;
+}
+.icon {
+  padding-left: 12px;
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
 }
 </style>
