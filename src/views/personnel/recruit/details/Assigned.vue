@@ -157,10 +157,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getStaffBasicInfo } from '@/api/personalInfo'
-import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
+import { queryDistribution, putDistribution, getFormal } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
 import { createUniqueID } from '@/util/util'
-import { getOrgUserList } from '@/api/system/user'
 export default {
   name: 'Assigned',
   props: {
@@ -240,7 +239,7 @@ export default {
       if (isBoolean) {
         if (page.options) {
           page.loading = true
-          getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId })
+          getFormal({ pageNo: 1, pageSize: 15, orgId: this.orgId })
             .then((res) => {
               page.options = res.data.filter(
                 (option) =>
