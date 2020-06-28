@@ -56,7 +56,7 @@ export default {
       if (formKey === this.showData[0]) {
         if (this.$store.getters.status === 'Formal' || this.$store.getters.status === 'WaitLeave') {
           //员工状态，Try-试用期，Formal-正式，Leaved-已离职，WaitLeave-待离职
-          this.$message.warning('你已经转证成功')
+          this.$message.warning('你已经是正式员工')
           return
         }
         this.$router.push({
@@ -112,6 +112,7 @@ export default {
         line-height: 48px;
         height: 48px;
         width: 48px;
+        margin-right: 0px;
         /*border-radius: 50%;*/
         display: inline-block;
         font-size: 32px;

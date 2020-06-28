@@ -1,8 +1,7 @@
 <template>
-  <div style="height:100%;width: 100% ">
-    <div class="header">
-      <div>岗位管理</div>
-      <div>
+  <div>
+    <page-header title="岗位管理">
+      <template slot="rightMenu">
         <el-button
           type="primary"
           size="medium"
@@ -10,8 +9,8 @@
         >
           新建岗位
         </el-button>
-      </div>
-    </div>
+      </template>
+    </page-header>
     <nav
       v-if="show"
       class="nav"
@@ -41,7 +40,6 @@
             :config="tableConfig"
             :columns="columns"
             :loading="loading"
-            @current-page-change="currentPageChange"
             @page-size-change="sizeChange"
           >
             <template slot="topMenu">
@@ -50,24 +48,16 @@
                   <el-input
                     v-model="form.name"
                     placeholder="岗位名称"
-                    size="medium"
-                    class="input-with-select"
-                  >
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click="search"
-                    />
-                  </el-input>
+                    suffix-icon="el-icon-search"
+                    style="width:200px;margin-right:12px;"
+                    @change="search"
+                  />
                 </div>
                 <div>
-                  <el-button
-                    type="primary"
-                    size="medium"
+                  <i
+                    class="icon  el-icon-refresh-right"
                     @click="getData"
-                  >
-                    <i class="el-icon-refresh" />
-                  </el-button>
+                  />
                 </div>
               </div>
             </template>
@@ -404,20 +394,20 @@ export default {
     }
   }
 }
-.header {
-  display: flex;
-  display: -ms-flex;
-  display: -moz-box;
-  display: -webkit-flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  color: #202940;
-  line-height: 28px;
-  font-weight: bold;
-  padding-top: 14px;
-}
+/*.header {*/
+/*  display: flex;*/
+/*  display: -ms-flex;*/
+/*  display: -moz-box;*/
+/*  display: -webkit-flex;*/
+/*  flex-flow: row nowrap;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  font-size: 18px;*/
+/*  color: #202940;*/
+/*  line-height: 28px;*/
+/*  font-weight: bold;*/
+/*  padding-top: 14px;*/
+/*}*/
 .nav {
   /*height: 36px;*/
   display: flex;
@@ -429,7 +419,7 @@ export default {
   align-items: center;
   line-height: 16px;
   padding: 0px 20px;
-  margin-top: 8px;
+  margin-top: -6px;
   background: #edf8ff;
   border: 1px solid #73b9ff;
   border-radius: 4px;
@@ -499,5 +489,10 @@ export default {
 
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+.icon {
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
 }
 </style>

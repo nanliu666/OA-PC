@@ -402,6 +402,7 @@ export default {
         getStaffBasicInfo({ userId: this.userId }).then((res) => {
           this.form.companyName = res.companyName
           this.form.companyId = res.companyId
+          this.form.orgId = res.orgId
         })
       } else {
         this.$message({

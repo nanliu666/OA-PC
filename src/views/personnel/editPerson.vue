@@ -431,6 +431,7 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     this.clear()
+    this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
     next()
   },
   methods: {
@@ -552,7 +553,6 @@ export default {
     },
     goBack() {
       this.clear()
-      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.go(-1)
     }
   }

@@ -119,3 +119,10 @@
 .el-cascader--medium {
   line-height: 34px;
 }
+
+table tr {
+  td:first-child .cell,
+  th:first-child .cell {
+    padding-left: 24px;
+  }
+}

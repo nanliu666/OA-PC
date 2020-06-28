@@ -10,7 +10,7 @@ export default [
     children: [
       {
         path: 'index',
-        name: '首页',
+        name: '工作台',
         meta: {
           i18n: 'dashboard'
         },

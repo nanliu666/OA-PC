@@ -5,12 +5,7 @@
       style="height: calc(100% - 92px);"
       :gutter="8"
     >
-      <el-col
-        class="fill"
-        :xs="9"
-        :sm="7"
-        :md="6"
-      >
+      <el-col class="fill sidebar">
         <basic-container block>
           <el-tabs
             v-model="activeTabName"
@@ -59,7 +54,10 @@
                   content="对用户进行的自定义分组，不包含业务属性"
                   placement="top-start"
                 >
-                  <i class="el-icon-warning" />
+                  <i
+                    style="color:#A0A8AE;position:relative;top:1px;"
+                    class="iconfont icon-tips-question-outlined"
+                  />
                 </el-tooltip>
               </span>
               <user-tag
@@ -71,9 +69,7 @@
         </basic-container>
       </el-col>
       <el-col
-        :xs="15"
-        :sm="17"
-        :md="18"
+        class="content"
         style="height:100%"
       >
         <user-list
@@ -180,5 +176,14 @@ export default {
       overflow: auto;
     }
   }
+}
+.sidebar {
+  width: 250px;
+}
+.content {
+  width: calc(100% - 250px);
+}
+.fill /deep/.el-tree-node__content {
+  line-height: 36px;
 }
 </style>

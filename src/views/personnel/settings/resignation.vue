@@ -3,7 +3,6 @@
     <page-header title="离职交接事项">
       <template slot="rightMenu">
         <el-button
-          type="primary"
           size="medium"
           @click="groupEditVisible = true"
         >
