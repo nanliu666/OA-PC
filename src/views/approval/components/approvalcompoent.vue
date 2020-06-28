@@ -76,7 +76,7 @@
                 icon="el-icon-check"
                 size="mini"
                 circle
-                @click="handleEditName(node, index)"
+                @click.stop="handleEditName(node, index)"
               /></span>
               <span><el-button
                 type="danger"
@@ -84,7 +84,7 @@
                 icon="el-icon-close"
                 size="mini"
                 circle
-                @click="handleClose(node, index)"
+                @click.stop="handleClose(node, index)"
               />
               </span>
             </div>
@@ -214,8 +214,8 @@ export default {
      * */
     handleEditName(node) {
       node.name = node.editname
-      node.isEdit = false
-      this.name = ''
+      // node.isEdit = false
+      // this.name = ''
     },
     /**
      * @author guanfenda
@@ -267,9 +267,11 @@ export default {
         data = '审批人'
         this.approvalList[index].name = '审批人'
       }
-      this.approvalList.map((it) => {
-        it.isEdit = false
-      })
+      setTimeout(() => {
+        this.approvalList.map((it) => {
+          it.isEdit = false
+        })
+      }, 500)
     },
     /***
      * @author guanfenda

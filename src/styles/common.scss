@@ -92,3 +92,6 @@ ul {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.el-tabs__nav-wrap::after {
+  height: 1px;
+}
