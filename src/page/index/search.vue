@@ -97,7 +97,7 @@ export default {
         }
       }
       this.menuList = []
-      findMenu(this.menu)
+      findMenu(this.menu.children)
       this.menus = this.menuList
     },
     querySearch() {

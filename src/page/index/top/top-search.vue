@@ -68,7 +68,7 @@ export default {
         }
       }
       this.menuList = []
-      findMenu(this.menu)
+      findMenu(this.menu.children)
     },
     querySearch(queryString, cb) {
       var restaurants = this.menuList

@@ -269,7 +269,7 @@
                       size="medium"
                       type="text"
                     >
-                      {{ form.attachment[0].localName }}
+                      {{ form.attachment[0].localName || '附件' }}
                     </el-button>
                   </common-upload>
                 </el-form-item>
@@ -415,7 +415,7 @@ export default {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
     await this.getRecruitment()
-    this.getPersonInfo()
+    // this.getPersonInfo()
     // this.recruitmentId && (this.form.recruitmentId = this.recruitmentId)
   },
   async activated() {
@@ -424,7 +424,7 @@ export default {
     await this.getPersonInfo()
     if (this.form.recruitmentId || this.$route.query.recruitmentId) {
       this.recruitmentIdDisabled = true
-      this.form.recruitmentId = this.$route.query.recruitmentId
+      this.$route.query.recruitmentId && (this.form.recruitmentId = this.$route.query.recruitmentId)
     } else {
       this.recruitmentIdDisabled = false
     }

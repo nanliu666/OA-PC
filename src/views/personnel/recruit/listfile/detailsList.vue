@@ -115,6 +115,7 @@ export default {
             label: '',
             data: '',
             config: {
+              'suffix-icon': 'el-icon-search',
               placeholder: '职位名称'
             }
           }

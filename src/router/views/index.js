@@ -1,18 +1,18 @@
 import Layout from '@/page/index/'
-import LayoutNoSidebar from '@/page/index/layoutNoSidebar'
 import demoRoutes from './demo'
 import todo from './todo'
 export default [
   {
     path: '/wel',
-    component: LayoutNoSidebar,
+    component: Layout,
     redirect: '/wel/index',
     children: [
       {
         path: 'index',
         name: '工作台',
         meta: {
-          i18n: 'dashboard'
+          i18n: 'dashboard',
+          fullscreen: true
         },
         component: () => import(/* webpackChunkName: "views" */ '@/views/wel/index')
       },

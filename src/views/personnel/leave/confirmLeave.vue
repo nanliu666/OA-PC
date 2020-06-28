@@ -485,20 +485,6 @@ export default {
     color: #202940;
   }
 }
-// .tag-wrap {
-// 	font-family: PingFangSC-Regular;
-// 	font-size: 14px;
-// 	color: #202940;
-// 	margin: 10px 0;
-// 	background: #f7f8fa;
-// 	width: 100%;
-// 	height: 36px;
-// 	line-height: 36px;
-
-// 	.icon-warning {
-// 		margin-left: 12px;
-// 	}
-// }
 
 // 没完成图标
 .icon-warning {

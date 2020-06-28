@@ -123,21 +123,7 @@
         />-->
       </el-form-item>
       <el-form-item
-        v-if="popoverOptions.length === 0"
-        class="require-form-item"
-      >
-        <el-button
-          type="primary"
-          size="medium"
-          class="button-search"
-          icon="el-icon-search"
-          @click="submitSearch"
-        >
-          搜索
-        </el-button>
-      </el-form-item>
-      <el-form-item
-        v-else
+        v-if="popoverOptions.length > 0"
         class="require-form-item"
       >
         <el-popover
@@ -284,6 +270,7 @@
             type="primary"
             size="medium"
             icon="icon-basics-filter-outlined"
+            class="select-btn"
           >
             筛选
           </el-button>
@@ -491,13 +478,9 @@ export default {
   margin: 0 auto;
   text-align: right;
 }
-
-/deep/.button-search {
-  i {
-    font-size: 14px;
-  }
+.select-btn {
+  margin-left: 8px;
 }
-
 .require-form {
   .el-form-item {
     padding-right: 6px;
