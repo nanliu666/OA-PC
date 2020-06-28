@@ -130,7 +130,7 @@
           type="primary"
           size="medium"
           class="button-search"
-          icon="icon-basics-filter-outlined"
+          icon="el-icon-search"
           @click="submitSearch"
         >
           搜索
@@ -283,6 +283,7 @@
             slot="reference"
             type="primary"
             size="medium"
+            icon="icon-basics-filter-outlined"
           >
             筛选
           </el-button>
@@ -536,5 +537,9 @@ export default {
 }
 /deep/ .el-input__icon.el-icon-search {
   cursor: pointer;
+}
+
+/deep/ .icon-basics-filter-outlined {
+  font-size: 14px;
 }
 </style>

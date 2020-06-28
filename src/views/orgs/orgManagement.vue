@@ -335,6 +335,7 @@ export default {
         align: 'center',
         border: false,
         menuWidth: 180,
+        selectionWidth: 60,
         defaultExpandAll: true,
         selection: true,
         formHeight: 20,

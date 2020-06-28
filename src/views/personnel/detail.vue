@@ -277,9 +277,15 @@ export default {
       this.$refs.leaveDialogRef.showChangeDialog(this.allInfo)
     },
     giveupLeave() {
-      giveupLeave({ id: this.leaveInfo.id }).then(() => {
-        this.$message.success('操作成功')
-        this.getBasicInfo()
+      this.$confirm('放弃离职后员工将恢复到正常在职状态，您确认要放弃离职吗？', '确认放弃离职？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        giveupLeave({ id: this.leaveInfo.id }).then(() => {
+          this.$message.success('操作成功')
+          this.getBasicInfo()
+        })
       })
     },
     closeNav() {

@@ -42,14 +42,17 @@
         @keyup.enter.native="handleLogin"
       >
         <i
+          v-if="passwordType === 'password'"
           slot="suffix"
-          class="el-icon-view el-input__icon"
+          class="icon-basics-eyeopen-outlined eye-icon"
           @click="showPassword"
         />
-        <!-- <i
-          slot="prefix"
-          class="icon-mima"
-        />-->
+        <i
+          v-else
+          slot="suffix"
+          class="icon-basics-eyeblind-outlined eye-icon"
+          @click="showPassword"
+        />
       </el-input>
     </el-form-item>
     <el-form-item
@@ -211,4 +214,11 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.login-submit {
+  font-size: 16px;
+}
+.eye-icon {
+  color: #757c85;
+}
+</style>
