@@ -181,14 +181,6 @@ export default {
         }
       })
       if (isUser) return //不给提交
-
-      // if (this.initData.id && this.note) {
-      //   let params = {
-      //     id: this.initData.id,
-      //     note: this.note
-      //   }
-      //   putAppProcess(params).then(() => {})
-      // }
       let params = {
         formKey: this.$route.query.formKey,
         note: this.note,
@@ -219,6 +211,9 @@ export default {
         prev.childId = cur.id
         return cur
       })
+      if (this.approvalList.length < 2) {
+        this.approvalList[0].isEnd = 1
+      }
       params.nodes = this.approvalList
       postAppProcess(params).then(() => {
         this.$message.success('提交成功')

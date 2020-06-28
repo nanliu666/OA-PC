@@ -447,7 +447,10 @@ export default {
       })
     },
     handleBack() {
-      this.active = 1
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.push({
+        path: '/personnel/candidate/candidateManagement'
+      })
     },
     dataFilter(res, form, props, label, value) {
       let index = ''
