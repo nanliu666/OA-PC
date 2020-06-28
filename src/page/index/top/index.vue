@@ -95,19 +95,18 @@
           />
         </div>
       </el-tooltip>
-      <img
-        v-if="userInfo.avatar"
-        class="top-bar__img"
-        :src="userInfo.avatar"
-      >
-      <i
-        v-else
-        class="icon-usercircle top-bar__usericon"
-      />
+
       <el-dropdown>
         <span class="el-dropdown-link">
-          {{ userInfo.userName }}
-          <i class="el-icon-arrow-down el-icon--right" />
+          <img
+            v-if="userInfo.avatar"
+            class="top-bar__img"
+            :src="userInfo.avatar"
+          >
+          <i
+            v-else
+            class="icon-usercircle top-bar__usericon"
+          />
         </span>
         <el-dropdown-menu slot="dropdown">
           <!-- <el-dropdown-item>
@@ -144,29 +143,33 @@ import topMenu from './top-menu'
 // import topNotice from './top-notice'
 // import topLang from './top-lang'
 // import logo from '../logo'
-const userCenterMenu = [
-  {
-    menuId: '312122',
-    menuName: '个人信息',
-    menuType: 'Menu',
-    isOwn: 1,
-    isShow: 1,
-    code: 'userinfo',
-    alias: 'userInfo',
-    path: '/info/index',
-    children: []
-  },
-  {
-    menuId: '312123',
-    menuName: '安全设置',
-    isOwn: 1,
-    isShow: 1,
-    code: 'user_securitySetting',
-    alias: 'securitySetting',
-    path: '/info/securitySetting',
-    children: []
-  }
-]
+const userCenterMenu = {
+  menuName: '个人中心',
+  menuType: 'Dir',
+  children: [
+    {
+      menuId: '312122',
+      menuName: '个人信息',
+      menuType: 'Menu',
+      isOwn: 1,
+      isShow: 1,
+      code: 'userinfo',
+      alias: 'userInfo',
+      path: '/info/index',
+      children: []
+    },
+    {
+      menuId: '312123',
+      menuName: '安全设置',
+      isOwn: 1,
+      isShow: 1,
+      code: 'user_securitySetting',
+      alias: 'securitySetting',
+      path: '/info/securitySetting',
+      children: []
+    }
+  ]
+}
 export default {
   name: 'Top',
   components: {
@@ -239,4 +242,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.top-bar__usericon {
+  margin: 0 10px;
+  cursor: pointer;
+}
+</style>

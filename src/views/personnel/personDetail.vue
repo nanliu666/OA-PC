@@ -505,12 +505,14 @@
                 {{ recruitmentChannel[personInfo.recruitment] }}
               </el-col>
               <el-col
+                v-if="personInfo.resumeUrl"
                 :span="8"
                 class="key"
               >
                 简历：
               </el-col>
               <el-col
+                v-if="personInfo.resumeUrl"
                 :span="16"
                 class="value"
               >

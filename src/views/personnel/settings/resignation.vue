@@ -346,7 +346,7 @@ export default {
 }
 
 .basic-container--block {
-  height: calc(100% - 92px);
-  min-height: calc(100% - 92px);
+  height: calc(100% - 92px - 52px);
+  min-height: calc(100% - 92px - 52px);
 }
 </style>

@@ -138,6 +138,7 @@ export default {
             field: 'search',
             label: '',
             config: {
+              'suffix-icon': 'el-icon-search',
               placeholder: '姓名/工号'
             }
           }
