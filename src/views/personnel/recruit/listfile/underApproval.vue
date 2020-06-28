@@ -28,6 +28,37 @@
               size="medium"
               @click="getTableData"
             />
+
+            <el-popover
+              placement="bottom"
+              width="40"
+              trigger="click"
+              style="margin:0 12px"
+            >
+              <div class="checkColumn">
+                <el-checkbox-group
+                  v-model="checkColumn"
+                  @change="columnChange"
+                >
+                  <el-checkbox
+                    v-for="item in originColumn"
+                    :key="item.prop"
+                    :label="item.prop"
+                    :disabled="item.prop === 'apprNo' || item.prop === 'jobName'"
+                    class="originColumn"
+                  >
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <el-button
+                slot="reference"
+                icon="el-icon-setting"
+                size="medium"
+                class="topBtn"
+                type="text"
+              />
+            </el-popover>
           </div>
         </div>
       </template>
@@ -57,6 +88,48 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getApprove } from '@/api/personnel/recruitment'
+const column = [
+  {
+    label: '审批编号',
+    prop: 'apprNo',
+    slot: true,
+    minWidth: '120px'
+  },
+  {
+    label: '需求编号',
+    prop: 'formId',
+    minWidth: '120px'
+  },
+  {
+    label: '用人部门',
+    prop: 'orgName'
+  },
+  {
+    label: '职位',
+    prop: 'jobName'
+  },
+  {
+    label: '岗位',
+    prop: 'positionName',
+    minWidth: '120px'
+  },
+  {
+    label: '审批状态',
+    prop: 'status',
+    slot: true
+  },
+  {
+    label: '申请时间',
+    prop: 'applyTime',
+    minWidth: '120px'
+  },
+  {
+    label: '完成时间',
+    prop: 'completeTime',
+    minWidth: '120px'
+  }
+]
+
 export default {
   name: 'DetailsList',
   components: {
@@ -64,6 +137,17 @@ export default {
   },
   data() {
     return {
+      checkColumn: [
+        'apprNo',
+        'formId',
+        'orgName',
+        'orgName',
+        'jobName',
+        'positionName',
+        'status',
+        'applyTime',
+        'completeTime'
+      ],
       loading: false,
       searchConfig: {
         requireOptions: [
@@ -136,7 +220,8 @@ export default {
       },
       createOrgDailog: false,
       WorkYear: [],
-      getLevel: []
+      getLevel: [],
+      originColumn: column
     }
   },
   computed: {
@@ -182,6 +267,11 @@ export default {
     },
     calcStataus(status) {
       return { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' }[status]
+    },
+    columnChange() {
+      this.columns = column.filter((item) => {
+        return this.checkColumn.indexOf(item.prop) > -1
+      })
     }
   }
 }

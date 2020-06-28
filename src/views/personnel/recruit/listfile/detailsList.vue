@@ -29,6 +29,37 @@
               size="medium"
               @click="getTableData"
             />
+
+            <el-popover
+              placement="bottom"
+              width="40"
+              trigger="click"
+              style="margin:0 12px"
+            >
+              <div class="checkColumn">
+                <el-checkbox-group
+                  v-model="checkColumn"
+                  @change="columnChange"
+                >
+                  <el-checkbox
+                    v-for="item in originColumn"
+                    :key="item.prop"
+                    :label="item.prop"
+                    :disabled="item.prop === 'id' || item.prop === 'jobName'"
+                    class="originColumn"
+                  >
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <el-button
+                slot="reference"
+                icon="el-icon-setting"
+                size="medium"
+                class="topBtn"
+                type="text"
+              />
+            </el-popover>
           </div>
         </div>
       </template>
@@ -96,6 +127,48 @@ import { mapGetters } from 'vuex'
 import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+
+const column = [
+  {
+    label: '需求编号',
+    prop: 'id'
+  },
+  {
+    label: '职位',
+    prop: 'jobName',
+    minWidth: '120px'
+  },
+  {
+    label: '岗位',
+    prop: 'positionName',
+    minWidth: '120px'
+  },
+  {
+    label: '紧急程度',
+    prop: 'emerType'
+  },
+  {
+    label: '需求状态',
+    prop: 'status'
+  },
+  {
+    label: '需求人数',
+    prop: 'needNum'
+  },
+
+  {
+    label: '已入职',
+    prop: 'entryNum'
+  },
+  {
+    label: '招聘进度',
+    prop: 'accuracy'
+  },
+  {
+    label: '候选人数',
+    prop: 'candidateNum'
+  }
+]
 export default {
   name: 'DetailsList',
   components: {
@@ -103,6 +176,18 @@ export default {
   },
   data() {
     return {
+      checkColumn: [
+        'id',
+        'jobName',
+        'orgName',
+        'positionName',
+        'emerType',
+        'status',
+        'needNum',
+        'emerType',
+        'entryNum',
+        'candidateNum'
+      ],
       recruit: false,
       change: true,
       loading: false,
@@ -268,7 +353,8 @@ export default {
       ],
       workProperty: {},
       EmerType: {},
-      searchParams: {}
+      searchParams: {},
+      originColumn: column
     }
   },
   computed: {
@@ -298,6 +384,11 @@ export default {
     this.getDictionarygroup()
   },
   methods: {
+    columnChange() {
+      this.columns = column.filter((item) => {
+        return this.checkColumn.indexOf(item.prop) > -1
+      })
+    },
     getEducationalLevel(type) {
       let typeWord
       this.getLevel.forEach((item) => {
@@ -391,5 +482,10 @@ export default {
 
 .refresh {
   color: #a0a8ae;
+}
+
+.checkColumn {
+  height: 200px;
+  overflow: scroll;
 }
 </style>
