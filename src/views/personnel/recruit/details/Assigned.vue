@@ -222,18 +222,13 @@ export default {
       this.Totalnumberpeople = row.needNum
       this.$emit('update:visible', true)
       queryDistribution({ recruitmentId: row.id }).then((res) => {
-        this.dynamicValidateForm.users = res.map(
-          (item) => (
-            (item.entryNum = 4),
-            {
-              ...item,
-              olditem: item.taskNum,
-              taskNum: item.taskNum - item.entryNum,
-              peopleDisabled: true,
-              disabled: true
-            }
-          )
-        )
+        this.dynamicValidateForm.users = res.map((item) => ({
+          ...item,
+          olditem: item.taskNum,
+          taskNum: item.taskNum - item.entryNum,
+          peopleDisabled: true,
+          disabled: true
+        }))
       })
     },
     requeWorkList(page) {
