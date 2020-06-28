@@ -228,12 +228,11 @@ export default {
     },
     init(row) {
       this.list = row
-      let { id, entryNum, needNum, jumpnot } = row
-      this.jumpnot = jumpnot
-      this.recruitmentId = id
-      this.Totalnumberpeople = needNum
-      this.Assigned = entryNum
-      this.Numberofpeople = needNum - entryNum
+      this.jumpnot = row.jumpnot
+      this.recruitmentId = row.id
+      this.Totalnumberpeople = row.needNum
+      this.Assigned = row.entryNum
+      this.Numberofpeople = row.needNum - row.entryNum
       this.$emit('update:visible', true)
       getStaffBasicInfo({ userId: this.userId }).then((res) => {
         this.orgId = res.orgId

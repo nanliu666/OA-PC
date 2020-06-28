@@ -374,6 +374,9 @@ export default {
       return { Try: '试用期', Formal: '正式', Leaved: '已离职', WaitLeave: '待离职' }[status]
     },
     calApprNo(apprNo) {
+      if (apprNo === '未申请') {
+        return '未申请'
+      }
       return { Approve: '审批中', Pass: '正式', Reject: '已拒绝', Cancel: '已撤回' }[apprNo]
     },
     calBeyond(formalDate) {
