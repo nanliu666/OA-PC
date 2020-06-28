@@ -43,6 +43,7 @@
           <el-tag
             v-if="ifShowWarn(row)"
             type="danger"
+            class="tag"
           >
             停滞{{ getWarnText(row) }}天
           </el-tag>
@@ -322,5 +323,8 @@ export default {
 }
 .refresh {
   color: #a0a8ae;
+}
+.tag {
+  margin-left: 16px;
 }
 </style>
