@@ -95,19 +95,18 @@
           />
         </div>
       </el-tooltip>
-      <img
-        v-if="userInfo.avatar"
-        class="top-bar__img"
-        :src="userInfo.avatar"
-      >
-      <i
-        v-else
-        class="icon-usercircle top-bar__usericon"
-      />
+
       <el-dropdown>
         <span class="el-dropdown-link">
-          {{ userInfo.userName }}
-          <i class="el-icon-arrow-down el-icon--right" />
+          <img
+            v-if="userInfo.avatar"
+            class="top-bar__img"
+            :src="userInfo.avatar"
+          >
+          <i
+            v-else
+            class="icon-usercircle top-bar__usericon"
+          />
         </span>
         <el-dropdown-menu slot="dropdown">
           <!-- <el-dropdown-item>
@@ -243,4 +242,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.top-bar__usericon {
+  margin: 0 10px;
+  cursor: pointer;
+}
+</style>
