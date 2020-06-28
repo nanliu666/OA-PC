@@ -44,13 +44,16 @@ export default {
     return {
       itemHome: {
         menuName: '工作台'
-      },
-      activeIndex: '0'
+      }
     }
   },
   inject: ['index'],
   computed: {
-    ...mapGetters(['tagCurrent', 'menuAll', 'menuLoading'])
+    ...mapGetters(['tagCurrent', 'menuAll', 'menuLoading', 'menu']),
+    activeIndex() {
+      return (this.menuAll.find((menu) => menu.menuId === this.menu.menuId) || { menuId: '0' })
+        .menuId
+    }
   },
   methods: {
     openHome(itemHome) {

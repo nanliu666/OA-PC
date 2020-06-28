@@ -147,10 +147,12 @@
       <common-table
         v-model="obj"
         :data="data"
+        :loading="loading"
         :columns="option.column"
-        :page.sync="page"
-        @size-change="sizeChange"
-        @current-change="currentChange"
+        :page="page"
+        :config="tableConfig"
+        @page-size-change="sizeChange"
+        @current-page-change="currentChange"
       >
         <template slot="topMenu">
           <search-component
@@ -292,6 +294,10 @@ export default {
         background: false,
         layout: 'prev, pager, next, sizes, jumper,total'
       },
+      tableConfig: {
+        showHandler: false
+      },
+      loading: false,
       searchParams: {},
       data: [],
       option: {
@@ -345,11 +351,10 @@ export default {
     }
   },
   created() {
-    this.getTableData(1)
     this.getUserStatusStat()
   },
   activated() {
-    this.getTableData()
+    this.getTableData(1)
   },
   methods: {
     toUserDetail(row) {
@@ -363,6 +368,7 @@ export default {
       })
     },
     tabClick(status) {
+      if (this.loading) return
       this.tabStatus = status
       this.$refs.searchComponent.resetForm()
       this.searchParams = {}
@@ -376,6 +382,8 @@ export default {
       console.log(command, row)
     },
     getTableData(pageNo) {
+      if (this.loading) return
+      if (pageNo) this.page.currentPage = pageNo
       if (!this.searchParams.statuses && this.tabStatus === 'onJob') {
         this.searchParams.statuses = ['Formal', 'Try', 'WaitLeave']
       } else if (this.tabStatus !== 'onJob') {
@@ -386,21 +394,27 @@ export default {
         pageSize: this.page.pageSize,
         ...this.searchParams
       }
-      getUserList(params).then((res) => {
-        this.data = res.data
-        this.page.total = res.totalNum
-        if (pageNo) this.page.currentPage = pageNo
-      })
+      this.loading = true
+      getUserList(params)
+        .then((res) => {
+          this.data = res.data
+          this.page.total = res.totalNum
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     handleSearch(params) {
       this.searchParams = params
       this.getTableData(1)
     },
-    sizeChange() {
+    sizeChange(pageSize) {
+      this.page.pageSize = pageSize
       this.getTableData(1)
     },
-    currentChange() {
-      this.getTableData()
+    currentChange(currentPage) {
+      this.getTableData(currentPage)
     },
     handleExport() {}
   }

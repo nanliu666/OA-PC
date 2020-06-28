@@ -43,7 +43,7 @@
                 </svg>
               </div>
               <div
-                v-else
+                v-if="item.status === 'Reject'"
                 class="iconfont"
               >
                 <svg
@@ -64,7 +64,7 @@
                     <div style="text-align: right">
                       {{ info.label }}：
                     </div>
-                    <div>{{ item[info.name] }}</div>
+                    <div>{{ filterD(item[info.name], info.name) }}</div>
                   </div>
                 </div>
               </div>
@@ -203,10 +203,31 @@ export default {
     }
   },
   methods: {
+    filterD(data, status) {
+      let val = ''
+      // Onsite-现场面试，Phone-电话面试，Video-视频面试
+      let interivew = {
+        Onsite: '现场面试',
+        Phone: '电话面试',
+        Video: '视频面试'
+      }
+      if (status === 'interviewType') {
+        val = interivew[data]
+      } else {
+        val = data
+      }
+      return val
+    },
     formmat(data, status) {
       let val = ''
+      let statusList = {
+        UnEvaluate: '待评价',
+        Pass: '通过',
+        Reject: '淘汰',
+        Cancel: '已撤销'
+      }
       if (status === 'status') {
-        val = data === 'Pass' ? '通过' : '淘汰'
+        val = statusList[data]
       } else {
         val = data
       }

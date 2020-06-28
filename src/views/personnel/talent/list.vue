@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fill">
     <page-header title="人才库管理">
       <template slot="rightMenu">
         <el-dropdown @command="handleCommand">
@@ -19,7 +19,7 @@
         </el-dropdown>
       </template>
     </page-header>
-    <basic-container>
+    <basic-container block>
       <common-table
         ref="crud"
         :config="tableConfig"
@@ -177,6 +177,16 @@ export default {
           width: 80
         },
         {
+          label: '毕业学校',
+          prop: 'university',
+          width: 120
+        },
+        {
+          label: '工作年限',
+          prop: 'workAge',
+          width: 80
+        },
+        {
           label: '最近工作单位',
           prop: 'lastCompany',
           minWidth: 160
@@ -302,5 +312,9 @@ export default {
   font-size: 16px;
   line-height: 40px;
   cursor: pointer;
+}
+.basic-container--block {
+  height: calc(100% - 92px);
+  min-height: calc(100% - 92px);
 }
 </style>

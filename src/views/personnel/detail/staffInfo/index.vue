@@ -142,7 +142,8 @@ export default {
     this.box = document.querySelector('.staff-detail-info')
   },
   activated() {
-    document.querySelector('.flow-line').style.top = -2 + 'px'
+    if (document.querySelector('.flow-line'))
+      document.querySelector('.flow-line').style.top = -2 + 'px'
   },
   deactivated() {
     this.filterNavItemActive = 0

@@ -346,6 +346,7 @@ export default {
     },
     handleSubmit() {
       this.$refs['form'].validate().then(() => {
+        this.closeRules()
         this.form.userId = this.userId
         this.form.minSalary = this.range.min
         this.form.maxSalary = this.range.max
@@ -355,6 +356,7 @@ export default {
             this.$refs['apprProgress'].submit(res.id).then(() => {
               this.loading = false
               this.$message({ type: 'success', message: '提交成功' })
+              this.isDoNotSave()
               this.goBack()
             })
           }

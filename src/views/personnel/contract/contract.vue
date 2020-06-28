@@ -65,13 +65,10 @@
                 />
               </template>
               <template slot="refresh">
-                <el-button
-                  type="primary"
-                  size="medium"
+                <span
+                  class="icon  el-icon-refresh-right"
                   @click="refresh"
-                >
-                  <i class="el-icon-refresh" />
-                </el-button>
+                />
               </template>
               <template
                 slot="operation"
@@ -144,13 +141,10 @@
                 />
               </template>
               <template slot="refresh">
-                <el-button
-                  type="primary"
-                  size="medium"
+                <span
+                  class="icon  el-icon-refresh-right"
                   @click="refreshTodo"
-                >
-                  <i class="el-icon-refresh" />
-                </el-button>
+                />
               </template>
               <template
                 slot="operation"
@@ -196,13 +190,10 @@
                 />
               </template>
               <template slot="refresh">
-                <el-button
-                  type="primary"
-                  size="medium"
+                <span
+                  class="icon  el-icon-refresh-right"
                   @click="refreshR"
-                >
-                  <i class="el-icon-refresh" />
-                </el-button>
+                />
               </template>
             </signed>
           </el-tab-pane>
@@ -839,116 +830,6 @@ export default {
 .avue-view {
   height: auto;
 }
-/*.cntract {*/
-/*  position: relative;*/
-/*  !*margin-top: 16px;*!*/
-/*  !*background: #ffffff;*!*/
-/*  !*box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);*!*/
-/*  !*border-radius: 4px;*!*/
-/*  !*padding: 24px !important;*!*/
-/*  !*min-height: calc(100% - 204px);*!*/
-/*  .form_ {*/
-/*    !*padding-top: 40px;*!*/
-/*    !*width: 400px;*!*/
-/*    !*margin: 0 auto;*!*/
-/*    !*font-size: 14px;*!*/
-/*    .label_ {*/
-/*      !*display: inline-block;*!*/
-/*      !*margin-top:24px;*!*/
-/*      !*margin-bottom:8px;*!*/
-/*    }*/
-/*    .tip {*/
-/*      font-size: 12px;*/
-/*      line-height: 14px;*/
-/*      color: #a0a8ae;*/
-/*    }*/
-/*    .bt {*/
-/*      !*margin-top: 40px;*!*/
-/*    }*/
-/*  }*/
-/*}*/
-/*.aside {*/
-/*  width: 200px;*/
-/*  border-right: 1px solid #efefef;*/
-/*  height: 100%;*/
-/*  box-sizing: border-box;*/
-/*  margin-right: 20px;*/
-/*  margin-top: 20px;*/
-/*  ul {*/
-/*    list-style: none;*/
-/*    padding: 0 10px;*/
-/*    margin-top: 10px;*/
-/*    line-height: 34px;*/
-/*    li {*/
-/*      cursor: pointer;*/
-/*    }*/
-/*    li:not(.selection) {*/
-/*      line-height: 34px;*/
-/*      font-size: 14px;*/
-/*      padding-left: 30px;*/
-/*    }*/
-/*    .selection {*/
-/*      .icon {*/
-/*        display: inline-block;*/
-/*        margin: 0 6px 0 6px;*/
-/*        font-size: 18px;*/
-/*      }*/
-/*    }*/
-/*    .actives {*/
-/*      border-right: 4px solid #1e9fff;*/
-/*      background: #efefef;*/
-/*    }*/
-/*  }*/
-/*}*/
-/*.header {*/
-/*  display: flex;*/
-/*  display: -ms-flex;*/
-/*  display: -moz-box;*/
-/*  display: -webkit-flex;*/
-/*  flex-flow: row nowrap;*/
-/*  justify-content: space-between;*/
-/*  align-items: center;*/
-/*  font-size: 18px;*/
-/*  color: #202940;*/
-/*  line-height: 28px;*/
-/*  font-weight: bold;*/
-/*  margin-top: 14px;*/
-/*}*/
-/*.nav {*/
-/*  !*height: 36px;*!*/
-/*  display: flex;*/
-/*  display: -ms-flex;*/
-/*  display: -moz-box;*/
-/*  display: -webkit-flex;*/
-/*  flex-flow: row nowrap;*/
-/*  justify-content: space-between;*/
-/*  align-items: center;*/
-/*  line-height: 16px;*/
-/*  padding: 0px 20px;*/
-/*  margin-top: 8px;*/
-/*  background: #edf8ff;*/
-/*  border: 1px solid #73b9ff;*/
-/*  border-radius: 4px;*/
-/*  font-size: 14px;*/
-/*  box-sizing: border-box;*/
-/*  !*span {*!*/
-/*  !*  line-height: 20px;*!*/
-/*  !*}*!*/
-/*}*/
-/*.aside_header {*/
-/*  display: flex;*/
-/*  display: -ms-flex;*/
-/*  display: -moz-box;*/
-/*  display: -webkit-flex;*/
-/*  align-items: center;*/
-/*  flex-flow: row nowrap;*/
-/*  justify-content: space-between;*/
-/*  margin: 0 10px 0px 10px;*/
-/*  padding-bottom: 10px;*/
-/*  font-size: 18px;*/
-/*  border-bottom: 1px solid #efefef;*/
-/*  !*line-height: 40px;*!*/
-/*}*/
 .flex {
   display: flex;
   display: -ms-flex;
@@ -998,5 +879,11 @@ export default {
 
 /deep/ .avue-crud__menu {
   min-height: 0;
+}
+.icon {
+  padding-left: 12px;
+  font-size: 18px;
+  color: #a0a8ae;
+  cursor: pointer;
 }
 </style>

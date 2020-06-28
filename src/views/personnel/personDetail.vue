@@ -45,7 +45,7 @@
                 </el-dropdown-item>
                 <!-- <el-dropdown-item command="checkEntry">
                   查看入职登记表
-                </el-dropdown-item> -->
+                </el-dropdown-item>-->
                 <!-- <el-dropdown-item command>
                   下载简历
                 </el-dropdown-item>-->
@@ -95,7 +95,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -129,7 +129,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -175,7 +175,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -222,7 +222,7 @@
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
-                  <el-dropdown-item command>
+                  <el-dropdown-item command="InterviewEvaluation">
                     查看面试评价
                   </el-dropdown-item>
                   <el-dropdown-item command="toRegistrationForm">
@@ -230,7 +230,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -263,7 +263,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -300,7 +300,7 @@
                   </el-dropdown-item>
                   <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                  </el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -326,7 +326,7 @@
                   下载简历
                 </el-dropdown-item>
                 </el-dropdown-menu>
-              </el-dropdown> -->
+              </el-dropdown>-->
             </template>
           </template>
         </div>
@@ -401,7 +401,7 @@
                     class="tag-class"
                   >{{ item.name }}</span>
                 </template>
-              </el-col> -->
+              </el-col>-->
               <el-col
                 :span="8"
                 class="key"
@@ -505,12 +505,14 @@
                 {{ recruitmentChannel[personInfo.recruitment] }}
               </el-col>
               <el-col
+                v-if="personInfo.resumeUrl"
                 :span="8"
                 class="key"
               >
                 简历：
               </el-col>
               <el-col
+                v-if="personInfo.resumeUrl"
                 :span="16"
                 class="value"
               >
@@ -518,9 +520,7 @@
                   class="attachmentUrl"
                   target="_blank"
                   :href="personInfo.resumeUrl"
-                >
-                  {{ personInfo.name }}的简历
-                </a>
+                >{{ personInfo.name }}的简历</a>
               </el-col>
               <el-col
                 :span="8"
@@ -536,9 +536,9 @@
                   class="attachmentUrl"
                   target="_blank"
                   :href="personInfo.attachmentUrl"
-                >
-                  {{ personInfo.attachmentName }}
-                </a>
+                >{{
+                  personInfo.attachmentName
+                }}</a>
               </el-col>
             </el-row>
           </div>
@@ -665,8 +665,13 @@ export default {
       this.$refs.changeJobDialog.init('add', this.personInfo)
     },
     loopUpInterview() {
+      let params = {
+        personId: this.personInfo.personId,
+        interview: this.personInfo.interview
+      }
       this.$router.push({
-        path: '/personnel/candidate/registrationForm'
+        path: '/personnel/candidate/registrationForm',
+        query: params
       })
     },
     handleSend() {
@@ -777,12 +782,21 @@ export default {
         this.$router.push(
           '/personnel/editPerson?personId=' + this.personId + '&tagName=修改人员信息'
         )
-      } else if (command === 'toRegistrationForm') {
-        this.$router.push('/personnel/candidate/registrationForm')
+      } else if (command === 'toRegistrationForm' || command === 'checkInterview') {
+        this.loopUpInterview()
       } else if (command === 'arrange') {
         this.handleArrange(this.personInfo)
-      } else if (command === 'checkInterview') {
-        this.loopUpInterview()
+      } else if (command === 'InterviewEvaluation') {
+        let params = {
+          personId: this.personInfo.personId,
+          orgName: this.personInfo.orgName,
+          jobName: this.personInfo.jobName,
+          name: this.personInfo.name
+        }
+        this.$router.push({
+          path: '/personnel/candidate/interivewDetails',
+          query: params
+        })
       }
     },
     handleAcceptOffer() {

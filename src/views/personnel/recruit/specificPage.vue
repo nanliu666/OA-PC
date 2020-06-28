@@ -194,6 +194,12 @@ export default {
       this.getData()
     }
   },
+  mounted() {
+    // 当其他页面进入详情页面时 仅展示需求详情页面
+    if (!this.$route.query.status) {
+      this.activeName = 'recruitmentdemand'
+    }
+  },
   methods: {
     getData() {
       this.loading = true

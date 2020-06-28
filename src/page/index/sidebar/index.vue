@@ -3,7 +3,7 @@
     <!-- <logo /> -->
     <el-scrollbar style="height:100%">
       <div
-        v-if="validatenull(menu)"
+        v-if="validatenull(menu) && validatenull(menu.children)"
         class="avue-sidebar--tip"
       >
         {{ $t('menuTip') }}
@@ -16,7 +16,7 @@
         :collapse="keyCollapse"
       >
         <sidebar-item
-          v-for="item in menu"
+          v-for="item in menu.children"
           :key="item.menuId"
           :item="item"
           :props="website.menu.props"
