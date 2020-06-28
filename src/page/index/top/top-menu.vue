@@ -4,7 +4,6 @@
       v-loading="menuLoading"
       :default-active="activeIndex"
       mode="horizontal"
-      text-color="#333"
     >
       <el-menu-item
         key="0"
@@ -12,7 +11,7 @@
         @click.native="openHome(itemHome)"
       >
         <template slot="title">
-          <i :class="itemHome.source" />
+          <!-- <i :class="itemHome.source" /> -->
           <span>{{ generateTitle(itemHome) }}</span>
         </template>
       </el-menu-item>
@@ -23,10 +22,11 @@
           @click.native="openMenu(item)"
         >
           <template slot="title">
-            <i
+            <!-- <i
+              v-if="item.icon"
               :class="item.icon"
               style="padding-right: 5px;"
-            />
+            /> -->
             <span>{{ generateTitle(item) }}</span>
           </template>
         </el-menu-item>
@@ -43,8 +43,7 @@ export default {
   data() {
     return {
       itemHome: {
-        menuName: '工作台',
-        source: 'el-icon-menu'
+        menuName: '工作台'
       },
       activeIndex: '0'
     }

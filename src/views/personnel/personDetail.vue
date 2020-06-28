@@ -313,7 +313,7 @@
               >
                 恢复为候选人
               </el-button>
-              <el-dropdown @command="handleCommand">
+              <!-- <el-dropdown @command="handleCommand">
                 <el-button
                   size="medium"
                   style="margin-left: 16px"
@@ -322,11 +322,11 @@
                   <i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <!-- <el-dropdown-item command>
+                  <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                </el-dropdown-item>
                 </el-dropdown-menu>
-              </el-dropdown>
+              </el-dropdown> -->
             </template>
           </template>
         </div>
@@ -508,6 +508,24 @@
                 :span="8"
                 class="key"
               >
+                简历：
+              </el-col>
+              <el-col
+                :span="16"
+                class="value"
+              >
+                <a
+                  class="attachmentUrl"
+                  target="_blank"
+                  :href="personInfo.resumeUrl"
+                >
+                  {{ personInfo.name }}的简历
+                </a>
+              </el-col>
+              <el-col
+                :span="8"
+                class="key"
+              >
                 附件：
               </el-col>
               <el-col
@@ -516,6 +534,7 @@
               >
                 <a
                   class="attachmentUrl"
+                  target="_blank"
                   :href="personInfo.attachmentUrl"
                 >
                   {{ personInfo.attachmentName }}

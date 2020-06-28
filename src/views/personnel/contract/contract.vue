@@ -318,6 +318,11 @@ export default {
           width: 120
         },
         {
+          label: '合同签订日期',
+          prop: 'signDate',
+          width: 120
+        },
+        {
           label: '合同签订次数',
           prop: 'signNum',
           width: 120
@@ -402,6 +407,11 @@ export default {
         {
           label: '合同结束日期',
           prop: 'endContractDate',
+          width: 120
+        },
+        {
+          label: '合同签订日期',
+          prop: 'signDate',
           width: 120
         },
         {
@@ -491,6 +501,12 @@ export default {
           prop: 'endContractDate',
           width: 120
         },
+        {
+          label: '合同签订日期',
+          prop: 'signDate',
+          width: 120
+        },
+
         {
           label: '合同签订次数',
           prop: 'signNum',
