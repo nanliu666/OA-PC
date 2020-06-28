@@ -489,12 +489,22 @@ export default {
 // 代办事项
 .workArea-wrap {
   /deep/.el-tabs__item {
-    font-family: PingFangSC-Regular;
     font-size: 16px;
     color: #757c85;
+    height: 22px;
+    line-height: 22px;
+    margin-bottom: 8px;
+  }
+
+  /deep/.el-tabs__item:hover {
+    font-size: 16px;
+    color: #73b9ff;
+  }
+  /deep/.el-tabs__item:active {
+    font-size: 16px;
+    color: #115fd4;
   }
   /deep/.is-active {
-    font-family: PingFangSC-Semibold;
     font-size: 16px;
     color: #202940;
     font-weight: bold;
@@ -546,7 +556,7 @@ export default {
       margin-right: 12px;
       p {
         cursor: pointer;
-        font-family: PingFangSC-Regular;
+
         font-size: 14px;
         color: #13141a;
         line-height: 43px;
@@ -554,19 +564,17 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        margin: 0 20px 0 0px;
+        margin: 0 16px 0 0px;
       }
       span {
-        background: #ff8b8a;
-
-        border-radius: 4px;
-        font-family: PingFangSC-Medium;
-        font-size: 14px;
-        text-align: center;
-        color: #ffffff;
-        line-height: 26px;
-        padding: 3px 6px;
+        display: flex;
+        align-items: center;
         min-width: 63px;
+        justify-content: center;
+        background: #ff8b8a;
+        border-radius: 4px;
+        color: #ffffff;
+        width: 63px;
         height: 26px;
       }
     }
@@ -612,7 +620,6 @@ export default {
     min-width: 80px;
   }
   .detail {
-    font-family: PingFangSC-Regular;
     font-size: 14px;
     line-height: 43px;
     display: inline-block;

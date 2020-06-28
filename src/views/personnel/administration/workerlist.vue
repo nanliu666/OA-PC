@@ -296,9 +296,24 @@ export default {
   },
   methods: {
     getTableData(params = {}) {
-      this.decorator(params)
+      params.pageNo = this.page.currentPage
+      params.pageSize = this.page.size
+
+      if (params.search) {
+        params.search = params.search.trim()
+      }
+      if (params.orgs || params.orgs === '') {
+        params.orgs = [params.orgs]
+      }
+      if (params.jobs || params.jobs === '') {
+        params.jobs = [params.jobs]
+      }
+      if (params.probations || params.probations === '') {
+        params.probations = [params.probations]
+      }
       this.loading = true
-      getStaffList(params).then((res) => {
+      params = [params].filter((item) => item || item.beginEntryDate !== 'null')
+      getStaffList(...params).then((res) => {
         this.loading = false
         this.data = res.data.map((item) => ({ ...item, overdue: this.calBeyond(item.formalDate) }))
         this.page.total = res.totalNum
@@ -332,18 +347,18 @@ export default {
     decorator(params) {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
-      if (params.orgs) {
+
+      if (params.orgs || params.orgs === '') {
         params.orgs = [params.orgs]
       }
 
-      if (params.jobs) {
+      if (params.jobs || params.jobs === '') {
         params.jobs = [params.jobs]
       }
 
-      if (params.probations) {
+      if (params.probations || params.probations === '') {
         params.probations = [params.probations]
       }
-
       return params
     },
 

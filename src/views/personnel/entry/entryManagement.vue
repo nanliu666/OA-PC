@@ -106,40 +106,42 @@
         >
           <div class="handlerRow">
             <template v-if="status === '7'">
-              <el-button
-                type="text"
-                @click="confirmEntry(row)"
-              >
-                确认入职
-              </el-button>
-              <el-button
-                v-if="row.register === 0"
-                type="text"
-                @click="handleSend(row)"
-              >
-                发送入职登记表
-              </el-button>
-              <el-button
-                v-if="row.register === 1"
-                type="text"
-                @click="handleViewRegister(row)"
-              >
-                查看入职登记表
-              </el-button>
-              <el-dropdown @command="handleCommand($event, row)">
+              <div class="entryClass">
                 <el-button
                   type="text"
-                  style="margin-left: 10px"
+                  @click="confirmEntry(row)"
                 >
-                  <i class="el-icon-arrow-down el-icon-more" />
+                  确认入职
                 </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="getOutEntry">
-                    放弃入职
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command="edit">编辑</el-dropdown-item> -->
-                </el-dropdown-menu>
-              </el-dropdown>
+                <el-button
+                  v-if="row.register === 0"
+                  type="text"
+                  @click="handleSend(row)"
+                >
+                  发送入职登记表
+                </el-button>
+                <el-button
+                  v-if="row.register === 1"
+                  type="text"
+                  @click="handleViewRegister(row)"
+                >
+                  查看入职登记表
+                </el-button>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="getOutEntry">
+                      放弃入职
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command="edit">编辑</el-dropdown-item> -->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </template>
 
             <template v-if="status === '8'">
@@ -271,7 +273,7 @@ export default {
         highlightSelect: true,
         showIndexColumn: false,
         handlerColumn: {
-          width: 220
+          width: 240
         }
       },
       page: {
@@ -535,5 +537,35 @@ export default {
     flex: 1;
     text-align: left;
   }
+  .entryClass {
+    > .el-button--text {
+      text-align: center;
+      padding: 0 8px;
+      margin-left: 0px;
+      position: relative;
+      &::after {
+        content: '';
+        width: 1px;
+        height: 10px;
+        background-color: #e3e7e9;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+      }
+    }
+  }
+}
+
+.icon-basics-more-outlined {
+  color: #a1a7ae;
+}
+
+/deep/ .el-tabs__nav-wrap::after {
+  height: 1px;
+}
+
+/deep/ .el-tabs__active-bar {
+  height: 3px;
 }
 </style>

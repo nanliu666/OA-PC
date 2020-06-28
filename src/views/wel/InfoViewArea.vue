@@ -91,8 +91,12 @@
             @click="jumpToAddUser"
           >
             <div class="icon-box add">
-              +
+              <i class="icon-tips-plus-outlined" />
             </div>
+
+            <!-- <div class="icon-box add">
+							+
+						</div> -->
             <span>添加员工</span>
           </div>
         </div>
@@ -191,12 +195,10 @@ export default {
       height: 116px;
       width: 116px;
       border-radius: 100%;
-
-      position: relative;
-
       .icon-usercircle {
         font-size: 116px;
-        vertical-align: middle;
+        line-height: 116px;
+        // vertical-align: middle;
         color: #cfd3d6;
       }
     }
@@ -214,7 +216,7 @@ export default {
   .org-row {
     margin-top: 4px;
     :nth-child(2) {
-      padding: 0 7px;
+      margin: 0 4px;
       vertical-align: middle;
     }
     display: flex;
@@ -273,9 +275,12 @@ export default {
           text-align: center;
           width: 56px;
         }
-        i {
-          display: inline-block;
-          font-size: 36px;
+
+        span:hover {
+          color: #73b9ff;
+        }
+        span:active {
+          color: #115fd4;
         }
       }
     }
@@ -293,11 +298,16 @@ export default {
   width: 32px;
   height: 32px;
 }
+#icon-remind-bicolor {
+  color: #ffffff 30%;
+}
 .add {
   border: 1px dashed #e3e7e9;
   border-radius: 24px;
-  font-size: 24px;
   color: #a0a8ae;
+  .icon-tips-plus-outlined::before {
+    font-size: 16px;
+  }
 }
 
 // 工作概览
@@ -322,6 +332,7 @@ export default {
       .content-item {
         width: 56px;
         height: 95px;
+        cursor: pointer;
         .num-box {
           opacity: 0.8;
           font-family: DINAlternate-Bold;
@@ -343,6 +354,12 @@ export default {
           text-align: center;
           display: inline-block;
         }
+      }
+      .content-item:hover span {
+        color: #73b9ff;
+      }
+      .content-item:active span {
+        color: #115fd4;
       }
     }
   }
