@@ -296,9 +296,12 @@ export default {
   },
   methods: {
     getTableData(params = {}) {
-      params.search = params.search.trim()
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
+
+      if (params.search) {
+        params.search = params.search.trim()
+      }
       if (params.orgs || params.orgs === '') {
         params.orgs = [params.orgs]
       }
