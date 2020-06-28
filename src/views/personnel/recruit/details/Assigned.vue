@@ -353,16 +353,10 @@ export default {
 
 /deep/ .textForm {
   margin-top: 10px;
-  .el-input__inner {
-    width: 100% !important;
-  }
-
+  .el-input__inner,
+  .el-input-number,
   .el-select {
     width: 100% !important;
-  }
-
-  .el-input-number {
-    width: 100% !important ;
   }
 }
 </style>
