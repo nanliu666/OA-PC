@@ -335,7 +335,12 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return row.status === 'UnFinished' && moment().diff(moment(row.endDate)) > 0
+      return (
+        row.status === 'UnFinished' &&
+        moment()
+          .startOf('day')
+          .diff(moment(row.endDate)) > 0
+      )
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
