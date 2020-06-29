@@ -677,6 +677,7 @@ export default {
   color: #a0a8ae;
   font-size: 16px !important;
   cursor: pointer;
+  margin: 0 12px;
 }
 
 .checkColumn {
