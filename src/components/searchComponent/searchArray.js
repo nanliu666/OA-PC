@@ -145,14 +145,10 @@ export default async () => {
             if (item.loading || item.noMore) return
             item.loading = true
             getOrgPosition({ pageNo: item.pageNo, pageSize: 100 }).then((res) => {
-              if (res.length > 0) {
-                item.options.push(...res)
-                item.pageNo += 1
-                item.loading = false
-              } else {
-                item.noMore = true
-                item.loading = false
-              }
+              item.options.push(...res)
+              item.pageNo += 1
+              item.loading = false
+              item.noMore = true
             })
           }
         },
