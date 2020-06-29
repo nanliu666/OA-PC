@@ -24,7 +24,7 @@
       :gutter="20"
     >
       <el-col :span="10">
-        原定试用期：{{ oldProbation }}
+        原定试用期：{{ oldProbation }} 个月
       </el-col>
       <el-col :span="10">
         原定计划转正日期：{{ oldProbationDate }}

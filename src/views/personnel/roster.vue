@@ -295,12 +295,7 @@ export default {
         layout: 'prev, pager, next, sizes, jumper,total'
       },
       tableConfig: {
-        showHandler: false,
-        // enableMultiSelect: true,
-        enablePagination: true,
-        uniqueKey: 'personId',
-        highlightSelect: true,
-        showIndexColumn: false
+        showHandler: false
       },
       loading: false,
       searchParams: {},

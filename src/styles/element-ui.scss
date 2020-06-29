@@ -126,3 +126,68 @@ table tr {
     padding-left: 24px;
   }
 }
+
+.el-pager li {
+  padding: 0 4px;
+  margin: 0 4px;
+  font-size: 13px;
+  min-width: 26px;
+  height: 26px;
+  line-height: 26px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  text-align: center;
+  border: 1px solid #c6cbce;
+  border-radius: 4px;
+}
+.el-pager li.active + li {
+  border-left: 1px solid #c6cbce;
+}
+.el-pager li.active {
+  border: 1px solid #207efa;
+}
+
+.el-pagination {
+  .el-pagination__total {
+    color: #757c85;
+  }
+  color: #757c85;
+  button {
+    border: 1px solid #c6cbce;
+    border-radius: 4px;
+    min-width: 26px;
+    height: 26px;
+    line-height: 26px;
+    padding: 0;
+    margin: 0 4px;
+  }
+  .btn-next {
+    padding-left: 0;
+  }
+  .btn-prev {
+    padding-right: 0;
+  }
+  .el-input--mini .el-input__inner {
+    height: 26px;
+    line-height: 26px;
+    font-size: 12px;
+  }
+  .el-pagination__jump {
+    margin-left: 6px;
+    color: #757c85;
+  }
+  .el-pagination__editor {
+    line-height: 26px;
+    height: 26px;
+  }
+  .el-pagination__editor.el-input .el-input__inner {
+    line-height: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+}
+.el-pagination button,
+.el-pagination span:not([class*='suffix']) {
+  height: 26px;
+  line-height: 26px;
+}
