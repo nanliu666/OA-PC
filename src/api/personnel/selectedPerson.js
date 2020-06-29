@@ -119,3 +119,9 @@ export const getpersonInfo = (params) => get('/helper/v1/person/info', params)
  *@params params
  * */
 export const putpersonInfo = (params) => put('/helper/v1/person/info', params)
+/***
+ *
+ * @author guanfenda
+ * @desc 人员详情查询接口 /user/v1/person/info
+ * */
+export const getPersonInfo = (params) => get('/user/v1/person/info', params)

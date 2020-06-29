@@ -258,6 +258,8 @@ export default {
 <style lang="scss" scoped>
 /deep/ .el-collapse-item__header {
   position: relative;
+  height: 42px;
+  line-height: 42px;
 }
 /deep/ .group-header {
   .el-collapse-item__header {
@@ -268,18 +270,23 @@ export default {
     border-top: 0;
     border-bottom: 0;
   }
+  .el-collapse-item__arrow {
+    position: absolute;
+    margin-left: 24px;
+  }
 }
-/deep/ .el-collapse-item__arrow {
-  position: absolute;
-  margin-left: 24px;
-}
+
 /deep/ .category-header {
   .el-collapse-item__header {
     background: #fff;
   }
   .el-collapse-item__content {
     border: 0;
-    padding-left: 56px;
+    padding-left: 101px;
+  }
+  .el-collapse-item__arrow {
+    position: absolute;
+    margin-left: 16px;
   }
 }
 
@@ -303,7 +310,7 @@ export default {
     height: 32px;
     line-height: 32px;
     width: 100%;
-    padding-left: 56px;
+    padding-left: 61px;
     .name {
       width: 100px;
     }
@@ -317,9 +324,9 @@ export default {
   }
 }
 
-.group-content {
+/deep/ .group-content .el-collapse-item__header {
   min-height: 36px;
-  padding-left: 48px;
+  padding-left: 40px;
 }
 .category-title {
   display: flex;
@@ -327,7 +334,7 @@ export default {
   height: 32px;
   line-height: 32px;
   width: 100%;
-  padding-left: 56px;
+  padding-left: 45px;
   .buttons__wrap {
     display: flex;
     padding-right: 24px;

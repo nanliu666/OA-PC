@@ -24,11 +24,40 @@
             <el-button
               type="text"
               class="refresh"
-              style="font-size: 16px"
               icon="icon-basics-refresh-outlined"
               size="medium"
               @click="getTableData"
             />
+
+            <el-popover
+              placement="bottom"
+              width="40"
+              trigger="click"
+              class="refresh"
+            >
+              <div class="checkColumn">
+                <el-checkbox-group
+                  v-model="checkColumn"
+                  @change="columnChange"
+                >
+                  <el-checkbox
+                    v-for="item in originColumn"
+                    :key="item.prop"
+                    :label="item.prop"
+                    :disabled="item.prop === 'id' || item.prop === 'jobName'"
+                    class="originColumn"
+                  >
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <el-button
+                slot="reference"
+                icon="icon-basics-setup-outlined"
+                size="medium"
+                type="text"
+              />
+            </el-popover>
           </div>
         </div>
       </template>
@@ -96,6 +125,59 @@ import { mapGetters } from 'vuex'
 import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+
+const column = [
+  {
+    label: '需求编号',
+    prop: 'id',
+    slot: true,
+    minWidth: '120px'
+  },
+  {
+    label: '职位',
+    prop: 'jobName',
+    minWidth: '120px'
+  },
+  {
+    label: '岗位',
+    prop: 'positionName',
+    minWidth: '120px'
+  },
+  {
+    label: '用人部门',
+    prop: 'orgName',
+    minWidth: '120px'
+  },
+  {
+    label: '工作性质',
+    prop: 'workProperty',
+    slot: true
+  },
+  {
+    label: '紧急程度',
+    prop: 'emerType',
+    slot: true
+  },
+  {
+    label: '需求人数',
+    prop: 'needNum'
+  },
+  {
+    label: '已入职',
+    prop: 'entryNum',
+    width: '100'
+  },
+  {
+    label: '招聘进度',
+    prop: 'accuracy',
+    minWidth: '120px',
+    slot: true
+  },
+  {
+    label: '候选人数',
+    prop: 'candidateNum'
+  }
+]
 export default {
   name: 'DetailsList',
   components: {
@@ -103,6 +185,19 @@ export default {
   },
   data() {
     return {
+      checkColumn: [
+        'id',
+        'jobName',
+        'orgName',
+        'positionName',
+        'emerType',
+        'status',
+        'needNum',
+        'entryNum',
+        'accuracy',
+        'workProperty',
+        'candidateNum'
+      ],
       recruit: false,
       change: true,
       loading: false,
@@ -189,58 +284,7 @@ export default {
         ]
       },
       data: [],
-      columns: [
-        {
-          label: '需求编号',
-          prop: 'id',
-          slot: true,
-          minWidth: '120px'
-        },
-        {
-          label: '职位',
-          prop: 'jobName',
-          minWidth: '120px'
-        },
-        {
-          label: '岗位',
-          prop: 'positionName',
-          minWidth: '120px'
-        },
-        {
-          label: '用人部门',
-          prop: 'orgName',
-          minWidth: '120px'
-        },
-        {
-          label: '工作性质',
-          prop: 'workProperty',
-          slot: true
-        },
-        {
-          label: '紧急程度',
-          prop: 'emerType',
-          slot: true
-        },
-        {
-          label: '需求人数',
-          prop: 'needNum'
-        },
-        {
-          label: '已入职',
-          prop: 'entryNum',
-          width: '100'
-        },
-        {
-          label: '招聘进度',
-          prop: 'accuracy',
-          minWidth: '120px',
-          slot: true
-        },
-        {
-          label: '候选人数',
-          prop: 'candidateNum'
-        }
-      ],
+      columns: column,
       tableConfig: {
         showHandler: true,
         showIndexColumn: false,
@@ -268,7 +312,8 @@ export default {
       ],
       workProperty: {},
       EmerType: {},
-      searchParams: {}
+      searchParams: {},
+      originColumn: column
     }
   },
   computed: {
@@ -298,6 +343,11 @@ export default {
     this.getDictionarygroup()
   },
   methods: {
+    columnChange() {
+      this.columns = column.filter((item) => {
+        return this.checkColumn.indexOf(item.prop) > -1
+      })
+    },
     getEducationalLevel(type) {
       let typeWord
       this.getLevel.forEach((item) => {
@@ -384,12 +434,17 @@ export default {
 /deep/ .resetEdge {
   position: absolute;
   right: 59px;
-  .el-button--text {
-    color: #a0a8ae;
-  }
 }
 
-.refresh {
+/deep/.refresh i {
   color: #a0a8ae;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 12px;
+}
+
+.checkColumn {
+  height: 200px;
+  overflow: scroll;
 }
 </style>

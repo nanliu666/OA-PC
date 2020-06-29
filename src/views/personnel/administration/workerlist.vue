@@ -30,7 +30,6 @@
               <el-button
                 type="text"
                 class="refresh"
-                style="font-size: 16px"
                 icon="icon-basics-refresh-outlined"
                 size="medium"
                 @click="getTableData"
@@ -298,22 +297,21 @@ export default {
     getTableData(params = {}) {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
-
-      if (params.search) {
-        params.search = params.search.trim()
-      }
-      if (params.orgs || params.orgs === '') {
-        params.orgs = [params.orgs]
-      }
-      if (params.jobs || params.jobs === '') {
-        params.jobs = [params.jobs]
-      }
-      if (params.probations || params.probations === '') {
-        params.probations = [params.probations]
-      }
       this.loading = true
-      params = [params].filter((item) => item || item.beginEntryDate !== 'null')
-      getStaffList(...params).then((res) => {
+      let _params = JSON.parse(JSON.stringify(params))
+      // 根据数据是否为空清除数据
+      for (const key in _params) {
+        if (_params.hasOwnProperty(key)) if (_params[key] === '') delete _params[key]
+      }
+
+      // 将数据包裹成接口需要的数据格式
+      if (_params.orgs) _params.orgs = [_params.orgs]
+
+      if (_params.jobs) _params.jobs = [_params.jobs]
+
+      if (_params.probations) _params.probations = [_params.probations]
+
+      getStaffList(_params).then((res) => {
         this.loading = false
         this.data = res.data.map((item) => ({ ...item, overdue: this.calBeyond(item.formalDate) }))
         this.page.total = res.totalNum
@@ -348,17 +346,6 @@ export default {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
 
-      if (params.orgs || params.orgs === '') {
-        params.orgs = [params.orgs]
-      }
-
-      if (params.jobs || params.jobs === '') {
-        params.jobs = [params.jobs]
-      }
-
-      if (params.probations || params.probations === '') {
-        params.probations = [params.probations]
-      }
       return params
     },
 
@@ -374,6 +361,9 @@ export default {
       return { Try: '试用期', Formal: '正式', Leaved: '已离职', WaitLeave: '待离职' }[status]
     },
     calApprNo(apprNo) {
+      if (apprNo === '未申请') {
+        return '未申请'
+      }
       return { Approve: '审批中', Pass: '正式', Reject: '已拒绝', Cancel: '已撤回' }[apprNo]
     },
     calBeyond(formalDate) {
@@ -414,8 +404,10 @@ export default {
   font-size: 14px;
   border-radius: 4px;
 }
-
-.refresh {
+/deep/.refresh i {
   color: #a0a8ae;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 12px;
 }
 </style>
