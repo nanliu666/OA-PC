@@ -172,7 +172,8 @@ export default {
       ).then((res) => {
         if (res.includes(false)) return
         let params = {
-          ...this.infoForm
+          ...this.infoForm,
+          userId: this.$route.query.userId
         }
         this.loading = true
         if (this.infoForm.id) {
