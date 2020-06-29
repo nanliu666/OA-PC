@@ -11,14 +11,14 @@
       <div class="apply-info-wrap">
         <div class="title">
           <div>{{ ApplyInfo.userName }}提交的{{ title }}申请</div>
-          <el-button
+          <!-- <el-button
             v-if="isReapply"
             type="primary"
             size="medium"
             @click="goToReapply"
           >
             重新申请
-          </el-button>
+          </el-button> -->
         </div>
         <div class="info">
           <div class="num-box">
