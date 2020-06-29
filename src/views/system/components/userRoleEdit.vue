@@ -6,6 +6,7 @@
       width="1000px"
       append-to-body
       :before-close="close"
+      custom-class="user-role-edit-dialog"
     >
       <div class="title-wr">
         <div class="title">
@@ -270,39 +271,51 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.el-dialog__body {
-  padding-top: 10px;
-}
-.title-wr {
-  padding-bottom: 10px;
-  .title {
-    line-height: 30px;
+<style lang="scss" scoped>
+/deep/ .user-role-edit-dialog {
+  .el-checkbox.is-disabled {
+    display: none;
   }
-}
-.content-wr {
-  display: flex;
-  border: 1px solid #f2f2f2;
+  .el-dialog__body {
+    padding: 24px;
+    padding-top: 10px;
+  }
+  .el-dialog__footer {
+    padding: 0 24px 24px;
+  }
+  .el-dialog__header {
+    padding: 24px 24px 10px;
+  }
+  .title-wr {
+    padding-bottom: 10px;
+    .title {
+      line-height: 30px;
+    }
+  }
+  .content-wr {
+    display: flex;
+    border: 1px solid #f2f2f2;
 
-  .left {
-    width: 60%;
-    padding: 8px;
-    padding-right: 20px;
-    .title {
-      line-height: 30px;
+    .left {
+      width: 60%;
+      padding: 8px;
+      padding-right: 20px;
+      .title {
+        line-height: 30px;
+      }
     }
-  }
-  .right {
-    border-left: 1px solid #f2f2f2;
-    width: 40%;
-    padding: 8px;
-    padding-left: 20px;
-    .title {
-      line-height: 30px;
-    }
-    .el-tag {
-      margin-right: 12px;
-      margin-bottom: 8px;
+    .right {
+      border-left: 1px solid #f2f2f2;
+      width: 40%;
+      padding: 8px;
+      padding-left: 20px;
+      .title {
+        line-height: 30px;
+      }
+      .el-tag {
+        margin-right: 12px;
+        margin-bottom: 8px;
+      }
     }
   }
 }
