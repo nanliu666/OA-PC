@@ -258,7 +258,8 @@ import {
   getposition,
   postOfferApply,
   getRecruitmentDetail,
-  getOfferApply
+  getOfferApply,
+  getPersonInfo
 } from '@/api/personnel/selectedPerson'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { CodeToText } from 'element-china-area-data'
@@ -358,15 +359,13 @@ export default {
     }
   },
   async mounted() {
-    let sex = parseInt(this.$route.query.sex)
     this.personId = this.$route.query.personId
     this.recruitmentId = this.$route.query.recruitmentId
     this.infoForm = {
       ...this.infoForm,
-      ...this.$route.query,
-      sex
+      ...this.$route.query
     }
-    // personId
+    this.getPersonInfo()
     this.getCompany()
     this.getWorkAddress()
     this.getJob()
@@ -386,6 +385,27 @@ export default {
     this.labour.find((it) => it.prop === 'contractEndDate').rules.push(this.rule)
   },
   methods: {
+    /***
+     *
+     * @author guanfenda
+     * @desc 获取永恒信息
+     *
+     * */
+    getPersonInfo() {
+      let params = {
+        personId: this.$route.query.personId
+      }
+      getPersonInfo(params).then((res) => {
+        let { name, sex, phonenum, email } = { ...res }
+        this.infoForm = {
+          ...this.infoForm,
+          name,
+          sex,
+          phonenum,
+          email
+        }
+      })
+    },
     /**
      *  @author guanfenda
      *  @desc 获取详情
