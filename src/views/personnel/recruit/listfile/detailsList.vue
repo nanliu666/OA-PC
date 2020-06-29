@@ -142,6 +142,10 @@ const column = [
     minWidth: '120px'
   },
   {
+    label: '用人部门',
+    prop: 'orgName'
+  },
+  {
     label: '紧急程度',
     prop: 'emerType'
   },
@@ -182,7 +186,6 @@ export default {
         'emerType',
         'status',
         'needNum',
-        'emerType',
         'entryNum',
         'candidateNum'
       ],
@@ -383,7 +386,7 @@ export default {
   },
   methods: {
     columnChange() {
-      this.columns = column.filter((item) => {
+      this.columns = this.columns.filter((item) => {
         return this.checkColumn.indexOf(item.prop) > -1
       })
     },
