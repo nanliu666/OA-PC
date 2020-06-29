@@ -22,7 +22,7 @@
           </div>
           <div class="resetEdge">
             <el-button
-              icon="el-icon-refresh-right"
+              icon="icon-basics-refresh-outlined"
               size="medium"
               class="topBtn"
               type="text"
@@ -52,7 +52,7 @@
               </div>
               <el-button
                 slot="reference"
-                icon="el-icon-setting"
+                icon="icon-basics-setup-outlined"
                 size="medium"
                 class="topBtn"
                 type="text"
