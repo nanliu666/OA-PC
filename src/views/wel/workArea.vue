@@ -29,9 +29,7 @@
                       <p @click="jumpToDetail(item.type, item.bizId)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
-                      <span
-                        v-if="ifShowWarn(item.createTime)"
-                      >滞留{{ getWarnText(item.startDate) }}天</span>
+                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
                     </div>
                     <div class="time-box">
                       {{ item.createTime | filterDate }}
