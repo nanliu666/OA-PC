@@ -173,8 +173,11 @@ export default {
     assignedCount: function() {
       return this.dynamicValidateForm.users.reduce((total, item) => total + item.taskNum, 0)
     },
+    getIntoCount: function() {
+      return this.dynamicValidateForm.users.reduce((total, item) => total + item.entryNum, 0)
+    },
     noAssignedCount() {
-      return this.Totalnumberpeople - this.assignedCount
+      return this.Totalnumberpeople - (this.assignedCount + this.getIntoCount)
     }
   },
   data() {
@@ -214,10 +217,9 @@ export default {
       this.handleClose()
     },
     init(row) {
-      let { id, needNum, jumpnot } = row
-      this.jumpnot = jumpnot
-      this.recruitmentId = id
-      this.Totalnumberpeople = needNum
+      this.jumpnot = row.jumpnot
+      this.recruitmentId = row.id
+      this.Totalnumberpeople = row.needNum
       this.$emit('update:visible', true)
       queryDistribution({ recruitmentId: row.id }).then((res) => {
         this.dynamicValidateForm.users = res.map((item) => ({
@@ -283,6 +285,9 @@ export default {
           creatId: createUniqueID(),
           userId: '',
           taskNum: 0,
+          entryNum: 0,
+          olditem: 0,
+          candidateNum: 0,
           disabled: true,
           Rendering: 'Rendering',
           options: []
