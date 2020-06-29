@@ -53,7 +53,7 @@
               </div>
               <el-button
                 slot="reference"
-                icon="el-icon-setting"
+                icon="icon-basics-setup-outlined"
                 size="medium"
                 class="topBtn"
                 type="text"

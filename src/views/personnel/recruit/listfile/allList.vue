@@ -35,7 +35,7 @@
               placement="bottom"
               width="40"
               trigger="click"
-              style="margin:0 12px"
+              style="margin:0 12px ,font-size: 16px "
             >
               <div class="checkColumn">
                 <el-checkbox-group
@@ -55,7 +55,7 @@
               </div>
               <el-button
                 slot="reference"
-                icon="el-icon-setting"
+                icon="icon-basics-setup-outlined"
                 size="medium"
                 class="topBtn"
                 type="text"
