@@ -1100,7 +1100,7 @@ export default {
       loading: false,
       btnloading: false,
       // 头像配置
-      size: 'medium',
+      size: 'small',
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
     }
   },
@@ -1677,14 +1677,17 @@ export default {
     .img-box {
       width: 63px;
       height: 63px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       // img {
       //   width: 48px;
       //   height: 48px;
       //   border-radius: 100%;
       // }
       .el-avatar {
-        width: 63px;
-        height: 63px;
+        width: 48px;
+        height: 48px;
       }
     }
     .detail-box {
