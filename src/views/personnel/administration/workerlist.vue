@@ -30,7 +30,6 @@
               <el-button
                 type="text"
                 class="refresh"
-                style="font-size: 16px"
                 icon="icon-basics-refresh-outlined"
                 size="medium"
                 @click="getTableData"
@@ -405,8 +404,10 @@ export default {
   font-size: 14px;
   border-radius: 4px;
 }
-
-.refresh {
+/deep/.refresh i {
   color: #a0a8ae;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 12px;
 }
 </style>
