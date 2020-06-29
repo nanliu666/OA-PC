@@ -98,9 +98,10 @@
             </el-tag>
           </template>
           <!-- 操作列 -->
-          <template
+          <div
             slot="handler"
             slot-scope="{ row }"
+            class="handel-column"
           >
             <el-button
               v-if="isWaitLeave && row.approveStatus === 'Pass' && !row.leaveDate"
@@ -126,23 +127,27 @@
             >
               调整离职信息
             </el-button>
+            <!-- v-if="isWaitLeave && !row.leaveDate" -->
             <el-dropdown
-              v-if="isWaitLeave && !row.leaveDate"
+              v-if="isWaitLeave"
               @command="handleCommand($event, row.userId)"
             >
-              <el-button
-                type="text"
-                style="margin-left: 10px"
-              >
-                <i class="el-icon-arrow-down el-icon-more" />
-              </el-button>
+              <!-- <el-button type="text" style="margin-left: 10px"> -->
+              <i
+                class="el-icon-arrow-down iconfont icon-basics-more-outlined"
+                style="cursor: pointer;"
+              />
+              <!-- </el-button> -->
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="giveLeave">
+                <el-dropdown-item
+                  v-if="!row.leaveDate"
+                  command="giveLeave"
+                >
                   放弃离职
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-          </template>
+          </div>
           <!-- 离职日期 -->
           <template
             slot="leaveDate"
@@ -624,5 +629,27 @@ export default {
   font-size: 16px;
   line-height: 40px;
   cursor: pointer;
+}
+
+// 操作列
+/deep/ .handel-column {
+  display: flex;
+  justify-content: flex-end;
+  > .el-button--text {
+    text-align: center;
+    padding: 0 8px;
+    margin-left: 0px;
+    position: relative;
+    &::after {
+      content: '';
+      width: 1px;
+      height: 10px;
+      background-color: #e3e7e9;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+  }
 }
 </style>

@@ -11,14 +11,14 @@
       <div class="apply-info-wrap">
         <div class="title">
           <div>{{ ApplyInfo.userName }}提交的{{ title }}申请</div>
-          <el-button
+          <!-- <el-button
             v-if="isReapply"
             type="primary"
             size="medium"
             @click="goToReapply"
           >
             重新申请
-          </el-button>
+          </el-button> -->
         </div>
         <div class="info">
           <div class="num-box">
@@ -802,10 +802,7 @@
                       src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
                       alt=""
                     > -->
-                    <el-avatar
-                      :size="size"
-                      :src="circleUrl"
-                    />
+                    <el-avatar :src="circleUrl" />
                   </div>
                   <div class="detail-box">
                     <div>
@@ -862,10 +859,7 @@
                       src="http://b-ssl.duitang.com/uploads/item/201707/10/20170710210234_y3Kf5.jpeg"
                       alt=""
                     > -->
-                    <el-avatar
-                      :size="size"
-                      :src="circleUrl"
-                    />
+                    <el-avatar :src="circleUrl" />
                   </div>
                   <div class="detail-box">
                     <div>
