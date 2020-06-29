@@ -30,6 +30,37 @@
               size="medium"
               @click="getTableData"
             />
+
+            <el-popover
+              placement="bottom"
+              width="40"
+              trigger="click"
+              style="margin:0 12px ,font-size: 16px "
+            >
+              <div class="checkColumn">
+                <el-checkbox-group
+                  v-model="checkColumn"
+                  @change="columnChange"
+                >
+                  <el-checkbox
+                    v-for="item in originColumn"
+                    :key="item.prop"
+                    :label="item.prop"
+                    :disabled="item.prop === 'id' || item.prop === 'jobName'"
+                    class="originColumn"
+                  >
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <el-button
+                slot="reference"
+                icon="icon-basics-setup-outlined"
+                size="medium"
+                class="topBtn"
+                type="text"
+              />
+            </el-popover>
           </div>
         </div>
       </template>
@@ -197,6 +228,48 @@ import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 import Again from '@/views/personnel/recruit/details/again'
 import Assigned from '@/views/personnel/recruit/details/Assigned'
 import ClaLabel from '@/views/personnel/recruit/components/claLabel'
+const column = [
+  {
+    label: '需求编号',
+    prop: 'id'
+  },
+  {
+    label: '职位',
+    prop: 'jobName',
+    minWidth: '120px'
+  },
+  {
+    label: '岗位',
+    prop: 'positionName',
+    minWidth: '120px'
+  },
+  {
+    label: '紧急程度',
+    prop: 'emerType'
+  },
+  {
+    label: '需求状态',
+    prop: 'status'
+  },
+  {
+    label: '需求人数',
+    prop: 'needNum'
+  },
+
+  {
+    label: '已入职',
+    prop: 'entryNum'
+  },
+  {
+    label: '招聘进度',
+    prop: 'accuracy'
+  },
+  {
+    label: '候选人数',
+    prop: 'candidateNum'
+  }
+]
+
 export default {
   name: 'AllList',
   components: {
@@ -207,6 +280,17 @@ export default {
   },
   data() {
     return {
+      checkColumn: [
+        'id',
+        'jobName',
+        'orgName',
+        'positionName',
+        'emerType',
+        'status',
+        'needNum',
+        'emerType',
+        'entryNum'
+      ],
       activeName: 'inrecruitment',
       loading: false,
       searchConfig: {
@@ -384,7 +468,8 @@ export default {
       WorkYear: [],
       getLevel: [],
       management: [],
-      searchParams: {}
+      searchParams: {},
+      originColumn: column
     }
   },
   computed: {
@@ -531,6 +616,11 @@ export default {
       } else {
         return (row.percentage = claAccuracy(row.needNum, row.entryNum))
       }
+    },
+    columnChange() {
+      this.columns = column.filter((item) => {
+        return this.checkColumn.indexOf(item.prop) > -1
+      })
     }
   }
 }
@@ -587,5 +677,11 @@ export default {
   color: #a0a8ae;
   font-size: 16px !important;
   cursor: pointer;
+  margin: 0 12px;
+}
+
+.checkColumn {
+  height: 200px;
+  overflow: scroll;
 }
 </style>

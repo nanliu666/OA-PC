@@ -6,6 +6,7 @@
         :loading="loading"
         :data="data"
         :columns="columns"
+        :config="tableConfig"
       >
         <template
           slot="nodeData"
@@ -84,7 +85,11 @@ export default {
         }
       ],
       nodeData: null,
-      createAgain: false
+      createAgain: false,
+      tableConfig: {
+        showIndexColumn: false,
+        enableMultiSelect: false
+      }
     }
   },
   computed: {

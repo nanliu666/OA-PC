@@ -76,6 +76,8 @@
                   v-model="user.userId"
                   v-loading="user.loading"
                   placeholder="请选择"
+                  no-data-text="加载中...."
+                  filterable
                   @visible-change="
                     (isBoolean) => {
                       requeUserList(user, isBoolean)
@@ -152,11 +154,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { taskDistribution } from '@/api/personnel/recruitment'
+import { taskDistribution, getFormal } from '@/api/personnel/recruitment'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { getUserWorkList } from '@/api/org/org'
 import { createUniqueID } from '@/util/util'
-import { getOrgUserList } from '@/api/system/user'
 export default {
   name: 'Again',
   props: {
@@ -227,12 +228,11 @@ export default {
     },
     init(row) {
       this.list = row
-      let { id, entryNum, needNum, jumpnot } = row
-      this.jumpnot = jumpnot
-      this.recruitmentId = id
-      this.Totalnumberpeople = needNum
-      this.Assigned = entryNum
-      this.Numberofpeople = needNum - entryNum
+      this.jumpnot = row.jumpnot
+      this.recruitmentId = row.id
+      this.Totalnumberpeople = row.needNum
+      this.Assigned = row.entryNum
+      this.Numberofpeople = row.needNum - row.entryNum
       this.$emit('update:visible', true)
       getStaffBasicInfo({ userId: this.userId }).then((res) => {
         this.orgId = res.orgId
@@ -258,7 +258,7 @@ export default {
     requeUserList(page, isBoolean) {
       if (isBoolean) {
         page.loading = true
-        getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId })
+        getFormal({ pageNo: 1, pageSize: 15, orgId: this.orgId })
           .then((res) => {
             page.loading = false
             page.options = res.data.filter(
@@ -299,7 +299,6 @@ export default {
     },
     onSubmitted(users) {
       let accumulation = this.calWhetherBeyond()
-      debugger
       if (accumulation === this.Totalnumberpeople) {
         taskDistribution({
           recruitmentId: this.recruitmentId,

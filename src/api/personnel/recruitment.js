@@ -132,3 +132,9 @@ export const getApprove = (params) => {
 export const getChange = (params) => {
   return post('/user/v1/recruitment/change/num', { ...params })
 }
+
+/************************** 查询组织直属部门人员 ***************************/
+
+export const getFormal = (params) => {
+  return get('/org/v1/org/under/user', params)
+}

@@ -2,7 +2,7 @@
   <el-dialog
     title="重新分配招聘需求"
     :visible="visible"
-    width="1200px"
+    width="1200"
     :modal-append-to-body="false"
     @close="handleClose"
   >
@@ -63,6 +63,8 @@
               v-model="user.userId"
               v-loading="user.loading"
               placeholder="请选择"
+              no-data-text="加载中...."
+              filterable
               @visible-change="
                 (isBoolean) => {
                   requeUserList(user, isBoolean)
@@ -155,10 +157,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getStaffBasicInfo } from '@/api/personalInfo'
-import { queryDistribution, putDistribution } from '@/api/personnel/recruitment'
+import { queryDistribution, putDistribution, getFormal } from '@/api/personnel/recruitment'
 import { getUserWorkList } from '@/api/org/org'
 import { createUniqueID } from '@/util/util'
-import { getOrgUserList } from '@/api/system/user'
 export default {
   name: 'Assigned',
   props: {
@@ -172,8 +173,11 @@ export default {
     assignedCount: function() {
       return this.dynamicValidateForm.users.reduce((total, item) => total + item.taskNum, 0)
     },
+    getIntoCount: function() {
+      return this.dynamicValidateForm.users.reduce((total, item) => total + item.entryNum, 0)
+    },
     noAssignedCount() {
-      return this.Totalnumberpeople - this.assignedCount
+      return this.Totalnumberpeople - (this.assignedCount + this.getIntoCount)
     }
   },
   data() {
@@ -213,10 +217,9 @@ export default {
       this.handleClose()
     },
     init(row) {
-      let { id, needNum, jumpnot } = row
-      this.jumpnot = jumpnot
-      this.recruitmentId = id
-      this.Totalnumberpeople = needNum
+      this.jumpnot = row.jumpnot
+      this.recruitmentId = row.id
+      this.Totalnumberpeople = row.needNum
       this.$emit('update:visible', true)
       queryDistribution({ recruitmentId: row.id }).then((res) => {
         this.dynamicValidateForm.users = res.map((item) => ({
@@ -238,7 +241,7 @@ export default {
       if (isBoolean) {
         if (page.options) {
           page.loading = true
-          getOrgUserList({ pageNo: 1, pageSize: 15, orgId: this.orgId })
+          getFormal({ pageNo: 1, pageSize: 15, orgId: this.orgId })
             .then((res) => {
               page.options = res.data.filter(
                 (option) =>
@@ -282,6 +285,9 @@ export default {
           creatId: createUniqueID(),
           userId: '',
           taskNum: 0,
+          entryNum: 0,
+          olditem: 0,
+          candidateNum: 0,
           disabled: true,
           Rendering: 'Rendering',
           options: []
@@ -338,14 +344,9 @@ export default {
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #ccc;
 }
-
 /deep/ .el-dialog__body {
   padding: 30px 35px;
 }
-.textForm {
-  margin-top: 10px;
-}
-
 #assigned {
   color: #1989fa;
 }
@@ -356,11 +357,12 @@ export default {
   font-weight: 600;
 }
 
-/deep/ .el-input__inner {
-  width: 100% !important;
-}
-
-/deep/ .el-select {
-  width: 100% !important;
+/deep/ .textForm {
+  margin-top: 10px;
+  .el-input__inner,
+  .el-input-number,
+  .el-select {
+    width: 100% !important;
+  }
 }
 </style>

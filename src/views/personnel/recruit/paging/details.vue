@@ -92,16 +92,16 @@
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="薪酬范围">
-                  <span class="distance">
-                    ￥{{ personnel.minSalary }} ~ ￥ {{ personnel.maxSalary }}</span>
+                <el-form-item label="紧急程度">
+                  <span class="distance">{{ calEmerType(personnel.emerType) }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="10">
-                <el-form-item label="工作性质">
-                  <span class="distance">{{ calWorkProperty(personnel.workProperty) }}</span>
+                <el-form-item label="薪酬范围">
+                  <span class="distance">
+                    ￥{{ personnel.minSalary }} ~ ￥ {{ personnel.maxSalary }}</span>
                 </el-form-item>
               </el-col>
               <el-col
@@ -180,7 +180,8 @@ export default {
       workProperty: [],
       workYear: [],
       reason: [],
-      educationalLevel: []
+      educationalLevel: [],
+      emerType: []
     }
   },
   watch: {
