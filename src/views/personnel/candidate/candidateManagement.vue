@@ -1050,11 +1050,7 @@ export default {
         path: '/personnel/candidate/apply',
         query: {
           personId: row.personId,
-          name: row.name,
-          sex: row.sex,
           applyId: row.applyId,
-          email: row.email,
-          phonenum: row.phonenum,
           recruitmentId: row.recruitmentId
         }
       })

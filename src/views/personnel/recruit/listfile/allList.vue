@@ -233,13 +233,11 @@ const column = [
   },
   {
     label: '职位',
-    prop: 'jobName',
-    minWidth: '120px'
+    prop: 'jobName'
   },
   {
     label: '岗位',
-    prop: 'positionName',
-    minWidth: '120px'
+    prop: 'positionName'
   },
   {
     label: '紧急程度',
@@ -257,10 +255,6 @@ const column = [
   {
     label: '已入职',
     prop: 'entryNum'
-  },
-  {
-    label: '招聘进度',
-    prop: 'accuracy'
   },
   {
     label: '候选人数',
@@ -286,8 +280,8 @@ export default {
         'emerType',
         'status',
         'needNum',
-        'emerType',
-        'entryNum'
+        'entryNum',
+        'candidateNum'
       ],
       activeName: 'inrecruitment',
       loading: false,
