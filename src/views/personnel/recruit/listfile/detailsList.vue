@@ -383,7 +383,7 @@ export default {
   },
   methods: {
     columnChange() {
-      this.columns = column.filter((item) => {
+      this.columns = this.columns.filter((item) => {
         return this.checkColumn.indexOf(item.prop) > -1
       })
     },
