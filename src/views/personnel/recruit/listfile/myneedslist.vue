@@ -133,13 +133,11 @@ const column = [
   },
   {
     label: '分配人',
-    prop: 'userName',
-    minWidth: '120px'
+    prop: 'userName'
   },
   {
     label: '分配时间',
-    prop: 'createTime',
-    minWidth: '120px'
+    prop: 'createTime'
   },
   {
     label: '任务数',
@@ -148,12 +146,6 @@ const column = [
   {
     label: '已入职',
     prop: 'entryNum'
-  },
-  {
-    label: '招聘进度',
-    prop: 'accuracy',
-    minWidth: '120px',
-    slot: true
   },
   {
     label: '候选人数',
@@ -168,7 +160,18 @@ export default {
   },
   data() {
     return {
-      checkColumn: ['id', 'jobName', 'orgName', 'positionName', 'userNum', 'workNum', 'remark'],
+      checkColumn: [
+        'id',
+        'jobName',
+        'orgName',
+        'positionName',
+        'emerType',
+        'userName',
+        'createTime',
+        'taskNum',
+        'entryNum',
+        'candidateNum'
+      ],
       originColumn: column,
       loading: false,
       searchConfig: {
