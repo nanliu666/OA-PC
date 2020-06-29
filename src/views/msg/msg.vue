@@ -164,6 +164,7 @@ export default {
     'msgQuery.isRead': {
       deep: true,
       handler: function() {
+        this.page.currentPage = 1
         this.loadingData()
       }
     }
@@ -197,6 +198,7 @@ export default {
     },
     // 切换Work和System
     handleClick() {
+      this.page.currentPage = 1
       if (this.activeName === 'Work') {
         (this.msgQuery.type = 'Work'), this.loadingData()
       } else if (this.activeName === 'System') {

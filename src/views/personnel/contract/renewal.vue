@@ -233,7 +233,8 @@ export default {
           if (res.includes(false)) return
           if (!valid) return
           let params = {
-            ...this.infoForm
+            ...this.infoForm,
+            userId: this.$route.query.userId
           }
           this.loading = true
           postContractApply(params)

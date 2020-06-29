@@ -271,6 +271,10 @@ export default {
   .el-select {
     width: calc(100% - 28px);
     margin-right: 14px;
+    .el-input {
+      width: 100%;
+      margin-right: 0;
+    }
   }
   i {
     cursor: pointer;

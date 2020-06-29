@@ -395,9 +395,10 @@ export default {
       await confirmLeave({
         ...this.confirmDataForm,
         userId: this.userId
+      }).finally(() => {
+        this.btnloading = false
       })
       this.$message.success('确认离职成功', 1000, this.$router.go(-1))
-      this.btnloading = false
     },
     // 获取离职原因选择组
     getLeaveReason() {

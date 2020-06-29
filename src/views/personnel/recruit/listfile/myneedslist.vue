@@ -24,7 +24,7 @@
             <el-button
               icon="icon-basics-refresh-outlined"
               size="medium"
-              class="topBtn"
+              class="refresh"
               type="text"
               @click="getTableData"
             />
@@ -32,7 +32,7 @@
               placement="bottom"
               width="40"
               trigger="click"
-              style="margin:0 12px"
+              class="refresh"
             >
               <div class="checkColumn">
                 <el-checkbox-group
@@ -54,7 +54,6 @@
                 slot="reference"
                 icon="icon-basics-setup-outlined"
                 size="medium"
-                class="topBtn"
                 type="text"
               />
             </el-popover>
@@ -134,13 +133,11 @@ const column = [
   },
   {
     label: '分配人',
-    prop: 'userName',
-    minWidth: '120px'
+    prop: 'userName'
   },
   {
     label: '分配时间',
-    prop: 'createTime',
-    minWidth: '120px'
+    prop: 'createTime'
   },
   {
     label: '任务数',
@@ -149,12 +146,6 @@ const column = [
   {
     label: '已入职',
     prop: 'entryNum'
-  },
-  {
-    label: '招聘进度',
-    prop: 'accuracy',
-    minWidth: '120px',
-    slot: true
   },
   {
     label: '候选人数',
@@ -169,7 +160,18 @@ export default {
   },
   data() {
     return {
-      checkColumn: ['id', 'jobName', 'orgName', 'positionName', 'userNum', 'workNum', 'remark'],
+      checkColumn: [
+        'id',
+        'jobName',
+        'orgName',
+        'positionName',
+        'emerType',
+        'userName',
+        'createTime',
+        'taskNum',
+        'entryNum',
+        'candidateNum'
+      ],
       originColumn: column,
       loading: false,
       searchConfig: {
@@ -482,8 +484,12 @@ export default {
 /deep/ .resetEdge {
   position: absolute;
   right: 59px;
-  .el-button--text {
-    color: #a0a8ae;
-  }
+}
+
+/deep/.refresh i {
+  color: #a0a8ae;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 12px;
 }
 </style>

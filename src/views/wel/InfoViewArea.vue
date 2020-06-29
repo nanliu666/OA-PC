@@ -34,6 +34,7 @@
             class="content-item"
             @click="handelClick"
           >
+            <div class="Smectite" />
             <div class="icon-box tips">
               <svg
                 class="icon"
@@ -48,6 +49,7 @@
             class="content-item"
             @click="handelClick"
           >
+            <div class="Smectite" />
             <div class="icon-box apply">
               <svg
                 class="icon"
@@ -62,6 +64,7 @@
             class="content-item"
             @click="handelClick"
           >
+            <div class="Smectite" />
             <div class="icon-box  arrange">
               <svg
                 class="icon"
@@ -76,6 +79,7 @@
             class="content-item"
             @click="handelClick"
           >
+            <div class="Smectite" />
             <div class="icon-box book">
               <svg
                 class="icon"
@@ -90,13 +94,10 @@
             class="content-item"
             @click="jumpToAddUser"
           >
+            <div class="Smectite" />
             <div class="icon-box add">
               <i class="icon-tips-plus-outlined" />
             </div>
-
-            <!-- <div class="icon-box add">
-							+
-						</div> -->
             <span>添加员工</span>
           </div>
         </div>
@@ -265,6 +266,10 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
+        position: relative;
+        .Smectite {
+          display: none;
+        }
         cursor: pointer;
         span {
           font-family: PingFangSC-Regular;
@@ -275,11 +280,26 @@ export default {
           text-align: center;
           width: 56px;
         }
-
-        span:hover {
+      }
+      .content-item:hover {
+        span {
           color: #73b9ff;
         }
-        span:active {
+        position: relative;
+        .Smectite {
+          display: block;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background: rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      .content-item:active {
+        span {
           color: #115fd4;
         }
       }
@@ -298,9 +318,7 @@ export default {
   width: 32px;
   height: 32px;
 }
-#icon-remind-bicolor {
-  color: #ffffff 30%;
-}
+
 .add {
   border: 1px dashed #e3e7e9;
   border-radius: 24px;

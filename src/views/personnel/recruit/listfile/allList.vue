@@ -25,7 +25,6 @@
             <el-button
               type="text"
               class="refresh"
-              style="font-size: 16px"
               icon="icon-basics-refresh-outlined"
               size="medium"
               @click="getTableData"
@@ -35,7 +34,7 @@
               placement="bottom"
               width="40"
               trigger="click"
-              style="margin:0 12px ,font-size: 16px "
+              class="refresh"
             >
               <div class="checkColumn">
                 <el-checkbox-group
@@ -57,7 +56,6 @@
                 slot="reference"
                 icon="icon-basics-setup-outlined"
                 size="medium"
-                class="topBtn"
                 type="text"
               />
             </el-popover>
@@ -231,7 +229,9 @@ import ClaLabel from '@/views/personnel/recruit/components/claLabel'
 const column = [
   {
     label: '需求编号',
-    prop: 'id'
+    prop: 'id',
+    slot: true,
+    minWidth: '120px'
   },
   {
     label: '职位',
@@ -245,11 +245,13 @@ const column = [
   },
   {
     label: '紧急程度',
-    prop: 'emerType'
+    prop: 'emerType',
+    slot: true
   },
   {
     label: '需求状态',
-    prop: 'status'
+    prop: 'status',
+    slot: true
   },
   {
     label: '需求人数',
@@ -262,7 +264,9 @@ const column = [
   },
   {
     label: '招聘进度',
-    prop: 'accuracy'
+    prop: 'accuracy',
+    minWidth: '120px',
+    slot: true
   },
   {
     label: '候选人数',
@@ -283,13 +287,13 @@ export default {
       checkColumn: [
         'id',
         'jobName',
-        'orgName',
         'positionName',
         'emerType',
         'status',
         'needNum',
-        'emerType',
-        'entryNum'
+        'entryNum',
+        'accuracy',
+        'candidateNum'
       ],
       activeName: 'inrecruitment',
       loading: false,
@@ -393,51 +397,7 @@ export default {
           type: 'expand',
           slot: true
         },
-        {
-          label: '需求编号',
-          prop: 'id',
-          slot: true,
-          minWidth: '120px'
-        },
-        {
-          label: '职位',
-          prop: 'jobName',
-          minWidth: '120px'
-        },
-        {
-          label: '岗位',
-          prop: 'positionName',
-          minWidth: '120px'
-        },
-        {
-          label: '紧急程度',
-          prop: 'emerType',
-          slot: true
-        },
-        {
-          label: '需求状态',
-          prop: 'status',
-          slot: true
-        },
-        {
-          label: '需求人数',
-          prop: 'needNum'
-        },
-
-        {
-          label: '已入职',
-          prop: 'entryNum'
-        },
-        {
-          label: '招聘进度',
-          prop: 'accuracy',
-          minWidth: '120px',
-          slot: true
-        },
-        {
-          label: '候选人数',
-          prop: 'candidateNum'
-        }
+        ...column
       ],
       tableConfig: {
         showHandler: true,
@@ -618,9 +578,16 @@ export default {
       }
     },
     columnChange() {
-      this.columns = column.filter((item) => {
-        return this.checkColumn.indexOf(item.prop) > -1
-      })
+      this.columns = [
+        {
+          prop: 'expand',
+          type: 'expand',
+          slot: true
+        },
+        ...column.filter((item) => {
+          return this.checkColumn.indexOf(item.prop) > -1
+        })
+      ]
     }
   }
 }
@@ -639,9 +606,6 @@ export default {
 /deep/ .resetEdge {
   position: absolute;
   right: 59px;
-  .el-button--text {
-    color: #a0a8ae;
-  }
 }
 
 /deep/ .el-table__expanded-cell[class*='cell'] {
@@ -673,9 +637,9 @@ export default {
 .isRed {
   color: #ff6464;
 }
-.refresh {
+/deep/.refresh i {
   color: #a0a8ae;
-  font-size: 16px !important;
+  font-size: 16px;
   cursor: pointer;
   margin: 0 12px;
 }
