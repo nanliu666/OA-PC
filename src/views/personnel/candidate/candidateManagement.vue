@@ -653,7 +653,7 @@
               >
                 恢复为候选人
               </el-button>
-              <el-dropdown @command="handleCommand($event, row)">
+              <!-- <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
                   style="margin-left: 10px"
@@ -661,11 +661,11 @@
                   <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <!-- <el-dropdown-item command>
+                  <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>-->
+                  </el-dropdown-item>
                 </el-dropdown-menu>
-              </el-dropdown>
+              </el-dropdown> -->
             </template>
           </div>
         </template>
@@ -1206,7 +1206,7 @@ export default {
             .then(() => {
               this.$message.success('发起成功')
               loading.close()
-              this.loadAllData(1)
+              this.handleApplyEmploy(data)
             })
             .catch(() => {
               loading.close()
