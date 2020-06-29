@@ -5,6 +5,7 @@
     width="600px"
     append-to-body
     :before-close="close"
+    custom-class="category-edit-dialog"
   >
     <el-form
       ref="form"
@@ -253,18 +254,29 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.el-input {
-  width: 90%;
-  margin-right: 14px;
-}
-.el-select {
-  width: 90%;
-  margin-right: 14px;
-}
-i {
-  cursor: pointer;
-}
-.detail-row {
-  margin-bottom: 14px;
+/deep/.category-edit-dialog {
+  .el-dialog__body {
+    padding: 24px;
+  }
+  .el-dialog__footer {
+    padding: 0 24px 24px;
+  }
+  .el-dialog__header {
+    padding: 24px 24px 10px;
+  }
+  .el-input {
+    width: calc(100% - 28px);
+    margin-right: 14px;
+  }
+  .el-select {
+    width: calc(100% - 28px);
+    margin-right: 14px;
+  }
+  i {
+    cursor: pointer;
+  }
+  .detail-row {
+    margin-bottom: 14px;
+  }
 }
 </style>
