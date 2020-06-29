@@ -42,6 +42,7 @@
             <el-button
               v-if="personInfo.register"
               type="primary"
+              size="medium"
               @click="handleViewRegister"
             >
               查看入职登记表

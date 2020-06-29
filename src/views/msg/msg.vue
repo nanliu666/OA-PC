@@ -164,6 +164,7 @@ export default {
     'msgQuery.isRead': {
       deep: true,
       handler: function() {
+        this.page.currentPage = 1
         this.loadingData()
       }
     }

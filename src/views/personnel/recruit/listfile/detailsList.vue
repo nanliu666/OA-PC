@@ -24,7 +24,6 @@
             <el-button
               type="text"
               class="refresh"
-              style="font-size: 16px"
               icon="icon-basics-refresh-outlined"
               size="medium"
               @click="getTableData"
@@ -34,7 +33,7 @@
               placement="bottom"
               width="40"
               trigger="click"
-              style="margin:0 12px"
+              class="refresh"
             >
               <div class="checkColumn">
                 <el-checkbox-group
@@ -56,7 +55,6 @@
                 slot="reference"
                 icon="icon-basics-setup-outlined"
                 size="medium"
-                class="topBtn"
                 type="text"
               />
             </el-popover>
@@ -475,13 +473,13 @@ export default {
 /deep/ .resetEdge {
   position: absolute;
   right: 59px;
-  .el-button--text {
-    color: #a0a8ae;
-  }
 }
 
-.refresh {
+/deep/.refresh i {
   color: #a0a8ae;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 12px;
 }
 
 .checkColumn {

@@ -304,10 +304,16 @@ export default {
     }
   },
   created() {
-    this.getTableList()
-    this.getReasonList()
+    this.init()
+  },
+  activated() {
+    this.init()
   },
   methods: {
+    init() {
+      this.getTableList()
+      this.getReasonList()
+    },
     // 获取table表格数据
     getTableList() {
       this.loading = true

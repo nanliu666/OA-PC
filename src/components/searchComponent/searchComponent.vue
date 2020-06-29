@@ -3,6 +3,7 @@
     <el-form
       :inline="true"
       class="demo-form-inline"
+      @submit.native.prevent
     >
       <el-form-item>
         <el-input
@@ -54,7 +55,10 @@
           v-show="showCollapse"
           class="collapse"
         >
-          <el-form label-width="80px">
+          <el-form
+            label-width="80px"
+            @submit.native.prevent
+          >
             <el-form-item label="已选条件">
               <el-tag
                 v-for="tag in tags"

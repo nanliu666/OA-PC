@@ -208,15 +208,15 @@ const column = [
     label: '手机号',
     prop: 'phonenum',
     width: 120
-  },
-  {
-    label: '邮箱',
-    prop: 'email',
-    width: 180
   }
 ]
 
 const willEntryColumn = [
+  {
+    label: '邮箱',
+    prop: 'email',
+    width: 180
+  },
   {
     label: '预计入职日期',
     prop: 'entryDate',
@@ -227,6 +227,11 @@ const willEntryColumn = [
 
 const didEntryColumn = [
   {
+    label: '邮箱',
+    prop: 'userEmail',
+    width: 180
+  },
+  {
     label: '入职日期',
     prop: 'entryDate',
     slot: true,
@@ -235,6 +240,11 @@ const didEntryColumn = [
 ]
 
 const giveUpEntryColumn = [
+  {
+    label: '邮箱',
+    prop: 'email',
+    width: 180
+  },
   {
     label: '原定入职日期',
     prop: 'entryDate',

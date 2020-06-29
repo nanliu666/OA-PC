@@ -247,7 +247,7 @@
                 导出
               </el-button>-->
               <el-button
-                icon="el-icon-refresh-right"
+                icon="icon-basics-refresh-outlined"
                 size="medium"
                 class="topBtn"
                 type="text"
@@ -1172,7 +1172,21 @@ export default {
           this.$refs.changeJobDialog.changeJob(data)
         }
       } else if (command === 'weedOut') {
-        this.$refs.weedOutgDialog.out(data)
+        if (data.status === '3') {
+          this.$confirm(
+            '该候选人已安排面试，淘汰候选人后原面试安排将自动取消，您确认要淘汰该候选人吗？',
+            '确认淘汰候选人？',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }
+          ).then(() => {
+            this.$refs.weedOutgDialog.out(data)
+          })
+        } else {
+          this.$refs.weedOutgDialog.out(data)
+        }
       } else if (command === 'offerChange') {
         this.$confirm('您确认要重新发起录用申请么？重新发起后，已发送的offer将自动作废。', '提示', {
           confirmButtonText: '确定',
@@ -1290,8 +1304,9 @@ export default {
   min-height: calc(100% - 92px - 116px);
 }
 
-.topBtn {
+/deep/ .topBtn i {
   color: #a0a8ae;
+  font-size: 16px;
 }
 
 .state {

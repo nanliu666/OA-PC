@@ -296,10 +296,7 @@ export let family = [
     span: 10,
     prop: 'jobName',
     itemType: 'input',
-    label: '职位',
-    props: {
-      onlyNumber: true
-    }
+    label: '职位'
   },
   {
     span: 10,
@@ -323,7 +320,8 @@ export let education = [
     itemType: 'datePicker',
     type: 'daterange',
     label: '受教育时间',
-    required: true
+    required: true,
+    'unlink-panels': true
   },
   {
     span: 10,
@@ -372,7 +370,8 @@ export let work = [
     itemType: 'datePicker',
     type: 'daterange',
     label: '在职时间',
-    required: true
+    required: true,
+    'unlink-panels': true
   },
   {
     span: 10,
@@ -447,7 +446,8 @@ export let train = [
     type: 'daterange',
     itemType: 'datePicker',
     label: '培训日期',
-    required: true
+    required: true,
+    'unlink-panels': true
   },
   {
     span: 10,

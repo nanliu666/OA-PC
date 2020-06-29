@@ -5,6 +5,7 @@
     width="600px"
     append-to-body
     :before-close="close"
+    custom-class="group-edit-dialog"
   >
     <el-form
       ref="form"
@@ -251,8 +252,19 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.el-select {
-  width: 100%;
+<style lang="scss" scoped>
+/deep/.group-edit-dialog {
+  .el-select {
+    width: 100%;
+  }
+  .el-dialog__body {
+    padding: 24px;
+  }
+  .el-dialog__footer {
+    padding: 0 24px 24px;
+  }
+  .el-dialog__header {
+    padding: 24px 24px 10px;
+  }
 }
 </style>
