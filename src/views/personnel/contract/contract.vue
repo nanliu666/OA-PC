@@ -496,12 +496,6 @@ export default {
           label: '合同签订日期',
           prop: 'signDate',
           width: 120
-        },
-
-        {
-          label: '合同签订次数',
-          prop: 'signNum',
-          width: 120
         }
       ],
       recordTableConfig: {
@@ -653,29 +647,33 @@ export default {
      *
      */
     handleLook() {
-      this.endDate = moment()
+      let beginEndDate = moment().format('YYYY-MM-DD')
+      this.endEndDate = moment()
         .add(2, 'M')
         .format('YYYY-MM-DD')
-      this.getData(this.endDate)
+      this.getData(beginEndDate, this.endEndDate)
     },
     handleLookTodo() {
+      let beginEndDate = moment().format('YYYY-MM-DD')
       this.endDateTodo = moment()
         .add(2, 'M')
         .format('YYYY-MM-DD')
-      this.getTodoData(this.endDate)
+      this.getTodoData(beginEndDate, this.endDateTodo)
     },
     refresh() {
       this.getData()
     },
 
     getTowData() {
-      let endDate = moment()
+      let beginEndDate = moment().format('YYYY-MM-DD')
+      let endEndDate = moment()
         .add(2, 'M')
         .format('YYYY-MM-DD')
       let params = {
         pageNo: 1,
         pageSize: 10,
-        endDate,
+        beginEndDate,
+        endEndDate,
         ...this.searchForm
       }
       postSigned(params).then((res) => {
@@ -689,13 +687,17 @@ export default {
      * @desc 获取table数据
      *
      */
-    getData(endDate) {
+    getData(beginEndDate, endEndDate) {
       let params = {
         ...this.params,
         ...this.searchForm
       }
-      if (endDate) {
-        params.endDate = endDate
+      if (endEndDate) {
+        params = {
+          ...this.params,
+          beginEndDate,
+          endEndDate
+        }
       }
       this.loading = true
       postSigned(params).then((res) => {
@@ -727,13 +729,17 @@ export default {
         this.signedTodoTotalNum = res.totalNum
       })
     },
-    getTodoData(endDate) {
+    getTodoData(beginEndDate, endEndDate) {
       let params = {
         ...this.paramsTodo,
         ...this.searchFormTodo
       }
-      if (endDate) {
-        params.endDate = endDate
+      if (endEndDate) {
+        params = {
+          ...this.params,
+          beginEndDate,
+          endEndDate
+        }
       }
       this.loading = true
       postContractTodo(params).then((res) => {
