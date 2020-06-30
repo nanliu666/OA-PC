@@ -876,7 +876,7 @@ const res = {
 
 export default ({ mock }) => {
   if (!mock) return
-  Mock.mock(new RegExp('/api/sys/v1/user/privilege' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/sys/v1/user/menu/privilege' + '.*'), 'get', () => {
     return res
   })
 }
