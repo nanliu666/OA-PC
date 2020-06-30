@@ -312,6 +312,9 @@ export default {
   height: calc(100% - 92px);
   min-height: calc(100% - 92px);
 }
+/deep/.el-card__body {
+  padding-top: 14px;
+}
 .title {
   display: flex;
   align-items: center;

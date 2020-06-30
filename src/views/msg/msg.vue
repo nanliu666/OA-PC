@@ -277,6 +277,9 @@ export default {
 /deep/.el-select .el-input__inner:focus {
   border-color: #fff;
 }
+/deep/.el-card__body {
+  padding-top: 14px;
+}
 .el-select {
   width: 120px;
 }
