@@ -6,6 +6,7 @@
     </div>
     <div class="main">
       <workArea :todo-count.sync="todoCount" />
+      <taskCenterCard />
     </div>
   </div>
 </template>
@@ -13,11 +14,13 @@
 <script>
 import infoViewArea from './InfoViewArea'
 import workArea from './workArea'
+import taskCenterCard from './taskCenterCard'
 export default {
   name: 'Wel',
   components: {
     infoViewArea,
-    workArea
+    workArea,
+    taskCenterCard
   },
   data() {
     return {

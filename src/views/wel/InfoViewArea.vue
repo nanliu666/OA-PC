@@ -77,7 +77,7 @@
           </div>
           <div
             class="content-item"
-            @click="handelClick"
+            @click="goToMailList"
           >
             <div class="Smectite" />
             <div class="icon-box book">
@@ -166,10 +166,17 @@ export default {
     // 获取员工信息
     async loadingUserInfo() {
       this.loading = true
-      let res = await getStaffBasicInfo({ userId: this.userInfo.user_id })
+      let res = await getStaffBasicInfo({ userId: this.userInfo.user_id }).finally(() => {
+        this.loading = false
+      })
       this.$store.dispatch('set_info', res)
       this.info = res
-      this.loading = false
+    },
+    // 跳去通讯录
+    goToMailList() {
+      this.$router.push({
+        path: '/quickAccess/mailList'
+      })
     }
   }
 }
