@@ -185,7 +185,7 @@
                 v-if="!$route.query.applyId"
                 type="primary"
                 size="medium"
-                @click="handleApplyEmploy(row)"
+                @click="handleApplyEmploy(personInfo)"
               >
                 申请录用
               </el-button>
