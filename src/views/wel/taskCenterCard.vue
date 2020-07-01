@@ -97,7 +97,7 @@ import { fetchTaskList } from '@/api/taskcenter/taskcenter'
 import tagCom from './components/tagCom'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'TaskCenter',
+  name: 'TaskCenterCard',
   components: { tagCom },
   filters: {
     // 过滤任务类型
@@ -156,7 +156,8 @@ export default {
       // 任务数据
       taskDataList: [],
       // 紧急程度字典组
-      EmerTypeList: []
+      EmerTypeList: [],
+      nowDate: new Date()
     }
   },
   computed: {
@@ -164,8 +165,7 @@ export default {
     // 计算是否已逾期
     isOverdue: function() {
       return function({ endDate }) {
-        let nowDate = new Date()
-        let now = nowDate.valueOf()
+        let now = this.nowDate.valueOf()
         let time = new Date(endDate).valueOf()
         if (now > time) {
           return true
@@ -196,9 +196,14 @@ export default {
     async loadData() {
       this.taskQuery.userId = this.userId
       this.taskLoading = true
-      let { data } = await fetchTaskList(this.taskQuery).finally(() => {
+      let { data, totalNum } = await fetchTaskList(this.taskQuery).finally(() => {
         this.taskLoading = false
       })
+      if (this.taskActiveName === 'ongoing') {
+        this.labelArray[0].label = `进行中(${totalNum})`
+      } else if (this.taskActiveName === 'overdue') {
+        this.labelArray[1].label = `已逾期(${totalNum})`
+      }
       this.taskDataList = data
     },
     // 跳去任务中心

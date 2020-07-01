@@ -106,6 +106,7 @@ import { taskTypeCN } from '@/const/taskCenter'
 import { fetchTaskList } from '@/api/taskcenter/taskcenter'
 import { mapGetters } from 'vuex'
 export default {
+  name: 'TaskCenter',
   components: {
     SearchPopover: () => import('@/components/searchPopOver/index')
   },
