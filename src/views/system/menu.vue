@@ -154,19 +154,19 @@ import { deleteMenuInfo, getMenuInfo, postMenuInfo, putMenuInfo } from '@/api/sy
 const TABLE_COLUMS = [
   {
     label: '菜单名称',
-    prop: 'name',
-    width: 150
+    minWidth: 150,
+    prop: 'name'
   },
   {
     label: '请求地址',
-    prop: 'path',
-    width: 150
+    minWidth: 150,
+    prop: 'path'
   },
-  {
-    label: '上级菜单',
-    prop: 'parentId',
-    width: 150
-  },
+  // {
+  //   label: '上级菜单',
+  //   prop: 'parentId',
+  //   width: 150
+  // },
   {
     label: '菜单图标',
     prop: 'icon',
@@ -224,7 +224,7 @@ const TABLE_COLUMS = [
   {
     label: '菜单排序',
     prop: 'sort',
-    width: 150
+    width: 80
   },
   {
     label: '菜单备注',

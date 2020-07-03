@@ -251,14 +251,10 @@ export default {
   methods: {
     close() {
       this.submitting = false
-      this.clearValidate()
       this.$emit('update:visible', false)
     },
     clearValidate() {
-      const form = this.$refs.form
-      if (form) {
-        form.clearValidate()
-      }
+      this.$nextTick(() => this.$refs.form.clearValidate())
     },
 
     // 提交
