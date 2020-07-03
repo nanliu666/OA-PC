@@ -195,7 +195,7 @@ export default {
           {
             required: true,
             message: `请${column.itemType == 'input' ? '输入' : '选择'}${column.label}`,
-            trigger: `${column.itemType == 'input' ? ['blur', 'input'] : 'change'}`
+            trigger: `${column.itemType == 'input' ? 'blur' : 'change'}`
           },
           ...(column.rules ? column.rules : [])
         ]
