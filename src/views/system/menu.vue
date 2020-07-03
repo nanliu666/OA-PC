@@ -311,9 +311,8 @@ export default {
   },
   filters: {
     // 过滤不可见的列
-    columnsFilter(visibleColProps) {
-      return _.filter(TABLE_COLUMS, ({ prop }) => _.includes(visibleColProps, prop))
-    }
+    columnsFilter: (visibleColProps) =>
+      _.filter(TABLE_COLUMS, ({ prop }) => _.includes(visibleColProps, prop))
   },
   data() {
     return {
