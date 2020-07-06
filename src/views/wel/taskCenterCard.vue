@@ -77,11 +77,13 @@
           任务中心
         </el-button>
       </div>
-      <div slot="foot">
+      <div
+        slot="foot"
+        class="view-all"
+      >
         <el-button
           type="text"
           size="medium"
-          class="view-all"
           @click="goTOTaskCenter"
         >
           查看全部

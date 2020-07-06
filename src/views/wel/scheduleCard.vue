@@ -90,7 +90,7 @@
             </div>
           </div>
 
-          <div>
+          <div class="view-all">
             <el-button
               type="text"
               @click="jumpScheduleCenter"
@@ -241,6 +241,7 @@ export default {
   .main-box {
     display: flex;
     justify-content: space-between;
+
     .calendar-box {
       flex: 1;
       height: 302px;
@@ -301,6 +302,7 @@ export default {
       flex: 1;
       padding: 0 20px;
       height: 302px;
+      position: relative;
       .content {
         border-bottom: 1px solid #e3e7e9;
         .time-row {

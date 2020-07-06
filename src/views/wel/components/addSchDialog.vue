@@ -93,7 +93,10 @@ export default {
   },
   data() {
     return {
-      Params: {},
+      Params: {
+        title: '',
+        remindDate: ''
+      },
       Rules: {
         title: [
           { required: true, message: '请输入提醒内容', trigger: 'blur' },
