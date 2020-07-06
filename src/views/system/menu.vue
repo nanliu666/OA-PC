@@ -230,24 +230,24 @@ const TABLE_COLUMS = [
     label: '菜单备注',
     prop: 'remark',
     width: 150
-  },
-  {
-    formatter: (row, column, text = '') => {
-      switch (text) {
-        case 'VALID':
-          text = '有效'
-          break
-        case 'INVALID':
-          text = '失效'
-          break
-        default:
-      }
-      return text
-    },
-    label: '状态',
-    prop: 'status',
-    width: 150
   }
+  // {
+  //   formatter: (row, column, text = '') => {
+  //     switch (text) {
+  //       case 'VALID':
+  //         text = '有效'
+  //         break
+  //       case 'INVALID':
+  //         text = '失效'
+  //         break
+  //       default:
+  //     }
+  //     return text
+  //   },
+  //   label: '状态',
+  //   prop: 'status',
+  //   width: 150
+  // }
 ]
 const TABLE_CONFIG = {
   handlerColumn: {

@@ -194,24 +194,24 @@ const FORM_COLUMNS = [
     prop: 'remark',
     span: 24,
     type: 'textarea'
-  },
-  {
-    label: '状态',
-    itemType: 'radio',
-    prop: 'status',
-    span: 11,
-    offset: 0,
-    options: [
-      {
-        label: '有效',
-        value: 'VALID'
-      },
-      {
-        label: '失效',
-        value: 'INVALID'
-      }
-    ]
   }
+  // {
+  //   label: '状态',
+  //   itemType: 'radio',
+  //   prop: 'status',
+  //   span: 11,
+  //   offset: 0,
+  //   options: [
+  //     {
+  //       label: '有效',
+  //       value: 'VALID'
+  //     },
+  //     {
+  //       label: '失效',
+  //       value: 'INVALID'
+  //     }
+  //   ]
+  // }
 ]
 
 export default {
