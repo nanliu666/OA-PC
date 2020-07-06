@@ -177,7 +177,7 @@ export const findParent = (menu, id) => {
  * @param {node => boolean} predicate 过滤条件，符合条件的节点保留
  * @return 过滤后的节点
  */
-export const filterTree = (nodes, predicate) => {
+export const filterTree = (nodes, predicate, shouldUp = false) => {
   // 如果已经没有节点了，结束递归
   if (!(nodes && nodes.length)) {
     return []
@@ -188,13 +188,12 @@ export const filterTree = (nodes, predicate) => {
     if (predicate(node)) {
       // 如果节点符合条件，直接加入新的节点集
       newChildren.push(node)
-      node.children = filterTree(node.children, predicate)
+      node.children = filterTree(node.children, predicate, shouldUp)
+    } else if (shouldUp) {
+      // 如果当前节点不符合条件，递归过滤子节点，
+      // 把符合条件的子节点提升上来，并入新节点集
+      newChildren.push(...filterTree(node.children, predicate, shouldUp))
     }
-    // else {
-    // 	// 如果当前节点不符合条件，递归过滤子节点，
-    // 	// 把符合条件的子节点提升上来，并入新节点集
-    // 	newChildren.push(...filterTree(node.children, predicate));
-    // }
   }
   return newChildren
 }
