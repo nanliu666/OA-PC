@@ -4,14 +4,14 @@
       <template slot="rightMenu">
         <el-button
           size="medium"
-          @click="groupEditVisible = true"
+          @click="() => (groupEditVisible = true)"
         >
           添加分组
         </el-button>
         <el-button
           type="primary"
           size="medium"
-          @click="categoryEditVisible = true"
+          @click="() => (categoryEditVisible = true)"
         >
           添加交接事项
         </el-button>

@@ -7,81 +7,26 @@
     :before-close="close"
     custom-class="group-edit-dialog"
   >
-    <el-form
+    <common-form
       ref="form"
       :model="form"
-      label-position="top"
-      :rules="rules"
-      size="medium"
+      :columns="form | formColumnsFilter"
     >
-      <el-form-item
-        label="分组名称"
-        prop="name"
-      >
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item
-        label="交接人"
-        prop="type"
-      >
-        <el-radio-group v-model="form.type">
-          <el-radio
-            v-for="(value, key) in typeDict"
-            :key="key"
-            :label="key"
-          >
-            {{ value }}
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item
-        v-show="form.type === 'User'"
-        label="选择人员"
-        prop="userId"
-      >
+      <template #userId>
         <lazy-select
           v-model="form.userId"
           :load="loadUser"
+          :option-props="{
+            formatter: (item) => `${item.name}(${item.workNo})`,
+            key: 'userId',
+            value: 'userId'
+          }"
           placeholder="请选择人员"
           searchable
-          :option-props="{
-            value: 'userId',
-            key: 'userId',
-            formatter: (item) => `${item.name}(${item.workNo})`
-          }"
         />
-      </el-form-item>
-      <el-form-item
-        v-show="form.type === 'Job'"
-        label="部门"
-        prop="orgId"
-      >
-        <el-tree-select
-          ref="orgTree"
-          v-model="form.orgId"
-          :select-params="orgOptions.selectParams"
-          :tree-params="orgOptions.treeParams"
-          @node-click="handleOrgChange"
-        />
-      </el-form-item>
-      <el-form-item
-        v-show="form.type === 'Job'"
-        label="职位"
-        prop="jobId"
-      >
-        <el-select
-          v-model="form.jobId"
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in jobList"
-            :key="item.jobId"
-            :label="item.jobName"
-            :value="item.jobId"
-          />
-        </el-select>
-      </el-form-item>
-    </el-form>
+      </template>
+    </common-form>
+
     <span
       slot="footer"
       class="dialog-footer"
@@ -91,7 +36,7 @@
         @click="close"
       >取 消</el-button>
       <el-button
-        :loading="loading"
+        :loading="submitting"
         size="medium"
         type="primary"
         @click="handleSubmit"
@@ -102,36 +47,79 @@
   </el-dialog>
 </template>
 <script>
-import { getUserWorkList, getOrgTreeSimple } from '@/api/org/org'
-import { getOrgJob } from '@/api/personnel/roster'
+import { getUserWorkList } from '@/api/org/org'
 import { modifyResignGroup, createResignGroup } from '@/api/personnel/settings'
 import { mapGetters } from 'vuex'
 
 // Org-部门负责人，User-指定人员，Job-指定职位
-const typeDict = {
-  Org: '部门负责人',
-  User: '指定人员',
-  Job: '指定职位'
-}
-const ruleDict = {
+const TYPE_DICTIONARY = {
   Org: {
-    name: [{ required: true, message: '请输入分组名称', trigger: 'input' }]
+    label: '部门负责人',
+    value: 'Org'
   },
   User: {
-    name: [{ required: true, message: '请输入分组名称', trigger: 'input' }],
-    userId: [{ required: true, message: '请选择指定人员', trigger: 'change' }]
+    label: '指定人员',
+    value: 'User'
   },
   Job: {
-    name: [{ required: true, message: '请输入分组名称', trigger: 'input' }],
-    orgId: [{ required: true, message: '请选择部门', trigger: 'change' }],
-    jobId: [{ required: true, message: '请选择职位', trigger: 'change' }]
+    label: '指定职位',
+    value: 'Job'
   }
 }
+
+// 表单配置
+const FORM_COLUMNS = [
+  {
+    itemType: 'input',
+    label: '分组名称',
+    prop: 'name',
+    required: true,
+    span: 24
+  },
+  {
+    itemType: 'radio',
+    label: '交接人',
+    options: _.map(TYPE_DICTIONARY),
+    prop: 'type',
+    required: true,
+    span: 24
+  },
+  {
+    itemType: 'slot',
+    label: '请选择人员',
+    prop: 'userId',
+    placeholder: '请选择人员',
+    required: true,
+    span: 24
+  }
+]
+
 export default {
   name: 'GroupEditDialog',
   components: {
-    lazySelect: () => import('@/components/lazy-select/lazySelect'),
-    elTreeSelect: () => import('@/components/elTreeSelect/elTreeSelect')
+    lazySelect: () => import('@/components/lazy-select/lazySelect')
+  },
+  filters: {
+    formColumnsFilter(form) {
+      let res = _(FORM_COLUMNS)
+      switch (form.type) {
+        case TYPE_DICTIONARY.User.value: {
+          const VISIBLE_PROPS = ['name', 'type', 'userId']
+          res = res.filter(({ prop }) => _.includes(VISIBLE_PROPS, prop))
+          break
+        }
+
+        // 以下当作defalt处理
+        case TYPE_DICTIONARY.Job.value:
+        case TYPE_DICTIONARY.Org.value:
+        default: {
+          const VISIBLE_PROPS = ['name', 'type']
+          res = res.filter(({ prop }) => _.includes(VISIBLE_PROPS, prop))
+          break
+        }
+      }
+      return res.value()
+    }
   },
   props: {
     visible: {
@@ -141,16 +129,10 @@ export default {
   },
   data() {
     return {
-      form: {
-        name: '',
-        type: 'Org',
-        userId: null,
-        orgId: null,
-        jobId: null
-      },
+      form: {},
       rules: {},
-      typeDict,
-      loading: false,
+      typeDict: TYPE_DICTIONARY,
+      submitting: false,
       orgOptions: {
         selectParams: {
           placeholder: '请选择组织',
@@ -178,36 +160,16 @@ export default {
     ...mapGetters(['companyId'])
   },
   watch: {
-    'form.type': {
-      handler(val) {
-        this.rules = ruleDict[val]
-        this.$nextTick(() => {
-          this.$refs['form'].clearValidate()
-        })
+    form: {
+      deep: true,
+      handler() {
+        this.$nextTick(() => this.$refs.form.clearValidate())
       }
     }
-  },
-  mounted() {
-    this.loadOrgData()
   },
   methods: {
     loadUser(params) {
       return getUserWorkList(params)
-    },
-    handleOrgChange() {
-      this.form.jobId = ''
-      this.getOrgJob()
-    },
-    getOrgJob() {
-      getOrgJob({ orgId: this.form.orgId }).then((res) => {
-        this.jobList = res
-      })
-    },
-    loadOrgData() {
-      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.orgOptions.treeParams.data = res
-        this.$refs['orgTree'] && this.$refs['orgTree'].treeDataUpdateFun(res)
-      })
     },
     close() {
       this.clear()
@@ -219,21 +181,15 @@ export default {
     },
     init(data) {
       Object.assign(this.form, data)
-      if (data.orgId) {
-        this.getOrgJob()
-      }
       this.$emit('update:visible', true)
     },
     handleSubmit() {
-      this.$refs.form.validate((valid) => {
-        if (!valid) {
-          return
-        }
+      this.$refs.form.validate().then(() => {
         let submitFunc = createResignGroup
         if (this.form.id) {
           submitFunc = modifyResignGroup
         }
-        this.loading = true
+        this.submitting = true
         submitFunc({ ...this.form, companyId: this.companyId })
           .then((res = {}) => {
             this.$message.success('操作成功')
@@ -245,7 +201,7 @@ export default {
             }
           })
           .finally(() => {
-            this.loading = false
+            this.submitting = false
           })
       })
     }
