@@ -7,6 +7,7 @@
     <div class="main">
       <workArea :todo-count.sync="todoCount" />
       <taskCenterCard />
+      <scheduleCard />
     </div>
   </div>
 </template>
@@ -15,12 +16,14 @@
 import infoViewArea from './InfoViewArea'
 import workArea from './workArea'
 import taskCenterCard from './taskCenterCard'
+import scheduleCard from './scheduleCard'
 export default {
   name: 'Wel',
   components: {
     infoViewArea,
     workArea,
-    taskCenterCard
+    taskCenterCard,
+    scheduleCard
   },
   data() {
     return {
@@ -37,6 +40,7 @@ export default {
 .page {
   margin-top: 24px;
   width: 100%;
+  padding-bottom: 50px !important;
   .aside {
     float: left;
     width: 332px;

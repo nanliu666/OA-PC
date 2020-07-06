@@ -26,6 +26,7 @@ import todo from './todo'
 import msg from './msg'
 import entry from './entry'
 import taskcenter from './taskcenter'
+import schedule from './schedule'
 /**
  * 模拟数据mock
  *
@@ -69,4 +70,5 @@ todo(options)
 msg(options)
 todo(options)
 entry(options)
-taskcenter({ mock: false })
+taskcenter({ mock: true })
+schedule({ mock: true })

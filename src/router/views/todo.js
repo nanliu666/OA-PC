@@ -79,6 +79,14 @@ export default [
           fullscreen: true
         },
         component: () => import(/* webpackChunkName: "views" */ '@/views/quickAccess/mailList')
+      },
+      {
+        path: '/taskCenter/scheduleCenter',
+        name: '日程中心',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import(/* webpackChunkName: "views" */ '@/views/taskCenter/scheduleCenter')
       }
     ]
   }
