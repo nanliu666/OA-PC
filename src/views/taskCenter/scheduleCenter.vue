@@ -362,6 +362,7 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      margin: 5px 10px;
       // normal
     }
     .blue-tip {
