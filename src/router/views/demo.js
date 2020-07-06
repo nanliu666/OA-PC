@@ -12,11 +12,6 @@ export default [
           fullscreen: true
         },
         component: () => import(/* webpackChunkName: "page" */ '@/views/demo/demoForm')
-      },
-      {
-        path: 'menu',
-        name: '菜单测试页面',
-        component: () => import(/* webpackChunkName: "page" */ '@/views/demo/demoMenu')
       }
     ]
   }
