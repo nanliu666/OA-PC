@@ -93,6 +93,7 @@ export default {
   justify-content: space-between;
 }
 .title {
+  cursor: pointer;
   font-weight: bold;
   font-size: 18px;
   padding: 14px 0 16px;
