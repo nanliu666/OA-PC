@@ -175,11 +175,22 @@ import CommonForm from '@/components/common-form/commonForm'
 import { getStaffBasicInfo, getConpactInfo } from '@/api/personalInfo'
 import { getCompany } from '@/api/personnel/selectedPerson'
 import { createContract } from '@/api/personnel/entry'
+import moment from 'moment'
 
 export default {
   name: 'EntryPersonDetail',
   components: { PageHeader, CommonForm },
   data() {
+    let validate = (rule, value, callback) => {
+      let beginDate = moment(this.form.beginDate).valueOf()
+      let endDate = moment(this.form.endDate).valueOf()
+      if (beginDate > endDate) {
+        // this.infoForm.endDate = ''
+        callback(new Error('合同结束日期要大于合同起始日期'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false,
       personInfo: {
@@ -203,7 +214,7 @@ export default {
         period: '',
         remark: ''
       },
-
+      rule: { required: true, validator: validate, trigger: 'change' },
       columns: [
         {
           label: '合同编号', // lable
@@ -253,7 +264,14 @@ export default {
           itemType: 'datePicker',
           prop: 'beginDate',
           required: true,
-          span: 11
+          span: 11,
+          rules: [
+            {
+              required: true,
+              message: '请选择合同起止日期',
+              trigger: 'change'
+            }
+          ]
         },
         {
           label: '合同结束日期', // lable
@@ -261,7 +279,14 @@ export default {
           prop: 'endDate',
           required: true,
           offset: 2,
-          span: 11
+          span: 11,
+          rules: [
+            {
+              required: true,
+              message: '请选择合同结束日期',
+              trigger: 'change'
+            }
+          ]
         },
         {
           label: '合同签订日期', // lable
@@ -281,6 +306,38 @@ export default {
       ]
     }
   },
+  watch: {
+    'form.beginDate': {
+      handler(val) {
+        // beginDate: '',
+        //   endDate: '',
+        if (val && this.form.period) {
+          this.form.endDate = moment(val)
+            .add(this.form.period, 'Y')
+            .format('YYYY-MM-DD')
+        } else if (val && !this.form.period) {
+          let beginDate = moment(this.form.beginDate).valueOf()
+          let endDate = moment(this.form.endDate).valueOf()
+          if (beginDate > endDate) {
+            this.form.endDate = ''
+          }
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'form.period': {
+      handler(val) {
+        if (val && this.form.beginDate) {
+          this.form.endDate = moment(this.form.beginDate)
+            .add(this.form.period, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   created() {
     this.getPersonInfo()
   },
@@ -290,6 +347,7 @@ export default {
       this.columns[2].options = res
     })
     this.getCompany()
+    this.columns.find((it) => it.prop === 'endDate').rules.push(this.rule)
     // var day = moment("1995-12-25").valueOf()
     // console.log(day)
   },
