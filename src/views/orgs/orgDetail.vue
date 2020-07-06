@@ -53,13 +53,13 @@
               上级组织：{{ findFatherOrgName(orgData) || '' }}
             </div>
             <div class="numInfo">
-              在职人数 {{ orgData.workNum }} 人
+              在职人数 <em class="count">{{ orgData.workNum }}</em> 人
             </div>
             <div class="numInfo">
-              用户人数 {{ orgData.userNum }} 人
+              用户人数 <em class="count">{{ orgData.userNum }}</em> 人
             </div>
             <div class="numInfo">
-              职位 {{ orgData.jobNum }} 个
+              职位 <em class="count">{{ orgData.jobNum }}</em> 个
             </div>
           </div>
           <div class="baseInfo">
@@ -211,6 +211,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$color_active: #368afa;
+$color_link_active: $color_active;
+$color_font_label: #999999;
+
 .pageHeader {
   height: 48px;
   // padding: 0 24px;
@@ -244,11 +248,17 @@ export default {
     .mainNum {
       margin-bottom: 40px;
       .parent {
-        color: #999999;
+        color: $color_font_label;
       }
       .numInfo {
+        color: $color_font_label;
         float: right;
         margin-left: 20px;
+        .count {
+          color: $color_active;
+          font-style: normal;
+          font-weight: bold;
+        }
       }
     }
     .baseInfo {
@@ -259,7 +269,7 @@ export default {
           margin-bottom: 20px;
         }
         .el-col-4 {
-          color: #999999;
+          color: $color_font_label;
         }
       }
     }
