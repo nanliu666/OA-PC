@@ -39,18 +39,17 @@
               >
                 <el-button
                   class="operations__btns--item"
-                  round
                   size="mini"
+                  type="text"
                   @click="refreshTableData"
                 >
-                  <i class="icon-basics-refresh-outlined  icon" />
+                  <i class="iconfont iconicon_refresh" />
                 </el-button>
               </el-tooltip>
               <el-popover
                 placement="bottom"
                 width="40"
                 trigger="click"
-                style="margin:0 12px"
               >
                 <el-tooltip
                   slot="reference"
@@ -61,20 +60,17 @@
                 >
                   <el-button
                     class="operations__btns--item"
-                    round
                     size="mini"
+                    type="text"
                     @click="getTableList"
                   >
-                    <i class="el-icon-setting icon" />
+                    <i class="iconfont iconicon_setting" />
                   </el-button>
                 </el-tooltip>
 
                 <!-- 设置表格列可见性 -->
                 <div class="operations__column--visible">
-                  <el-checkbox-group
-                    v-model="columnVisible"
-                    @change="setColumnVisible"
-                  >
+                  <el-checkbox-group v-model="columnVisible">
                     <el-checkbox
                       v-for="item of tableColumns"
                       :key="item.prop"
@@ -106,30 +102,29 @@
         </template>
 
         <template #handler="{row}">
-          <el-button
-            icon="el-icon-edit"
-            size="medium"
-            type="text"
-            @click.stop="() => handleMenuEditBtnClick(row)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            icon="el-icon-delete"
-            size="medium"
-            type="text"
-            @click.stop="() => handleRemoveItems([row])"
-          >
-            删除子项
-          </el-button>
-          <el-button
-            icon="el-icon-circle-plus-outline"
-            size="medium"
-            type="text"
-            @click.stop="() => handleMenuItemAddBtnClick(row)"
-          >
-            新增子项
-          </el-button>
+          <div class="table__handler">
+            <el-button
+              size="medium"
+              type="text"
+              @click.stop="() => handleMenuEditBtnClick(row)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              size="medium"
+              type="text"
+              @click.stop="() => handleRemoveItems([row])"
+            >
+              删除子项
+            </el-button>
+            <el-button
+              size="medium"
+              type="text"
+              @click.stop="() => handleMenuItemAddBtnClick(row)"
+            >
+              新增子项
+            </el-button>
+          </div>
         </template>
       </common-table>
     </basic-container>
@@ -251,7 +246,7 @@ const TABLE_COLUMS = [
 ]
 const TABLE_CONFIG = {
   handlerColumn: {
-    width: 300
+    width: 200
   },
   enableMultiSelect: true,
   enablePagination: true,
@@ -389,7 +384,7 @@ export default {
           return
       }
       menuEdit.loading = true
-      api(query)
+      api(_.set(query, 'status', true))
         .then(() => {
           this.$message.success('操作成功!')
           this.refreshTableData()
@@ -407,8 +402,6 @@ export default {
       this.tableData = []
       this.loadTableData({ parentId: '0' })
     },
-
-    setColumnVisible() {},
 
     // 加载表格数据
     // TODO: 分页还未实现
@@ -438,7 +431,7 @@ export default {
 </script>
 
 <style lang="sass" scope>
-$color_icon: #a0a8ae
+$color_icon: #A0A8AE
 
 .basic-container--block
   height: calc(100% - 92px)
@@ -455,14 +448,40 @@ $color_icon: #a0a8ae
   &__btns
     align-items: center
     display: flex
-    justify-content: space-between
+    height: 24px
+    justify-content: flex-start
   &__btns--item
-    padding: 9px !important
     margin: 0
-    margin-bottom: 8px
-    margin-right: 8px
-  .icon
+    margin-right: 4px
+    padding: 0
+    height: 24px
+    width: 24px
+    line-height: 24px
+    &:last-child
+      margin: 0
+    // margin-bottom: 8px
+    // margin-right: 8px
+  .iconfont
     color: $color_icon
-    font-weight: lighter
+    font-weight: bold
     font-size: 16px
+
+// 添加一个分隔号 "｜"
+.table__handler
+  display: flex
+  justify-content: flex-end
+  > .el-button--text
+    text-align: center
+    padding: 0 8px
+    margin-left: 0px
+    position: relative
+    &::after
+      content: ''
+      width: 1px
+      height: 10px
+      background-color: #e3e7e9
+      position: absolute
+      top: 50%
+      right: 0
+      transform: translateY(-50%)
 </style>

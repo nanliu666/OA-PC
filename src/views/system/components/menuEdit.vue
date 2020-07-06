@@ -12,7 +12,7 @@
       ref="form"
       class="form"
       :model="form"
-      :columns="form | columnsFilter"
+      :columns="form | formColumnsFilter"
     >
       <template #icon="{iconList}">
         <icon-select
@@ -80,7 +80,6 @@ const FORM_COLUMNS = [
     prop: 'parentId',
     span: 11,
     offset: 0,
-    hide: true,
     props: {
       selectParams: {
         placeholder: '请选择上级菜单',
@@ -219,15 +218,12 @@ export default {
     IconSelect: () => import(/* webpackChunkName: "views" */ '@/components/icon-select')
   },
   filters: {
-    columnsFilter: function(form) {
-      const menuType = form.menuType
-      if (_.eq(menuType, 'Button')) {
-        return _(FORM_COLUMNS)
-          .difference([_.find(FORM_COLUMNS, { prop: 'sort' })])
-          .value()
-      } else {
-        return FORM_COLUMNS
+    formColumnsFilter: function(form) {
+      let res = _(FORM_COLUMNS)
+      if (_.eq(form.menuType, 'Button')) {
+        res = res.difference([_.find(FORM_COLUMNS, { prop: 'sort' })])
       }
+      return res.value()
     }
   },
   props: {
