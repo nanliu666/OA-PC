@@ -166,14 +166,6 @@ export default {
           prop: 'name'
         },
         {
-          label: '职位数',
-          prop: 'jobNum'
-        },
-        {
-          label: '用户人数',
-          prop: 'userNum'
-        },
-        {
           label: '在职人数',
           prop: 'workNum'
         },

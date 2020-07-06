@@ -220,14 +220,6 @@ export default {
           prop: 'jobName'
         },
         {
-          label: '用户人数',
-          prop: 'userNum'
-        },
-        {
-          label: '在职人数',
-          prop: 'workNum'
-        },
-        {
           label: '所属组织',
           prop: 'orgName'
         },
