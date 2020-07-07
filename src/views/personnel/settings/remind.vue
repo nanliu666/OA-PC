@@ -25,10 +25,11 @@
             <span class="handler__name">{{ _.get(row, 'executor.name', '') }}</span>
             <span class="handler__btn">
               <el-button
-                icon="icon-basics-edit-outlined"
                 type="text"
                 @click="() => editInit({ type: row['personnelEvent'].type })"
-              />
+              >
+                <i class="icon-basics-edit-outlined" />
+              </el-button>
             </span>
           </div>
         </template>
@@ -214,6 +215,11 @@ export default {
   .basic-container--block
     height: calc(100% - 92px - 52px)
     min-height: calc(100% - 92px - 52px)
+  .handler
+    &__btn
+      i
+        font-size: inherit
+        margin-left: .5em
   .event
     display: flex
     flex-direction: column
