@@ -25,7 +25,7 @@
               show-icon
             />
           </el-col>
-          <introduce :status="Status" />
+          <introduce :status="status" />
 
           <el-form
             ref="users"
@@ -118,7 +118,7 @@ export default {
     }
     return {
       inputdisabled: true,
-      Status: null,
+      status: null,
       users: {
         changneedNum: null,
         changreason: null
@@ -146,8 +146,8 @@ export default {
   },
   mounted() {
     getRecruitmentDetail(this.$route.query.id).then((res) => {
-      this.users.changneedNum = res.needNum
-      this.Status = res
+      this.users.changneedNum = res.needNum - res.entryNum
+      this.status = res
     })
   },
   methods: {
