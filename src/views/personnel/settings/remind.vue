@@ -172,8 +172,8 @@ export default {
 
   created() {
     getRemindExecutor().then((users) => {
-      _.each(users, (user, i) => {
-        TABLE_DATA[i].executor = user
+      _.each(users, (user) => {
+        _.find(TABLE_DATA, { personnelEvent: { type: user.type } }).executor = user
       })
       this.tableData = TABLE_DATA
     })
