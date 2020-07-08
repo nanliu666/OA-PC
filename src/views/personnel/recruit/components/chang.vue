@@ -124,6 +124,7 @@ export default {
   },
   filters: {
     introProps: (data) => {
+      if (_.isNull(data)) return []
       return _.map(INTRODUCT_PROPS, ([prop, label, config]) => {
         let res = { label, value: data[prop] }
         if (config && config.handler) {
