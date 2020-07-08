@@ -25,7 +25,7 @@
               show-icon
             />
           </el-col>
-          <Overview :value="status | introProps" />
+          <Overview :value="status | overviewProps" />
 
           <el-form
             ref="users"
@@ -101,7 +101,7 @@
 import { mapGetters } from 'vuex'
 import { getRecruitmentDetail, getChange } from '@/api/personnel/recruitment'
 
-const INTRODUCT_PROPS = [
+const OVERVIEW_PROPS = [
   // 显示在<introduct/>中的属性 格式: ["prop", "label", {config}]
   ['jobName', '职位名称'],
   ['needNum', '需求总数'],
@@ -113,6 +113,13 @@ const INTRODUCT_PROPS = [
       handler: ({ needNum, entryNum }) =>
         _.isNumber(needNum - entryNum) ? needNum - entryNum : '-'
     }
+  ],
+  [
+    'emerType',
+    '紧急程度',
+    {
+      dictKey: 'emerType'
+    }
   ]
 ]
 
@@ -123,12 +130,15 @@ export default {
     ApprProgress: () => import('@/components/appr-progress/apprProgress')
   },
   filters: {
-    introProps: (data) => {
+    overviewProps: (data) => {
       if (_.isNull(data)) return []
-      return _.map(INTRODUCT_PROPS, ([prop, label, config]) => {
+      return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
         let res = { label, value: data[prop] }
-        if (config && config.handler) {
-          res.value = config.handler(data)
+        if (config) {
+          res.$config = config
+          if (config.handler) {
+            res.value = config.handler(data)
+          }
         }
         return res
       })
@@ -213,14 +223,6 @@ export default {
   width: 48%;
 }
 
-.introduceP {
-  margin-left: 92px;
-  color: #207efa;
-  height: 40px;
-  font-size: 13px;
-  line-height: 40px;
-}
-
 .isbox {
   color: #fff;
   width: 120px;
@@ -229,10 +231,6 @@ export default {
   line-height: 60px;
   background: #ccc;
   text-align: center;
-}
-
-.introduce {
-  margin-left: 92px !important;
 }
 
 /deep/ .el-select--medium,
