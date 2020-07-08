@@ -39,8 +39,12 @@
 
 <script>
 export default {
+  name: 'IconSelectDialog',
   props: {
-    iconList: Array,
+    iconList: {
+      type: Array,
+      default: _.stubArray
+    },
     visible: {
       type: Boolean,
       default: false

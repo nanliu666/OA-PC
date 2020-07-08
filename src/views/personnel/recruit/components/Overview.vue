@@ -18,6 +18,7 @@
 
 <script>
 export default {
+  name: 'Overview',
   props: {
     value: {
       type: Array,

@@ -141,6 +141,7 @@ const FORM_COLUMNS = [
 ]
 
 export default {
+  name: 'Remind',
   components: {
     LazySelect: () => import(/* webpackChunkName: "views" */ '@/components/lazy-select/lazySelect')
   },
