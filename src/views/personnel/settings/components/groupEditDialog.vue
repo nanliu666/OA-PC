@@ -79,16 +79,7 @@ const FORM_COLUMNS = [
   {
     itemType: 'radio',
     label: '交接人',
-    options: [
-      {
-        label: '部门负责人',
-        value: 'Org'
-      },
-      {
-        label: '指定人员',
-        value: 'User'
-      }
-    ],
+    options: _.map(TYPE_DICTIONARY),
     prop: 'type',
     required: true,
     span: 24
