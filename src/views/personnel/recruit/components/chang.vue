@@ -25,7 +25,7 @@
               show-icon
             />
           </el-col>
-          <introduce :status="status" />
+          <Overview :value="status | introProps" />
 
           <el-form
             ref="users"
@@ -99,14 +99,39 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Introduce from './introduce'
 import { getRecruitmentDetail, getChange } from '@/api/personnel/recruitment'
+
+const INTRODUCT_PROPS = [
+  // 显示在<introduct/>中的属性 格式: ["prop", "label", {config}]
+  ['jobName', '职位名称'],
+  ['needNum', '需求总数'],
+  ['entryNum', '已入职'],
+  [
+    '$_minus',
+    '剩余需求总数',
+    {
+      handler: ({ needNum, entryNum }) =>
+        _.isNumber(needNum - entryNum) ? needNum - entryNum : '-'
+    }
+  ]
+]
 
 export default {
   name: 'Chang',
   components: {
-    Introduce,
+    Overview: () => import(/* webpackChunkName: "views" */ './Overview'),
     ApprProgress: () => import('@/components/appr-progress/apprProgress')
+  },
+  filters: {
+    introProps: (data) => {
+      return _.map(INTRODUCT_PROPS, ([prop, label, config]) => {
+        let res = { label, value: data[prop] }
+        if (config && config.handler) {
+          res.value = config.handler(data)
+        }
+        return res
+      })
+    }
   },
   data() {
     var checkAppr = (rule, value, callback) => {
