@@ -60,11 +60,11 @@ const TYPE_DICTIONARY = {
   User: {
     label: '指定人员',
     value: 'User'
-  },
-  Job: {
-    label: '指定职位',
-    value: 'Job'
   }
+  // Job: {
+  //   label: '指定职位',
+  //   value: 'Job'
+  // }
 }
 
 // 表单配置
@@ -79,7 +79,16 @@ const FORM_COLUMNS = [
   {
     itemType: 'radio',
     label: '交接人',
-    options: _.map(TYPE_DICTIONARY),
+    options: [
+      {
+        label: '部门负责人',
+        value: 'Org'
+      },
+      {
+        label: '指定人员',
+        value: 'User'
+      }
+    ],
     prop: 'type',
     required: true,
     span: 24
@@ -110,7 +119,7 @@ export default {
         }
 
         // 以下当作defalt处理
-        case TYPE_DICTIONARY.Job.value:
+        // case TYPE_DICTIONARY.Job.value:
         case TYPE_DICTIONARY.Org.value:
         default: {
           const VISIBLE_PROPS = ['name', 'type']
@@ -180,7 +189,8 @@ export default {
       this.$refs['form'].clearValidate()
     },
     init(data) {
-      Object.assign(this.form, data)
+      // Object.assign(this.form, data)
+      this.form = _.cloneDeep(data)
       this.$emit('update:visible', true)
     },
     handleSubmit() {
