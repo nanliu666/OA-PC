@@ -25,6 +25,8 @@ import interview from './interview'
 import todo from './todo'
 import msg from './msg'
 import entry from './entry'
+import taskcenter from './taskcenter'
+import schedule from './schedule'
 /**
  * 模拟数据mock
  *
@@ -66,5 +68,7 @@ leave(options)
 personnelSettings(options.mock)
 todo(options)
 msg(options)
-todo({ mock: false })
-entry({ mock: false })
+todo(options)
+entry(options)
+taskcenter({ mock: true })
+schedule({ mock: true })

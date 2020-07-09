@@ -29,9 +29,7 @@
                       <p @click="jumpToDetail(item.type, item.bizId)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
-                      <span
-                        v-if="ifShowWarn(item.createTime)"
-                      >滞留{{ getWarnText(item.startDate) }}天</span>
+                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
                     </div>
                     <div class="time-box">
                       {{ item.createTime | filterDate }}
@@ -337,7 +335,12 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return row.status === 'UnFinished' && moment().diff(moment(row.endDate)) > 0
+      return (
+        row.status === 'UnFinished' &&
+        moment()
+          .startOf('day')
+          .diff(moment(row.endDate)) > 0
+      )
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
