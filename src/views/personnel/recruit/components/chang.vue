@@ -113,14 +113,14 @@ const OVERVIEW_PROPS = [
       handler: ({ needNum, entryNum }) =>
         _.isNumber(needNum - entryNum) ? needNum - entryNum : '-'
     }
-  ],
-  [
-    'emerType',
-    '紧急程度',
-    {
-      dictKey: 'emerType'
-    }
   ]
+  // [
+  //   'emerType',
+  //   '紧急程度',
+  //   {
+  //     dictKey: 'emerType'
+  //   }
+  // ]
 ]
 
 export default {
