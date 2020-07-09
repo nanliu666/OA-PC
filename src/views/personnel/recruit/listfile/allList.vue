@@ -1,32 +1,33 @@
 <template>
   <div>
     <common-table
-      :loading="loading"
-      :data="data"
-      :page="page"
-      :columns="columns"
-      :page-config="pageConfig"
+      ref="table"
+      :columns="visibleColProps | columnsFilter"
       :config="tableConfig"
-      @current-page-change="currentPageChange"
-      @page-size-change="sizeChange"
+      :data="data"
+      :loading="tableLoading"
+      :page-config="pageConfig"
+      :page="page"
+      @current-page-change="handleCurrentPageChange"
       @expand-change="recruitmentSituation"
+      @page-size-change="handlePageSizeChange"
     >
       <template slot="topMenu">
         <div class="flex-flow flex justify-content align-items ">
           <div>
             <search-popover
               ref="searchPopover"
-              :require-options="searchConfig.requireOptions"
               :popover-options="searchConfig.popoverOptions"
+              :require-options="searchConfig.requireOptions"
               @submit="handleSubmit"
             />
           </div>
           <div class="resetEdge">
             <el-button
-              type="text"
               class="refresh"
               icon="icon-basics-refresh-outlined"
               size="medium"
+              type="text"
               @click="getTableData"
             />
 
@@ -36,17 +37,14 @@
               trigger="click"
               class="refresh"
             >
-              <div class="checkColumn">
-                <el-checkbox-group
-                  v-model="checkColumn"
-                  @change="columnChange"
-                >
+              <div class="operation__column--visible">
+                <el-checkbox-group v-model="visibleColProps">
                   <el-checkbox
-                    v-for="item in originColumn"
+                    v-for="item of _.drop(columns)"
                     :key="item.prop"
-                    :label="item.prop"
                     :disabled="item.prop === 'id' || item.prop === 'jobName'"
-                    class="originColumn"
+                    :label="item.prop"
+                    class="operation__column--item"
                   >
                     {{ item.label }}
                   </el-checkbox>
@@ -76,16 +74,25 @@
       </template>
       <template
         v-if="params.progress === 'Approved'"
-        slot="handler"
-        slot-scope="{ row }"
+        #handler="{row}"
       >
-        <el-button
-          size="medium"
-          type="text"
-          @click="handleEdit(row)"
-        >
-          {{ row.status == 'UnHandle' ? '分配' : '重新分配' }}
-        </el-button>
+        <div class="table__handler">
+          <el-button
+            size="medium"
+            type="text"
+            @click.stop="handleEdit(row)"
+          >
+            {{ row.status == 'UnHandle' ? '分配需求' : '重新分配' }}
+          </el-button>
+
+          <el-button
+            size="medium"
+            type="text"
+            @click.stop="() => handleNeedNumBtnClick(row)"
+          >
+            更改需求人数
+          </el-button>
+        </div>
       </template>
       <template
         slot="accuracy"
@@ -116,12 +123,12 @@
         </el-tag>
       </template>
 
-      <template
+      <div
         slot="emerType"
         slot-scope="{ row }"
       >
         <cla-label :emertype="row.emerType" />
-      </template>
+      </div>
       <template
         slot="expand"
         slot-scope="{ row }"
@@ -206,37 +213,44 @@
 
     <again
       ref="Again"
-      :visible.sync="createAgain"
+      :visible.sync="assignmentVisible"
       @refresh="refresNew()"
     />
     <assigned
       ref="Assigned"
-      :visible.sync="createAssigned"
+      :visible.sync="reassignmentVisible"
       @refresh="refresNew()"
     />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import SearchPopover from '@/components/searchPopOver/index'
+import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 import { getAllRecruitment, getPost, queryDistribution } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
-import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+import { mapGetters } from 'vuex'
 import Again from '@/views/personnel/recruit/details/again'
 import Assigned from '@/views/personnel/recruit/details/Assigned'
 import ClaLabel from '@/views/personnel/recruit/components/claLabel'
-const column = [
+import SearchPopover from '@/components/searchPopOver/index'
+
+// 全部招聘需求列表
+const TABLE_COLUMS = [
+  {
+    prop: 'expand',
+    type: 'expand',
+    slot: true
+  },
   {
     label: '需求编号',
     prop: 'id',
     slot: true,
-    minWidth: '120px'
+    minWidth: 120
   },
   {
     label: '职位',
     prop: 'jobName',
-    minWidth: '120px'
+    minWidth: 120
   },
   {
     label: '岗位',
@@ -246,7 +260,8 @@ const column = [
   {
     label: '紧急程度',
     prop: 'emerType',
-    slot: true
+    slot: true,
+    minWidth: 100
   },
   {
     label: '需求状态',
@@ -273,6 +288,15 @@ const column = [
     prop: 'candidateNum'
   }
 ]
+const TABLE_CONFIG = {
+  showHandler: true,
+  showIndexColumn: false,
+  enableMultiSelect: false,
+  enablePagination: true,
+  handlerColumn: {
+    width: 250
+  }
+}
 
 export default {
   name: 'AllList',
@@ -282,21 +306,17 @@ export default {
     Assigned,
     ClaLabel
   },
+  filters: {
+    // 过滤不可见的列
+    columnsFilter: (visibleColProps) =>
+      _.filter(TABLE_COLUMS, ({ prop }) => _.includes(visibleColProps, prop))
+  },
   data() {
     return {
-      checkColumn: [
-        'id',
-        'jobName',
-        'positionName',
-        'emerType',
-        'status',
-        'needNum',
-        'entryNum',
-        'accuracy',
-        'candidateNum'
-      ],
+      // 选中所有的col
+      visibleColProps: _.map(TABLE_COLUMS, ({ prop }) => prop),
       activeName: 'inrecruitment',
-      loading: false,
+      tableLoading: false,
       searchConfig: {
         requireOptions: [
           {
@@ -391,20 +411,8 @@ export default {
         ]
       },
       data: [],
-      columns: [
-        {
-          prop: 'expand',
-          type: 'expand',
-          slot: true
-        },
-        ...column
-      ],
-      tableConfig: {
-        showHandler: true,
-        showIndexColumn: false,
-        enableMultiSelect: false,
-        enablePagination: true
-      },
+      columns: TABLE_COLUMS,
+      tableConfig: TABLE_CONFIG,
       params: {
         progress: 'Approved',
         userId: null
@@ -413,8 +421,8 @@ export default {
       pageConfig: {
         pageSizes: [10, 20, 30, 40, 50]
       },
-      createAgain: false,
-      createAssigned: false,
+      assignmentVisible: false,
+      reassignmentVisible: false,
       setElement: [
         {
           choice: 'WorkYear',
@@ -428,8 +436,7 @@ export default {
       WorkYear: [],
       getLevel: [],
       management: [],
-      searchParams: {},
-      originColumn: column
+      searchParams: {}
     }
   },
   computed: {
@@ -479,9 +486,9 @@ export default {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
       params.progress = this.params.progress
-      this.loading = true
+      this.tableLoading = true
       getAllRecruitment(params).then((res) => {
-        this.loading = false
+        this.tableLoading = false
         this.data = res.data.map((item) => ({
           ...item,
           detail: [],
@@ -503,11 +510,11 @@ export default {
         query: { id: id, status: 'aRequirements' }
       })
     },
-    currentPageChange(param) {
+    handleCurrentPageChange(param) {
       this.page.currentPage = param
       this.getTableData(this.searchParams)
     },
-    sizeChange(pageSize) {
+    handlePageSizeChange(pageSize) {
       this.page.size = pageSize
       this.getTableData()
     },
@@ -527,6 +534,12 @@ export default {
       } else {
         this.$refs.Again.init(row)
       }
+    },
+    handleNeedNumBtnClick({ id }) {
+      this.$router.push({
+        path: '/personnel/recruit/components/chang',
+        query: { id }
+      })
     },
     isStatus(status) {
       let typeStatus
@@ -576,19 +589,19 @@ export default {
       } else {
         return (row.percentage = claAccuracy(row.needNum, row.entryNum))
       }
-    },
-    columnChange() {
-      this.columns = [
-        {
-          prop: 'expand',
-          type: 'expand',
-          slot: true
-        },
-        ...column.filter((item) => {
-          return this.checkColumn.indexOf(item.prop) > -1
-        })
-      ]
     }
+    // columnChange() {
+    //   this.columns = [
+    //     {
+    //       prop: 'expand',
+    //       type: 'expand',
+    //       slot: true
+    //     },
+    //     ...TABLE_COLUMS.filter((item) => {
+    //       return this.visibleColProps.indexOf(item.prop) > -1
+    //     })
+    //   ]
+    // }
   }
 }
 </script>
@@ -644,7 +657,7 @@ export default {
   margin: 0 12px;
 }
 
-.checkColumn {
+.operation__columns--visible {
   height: 200px;
   overflow: scroll;
 }

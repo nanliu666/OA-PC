@@ -176,6 +176,7 @@ const OVERVIEW_PROPS = [
           case 'suit':
             className = 'color--success'
             break
+          default:
         }
         return className
       },

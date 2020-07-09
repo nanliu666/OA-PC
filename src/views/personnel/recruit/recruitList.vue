@@ -76,9 +76,9 @@ const TAB_ACITVE_DEFAULT = 'iSubmit'
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList: () => import('./listfile/detailsList'),
+    DetailsList: () => import(/* webpackChunkName: "views" */ './listfile/detailsList'),
     AllList: () => import(/* webpackChunkName: "views" */ './listfile/allList'),
-    underApproval: () => import('./listfile/underApproval')
+    UnderApproval: import(/* webpackChunkName: "views" */ './listfile/underApproval')
   },
   data() {
     return {
@@ -148,4 +148,27 @@ $color_link_active: $color_active
 
   .newlyDemand
     float: right
+</style>
+
+<style lang="sass">
+// 该页面下的表格handler样式
+.RecruitList
+  // 添加一个分隔号 "｜"
+  .table__handler
+    display: flex
+    justify-content: flex-end
+    > .el-button--text
+      text-align: center
+      padding: 0 8px
+      margin-left: 0px
+      position: relative
+      &:not(:last-child)::after
+        background-color: #e3e7e9
+        content: ''
+        height: 10px
+        position: absolute
+        right: 0
+        top: 50%
+        transform: translateY(-50%)
+        width: 1px
 </style>

@@ -72,10 +72,26 @@
       </template>
 
       <template
-        v-for="dictName of ['EmerType', 'progress', 'status', 'WorkProperty']"
+        v-for="dictName of ['progress', 'WorkProperty']"
         #[_.lowerFirst(dictName)]="{row}"
       >
         {{ translator({ dictKey: dictName, value: _.get(row, _.lowerFirst(dictName)) }) }}
+      </template>
+
+      <el-tag
+        slot="status"
+        slot-scope="{ row }"
+        :type="row.status === 'Handled' ? 'primary' : 'danger'"
+      >
+        {{ translator({ dictKey: 'status', value: row.status }) }}
+      </el-tag>
+
+      <template #emerType="{row}">
+        <cla-label :emertype="row.emerType" />
+      </template>
+
+      <template #percentage="{row}">
+        {{ toPercentage(row) }}
       </template>
 
       <template
@@ -257,6 +273,7 @@ const TABLE_COLUMNS = [
   },
   {
     label: '紧急程度',
+    minWidth: 100,
     prop: 'emerType',
     slot: true
   },
@@ -270,8 +287,14 @@ const TABLE_COLUMNS = [
     width: '100'
   },
   {
-    label: '招聘进度',
+    label: '需求进度',
     prop: 'progress',
+    slot: true,
+    width: 100
+  },
+  {
+    label: '招聘进度',
+    prop: 'percentage',
     slot: true,
     width: 100
   },
@@ -305,6 +328,8 @@ const TABLE_CONFIG = {
 export default {
   name: 'DetailsList',
   components: {
+    ClaLabel: () =>
+      import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/claLabel'),
     SearchPopover: () => import('@/components/searchPopOver/index')
   },
   filters: {
@@ -324,7 +349,7 @@ export default {
       tableConfig: TABLE_CONFIG,
       tableLoading: false,
       params: {
-        progress: 'Approved',
+        progress: _.head(PROGRESS_DICTS).dictKey,
         userId: null
       },
       page: { currentPage: 1, size: 10, total: 0 },
@@ -332,16 +357,6 @@ export default {
         pageSizes: [10, 20, 30, 40, 50]
       },
       createOrgDailog: false,
-      setElement: [
-        {
-          choice: 'WorkYear',
-          target: 2
-        },
-        {
-          choice: 'EmerType',
-          target: 4
-        }
-      ],
       dictionary: {
         status: STATUS_DICTS,
         progress: PROGRESS_DICTS
@@ -424,8 +439,9 @@ export default {
         query: { id: row.id }
       })
     },
-    percentage(row) {
-      return (row.percentage = claAccuracy(row.needNum, row.entryNum))
+    toPercentage(row) {
+      const num = claAccuracy(row.needNum, row.entryNum)
+      return `${_.isNumber(num) ? num + '%' : '-'}`
     },
 
     // 查询字典字段

@@ -44,7 +44,7 @@
                     v-model="users.changneedNum"
                     size="medium"
                     controls-position="right"
-                    :min="1"
+                    :min="0"
                     :precision="0"
                   />
                 </el-form-item>
