@@ -78,7 +78,7 @@
           label="分配信息"
           name="inrecruitment"
         >
-          <Introduce :status="childData" />
+          <Overview :value="childData | overviewProps" />
           <h3 class="Header">
             分配详情
           </h3>
@@ -97,7 +97,7 @@
           label="招聘进度"
           name="inrecruitment"
         >
-          <Introduce :status="childData" />
+          <Overview :value="childData | overviewProps" />
           <h3 class="Header">
             分配详情
           </h3>
@@ -116,7 +116,7 @@
           label="招聘进度"
           name="inrecruitment"
         >
-          <Introduce :status="childData" />
+          <Overview :value="childData | overviewProps" />
           <h3 class="Header">
             关联候选人
             <el-button
@@ -149,20 +149,81 @@
 import { mapGetters } from 'vuex'
 import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 import Candidatepeople from './components/candidatepeople'
-import Introduce from './components/introduce'
 import DetailsDetails from './paging/details'
 import Entrystaff from './components/entrystaff'
 import DistriButeall from './components/Distributeall'
 import ButtongroupFrom from './components/buttongroup'
+import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+
+const OVERVIEW_PROPS = [
+  // 显示在<overview/>中的属性 格式: ["prop", "label", {config}]
+  ['jobName', '职位名称'],
+  ['joinDate', '到岗日期'],
+  [
+    'emerType',
+    '紧急程度',
+    {
+      className: ({ emerType }) => {
+        let className = ''
+        switch (emerType) {
+          case 'Super': // 与 urgent 相同处理
+          case 'urgent':
+            className = 'color--danger'
+            break
+          case 'common':
+            className = 'color--info'
+            break
+          case 'suit':
+            className = 'color--success'
+            break
+        }
+        return className
+      },
+      dictKey: 'emerType'
+    }
+  ],
+  ['needNum', '需求总数'],
+  ['entryNum', '已入职'],
+  [
+    '$_process',
+    '招聘进度',
+    {
+      // 设置 CSS class 属性
+      className: 'color--active text--bold',
+      // 处理 value
+      handler: ({ needNum, entryNum }) => _.toString(claAccuracy(needNum, entryNum)) + '%'
+    }
+  ],
+  ['candidateNum', '候选人数']
+]
+
 export default {
   name: 'StaffList',
   components: {
-    DetailsDetails,
-    Introduce,
+    ButtongroupFrom,
     Candidatepeople,
-    Entrystaff,
+    DetailsDetails,
     DistriButeall,
-    ButtongroupFrom
+    Entrystaff,
+    Overview: () => import(/* webpackChunkName: "views" */ './components/Overview')
+  },
+  filters: {
+    overviewProps: (data) => {
+      if (_.isNull(data)) return []
+      return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
+        let res = { label, value: data[prop] }
+        if (config) {
+          res.$config = _.cloneDeep(config)
+          if (config.handler) {
+            res.value = config.handler(data)
+          }
+          if (config.className && _.isFunction(config.className)) {
+            res.$config.className = config.className(data)
+          }
+        }
+        return res
+      })
+    }
   },
   data() {
     return {

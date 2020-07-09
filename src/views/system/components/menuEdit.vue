@@ -214,6 +214,7 @@ const FORM_COLUMNS = [
 ]
 
 export default {
+  name: 'MenuEdit',
   components: {
     IconSelect: () => import(/* webpackChunkName: "views" */ '@/components/icon-select')
   },

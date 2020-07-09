@@ -703,14 +703,38 @@ const res = {
           },
 
           {
-            menuId: '31212212451',
-            menuName: '离职交接事项',
-            menuType: 'Menu',
+            menuId: '1260116127481413601',
+            menuName: '人事信息设置',
+            menuType: 'Dir',
             isOwn: 1,
             isShow: 1,
-            code: '',
-            alias: '',
-            path: '/personnel/settings/resignation'
+            code: '/personnel/information',
+            alias: '/personnel/information',
+            path: '',
+            icon: 'iconfont icon-menu-user-filled',
+            dataPrivileges: [],
+            children: [
+              {
+                menuId: '31212212451',
+                menuName: '离职交接事项',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: '',
+                alias: '',
+                path: '/personnel/settings/resignation'
+              },
+              {
+                menuId: '38212212453',
+                menuName: '人事提醒设置',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: '',
+                alias: '',
+                path: '/personnel/settings/remind'
+              }
+            ]
           },
           {
             menuId: '1260116127481413637',

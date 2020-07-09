@@ -300,6 +300,7 @@ const SEARCH_POPOVER_CONFIG = {
 }
 
 export default {
+  name: 'Menu',
   components: {
     MenuEdit: () => import(/* webpackChunkName: "views" */ './components/menuEdit'),
     SeachPopover: () => import(/* webpackChunkName: "views" */ '@/components/searchPopOver')
@@ -466,22 +467,23 @@ $color_icon: #A0A8AE
     font-weight: bold
     font-size: 16px
 
-// 添加一个分隔号 "｜"
-.table__handler
-  display: flex
-  justify-content: flex-end
-  > .el-button--text
-    text-align: center
-    padding: 0 8px
-    margin-left: 0px
-    position: relative
-    &::after
-      content: ''
-      width: 1px
-      height: 10px
-      background-color: #e3e7e9
-      position: absolute
-      top: 50%
-      right: 0
-      transform: translateY(-50%)
+.Menu
+  // 添加一个分隔号 "｜"
+  .table__handler
+    display: flex
+    justify-content: flex-end
+    > .el-button--text
+      text-align: center
+      padding: 0 8px
+      margin-left: 0px
+      position: relative
+      &::after
+        content: ''
+        width: 1px
+        height: 10px
+        background-color: #e3e7e9
+        position: absolute
+        top: 50%
+        right: 0
+        transform: translateY(-50%)
 </style>

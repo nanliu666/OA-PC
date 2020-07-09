@@ -25,6 +25,7 @@
 
 <script>
 export default {
+  name: 'IconSelect',
   components: {
     IconSelectDialog: () => import(/* webpackChunkName: "views" */ './icon-select-dialog')
   },
