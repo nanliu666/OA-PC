@@ -1,5 +1,15 @@
 import Mock from 'mockjs'
 
+// emun 工作性质列表
+const WORK_PROPERTY_LIST = [
+  'FullTime',
+  'Trainee',
+  'PartTime',
+  'Labor',
+  'FullTime',
+  'LaborOutsourcing'
+]
+
 const workAddress = {
   resCode: 200,
   resMsg: '',
@@ -360,7 +370,7 @@ export default ({ mock }) => {
           positionId: '岗位测试-@increment',
           positionName: '经理-@increment',
           // 调用字典组
-          workProperty: 'full-time',
+          '': 'full-time',
           // 调用字典组
           emerType: 'urgent',
           needNum: '@integer(1, 100)',
@@ -406,7 +416,7 @@ export default ({ mock }) => {
           positionId: '岗位测试-@increment',
           positionName: '经理-@increment',
           // 调用字典组
-          workProperty: 'full-time',
+          'workProperty|1': WORK_PROPERTY_LIST,
           // 调用字典组
           emerType: 'urgent',
           needNum: '@integer(1, 100)',
@@ -426,7 +436,9 @@ export default ({ mock }) => {
           requirement: '测试全职-@increment',
           duty: '测试开发项目-@increment',
           userId: 'kenko',
-          userName: '@cname'
+          // userName: '@cname',
+          'progress|1': ['Approved', 'Finished'],
+          'status|1': ['UnHandle', 'Handled']
         })
       )
     }
@@ -439,6 +451,7 @@ export default ({ mock }) => {
         data: list
       }
     }
+    window.console.debug('get /user/v1/recruitment/submit/list', { res: submitList })
     return submitList
   })
 
@@ -456,7 +469,7 @@ export default ({ mock }) => {
           positionId: '岗位测试-@increment',
           positionName: '经理-@increment',
           // 调用字典组
-          workProperty: 'full-time',
+          'workProperty|1': WORK_PROPERTY_LIST,
           // 调用字典组
           emerType: 'urgent',
           needNum: '@integer(1, 100)',
