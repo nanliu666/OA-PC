@@ -40,7 +40,7 @@
           />
           <el-tab-pane
             label="已结束"
-            name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+            name="Finished"
           />
         </el-tabs>
         <under-approval v-if="activeName === 'UnderApproval'" />
@@ -78,7 +78,7 @@ export default {
   components: {
     DetailsList: () => import(/* webpackChunkName: "views" */ './listfile/detailsList'),
     AllList: () => import(/* webpackChunkName: "views" */ './listfile/allList'),
-    UnderApproval: import(/* webpackChunkName: "views" */ './listfile/underApproval')
+    UnderApproval: () => import(/* webpackChunkName: "views" */ './listfile/underApproval')
   },
   data() {
     return {

@@ -31,7 +31,21 @@
         type="primary"
         @click="DistributionContent()"
       >
-        {{ childData.status === 'UnHandle' ? '分配' : '重新分配' }}
+        {{ childData.status === 'UnHandle' ? '分配需求' : '重新分配' }}
+      </el-button>
+      <el-button
+        size="medium"
+        type="defualt"
+      >
+        更改需求人数
+      </el-button>
+
+      <el-button
+        plain
+        size="medium"
+        type="danger"
+      >
+        停止招聘
       </el-button>
     </template>
 
@@ -119,6 +133,6 @@ export default {
   display: block;
 }
 .Requirements {
-  width: 150px;
+  width: 500px;
 }
 </style>
