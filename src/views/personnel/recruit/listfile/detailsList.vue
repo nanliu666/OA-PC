@@ -15,8 +15,8 @@
           <div>
             <search-popover
               ref="searchPopover"
-              :require-options="searchConfig.requireOptions"
-              :popover-options="searchConfig.popoverOptions"
+              :require-options="searchPopoverConfig.requireOptions"
+              :popover-options="searchPopoverConfig.popoverOptions"
               @submit="handleSubmit"
             />
           </div>
@@ -82,22 +82,34 @@
         slot="handler"
         slot-scope="{ row }"
       >
-        <el-button
-          v-if="params.progress === 'Approved'"
-          size="medium"
-          type="text"
-          @click="JumpChange(row)"
-        >
-          更改需求人数
-        </el-button>
-        <el-button
-          v-else
-          size="medium"
-          type="text"
-          @click="JumpNewlybuild(row.id)"
-        >
-          复制
-        </el-button>
+        <el-dropdown trigger="click">
+          <span class="el-dropdown-link">
+            <el-button
+              type="text"
+              icon="icon-basics-more-outlined"
+            />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-if="params.progress === 'Approved'">
+              <el-button
+                size="medium"
+                type="text"
+                @click="JumpChange(row)"
+              >
+                更改需求人数
+              </el-button>
+            </el-dropdown-item>
+            <el-dropdown-item v-else>
+              <el-button
+                size="medium"
+                type="text"
+                @click="JumpNewlybuild(row.id)"
+              >
+                复制
+              </el-button>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </template>
     </common-table>
   </div>
@@ -280,6 +292,16 @@ const TABLE_COLUMNS = [
     prop: 'candidateNum'
   }
 ]
+const TABLE_CONFIG = {
+  showHandler: true,
+  showIndexColumn: false,
+  enableMultiSelect: false,
+  enablePagination: true,
+  handlerColumn: {
+    width: 50
+  }
+}
+
 export default {
   name: 'DetailsList',
   components: {
@@ -296,15 +318,10 @@ export default {
       recruit: false,
       change: true,
       activeName: 'inrecruitment',
-      searchConfig: SEARCH_POPOVER_CONFIG,
+      searchPopoverConfig: SEARCH_POPOVER_CONFIG,
       tableData: [],
       tableColumns: TABLE_COLUMNS,
-      tableConfig: {
-        showHandler: true,
-        showIndexColumn: false,
-        enableMultiSelect: false,
-        enablePagination: true
-      },
+      tableConfig: TABLE_CONFIG,
       tableLoading: false,
       params: {
         progress: 'Approved',
@@ -338,28 +355,22 @@ export default {
   mounted() {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
+      this.searchPopoverConfig.popoverOptions[0].config.treeParams.data.push(...res)
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getPost().then((res) => {
-      this.searchConfig.popoverOptions[1].options = res
+      this.searchPopoverConfig.popoverOptions[1].options = res
     })
-    this.pushDiction('WorkProperty')
-    this.pushDiction('EmerType')
+    // 加载字典数据 并初始化搜索组件的 options
+    _.each(['EducationalLevel', 'EmerType', 'WorkProperty', 'WorkYear'], async (dictKey) => {
+      let item = _.find(this.searchPopoverConfig.popoverOptions, { field: _.lowerFirst(dictKey) })
+      _.set(item, 'options', await this.pushDiction(dictKey))
+    })
   },
   methods: {
     getEducationalLevel(type) {
       let typeWord
       this.getLevel.forEach((item) => {
-        if (item.dictKey === type) {
-          typeWord = item.dictValue
-        }
-      })
-      return typeWord
-    },
-    getWorkYear(type) {
-      let typeWord
-      this.WorkYear.forEach((item) => {
         if (item.dictKey === type) {
           typeWord = item.dictValue
         }
@@ -440,6 +451,7 @@ export default {
     async pushDiction(dictKey) {
       const dict = await this.$store.dispatch('CommonDict', dictKey)
       this.$set(this.dictionary, dictKey, dict)
+      return dict
     }
   }
 }
