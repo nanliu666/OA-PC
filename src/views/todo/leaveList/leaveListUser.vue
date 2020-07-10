@@ -13,6 +13,17 @@
           <div class="name-box">
             {{ leaveNoteData.userName }} 的离职交接事项
           </div>
+          <div
+            v-if="listData.status === 'UnConfirm'"
+            class="btn-box"
+          >
+            <el-button
+              size="medium"
+              @click="urgeleaveNote"
+            >
+              催办
+            </el-button>
+          </div>
         </div>
         <div class="info-row">
           <div>
@@ -55,7 +66,7 @@
 </template>
 
 <script>
-import { getLeaveNote } from '@/api/todo/todo'
+import { getLeaveNote, postUrgeleaveNote } from '@/api/todo/todo'
 import { mapGetters } from 'vuex'
 export default {
   name: 'LeaveListUser',
@@ -118,6 +129,14 @@ export default {
         .finally(() => {
           this.loading = false
         })
+    },
+    // 催办
+    async urgeleaveNote() {
+      await postUrgeleaveNote({
+        groupId: this.groupId,
+        userId: this.userId
+      })
+      this.$message.success('催办成功')
     }
   }
 }
