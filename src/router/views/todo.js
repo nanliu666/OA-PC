@@ -63,6 +63,30 @@ export default [
         },
         component: () =>
           import(/* webpackChunkName: "views" */ '@/views/todo/leaveList/leaveListUser')
+      },
+      {
+        path: '/taskCenter/taskCenter',
+        name: '任务中心',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import(/* webpackChunkName: "views" */ '@/views/taskCenter/taskCenter')
+      },
+      {
+        path: '/quickAccess/mailList',
+        name: '通讯录',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import(/* webpackChunkName: "views" */ '@/views/quickAccess/mailList')
+      },
+      {
+        path: '/taskCenter/scheduleCenter',
+        name: '日程中心',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import(/* webpackChunkName: "views" */ '@/views/taskCenter/scheduleCenter')
       }
     ]
   }

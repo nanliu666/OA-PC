@@ -212,14 +212,6 @@ const column = [
     prop: 'jobNum'
   },
   {
-    label: '用户人数',
-    prop: 'userNum'
-  },
-  {
-    label: '在职人数',
-    prop: 'workNum'
-  },
-  {
     label: '描述',
     prop: 'remark',
     overHidden: true

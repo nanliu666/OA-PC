@@ -204,14 +204,6 @@ export default {
           label: '关联信息',
           prop: 'message',
           formatter: this.messageFormatter
-        },
-        {
-          label: '用户人数',
-          prop: 'userNum'
-        },
-        {
-          label: '在职人数',
-          prop: 'workNum'
         }
       ],
       selectArr: [],
