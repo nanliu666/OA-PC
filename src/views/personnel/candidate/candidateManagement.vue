@@ -398,10 +398,16 @@
           {{ row.monthSalary / 1000 + 'K' }}
         </template>
         <template
-          slot="createTime"
+          slot="interviewNum"
           slot-scope="{ row }"
         >
-          {{ row.createTime.split(' ')[0] }}
+          {{ row.interviewNum ? numberToChinese(row.interviewNum) + '面' : '' }}
+        </template>
+        <template
+          slot="interviewType"
+          slot-scope="{ row }"
+        >
+          {{ interviewTypeWord[row.interviewType] }}
         </template>
         <template
           slot="handler"
@@ -410,26 +416,28 @@
           <div class="handlerRow">
             <!-- 待沟通 -->
             <template v-if="row.status === '1'">
-              <el-button
-                v-if="row.pushResume === 0"
-                type="text"
-                @click="hadlePushAudit(row)"
-              >
-                推送审核
-              </el-button>
-              <el-button
-                v-if="row.pushResume === 1"
-                type="text"
-                disabled
-              >
-                已推送
-              </el-button>
-              <el-button
-                type="text"
-                @click="handleWeedOut(row)"
-              >
-                淘汰
-              </el-button>
+              <template v-if="tabStatus !== 'all'">
+                <el-button
+                  v-if="row.pushResume === 0"
+                  type="text"
+                  @click="hadlePushAudit(row)"
+                >
+                  推送审核
+                </el-button>
+                <el-button
+                  v-if="row.pushResume === 1"
+                  type="text"
+                  disabled
+                >
+                  已推送
+                </el-button>
+                <el-button
+                  type="text"
+                  @click="handleWeedOut(row)"
+                >
+                  淘汰
+                </el-button>
+              </template>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
@@ -438,6 +446,23 @@
                   <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
+                  <template v-if="tabStatus === 'all'">
+                    <el-dropdown-item
+                      v-if="row.pushResume === 0"
+                      command="hadlePushAudit"
+                    >
+                      推送审核
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.pushResume === 1"
+                      disabled
+                    >
+                      已推送
+                    </el-dropdown-item>
+                    <el-dropdown-item command="handleWeedOut">
+                      淘汰
+                    </el-dropdown-item>
+                  </template>
                   <el-dropdown-item command="changeJob">
                     更改应聘职位
                   </el-dropdown-item>
@@ -452,18 +477,20 @@
             </template>
             <!-- 初选通过 -->
             <template v-if="row.status === '2'">
-              <el-button
-                type="text"
-                @click="handleArrange(row)"
-              >
-                安排面试
-              </el-button>
-              <el-button
-                type="text"
-                @click="handleWeedOut(row)"
-              >
-                淘汰
-              </el-button>
+              <template v-if="tabStatus !== 'all'">
+                <el-button
+                  type="text"
+                  @click="handleArrange(row)"
+                >
+                  安排面试
+                </el-button>
+                <el-button
+                  type="text"
+                  @click="handleWeedOut(row)"
+                >
+                  淘汰
+                </el-button>
+              </template>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
@@ -472,6 +499,14 @@
                   <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
+                  <template v-if="tabStatus === 'all'">
+                    <el-dropdown-item command="handleArrange">
+                      安排面试
+                    </el-dropdown-item>
+                    <el-dropdown-item command="handleWeedOut">
+                      淘汰
+                    </el-dropdown-item>
+                  </template>
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
@@ -483,26 +518,28 @@
             </template>
             <!-- 面试中 -->
             <template v-if="row.status === '3'">
-              <el-button
-                type="text"
-                @click="handleArrange(row)"
-              >
-                重新安排面试
-              </el-button>
-              <el-button
-                v-if="row.interview === 0"
-                type="text"
-                @click="handleSend(row)"
-              >
-                发送面试登记表
-              </el-button>
-              <el-button
-                v-else
-                type="text"
-                @click="loopUpInterview(row)"
-              >
-                查看面试登记表
-              </el-button>
+              <template v-if="tabStatus !== 'all'">
+                <el-button
+                  type="text"
+                  @click="handleArrange(row)"
+                >
+                  重新安排面试
+                </el-button>
+                <el-button
+                  v-if="row.interview === 0"
+                  type="text"
+                  @click="handleSend(row)"
+                >
+                  发送面试登记表
+                </el-button>
+                <el-button
+                  v-else
+                  type="text"
+                  @click="loopUpInterview(row)"
+                >
+                  查看面试登记表
+                </el-button>
+              </template>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
@@ -511,6 +548,23 @@
                   <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
+                  <template v-if="tabStatus === 'all'">
+                    <el-dropdown-item command="handleArrange">
+                      重新安排面试
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.interview === 0"
+                      command="handleSend"
+                    >
+                      发送面试登记表
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-else
+                      command="loopUpInterview"
+                    >
+                      查看面试登记表
+                    </el-dropdown-item>
+                  </template>
                   <el-dropdown-item command="weedOut">
                     淘汰
                   </el-dropdown-item>
@@ -525,26 +579,28 @@
             </template>
             <!-- 面试通过 -->
             <template v-if="row.status === '4'">
-              <el-button
-                v-if="!row.applyId"
-                type="text"
-                @click="handleApplyEmploy(row)"
-              >
-                申请录用
-              </el-button>
-              <el-button
-                v-else
-                type="text"
-                @click="handleCheckEmploy(row)"
-              >
-                查看申请
-              </el-button>
-              <el-button
-                type="text"
-                @click="handleWeedOut(row)"
-              >
-                淘汰
-              </el-button>
+              <template v-if="tabStatus !== 'all'">
+                <el-button
+                  v-if="!row.applyId"
+                  type="text"
+                  @click="handleApplyEmploy(row)"
+                >
+                  申请录用
+                </el-button>
+                <el-button
+                  v-else
+                  type="text"
+                  @click="handleCheckEmploy(row)"
+                >
+                  查看申请
+                </el-button>
+                <el-button
+                  type="text"
+                  @click="handleWeedOut(row)"
+                >
+                  淘汰
+                </el-button>
+              </template>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
@@ -553,6 +609,23 @@
                   <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
+                  <template v-if="tabStatus === 'all'">
+                    <el-dropdown-item
+                      v-if="!row.applyId"
+                      command="handleApplyEmploy"
+                    >
+                      申请录用
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-else
+                      command="handleCheckEmploy"
+                    >
+                      查看申请
+                    </el-dropdown-item>
+                    <el-dropdown-item command="handleWeedOut">
+                      淘汰
+                    </el-dropdown-item>
+                  </template>
                   <el-dropdown-item
                     v-if="!row.applyId"
                     command="arrange"
@@ -582,18 +655,20 @@
             </template>
             <!-- 待发Offer -->
             <template v-if="row.status === '5'">
-              <el-button
-                type="text"
-                @click="handleSendOffer(row)"
-              >
-                发送Offer
-              </el-button>
-              <el-button
-                type="text"
-                @click="handleWeedOut(row)"
-              >
-                淘汰
-              </el-button>
+              <template v-if="tabStatus !== 'all'">
+                <el-button
+                  type="text"
+                  @click="handleSendOffer(row)"
+                >
+                  发送Offer
+                </el-button>
+                <el-button
+                  type="text"
+                  @click="handleWeedOut(row)"
+                >
+                  淘汰
+                </el-button>
+              </template>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
@@ -602,6 +677,14 @@
                   <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
+                  <template v-if="tabStatus === 'all'">
+                    <el-dropdown-item command="handleSendOffer">
+                      发送Offer
+                    </el-dropdown-item>
+                    <el-dropdown-item command="handleWeedOut">
+                      淘汰
+                    </el-dropdown-item>
+                  </template>
                   <el-dropdown-item command="edit">
                     编辑
                   </el-dropdown-item>
@@ -613,18 +696,20 @@
             </template>
             <!-- 已发Offer -->
             <template v-if="row.status === '6'">
-              <el-button
-                type="text"
-                @click="handleAcceptOffer(row)"
-              >
-                接受
-              </el-button>
-              <el-button
-                type="text"
-                @click="handleWeedOut(row)"
-              >
-                淘汰
-              </el-button>
+              <template v-if="tabStatus !== 'all'">
+                <el-button
+                  type="text"
+                  @click="handleAcceptOffer(row)"
+                >
+                  接受
+                </el-button>
+                <el-button
+                  type="text"
+                  @click="handleWeedOut(row)"
+                >
+                  淘汰
+                </el-button>
+              </template>
               <el-dropdown @command="handleCommand($event, row)">
                 <el-button
                   type="text"
@@ -633,6 +718,14 @@
                   <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
+                  <template v-if="tabStatus === 'all'">
+                    <el-dropdown-item command="handleAcceptOffer">
+                      接受
+                    </el-dropdown-item>
+                    <el-dropdown-item command="handleWeedOut">
+                      淘汰
+                    </el-dropdown-item>
+                  </template>
                   <el-dropdown-item command="offerChange">
                     Offer变更
                   </el-dropdown-item>
@@ -647,25 +740,32 @@
             </template>
             <!-- 已淘汰 -->
             <template v-if="row.status === '0'">
-              <el-button
-                type="text"
-                @click="handleRecover(row)"
-              >
-                恢复为候选人
-              </el-button>
-              <!-- <el-dropdown @command="handleCommand($event, row)">
+              <template v-if="tabStatus !== 'all'">
                 <el-button
                   type="text"
-                  style="margin-left: 10px"
+                  @click="handleRecover(row)"
                 >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  恢复为候选人
                 </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command>
+              </template>
+              <template v-if="tabStatus === 'all'">
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="handleRecover">
+                      淘汰
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
                     下载简历
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown> -->
+                  </el-dropdown-item> -->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
             </template>
           </div>
         </template>
@@ -805,10 +905,35 @@ const column = [
     width: 200
   },
   {
-    label: '候选人添加时间',
+    label: '添加人',
+    prop: 'addUserName',
+    width: '100'
+  },
+  {
+    label: '添加时间',
     prop: 'createTime',
-    slot: true,
+    width: 160
+  },
+  {
+    label: '面试轮次',
+    prop: 'interviewNum',
+    slot: true
+  },
+  {
+    label: '面试官',
+    prop: 'interviewUserName',
+    width: '100'
+  },
+  {
+    label: '面试时间',
+    prop: 'interviewTime',
     width: 120
+  },
+  {
+    label: '面试方式',
+    prop: 'interviewType',
+    width: '100',
+    slot: true
   }
 ]
 
@@ -820,6 +945,7 @@ import ChangeJobDialog from './components/changeJobDialog'
 import {
   getCandidateStatusStat,
   getCandidateList,
+  getCandidateOutList,
   acceptCandidateOffer,
   changeCandidateOffer,
   postRegisterSend
@@ -827,12 +953,14 @@ import {
 import { getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
 import arrange from './components/arrangeInterview'
+import { numberToChinese } from '@/util/util'
 
 export default {
   name: 'Candidate',
   components: { SearchPopover, WeedOutDialog, PushAuditDialog, ChangeJobDialog, arrange },
   data() {
     return {
+      numberToChinese: numberToChinese,
       arrangeTitle: '',
       arrangeDialog: false,
       row: {},
@@ -879,6 +1007,7 @@ export default {
         '6': '已发Offer'
       },
       approveStatusWord: { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' },
+      interviewTypeWord: { Onsite: '现场面试', Phone: '电话面试', Video: '视频面试' },
       loading: false,
       data: [],
       columns: column,
@@ -893,7 +1022,7 @@ export default {
         highlightSelect: true,
         showIndexColumn: false,
         handlerColumn: {
-          width: 250
+          width: 60
         }
       },
       page: {
@@ -983,6 +1112,23 @@ export default {
       changeJobDialog: false
     }
   },
+  watch: {
+    tabStatus: {
+      handler(val) {
+        let width = {
+          all: 50,
+          '1': 160,
+          '2': 160,
+          '3': 260,
+          '4': 160,
+          '5': 160,
+          '6': 140,
+          '0': 120
+        }
+        this.tableConfig.handlerColumn.width = width[val]
+      }
+    }
+  },
   created() {
     this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
       this.searchConfig.popoverOptions[2].options = res
@@ -1028,7 +1174,8 @@ export default {
     handleSend(row) {
       let params = {
         recruitmentId: row.recruitmentId,
-        personId: row.personId
+        personId: row.personId,
+        type: 'Interview'
       }
       postRegisterSend(params).then(() => {
         this.$message.success('发送成功')
@@ -1069,10 +1216,11 @@ export default {
       this.arrangeDialog = true
       if (row.status === '2') {
         this.arrangeTitle = '安排面试'
+      } else if (row.status === '4') {
+        this.arrangeTitle = '安排复试'
       } else {
         this.arrangeTitle = '重新安排面试'
       }
-
       this.row = JSON.parse(JSON.stringify(row))
     },
     handleExport() {},
@@ -1081,19 +1229,20 @@ export default {
         path: '/personnel/candidate/sendOffer',
         query: {
           personId: row.personId,
-          applyId: row.applyId
+          applyId: row.applyId,
+          offerId: row.offerId
         }
       })
     },
     toDetail(row) {
-      if (row.status === '4') {
-        this.$router.push('/personnel/personDetail/' + row.personId + `?applyId=${row.applyId}`)
-      } else if (row.status === '1') {
+      if (this.tabStatus === '0') {
         this.$router.push(
-          '/personnel/personDetail/' + row.personId + `?pushResume=${row.pushResume}`
+          '/personnel/personDetail/' + row.personId + `?recruitmentId=${row.recruitmentId}&status=0`
         )
       } else {
-        this.$router.push('/personnel/personDetail/' + row.personId)
+        this.$router.push(
+          '/personnel/personDetail/' + row.personId + `?recruitmentId=${row.recruitmentId}`
+        )
       }
     },
     handleAcceptOffer(row) {
@@ -1103,8 +1252,9 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = {
-          recruitmentId: row.recruitmentId,
-          personId: row.personId,
+          offerId: row.offerId,
+          // recruitmentId: row.recruitmentId,
+          // personId: row.personId,
           userId: this.$store.state.user.userInfo.user_id
         }
         const loading = this.$loading({ lock: true })
@@ -1194,7 +1344,8 @@ export default {
           type: 'warning'
         }).then(() => {
           const params = {
-            personId: data.personId,
+            // personId: data.personId,
+            offerId: data.offerId,
             userId: this.$store.state.user.userInfo.user_id
           }
           const loading = this.$loading({ lock: true })
@@ -1222,7 +1373,8 @@ export default {
           personId: data.personId,
           orgName: data.orgName,
           jobName: data.jobName,
-          name: data.name
+          name: data.name,
+          recruitmentId: data.recruitmentId
         }
         this.$router.push({
           path: '/personnel/candidate/interivewDetails',
@@ -1230,6 +1382,8 @@ export default {
         })
       } else if (command === 'reApply') {
         this.handleApplyEmploy(data)
+      } else if (command) {
+        this[command] && this[command](data)
       }
     },
     handleSubmit(params) {
@@ -1248,7 +1402,13 @@ export default {
       params.pageSize = this.page.size
       params.status = this.tabStatus === 'all' ? '' : this.tabStatus
       this.loading = true
-      getCandidateList(params)
+      let getFun
+      if (this.tabStatus === '0') {
+        getFun = getCandidateOutList
+      } else {
+        getFun = getCandidateList
+      }
+      getFun(params)
         .then((res) => {
           this.page.total = res.totalNum
           this.data = res.data
