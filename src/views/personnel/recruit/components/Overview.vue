@@ -51,7 +51,7 @@ export default {
       if (!dicts) this.pushDiction(dictKey)
       let result = value
       _.each(dicts, (item) => {
-        if (item.dictKey === value.trim()) {
+        if (item.dictKey === _.trim(value)) {
           result = item.dictValue
           return false
         }
