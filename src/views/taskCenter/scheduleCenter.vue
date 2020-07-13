@@ -151,6 +151,7 @@
 <script>
 import { scheduleTypeCN } from '@/const/taskCenter'
 import { mapGetters } from 'vuex'
+import moment from 'moment'
 import addSchDialog from '@/views/wel/components/addSchDialog'
 import { fetchScheduleinfo, delScheduleinfo } from '@/api/taskcenter/taskcenter'
 export default {
@@ -199,8 +200,8 @@ export default {
     loadData() {
       this.loading = true
       this.query.userId = this.userId
-      this.query.beginRemindDate = this.chooseDate
-      this.query.endRemindDate = this.chooseDate
+      this.query.beginRemindDate = moment().startOf('month')
+      this.query.endRemindDate = moment().endOf('month')
       fetchScheduleinfo(this.query)
         .then((res) => {
           this.scheduleList = res
