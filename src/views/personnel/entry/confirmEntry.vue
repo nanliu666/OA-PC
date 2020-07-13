@@ -414,8 +414,8 @@ import { getOrgTreeSimple } from '@/api/org/org'
 import { regionData } from 'element-china-area-data'
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import PageHeader from '@/components/page-header/pageHeader'
-import { getPersonInfo } from '@/api/personnel/candidate'
-import { getOfferApply } from '@/api/personnel/entry'
+// import { getPersonInfo, } from '@/api/personnel/candidate'
+import { getCandidateAcceptDetail } from '@/api/personnel/entry'
 
 export default {
   name: 'ConfirmEntry',
@@ -538,16 +538,31 @@ export default {
       this.workPropertyList = res
     })
     this.loadSelectData()
-    getPersonInfo({ personId: this.$route.params.personId }).then((res) => {
+    // getPersonInfo({ personId: this.$route.params.personId }).then((res) => {
+    // 	this.form.name = res.name
+    // 	this.form.phonenum = res.phonenum
+    // 	this.form.sex = res.sex
+    // 	this.form.userEmail = res.email
+    // 	this.form.personId = res.personId
+    // 	this.form.recruitmentId = res.recruitmentId
+    // 	this.$refs.form.clearValidate()
+    // })
+    // getOfferApply({ id: this.$route.query.applyId }).then((res) => {
+    // 	this.form.orgId = res.orgId
+    // 	this.form.jobId = res.jobId
+    // 	this.form.positionId = res.positionId
+    // 	this.form.entryDate = res.entryDate
+    // 	this.form.companyId = res.companyId
+    // 	this.form.workProperty = res.workProperty
+    // 	this.$refs.form.clearValidate()
+    // })
+    getCandidateAcceptDetail({ personId: this.$route.params.personId }).then((res) => {
       this.form.name = res.name
       this.form.phonenum = res.phonenum
       this.form.sex = res.sex
       this.form.userEmail = res.email
       this.form.personId = res.personId
       this.form.recruitmentId = res.recruitmentId
-      this.$refs.form.clearValidate()
-    })
-    getOfferApply({ id: this.$route.query.applyId }).then((res) => {
       this.form.orgId = res.orgId
       this.form.jobId = res.jobId
       this.form.positionId = res.positionId
