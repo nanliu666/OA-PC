@@ -244,7 +244,8 @@ export default {
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
-            personId: row.bizId
+            personId: row.bizId,
+            recruitmentId: row.bizId2
           }
         })
         //

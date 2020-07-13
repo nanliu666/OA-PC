@@ -1202,11 +1202,11 @@ export default {
         }
       })
     },
-    handleRegistration() {
-      this.$router.push({
-        path: '/personnel/candidate/registrationForm'
-      })
-    },
+    // handleRegistration() {
+    //   this.$router.push({
+    //     path: '/personnel/candidate/registrationForm'
+    //   })
+    // },
     handleApply() {
       this.$router.push({
         path: '/personnel/candidate/apply'
@@ -1229,6 +1229,7 @@ export default {
         path: '/personnel/candidate/sendOffer',
         query: {
           personId: row.personId,
+          recruitmentId: row.recruitmentId,
           applyId: row.applyId,
           offerId: row.offerId
         }

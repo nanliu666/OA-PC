@@ -428,6 +428,13 @@ export default {
       }
     },
     toEntryMatters(row) {
+      this.$router.push({
+        path: '/personnel/entry/entryMatters/' + row.userId,
+        query: {
+          personId: row.personId,
+          recruitmentId: row.recruitmentId
+        }
+      })
       this.$router.push('/personnel/entry/entryMatters/' + row.userId)
     },
     loadSearchOption() {

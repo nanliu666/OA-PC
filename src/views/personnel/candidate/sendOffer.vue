@@ -86,7 +86,7 @@
   </div>
 </template>
 <script>
-import { getPersonInfo } from '@/api/personnel/person'
+import { getCandidateInfo } from '@/api/personnel/person'
 import {
   modifyOffer,
   createOffer,
@@ -148,7 +148,10 @@ export default {
   },
   methods: {
     getPersonInfo() {
-      getPersonInfo(this.personId).then((data) => {
+      getCandidateInfo({
+        personId: this.personId,
+        recruitmentId: this.$route.query.recruitmentId
+      }).then((data) => {
         this.personInfo = data
       })
     },

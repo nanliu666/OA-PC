@@ -52,7 +52,7 @@ export const getPersonInfo = (params) => {
 
 // 候选人人员详情查询
 export const getCandidateInfo = (params) => {
-  return get('/api/user/v1/person/info', params)
+  return get('/api/user/v1/candidate/info', params)
 }
 
 // 已淘汰人员详情查询

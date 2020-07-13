@@ -26,7 +26,7 @@
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p @click="jumpToDetail(item.type, item.bizId)">
+                      <p @click="jumpToDetail(item.type, item.bizId, item.bizId2)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
                       <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
@@ -361,7 +361,7 @@ export default {
       })
     },
     // 跳去详情
-    jumpToDetail(type, bizId) {
+    jumpToDetail(type, bizId, bizId2) {
       if (type === 'Interview') {
         // 面试
         this.$router.push({
@@ -414,7 +414,8 @@ export default {
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
-            personId: bizId
+            personId: bizId,
+            recruitmentId: bizId2
           }
         })
       } else if (type === 'Entry') {

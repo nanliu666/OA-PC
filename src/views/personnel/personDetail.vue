@@ -673,6 +673,7 @@ export default {
         path: '/personnel/candidate/sendOffer',
         query: {
           personId: this.personInfo.personId,
+          recruitmentId: this.personInfo.recruitmentId,
           applyId: this.personInfo.applyId,
           offerId: this.personInfo.offerId
         }
@@ -726,11 +727,11 @@ export default {
         }
       })
     },
-    handleRegistration() {
-      this.$router.push({
-        path: '/personnel/candidate/registrationForm'
-      })
-    },
+    // handleRegistration() {
+    //   this.$router.push({
+    //     path: '/personnel/candidate/registrationForm'
+    //   })
+    // },
     handleApply() {
       this.$router.push({
         path: '/personnel/candidate/apply'
@@ -765,6 +766,7 @@ export default {
           this.personInfo = res
         })
         .catch(() => {
+          this.$message.error('无此人员信息')
           this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
           this.$router.go(-1)
         })
