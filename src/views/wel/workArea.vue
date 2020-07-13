@@ -21,8 +21,8 @@
                   slot="Pending"
                 >
                   <div
-                    v-for="item in toDoListData"
-                    :key="item.id"
+                    v-for="(item, index) in toDoListData"
+                    :key="index"
                     class="item-row"
                   >
                     <div class="text-box">
@@ -57,8 +57,8 @@
                   slot="Warning"
                 >
                   <div
-                    v-for="item in warningList"
-                    :key="item.id"
+                    v-for="(item, index) in warningList"
+                    :key="index"
                     class="item-row"
                   >
                     <div class="text-box">
@@ -120,8 +120,8 @@
                   slot="workNews"
                 >
                   <el-tooltip
-                    v-for="item in msgWorkList"
-                    :key="item.id"
+                    v-for="(item, index) in msgWorkList"
+                    :key="index"
                     :open-delay="500"
                     :enterable="false"
                     :content="item.content"
@@ -163,8 +163,8 @@
                   slot="systemNews"
                 >
                   <el-tooltip
-                    v-for="item in msgSystemList"
-                    :key="item.id"
+                    v-for="(item, index) in msgSystemList"
+                    :key="index"
                     :open-delay="500"
                     :enterable="false"
                     effect="dark"
