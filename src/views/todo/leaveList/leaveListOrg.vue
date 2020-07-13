@@ -168,7 +168,8 @@ export default {
     async urgeleaveNote() {
       await postUrgeleaveNote({
         groupId: this.groupId,
-        userId: this.userId
+        userId: this.leaveUserId,
+        type: 'B2C'
       })
       this.$message.success('催办成功')
     }
