@@ -216,23 +216,36 @@
       :visible.sync="assignmentVisible"
       @refresh="refresNew()"
     />
-    <assigned
-      ref="Assigned"
-      :visible.sync="reassignmentVisible"
-      @refresh="refresNew()"
+
+    <Redistribution
+      ref="redistribution"
+      :visible.sync="redistributionVisible"
+      @submit="handleRedistributionSubmit"
+    />
+
+    <NeedNumEdit
+      ref="needNumEdit"
+      :visible.sync="needNumEditVisible"
+      @submit="handleNeedNumEditSubmit"
     />
   </div>
 </template>
 
 <script>
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
-import { getAllRecruitment, getPost, queryDistribution } from '@/api/personnel/recruitment'
+import {
+  getAllRecruitment,
+  getPost,
+  queryDistribution,
+  getChange,
+  putDistribution
+} from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { mapGetters } from 'vuex'
 import Again from '@/views/personnel/recruit/details/again'
-import Assigned from '@/views/personnel/recruit/details/Assigned'
 import ClaLabel from '@/views/personnel/recruit/components/claLabel'
 import SearchPopover from '@/components/searchPopOver/index'
+import { renameKey } from '../../../../util/util'
 
 // 全部招聘需求列表
 const TABLE_COLUMS = [
@@ -301,10 +314,15 @@ const TABLE_CONFIG = {
 export default {
   name: 'AllList',
   components: {
-    SearchPopover,
     Again,
-    Assigned,
-    ClaLabel
+    ClaLabel,
+    Redistribution: () =>
+      import(/* webpackChunkName: "views" */ '../components/modals/Redistribution'),
+    SearchPopover,
+    NeedNumEdit: () =>
+      import(
+        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
+      )
   },
   filters: {
     // 过滤不可见的列
@@ -422,7 +440,8 @@ export default {
         pageSizes: [10, 20, 30, 40, 50]
       },
       assignmentVisible: false,
-      reassignmentVisible: false,
+      redistributionVisible: false,
+      needNumEditVisible: false,
       setElement: [
         {
           choice: 'WorkYear',
@@ -530,16 +549,17 @@ export default {
     },
     handleEdit(row) {
       if (row.status === 'Handled') {
-        this.$refs.Assigned.init(row)
+        this.$refs.redistribution.init(row)
       } else {
         this.$refs.Again.init(row)
       }
     },
-    handleNeedNumBtnClick({ id }) {
-      this.$router.push({
-        path: '/personnel/recruit/components/chang',
-        query: { id }
-      })
+    handleNeedNumBtnClick(row) {
+      return this.$refs.needNumEdit.init(row)
+      // this.$router.push({
+      //   path: '/personnel/recruit/components/chang',
+      //   query: { id }
+      // })
     },
     isStatus(status) {
       let typeStatus
@@ -589,7 +609,7 @@ export default {
       } else {
         return (row.percentage = claAccuracy(row.needNum, row.entryNum))
       }
-    }
+    },
     // columnChange() {
     //   this.columns = [
     //     {
@@ -602,6 +622,22 @@ export default {
     //     })
     //   ]
     // }
+    handleNeedNumEditSubmit(data) {
+      getChange(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message({ type: 'success', message: '提交成功' })
+          this.$refs.needNumEdit.close()
+        })
+        .finally(() => (this.$refs.needNumEdit.submitting = false))
+    },
+    handleRedistributionSubmit(data) {
+      putDistribution(data)
+        .then(() => this.$message.success('操作成功'))
+        .finally(() => {
+          this.$refs.redistribution.close()
+          this.refresNew()
+        })
+    }
   }
 }
 </script>
