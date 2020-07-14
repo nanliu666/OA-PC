@@ -25,7 +25,7 @@
               show-icon
             />
           </el-col>
-          <introduce :status="Status" />
+          <Overview :value="status | overviewProps" />
 
           <el-form
             ref="users"
@@ -99,14 +99,50 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Introduce from './introduce'
 import { getRecruitmentDetail, getChange } from '@/api/personnel/recruitment'
+
+const OVERVIEW_PROPS = [
+  // 显示在<introduct/>中的属性 格式: ["prop", "label", {config}]
+  ['jobName', '职位名称'],
+  ['needNum', '需求总数'],
+  ['entryNum', '已入职'],
+  [
+    '$_minus',
+    '剩余需求总数',
+    {
+      handler: ({ needNum, entryNum }) =>
+        _.isNumber(needNum - entryNum) ? needNum - entryNum : '-'
+    }
+  ],
+  [
+    'emerType',
+    '紧急程度',
+    {
+      dictKey: 'emerType'
+    }
+  ]
+]
 
 export default {
   name: 'Chang',
   components: {
-    Introduce,
+    Overview: () => import(/* webpackChunkName: "views" */ './Overview'),
     ApprProgress: () => import('@/components/appr-progress/apprProgress')
+  },
+  filters: {
+    overviewProps: (data) => {
+      if (_.isNull(data)) return []
+      return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
+        let res = { label, value: data[prop] }
+        if (config) {
+          res.$config = config
+          if (config.handler) {
+            res.value = config.handler(data)
+          }
+        }
+        return res
+      })
+    }
   },
   data() {
     var checkAppr = (rule, value, callback) => {
@@ -118,7 +154,7 @@ export default {
     }
     return {
       inputdisabled: true,
-      Status: null,
+      status: null,
       users: {
         changneedNum: null,
         changreason: null
@@ -146,8 +182,8 @@ export default {
   },
   mounted() {
     getRecruitmentDetail(this.$route.query.id).then((res) => {
-      this.users.changneedNum = res.needNum
-      this.Status = res
+      this.users.changneedNum = res.needNum - res.entryNum
+      this.status = res
     })
   },
   methods: {
@@ -187,14 +223,6 @@ export default {
   width: 48%;
 }
 
-.introduceP {
-  margin-left: 92px;
-  color: #207efa;
-  height: 40px;
-  font-size: 13px;
-  line-height: 40px;
-}
-
 .isbox {
   color: #fff;
   width: 120px;
@@ -203,10 +231,6 @@ export default {
   line-height: 60px;
   background: #ccc;
   text-align: center;
-}
-
-.introduce {
-  margin-left: 92px !important;
 }
 
 /deep/ .el-select--medium,

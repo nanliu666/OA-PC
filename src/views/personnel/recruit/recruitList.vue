@@ -4,14 +4,14 @@
       <div slot="title">
         <span
           style="cursor:pointer"
-          :class="{ active: Select }"
-          @click="changeTemp"
+          :class="{ active: tab === 'iSubmit' }"
+          @click="() => switchTab('iSubmit')"
         >我提交的招聘需求</span>
         <span style=" margin: 0 20px">|</span>
         <span
           style="cursor:pointer"
-          :class="{ active: doNotsave }"
-          @click="changeTemp('all')"
+          :class="{ active: tab === 'all' }"
+          @click="() => switchTab('all')"
         >全部招聘需求</span>
       </div>
       <el-button
@@ -25,7 +25,7 @@
       </el-button>
     </page-header>
     <basic-container>
-      <div v-show="Select">
+      <div v-show="tab === 'iSubmit'">
         <el-tabs
           v-model="activeName"
           @tab-click="handleClick"
@@ -50,7 +50,7 @@
         />
       </div>
 
-      <div v-show="doNotsave">
+      <div v-show="tab === 'all'">
         <el-tabs
           v-model="allActiveName"
           @tab-click="allHandleClick"
@@ -69,7 +69,12 @@
     </basic-container>
   </div>
 </template>
+
 <script>
+import _ from 'lodash'
+
+const TAB_ACITVE_DEFAULT = 'iSubmit'
+
 export default {
   name: 'RecruitList',
   components: {
@@ -79,10 +84,17 @@ export default {
   },
   data() {
     return {
-      doNotsave: false,
-      Select: true,
       activeName: 'UnderApproval',
       allActiveName: 'allApproved'
+    }
+  },
+  computed: {
+    // 当前pageHeader显示的视图
+    tab() {
+      if (!this.$route.query.tab) {
+        this.switchTab(TAB_ACITVE_DEFAULT)
+      }
+      return this.$route.query.tab
     }
   },
   methods: {
@@ -106,14 +118,18 @@ export default {
         this.$refs.all.init('Finished')
       }
     },
-    changeTemp(value) {
-      if (value === 'all') {
-        this.Select = false
-        this.doNotsave = true
-      } else {
-        this.Select = true
-        this.doNotsave = false
-      }
+    /**
+     * 切换当前tab
+     * @param {string} tab 要切换的tab
+     * @returns {void}
+     */
+    switchTab(tab) {
+      if (this.$route.name !== '招聘需求管理') return
+      this.$router.replace({
+        query: _.assign(null, this.$route.query, {
+          tab
+        })
+      })
     }
   }
 }

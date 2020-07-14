@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import Mock from 'mockjs'
 import user from './user'
 import menu from './menu'
 import oauth from './oauth'
@@ -27,6 +28,7 @@ import msg from './msg'
 import entry from './entry'
 import taskcenter from './taskcenter'
 import schedule from './schedule'
+import remind from './remind'
 /**
  * 模拟数据mock
  *
@@ -34,6 +36,10 @@ import schedule from './schedule'
  */
 
 const options = { mock: false }
+// 设置500毫秒的时延长
+Mock.setup({
+  timeout: 500
+})
 
 user(options)
 approval(options)
@@ -72,3 +78,4 @@ todo(options)
 entry(options)
 taskcenter({ mock: true })
 schedule({ mock: true })
+remind({ mock: true })
