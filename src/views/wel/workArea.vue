@@ -323,7 +323,6 @@ export default {
         let toDoRes = await getTodoList(this.todoQuery)
         this.toDoListData = toDoRes.data
         this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
-        this.$emit('update:todoCount', toDoRes.totalNum)
         this.todoQuery.isWarn = 1
         let warningRes = await getTodoList(this.todoQuery)
         this.warningList = warningRes.data

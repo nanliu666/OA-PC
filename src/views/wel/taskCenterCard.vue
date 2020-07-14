@@ -199,14 +199,10 @@ export default {
     async loadData() {
       this.taskQuery.userId = this.userId
       this.taskLoading = true
-      let { data, totalNum } = await fetchTaskList(this.taskQuery).finally(() => {
+      let { data } = await fetchTaskList(this.taskQuery).finally(() => {
         this.taskLoading = false
       })
-      if (this.taskActiveName === 'ongoing') {
-        this.labelArray[0].label = `进行中(${totalNum})`
-      } else if (this.taskActiveName === 'overdue') {
-        this.labelArray[1].label = `已逾期(${totalNum})`
-      }
+
       this.taskDataList = data
     },
     // 跳去任务中心

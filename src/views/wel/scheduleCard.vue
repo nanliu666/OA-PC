@@ -351,5 +351,10 @@ export default {
       }
     }
   }
+  .view-all {
+    position: absolute;
+    bottom: -48px;
+    left: 24px;
+  }
 }
 </style>
