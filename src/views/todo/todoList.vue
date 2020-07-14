@@ -253,7 +253,8 @@ export default {
         this.$router.push({
           path: '/todo/leaveListOrg',
           query: {
-            id: row.bizId
+            leaveUserId: row.bizId,
+            groupId: row.biz_id2
           }
         })
       } else if (row.type === 'LeaveListUser') {
@@ -261,7 +262,7 @@ export default {
         this.$router.push({
           path: '/todo/LeaveListUser',
           query: {
-            id: row.bizId
+            leaveUserId: row.bizId
           }
         })
       } else if (row.type === 'Entry') {

@@ -97,9 +97,11 @@ export default {
   methods: {
     loadingData() {
       this.loading = true
-      let arrId = this.$route.query.id.split(',')
-      this.leaveUserId = arrId[0]
-      this.groupId = arrId[1]
+      // let arrId = this.$route.query.id.split(',')
+      // this.leaveUserId = arrId[0]
+      // this.groupId = arrId[1]
+      this.leaveUserId = this.$route.query.leaveUserId
+      this.groupId = this.$route.query.groupId
       let params = {
         userId: this.userId,
         leaveUserId: this.leaveUserId,

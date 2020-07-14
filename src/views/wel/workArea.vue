@@ -26,7 +26,7 @@
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p @click="jumpToDetail(item.type, item.bizId)">
+                      <p @click="jumpToDetail(item)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
                       <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
@@ -62,7 +62,7 @@
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p @click="jumpToDetail(item.type, item.bizId)">
+                      <p @click="jumpToDetail(item)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
                       <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
@@ -360,7 +360,7 @@ export default {
       })
     },
     // 跳去详情
-    jumpToDetail(type, bizId) {
+    jumpToDetail({ type, bizId, biz_id2 }) {
       if (type === 'Interview') {
         // 面试
         this.$router.push({
@@ -397,7 +397,8 @@ export default {
         this.$router.push({
           path: '/todo/leaveListOrg',
           query: {
-            id: bizId
+            leaveUserId: bizId,
+            groupId: biz_id2
           }
         })
       } else if (type === 'LeaveListUser') {
@@ -405,7 +406,7 @@ export default {
         this.$router.push({
           path: '/todo/LeaveListUser',
           query: {
-            id: bizId
+            leaveUserId: bizId
           }
         })
       } else if (type === 'InterviewRegister') {
