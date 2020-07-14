@@ -17,7 +17,7 @@
               ref="searchPopover"
               :require-options="searchPopoverConfig.requireOptions"
               :popover-options="searchPopoverConfig.popoverOptions"
-              @submit="handleSubmit"
+              @submit="handleSearch"
             />
           </div>
           <div class="resetEdge">
@@ -98,7 +98,7 @@
         slot="handler"
         slot-scope="{ row }"
       >
-        <el-dropdown trigger="click">
+        <el-dropdown>
           <span class="el-dropdown-link">
             <el-button
               type="text"
@@ -110,7 +110,7 @@
               <el-button
                 size="medium"
                 type="text"
-                @click="JumpChange(row)"
+                @click="() => handleNeedNumEditBtnClick(row)"
               >
                 更改需求人数
               </el-button>
@@ -128,14 +128,21 @@
         </el-dropdown>
       </template>
     </common-table>
+
+    <need-num-edit
+      ref="needNumEdit"
+      :visible.sync="needNumEditVisible"
+      @submit="handleNeedNumEditSubmit"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
-import { getOrgTreeSimple } from '@/api/org/org'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+import { getMyRecruitment, getPost, getChange } from '@/api/personnel/recruitment'
+import { getOrgTreeSimple } from '@/api/org/org'
+import { mapGetters } from 'vuex'
+import { renameKey } from '@/util/util'
 
 // 静态字典组
 const PROGRESS_DICTS = [
@@ -249,7 +256,7 @@ const TABLE_COLUMNS = [
     label: '需求编号',
     prop: 'id',
     slot: true,
-    minWidth: '120px'
+    minWidth: 150
   },
   {
     label: '职位',
@@ -330,6 +337,10 @@ export default {
   components: {
     ClaLabel: () =>
       import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/claLabel'),
+    NeedNumEdit: () =>
+      import(
+        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
+      ),
     SearchPopover: () => import('@/components/searchPopOver/index')
   },
   filters: {
@@ -343,6 +354,7 @@ export default {
       recruit: false,
       change: true,
       activeName: 'inrecruitment',
+      needNumEditVisible: false,
       searchPopoverConfig: SEARCH_POPOVER_CONFIG,
       tableData: [],
       tableColumns: TABLE_COLUMNS,
@@ -408,7 +420,16 @@ export default {
         this.page.total = res.totalNum
       })
     },
-    handleSubmit(params) {
+
+    handleNeedNumEditSubmit(data) {
+      getChange(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message({ type: 'success', message: '提交成功' })
+          this.$refs.needNumEdit.close()
+        })
+        .finally(() => (this.$refs.needNumEdit.submitting = false))
+    },
+    handleSearch(params) {
       this.searchParams = params
       this.getTableData(params)
     },
@@ -433,11 +454,8 @@ export default {
       this.getTableData()
     },
 
-    JumpChange(row) {
-      this.$router.push({
-        path: '/personnel/recruit/components/chang',
-        query: { id: row.id }
-      })
+    handleNeedNumEditBtnClick(row) {
+      return this.$refs.needNumEdit.init(row)
     },
     toPercentage(row) {
       const num = claAccuracy(row.needNum, row.entryNum)
