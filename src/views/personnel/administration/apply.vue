@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="Apply">
     <page-header
       title="新建转正申请"
       show-back
     />
-    <basic-container>
+    <basic-container block>
       <el-row
         type="flex"
         justify="center"
@@ -99,7 +99,7 @@
               :loading="loading"
               type="primary"
               size="medium"
-              @click="submitForm()"
+              @click="() => handleSubmit()"
             >
               提交
             </el-button>
@@ -114,6 +114,7 @@
 import { mapGetters } from 'vuex'
 import { createApply } from '@/api/personnel/person'
 import { getStaffBasicInfo } from '@/api/personalInfo'
+import { getApproveCount } from '../../../api/approval/approval'
 export default {
   name: 'Apply',
   components: {
@@ -153,7 +154,25 @@ export default {
     })
   },
   methods: {
-    submitForm(params = {}) {
+    // 提交之前hook
+    async preSubmit() {
+      let valid = true
+      if (
+        _.get(
+          await getApproveCount({ userId: this.userId, formKey: 'UserFormalInfo' }),
+          'approveNum'
+        ) > 0
+      ) {
+        valid = false
+      }
+      return valid
+    },
+    async handleSubmit(params = {}) {
+      if (await this.preSubmit()) {
+        // 已经提交过了
+        return this.$message.warning('已存在正在审批中的申请')
+      }
+
       this.$refs['apply'].validate((valid) => {
         if (valid) {
           params.userId = this.userId
@@ -188,7 +207,7 @@ export default {
     goBack() {
       this.resetForm()
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-      this.$router.go(-1)
+      this.$router.back()
     },
     resetForm() {
       this.apply.advise = null
@@ -197,4 +216,10 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped></style>
+
+<style lang="sass" scoped>
+.Apply
+  .basic-container--block
+    height: calc(100% - 92px)
+    min-height: calc(100% - 92px)
+</style>
