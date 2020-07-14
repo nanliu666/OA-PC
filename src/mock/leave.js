@@ -28,9 +28,10 @@ export default ({ mock }) => {
           phonenum: '@natural(1000, 500000)',
           applyDate: '@date()',
           lastDate: '@date()',
-          leaveDate: '@date()',
+          'leaveDate|1': ['', '@date()'],
           leaveReason: 'A01',
-          leaveRemark: '@cparagraph(1, 2)'
+          leaveRemark: '@cparagraph(1, 2)',
+          approveStatus: 'Pass'
         })
       )
     }
@@ -82,8 +83,11 @@ export default ({ mock }) => {
         Mock.mock({
           id: '@integer(1, 1000000)',
           name: '@ctitle(3,5)',
-          isFinished: '@natural(0, 1)'
-          // isFinished: '1'
+          'status|1': ['Confirmed', 'UnConfirm'], //'UnConfirm'
+          isUrge: '@natural(0, 1)',
+          urgeTime: '2002-01-01 21:52:24',
+          b2cUrge: '@natural(0, 1)',
+          b2cUrgeTime: '2003-03-11 19:27:10'
         })
       )
     }
@@ -196,6 +200,22 @@ export default ({ mock }) => {
     })
     return {
       response: response
+    }
+  })
+  // 员工在发起离职申请前需要校验是否已存在正在审批中的申请，如果已存在正在审批中的申请，则不允许再次发起申请，调用接口：用户审批中个数查询接口
+  Mock.mock(new RegExp('/appr/v1/appr/apply/approve/num' + '.*'), 'get', () => {
+    let response = Mock.mock({
+      'approveNum|1': [0, 1]
+    })
+    return {
+      response: response
+    }
+  })
+
+  // 6.员工催部门
+  Mock.mock(new RegExp('/user/v1/user/leave/note/urge' + '.*'), 'post', () => {
+    return {
+      response: '催办成功'
     }
   })
 }

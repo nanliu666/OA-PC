@@ -36,4 +36,15 @@ export default ({ mock }) => {
       response: 'OK'
     }
   })
+  // 审批统计查询接口
+  Mock.mock(new RegExp('/appr/v1/appr/approve/stat' + '.*'), 'get', () => {
+    let obj = Mock.mock({
+      ccNum: '@increment(1,100)',
+      myNum: '@increment(1,100)',
+      waitNum: '@increment(1,100)'
+    })
+    return {
+      response: obj
+    }
+  })
 }
