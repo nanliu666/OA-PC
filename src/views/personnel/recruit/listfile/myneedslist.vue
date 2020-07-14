@@ -1,12 +1,12 @@
 <template>
   <div>
     <common-table
-      :loading="loading"
-      :data="data"
-      :page="page"
-      :columns="columns"
-      :page-config="pageConfig"
+      :columns="columnsVisible | columnsFilter"
       :config="tableConfig"
+      :data="data"
+      :loading="loading"
+      :page-config="pageConfig"
+      :page="page"
       @current-page-change="currentPageChange"
       @page-size-change="sizeChange"
     >
@@ -35,12 +35,9 @@
               class="refresh"
             >
               <div class="checkColumn">
-                <el-checkbox-group
-                  v-model="checkColumn"
-                  @change="columnChange"
-                >
+                <el-checkbox-group v-model="columnsVisible">
                   <el-checkbox
-                    v-for="item in originColumn"
+                    v-for="item of tableColumns"
                     :key="item.prop"
                     :label="item.prop"
                     :disabled="item.prop === 'id' || item.prop === 'jobName'"
@@ -85,6 +82,9 @@
       >
         {{ percentage(row) + '%' }}
       </template>
+      <template #progress="{row}">
+        {{ translator({ dictKey: 'progress', value: row.progress }) }}
+      </template>
       <template
         slot="handler"
         slot-scope="{ row }"
@@ -108,7 +108,7 @@ import { setRecruitment, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 
-const column = [
+const TABLE_COLUMNS = [
   {
     label: '需求编号',
     prop: 'id',
@@ -132,13 +132,13 @@ const column = [
     slot: true
   },
   {
-    label: '分配人',
+    label: '提交需求用户名',
     prop: 'userName'
   },
-  {
-    label: '分配时间',
-    prop: 'createTime'
-  },
+  // {
+  //   label: '分配时间',
+  //   prop: 'createTime'
+  // },
   {
     label: '任务数',
     prop: 'taskNum'
@@ -150,6 +150,34 @@ const column = [
   {
     label: '候选人数',
     prop: 'candidateNum'
+  },
+  {
+    label: '需求进度',
+    prop: 'progress',
+    slot: true
+  },
+  {
+    label: '分配人的用户ID',
+    prop: 'assignUserId'
+  },
+  {
+    label: '分配人的用户名',
+    prop: 'assignUserName'
+  },
+  {
+    label: '分配时间',
+    prop: 'updateTime'
+  }
+]
+
+const PROGRESS_DICTS = [
+  {
+    dictKey: 'Approved',
+    dictValue: '审批通过'
+  },
+  {
+    dictKey: 'Finished',
+    dictValue: '已结束'
   }
 ]
 
@@ -158,21 +186,15 @@ export default {
   components: {
     SearchPopover: () => import('@/components/searchPopOver/index')
   },
+  filters: {
+    // 过滤不可见的列
+    columnsFilter: (visibleColProps) =>
+      _.filter(TABLE_COLUMNS, ({ prop }) => _.includes(visibleColProps, prop))
+  },
   data() {
     return {
-      checkColumn: [
-        'id',
-        'jobName',
-        'orgName',
-        'positionName',
-        'emerType',
-        'userName',
-        'createTime',
-        'taskNum',
-        'entryNum',
-        'candidateNum'
-      ],
-      originColumn: column,
+      columnsVisible: _.map(TABLE_COLUMNS, ({ prop }) => prop),
+      tableColumns: TABLE_COLUMNS,
       loading: false,
       searchConfig: {
         requireOptions: [
@@ -264,59 +286,6 @@ export default {
         ]
       },
       data: [],
-      columns: [
-        {
-          label: '需求编号',
-          prop: 'id',
-          slot: true,
-          minWidth: '140px'
-        },
-        {
-          label: '职位',
-          prop: 'jobName',
-          minWidth: '120px'
-        },
-        {
-          label: '岗位',
-          prop: 'positionName',
-          minWidth: '120px'
-        },
-        {
-          label: '紧急程度',
-          prop: 'emerType',
-          minWidth: '120px',
-          slot: true
-        },
-        {
-          label: '分配人',
-          prop: 'userName',
-          minWidth: '120px'
-        },
-        {
-          label: '分配时间',
-          prop: 'createTime',
-          minWidth: '120px'
-        },
-        {
-          label: '任务数',
-          prop: 'taskNum'
-        },
-        {
-          label: '已入职',
-          prop: 'entryNum'
-        },
-        {
-          label: '招聘进度',
-          prop: 'accuracy',
-          minWidth: '120px',
-          slot: true
-        },
-        {
-          label: '候选人数',
-          prop: 'candidateNum'
-        }
-      ],
-
       tableConfig: {
         showHandler: true,
         showIndexColumn: false,
@@ -354,9 +323,12 @@ export default {
         selection: true,
         formHeight: 20,
         rowKey: 'orgId',
-        column: column
+        column: TABLE_COLUMNS
       },
-      searchParams: {}
+      searchParams: {},
+      dictionary: {
+        progress: PROGRESS_DICTS
+      }
     }
   },
   computed: {
@@ -471,10 +443,28 @@ export default {
     percentage(row) {
       return (row.percentage = claAccuracy(row.taskNum, row.entryNum))
     },
-    columnChange() {
-      this.columns = column.filter((item) => {
-        return this.checkColumn.indexOf(item.prop) > -1
+    translator({ value, dictKey, $config: config }) {
+      if (!(dictKey = dictKey || _.get(config, 'dictKey'))) {
+        return value
+      }
+
+      let dicts = this.dictionary[dictKey]
+      // 如果字典为 undefined 时候加载字典
+      if (!dicts) this.pushDiction(dictKey)
+      let result = value
+      _.each(dicts, (item) => {
+        if (item.dictKey === _.trim(value)) {
+          result = item.dictValue
+          return false
+        }
       })
+      return result
+    },
+    // 添加字典
+    async pushDiction(dictKey) {
+      const dict = await this.$store.dispatch('CommonDict', dictKey)
+      this.$set(this.dictionary, dictKey, dict)
+      return dict
     }
   }
 }

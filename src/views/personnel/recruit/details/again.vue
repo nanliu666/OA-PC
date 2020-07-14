@@ -145,7 +145,7 @@
     <el-button
       type="primary"
       size="medium"
-      @click="onSubmitted(dynamicValidateForm.users)"
+      @click="handleSubmit(dynamicValidateForm.users)"
     >
       确定
     </el-button>
@@ -297,10 +297,11 @@ export default {
       })
       return total
     },
-    onSubmitted(users) {
+    handleSubmit(users) {
       let accumulation = this.calWhetherBeyond()
       if (accumulation === this.Totalnumberpeople) {
         taskDistribution({
+          assignUser: this.userId,
           recruitmentId: this.recruitmentId,
           users: users
             .filter((item) => item.userId)
