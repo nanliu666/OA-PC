@@ -560,17 +560,6 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
-            menuId: '12613143696669077777777',
-            menuName: '更改需求人数',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 0,
-            code: 'personnel_editPerson',
-            alias: 'recruit',
-            path: '/personnel/recruit/components/chang',
-            icon: 'iconfont iconicon_compile'
-          },
-          {
             menuId: '12613143696669088888888888888',
             menuName: '新建需求',
             menuType: 'Menu',
