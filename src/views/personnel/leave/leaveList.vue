@@ -440,7 +440,7 @@ export default {
         this.getDataList()
       } else {
         this.paramsInfo.status = 'Leaved'
-        this.tableConfig.handlerColumn.minWidth = 100
+        this.tableConfig.handlerColumn.minWidth = 150
         this.getDataList()
       }
     },

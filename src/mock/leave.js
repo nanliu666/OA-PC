@@ -28,9 +28,10 @@ export default ({ mock }) => {
           phonenum: '@natural(1000, 500000)',
           applyDate: '@date()',
           lastDate: '@date()',
-          leaveDate: '@date()',
+          'leaveDate|1': ['', '@date()'],
           leaveReason: 'A01',
-          leaveRemark: '@cparagraph(1, 2)'
+          leaveRemark: '@cparagraph(1, 2)',
+          approveStatus: 'Pass'
         })
       )
     }

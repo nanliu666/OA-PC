@@ -200,8 +200,8 @@ export default {
     loadData() {
       this.loading = true
       this.query.userId = this.userId
-      this.query.beginRemindDate = moment().startOf('month')
-      this.query.endRemindDate = moment().endOf('month')
+      this.query.beginRemindDate = moment(this.chooseDate).startOf('month')
+      this.query.endRemindDate = moment(this.chooseDate).endOf('month')
       fetchScheduleinfo(this.query)
         .then((res) => {
           this.scheduleList = res
