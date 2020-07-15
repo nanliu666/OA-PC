@@ -63,6 +63,7 @@
   </el-dialog>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { getRecruitmentList, changeCandidateJob, recoverCandidate } from '@/api/personnel/candidate'
 // import { getOrgTreeSimple } from '@/api/org/org'
 import { addToCandidate } from '@/api/personnel/person'
@@ -95,8 +96,13 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   created() {
-    getRecruitmentList().then((res) => {
+    getRecruitmentList({
+      userId: this.userId
+    }).then((res) => {
       this.recruitmentList = res
     })
     // getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
