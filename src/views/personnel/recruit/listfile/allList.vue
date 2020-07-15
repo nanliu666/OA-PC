@@ -208,8 +208,6 @@
       </template>
     </common-table>
 
-    <!-- <again ref="Again" :visible.sync="assignmentVisible" @refresh="refresNew()" /> -->
-
     <Distribution
       ref="distribution"
       :visible.sync="distributionVisible"

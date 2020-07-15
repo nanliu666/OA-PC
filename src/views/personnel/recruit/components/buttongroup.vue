@@ -51,10 +51,10 @@
       </el-button>
     </template>
 
-    <Again
-      ref="Again"
-      :visible.sync="createAgain"
-      @dataJump="dataJump"
+    <Distribution
+      ref="distribution"
+      :visible.sync="distributionVisible"
+      @submit="handleDistributionSubmit"
     />
     <RequirementStop
       ref="requirementStop"
@@ -73,13 +73,12 @@
   </div>
 </template>
 <script>
-import Again from '@/views/personnel/recruit/details/again'
-import { getChange, putDistribution } from '@/api/personnel/recruitment'
+import { getChange, putDistribution, taskDistribution } from '@/api/personnel/recruitment'
 import { renameKey } from '@/util/util'
 export default {
   name: 'Buttongroup',
   components: {
-    Again,
+    Distribution: () => import(/* webpackChunkName: "views" */ '../components/modals/Distribution'),
     Redistribution: () =>
       import(/* webpackChunkName: "views" */ '../components/modals/Redistribution'),
     RequirementStop: () =>
@@ -91,7 +90,12 @@ export default {
         /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
       )
   },
-  props: ['childData'],
+  props: {
+    childData: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       user: {
@@ -100,7 +104,7 @@ export default {
         id: null
       },
       status: null,
-      createAgain: false,
+      distributionVisible: false,
       requirementStopVisible: false,
       redistributionVisible: false,
       needNumEditVisible: false
@@ -111,7 +115,7 @@ export default {
     DistributionContent() {
       this.$set(this.childData, 'jumpnot', true)
       if (this.childData && this.childData.status === 'UnHandle') {
-        this.$refs.Again.init(this.childData)
+        this.$refs.distribution.init(this.childData)
       } else {
         this.$refs.redistribution.init(this.childData)
       }
@@ -131,6 +135,14 @@ export default {
           this.$refs.needNumEdit.close()
         })
         .finally(() => (this.$refs.needNumEdit.submitting = false))
+    },
+    handleDistributionSubmit(data) {
+      taskDistribution(data)
+        .then(() => this.$message.success('操作成功'))
+        .finally(() => {
+          this.$refs.distribution.close()
+          this.refresNew()
+        })
     },
     handleRedistributionSubmit(data) {
       putDistribution(data)

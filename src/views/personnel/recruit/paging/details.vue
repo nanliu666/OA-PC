@@ -22,7 +22,7 @@
               <el-row>
                 <el-col :span="10">
                   <el-form-item label="停止招聘人">
-                    {{ personnel.stopUserName }}
+                    {{ personnel.stopName }}
                   </el-form-item>
                 </el-col>
                 <el-col
