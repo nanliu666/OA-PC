@@ -130,14 +130,13 @@
             <!-- v-if="isWaitLeave && !row.leaveDate" -->
             <el-dropdown
               v-if="isWaitLeave"
-              @command="handleCommand($event, row.userId)"
+              @command="handleCommand($event, row)"
             >
-              <!-- <el-button type="text" style="margin-left: 10px"> -->
               <i
                 class="el-icon-arrow-down iconfont icon-basics-more-outlined"
                 style="cursor: pointer;"
               />
-              <!-- </el-button> -->
+
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   v-if="!row.leaveDate"
@@ -182,7 +181,7 @@
 import { flatTree } from '@/util/util.js'
 import { getOrganizationTree } from '@/api/organize/grade.js'
 import SearchPopover from '@/components/searchPopOver/index'
-import { getLeaveList, getLeaveInfo, giveupLeave } from '@/api/leave/leave'
+import { getLeaveList, giveupLeave } from '@/api/leave/leave'
 import { getJobInfo } from '@/api/personalInfo.js'
 
 import leaveDialog from './components/leaveDialog'
@@ -441,7 +440,7 @@ export default {
         this.getDataList()
       } else {
         this.paramsInfo.status = 'Leaved'
-        this.tableConfig.handlerColumn.minWidth = 100
+        this.tableConfig.handlerColumn.minWidth = 150
         this.getDataList()
       }
     },
@@ -533,7 +532,7 @@ export default {
       this.$router.push('/personnel/detail/' + userId)
     },
     // 点击放弃离职
-    handleCommand(command, userId) {
+    handleCommand(command, { userId }) {
       // 点击离职
       if (command === 'giveLeave') {
         this.handelGiveLeave(userId)
@@ -541,10 +540,6 @@ export default {
     },
     // 放弃离职api
     async handelGiveLeave(userId) {
-      // 获取离职ID
-      let { id } = await getLeaveInfo({
-        userId
-      })
       let result = await this.$confirm(
         '放弃离职后员工将恢复到正常在职状态，您确认要放弃离职吗？',
         '确认放弃离职？',
@@ -561,7 +556,7 @@ export default {
 
       // confirm 点击确定
       await giveupLeave({
-        id
+        userId
       })
       // // 提示放弃离职 刷新页面
       this.$message.success('放弃离职成功')

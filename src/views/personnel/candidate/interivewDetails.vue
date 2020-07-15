@@ -238,7 +238,8 @@ export default {
     async getDataInfo() {
       // let { personId } = this.$route.query.personId
       let params = {
-        personId: this.$route.query.personId
+        personId: this.$route.query.personId,
+        recruitmentId: this.$route.query.recruitmentId
       }
       this.loading = true
       this.InterviewInfo = await getInterviewList(params).finally(() => {

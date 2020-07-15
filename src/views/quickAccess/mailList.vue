@@ -434,9 +434,11 @@ export default {
             padding-left: 12px;
             font-size: 14px;
             color: #202940;
+            // border: 1px solid #c6cbce;
             background: #ffffff;
             border-radius: 4px;
             flex: 5;
+            box-sizing: border-box;
           }
         }
       }

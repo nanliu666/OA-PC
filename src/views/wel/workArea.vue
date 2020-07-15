@@ -21,12 +21,12 @@
                   slot="Pending"
                 >
                   <div
-                    v-for="item in toDoListData"
-                    :key="item.id"
+                    v-for="(item, index) in toDoListData"
+                    :key="index"
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p @click="jumpToDetail(item.type, item.bizId)">
+                      <p @click="jumpToDetail(item)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
                       <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
@@ -57,12 +57,12 @@
                   slot="Warning"
                 >
                   <div
-                    v-for="item in warningList"
-                    :key="item.id"
+                    v-for="(item, index) in warningList"
+                    :key="index"
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p @click="jumpToDetail(item.type, item.bizId)">
+                      <p @click="jumpToDetail(item)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
                       <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
@@ -120,8 +120,8 @@
                   slot="workNews"
                 >
                   <el-tooltip
-                    v-for="item in msgWorkList"
-                    :key="item.id"
+                    v-for="(item, index) in msgWorkList"
+                    :key="index"
                     :open-delay="500"
                     :enterable="false"
                     :content="item.content"
@@ -163,8 +163,8 @@
                   slot="systemNews"
                 >
                   <el-tooltip
-                    v-for="item in msgSystemList"
-                    :key="item.id"
+                    v-for="(item, index) in msgSystemList"
+                    :key="index"
                     :open-delay="500"
                     :enterable="false"
                     effect="dark"
@@ -323,7 +323,6 @@ export default {
         let toDoRes = await getTodoList(this.todoQuery)
         this.toDoListData = toDoRes.data
         this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
-        this.$emit('update:todoCount', toDoRes.totalNum)
         this.todoQuery.isWarn = 1
         let warningRes = await getTodoList(this.todoQuery)
         this.warningList = warningRes.data
@@ -361,7 +360,7 @@ export default {
       })
     },
     // 跳去详情
-    jumpToDetail(type, bizId) {
+    jumpToDetail({ type, bizId, biz_id2 }) {
       if (type === 'Interview') {
         // 面试
         this.$router.push({
@@ -398,7 +397,8 @@ export default {
         this.$router.push({
           path: '/todo/leaveListOrg',
           query: {
-            id: bizId
+            leaveUserId: bizId,
+            groupId: biz_id2
           }
         })
       } else if (type === 'LeaveListUser') {
@@ -406,7 +406,7 @@ export default {
         this.$router.push({
           path: '/todo/LeaveListUser',
           query: {
-            id: bizId
+            leaveUserId: bizId
           }
         })
       } else if (type === 'InterviewRegister') {
@@ -414,7 +414,8 @@ export default {
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
-            personId: bizId
+            personId: bizId,
+            recruitmentId: biz_id2
           }
         })
       } else if (type === 'Entry') {

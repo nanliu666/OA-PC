@@ -296,6 +296,7 @@ import {
   certificate
 } from './components/userInfo'
 import { cardid, HMCardValid, TWCardValid } from '@/util/validate'
+import { mapGetters } from 'vuex'
 export default {
   name: 'RegistrationFormEdit',
   components: {},
@@ -455,6 +456,9 @@ export default {
       handler() {},
       deep: true
     }
+  },
+  computed: {
+    ...mapGetters(['userId'])
   },
   created() {
     this.validataId()
@@ -668,6 +672,8 @@ export default {
           this.form.nativeCityName = CodeToText[this.form.native[1]] || ''
           let params = {
             personId: this.$route.query.personId,
+            type: this.$route.query.entry ? 'Entry' : 'Interview',
+            userId: this.userId,
             ...this.form,
             emer: emer,
             family: family,
