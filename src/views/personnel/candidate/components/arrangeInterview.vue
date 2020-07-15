@@ -122,7 +122,8 @@ import {
   getAddresss,
   delAddresss,
   postInterViewSend,
-  postInterViewResend
+  postInterViewResend,
+  postInterViewRetest
 } from '@/api/personnel/selectedPerson'
 
 let optionsList = [
@@ -346,33 +347,25 @@ export default {
         }
 
         data.interview = this.form.interview ? 1 : 0
-
+        let postFun
         if (this.row.status === '2') {
-          this.loading = true
-
-          postInterViewSend(data)
-            .then(() => {
-              this.loading = false
-              this.dialog = false
-              this.$message.success('提交成功')
-              this.$emit('load')
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        } else if (this.row.status === '3' || this.row.status === '4') {
-          this.loading = true
-          postInterViewResend(data)
-            .then(() => {
-              this.loading = false
-              this.dialog = false
-              this.$emit('load')
-              this.$message.success('提交成功')
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          postFun = postInterViewSend
+        } else if (this.row.status === '3') {
+          postFun = postInterViewResend
+        } else if (this.row.status === '4') {
+          postFun = postInterViewRetest
         }
+        this.loading = true
+        postFun(data)
+          .then(() => {
+            this.loading = false
+            this.dialog = false
+            this.$message.success('提交成功')
+            this.$emit('load')
+          })
+          .catch(() => {
+            this.loading = false
+          })
       })
     },
     /***

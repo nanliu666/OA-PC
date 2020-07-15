@@ -118,6 +118,7 @@ export default {
         if (valid) {
           const params = {
             personId: this.personArr[0].personId,
+            recruitmentId: this.personArr[0].recruitmentId,
             userId: this.$store.state.user.userInfo.user_id,
             ...this.form
           }
