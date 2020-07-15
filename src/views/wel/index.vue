@@ -2,10 +2,10 @@
   <!-- <div>首页</div> -->
   <div class="page clearfix">
     <div class="aside">
-      <infoViewArea :todo-count="todoCount" />
+      <infoViewArea />
     </div>
     <div class="main">
-      <workArea :todo-count.sync="todoCount" />
+      <workArea />
       <taskCenterCard />
       <scheduleCard />
     </div>
@@ -26,9 +26,7 @@ export default {
     scheduleCard
   },
   data() {
-    return {
-      todoCount: 0
-    }
+    return {}
   }
 }
 </script>

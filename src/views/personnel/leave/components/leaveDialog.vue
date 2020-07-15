@@ -197,7 +197,8 @@ export default {
     // 调整离职信息
     async handelChangeLeave() {
       this.btnLoading = true
-      await changeLeaveInfo(this.changeParams)
+      let { id, lastDate, remark, reason } = this.changeParams
+      await changeLeaveInfo({ id, lastDate, remark, reason })
       this.$message.success('保存成功', 2000)
       this.refresh && this.refresh()
       this.btnLoading = false

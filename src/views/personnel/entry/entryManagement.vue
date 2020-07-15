@@ -138,6 +138,9 @@
                     <el-dropdown-item command="getOutEntry">
                       放弃入职
                     </el-dropdown-item>
+                    <el-dropdown-item command="changeEntryDate">
+                      更改入职日期
+                    </el-dropdown-item>
                     <!-- <el-dropdown-item command="edit">编辑</el-dropdown-item> -->
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -173,6 +176,12 @@
     <give-out-entry-dialog
       ref="giveOutEntryDialog"
       :visible.sync="giveOutEntryDialog"
+      @refresh="loadData(1)"
+    />
+    <!-- 更改入职日期 -->
+    <change-entry-date-dialog
+      ref="changeEntryDate"
+      :visible.sync="chanegDatevisible"
       @refresh="loadData(1)"
     />
   </div>
@@ -257,17 +266,20 @@ import moment from 'moment'
 import PageHeader from '@/components/page-header/pageHeader'
 import SearchPopover from '@/components/searchPopOver/index'
 import GiveOutEntryDialog from './components/giveOutEntryDialog'
+import changeEntryDateDialog from './components/changeEntryDate'
 import { getOrgJob } from '@/api/personnel/roster'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { getUserList } from '@/api/personnel/roster'
+import { postRegisterSend } from '@/api/personnel/candidate'
 import {
   getCandidateAcceptList,
   addOutCandidateAccept,
-  postEntryRegisterSend
+  // postEntryRegisterSend,
+  getGiveUpEntryist
 } from '@/api/personnel/entry'
 export default {
   name: 'EntryManagement',
-  components: { PageHeader, SearchPopover, GiveOutEntryDialog },
+  components: { PageHeader, SearchPopover, GiveOutEntryDialog, changeEntryDateDialog },
   data() {
     return {
       status: '7',
@@ -357,7 +369,8 @@ export default {
       },
       navShow: true,
       workProperty: {},
-      giveOutEntryDialog: false
+      giveOutEntryDialog: false,
+      chanegDatevisible: false
     }
   },
   created() {
@@ -368,7 +381,7 @@ export default {
   },
   methods: {
     confirmEntry(row) {
-      this.$router.push('/personnel/entry/confirmEntry/' + row.personId + '?applyId=' + row.applyId)
+      this.$router.push('/personnel/entry/confirmEntry/' + row.personId + '?offerId=' + row.offerId)
     },
     addWillEntry(row) {
       this.$confirm('您确认要将该员工添加到待入职吗？', '添加到待入职', {
@@ -379,7 +392,8 @@ export default {
         this.loading = true
         let params = {
           personId: row.personId,
-          userId: this.$store.state.user.userInfo.user_id
+          userId: this.$store.state.user.userInfo.user_id,
+          recruitmentId: row.recruitmentId
         }
         addOutCandidateAccept(params)
           .then(() => {
@@ -396,6 +410,9 @@ export default {
     handleCommand(command, data) {
       if (command === 'getOutEntry') {
         this.$refs.giveOutEntryDialog.out(data)
+      }
+      if (command === 'changeEntryDate') {
+        this.$refs.changeEntryDate.out(data)
       }
     },
     toRoster() {
@@ -460,6 +477,7 @@ export default {
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
       let getDataFun
+      // 最近入职
       if (this.status === 'latelyEntry') {
         getDataFun = getUserList
         params.endEntryDate = moment(new Date()).format('YYYY-MM-DD')
@@ -473,9 +491,14 @@ export default {
         delete params.jobId
         delete params.orgId
         delete params.orgId
-      } else {
+      }
+      // 待入职
+      else if (this.status === '7') {
         getDataFun = getCandidateAcceptList
-        params.status = this.status
+      }
+      // 放弃入职  730新增接口
+      else if (this.status === '8') {
+        getDataFun = getGiveUpEntryist
       }
       this.loading = true
       getDataFun(params)
@@ -503,9 +526,10 @@ export default {
     handleSend(row) {
       let params = {
         recruitmentId: row.recruitmentId,
-        personId: row.personId
+        personId: row.personId,
+        type: 'Entry'
       }
-      postEntryRegisterSend(params).then(() => {
+      postRegisterSend(params).then(() => {
         this.$message.success('发送成功')
         this.loadData()
       })
