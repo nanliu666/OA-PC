@@ -497,8 +497,7 @@ export default {
             attachment: data.attachmentUrl
               ? [{ fileUrl: data.attachmentUrl, localName: data.attachmentName }]
               : [],
-            remark: data.remark,
-            recruitmentId: data.recruitmentId
+            remark: data.remark
           }
           resolve()
         })

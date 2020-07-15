@@ -44,6 +44,19 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="恢复候选人到">
+        <el-select
+          v-model="form.status"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in statusList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <span
       slot="footer"
@@ -82,7 +95,8 @@ export default {
       form: { recruitmentId: '' },
       recruitmentList: [],
       rules: {
-        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }]
+        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }],
+        status: [{ required: true, message: '请选择候选人恢复后状态', trigger: 'blur' }]
       },
       orgId: '',
       orgList: [],
@@ -97,7 +111,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId']),
+    statusList() {
+      let statusList = [
+        { label: '待沟通', value: '1' },
+        { label: '初选通过', value: '2' },
+        { label: '面试通过', value: '4' }
+      ]
+      return statusList.filter((item) => {
+        return Number(item.value) <= Number(this.person.status)
+      })
+    }
   },
   created() {
     getRecruitmentList({

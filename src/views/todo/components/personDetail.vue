@@ -41,12 +41,16 @@
   </div>
 </template>
 <script>
-import { getPersonInfo } from '@/api/personnel/person'
+import { getCandidateInfo } from '@/api/personnel/candidate'
 import { createUniqueID } from '@/util/util'
 export default {
   name: 'PersonDetail',
   props: {
     personId: {
+      type: String,
+      default: ''
+    },
+    recruitmentId: {
       type: String,
       default: ''
     }
@@ -155,7 +159,7 @@ export default {
   watch: {
     personId: {
       handler(val) {
-        val && this.getPersonInfo(val)
+        val && this.getPersonInfo({ personId: val, recruitmentId: this.recruitmentId })
         // this.getPersonInfo('1263731939027013634')
       },
       immediate: true
@@ -179,7 +183,7 @@ export default {
     },
     getPersonInfo(personId) {
       this.loading = true
-      getPersonInfo(personId)
+      getCandidateInfo(personId)
         .then((res) => {
           this.personData = res
           this.$emit('update', res)
