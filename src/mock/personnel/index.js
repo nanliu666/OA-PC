@@ -1,9 +1,11 @@
 import Mock from 'mockjs'
 
+const EmerType = ['Super', 'urgent', 'common', 'suit']
+
 // 解析查询字符串
 const urlDecode = (url) =>
   _.fromPairs(
-    _.replace(url, /^.+\?/, '')
+    _.replace(url, /^[^?]*\?/, '')
       .split('&')
       .map((p) => p.split('=').map((p) => decodeURIComponent(p)))
   )
@@ -380,9 +382,9 @@ export default ({ mock }) => {
           // 调用字典组
           '': 'full-time',
           // 调用字典组
-          emerType: 'urgent',
+          'emerType|1': EmerType,
           needNum: function() {
-            return this.entryNum + _.random(0, 50)
+            return this.entryNum + _.random(50)
           },
           entryNum: '@integer(1, 100)',
           candidateNum: '@integer(1, 100)',
@@ -428,7 +430,7 @@ export default ({ mock }) => {
           // 调用字典组
           'workProperty|1': WORK_PROPERTY_LIST,
           // 调用字典组
-          emerType: 'urgent',
+          'emerType|1': EmerType,
           needNum: '@integer(1, 100)',
           entryNum: '@integer(1, 100)',
           candidateNum: '@integer(1, 100)',
@@ -481,7 +483,7 @@ export default ({ mock }) => {
           // 调用字典组
           'workProperty|1': WORK_PROPERTY_LIST,
           // 调用字典组
-          emerType: 'urgent',
+          'emerType|1': EmerType,
           needNum: '@integer(1, 100)',
           entryNum: '@integer(1, 100)',
           candidateNum: '@integer(1, 100)',
@@ -558,7 +560,7 @@ export default ({ mock }) => {
       positionId: '@integer(0, 1)',
       positionName: 'Vm[Z',
       'workProperty|1': WORK_PROPERTY_LIST,
-      emerType: 'urgent',
+      'emerType|1': EmerType,
       needNum: '@integer(1, 100)',
       entryNum: '@integer(1, 100)',
       candidateNum: '@integer(1, 100)',
