@@ -323,6 +323,8 @@
 </template>
 <script>
 import { provinceAndCityData } from 'element-china-area-data'
+import { mapGetters } from 'vuex'
+
 import {
   getPersonInfo,
   getRecruitmentList,
@@ -396,7 +398,8 @@ export default {
       } else {
         return '添加候选人'
       }
-    }
+    },
+    ...mapGetters(['userId'])
   },
   watch: {
     'form.recruitmentId': function(val) {
@@ -455,7 +458,9 @@ export default {
     },
     getRecruitment() {
       return new Promise((resolve) => {
-        getRecruitmentList().then((res) => {
+        getRecruitmentList({
+          userId: this.userId
+        }).then((res) => {
           this.recruitmentList = res
           this.form.orgName = (
             this.recruitmentList.find((item) => item.id === this.form.recruitmentId) || {}
