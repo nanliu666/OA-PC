@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div class="CandidateManagement">
     <page-header title="候选人管理">
       <el-dropdown
         slot="rightMenu"
@@ -219,12 +219,12 @@
     <basic-container block>
       <common-table
         ref="commonTable"
-        style="width: 100%;height:100%"
-        :data="data"
-        :page="page"
-        :loading="loading"
+        :columns="columnsVisible | columnsFilter"
         :config="tableConfig"
-        :columns="columns"
+        :data="data"
+        :loading="tableLoading"
+        :page="page"
+        style="width: 100%;height:100%"
         @current-page-change="currentChange"
         @page-size-change="sizeChange"
       >
@@ -260,12 +260,9 @@
                 style="margin:0 12px"
               >
                 <div class="checkColumn">
-                  <el-checkbox-group
-                    v-model="checkColumn"
-                    @change="columnChange"
-                  >
+                  <el-checkbox-group v-model="columnsVisible">
                     <el-checkbox
-                      v-for="item in originColumn"
+                      v-for="item in tableColumns"
                       :key="item.prop"
                       :label="item.prop"
                       :disabled="item.prop === 'name' || item.prop === 'jobName'"
@@ -349,11 +346,8 @@
             <el-button type="text">{{ row.name }}</el-button>
           </span>
         </template>
-        <template
-          slot="status"
-          slot-scope="{ row }"
-        >
-          {{ statusWord[row.status] }}
+        <template #status="{row}">
+          {{ translator({ dictKey: 'status', value: row.status }) }}
         </template>
         <template
           slot="sex"
@@ -371,7 +365,7 @@
           slot="approveStatus"
           slot-scope="{ row }"
         >
-          {{ approveStatusWord[row.approveStatus] }}
+          {{ translator({ dictKey: 'approveStatusWord', value: row.approveStatus }) }}
         </template>
         <template
           slot="provinceCode"
@@ -383,13 +377,13 @@
           slot="educationalLevel"
           slot-scope="{ row }"
         >
-          {{ educationalDict[row.educationalLevel] }}
+          {{ translator({ dictKey: 'EducationalLevel', value: row.educationalLevel }) }}
         </template>
         <template
           slot="recruitment"
           slot-scope="{ row }"
         >
-          {{ recruitmentChannel[row.recruitment] }}
+          {{ translator({ dictKey: 'RecruitmentChannel', value: row.recruitment }) }}
         </template>
         <template
           slot="monthSalary"
@@ -407,7 +401,7 @@
           slot="handler"
           slot-scope="{ row }"
         >
-          <div class="handlerRow">
+          <div class="table__handler">
             <!-- 待沟通 -->
             <template v-if="row.status === '1'">
               <el-button
@@ -697,16 +691,60 @@
 </template>
 
 <script>
-const column = [
+import {
+  acceptCandidateOffer,
+  changeCandidateOffer,
+  getCandidateList,
+  getCandidateStatusStat,
+  postRegisterSend
+} from '@/api/personnel/candidate'
+import { getOrgJob } from '@/api/personnel/roster'
+import { getOrgTreeSimple } from '@/api/org/org'
+import arrange from './components/arrangeInterview'
+import ChangeJobDialog from './components/changeJobDialog'
+import PushAuditDialog from './components/pushAuditDialog'
+import SearchPopover from '@/components/searchPopOver/index'
+import WeedOutDialog from './components/weedOutDialog'
+
+const APPROVAL_STATUS_DICTS = [
+  { dictKey: 'Approve', dictValue: '审批中' },
+  { dictKey: 'Pass', dictValue: '已通过' },
+  { dictKey: 'Reject', dictValue: '已拒绝' },
+  { dictKey: 'Cancel', dictValue: '已撤回' }
+]
+
+const PROGRESS_DICTS = [
+  {
+    dictKey: 'Approved',
+    dictValue: '审批通过'
+  },
+  {
+    dictKey: 'Finished',
+    dictValue: '已结束'
+  }
+]
+
+const STATUS_DICTS = [
+  { dictKey: '0', dictValue: '已淘汰' },
+  { dictKey: '1', dictValue: '待沟通' },
+  { dictKey: '2', dictValue: '初选通过' },
+  { dictKey: '3', dictValue: '面试中' },
+  { dictKey: '4', dictValue: '面试通过' },
+  { dictKey: '5', dictValue: '待发Offer' },
+  { dictKey: '6', dictValue: '已发Offer' }
+]
+
+const TABLE_COLUMNS = [
   {
     label: '姓名',
     prop: 'name',
     slot: true
   },
   {
+    formatter: ({ jobName, process }) => jobName + (_.eq('Finished', process) ? ' (停止招聘)' : ''),
     label: '应聘职位',
     prop: 'jobName',
-    width: 100
+    width: 200
   },
   {
     label: '用人部门',
@@ -812,53 +850,97 @@ const column = [
   }
 ]
 
-import SearchPopover from '@/components/searchPopOver/index'
-import WeedOutDialog from './components/weedOutDialog'
-import PushAuditDialog from './components/pushAuditDialog'
-import ChangeJobDialog from './components/changeJobDialog'
+const SEARCH_POPOVER_REQUIRE_OPTIONS = [
+  {
+    type: 'input',
+    field: 'search',
+    label: '',
+    data: '',
+    config: { placeholder: '姓名/邮箱/手机号码', 'suffix-icon': 'el-icon-search' }
+  }
+]
+const SEARCH_POPOVER_POPOVER_OPTIONS = [
+  {
+    type: 'select',
+    field: 'jobId',
+    label: '应聘职位',
+    data: '',
+    options: [],
+    config: { optionLabel: 'jobName', optionValue: 'jobId' }
+  },
+  {
+    type: 'treeSelect',
+    field: 'orgId',
+    label: '用人部门',
+    data: '',
+    config: {
+      selectParams: {
+        placeholder: '请选择用人部门',
+        multiple: false
+      },
+      treeParams: {
+        data: [],
+        'check-strictly': true,
+        'default-expand-all': false,
+        'expand-on-click-node': false,
+        clickParent: true,
+        filterable: false,
+        props: {
+          children: 'children',
+          label: 'orgName',
+          disabled: 'disabled',
+          value: 'orgId'
+        }
+      }
+    }
+  },
+  {
+    type: 'select',
+    field: 'recruitment',
+    label: '应聘渠道',
+    data: '',
+    options: [],
+    config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
+  },
+  {
+    type: 'select',
+    data: '',
+    label: '性别',
+    field: 'sex',
+    config: {},
+    options: [
+      { label: '男', value: '1' },
+      { label: '女', value: '0' }
+    ]
+  },
+  {
+    type: 'dataPicker',
+    data: '',
+    label: '添加时间',
+    field: 'beginCreateDate,endCreateDate',
+    config: { type: 'daterange', 'range-separator': '至' }
+  }
+]
 
-import {
-  getCandidateStatusStat,
-  getCandidateList,
-  acceptCandidateOffer,
-  changeCandidateOffer,
-  postRegisterSend
-} from '@/api/personnel/candidate'
-import { getOrgJob } from '@/api/personnel/roster'
-import { getOrgTreeSimple } from '@/api/org/org'
-import arrange from './components/arrangeInterview'
+const SEARCH_POPOVER_CONFIG = {
+  popoverOptions: SEARCH_POPOVER_POPOVER_OPTIONS,
+  requireOptions: SEARCH_POPOVER_REQUIRE_OPTIONS
+}
 
 export default {
   name: 'Candidate',
   components: { SearchPopover, WeedOutDialog, PushAuditDialog, ChangeJobDialog, arrange },
+  filters: {
+    // 过滤不可见的列
+    columnsFilter: (visibleColProps) =>
+      _.filter(TABLE_COLUMNS, ({ prop }) => _.includes(visibleColProps, prop))
+  },
   data() {
     return {
       arrangeTitle: '',
       arrangeDialog: false,
-      row: {},
-      checkColumn: [
-        'name',
-        'jobName',
-        'orgName',
-        'userName',
-        'status',
-        'interview',
-        'sex',
-        'age',
-        'phonenum',
-        'email',
-        'provinceCode',
-        'educationalLevel',
-        'university',
-        'major',
-        'workAge',
-        'lastCompany',
-        'recruitment',
-        'monthSalary',
-        'remark',
-        'createTime'
-      ],
-      originColumn: column,
+      columnsVisible: _.map(TABLE_COLUMNS, ({ prop }) => prop),
+      tableColumns: TABLE_COLUMNS,
       candidateStatus: {
         '0': 0,
         '1': 0,
@@ -869,19 +951,23 @@ export default {
         '6': 0
       },
       tabStatus: 'all',
-      statusWord: {
-        '0': '已淘汰',
-        '1': '待沟通',
-        '2': '初选通过',
-        '3': '面试中',
-        '4': '面试通过',
-        '5': '待发Offer',
-        '6': '已发Offer'
+      dictionary: {
+        approveStatusWord: APPROVAL_STATUS_DICTS,
+        progress: PROGRESS_DICTS,
+        status: STATUS_DICTS
       },
-      approveStatusWord: { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' },
-      loading: false,
+      // statusWord: {
+      //   '0': '已淘汰',
+      //   '1': '待沟通',
+      //   '2': '初选通过',
+      //   '3': '面试中',
+      //   '4': '面试通过',
+      //   '5': '待发Offer',
+      //   '6': '已发Offer'
+      // },
+      tableLoading: false,
       data: [],
-      columns: column,
+      columns: TABLE_COLUMNS,
       tableConfig: {
         showHandler: true,
         rowKey: (row) => {
@@ -902,81 +988,7 @@ export default {
         total: 0
       },
       searchParams: {},
-      searchConfig: {
-        requireOptions: [
-          {
-            type: 'input',
-            field: 'search',
-            label: '',
-            data: '',
-            options: [],
-            config: { placeholder: '姓名/邮箱/手机号码', 'suffix-icon': 'el-icon-search' }
-          }
-        ],
-        popoverOptions: [
-          {
-            type: 'select',
-            field: 'jobId',
-            label: '应聘职位',
-            data: '',
-            options: [],
-            config: { optionLabel: 'jobName', optionValue: 'jobId' }
-          },
-          {
-            type: 'treeSelect',
-            field: 'orgId',
-            label: '用人部门',
-            data: '',
-            config: {
-              selectParams: {
-                placeholder: '请选择用人部门',
-                multiple: false
-              },
-              treeParams: {
-                data: [],
-                'check-strictly': true,
-                'default-expand-all': false,
-                'expand-on-click-node': false,
-                clickParent: true,
-                filterable: false,
-                props: {
-                  children: 'children',
-                  label: 'orgName',
-                  disabled: 'disabled',
-                  value: 'orgId'
-                }
-              }
-            }
-          },
-          {
-            type: 'select',
-            field: 'recruitment',
-            label: '应聘渠道',
-            data: '',
-            options: [],
-            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
-          },
-          {
-            type: 'select',
-            data: '',
-            label: '性别',
-            field: 'sex',
-            config: {},
-            options: [
-              { label: '男', value: '1' },
-              { label: '女', value: '0' }
-            ]
-          },
-          {
-            type: 'dataPicker',
-            data: '',
-            label: '添加时间',
-            field: 'beginCreateDate,endCreateDate',
-            config: { type: 'daterange', 'range-separator': '至' }
-          }
-        ]
-      },
-      educationalDict: {},
+      searchConfig: SEARCH_POPOVER_CONFIG,
       recruitmentChannel: {},
       weedOutgDialog: false,
       pushAuditDialog: false,
@@ -984,16 +996,10 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
-      this.searchConfig.popoverOptions[2].options = res
-      res.forEach((item) => {
-        this.recruitmentChannel[item.dictKey] = item.dictValue
-      })
-    })
-    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
-      res.forEach((item) => {
-        this.educationalDict[item.dictKey] = item.dictValue
-      })
+    this.pushDiction('RecruitmentChannel').then((dicts) => {
+      _.find(this.searchConfig.popoverOptions, {
+        field: 'recruitment'
+      }).options = dicts
     })
     getOrgJob().then((res) => {
       this.searchConfig.popoverOptions[0].options = res
@@ -1146,11 +1152,6 @@ export default {
     handleRefresh() {
       this.loadAllData(1)
     },
-    columnChange() {
-      this.columns = column.filter((item) => {
-        return this.checkColumn.indexOf(item.prop) > -1
-      })
-    },
     handleRecover(data) {
       this.$refs.changeJobDialog.recover(data)
     },
@@ -1241,21 +1242,21 @@ export default {
       this.loadData(pageNo)
     },
     loadData(pageNo) {
-      if (this.loading) return
+      if (this.tableLoading) return
       let params = { ...this.searchParams }
       if (pageNo) this.page.currentPage = pageNo
       params.pageNo = this.page.currentPage
       params.pageSize = this.page.size
       params.status = this.tabStatus === 'all' ? '' : this.tabStatus
-      this.loading = true
+      this.tableLoading = true
       getCandidateList(params)
         .then((res) => {
           this.page.total = res.totalNum
           this.data = res.data
-          this.loading = false
+          this.tableLoading = false
         })
         .catch(() => {
-          this.loading = false
+          this.tableLoading = false
         })
     },
     currentChange(currentPage) {
@@ -1279,7 +1280,7 @@ export default {
       }
     },
     tabClick(status) {
-      if (this.loading) return
+      if (this.tableLoading) return
       this.tabStatus = status
       this.page.currentPage = 1
       this.$refs['searchPopover'].resetForm()
@@ -1293,6 +1294,30 @@ export default {
           this.$set(this.candidateStatus, item.status, item.statusNum)
         })
       })
+    },
+    // 查询字典字段
+    translator({ value, dictKey, $config: config }) {
+      if (!(dictKey = dictKey || _.get(config, 'dictKey'))) {
+        return value
+      }
+
+      let dicts = this.dictionary[dictKey]
+      // 如果字典为 undefined 时候加载字典
+      if (!dicts) this.pushDiction(dictKey)
+      let result = value
+      _.each(dicts, (item) => {
+        if (item.dictKey === _.trim(value)) {
+          result = item.dictValue
+          return false
+        }
+      })
+      return result
+    },
+    // 添加字典
+    async pushDiction(dictKey) {
+      const dict = await this.$store.dispatch('CommonDict', dictKey)
+      this.$set(this.dictionary, dictKey, dict)
+      return dict
     }
   }
 }
@@ -1407,28 +1432,31 @@ export default {
   overflow: scroll;
 }
 
-/deep/ .handlerRow {
-  display: flex;
-  justify-content: flex-end;
-  > .el-button--text {
-    text-align: center;
-    padding: 0 8px;
-    margin-left: 0px;
-    position: relative;
-    &::after {
-      content: '';
-      width: 1px;
-      height: 10px;
-      background-color: #e3e7e9;
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-    }
-  }
-}
-
 .icon-basics-more-outlined {
   color: #a1a7ae;
 }
+</style>
+
+<style lang="sass" scoped>
+$color_table_handler_border: #e3e7e9;
+
+.CandidateManagement
+  height: 100%
+  .table__handler
+    display: flex
+    justify-content: flex-end
+    > .el-button--text
+      text-align: center
+      padding: 0 8px
+      margin-left: 0px
+      position: relative
+      &:not(:last-child)::after
+        background-color: $color_table_handler_border
+        content: ''
+        height: 10px
+        position: absolute
+        right: 0
+        top: 50%
+        transform: translateY(-50%)
+        width: 1px
 </style>
