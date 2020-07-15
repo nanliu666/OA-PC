@@ -435,7 +435,6 @@ export default {
           recruitmentId: row.recruitmentId
         }
       })
-      this.$router.push('/personnel/entry/entryMatters/' + row.userId)
     },
     loadSearchOption() {
       getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
