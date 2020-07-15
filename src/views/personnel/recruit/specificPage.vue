@@ -229,7 +229,7 @@ export default {
   data() {
     return {
       loading: false,
-      childData: [],
+      childData: {},
       user: {
         joinDate: null,
         userName: null,
