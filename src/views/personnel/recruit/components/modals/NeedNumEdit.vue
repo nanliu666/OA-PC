@@ -110,7 +110,7 @@ export default {
   },
   filters: {
     overviewProps: (data) => {
-      if (_.isNull(data)) return []
+      if (_.isNil(data)) return []
       return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
         let res = { label, value: data[prop] }
         if (config) {

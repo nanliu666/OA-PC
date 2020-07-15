@@ -5,7 +5,7 @@
         :key="index"
         :gutter="20"
       >
-        <el-col :span="6">
+        <el-col :span="12">
           <span
             v-if="_.get(form.$config, 'userId.writable')"
             class="form__input"
@@ -33,58 +33,37 @@
             v-text="form.name"
           />
         </el-col>
-        <el-col :span="4">
-          <span
-            v-if="_.get(form.$config, 'taskNum.writable')"
-            class="form__input"
-          >
+        <!-- <el-col :span="4">
+          <span v-if="_.get(form.$config, 'taskNum.writable')" class="form__input">
             <el-input
               v-if="_.get(form.$config, '_taskNum.writable')"
               v-model="form._taskNum"
               :disabled="_.get(form.$config, '_taskNum.disabled')"
             />
           </span>
-          <span
-            v-else
-            class="form__text"
-            v-text="form._taskNum"
-          />
+          <span v-else class="form__text" v-text="form._taskNum" />
         </el-col>
         <el-col :span="4">
-          <span
-            v-if="_.get(form.$config, 'entryNum.writable')"
-            class="form__input"
-          >
+          <span v-if="_.get(form.$config, 'entryNum.writable')" class="form__input">
             <el-input
               v-model="form.entryNum"
               :disabled="_.get(form.$config, 'entryNum.writable')"
             />
           </span>
 
-          <span
-            v-else
-            class="form__text"
-            v-text="form.entryNum"
-          />
+          <span v-else class="form__text" v-text="form.entryNum" />
         </el-col>
         <el-col :span="4">
-          <span
-            v-if="_.get(form.$config, 'candidateNum.writable')"
-            class="form__input"
-          >
+          <span v-if="_.get(form.$config, 'candidateNum.writable')" class="form__input">
             <el-input
               v-model="form.candidateNum"
               :disabled="_.get(form.$config, 'candidateNum.writable')"
             />
           </span>
 
-          <span
-            v-else
-            class="form__text"
-            v-text="form.candidateNum"
-          />
-        </el-col>
-        <el-col :span="6">
+          <span v-else class="form__text" v-text="form.candidateNum" />
+        </el-col> -->
+        <el-col :span="12">
           <span class="form__input">
             <el-input-number
               :max="getMax(localValue.filter((i) => i !== form))"

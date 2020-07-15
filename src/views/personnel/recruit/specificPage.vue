@@ -37,39 +37,39 @@
         type="flex"
         style="margin-top:20px"
       >
-        <el-col :span="6">
+        <el-col :span="7">
           <span class="nodetitle">需求编号:</span>
           <span>{{ user.id }}</span>
         </el-col>
         <template v-if="$route.query.status === 'iSubmit'">
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">分配人:</span>
             <span>{{ user.userName }}</span>
           </el-col>
 
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">分配时间:</span>
             <span>{{ user.createTime }}</span>
           </el-col>
         </template>
         <template v-else>
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">提交人:</span>
             <span>{{ user.userName }}</span>
           </el-col>
 
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">提交时间:</span>
             <span>{{ user.createTime }}</span>
           </el-col>
         </template>
-        <el-col :span="6">
+        <el-col :span="3">
           <span class="nodetitle">状态:</span>
           <span style="color: #207EFA">{{
             user.needNum !== user.entryNum ? '招聘中' : '已结束'
           }}</span>
         </el-col>
-        <Buttongroup-from :child-data="childData" />
+        <ButtongroupFrom :child-data="childData" />
       </el-row>
       <el-tabs v-model="activeName">
         <!-- 全部招聘需求 -->

@@ -74,10 +74,7 @@
         </el-button>
       </template>
 
-      <template
-        slot="status"
-        slot-scope="{ row }"
-      >
+      <template #status="{row}">
         {{ calcStataus(row.status) }}
       </template>
     </common-table>
@@ -92,7 +89,7 @@ const column = [
     label: '审批编号',
     prop: 'apprNo',
     slot: true,
-    minWidth: '120px'
+    minWidth: 150
   },
   {
     label: '需求编号',

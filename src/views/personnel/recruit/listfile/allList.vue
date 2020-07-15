@@ -129,10 +129,7 @@
       >
         <cla-label :emertype="row.emerType" />
       </div>
-      <template
-        slot="expand"
-        slot-scope="{ row }"
-      >
+      <template #expand="{row}">
         <div v-loading="row.loading">
           <el-row
             :gutter="20"
@@ -211,12 +208,13 @@
       </template>
     </common-table>
 
-    <again
-      ref="Again"
-      :visible.sync="assignmentVisible"
-      @refresh="refresNew()"
-    />
+    <!-- <again ref="Again" :visible.sync="assignmentVisible" @refresh="refresNew()" /> -->
 
+    <Distribution
+      ref="distribution"
+      :visible.sync="distributionVisible"
+      @submit="handleDistributionSubmit"
+    />
     <Redistribution
       ref="redistribution"
       :visible.sync="redistributionVisible"
@@ -235,17 +233,18 @@
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 import {
   getAllRecruitment,
-  getPost,
-  queryDistribution,
   getChange,
-  putDistribution
+  // getEntryDetails,
+  getPost,
+  putDistribution,
+  queryDistribution,
+  taskDistribution
 } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { mapGetters } from 'vuex'
-import Again from '@/views/personnel/recruit/details/again'
 import ClaLabel from '@/views/personnel/recruit/components/claLabel'
 import SearchPopover from '@/components/searchPopOver/index'
-import { renameKey } from '../../../../util/util'
+import { renameKey } from '@/util/util'
 
 // 全部招聘需求列表
 const TABLE_COLUMS = [
@@ -314,10 +313,11 @@ const TABLE_CONFIG = {
 export default {
   name: 'AllList',
   components: {
-    Again,
     ClaLabel,
     Redistribution: () =>
       import(/* webpackChunkName: "views" */ '../components/modals/Redistribution'),
+    Distribution: () => import(/* webpackChunkName: "views" */ '../components/modals/Distribution'),
+
     SearchPopover,
     NeedNumEdit: () =>
       import(
@@ -441,6 +441,7 @@ export default {
       },
       assignmentVisible: false,
       redistributionVisible: false,
+      distributionVisible: false,
       needNumEditVisible: false,
       setElement: [
         {
@@ -551,7 +552,8 @@ export default {
       if (row.status === 'Handled') {
         this.$refs.redistribution.init(row)
       } else {
-        this.$refs.Again.init(row)
+        // this.$refs.Again.init(row)
+        this.$refs.distribution.init(row)
       }
     },
     handleNeedNumBtnClick(row) {
@@ -600,6 +602,7 @@ export default {
           row.detail = res.map((item) => ({ ...item, percentage: null }))
           row.loading = false
         })
+        // getEntryDetails({ recruitmentId: row.id }).then((res) => console.debug('recruitment', res))
       }
     },
     percentage(row) {
@@ -610,18 +613,7 @@ export default {
         return (row.percentage = claAccuracy(row.needNum, row.entryNum))
       }
     },
-    // columnChange() {
-    //   this.columns = [
-    //     {
-    //       prop: 'expand',
-    //       type: 'expand',
-    //       slot: true
-    //     },
-    //     ...TABLE_COLUMS.filter((item) => {
-    //       return this.visibleColProps.indexOf(item.prop) > -1
-    //     })
-    //   ]
-    // }
+
     handleNeedNumEditSubmit(data) {
       getChange(renameKey(data, 'id', 'recruitmentId'))
         .then(() => {
@@ -635,6 +627,15 @@ export default {
         .then(() => this.$message.success('操作成功'))
         .finally(() => {
           this.$refs.redistribution.close()
+          this.refresNew()
+        })
+    },
+
+    handleDistributionSubmit(data) {
+      taskDistribution(data)
+        .then(() => this.$message.success('操作成功'))
+        .finally(() => {
+          this.$refs.distribution.close()
           this.refresNew()
         })
     }
