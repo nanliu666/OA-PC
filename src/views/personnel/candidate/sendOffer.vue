@@ -86,7 +86,7 @@
   </div>
 </template>
 <script>
-import { getPersonInfo } from '@/api/personnel/person'
+import { getCandidateInfo } from '@/api/personnel/candidate'
 import {
   modifyOffer,
   createOffer,
@@ -107,6 +107,7 @@ export default {
       applyId: null,
       applyInfo: {},
       personId: null,
+      offerId: null,
       personInfo: {},
       offerInfo: {
         personId: null,
@@ -134,6 +135,7 @@ export default {
   },
   created() {
     this.personId = this.$route.query.personId
+    this.offerId = this.$route.query.offerId
   },
   activated() {
     this.clear()
@@ -146,12 +148,19 @@ export default {
   },
   methods: {
     getPersonInfo() {
-      getPersonInfo(this.personId).then((data) => {
+      getCandidateInfo({
+        personId: this.personId,
+        recruitmentId: this.$route.query.recruitmentId
+      }).then((data) => {
         this.personInfo = data
       })
     },
     getOfferInfo() {
-      getOfferInfo(this.personId).then((data) => {
+      if (!this.offerId) {
+        Object.assign(this.offerInfo, { personId: this.personId })
+        return
+      }
+      getOfferInfo(this.offerId).then((data) => {
         Object.assign(this.offerInfo, data, { personId: this.personId })
         if (Object.keys(data).length === 0) {
           return
@@ -216,7 +225,9 @@ export default {
       this.$refs['editOfferStepTwo']
         .validate()
         .then((data) => {
-          return this.submitOffer(Object.assign(this.offerInfo, data))
+          return this.submitOffer(
+            Object.assign(this.offerInfo, data, { recruitmentId: this.personInfo.recruitmentId })
+          )
         })
         .then(() => {
           this.$message.success('Offer提交成功')
@@ -274,15 +285,7 @@ export default {
     sendOffer() {
       this.sending = true
       sendOffer({
-        email: this.offerInfo.email,
-        ccEmail: this.offerInfo.ccEmail,
-        title: this.offerInfo.title,
-        attachmentUrl: this.offerInfo.attachmentUrl,
-        attachmentName: this.offerInfo.attachmentName,
-        noticeUser: this.offerInfo.noticeUser,
-        isFill: this.offerInfo.isFill,
-        personId: this.personInfo.personId,
-        recruitmentId: this.personInfo.recruitmentId,
+        offerId: this.offerInfo.id,
         content: this.$refs['editOfferStepThree'].getContentHtml()
       })
         .then(() => {

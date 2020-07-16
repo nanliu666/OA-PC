@@ -25,9 +25,9 @@
           <div v-if="!$route.query.entry">
             <template
               v-if="
-                ['3', '7', '8'].includes(candidateInfo.status) &&
-                  data.interviewRegister === 0 &&
-                  emer.length + familyData.length + EducationalData.length === 0
+                candidateInfo.interviewRegister === 0 &&
+                  candidateInfo.interviewFill === 0 &&
+                  candidateInfo.interview === 1
               "
             >
               <el-button
@@ -36,7 +36,7 @@
                 style="margin-right: 15px;"
                 @click="handleSend"
               >
-                {{ $route.query.entry ? '重新发送入职登记表' : '重新发送面试登记表' }}
+                重新发送面试登记表
               </el-button>
             </template>
             <!-- <template v-else-if="candidateInfo.status === '0'">
@@ -55,11 +55,9 @@
             </template>-->
             <template
               v-else-if="
-                ['3', '7', '8'].includes(candidateInfo.status) &&
-                  data.interviewRegister === 0 &&
-                  emer.length > 0 &&
-                  familyData.length > 0 &&
-                  EducationalData.length > 0
+                candidateInfo.interviewRegister === 0 &&
+                  candidateInfo.interviewFill === 1 &&
+                  candidateInfo.interview === 1
               "
             >
               <el-button
@@ -68,7 +66,7 @@
                 style="margin-right: 15px;"
                 @click="handlerConfirm"
               >
-                {{ $route.query.entry ? '确认入职登记表' : '确认面试登记表' }}
+                确认面试登记表
               </el-button>
               <el-button
                 size="medium"
@@ -108,7 +106,9 @@
             </template>
             <template
               v-else-if="
-                ['3', '7', '8'].includes(candidateInfo.status) && data.interviewRegister == 1
+                candidateInfo.interviewRegister === 1 &&
+                  candidateInfo.interviewFill === 1 &&
+                  candidateInfo.interview === 1
               "
             >
               <el-button
@@ -154,9 +154,9 @@
           <div v-else>
             <template
               v-if="
-                ['3', '7', '8'].includes(candidateInfo.status) &&
-                  data.entryRegister === 0 &&
-                  !basic.bankNo
+                candidateInfo.entryRegister === 0 &&
+                  candidateInfo.entryFill === 0 &&
+                  candidateInfo.register === 1
               "
             >
               <el-button
@@ -184,9 +184,9 @@
             </template>-->
             <template
               v-else-if="
-                ['3', '7', '8'].includes(candidateInfo.status) &&
-                  data.entryRegister === 0 &&
-                  basic.bankNo
+                candidateInfo.entryRegister === 0 &&
+                  candidateInfo.entryFill === 1 &&
+                  candidateInfo.register === 1
               "
             >
               <el-button
@@ -195,7 +195,7 @@
                 style="margin-right: 15px;"
                 @click="handlerConfirm"
               >
-                {{ $route.query.entry ? '确认入职登记表' : '确认面试登记表' }}
+                确认入职登记表
               </el-button>
               <el-button
                 size="medium"
@@ -234,7 +234,11 @@
               </el-dropdown>
             </template>
             <template
-              v-else-if="['3', '7', '8'].includes(candidateInfo.status) && data.entryRegister == 1"
+              v-else-if="
+                candidateInfo.entryRegister === 1 &&
+                  candidateInfo.entryFill === 1 &&
+                  candidateInfo.register === 1
+              "
             >
               <el-button
                 type="primary"
@@ -244,37 +248,7 @@
               >
                 已确认
               </el-button>
-              <!-- <el-button
-                size="medium"
-                style="margin-right: 15px;"
-              >
-                下载
-              </el-button>
-              <el-button
-                size="medium"
-                style="margin-right: 15px;"
-              >
-                打印
-              </el-button>-->
             </template>
-            <!-- <el-button
-              v-if="!isEdit"
-              type="primary"
-              size="medium"
-              style="margin-right: 15px;"
-              @click="handlerEdit"
-            >
-              帮他修改
-            </el-button>
-            <el-button
-              v-if="isEdit"
-              type="primary"
-              size="medium"
-              style="margin-right: 15px;"
-              @click="handlerEdit"
-            >
-              取消修改
-            </el-button>-->
           </div>
         </div>
       </div>
@@ -508,13 +482,9 @@
 
 <script>
 import { getpersonInfo } from '@/api/personnel/selectedPerson'
+import { getCandidateAcceptDetail } from '@/api/personnel/entry'
 import {
-  confirmEntryRegister,
-  sendEntryRegister,
-  getCandidateAcceptDetail
-} from '@/api/personnel/entry'
-import {
-  getPersonInfo as getCandidateInfo,
+  getCandidateInfo,
   postRegisterSend,
   confirmInterviewRegister
 } from '@/api/personnel/candidate'
@@ -858,7 +828,8 @@ export default {
     },
     getData() {
       let params = {
-        personId: this.$route.query.personId
+        personId: this.$route.query.personId,
+        recruitmentId: this.$route.query.recruitmentId
       }
       getpersonInfo(params).then((res) => {
         this.data = res
@@ -883,6 +854,8 @@ export default {
         this.qualificationData = res.certificate
         this.candidateInfo.interviewRegister = res.interviewRegister
         this.candidateInfo.entryRegister = res.entryRegister
+        this.candidateInfo.interviewFill = res.interviewFill
+        this.candidateInfo.entryFill = res.entryFill
       })
       let getPersonInfo = this.$route.query.entry ? getCandidateAcceptDetail : getCandidateInfo
       getPersonInfo(params).then((res) => {
@@ -921,10 +894,10 @@ export default {
     handleSend() {
       let params = {
         recruitmentId: this.candidateInfo.recruitmentId,
-        personId: this.$route.query.personId
+        personId: this.$route.query.personId,
+        type: this.$route.query.entry ? 'Entry' : 'Interview'
       }
-      let sendFun = this.$route.query.entry ? sendEntryRegister : postRegisterSend
-      sendFun(params).then(() => {
+      postRegisterSend(params).then(() => {
         this.$message.success('发送成功')
         this.getData()
       })
@@ -941,11 +914,12 @@ export default {
     handlerConfirm() {
       let params = {
         recruitmentId: this.candidateInfo.recruitmentId,
-        personId: this.$route.query.personId
+        personId: this.$route.query.personId,
+        type: this.$route.query.entry ? 'Entry' : 'Interview'
       }
-      let confirmFun = this.$route.query.entry ? confirmEntryRegister : confirmInterviewRegister
-      confirmFun(params).then(() => {
+      confirmInterviewRegister(params).then(() => {
         this.$message.success('确认成功')
+        this.isEdit = false
         this.getData()
       })
     }

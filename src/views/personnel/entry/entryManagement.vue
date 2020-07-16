@@ -445,7 +445,13 @@ export default {
       }
     },
     toEntryMatters(row) {
-      this.$router.push('/personnel/entry/entryMatters/' + row.userId)
+      this.$router.push({
+        path: '/personnel/entry/entryMatters/' + row.userId,
+        query: {
+          personId: row.personId,
+          recruitmentId: row.recruitmentId
+        }
+      })
     },
     loadSearchOption() {
       getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {

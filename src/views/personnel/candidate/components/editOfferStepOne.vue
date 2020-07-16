@@ -45,6 +45,7 @@
           <lazy-select
             v-model="form.userId"
             :load="loadUser"
+            :page-size="100"
             :option-list.sync="userList"
             placeholder="请选择入职联系人"
             :option-props="{
@@ -87,6 +88,7 @@
 <script>
 import { getUserWorkList } from '@/api/org/org'
 import { getWorkAddressList } from '@/api/personnel/roster'
+// import param from '../../../../mock/param'
 
 export default {
   name: 'EditOfferStepOne',
@@ -127,11 +129,24 @@ export default {
     },
     'form.userId': {
       handler(val) {
-        let user = this.userList.find((user) => user.userId === val) || {}
-        this.form.userName = user.name
-        this.form.phonenum = user.phonenum
+        if (val && this.userList.length > 0) {
+          let user = this.userList.find((user) => user.userId === val) || {}
+          this.form.userName = user.name
+          this.form.phonenum = user.phonenum
+        }
       },
       immediate: true
+    },
+    userList: {
+      handler(val) {
+        if (val.length > 0 && this.form.userId) {
+          let user = this.userList.find((user) => user.userId === this.form.userId) || {}
+          this.form.userName = user.name
+          this.form.phonenum = user.phonenum
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {

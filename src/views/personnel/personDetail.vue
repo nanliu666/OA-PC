@@ -4,7 +4,7 @@
     class="detail-contain"
   >
     <page-header
-      :title="isTalent ? '人才库详情' : '候选人详情'"
+      :title="isTalent ? '人才库详情' : $route.query.status === '0' ? '淘汰人员详情' : '候选人详情'"
       :show-back="true"
     />
     <!--人才库详情不展示招聘需求相关信息-->
@@ -40,272 +40,29 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="checkInterview">
+                <el-dropdown-item
+                  v-if="talentInterviewFill === 1"
+                  command="checkInterview"
+                >
                   查看面试登记表
                 </el-dropdown-item>
-                <!-- <el-dropdown-item command="checkEntry">
+                <el-dropdown-item
+                  v-if="talentEntryFill === 1"
+                  command="checkEntry"
+                >
                   查看入职登记表
-                </el-dropdown-item>-->
+                </el-dropdown-item>
                 <!-- <el-dropdown-item command>
                   下载简历
-                </el-dropdown-item>-->
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
           <!-- 候选人详情 -->
           <template v-else>
-            <template v-if="personInfo.status === '1'">
-              <el-button
-                v-if="!pushResume"
-                type="primary"
-                size="medium"
-                @click="hadlePushAudit"
-              >
-                推送审核
-              </el-button>
-              <el-button
-                v-if="pushResume"
-                size="medium"
-                type="primary"
-                disabled
-              >
-                已推送
-              </el-button>
-              <el-button
-                type="danger"
-                size="medium"
-                @click="handleWeedOut"
-              >
-                淘汰
-              </el-button>
-              <el-dropdown @command="handleCommand">
-                <el-button
-                  size="medium"
-                  style="margin-left: 16px"
-                >
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="changeJob">
-                    更改应聘职位
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 初选通过 -->
-            <template v-if="personInfo.status === '2'">
-              <el-button
-                type="primary"
-                size="medium"
-                @click="handleArrange"
-              >
-                安排面试
-              </el-button>
-              <el-button
-                type="danger"
-                size="medium"
-                @click="handleWeedOut"
-              >
-                淘汰
-              </el-button>
-              <el-dropdown @command="handleCommand">
-                <el-button
-                  size="medium"
-                  style="margin-left: 16px"
-                >
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 面试中 -->
-            <template v-if="personInfo.status === '3'">
-              <el-button
-                type="primary"
-                size="medium"
-                @click="handleArrange"
-              >
-                重新安排面试
-              </el-button>
-              <el-button
-                v-if="personInfo.interview === 0"
-                type="primary"
-                size="medium"
-                @click="handleSend"
-              >
-                发送面试登记表
-              </el-button>
-              <el-button
-                v-if="personInfo.interview === 1"
-                type="primary"
-                size="medium"
-                @click="loopUpInterview"
-              >
-                查看面试登记表
-              </el-button>
-              <el-dropdown @command="handleCommand">
-                <el-button
-                  size="medium"
-                  style="margin-left: 16px"
-                >
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="weedOut">
-                    淘汰
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 面试通过 -->
-            <template v-if="personInfo.status === '4'">
-              <el-button
-                v-if="!$route.query.applyId"
-                type="primary"
-                size="medium"
-                @click="handleApplyEmploy(personInfo)"
-              >
-                申请录用
-              </el-button>
-              <el-button
-                v-else
-                type="primary"
-                size="medium"
-                @click="handleCheckEmploy(row)"
-              >
-                查看申请
-              </el-button>
-              <el-button
-                type="danger"
-                size="medium"
-                @click="handleWeedOut"
-              >
-                淘汰
-              </el-button>
-              <el-dropdown @command="handleCommand">
-                <el-button
-                  size="medium"
-                  style="margin-left: 16px"
-                >
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    v-if="!$route.query.applyId"
-                    command="arrange"
-                  >
-                    安排复试
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <el-dropdown-item command="InterviewEvaluation">
-                    查看面试评价
-                  </el-dropdown-item>
-                  <el-dropdown-item command="toRegistrationForm">
-                    查看面试登记表
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 待发Offer -->
-            <template v-if="personInfo.status === '5'">
-              <el-button
-                type="primary"
-                size="medium"
-              >
-                发送Offer
-              </el-button>
-              <el-button
-                type="danger"
-                size="medium"
-                @click="handleWeedOut"
-              >
-                淘汰
-              </el-button>
-              <el-dropdown @command="handleCommand">
-                <el-button
-                  size="medium"
-                  style="margin-left: 16px"
-                >
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 已发Offer -->
-            <template v-if="personInfo.status === '6'">
-              <el-button
-                type="primary"
-                size="medium"
-                @click="handleAcceptOffer"
-              >
-                接受
-              </el-button>
-              <el-button
-                type="danger"
-                size="medium"
-                @click="handleWeedOut"
-              >
-                淘汰
-              </el-button>
-              <el-dropdown @command="handleCommand">
-                <el-button
-                  size="medium"
-                  style="margin-left: 16px"
-                >
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="offerChange">
-                    Offer变更
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 已淘汰 -->
-            <template v-if="personInfo.status === '0'">
+            <!-- 淘汰人员详情 -->
+            <template v-if="$route.query.status === '0'">
+              <!-- 已淘汰 -->
               <el-button
                 type="primary"
                 size="medium"
@@ -327,6 +84,269 @@
                 </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>-->
+            </template>
+            <!-- 候选人详情 -->
+            <template v-else>
+              <template v-if="personInfo.status === '1'">
+                <el-button
+                  v-if="personInfo.pushResume === 0"
+                  type="primary"
+                  size="medium"
+                  @click="hadlePushAudit"
+                >
+                  推送审核
+                </el-button>
+                <el-button
+                  v-if="personInfo.pushResume === 1"
+                  size="medium"
+                  type="primary"
+                  disabled
+                >
+                  已推送
+                </el-button>
+                <el-button
+                  type="danger"
+                  size="medium"
+                  @click="handleWeedOut"
+                >
+                  淘汰
+                </el-button>
+                <el-dropdown @command="handleCommand">
+                  <el-button
+                    size="medium"
+                    style="margin-left: 16px"
+                  >
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="changeJob">
+                      更改应聘职位
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                  下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 初选通过 -->
+              <template v-if="personInfo.status === '2'">
+                <el-button
+                  type="primary"
+                  size="medium"
+                  @click="handleArrange"
+                >
+                  安排面试
+                </el-button>
+                <el-button
+                  type="danger"
+                  size="medium"
+                  @click="handleWeedOut"
+                >
+                  淘汰
+                </el-button>
+                <el-dropdown @command="handleCommand">
+                  <el-button
+                    size="medium"
+                    style="margin-left: 16px"
+                  >
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                  下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 面试中 -->
+              <template v-if="personInfo.status === '3'">
+                <el-button
+                  type="primary"
+                  size="medium"
+                  @click="handleArrange"
+                >
+                  重新安排面试
+                </el-button>
+                <el-button
+                  v-if="personInfo.interview === 0"
+                  type="primary"
+                  size="medium"
+                  @click="handleSend"
+                >
+                  发送面试登记表
+                </el-button>
+                <el-button
+                  v-if="personInfo.interview === 1"
+                  type="primary"
+                  size="medium"
+                  @click="loopUpInterview(false)"
+                >
+                  查看面试登记表
+                </el-button>
+                <el-dropdown @command="handleCommand">
+                  <el-button
+                    size="medium"
+                    style="margin-left: 16px"
+                  >
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="weedOut">
+                      淘汰
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                  下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 面试通过 -->
+              <template v-if="personInfo.status === '4'">
+                <el-button
+                  v-if="!personInfo.applyId"
+                  type="primary"
+                  size="medium"
+                  @click="handleApplyEmploy(personInfo)"
+                >
+                  申请录用
+                </el-button>
+                <el-button
+                  v-else
+                  type="primary"
+                  size="medium"
+                  @click="handleCheckEmploy(row)"
+                >
+                  查看申请
+                </el-button>
+                <el-button
+                  type="danger"
+                  size="medium"
+                  @click="handleWeedOut"
+                >
+                  淘汰
+                </el-button>
+                <el-dropdown @command="handleCommand">
+                  <el-button
+                    size="medium"
+                    style="margin-left: 16px"
+                  >
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      v-if="!personInfo.applyId"
+                      command="arrange"
+                    >
+                      安排复试
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="
+                        personInfo.approveStatus === 'Reject' ||
+                          personInfo.approveStatus === 'Cancel'
+                      "
+                      command="reApply"
+                    >
+                      重新申请
+                    </el-dropdown-item>
+                    <el-dropdown-item command="InterviewEvaluation">
+                      查看面试评价
+                    </el-dropdown-item>
+                    <el-dropdown-item command="toRegistrationForm">
+                      查看面试登记表
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                  下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 待发Offer -->
+              <template v-if="personInfo.status === '5'">
+                <el-button
+                  type="primary"
+                  size="medium"
+                  @click="handleSendOffer"
+                >
+                  发送Offer
+                </el-button>
+                <el-button
+                  type="danger"
+                  size="medium"
+                  @click="handleWeedOut"
+                >
+                  淘汰
+                </el-button>
+                <el-dropdown @command="handleCommand">
+                  <el-button
+                    size="medium"
+                    style="margin-left: 16px"
+                  >
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                  下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 已发Offer -->
+              <template v-if="personInfo.status === '6'">
+                <el-button
+                  type="primary"
+                  size="medium"
+                  @click="handleAcceptOffer"
+                >
+                  接受
+                </el-button>
+                <el-button
+                  type="danger"
+                  size="medium"
+                  @click="handleWeedOut"
+                >
+                  淘汰
+                </el-button>
+                <el-dropdown @command="handleCommand">
+                  <el-button
+                    size="medium"
+                    style="margin-left: 16px"
+                  >
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="offerChange">
+                      Offer变更
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                  下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
             </template>
           </template>
         </div>
@@ -384,24 +404,6 @@
               >
                 {{ personInfo.major }}
               </el-col>
-              <!-- <el-col
-                :span="8"
-                class="key"
-              >
-                标签：
-              </el-col>
-              <el-col
-                :span="16"
-                class="value"
-              >
-                <template v-for="item in personInfo.tags">
-                  <span
-                    :key="item.tagId"
-                    :style="{color:item.color}"
-                    class="tag-class"
-                  >{{ item.name }}</span>
-                </template>
-              </el-col>-->
               <el-col
                 :span="8"
                 class="key"
@@ -600,11 +602,15 @@ import ChangeJobDialog from './candidate/components/changeJobDialog'
 import Arrange from './candidate/components/arrangeInterview'
 import {
   getPersonInfo,
+  getCandidateInfo,
+  getCandidateOutInfo,
   getPersonRecord,
   acceptCandidateOffer,
-  changeCandidateOffer
+  changeCandidateOffer,
+  postRegisterSend
 } from '@/api/personnel/candidate'
-import { getRecruitmentDetail } from '@/api/personnel/recruitment'
+import { getpersonInfo as getHelperPersonInfo } from '@/api/personnel/selectedPerson'
+// import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 
 export default {
   name: 'Detail',
@@ -631,12 +637,15 @@ export default {
       row: {},
       loading: false,
       personId: null,
+      recruitmentId: null,
       isTalent: null,
-      pushResume: this.$route.query.pushResume === '1'
+      talentInterviewFill: null,
+      talentEntryFill: null
     }
   },
   created() {
     this.personId = this.$route.params.personId
+    this.recruitmentId = this.$route.query.recruitmentId
     // this.getPersonInfo()
     // this.getPersonRecord()
     this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
@@ -652,22 +661,37 @@ export default {
   },
   activated() {
     this.personId = this.$route.params.personId
+    this.recruitmentId = this.$route.query.recruitmentId
+    this.personId = this.$route.params.personId
     this.isTalent = this.$route.query.isTalent
     this.getPersonInfo()
     this.getPersonRecord()
   },
   methods: {
+    handleSendOffer() {
+      this.$router.push({
+        path: '/personnel/candidate/sendOffer',
+        query: {
+          personId: this.personInfo.personId,
+          recruitmentId: this.personInfo.recruitmentId,
+          applyId: this.personInfo.applyId,
+          offerId: this.personInfo.offerId
+        }
+      })
+    },
     pushAuditRefresh() {
-      this.pushResume = true
       this.init()
     },
     handleTalentRecover() {
       this.$refs.changeJobDialog.init('add', this.personInfo)
     },
-    loopUpInterview() {
+    loopUpInterview(isEntry) {
       let params = {
-        personId: this.personInfo.personId,
-        interview: this.personInfo.interview
+        recruitmentId: this.personInfo.recruitmentId || this.$route.query.recruitmentId,
+        personId: this.personInfo.personId
+      }
+      if (isEntry) {
+        Object.assign(params, { entry: 1, tagName: '入职登记表详情' })
       }
       this.$router.push({
         path: '/personnel/candidate/registrationForm',
@@ -675,11 +699,19 @@ export default {
       })
     },
     handleSend() {
-      this.$message.success('发送成功')
+      let params = {
+        recruitmentId: this.personInfo.recruitmentId,
+        personId: this.personInfo.personId,
+        type: 'Interview'
+      }
+      postRegisterSend(params).then(() => {
+        this.$message.success('发送成功')
+        this.loadAllData()
+      })
     },
     handleCheckEmploy() {
       let params = {
-        formId: this.$route.query.applyId,
+        formId: this.personInfo.applyId,
         formKey: 'PersonOfferApply'
       }
       this.$router.push({
@@ -692,20 +724,16 @@ export default {
         path: '/personnel/candidate/apply',
         query: {
           personId: row.personId,
-          userName: row.userName,
-          sex: row.sex,
-          email: row.email,
-          phonenum: row.phonenum,
-          recruitmentId: row.recruitmentId,
-          applyId: row.applyId
+          applyId: row.applyId,
+          recruitmentId: row.recruitmentId
         }
       })
     },
-    handleRegistration() {
-      this.$router.push({
-        path: '/personnel/candidate/registrationForm'
-      })
-    },
+    // handleRegistration() {
+    //   this.$router.push({
+    //     path: '/personnel/candidate/registrationForm'
+    //   })
+    // },
     handleApply() {
       this.$router.push({
         path: '/personnel/candidate/apply'
@@ -715,6 +743,8 @@ export default {
       this.arrangeDialog = true
       if (this.personInfo.status === '2') {
         this.arrangeTitle = '安排面试'
+      } else if (this.personInfo.status === '4') {
+        this.arrangeTitle = '安排复试'
       } else {
         this.arrangeTitle = '重新安排面试'
       }
@@ -725,29 +755,33 @@ export default {
       this.getPersonRecord()
     },
     getPersonInfo() {
-      getPersonInfo({ personId: this.personId }).then((res) => {
-        this.personInfo = res
-        if (!res.recruitmentId) {
-          this.getRecruitmentDetail()
-        }
-      })
+      let getFun
+      if (this.$route.query.isTalent) {
+        getFun = getPersonInfo
+      } else if (this.$route.query.status === '0') {
+        getFun = getCandidateOutInfo
+      } else {
+        getFun = getCandidateInfo
+      }
+      getFun({ personId: this.personId })
+        .then((res) => {
+          this.personInfo = res
+        })
+        .catch(() => {
+          // this.$message.error('无此人员信息')
+          this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+          this.$router.go(-1)
+        })
+      if (this.$route.query.isTalent) {
+        getHelperPersonInfo({ personId: this.personId }).then((res) => {
+          this.talentInterviewFill = res.interviewFill
+          this.talentEntryFill = res.entryFill
+        })
+      }
     },
     getPersonRecord() {
       getPersonRecord({ personId: this.personId }).then((res) => {
         this.stepsData = res
-      })
-    },
-    // 获取招聘需求
-    getRecruitmentDetail() {
-      if (!this.$route.query.recruitmentId) {
-        return
-      }
-      getRecruitmentDetail(this.$route.query.recruitmentId).then((res) => {
-        Object.assign(this.personInfo, {
-          recruitmentId: res.recruitmentId,
-          jobName: res.jobName,
-          orgName: res.orgName
-        })
       })
     },
     hadlePushAudit() {
@@ -758,7 +792,21 @@ export default {
     },
     handleCommand(command) {
       if (command === 'changeJob') {
-        this.$refs.changeJobDialog.changeJob(this.personInfo)
+        if (this.personInfo.pushResume === 1) {
+          this.$confirm(
+            '该候选人已给用人部门推送简历审核，更改应聘职位后原审核推送将自动撤回，您确认要更改吗？',
+            '确认更改应聘职位？',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }
+          ).then(() => {
+            this.$refs.changeJobDialog.changeJob(this.personInfo)
+          })
+        } else {
+          this.$refs.changeJobDialog.changeJob(this.personInfo)
+        }
       } else if (command === 'weedOut') {
         this.handleWeedOut()
       } else if (command === 'offerChange') {
@@ -768,20 +816,33 @@ export default {
           type: 'warning'
         }).then(() => {
           const params = {
-            personId: this.personId,
+            // personId: this.personId,
+            offerId: this.personInfo.offerId,
             userId: this.$store.state.user.userInfo.user_id
           }
           this.loading = true
-          changeCandidateOffer(params).then(() => {
-            this.$message.success('发起成功')
-            this.loading = false
-            this.init()
-          })
+          changeCandidateOffer(params)
+            .then(() => {
+              this.$message.success('发起成功')
+              this.loading = false
+              this.init()
+            })
+            .catch(() => {
+              {
+                this.loading = false
+              }
+            })
         })
       } else if (command === 'edit') {
-        this.$router.push(
-          '/personnel/editPerson?personId=' + this.personId + '&tagName=修改人员信息'
-        )
+        this.$router.push({
+          path: '/personnel/editPerson',
+          query: {
+            personId: this.personId,
+            tagName: '修改人员信息',
+            isTalent: this.$route.query.isTalent,
+            status: this.$route.query.status
+          }
+        })
       } else if (command === 'toRegistrationForm' || command === 'checkInterview') {
         this.loopUpInterview()
       } else if (command === 'arrange') {
@@ -791,12 +852,17 @@ export default {
           personId: this.personInfo.personId,
           orgName: this.personInfo.orgName,
           jobName: this.personInfo.jobName,
-          name: this.personInfo.name
+          name: this.personInfo.name,
+          recruitmentId: this.personInfo.recruitmentId
         }
         this.$router.push({
           path: '/personnel/candidate/interivewDetails',
           query: params
         })
+      } else if (command === 'reApply') {
+        this.handleApplyEmploy(this.personInfo)
+      } else if (command === 'checkEntry') {
+        this.loopUpInterview('entry')
       }
     },
     handleAcceptOffer() {
@@ -806,16 +872,21 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = {
-          recruitmentId: this.personInfo.recruitmentId,
-          personId: this.personId,
+          offerId: this.personInfo.offerId,
+          // recruitmentId: this.personInfo.recruitmentId,
+          // personId: this.personId,
           userId: this.$store.state.user.userInfo.user_id
         }
         this.loading = true
-        acceptCandidateOffer(params).then(() => {
-          this.$message.success('接受成功')
-          this.loading = false
-          this.init()
-        })
+        acceptCandidateOffer(params)
+          .then(() => {
+            this.$message.success('接受成功')
+            this.loading = false
+            this.init()
+          })
+          .catch(() => {
+            this.loading = false
+          })
       })
     },
     handleRecover() {

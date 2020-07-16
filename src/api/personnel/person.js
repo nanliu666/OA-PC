@@ -68,8 +68,8 @@ export const getTagList = (name, color) => {
 /**
  * 关联招聘需求查询接口
  * */
-export const getRecruitmentList = () => {
-  return get('/user/v1/candidate/recruitment/list')
+export const getRecruitmentList = (params) => {
+  return get('/user/v1/candidate/recruitment/list', params)
 }
 
 /**

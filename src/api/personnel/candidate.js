@@ -10,6 +10,11 @@ export const getCandidateList = (params) => {
   return post('/api/user/v1/candidate/list', params)
 }
 
+// 已淘汰候选人筛选
+export const getCandidateOutList = (params) => {
+  return post('/api/user/v1/candidate/out/list', params)
+}
+
 // 候选人淘汰
 export const weedOutCandidate = (params) => {
   return post('/api/user/v1/candidate/out', params)
@@ -45,6 +50,16 @@ export const getPersonInfo = (params) => {
   return get('/api/user/v1/person/info', params)
 }
 
+// 候选人人员详情查询
+export const getCandidateInfo = (params) => {
+  return get('/api/user/v1/candidate/info', params)
+}
+
+// 已淘汰人员详情查询
+export const getCandidateOutInfo = (params) => {
+  return get('/api/user/v1/candidate/out/info', params)
+}
+
 // 人员动态查询
 export const getPersonRecord = (params) => {
   return get('/api/log/v1/person/record', params)
@@ -52,10 +67,10 @@ export const getPersonRecord = (params) => {
 
 /**
  * offer查询接口
- * @param {String} personId - 人员ID
+ * @param {String} id - offer ID
  * */
-export const getOfferInfo = (personId) => {
-  return get('/user/v1/candidate/offer', { personId })
+export const getOfferInfo = (id) => {
+  return get('/user/v1/candidate/offer', { id })
 }
 
 /**
