@@ -573,7 +573,7 @@
     <weed-out-dialog
       ref="weedOutgDialog"
       :visible.sync="weedOutgDialog"
-      @refresh="init"
+      @refresh="pageClose"
     />
     <push-audit-dialog
       ref="pushAuditDialog"
@@ -882,7 +882,7 @@ export default {
           .then(() => {
             this.$message.success('接受成功')
             this.loading = false
-            this.init()
+            this.pageClose()
           })
           .catch(() => {
             this.loading = false
@@ -891,6 +891,10 @@ export default {
     },
     handleRecover() {
       this.$refs.changeJobDialog.recover(this.personInfo)
+    },
+    pageClose() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.go(-1)
     }
   }
 }
@@ -898,7 +902,7 @@ export default {
 
 <style lang="scss" scoped>
 .detail-contain {
-  height: calc(100% - 64px);
+  height: calc(100% - 32px);
   position: relative;
   //   margin-bottom: 32px;
   overflow: hidden;
@@ -1027,11 +1031,16 @@ export default {
     padding: 0 0 0 16px;
     display: flex;
     flex-direction: column;
+    height: 100%;
     .title {
       font-size: 16px;
       color: #545b66;
       font-weight: 700;
       margin-bottom: 24px;
+    }
+    /deep/ .el-timeline {
+      overflow-y: scroll;
+      padding-right: 8px;
     }
   }
 }
