@@ -20,7 +20,6 @@
         slot-scope="scope"
       >
         <el-button
-          v-if="permission.work_done_detail"
           type="text"
           size="small"
           plain
@@ -30,7 +29,6 @@
           详情
         </el-button>
         <el-button
-          v-if="permission.work_done_follow"
           type="text"
           size="small"
           plain
@@ -78,7 +76,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { doneList } from '@/api/work/work'
-import { flowCategory, flowRoute } from '@/util/flow'
+import { flowCategory } from '@/util/flow'
 
 export default {
   data() {
@@ -117,7 +115,6 @@ export default {
             label: '流程分类',
             type: 'select',
             row: true,
-            dicUrl: '/api/blade-system/dict/dictionary?code=flow',
             props: {
               label: 'dictValue',
               value: 'dictKey'
@@ -155,7 +152,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permission', 'flowRoutes']),
+    ...mapGetters(['flowRoutes']),
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {
@@ -163,6 +160,12 @@ export default {
       })
       return ids.join(',')
     }
+  },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'flow').then((res) => {
+      let category = this.option.column.find((it) => it.prop === 'category')
+      category.dicData = res
+    })
   },
   methods: {
     searchReset() {
@@ -184,9 +187,7 @@ export default {
     },
     handleDetail(row) {
       this.$router.push({
-        path: `/work/process/${flowRoute(this.flowRoutes, row.category)}/detail/${row.processInstanceId}/${
-          row.businessId
-        }`
+        path: `/work/process/leave/detail/${row.processInstanceId}`
       })
     },
     handleImage(row) {
@@ -209,7 +210,7 @@ export default {
       }
       this.loading = true
       doneList(page.currentPage, page.pageSize, Object.assign(params, query)).then((res) => {
-        const data = res.data.data
+        const data = res
         this.page.total = data.total
         this.data = data.records
         this.loading = false
