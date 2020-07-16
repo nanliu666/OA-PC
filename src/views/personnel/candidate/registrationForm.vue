@@ -860,6 +860,7 @@ export default {
         this.candidateInfo.entryFill = res.entryFill
       })
       if (this.$route.query.isUser) {
+        this.candidateInfo.register = 1
         getPersonInfo(params).then((res) => {
           this.personInfo.name = res.name
         })
