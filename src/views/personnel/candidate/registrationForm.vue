@@ -481,14 +481,16 @@
 </template>
 
 <script>
-import { getpersonInfo } from '@/api/personnel/selectedPerson'
+import { getpersonInfo as getRegisterInfo } from '@/api/personnel/selectedPerson'
 import { getCandidateAcceptDetail } from '@/api/personnel/entry'
 import {
+  getPersonInfo,
   getCandidateInfo,
   postRegisterSend,
   confirmInterviewRegister
 } from '@/api/personnel/candidate'
 import NoticeModifyRegister from './components/noticeModifyRegister'
+import { getRecruitmentApply } from '@/api/approval/approval'
 import edit from './registrationFormEdit'
 export default {
   name: 'RegistrationForm',
@@ -831,7 +833,7 @@ export default {
         personId: this.$route.query.personId,
         recruitmentId: this.$route.query.recruitmentId
       }
-      getpersonInfo(params).then((res) => {
+      getRegisterInfo(params).then((res) => {
         this.data = res
         for (let key in this.basic) {
           this.basic[key] = res[key]
@@ -857,24 +859,41 @@ export default {
         this.candidateInfo.interviewFill = res.interviewFill
         this.candidateInfo.entryFill = res.entryFill
       })
-      let getPersonInfo = this.$route.query.entry ? getCandidateAcceptDetail : getCandidateInfo
-      getPersonInfo(params).then((res) => {
-        this.candidateInfo = Object.assign(this.candidateInfo, res)
-        this.personInfo.department = res.orgName
-        this.personInfo.name = res.name
-        this.personInfo.position = res.jobName
-        this.personInfo.status = {
-          '0': '已淘汰',
-          '1': '待沟通',
-          '2': '初选通过',
-          '3': '面试中',
-          '4': '面试通过',
-          '5': '待发Offer',
-          '6': '已发Offer',
-          '7': '待入职',
-          '8': '放弃入职'
-        }[res.status]
-      })
+      if (this.$route.query.isUser) {
+        this.candidateInfo.register = 1
+        getPersonInfo(params).then((res) => {
+          this.personInfo.name = res.name
+        })
+        getRecruitmentApply(params).then((res) => {
+          this.personInfo.department = res.orgName
+          this.personInfo.position = res.jobName
+        })
+      } else {
+        let getPersonInfo = this.$route.query.entry ? getCandidateAcceptDetail : getCandidateInfo
+        getPersonInfo(params)
+          .then((res) => {
+            this.candidateInfo = Object.assign(this.candidateInfo, res)
+            this.personInfo.department = res.orgName
+            this.personInfo.name = res.name
+            this.personInfo.position = res.jobName
+            this.personInfo.status = {
+              '0': '已淘汰',
+              '1': '待沟通',
+              '2': '初选通过',
+              '3': '面试中',
+              '4': '面试通过',
+              '5': '待发Offer',
+              '6': '已发Offer',
+              '7': '待入职',
+              '8': '放弃入职'
+            }[res.status]
+          })
+          .catch(() => {
+            this.$message.error('查无此人')
+            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+            this.$router.go(-1)
+          })
+      }
     },
     handleCommand(command) {
       if (command === 'modity') {
