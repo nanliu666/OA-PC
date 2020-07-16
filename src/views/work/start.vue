@@ -33,7 +33,6 @@
         slot-scope="scope"
       >
         <el-button
-          v-if="permission.work_start_flow"
           type="text"
           size="small"
           plain
@@ -43,7 +42,6 @@
           发起
         </el-button>
         <el-button
-          v-if="permission.work_start_image"
           type="text"
           size="small"
           plain
@@ -109,7 +107,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { startList } from '@/api/work/work'
-import { flowCategory, flowRoute } from '@/util/flow'
+import { flowCategory } from '@/util/flow'
 
 export default {
   data() {
@@ -119,7 +117,7 @@ export default {
       selectionId: '',
       selectionList: [],
       query: {},
-      loading: true,
+      loading: false,
       page: {
         pageSize: 10,
         currentPage: 1,
@@ -155,7 +153,6 @@ export default {
             label: '流程分类',
             type: 'select',
             row: true,
-            dicUrl: '/api/blade-system/dict/dictionary?code=flow',
             props: {
               label: 'dictValue',
               value: 'dictKey'
@@ -164,7 +161,8 @@ export default {
             slot: true,
             prop: 'category',
             search: true,
-            width: 100
+            width: 100,
+            dicData: []
           },
           {
             label: '流程标识',
@@ -198,7 +196,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permission', 'flowRoutes']),
+    ...mapGetters(['flowRoutes']),
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {
@@ -211,6 +209,14 @@ export default {
     mode() {
       this.onLoad(this.page)
     }
+  },
+  mounted() {
+    // category
+
+    this.$store.dispatch('CommonDict', 'flow').then((res) => {
+      let category = this.option.column.find((it) => it.prop === 'category')
+      category.dicData = res
+    })
   },
   methods: {
     searchReset() {
@@ -231,7 +237,7 @@ export default {
       this.$refs.crud.toggleSelection()
     },
     handleStart(row) {
-      this.$router.push({ path: `/work/process/${flowRoute(this.flowRoutes, row.category)}/form/${row.id}` })
+      this.$router.push({ path: `/work/process/leave/form/${row.id}` })
     },
     handleImage(row) {
       this.flowUrl = `/api/blade-flow/process/resource-view?processDefinitionId=${row.id}`
@@ -254,7 +260,7 @@ export default {
       }
       this.loading = true
       startList(page.currentPage, page.pageSize, Object.assign(params, query)).then((res) => {
-        const data = res.data.data
+        const data = res
         this.page.total = data.total
         this.data = data.records
         this.loading = false

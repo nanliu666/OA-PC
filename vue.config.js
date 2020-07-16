@@ -24,6 +24,7 @@ module.exports = {
       })
     } else {
       config.externals({
+        axios: 'axios',
         gojs: 'go'
       })
       entry.add('@/mock').end()
@@ -42,9 +43,9 @@ module.exports = {
     proxy: {
       '/api': {
         // 庆荣
-        // target: 'http://192.168.1.36/',
+        target: 'http://192.168.1.37/',
         // 本地环境
-        target: 'http://192.168.1.100:8000/',
+        // target: 'http://192.168.1.100:8000/',
 
         // 开发环境
         // target: 'http://122.112.183.186/',

@@ -14,7 +14,9 @@ import { leaveProcess } from '@/api/work/process'
 export default {
   data() {
     return {
-      form: {},
+      form: {
+        taskUser: '1258244944030916609'
+      },
       option: {
         group: [
           {
@@ -87,20 +89,52 @@ export default {
   },
   methods: {
     handleSubmit() {
-      const params = {
-        processDefinitionId: this.$route.params.processDefinitionId,
-        ...this.form
-      }
-      leaveProcess(params).then((resp) => {
-        const data = resp.data
-        if (data.success) {
-          this.$message.success(data.msg)
-          this.$router.$avueRouter.closeTag()
-          this.$router.push({ path: `/work/start` })
-        } else {
-          this.$message.error(data.msg || '提交失败')
+      // const params = {
+      //   processDefinitionId: this.$route.params.processDefinitionId,
+      //   ...this.form
+      // }
+      // let reason = this.form.reason.split(',')
+      try {
+        let s = JSON.parse(this.form.reason)
+        let params = {
+          processDefinitionId: this.$route.params.processDefinitionId,
+          businessKey: '{key1}:{key2}',
+          processMap: {
+            ...s
+          }
         }
-      })
+        leaveProcess(params).then((resp) => {
+          const data = resp
+          if (data) {
+            this.$message.success('提交成功')
+            this.$router.$avueRouter.closeTag()
+            this.$router.push({ path: `/work/start` })
+          } else {
+            this.$message.error(data.msg || '提交失败')
+          }
+        })
+      } catch (err) {
+        let params = {
+          processDefinitionId: this.$route.params.processDefinitionId,
+          businessKey: '{key1}:{key2}',
+          processMap: {
+            data: this.$route.params.processDefinitionId,
+            name: 'fenda',
+            phone: '15089906928',
+            days: '3'
+          }
+        }
+        leaveProcess(params).then((resp) => {
+          const data = resp
+          if (data) {
+            this.$message.success('提交成功')
+            this.$router.$avueRouter.closeTag()
+            this.$router.push({ path: `/work/start` })
+          } else {
+            this.$message.error(data.msg || '提交失败')
+          }
+        })
+      }
     }
   }
 }

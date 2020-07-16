@@ -39,5 +39,5 @@ export default {
     }
   },
   // 流程设计器地址
-  flowDesignUrl: 'http://localhost:9999'
+  flowDesignUrl: 'http://localhost:8088/'
 }
