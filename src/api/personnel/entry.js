@@ -36,8 +36,7 @@ export const notifyCandidateRegister = (params) => {
 // 入职登记表确认接口
 export const confirmEntryRegister = (params) => post('/user/v1/candidate/register/confirm', params)
 
-// 入职登记表发送接口
-export const sendEntryRegister = (params) => post('/user/v1/candidate/register/send', params)
-
-// 入职登记表发送接口
-export const postEntryRegisterSend = (params) => post('/user/v1/candidate/register/send', params)
+// 更改入职日期，调用接口：更改入职日期提交接口【POST /user/v1/candidate/entry/date】，新增接口
+export const changeEntryDate = (params) => post('/user/v1/candidate/entry/date', params)
+// 查询及筛选，调用接口：放弃入职人员筛选查询接口【POST /user/v1/candidate/giveup/list】，新增接口
+export const getGiveUpEntryist = (params) => post('/user/v1/candidate/giveup/list', params)

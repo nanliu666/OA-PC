@@ -177,7 +177,7 @@ export const findParent = (menu, id) => {
  * @param {node => boolean} predicate 过滤条件，符合条件的节点保留
  * @return 过滤后的节点
  */
-export const filterTree = (nodes, predicate) => {
+export const filterTree = (nodes, predicate, shouldUp = false) => {
   // 如果已经没有节点了，结束递归
   if (!(nodes && nodes.length)) {
     return []
@@ -188,13 +188,12 @@ export const filterTree = (nodes, predicate) => {
     if (predicate(node)) {
       // 如果节点符合条件，直接加入新的节点集
       newChildren.push(node)
-      node.children = filterTree(node.children, predicate)
+      node.children = filterTree(node.children, predicate, shouldUp)
+    } else if (shouldUp) {
+      // 如果当前节点不符合条件，递归过滤子节点，
+      // 把符合条件的子节点提升上来，并入新节点集
+      newChildren.push(...filterTree(node.children, predicate, shouldUp))
     }
-    // else {
-    // 	// 如果当前节点不符合条件，递归过滤子节点，
-    // 	// 把符合条件的子节点提升上来，并入新节点集
-    // 	newChildren.push(...filterTree(node.children, predicate));
-    // }
   }
   return newChildren
 }
@@ -385,3 +384,39 @@ export const createUniqueID = (() => {
     return i++
   }
 })()
+
+export const numberToChinese = (num) => {
+  if (!/^\d*(\.\d*)?$/.test(num)) {
+    alert('Number is wrong!')
+    return 'Number is wrong!'
+  }
+  var AA = new Array('零', '一', '二', '三', '四', '五', '六', '七', '八', '九')
+  var BB = new Array('', '十', '百', '千', '万', '亿', '点', '')
+  var a = ('' + num).replace(/(^0*)/g, '').split('.'),
+    k = 0,
+    re = ''
+  for (let i = a[0].length - 1; i >= 0; i--) {
+    switch (k) {
+      case 0:
+        re = BB[7] + re
+        break
+      case 4:
+        if (!new RegExp('0{4}\\d{' + (a[0].length - i - 1) + '}$').test(a[0])) re = BB[4] + re
+        break
+      case 8:
+        re = BB[5] + re
+        BB[7] = BB[5]
+        k = 0
+        break
+    }
+    if (k % 4 == 2 && a[0].charAt(i + 2) != 0 && a[0].charAt(i + 1) == 0) re = AA[0] + re
+    if (a[0].charAt(i) != 0) re = AA[a[0].charAt(i)] + BB[k % 4] + re
+    k++
+  }
+  if (a.length > 1) {
+    //加上小数部分(如果有小数部分)
+    re += BB[6]
+    for (let i = 0; i < a[1].length; i++) re += AA[a[1].charAt(i)]
+  }
+  return re
+}

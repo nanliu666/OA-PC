@@ -1,466 +1,489 @@
 <template>
-  <div class="fill">
-    <page-header title="菜单管理" />
-    <basic-container block>
-      <avue-crud
-        ref="crud"
-        v-model="form"
-        :option="option"
-        :table-loading="loading"
-        :data="data"
-        :before-open="beforeOpen"
-        :before-close="beforeClose"
-        @row-del="rowDel"
-        @row-update="rowUpdate"
-        @row-save="rowSave"
-        @search-change="searchChange"
-        @search-reset="searchReset"
-        @selection-change="selectionChange"
-        @current-change="currentChange"
-        @size-change="sizeChange"
-        @refresh-change="refreshChange"
-        @on-load="onLoad"
-        @tree-load="treeLoad"
+  <div class="Menu fill">
+    <page-header title="菜单管理">
+      <el-button
+        slot="rightMenu"
+        size="medium"
+        type="primary"
+        @click="handleMenuAddBtnClick"
       >
-        <template slot="menuLeft">
+        添加菜单
+      </el-button>
+    </page-header>
+
+    <basic-container block>
+      <common-table
+        ref="table"
+        :columns="columnVisible | columnsFilter"
+        :config="tableConfig"
+        :data="tableData"
+        :loading="tableLoading"
+        :page-config="tablePageConfig"
+        :page="page"
+        @current-page-change="handleCurrentPageChange"
+        @page-size-change="handlePageSizeChange"
+      >
+        <template #topMenu>
+          <div class="operations">
+            <seach-popover
+              :popover-options="searchPopoverConfig.popoverOptions"
+              :require-options="searchPopoverConfig.requireOptions"
+              @submit="handleSearch"
+            />
+            <div class="operations__btns">
+              <el-tooltip
+                class="operations__btns--tooltip"
+                content="刷新"
+                effect="dark"
+                placement="top"
+              >
+                <el-button
+                  class="operations__btns--item"
+                  size="mini"
+                  type="text"
+                  @click="refreshTableData"
+                >
+                  <i class="iconfont iconicon_refresh" />
+                </el-button>
+              </el-tooltip>
+              <el-popover
+                placement="bottom"
+                width="40"
+                trigger="click"
+              >
+                <el-tooltip
+                  slot="reference"
+                  class="operations__btns--tooltip"
+                  content="显隐"
+                  effect="dark"
+                  placement="top"
+                >
+                  <el-button
+                    class="operations__btns--item"
+                    size="mini"
+                    type="text"
+                    @click="getTableList"
+                  >
+                    <i class="iconfont iconicon_setting" />
+                  </el-button>
+                </el-tooltip>
+
+                <!-- 设置表格列可见性 -->
+                <div class="operations__column--visible">
+                  <el-checkbox-group v-model="columnVisible">
+                    <el-checkbox
+                      v-for="item of tableColumns"
+                      :key="item.prop"
+                      :disabled="item.prop === 'name'"
+                      :label="item.prop"
+                      class="operations__column--item"
+                    >
+                      {{ item.label }}
+                    </el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </el-popover>
+            </div>
+          </div>
+        </template>
+
+        <template #multiSelectMenu="{ selection }">
           <el-button
-            type="danger"
-            size="medium"
-            icon="el-icon-delete"
-            plain
-            @click="handleDelete"
+            style="margin-bottom:0;"
+            type="text"
+            @click="() => handleRemoveItems(selection)"
           >
-            删 除
+            批量删除
           </el-button>
         </template>
 
-        <template
-          slot="menu"
-          slot-scope="scope"
-        >
-          <el-button
-            type="text"
-            icon="el-icon-circle-plus-outline"
-            size="medium"
-            @click.stop="handleAddChild(scope.row, scope.index)"
-          >
-            新增子项
-          </el-button>
+        <template #icon="{row}">
+          <i :class="_.get(row, 'icon', '')" />
         </template>
-        <template
-          slot="icon"
-          slot-scope="{ row }"
-        >
-          <div style="text-align:center">
-            <i :class="row.icon" />
+
+        <template #handler="{row}">
+          <div class="table__handler">
+            <el-button
+              size="medium"
+              type="text"
+              @click.stop="() => handleMenuEditBtnClick(row)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              size="medium"
+              type="text"
+              @click.stop="() => handleRemoveItems([row])"
+            >
+              删除子项
+            </el-button>
+            <el-button
+              size="medium"
+              type="text"
+              @click.stop="() => handleMenuItemAddBtnClick(row)"
+            >
+              新增子项
+            </el-button>
           </div>
         </template>
-      </avue-crud>
+      </common-table>
     </basic-container>
+
+    <!-- 添加/编辑 菜单弹窗 -->
+    <menu-edit
+      ref="menuEdit"
+      :visible.sync="menuEditVisible"
+      v-on="{
+        submitAdd: (query) => handleMenuEditSubmit({ query, type: 'add' }),
+        submitAddItem: (query) => handleMenuEditSubmit({ query, type: 'addItem' }),
+        submitEdit: (query) => handleMenuEditSubmit({ query, type: 'edit' })
+      }"
+    />
   </div>
 </template>
 
 <script>
-import {
-  getMenuTree,
-  getMenuInfo,
-  postMenuInfo,
-  putMenuInfo,
-  deleteMenuInfo
-} from '@/api/system/menu'
-import { mapGetters } from 'vuex'
-import iconList from '@/config/iconList'
-import func from '@/util/func'
+import { deleteMenuInfo, getMenuInfo, postMenuInfo, putMenuInfo } from '@/api/system/menu'
+
+// 表格属性
+const TABLE_COLUMS = [
+  {
+    label: '菜单名称',
+    minWidth: 150,
+    prop: 'name'
+  },
+  {
+    label: '请求地址',
+    minWidth: 150,
+    prop: 'path'
+  },
+  // {
+  //   label: '上级菜单',
+  //   prop: 'parentId',
+  //   width: 150
+  // },
+  {
+    label: '菜单图标',
+    prop: 'icon',
+    slot: true,
+    width: 150
+  },
+  {
+    label: '菜单编号',
+    prop: 'code',
+    width: 150
+  },
+  {
+    // 格式化菜单类型
+    formatter: (row, column, text = '') => {
+      switch (text) {
+        case 'Dir':
+          text = '目录'
+          break
+        case 'Menu':
+          text = '菜单'
+          break
+        case 'Button':
+          text = '按钮'
+          break
+        default:
+      }
+      return text
+    },
+    label: '菜单类型',
+    prop: 'menuType',
+    width: 150
+  },
+  {
+    label: '菜单别名',
+    prop: 'alias',
+    width: 150
+  },
+  {
+    formatter: (row, column, text = '') => {
+      switch (text) {
+        case 0:
+          text = '隐藏'
+          break
+        case 1:
+          text = '显示'
+          break
+        default:
+      }
+      return text
+    },
+    label: '是否展示',
+    prop: 'isShow',
+    width: 150
+  },
+  {
+    label: '菜单排序',
+    prop: 'sort',
+    width: 80
+  },
+  {
+    label: '菜单备注',
+    prop: 'remark',
+    width: 150
+  }
+  // {
+  //   formatter: (row, column, text = '') => {
+  //     switch (text) {
+  //       case 'VALID':
+  //         text = '有效'
+  //         break
+  //       case 'INVALID':
+  //         text = '失效'
+  //         break
+  //       default:
+  //     }
+  //     return text
+  //   },
+  //   label: '状态',
+  //   prop: 'status',
+  //   width: 150
+  // }
+]
+const TABLE_CONFIG = {
+  handlerColumn: {
+    width: 200
+  },
+  enableMultiSelect: true,
+  enablePagination: true,
+  showHandler: true,
+  showIndexColumn: false,
+
+  // 树形结构懒加载
+  lazy: true,
+  load: async (row, treeNode, resolve) => {
+    try {
+      let items = await getMenuInfo(row.menuId)
+      resolve(_.map(items, (i) => ({ ...i, hasChildren: true })))
+    } catch (err) {
+      resolve([])
+    }
+  },
+  rowKey: 'menuId',
+  treeProps: { hasChildren: 'hasChildren', children: 'children' }
+}
+const TABLE_PAGE_CONFIG = {}
+
+// 搜索配置
+const SEARCH_POPOVER_REQUIRE_OPTIONS = [
+  {
+    config: { placeholder: '请输入菜单名称', 'suffix-icon': 'el-icon-search' },
+    data: '',
+    field: 'name',
+    label: '',
+    type: 'input'
+  }
+]
+const SEARCH_POPOVER_POPOVER_OPTIONS = [
+  {
+    config: { placeholder: '请输入菜单编号' },
+    data: '',
+    field: 'code',
+    label: '菜单编号',
+    type: 'input'
+  },
+  {
+    config: { placeholder: '请输入菜单别名' },
+    data: '',
+    field: 'alias',
+    label: '菜单别名',
+    type: 'input'
+  }
+]
+const SEARCH_POPOVER_CONFIG = {
+  popoverOptions: SEARCH_POPOVER_POPOVER_OPTIONS,
+  requireOptions: SEARCH_POPOVER_REQUIRE_OPTIONS
+}
 
 export default {
+  name: 'Menu',
+  components: {
+    MenuEdit: () => import(/* webpackChunkName: "views" */ './components/menuEdit'),
+    SeachPopover: () => import(/* webpackChunkName: "views" */ '@/components/searchPopOver')
+  },
+  filters: {
+    // 过滤不可见的列
+    columnsFilter: (visibleColProps) =>
+      _.filter(TABLE_COLUMS, ({ prop }) => _.includes(visibleColProps, prop))
+  },
   data() {
     return {
-      form: {},
-      query: {},
-      loading: true,
-      selectionList: [],
+      // 默认选中所有列
+      columnVisible: _.map(TABLE_COLUMS, ({ prop }) => prop),
+      menuEditVisible: false,
       parentId: '0',
       page: {
-        pageSize: 10,
         currentPage: 1,
+        size: 10,
         total: 0
       },
-      option: {
-        lazy: true,
-        tip: false,
-        simplePage: true,
-        searchShow: true,
-        searchMenuSpan: 6,
-        dialogWidth: '60%',
-        tree: true,
-        border: true,
-        index: true,
-        selection: true,
-        viewBtn: false,
-        menuWidth: 300,
-        dialogClickModal: false,
-        rowKey: 'menuId',
-        size: 'medium',
-        column: [
-          {
-            label: '菜单名称',
-            prop: 'name',
-            search: true,
-            minWidth: '200',
-            rules: [
-              {
-                required: true,
-                message: '请输入菜单名称',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '请求地址',
-            prop: 'path'
-          },
-          {
-            label: '上级菜单',
-            prop: 'parentId',
-            type: 'tree',
-            dicData: [],
-            hide: true,
-            props: {
-              label: 'name',
-              value: 'menuId'
-            },
-            rules: [
-              {
-                required: false,
-                message: '请选择上级菜单',
-                trigger: 'click'
-              }
-            ]
-          },
-          {
-            label: '菜单图标',
-            prop: 'icon',
-            type: 'icon-select',
-            slot: true,
-            iconList: iconList
-          },
-          {
-            label: '菜单编号',
-            prop: 'code',
-            search: true,
-            rules: [
-              {
-                required: true,
-                message: '请输入菜单编号',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '菜单类型',
-            prop: 'menuType',
-            type: 'radio',
-            dicData: [
-              // Dir：目录，Menu：菜单；Button：按钮
-              {
-                label: '目录',
-                value: 'Dir'
-              },
-              {
-                label: '菜单',
-                value: 'Menu'
-              },
-              {
-                label: '按钮',
-                value: 'Button'
-              }
-            ],
-            rules: [
-              {
-                required: true,
-                message: '请选择菜单类型',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '菜单别名',
-            prop: 'alias',
-            search: true,
-            rules: [
-              {
-                required: true,
-                message: '请输入菜单别名',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '是否展示',
-            prop: 'isShow',
-            type: 'radio',
-            hide: true,
-            dicData: [
-              {
-                label: '展示',
-                value: 1
-              },
-              {
-                label: '隐藏',
-                value: 0
-              }
-            ],
-            rules: [
-              {
-                required: true,
-                message: '是否显示菜单',
-                trigger: 'blur'
-              }
-            ]
-          },
-          {
-            label: '菜单排序',
-            prop: 'sort',
-            type: 'number',
-            rules: [
-              {
-                required: true,
-                message: '请输入菜单排序',
-                trigger: 'blur'
-              }
-            ]
-          },
-
-          {
-            label: '菜单备注',
-            prop: 'remark',
-            type: 'textarea',
-            span: 24,
-            minRows: 2,
-            hide: true
-          },
-          {
-            label: '状态',
-            prop: 'status',
-            type: 'radio',
-            dicData: [
-              {
-                label: '有效',
-                value: 'VALID'
-              },
-              {
-                label: '失效',
-                value: 'INVALID'
-              }
-            ]
-          }
-        ]
-      },
-      data: []
+      searchPopoverConfig: SEARCH_POPOVER_CONFIG,
+      query: {},
+      tableColumns: TABLE_COLUMS,
+      tableConfig: TABLE_CONFIG,
+      tableData: [],
+      tableLoading: false,
+      tablePageConfig: TABLE_PAGE_CONFIG
     }
   },
-  computed: {
-    ...mapGetters(['userInfo']),
-    ids() {
-      let ids = []
-      this.selectionList.forEach((ele) => {
-        ids.push(ele.menuId)
-      })
-      return ids.join(',')
-    }
-  },
-  watch: {
-    'form.category'() {
-      const category = func.toInt(this.form.category)
-      this.$refs.crud.option.column.filter((item) => {
-        if (item.prop === 'path') {
-          item.rules[0].required = category === 1
-        }
-      })
-    }
+  created() {
+    this.refreshTableData()
   },
   methods: {
-    initData() {
-      getMenuTree().then((res) => {
-        const column = this.findObject(this.option.column, 'parentId')
-        column.dicData = [{ menuId: '0', name: '顶级菜单', children: res }]
-      })
+    // 获取表格数据
+    getTableList() {},
+    //  处理页码改变
+    handleCurrentPageChange() {},
+    handlePageSizeChange() {},
+
+    handleSearch(searchParams) {
+      this.loadTableData(_.pickBy(searchParams))
     },
-    handleAddChild(row) {
-      this.$refs.crud.value.parentId = row.menuId
-      this.$refs.crud.option.column.filter((item) => {
-        if (item.prop === 'parentId') {
-          item.value = row.menuId
-          item.addDisabled = true
-        }
-      })
-      this.$refs.crud.rowAdd()
-    },
-    rowSave(row, done, loading) {
-      // console.log(row)
-      if (!row.parentId) {
-        row.parentId = '0'
-      }
-      postMenuInfo(row).then(
-        () => {
-          // 获取新增数据的相关字段
-          // row.menuId = res.menuId
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          })
-          // 数据回调进行刷新
-          this.refreshChange()
-          done(row)
-        },
-        (error) => {
-          window.console.log(error)
-          loading()
-        }
-      )
-    },
-    rowUpdate(row, index, done, loading) {
-      putMenuInfo(row).then(
-        () => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          })
-          // 数据回调进行刷新
-          done(row)
-        },
-        (error) => {
-          window.console.log(error)
-          loading()
-        }
-      )
-    },
-    rowDel(row, index, done) {
+
+    handleRemoveItems(selection) {
       this.$confirm('确定将选择数据删除?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning'
       })
+        .then(() => deleteMenuInfo(_.map(selection, ({ menuId }) => menuId).join(',')))
         .then(() => {
-          return deleteMenuInfo(row.menuId)
-        })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          })
-          // 数据回调进行刷新
-          done(row)
+          // 删除完成后更新视图
+          this.$refs.table.clearSelection()
+          this.refreshTableData()
         })
     },
-    handleDelete() {
-      if (this.selectionList.length === 0) {
-        this.$message.warning('请选择至少一条数据')
+    // 点击添加菜单按钮
+    handleMenuAddBtnClick() {
+      this.$refs.menuEdit.init()
+    },
+    // 添加子菜单
+    handleMenuItemAddBtnClick({ menuId }) {
+      this.$refs.menuEdit.init({ parentId: menuId })
+    },
+
+    // 点击菜单编辑按钮
+    handleMenuEditBtnClick(row) {
+      this.$refs.menuEdit.init(row)
+    },
+
+    // 表单弹窗提交
+    handleMenuEditSubmit({ query, type }) {
+      const menuEdit = this.$refs.menuEdit
+      let api = null
+      switch (type) {
+        case 'add': // 与case "addItem": 处理相同
+        case 'addItem':
+          api = postMenuInfo
+          break
+        case 'edit':
+          api = putMenuInfo
+          break
+        default:
+          return
+      }
+      menuEdit.loading = true
+      api(_.set(query, 'status', true))
+        .then(() => {
+          this.$message.success('操作成功!')
+          this.refreshTableData()
+          this.$refs.menuEdit.close()
+        })
+        .catch((err) => {
+          window.console.log(err)
+        })
+        .finally(() => (menuEdit.loading = false))
+    },
+
+    // 刷新列表数据
+    refreshTableData() {
+      //  因为只加载了最外层的数据，children仍然是旧的，清空数据
+      this.tableData = []
+      this.loadTableData({ parentId: '0' })
+    },
+
+    // 加载表格数据
+    // TODO: 分页还未实现
+    async loadTableData(param = {}, page) {
+      if (this.tableLoading) {
         return
       }
-      this.$confirm('确定将选择数据删除?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          return deleteMenuInfo(this.ids)
-        })
-        .then(() => {
-          // 刷新表格数据并重载
-          this.data = []
-          this.parentId = '0'
-          this.$refs.crud.refreshTable()
-          this.$refs.crud.toggleSelection()
-          // 表格数据重载
-          this.onLoad(this.page)
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          })
-        })
-    },
-    searchReset() {
-      this.query = {}
-      this.parentId = '0'
-      this.onLoad(this.page)
-    },
-    searchChange(params, done) {
-      this.query = params
-      this.parentId = '0'
-      this.page.currentPage = 1
-      this.onLoad(this.page, params)
-      done()
-    },
-    selectionChange(list) {
-      this.selectionList = list
-    },
-    selectionClear() {
-      this.selectionList = []
-      this.$refs.crud.toggleSelection()
-    },
-    beforeOpen(done, type) {
-      if (['add', 'edit'].includes(type)) {
-        this.initData()
+      this.tableLoading = true
+      try {
+        const query = _.assign(null, _.omit(param, 'parentId'), page)
+        const tableData = await getMenuInfo(param.parentId || '0', query)
+        this.tableData = _.map(tableData, (t) => ({
+          children: [],
+          hasChildren: true,
+          ...t
+        }))
+        // 更新分页器数据
+        this.page.total = _.size(tableData)
+      } catch (error) {
+        window.console.log(error)
+      } finally {
+        this.tableLoading = false
       }
-      if (type == 'add') {
-        this.form = { isShow: 1, status: 'VALID' }
-      }
-      done()
-    },
-    beforeClose(done) {
-      this.$refs.crud.value.parentId = ''
-      this.$refs.crud.value.addDisabled = false
-      this.$refs.crud.option.column.forEach((item) => {
-        if (item.prop === 'parentId') {
-          item.value = ''
-          item.addDisabled = false
-        }
-      })
-      done()
-    },
-    currentChange(currentPage) {
-      this.page.currentPage = currentPage
-    },
-    sizeChange(pageSize) {
-      this.page.pageSize = pageSize
-    },
-    refreshChange() {
-      this.onLoad(this.page, this.query)
-    },
-    onLoad(page, params = {}) {
-      this.loading = true
-      getMenuInfo(this.parentId, Object.assign(params, this.query)).then((res) => {
-        res.forEach((it) => {
-          it.hasChildren = true
-        })
-        this.data = res
-        this.$nextTick(() => {
-          this.loading = false
-          this.selectionClear()
-        })
-      })
-    },
-    treeLoad(tree, treeNode, resolve) {
-      const parentId = tree.menuId
-      getMenuInfo(parentId)
-        .then((res) => {
-          res.forEach((it) => {
-            it.hasChildren = true
-          })
-          resolve(res)
-        })
-        .catch(() => {
-          resolve([])
-        })
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.basic-container--block {
-  height: calc(100% - 92px);
-  min-height: calc(100% - 92px);
-}
+<style lang="sass" scope>
+$color_icon: #A0A8AE
+
+.basic-container--block
+  height: calc(100% - 92px)
+  min-height: calc(100% - 92px)
+.operations
+  align-items: center
+  display: flex
+  justify-content: space-between
+  &__column--item
+    height: 25px
+  &__column--visible
+    height: 200px
+    overflow: scroll
+  &__btns
+    align-items: center
+    display: flex
+    height: 24px
+    justify-content: flex-start
+  &__btns--item
+    margin: 0
+    margin-right: 4px
+    padding: 0
+    height: 24px
+    width: 24px
+    line-height: 24px
+    &:last-child
+      margin: 0
+    // margin-bottom: 8px
+    // margin-right: 8px
+  .iconfont
+    color: $color_icon
+    font-weight: bold
+    font-size: 16px
+
+.Menu
+  // 添加一个分隔号 "｜"
+  .table__handler
+    display: flex
+    justify-content: flex-end
+    > .el-button--text
+      text-align: center
+      padding: 0 8px
+      margin-left: 0px
+      position: relative
+      &::after
+        content: ''
+        width: 1px
+        height: 10px
+        background-color: #e3e7e9
+        position: absolute
+        top: 50%
+        right: 0
+        transform: translateY(-50%)
 </style>

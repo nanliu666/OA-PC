@@ -77,7 +77,7 @@
           </div>
           <div
             class="content-item"
-            @click="handelClick"
+            @click="goToMailList"
           >
             <div class="Smectite" />
             <div class="icon-box book">
@@ -112,14 +112,16 @@
       <div class="main-wrap">
         <div class="content">
           <div class="content-item">
-            <span class="num-box">{{ todoCount || '--' }}</span>
+            <span class="num-box">{{ numObj.waitNum || '--' }}</span>
             <span class="handel">待我处理</span>
           </div>
           <div class="content-item">
-            <span class="num-box">--</span> <span class="handel">我发起的</span>
+            <span class="num-box">{{ numObj.myNum || '--' }}</span>
+            <span class="handel">我发起的</span>
           </div>
           <div class="content-item">
-            <span class="num-box">--</span> <span class="handel">抄送我的</span>
+            <span class="num-box">{{ numObj.ccNum || '--' }}</span>
+            <span class="handel">抄送我的</span>
           </div>
         </div>
       </div>
@@ -128,22 +130,23 @@
 </template>
 
 <script>
+import { fetchApproveStat } from '@/api/msg/msg'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { mapGetters } from 'vuex'
 export default {
   name: 'InfoViewArea',
-  props: {
-    todoCount: {
-      type: Number,
-      default: 0
-    }
-  },
+
   data() {
     return {
       info: {},
       // 待我处理
       waitForMeNum: 0,
-      loading: false
+      loading: false,
+      numObj: {
+        ccNum: 0,
+        myNum: 0,
+        waitNum: 0
+      }
     }
   },
   computed: {
@@ -166,10 +169,29 @@ export default {
     // 获取员工信息
     async loadingUserInfo() {
       this.loading = true
-      let res = await getStaffBasicInfo({ userId: this.userInfo.user_id })
-      this.$store.dispatch('set_info', res)
-      this.info = res
-      this.loading = false
+      try {
+        let res = await getStaffBasicInfo({ userId: this.userInfo.user_id })
+        this.info = res
+        this.loading = false
+        this.$store.dispatch('set_info', res)
+        let { ccNum, myNum, waitNum } = await fetchApproveStat({ userId: this.userInfo.user_id })
+        this.numObj = { ccNum, myNum, waitNum }
+      } catch {
+        this.loading = false
+      }
+      // let { ccNum, myNum, waitNum } = await fetchApproveStat({ userId: this.userInfo.user_id })
+      // this.numObj = { ccNum, myNum, waitNum }
+      // let res = await getStaffBasicInfo({ userId: this.userInfo.user_id }).finally(() => {
+      // 	this.loading = false
+      // })
+      // this.$store.dispatch('set_info', res)
+      // this.info = res
+    },
+    // 跳去通讯录
+    goToMailList() {
+      this.$router.push({
+        path: '/quickAccess/mailList'
+      })
     }
   }
 }
@@ -177,7 +199,8 @@ export default {
 
 <style lang="scss" scoped>
 .info-wrap {
-  height: 90vh;
+  // height: 90vh;
+  height: 1222px; //
   width: 100%;
 
   background: #ffffff;

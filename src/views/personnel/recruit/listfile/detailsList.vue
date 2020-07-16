@@ -129,7 +129,9 @@ import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 const column = [
   {
     label: '需求编号',
-    prop: 'id'
+    prop: 'id',
+    slot: true,
+    minWidth: '120px'
   },
   {
     label: '职位',
@@ -142,25 +144,34 @@ const column = [
     minWidth: '120px'
   },
   {
-    label: '紧急程度',
-    prop: 'emerType'
+    label: '用人部门',
+    prop: 'orgName',
+    minWidth: '120px'
   },
   {
-    label: '需求状态',
-    prop: 'status'
+    label: '工作性质',
+    prop: 'workProperty',
+    slot: true
+  },
+  {
+    label: '紧急程度',
+    prop: 'emerType',
+    slot: true
   },
   {
     label: '需求人数',
     prop: 'needNum'
   },
-
   {
     label: '已入职',
-    prop: 'entryNum'
+    prop: 'entryNum',
+    width: '100'
   },
   {
     label: '招聘进度',
-    prop: 'accuracy'
+    prop: 'accuracy',
+    minWidth: '120px',
+    slot: true
   },
   {
     label: '候选人数',
@@ -182,8 +193,9 @@ export default {
         'emerType',
         'status',
         'needNum',
-        'emerType',
         'entryNum',
+        'accuracy',
+        'workProperty',
         'candidateNum'
       ],
       recruit: false,
@@ -272,58 +284,7 @@ export default {
         ]
       },
       data: [],
-      columns: [
-        {
-          label: '需求编号',
-          prop: 'id',
-          slot: true,
-          minWidth: '120px'
-        },
-        {
-          label: '职位',
-          prop: 'jobName',
-          minWidth: '120px'
-        },
-        {
-          label: '岗位',
-          prop: 'positionName',
-          minWidth: '120px'
-        },
-        {
-          label: '用人部门',
-          prop: 'orgName',
-          minWidth: '120px'
-        },
-        {
-          label: '工作性质',
-          prop: 'workProperty',
-          slot: true
-        },
-        {
-          label: '紧急程度',
-          prop: 'emerType',
-          slot: true
-        },
-        {
-          label: '需求人数',
-          prop: 'needNum'
-        },
-        {
-          label: '已入职',
-          prop: 'entryNum',
-          width: '100'
-        },
-        {
-          label: '招聘进度',
-          prop: 'accuracy',
-          minWidth: '120px',
-          slot: true
-        },
-        {
-          label: '候选人数',
-          prop: 'candidateNum'
-        }
-      ],
+      columns: column,
       tableConfig: {
         showHandler: true,
         showIndexColumn: false,

@@ -118,6 +118,7 @@ export default {
           const params = {
             personId: this.personArr[0].personId,
             userId: this.$store.state.user.userInfo.user_id,
+            recruitmentId: this.personArr[0].recruitmentId,
             ...this.form
           }
           this.loading = true
@@ -147,6 +148,9 @@ export default {
     },
     handleClose() {
       Object.assign(this.$data.form, this.$options.data().form)
+      this.$nextTick(() => {
+        this.$refs.ruleForm.clearValidate()
+      })
       this.$emit('update:visible', false)
     }
   }

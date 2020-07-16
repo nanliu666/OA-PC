@@ -105,6 +105,13 @@ export const postInterViewSend = (params) => post('/user/v1/person/interview/sen
  * */
 export const postInterViewResend = (params) => post('/user/v1/person/interview/resend', params)
 /***
+ * @author wuweiyan
+ * @desc  安排复试发送接口
+ *
+ *@params params
+ * */
+export const postInterViewRetest = (params) => post('/user/v1/person/interview/retest', params)
+/***
  * @author guanfenda
  * @desc  人员信息查询接口
  *

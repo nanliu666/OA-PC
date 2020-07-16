@@ -198,6 +198,7 @@ export default {
     },
     // 切换Work和System
     handleClick() {
+      this.page.currentPage = 1
       if (this.activeName === 'Work') {
         (this.msgQuery.type = 'Work'), this.loadingData()
       } else if (this.activeName === 'System') {
@@ -275,6 +276,9 @@ export default {
 }
 /deep/.el-select .el-input__inner:focus {
   border-color: #fff;
+}
+/deep/.el-card__body {
+  padding-top: 14px;
 }
 .el-select {
   width: 120px;

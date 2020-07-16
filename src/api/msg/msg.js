@@ -11,3 +11,7 @@ export const creatSignReadMsg = (params) => {
 export const creatDelReadMsg = (params) => {
   return post('/msg/v1/msg/notify/read/del', params)
 }
+// 审批统计查询接口【GET /appr/v1/appr/approve/stat】
+export const fetchApproveStat = (params) => {
+  return get('/appr/v1/appr/approve/stat', params)
+}

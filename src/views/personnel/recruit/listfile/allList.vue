@@ -229,7 +229,9 @@ import ClaLabel from '@/views/personnel/recruit/components/claLabel'
 const column = [
   {
     label: '需求编号',
-    prop: 'id'
+    prop: 'id',
+    slot: true,
+    minWidth: '120px'
   },
   {
     label: '职位',
@@ -243,11 +245,13 @@ const column = [
   },
   {
     label: '紧急程度',
-    prop: 'emerType'
+    prop: 'emerType',
+    slot: true
   },
   {
     label: '需求状态',
-    prop: 'status'
+    prop: 'status',
+    slot: true
   },
   {
     label: '需求人数',
@@ -260,7 +264,9 @@ const column = [
   },
   {
     label: '招聘进度',
-    prop: 'accuracy'
+    prop: 'accuracy',
+    minWidth: '120px',
+    slot: true
   },
   {
     label: '候选人数',
@@ -281,13 +287,13 @@ export default {
       checkColumn: [
         'id',
         'jobName',
-        'orgName',
         'positionName',
         'emerType',
         'status',
         'needNum',
-        'emerType',
-        'entryNum'
+        'entryNum',
+        'accuracy',
+        'candidateNum'
       ],
       activeName: 'inrecruitment',
       loading: false,
@@ -391,51 +397,7 @@ export default {
           type: 'expand',
           slot: true
         },
-        {
-          label: '需求编号',
-          prop: 'id',
-          slot: true,
-          minWidth: '120px'
-        },
-        {
-          label: '职位',
-          prop: 'jobName',
-          minWidth: '120px'
-        },
-        {
-          label: '岗位',
-          prop: 'positionName',
-          minWidth: '120px'
-        },
-        {
-          label: '紧急程度',
-          prop: 'emerType',
-          slot: true
-        },
-        {
-          label: '需求状态',
-          prop: 'status',
-          slot: true
-        },
-        {
-          label: '需求人数',
-          prop: 'needNum'
-        },
-
-        {
-          label: '已入职',
-          prop: 'entryNum'
-        },
-        {
-          label: '招聘进度',
-          prop: 'accuracy',
-          minWidth: '120px',
-          slot: true
-        },
-        {
-          label: '候选人数',
-          prop: 'candidateNum'
-        }
+        ...column
       ],
       tableConfig: {
         showHandler: true,
@@ -616,9 +578,16 @@ export default {
       }
     },
     columnChange() {
-      this.columns = column.filter((item) => {
-        return this.checkColumn.indexOf(item.prop) > -1
-      })
+      this.columns = [
+        {
+          prop: 'expand',
+          type: 'expand',
+          slot: true
+        },
+        ...column.filter((item) => {
+          return this.checkColumn.indexOf(item.prop) > -1
+        })
+      ]
     }
   }
 }
