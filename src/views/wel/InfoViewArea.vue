@@ -112,15 +112,15 @@
       <div class="main-wrap">
         <div class="content">
           <div class="content-item">
-            <span class="num-box">{{ numObj.waitNum || '--' }}</span>
+            <span class="num-box">{{ numObj.waitNum }}</span>
             <span class="handel">待我处理</span>
           </div>
           <div class="content-item">
-            <span class="num-box">{{ numObj.myNum || '--' }}</span>
+            <span class="num-box">{{ numObj.myNum }}</span>
             <span class="handel">我发起的</span>
           </div>
           <div class="content-item">
-            <span class="num-box">{{ numObj.ccNum || '--' }}</span>
+            <span class="num-box">{{ numObj.ccNum }}</span>
             <span class="handel">抄送我的</span>
           </div>
         </div>

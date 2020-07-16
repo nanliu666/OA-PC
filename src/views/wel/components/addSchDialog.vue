@@ -83,11 +83,16 @@
 <script>
 import { mapGetters } from 'vuex'
 import { addScheduleinfo } from '@/api/taskcenter/taskcenter'
+// import moment from 'moment'
 export default {
   name: 'AddSchDialog',
   props: {
     refresh: {
       type: Function,
+      default: null
+    },
+    chooseDay: {
+      type: Date,
       default: null
     }
   },
@@ -95,7 +100,7 @@ export default {
     return {
       Params: {
         title: '',
-        remindDate: ''
+        remindDate: this.chooseDay
       },
       Rules: {
         title: [
@@ -113,6 +118,12 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
+  watch: {
+    chooseDay(val) {
+      this.Params.remindDate = val
+    }
+  },
+
   methods: {
     // 显示模态框
     showDialog() {

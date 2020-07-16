@@ -360,7 +360,7 @@ export default {
       })
     },
     // 跳去详情
-    jumpToDetail({ type, bizId, biz_id2 }) {
+    jumpToDetail({ type, bizId, bizId2 }) {
       if (type === 'Interview') {
         // 面试
         this.$router.push({
@@ -398,7 +398,7 @@ export default {
           path: '/todo/leaveListOrg',
           query: {
             leaveUserId: bizId,
-            groupId: biz_id2
+            groupId: bizId2
           }
         })
       } else if (type === 'LeaveListUser') {
@@ -415,7 +415,7 @@ export default {
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: bizId,
-            recruitmentId: biz_id2
+            recruitmentId: bizId2
           }
         })
       } else if (type === 'Entry') {
