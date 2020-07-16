@@ -9,7 +9,7 @@
   >
     <div class="main">
       <Overview
-        :value="form"
+        :data="form"
         :props="overviewProps"
         style="margin:0"
       />

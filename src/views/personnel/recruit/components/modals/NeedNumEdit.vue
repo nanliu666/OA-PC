@@ -9,7 +9,7 @@
   >
     <div class="dialog__content">
       <Overview
-        :value="form"
+        :data="form"
         :props="overviewProps"
         style="margin:0"
       />

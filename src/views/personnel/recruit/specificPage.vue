@@ -80,7 +80,7 @@
           name="inrecruitment"
         >
           <Overview
-            :value="childData"
+            :data="childData"
             :props="overviewProps"
           />
           <h3 class="Header">
@@ -102,7 +102,7 @@
           name="inrecruitment"
         >
           <Overview
-            :value="childData"
+            :data="childData"
             :props="overviewProps"
           />
           <h3 class="Header">
@@ -124,7 +124,7 @@
           name="inrecruitment"
         >
           <Overview
-            :value="childData"
+            :data="childData"
             :props="overviewProps"
           />
           <h3 class="Header">
