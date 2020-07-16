@@ -57,7 +57,7 @@ export const getCandidateInfo = (params) => {
 
 // 已淘汰人员详情查询
 export const getCandidateOutInfo = (params) => {
-  return get('/api/user/v1/person/info', params)
+  return get('/api/user/v1/candidate/out/info', params)
 }
 
 // 人员动态查询
@@ -67,10 +67,10 @@ export const getPersonRecord = (params) => {
 
 /**
  * offer查询接口
- * @param {String} personId - 人员ID
+ * @param {String} id - offer ID
  * */
-export const getOfferInfo = (personId) => {
-  return get('/user/v1/candidate/offer', { personId })
+export const getOfferInfo = (id) => {
+  return get('/user/v1/candidate/offer', { id })
 }
 
 /**

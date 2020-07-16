@@ -86,7 +86,7 @@
   </div>
 </template>
 <script>
-import { getCandidateInfo } from '@/api/personnel/person'
+import { getCandidateInfo } from '@/api/personnel/candidate'
 import {
   modifyOffer,
   createOffer,
@@ -156,6 +156,10 @@ export default {
       })
     },
     getOfferInfo() {
+      if (!this.offerId) {
+        Object.assign(this.offerInfo, { personId: this.personId })
+        return
+      }
       getOfferInfo(this.offerId).then((data) => {
         Object.assign(this.offerInfo, data, { personId: this.personId })
         if (Object.keys(data).length === 0) {
