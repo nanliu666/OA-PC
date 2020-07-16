@@ -414,332 +414,8 @@
           slot-scope="{ row }"
         >
           <div class="handlerRow">
-            <!-- 待沟通 -->
-            <template v-if="row.status === '1'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  v-if="row.pushResume === 0"
-                  type="text"
-                  @click="hadlePushAudit(row)"
-                >
-                  推送审核
-                </el-button>
-                <el-button
-                  v-if="row.pushResume === 1"
-                  type="text"
-                  disabled
-                >
-                  已推送
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item
-                      v-if="row.pushResume === 0"
-                      command="hadlePushAudit"
-                    >
-                      推送审核
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-if="row.pushResume === 1"
-                      disabled
-                    >
-                      已推送
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="changeJob">
-                    更改应聘职位
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 初选通过 -->
-            <template v-if="row.status === '2'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleArrange(row)"
-                >
-                  安排面试
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleArrange">
-                      安排面试
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 面试中 -->
-            <template v-if="row.status === '3'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleArrange(row)"
-                >
-                  重新安排面试
-                </el-button>
-                <el-button
-                  v-if="row.interview === 0"
-                  type="text"
-                  @click="handleSend(row)"
-                >
-                  发送面试登记表
-                </el-button>
-                <el-button
-                  v-else
-                  type="text"
-                  @click="loopUpInterview(row)"
-                >
-                  查看面试登记表
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleArrange">
-                      重新安排面试
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-if="row.interview === 0"
-                      command="handleSend"
-                    >
-                      发送面试登记表
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-else
-                      command="loopUpInterview"
-                    >
-                      查看面试登记表
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="weedOut">
-                    淘汰
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!--                  <el-dropdown-item command>-->
-                  <!--                    下载简历-->
-                  <!--                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 面试通过 -->
-            <template v-if="row.status === '4'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  v-if="!row.applyId"
-                  type="text"
-                  @click="handleApplyEmploy(row)"
-                >
-                  申请录用
-                </el-button>
-                <el-button
-                  v-else
-                  type="text"
-                  @click="handleCheckEmploy(row)"
-                >
-                  查看申请
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item
-                      v-if="!row.applyId"
-                      command="handleApplyEmploy"
-                    >
-                      申请录用
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-else
-                      command="handleCheckEmploy"
-                    >
-                      查看申请
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item
-                    v-if="!row.applyId"
-                    command="arrange"
-                  >
-                    安排复试
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
-                    command="reApply"
-                  >
-                    重新申请
-                  </el-dropdown-item>
-                  <el-dropdown-item command="InterviewEvaluation">
-                    查看面试评价
-                  </el-dropdown-item>
-                  <el-dropdown-item command="toRegistrationForm">
-                    查看面试登记表
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 待发Offer -->
-            <template v-if="row.status === '5'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleSendOffer(row)"
-                >
-                  发送Offer
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleSendOffer">
-                      发送Offer
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 已发Offer -->
-            <template v-if="row.status === '6'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleAcceptOffer(row)"
-                >
-                  接受
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleAcceptOffer">
-                      接受
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="offerChange">
-                    Offer变更
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
             <!-- 已淘汰 -->
-            <template v-if="row.status === '0'">
+            <template v-if="tabStatus === '0'">
               <template v-if="tabStatus !== 'all'">
                 <el-button
                   type="text"
@@ -763,6 +439,332 @@
                     <!-- <el-dropdown-item command>
                     下载简历
                   </el-dropdown-item> -->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+            </template>
+            <template v-else>
+              <!-- 待沟通 -->
+              <template v-if="row.status === '1'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    v-if="row.pushResume === 0"
+                    type="text"
+                    @click="hadlePushAudit(row)"
+                  >
+                    推送审核
+                  </el-button>
+                  <el-button
+                    v-if="row.pushResume === 1"
+                    type="text"
+                    disabled
+                  >
+                    已推送
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item
+                        v-if="row.pushResume === 0"
+                        command="hadlePushAudit"
+                      >
+                        推送审核
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-if="row.pushResume === 1"
+                        disabled
+                      >
+                        已推送
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="changeJob">
+                      更改应聘职位
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 初选通过 -->
+              <template v-if="row.status === '2'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleArrange(row)"
+                  >
+                    安排面试
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleArrange">
+                        安排面试
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 面试中 -->
+              <template v-if="row.status === '3'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleArrange(row)"
+                  >
+                    重新安排面试
+                  </el-button>
+                  <el-button
+                    v-if="row.interview === 0"
+                    type="text"
+                    @click="handleSend(row)"
+                  >
+                    发送面试登记表
+                  </el-button>
+                  <el-button
+                    v-else
+                    type="text"
+                    @click="loopUpInterview(row)"
+                  >
+                    查看面试登记表
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleArrange">
+                        重新安排面试
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-if="row.interview === 0"
+                        command="handleSend"
+                      >
+                        发送面试登记表
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-else
+                        command="loopUpInterview"
+                      >
+                        查看面试登记表
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="weedOut">
+                      淘汰
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!--                  <el-dropdown-item command>-->
+                    <!--                    下载简历-->
+                    <!--                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 面试通过 -->
+              <template v-if="row.status === '4'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    v-if="!row.applyId"
+                    type="text"
+                    @click="handleApplyEmploy(row)"
+                  >
+                    申请录用
+                  </el-button>
+                  <el-button
+                    v-else
+                    type="text"
+                    @click="handleCheckEmploy(row)"
+                  >
+                    查看申请
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item
+                        v-if="!row.applyId"
+                        command="handleApplyEmploy"
+                      >
+                        申请录用
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-else
+                        command="handleCheckEmploy"
+                      >
+                        查看申请
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item
+                      v-if="!row.applyId"
+                      command="arrange"
+                    >
+                      安排复试
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
+                      command="reApply"
+                    >
+                      重新申请
+                    </el-dropdown-item>
+                    <el-dropdown-item command="InterviewEvaluation">
+                      查看面试评价
+                    </el-dropdown-item>
+                    <el-dropdown-item command="toRegistrationForm">
+                      查看面试登记表
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 待发Offer -->
+              <template v-if="row.status === '5'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleSendOffer(row)"
+                  >
+                    发送Offer
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleSendOffer">
+                        发送Offer
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 已发Offer -->
+              <template v-if="row.status === '6'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleAcceptOffer(row)"
+                  >
+                    接受
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleAcceptOffer">
+                        接受
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="offerChange">
+                      Offer变更
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -1354,7 +1356,8 @@ export default {
             .then(() => {
               this.$message.success('发起成功')
               loading.close()
-              this.handleApplyEmploy(data)
+              // this.handleApplyEmploy(data)
+              this.loadAllData()
             })
             .catch(() => {
               loading.close()
@@ -1432,7 +1435,7 @@ export default {
       if (state === 'all') {
         let num = 0
         for (let key in this.candidateStatus) {
-          num += this.candidateStatus[key]
+          key !== '0' && (num += this.candidateStatus[key])
         }
         return num || 0
       } else {

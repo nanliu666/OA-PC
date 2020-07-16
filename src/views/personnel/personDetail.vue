@@ -63,15 +63,14 @@
             <!-- 淘汰人员详情 -->
             <template v-if="$route.query.status === '0'">
               <!-- 已淘汰 -->
-              <template v-if="personInfo.status === '0'">
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="handleRecover"
-                >
-                  恢复为候选人
-                </el-button>
-                <!-- <el-dropdown @command="handleCommand">
+              <el-button
+                type="primary"
+                size="medium"
+                @click="handleRecover"
+              >
+                恢复为候选人
+              </el-button>
+              <!-- <el-dropdown @command="handleCommand">
                 <el-button
                   size="medium"
                   style="margin-left: 16px"
@@ -85,7 +84,6 @@
                 </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>-->
-              </template>
             </template>
             <!-- 候选人详情 -->
             <template v-else>
@@ -99,7 +97,7 @@
                   推送审核
                 </el-button>
                 <el-button
-                  v-if="personInfo.pushResume === 0"
+                  v-if="personInfo.pushResume === 1"
                   size="medium"
                   type="primary"
                   disabled
@@ -189,7 +187,7 @@
                   v-if="personInfo.interview === 1"
                   type="primary"
                   size="medium"
-                  @click="loopUpInterview"
+                  @click="loopUpInterview(false)"
                 >
                   查看面试登记表
                 </el-button>
@@ -663,6 +661,8 @@ export default {
   },
   activated() {
     this.personId = this.$route.params.personId
+    this.recruitmentId = this.$route.query.recruitmentId
+    this.personId = this.$route.params.personId
     this.isTalent = this.$route.query.isTalent
     this.getPersonInfo()
     this.getPersonRecord()
@@ -690,7 +690,9 @@ export default {
         recruitmentId: this.personInfo.recruitmentId || this.$route.query.recruitmentId,
         personId: this.personInfo.personId
       }
-      if (isEntry) Object.assign(params, { entry: 1, tagName: '入职登记表详情' })
+      if (isEntry) {
+        Object.assign(params, { entry: 1, tagName: '入职登记表详情' })
+      }
       this.$router.push({
         path: '/personnel/candidate/registrationForm',
         query: params
@@ -761,12 +763,12 @@ export default {
       } else {
         getFun = getCandidateInfo
       }
-      getFun({ personId: this.personId, recruitmentId: this.recruitmentId })
+      getFun({ personId: this.personId })
         .then((res) => {
           this.personInfo = res
         })
         .catch(() => {
-          this.$message.error('无此人员信息')
+          // this.$message.error('无此人员信息')
           this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
           this.$router.go(-1)
         })
@@ -832,9 +834,15 @@ export default {
             })
         })
       } else if (command === 'edit') {
-        this.$router.push(
-          '/personnel/editPerson?personId=' + this.personId + '&tagName=修改人员信息'
-        )
+        this.$router.push({
+          path: '/personnel/editPerson',
+          query: {
+            personId: this.personId,
+            tagName: '修改人员信息',
+            isTalent: this.$route.query.isTalent,
+            status: this.$route.query.status
+          }
+        })
       } else if (command === 'toRegistrationForm' || command === 'checkInterview') {
         this.loopUpInterview()
       } else if (command === 'arrange') {
