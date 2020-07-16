@@ -68,7 +68,11 @@
               placement="top"
             >
               <el-card shadow="hover">
-                <p>{{ flow.assigneeName }} 在 [{{ flow.createTime }}] 开始处理 [{{ flow.historyActivityName }}] 环节</p>
+                <p>
+                  {{ flow.assigneeName }} 在 [{{ flow.createTime }}] 开始处理 [{{
+                    flow.historyActivityName
+                  }}] 环节
+                </p>
                 <p v-if="flow.historyActivityDurationTime !== ''">
                   任务历时 [{{ flow.historyActivityDurationTime }}]
                 </p>
@@ -130,13 +134,18 @@ export default {
       this.businessId = this.$route.params.businessId
       this.src = `/api/blade-flow/process/diagram-view?processInstanceId=${this.$route.params.processInstanceId}`
       historyFlowList(this.processInstanceId).then((res) => {
-        const data = res.data
-        if (data.success) {
-          this.flowList = data.data
+        if (res) {
+          this.flowList = res
         }
+        // const data = res
+        // debugger
+        // if (data.success) {
+        //   this.flowList = data.data
+        // }
       })
       leaveDetail(this.businessId).then((res) => {
-        const data = res.data
+        const data = res
+
         if (data.success) {
           this.form = data.data
         }

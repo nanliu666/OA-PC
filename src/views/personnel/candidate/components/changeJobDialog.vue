@@ -44,6 +44,23 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item
+        v-if="type === 'recover'"
+        label="恢复候选人到"
+        prop="status"
+      >
+        <el-select
+          v-model="form.status"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in statusList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <span
       slot="footer"
@@ -66,6 +83,7 @@
 import { getRecruitmentList, changeCandidateJob, recoverCandidate } from '@/api/personnel/candidate'
 // import { getOrgTreeSimple } from '@/api/org/org'
 import { addToCandidate } from '@/api/personnel/person'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ChangeJobDialog',
@@ -78,10 +96,11 @@ export default {
   },
   data() {
     return {
-      form: { recruitmentId: '' },
+      form: { recruitmentId: '', status: '' },
       recruitmentList: [],
       rules: {
-        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }]
+        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }],
+        status: [{ required: true, message: '请选择候选人恢复后状态', trigger: 'blur' }]
       },
       orgId: '',
       orgList: [],
@@ -95,8 +114,21 @@ export default {
       }
     }
   },
+  computed: {
+    statusList() {
+      let statusList = [
+        { label: '待沟通', value: '1' },
+        { label: '初选通过', value: '2' },
+        { label: '面试通过', value: '4' }
+      ]
+      return statusList.filter((item) => {
+        return Number(item.value) <= Number(this.person.status)
+      })
+    },
+    ...mapGetters(['userId'])
+  },
   created() {
-    getRecruitmentList().then((res) => {
+    getRecruitmentList({ userId: this.userId }).then((res) => {
       this.recruitmentList = res
     })
     // getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
@@ -140,7 +172,8 @@ export default {
         const params = {
           personId: this.person.personId,
           recruitmentId: this.form.recruitmentId,
-          userId: this.$store.state.user.userInfo.user_id
+          userId: this.$store.state.user.userInfo.user_id,
+          status: this.type === 'recover' ? this.form.status : null
         }
         this.loading = true
 
@@ -157,7 +190,7 @@ export default {
           .then(() => {
             this.$message.success('操作成功')
             Object.assign(this.$data.form, this.$options.data().form)
-            this.$emit('refresh')
+            this.$emit('refresh', this.type)
             this.$emit('update:visible', false)
           })
           .catch(() => {

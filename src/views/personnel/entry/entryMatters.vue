@@ -36,31 +36,47 @@
     <basic-container>
       <div class="tags">
         <i class="el-icon-warning-outline" />
-        该员工还有 {{ contractStatus ? 0 : 1 }} 项入职事项未完成。
+        该员工还有 {{ getTodoNum() }} 项入职事项未完成。
       </div>
       <div class="matterList">
-        <!-- <div class="matterItem">
-          <i class="el-icon-warning" />
-          <div>入职登记表</div>
+        <div class="matterItem">
+          <i :class="getRegisterStatus() === '未发送' ? 'el-icon-warning' : 'el-icon-success'" />
+          <div class="title">
+            入职登记表
+          </div>
           <div class="matterStatus">
-            未发送
+            {{ getRegisterStatus() }}
           </div>
-          <div>
-            <el-button
-              size="mediun"
-              type="text"
-            >
-              发送入职登记表
-            </el-button>
+          <div class="btnBox">
+            <template v-if="$route.query.personId && $route.query.recruitmentId">
+              <el-button
+                v-if="getRegisterStatus() === '未发送'"
+                size="mediun"
+                type="text"
+                @click="sendRegister"
+              >
+                发送入职登记表
+              </el-button>
+              <el-button
+                v-else
+                size="mediun"
+                type="text"
+                @click="toRegister"
+              >
+                查看
+              </el-button>
+            </template>
           </div>
-        </div>-->
+        </div>
         <div class="matterItem">
           <i :class="contractStatus ? 'el-icon-success' : 'el-icon-warning'" />
-          <div>合同签订</div>
+          <div class="title">
+            合同签订
+          </div>
           <div class="matterStatus">
             {{ contractStatus ? '已' : '未' }}签订
           </div>
-          <div>
+          <div class="btnBox">
             <el-button
               v-if="!contractStatus"
               size="mediun"
@@ -175,11 +191,24 @@ import CommonForm from '@/components/common-form/commonForm'
 import { getStaffBasicInfo, getConpactInfo } from '@/api/personalInfo'
 import { getCompany } from '@/api/personnel/selectedPerson'
 import { createContract } from '@/api/personnel/entry'
+import { getpersonInfo } from '@/api/personnel/selectedPerson'
+import { postRegisterSend } from '@/api/personnel/candidate'
+import moment from 'moment'
 
 export default {
   name: 'EntryPersonDetail',
   components: { PageHeader, CommonForm },
   data() {
+    let validate = (rule, value, callback) => {
+      let beginDate = moment(this.form.beginDate).valueOf()
+      let endDate = moment(this.form.endDate).valueOf()
+      if (beginDate > endDate) {
+        // this.infoForm.endDate = ''
+        callback(new Error('合同结束日期要大于合同起始日期'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false,
       personInfo: {
@@ -203,7 +232,8 @@ export default {
         period: '',
         remark: ''
       },
-
+      registerForm: {},
+      rule: { required: true, validator: validate, trigger: 'change' },
       columns: [
         {
           label: '合同编号', // lable
@@ -253,7 +283,14 @@ export default {
           itemType: 'datePicker',
           prop: 'beginDate',
           required: true,
-          span: 11
+          span: 11,
+          rules: [
+            {
+              required: true,
+              message: '请选择合同起止日期',
+              trigger: 'change'
+            }
+          ]
         },
         {
           label: '合同结束日期', // lable
@@ -261,7 +298,14 @@ export default {
           prop: 'endDate',
           required: true,
           offset: 2,
-          span: 11
+          span: 11,
+          rules: [
+            {
+              required: true,
+              message: '请选择合同结束日期',
+              trigger: 'change'
+            }
+          ]
         },
         {
           label: '合同签订日期', // lable
@@ -281,6 +325,38 @@ export default {
       ]
     }
   },
+  watch: {
+    'form.beginDate': {
+      handler(val) {
+        // beginDate: '',
+        //   endDate: '',
+        if (val && this.form.period) {
+          this.form.endDate = moment(val)
+            .add(this.form.period, 'Y')
+            .format('YYYY-MM-DD')
+        } else if (val && !this.form.period) {
+          let beginDate = moment(this.form.beginDate).valueOf()
+          let endDate = moment(this.form.endDate).valueOf()
+          if (beginDate > endDate) {
+            this.form.endDate = ''
+          }
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'form.period': {
+      handler(val) {
+        if (val && this.form.beginDate) {
+          this.form.endDate = moment(this.form.beginDate)
+            .add(this.form.period, 'Y')
+            .format('YYYY-MM-DD')
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   created() {
     this.getPersonInfo()
   },
@@ -290,10 +366,58 @@ export default {
       this.columns[2].options = res
     })
     this.getCompany()
+    this.columns.find((it) => it.prop === 'endDate').rules.push(this.rule)
     // var day = moment("1995-12-25").valueOf()
     // console.log(day)
   },
   methods: {
+    getTodoNum() {
+      let num = 0
+      if (this.getRegisterStatus() !== '已确认') num++
+      if (!this.contractStatus) num++
+      return num
+    },
+    sendRegister() {
+      let params = {
+        recruitmentId: this.$route.query.recruitmentId,
+        personId: this.$route.query.personId,
+        type: 'Entry'
+      }
+      postRegisterSend(params).then(() => {
+        this.$message.success('发送成功')
+        this.loadAllData()
+      })
+    },
+    toRegister() {
+      let params = {
+        recruitmentId: this.$route.query.recruitmentId,
+        personId: this.$route.query.personId,
+        entry: 1,
+        tagName: '入职登记表详情',
+        isUser: 1
+      }
+      this.$router.push({
+        path: '/personnel/candidate/registrationForm',
+        query: params
+      })
+    },
+    getRegisterStatus() {
+      if (this.$route.query.personId) {
+        if (this.registerForm.register === 0) {
+          return '未发送'
+        } else if (this.registerForm.register === 1 && this.registerForm.entryRegister === 0) {
+          return '已发送'
+        } else if (
+          this.registerForm.register === 1 &&
+          this.registerForm.entryFill === 1 &&
+          this.registerForm.entryRegister === 1
+        ) {
+          return '已确认'
+        }
+      } else {
+        return '已确认'
+      }
+    },
     handleSubmit() {
       this.$refs.form
         .validate()
@@ -334,6 +458,11 @@ export default {
           this.contractStatus = true
         }
       })
+      if (this.$route.query.personId) {
+        getpersonInfo({ personId: this.$route.query.personId }).then((res) => {
+          this.registerForm = res
+        })
+      }
     },
     getCompany() {
       let params = {
@@ -438,6 +567,10 @@ export default {
     height: 42px;
     text-align: center;
     padding: 0 24px;
+    .title {
+      min-width: 100px;
+      text-align: left;
+    }
     i {
       line-height: 42px;
       margin-right: 16px;
@@ -450,6 +583,9 @@ export default {
     }
     .matterStatus {
       flex: 1;
+    }
+    .btnBox {
+      min-width: 60px;
     }
   }
 }

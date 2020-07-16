@@ -7,7 +7,6 @@
       :table-loading="loading"
       :data="data"
       :page="page"
-      :permission="permissionList"
       @row-del="rowDel"
       @search-change="searchChange"
       @search-reset="searchReset"
@@ -57,7 +56,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { followList, deleteProcessInstance } from '@/api/flow/flow'
 
 export default {
@@ -131,12 +129,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permission']),
-    permissionList() {
-      return {
-        delBtn: this.vaildData(this.permission.flow_follow_delete, false)
-      }
-    },
+    // ...mapGetters(['permission']),
+    // permissionList() {
+    //   return {
+    //     delBtn: this.vaildData(this.permission.flow_follow_delete, false)
+    //   }
+    // },
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {
@@ -200,12 +198,8 @@ export default {
     },
     onLoad(page, params = {}) {
       this.loading = true
-      followList(
-        page.currentPage,
-        page.pageSize,
-        Object.assign(params, this.query)
-      ).then((res) => {
-        const data = res.data.data
+      followList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then((res) => {
+        const data = res
         this.page.total = data.total
         this.data = data.records
         this.loading = false

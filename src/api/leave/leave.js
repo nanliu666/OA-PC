@@ -31,6 +31,15 @@ export const changeLeaveInfo = (params) => {
     params: params
   })
 }
+// 用户审批中个数查询接口
+export const checkApplyNum = (params) => {
+  return request({
+    url: '/appr/v1/appr/apply/approve/num',
+    method: 'get',
+    params: params
+  })
+}
+
 // 5、确认离职，调用接口：员工确认离职提交接口【POST /user/v1/user/leave/confirm】
 export const confirmLeave = (params) => {
   return request({
@@ -40,9 +49,9 @@ export const confirmLeave = (params) => {
   })
 }
 // 6、放弃离职，调用接口：员工放弃离职接口【POST /user/v1/user/leave/giveup】
-export const giveupLeave = ({ id }) => {
+export const giveupLeave = ({ userId }) => {
   return request({
-    url: `/api/user/v1/user/leave/giveup?id=${id}`,
+    url: `/api/user/v1/user/leave/giveup?userId=${userId}`,
     method: 'post'
     // params: params
   })
@@ -69,5 +78,13 @@ export const getLeaveCert = (params) => {
     url: '/api/user/v1/user/leave/cert',
     method: 'get',
     params: params
+  })
+}
+// 员工催部门，调用接口：员工离职交接事项催一下接口【POST /user/v1/user/leave/note/urge】
+export const userLeaveUrgeOrg = (params) => {
+  return request({
+    url: '/user/v1/user/leave/note/urge',
+    method: 'post',
+    data: params
   })
 }

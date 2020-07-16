@@ -72,19 +72,19 @@
               <div class="leave-group-header">
                 <i
                   :class="
-                    group.isFinished == '1'
+                    group.status == 'Confirmed'
                       ? ' el-icon-circle-check icon-success'
                       : ' el-icon-warning-outline icon-warning'
                   "
                 />
                 <span>{{ group.name }}</span>
                 <div class="isFinished-wrap">
-                  <span v-if="group.isFinished == '1'">已确认</span>
+                  <span v-if="group.status == 'Confirmed'">已确认</span>
                   <el-button
                     v-else
                     type="text"
                     size="medium"
-                    @click.stop="handelUrging"
+                    @click.stop="handelUrging(group)"
                   >
                     催办
                   </el-button>
@@ -156,7 +156,7 @@
                 <el-col :span="10">
                   <el-form-item label="预计离职日期">
                     <el-date-picker
-                      v-model="confirmDataForm.lastDate"
+                      v-model="leaveData.lastDate"
                       type="date"
                       placeholder="选择日期"
                       style="width : 100%"
@@ -171,7 +171,7 @@
                 >
                   <el-form-item label="申请离职日期">
                     <el-date-picker
-                      v-model="confirmDataForm.applyDate"
+                      v-model="leaveData.applyDate"
                       type="date"
                       placeholder="选择日期"
                       style="width : 100%"
@@ -186,7 +186,7 @@
                 <el-col :span="10">
                   <el-form-item label="离职原因">
                     <el-select
-                      v-model="confirmDataForm.reason"
+                      v-model="leaveData.reason"
                       placeholder="请选择"
                       style="width : 100%"
                       disabled
@@ -207,7 +207,7 @@
                 >
                   <el-form-item label="离职原因说明">
                     <el-input
-                      v-model="confirmDataForm.remark"
+                      v-model="leaveData.remark"
                       style="width : 100%"
                       disabled
                     />
@@ -235,15 +235,19 @@
               </el-row>
               <!-- 备注 -->
 
-              <!-- <el-row>
-                                <el-col :span="8">
-                                    <el-form-item label="备注">
-                                        <el-input type="textarea" :rows="2" placeholder="请输入" style="width : 80%" 
-                                        v-model="confirmDataForm.remark">
-                                        </el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row> -->
+              <el-row>
+                <el-col :span="10">
+                  <el-form-item label="备注">
+                    <el-input
+                      v-model="confirmDataForm.remark"
+                      type="textarea"
+                      :rows="2"
+                      placeholder="请输入"
+                      style="width : 100%"
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-form>
             <el-row>
               <el-col :span="16">
@@ -275,6 +279,7 @@ import { getStaffBasicInfo } from '@/api/personalInfo.js'
 import {
   getLeaveNoteGroup,
   getLeaveNoteCategory,
+  userLeaveUrgeOrg,
   getLeaveInfo,
   confirmLeave
 } from '@/api/leave/leave'
@@ -284,7 +289,6 @@ export default {
     return {
       userId: '',
       // userId: '1264805583983218689',
-      companyId: '',
       groupLoading: false,
       userInfo: {
         jobName: '',
@@ -296,14 +300,18 @@ export default {
       activeNames: ['default-open'],
       //   事项分组
       noteGroup: [],
+      leaveData: {
+        lastDate: '',
+        applyDate: '',
+        reason: '',
+        remark: ''
+      },
       // 确认离职表单
       confirmDataForm: {
         id: '',
-        lastDate: '',
-        applyDate: '',
         leaveDate: '',
-        reason: '',
-        remark: ''
+        remark: '',
+        userId: ''
       },
       //   离职表单的校验
       confirmRules: {
@@ -321,10 +329,10 @@ export default {
     }
   },
   computed: {
-    //   判断noteGroup数组中的isFinished，全是1 完成   有0 没完成
+    //   判断noteGroup数组中的status，全是Confirmed 完成   有UnConfirm 没完成
     isFinished() {
       let res = this.noteGroup.some((item) => {
-        return item.isFinished == 0
+        return item.status === 'UnConfirm'
       })
 
       return !res
@@ -343,10 +351,9 @@ export default {
     async initInfo() {
       this.userId = this.$route.query.userId
       // 获取员工信息
-      let { name, workNo, orgName, jobName, companyId } = await getStaffBasicInfo({
+      let { name, workNo, orgName, jobName } = await getStaffBasicInfo({
         userId: this.userId
       })
-      this.companyId = companyId
       this.userInfo = {
         name,
         workNo,
@@ -356,22 +363,20 @@ export default {
       // 获取组离职事项分组数据
       this.groupLoading = true
       let resLeaveNote = await getLeaveNoteGroup({
-        companyId: this.companyId,
         userId: this.userId
       })
-      //   获取离职事项分组明细
-
+      // //   获取离职事项分组明细
       resLeaveNote.forEach(async (item) => {
         let categoryres = await getLeaveNoteCategory({
-          groupId: item.id,
-          isFinished: item.isFinished
+          groupId: item.id
         })
         item.categoryres = categoryres
       })
       // 排序  已完成-未完成
       resLeaveNote.sort((a, b) => {
-        return b.isFinished - a.isFinished
+        return a.status.charCodeAt() - b.status.charCodeAt()
       })
+
       this.noteGroup = resLeaveNote
       this.groupLoading = false
     },
@@ -380,21 +385,24 @@ export default {
       let { id, applyDate, lastDate, reason, remark, lastDate: leaveDate } = await getLeaveInfo({
         userId: this.userId
       })
+      this.leaveData = {
+        lastDate,
+        applyDate,
+        reason,
+        remark
+      }
       this.confirmDataForm = {
         id,
-        applyDate,
-        lastDate,
-        reason,
-        remark,
-        leaveDate
+        leaveDate,
+        remark: '',
+        userId: this.userId
       }
     },
     // 点击确认离职
     async handelConfirm() {
       this.btnloading = true
       await confirmLeave({
-        ...this.confirmDataForm,
-        userId: this.userId
+        ...this.confirmDataForm
       }).finally(() => {
         this.btnloading = false
       })
@@ -419,9 +427,10 @@ export default {
       this.$router.go(-1)
     },
     // 点击催办
-    handelUrging() {
-      this.$message.success('催办成功')
-      return
+    handelUrging(data) {
+      userLeaveUrgeOrg({ groupId: data.id, userId: this.userId, type: 'C2B' }).then(() => {
+        return this.$message.success('催办成功')
+      })
     },
     //goBack
     goBack() {

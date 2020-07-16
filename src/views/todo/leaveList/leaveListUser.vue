@@ -13,13 +13,24 @@
           <div class="name-box">
             {{ leaveNoteData.userName }} 的离职交接事项
           </div>
+          <div
+            v-if="leaveNoteData.status === 'UnConfirm'"
+            class="btn-box"
+          >
+            <el-button
+              size="medium"
+              @click="urgeleaveNote"
+            >
+              催办
+            </el-button>
+          </div>
         </div>
         <div class="info-row">
           <div>
             发起人: <span>{{ leaveNoteData.userName }}</span>
           </div>
           <div>
-            发起时间: <span>{{ leaveNoteData.createTime | dataFliter }}</span>
+            发起时间: <span>{{ leaveNoteData.createTime }}</span>
           </div>
           <div>
             状态:
@@ -34,19 +45,24 @@
           您的离职申请已通过，请在离职前尽快与相关部门办理以下离职交接事项：
         </div>
         <div
-          v-for="category in leaveNoteData.data"
-          :key="category.categoryId"
-          class="category-box"
+          v-for="(item, index) in categoryList"
+          :key="index"
         >
-          <div class="categoryName-row">
-            {{ category.categoryName }}
-          </div>
           <div
-            v-for="detail in category.details"
-            :key="detail.detailId"
-            class="detail-box"
+            v-for="category in item"
+            :key="category.categoryId"
+            class="category-box"
           >
-            {{ detail.detailName }}
+            <div class="categoryName-row">
+              {{ category.categoryName }}
+            </div>
+            <div
+              v-for="detail in category.details"
+              :key="detail.detailId"
+              class="detail-box"
+            >
+              {{ detail.detailName }}
+            </div>
           </div>
         </div>
       </div>
@@ -55,46 +71,17 @@
 </template>
 
 <script>
-import { getLeaveNote } from '@/api/todo/todo'
+import { getLeaveNote, postUrgeleaveNote } from '@/api/todo/todo'
 import { mapGetters } from 'vuex'
 export default {
   name: 'LeaveListUser',
-  filters: {
-    dataFliter(time) {
-      if (!time) {
-        return
-      }
-      let dateStr = time.split(' ')
-      let strGMT =
-        dateStr[0] +
-        ' ' +
-        dateStr[1] +
-        ' ' +
-        dateStr[2] +
-        ' ' +
-        dateStr[5] +
-        ' ' +
-        dateStr[3] +
-        ' GMT+0800'
-      let date = new Date(Date.parse(strGMT))
-      let year = date.getFullYear()
-      let month = date.getMonth() + 1
-      let dates = date.getDate()
-      let h = date.getHours()
-      let m = date.getMinutes()
-      let s = date.getSeconds()
-      h = h < 10 ? '0' + h : h
-      m = m < 10 ? '0' + m : m
-      s = s < 10 ? '0' + s : s
-      return `${year}-${month}-${dates}  ${h}:${m}:${s}`
-    }
-  },
   data() {
     return {
       loading: false,
       leaveUserId: '',
       groupId: '',
-      leaveNoteData: {}
+      leaveNoteData: {},
+      categoryList: []
     }
   },
   computed: {
@@ -106,7 +93,10 @@ export default {
   methods: {
     loadingData() {
       this.loading = true
-      this.leaveUserId = this.$route.query.id
+      // let arrId = this.$route.query.id.split(',')
+      // this.leaveUserId = arrId[0]
+      // this.groupId = arrId[1]
+      this.leaveUserId = this.$route.query.leaveUserId
       let params = {
         userId: this.userId,
         leaveUserId: this.leaveUserId
@@ -114,10 +104,22 @@ export default {
       getLeaveNote(params)
         .then((res) => {
           this.leaveNoteData = res[0]
+          res.forEach((item) => {
+            this.categoryList.push(item.data)
+          })
         })
         .finally(() => {
           this.loading = false
         })
+    },
+    // 催办
+    async urgeleaveNote() {
+      await postUrgeleaveNote({
+        groupId: '',
+        userId: this.userId,
+        type: 'C2B'
+      })
+      this.$message.success('催办成功')
     }
   }
 }

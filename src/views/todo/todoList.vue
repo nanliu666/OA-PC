@@ -244,7 +244,8 @@ export default {
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
-            personId: row.bizId
+            personId: row.bizId,
+            recruitmentId: row.bizId2
           }
         })
         //
@@ -253,7 +254,8 @@ export default {
         this.$router.push({
           path: '/todo/leaveListOrg',
           query: {
-            id: row.bizId
+            leaveUserId: row.bizId,
+            groupId: row.bizId2
           }
         })
       } else if (row.type === 'LeaveListUser') {
@@ -261,7 +263,7 @@ export default {
         this.$router.push({
           path: '/todo/LeaveListUser',
           query: {
-            id: row.bizId
+            leaveUserId: row.bizId
           }
         })
       } else if (row.type === 'Entry') {
@@ -311,6 +313,9 @@ export default {
 .basic-container--block {
   height: calc(100% - 92px);
   min-height: calc(100% - 92px);
+}
+/deep/.el-card__body {
+  padding-top: 14px;
 }
 .title {
   display: flex;

@@ -21,17 +21,15 @@
                   slot="Pending"
                 >
                   <div
-                    v-for="item in toDoListData"
-                    :key="item.id"
+                    v-for="(item, index) in toDoListData"
+                    :key="index"
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p @click="jumpToDetail(item.type, item.bizId)">
+                      <p @click="jumpToDetail(item)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
-                      <span
-                        v-if="ifShowWarn(item.createTime)"
-                      >滞留{{ getWarnText(item.startDate) }}天</span>
+                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
                     </div>
                     <div class="time-box">
                       {{ item.createTime | filterDate }}
@@ -59,12 +57,12 @@
                   slot="Warning"
                 >
                   <div
-                    v-for="item in warningList"
-                    :key="item.id"
+                    v-for="(item, index) in warningList"
+                    :key="index"
                     class="item-row"
                   >
                     <div class="text-box">
-                      <p @click="jumpToDetail(item.type, item.bizId)">
+                      <p @click="jumpToDetail(item)">
                         【{{ item.type | filterType }}】{{ item.title }}
                       </p>
                       <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
@@ -122,8 +120,8 @@
                   slot="workNews"
                 >
                   <el-tooltip
-                    v-for="item in msgWorkList"
-                    :key="item.id"
+                    v-for="(item, index) in msgWorkList"
+                    :key="index"
                     :open-delay="500"
                     :enterable="false"
                     :content="item.content"
@@ -165,8 +163,8 @@
                   slot="systemNews"
                 >
                   <el-tooltip
-                    v-for="item in msgSystemList"
-                    :key="item.id"
+                    v-for="(item, index) in msgSystemList"
+                    :key="index"
                     :open-delay="500"
                     :enterable="false"
                     effect="dark"
@@ -325,7 +323,6 @@ export default {
         let toDoRes = await getTodoList(this.todoQuery)
         this.toDoListData = toDoRes.data
         this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
-        this.$emit('update:todoCount', toDoRes.totalNum)
         this.todoQuery.isWarn = 1
         let warningRes = await getTodoList(this.todoQuery)
         this.warningList = warningRes.data
@@ -337,7 +334,12 @@ export default {
     },
     // 处理滞留按钮
     ifShowWarn(row) {
-      return row.status === 'UnFinished' && moment().diff(moment(row.endDate)) > 0
+      return (
+        row.status === 'UnFinished' &&
+        moment()
+          .startOf('day')
+          .diff(moment(row.endDate)) > 0
+      )
     },
     getWarnText(row) {
       return moment().diff(moment(row.beginDate), 'days')
@@ -358,7 +360,7 @@ export default {
       })
     },
     // 跳去详情
-    jumpToDetail(type, bizId) {
+    jumpToDetail({ type, bizId, bizId2 }) {
       if (type === 'Interview') {
         // 面试
         this.$router.push({
@@ -395,7 +397,8 @@ export default {
         this.$router.push({
           path: '/todo/leaveListOrg',
           query: {
-            id: bizId
+            leaveUserId: bizId,
+            groupId: bizId2
           }
         })
       } else if (type === 'LeaveListUser') {
@@ -403,7 +406,7 @@ export default {
         this.$router.push({
           path: '/todo/LeaveListUser',
           query: {
-            id: bizId
+            leaveUserId: bizId
           }
         })
       } else if (type === 'InterviewRegister') {
@@ -411,7 +414,8 @@ export default {
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
-            personId: bizId
+            personId: bizId,
+            recruitmentId: bizId2
           }
         })
       } else if (type === 'Entry') {

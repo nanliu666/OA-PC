@@ -38,7 +38,7 @@
             发起人: <span>{{ listData.userName }}</span>
           </div>
           <div>
-            发起时间: <span>{{ listData.createTime | dataFliter }}</span>
+            发起时间: <span>{{ listData.createTime }}</span>
           </div>
           <div>
             状态:
@@ -78,36 +78,6 @@ import { getLeaveNote, postConfirmleaveNote, postUrgeleaveNote } from '@/api/tod
 import { mapGetters } from 'vuex'
 export default {
   name: 'LeaveListOrg',
-  filters: {
-    dataFliter(time) {
-      if (!time) {
-        return
-      }
-      let dateStr = time.split(' ')
-      let strGMT =
-        dateStr[0] +
-        ' ' +
-        dateStr[1] +
-        ' ' +
-        dateStr[2] +
-        ' ' +
-        dateStr[5] +
-        ' ' +
-        dateStr[3] +
-        ' GMT+0800'
-      let date = new Date(Date.parse(strGMT))
-      let year = date.getFullYear()
-      let month = date.getMonth() + 1
-      let dates = date.getDate()
-      let h = date.getHours()
-      let m = date.getMinutes()
-      let s = date.getSeconds()
-      h = h < 10 ? '0' + h : h
-      m = m < 10 ? '0' + m : m
-      s = s < 10 ? '0' + s : s
-      return `${year}-${month}-${dates}  ${h}:${m}:${s}`
-    }
-  },
   data() {
     return {
       loading: false,
@@ -127,9 +97,8 @@ export default {
   methods: {
     loadingData() {
       this.loading = true
-      let arrId = this.$route.query.id.split(',')
-      this.leaveUserId = arrId[0]
-      this.groupId = arrId[1]
+      this.leaveUserId = this.$route.query.leaveUserId
+      this.groupId = this.$route.query.groupId
       let params = {
         userId: this.userId,
         leaveUserId: this.leaveUserId,
@@ -138,6 +107,9 @@ export default {
       getLeaveNote(params)
         .then((res) => {
           this.listData = res[0]
+        })
+        .catch(() => {
+          this.loading = false
         })
         .finally(() => {
           this.loading = false
@@ -168,7 +140,8 @@ export default {
     async urgeleaveNote() {
       await postUrgeleaveNote({
         groupId: this.groupId,
-        userId: this.userId
+        userId: this.leaveUserId,
+        type: 'B2C'
       })
       this.$message.success('催办成功')
     }

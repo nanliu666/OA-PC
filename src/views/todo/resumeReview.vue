@@ -87,6 +87,8 @@
       </div>
       <person-detail
         :person-id="resumeData.personId"
+        :recruitment-id="resumeData.recruitmentId"
+        :status="resumeData.status"
         @update="updatePersonData"
       />
       <resume-pass

@@ -1,4 +1,4 @@
-import { get, del, post, put } from '@/router/axios'
+import { del, get, post, put } from '@/router/axios'
 
 /**
  * 离职交接事项分组查询接口
@@ -62,4 +62,21 @@ export const modifyResignCategory = (params) => {
  * */
 export const delResignCategory = (categoryId) => {
   return del('/user/v1/leave/note/category', { ids: categoryId })
+}
+
+/**
+ * 人事提醒设置提交接口
+ * @param {object} params
+ * @param {string} params.type 类型，Recruitment-招聘需求，Entry-入职办理，Leave-离职办理
+ * @param {string|null} params.userId 用户ID，可以为空
+ */
+export const createRemindExecutor = async (params) => {
+  return post('/user/v1/personnel/remind/set', params)
+}
+
+/**
+ * 人事提醒设置查询接口
+ */
+export const getRemindExecutor = async () => {
+  return get('/user/v1/personnel/remind/set')
 }

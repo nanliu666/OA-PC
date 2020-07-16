@@ -2,10 +2,12 @@
   <!-- <div>首页</div> -->
   <div class="page clearfix">
     <div class="aside">
-      <infoViewArea :todo-count="todoCount" />
+      <infoViewArea />
     </div>
     <div class="main">
-      <workArea :todo-count.sync="todoCount" />
+      <workArea />
+      <taskCenterCard />
+      <scheduleCard />
     </div>
   </div>
 </template>
@@ -13,16 +15,18 @@
 <script>
 import infoViewArea from './InfoViewArea'
 import workArea from './workArea'
+import taskCenterCard from './taskCenterCard'
+import scheduleCard from './scheduleCard'
 export default {
   name: 'Wel',
   components: {
     infoViewArea,
-    workArea
+    workArea,
+    taskCenterCard,
+    scheduleCard
   },
   data() {
-    return {
-      todoCount: 0
-    }
+    return {}
   }
 }
 </script>
@@ -34,6 +38,7 @@ export default {
 .page {
   margin-top: 24px;
   width: 100%;
+  padding-bottom: 50px !important;
   .aside {
     float: left;
     width: 332px;

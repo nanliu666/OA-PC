@@ -374,7 +374,6 @@ export default {
       this.options(this.employment, 'workProperty', res)
     })
     this.$store.dispatch('CommonDict', 'ContractType').then((res) => {
-      res
       this.options(this.labour, 'contractType', res)
     })
     this.getRecruitment()
@@ -384,6 +383,7 @@ export default {
     }
     this.labour.find((it) => it.prop === 'contractEndDate').rules.push(this.rule)
   },
+
   methods: {
     /***
      *

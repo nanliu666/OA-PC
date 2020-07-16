@@ -47,7 +47,7 @@
 </template>
 <script>
 import { notifyInterviewRegister } from '@/api/personnel/candidate'
-import { notifyCandidateRegister } from '@/api/personnel/entry'
+// import { notifyCandidateRegister } from '@/api/personnel/entry'
 
 export default {
   name: 'NoticeModifyRegister',
@@ -84,9 +84,8 @@ export default {
           const params = { ...this.form }
           params.userId = this.$store.state.user.userInfo.user_id
           this.loading = true
-          let notifyFun =
-            this.type === 'interview' ? notifyInterviewRegister : notifyCandidateRegister
-          notifyFun(params)
+          params.type = this.type === 'interview' ? 'Interview' : 'Entry'
+          notifyInterviewRegister(params)
             .then(() => {
               this.$message({
                 type: 'success',
