@@ -255,7 +255,7 @@ export default {
           path: '/todo/leaveListOrg',
           query: {
             leaveUserId: row.bizId,
-            groupId: row.biz_id2
+            groupId: row.bizId2
           }
         })
       } else if (row.type === 'LeaveListUser') {

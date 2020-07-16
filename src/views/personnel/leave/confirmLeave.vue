@@ -428,7 +428,7 @@ export default {
     },
     // 点击催办
     handelUrging(data) {
-      userLeaveUrgeOrg({ groupId: data.id, userId: this.userId, type: 'B2C' }).then(() => {
+      userLeaveUrgeOrg({ groupId: data.id, userId: this.userId, type: 'C2B' }).then(() => {
         return this.$message.success('催办成功')
       })
     },
