@@ -25,7 +25,10 @@
             size="medium"
           >
             <el-row>
-              <el-col :span="10">
+              <el-col
+                v-if="!$route.query.isTalent"
+                :span="10"
+              >
                 <el-form-item
                   label="关联应聘职位"
                   prop="recruitmentId"
@@ -45,6 +48,7 @@
                 </el-form-item>
               </el-col>
               <el-col
+                v-if="!$route.query.isTalent"
                 :span="10"
                 :offset="4"
               >
@@ -323,8 +327,6 @@
 </template>
 <script>
 import { provinceAndCityData } from 'element-china-area-data'
-import { mapGetters } from 'vuex'
-
 import {
   getPersonInfo,
   getRecruitmentList,
@@ -332,6 +334,7 @@ import {
   createCandidate,
   modifyPerson
 } from '@/api/personnel/person'
+import { getCandidateInfo, getCandidateOutInfo } from '@/api/personnel/candidate'
 
 export default {
   name: 'EditPerson',
@@ -398,8 +401,7 @@ export default {
       } else {
         return '添加候选人'
       }
-    },
-    ...mapGetters(['userId'])
+    }
   },
   watch: {
     'form.recruitmentId': function(val) {
@@ -425,7 +427,7 @@ export default {
     this.personId = this.$route.query.personId
     this.isTalent = this.$route.query.isTalent
     await this.getPersonInfo()
-    if (this.form.recruitmentId || this.$route.query.recruitmentId) {
+    if (this.$route.query.personId || this.$route.query.recruitmentId) {
       this.recruitmentIdDisabled = true
       this.$route.query.recruitmentId && (this.form.recruitmentId = this.$route.query.recruitmentId)
     } else {
@@ -458,9 +460,7 @@ export default {
     },
     getRecruitment() {
       return new Promise((resolve) => {
-        getRecruitmentList({
-          userId: this.userId
-        }).then((res) => {
+        getRecruitmentList({ userId: this.$store.state.user.userInfo.user_id }).then((res) => {
           this.recruitmentList = res
           this.form.orgName = (
             this.recruitmentList.find((item) => item.id === this.form.recruitmentId) || {}
@@ -475,7 +475,19 @@ export default {
           resolve()
           return
         }
-        getPersonInfo(this.personId).then((data) => {
+        let getFun
+        let params = {
+          personId: this.personId
+        }
+        if (this.$route.query.isTalent) {
+          getFun = getPersonInfo
+          params = this.personId
+        } else if (this.$route.query.status === '0') {
+          getFun = getCandidateOutInfo
+        } else {
+          getFun = getCandidateInfo
+        }
+        getFun(params).then((data) => {
           this.form = {
             orgName: this.form.orgName,
             name: data.name,
@@ -497,7 +509,8 @@ export default {
             attachment: data.attachmentUrl
               ? [{ fileUrl: data.attachmentUrl, localName: data.attachmentName }]
               : [],
-            remark: data.remark
+            remark: data.remark,
+            recruitmentId: data.recruitmentId
           }
           resolve()
         })

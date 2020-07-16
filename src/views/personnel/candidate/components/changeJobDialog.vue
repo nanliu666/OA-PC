@@ -44,7 +44,11 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="恢复候选人到">
+      <el-form-item
+        v-if="type === 'recover'"
+        label="恢复候选人到"
+        prop="status"
+      >
         <el-select
           v-model="form.status"
           placeholder="请选择"
@@ -76,10 +80,10 @@
   </el-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import { getRecruitmentList, changeCandidateJob, recoverCandidate } from '@/api/personnel/candidate'
 // import { getOrgTreeSimple } from '@/api/org/org'
 import { addToCandidate } from '@/api/personnel/person'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ChangeJobDialog',
@@ -92,7 +96,7 @@ export default {
   },
   data() {
     return {
-      form: { recruitmentId: '' },
+      form: { recruitmentId: '', status: '' },
       recruitmentList: [],
       rules: {
         recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }],
@@ -111,7 +115,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId']),
     statusList() {
       let statusList = [
         { label: '待沟通', value: '1' },
@@ -121,12 +124,11 @@ export default {
       return statusList.filter((item) => {
         return Number(item.value) <= Number(this.person.status)
       })
-    }
+    },
+    ...mapGetters(['userId'])
   },
   created() {
-    getRecruitmentList({
-      userId: this.userId
-    }).then((res) => {
+    getRecruitmentList({ userId: this.userId }).then((res) => {
       this.recruitmentList = res
     })
     // getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
@@ -170,7 +172,8 @@ export default {
         const params = {
           personId: this.person.personId,
           recruitmentId: this.form.recruitmentId,
-          userId: this.$store.state.user.userInfo.user_id
+          userId: this.$store.state.user.userInfo.user_id,
+          status: this.type === 'recover' ? this.form.status : null
         }
         this.loading = true
 

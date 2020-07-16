@@ -41,7 +41,7 @@
   </div>
 </template>
 <script>
-import { getCandidateInfo } from '@/api/personnel/candidate'
+import { getCandidateInfo, getCandidateOutInfo } from '@/api/personnel/candidate'
 import { createUniqueID } from '@/util/util'
 export default {
   name: 'PersonDetail',
@@ -51,6 +51,10 @@ export default {
       default: ''
     },
     recruitmentId: {
+      type: String,
+      default: ''
+    },
+    status: {
       type: String,
       default: ''
     }
@@ -159,8 +163,14 @@ export default {
   watch: {
     personId: {
       handler(val) {
-        val && this.getPersonInfo({ personId: val, recruitmentId: this.recruitmentId })
+        val && this.status && this.getPersonInfo(val)
         // this.getPersonInfo('1263731939027013634')
+      },
+      immediate: true
+    },
+    status: {
+      handler(val) {
+        val && this.personId && this.getPersonInfo(this.personId)
       },
       immediate: true
     }
@@ -183,7 +193,13 @@ export default {
     },
     getPersonInfo(personId) {
       this.loading = true
-      getCandidateInfo(personId)
+      let getFun
+      if (this.status !== 'Reject') {
+        getFun = getCandidateInfo
+      } else {
+        getFun = getCandidateOutInfo
+      }
+      getFun({ personId: personId })
         .then((res) => {
           this.personData = res
           this.$emit('update', res)

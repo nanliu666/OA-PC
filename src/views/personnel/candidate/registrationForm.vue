@@ -828,7 +828,7 @@ export default {
     },
     getData() {
       let params = {
-        personId: this.$route.query.personIdm,
+        personId: this.$route.query.personId,
         recruitmentId: this.$route.query.recruitmentId
       }
       getpersonInfo(params).then((res) => {
@@ -919,6 +919,7 @@ export default {
       }
       confirmInterviewRegister(params).then(() => {
         this.$message.success('确认成功')
+        this.isEdit = false
         this.getData()
       })
     }

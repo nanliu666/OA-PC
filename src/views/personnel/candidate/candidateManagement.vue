@@ -1,5 +1,5 @@
 <template>
-  <div class="CandidateManagement">
+  <div style="height: 100%">
     <page-header title="候选人管理">
       <el-dropdown
         slot="rightMenu"
@@ -219,12 +219,12 @@
     <basic-container block>
       <common-table
         ref="commonTable"
-        :columns="columnsVisible | columnsFilter"
-        :config="tableConfig"
-        :data="data"
-        :loading="tableLoading"
-        :page="page"
         style="width: 100%;height:100%"
+        :data="data"
+        :page="page"
+        :loading="loading"
+        :config="tableConfig"
+        :columns="columns"
         @current-page-change="currentChange"
         @page-size-change="sizeChange"
       >
@@ -260,9 +260,12 @@
                 style="margin:0 12px"
               >
                 <div class="checkColumn">
-                  <el-checkbox-group v-model="columnsVisible">
+                  <el-checkbox-group
+                    v-model="checkColumn"
+                    @change="columnChange"
+                  >
                     <el-checkbox
-                      v-for="item in tableColumns"
+                      v-for="item in originColumn"
                       :key="item.prop"
                       :label="item.prop"
                       :disabled="item.prop === 'name' || item.prop === 'jobName'"
@@ -346,8 +349,11 @@
             <el-button type="text">{{ row.name }}</el-button>
           </span>
         </template>
-        <template #status="{row}">
-          {{ translator({ dictKey: 'status', value: row.status }) }}
+        <template
+          slot="status"
+          slot-scope="{ row }"
+        >
+          {{ statusWord[row.status] }}
         </template>
         <template
           slot="sex"
@@ -365,7 +371,7 @@
           slot="approveStatus"
           slot-scope="{ row }"
         >
-          {{ translator({ dictKey: 'approveStatusWord', value: row.approveStatus }) }}
+          {{ approveStatusWord[row.approveStatus] }}
         </template>
         <template
           slot="provinceCode"
@@ -377,13 +383,13 @@
           slot="educationalLevel"
           slot-scope="{ row }"
         >
-          {{ translator({ dictKey: 'EducationalLevel', value: row.educationalLevel }) }}
+          {{ educationalDict[row.educationalLevel] }}
         </template>
         <template
           slot="recruitment"
           slot-scope="{ row }"
         >
-          {{ translator({ dictKey: 'RecruitmentChannel', value: row.recruitment }) }}
+          {{ recruitmentChannel[row.recruitment] }}
         </template>
         <template
           slot="monthSalary"
@@ -407,333 +413,9 @@
           slot="handler"
           slot-scope="{ row }"
         >
-          <div class="table__handler">
-            <!-- 待沟通 -->
-            <template v-if="row.status === '1'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  v-if="row.pushResume === 0"
-                  type="text"
-                  @click="hadlePushAudit(row)"
-                >
-                  推送审核
-                </el-button>
-                <el-button
-                  v-if="row.pushResume === 1"
-                  type="text"
-                  disabled
-                >
-                  已推送
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item
-                      v-if="row.pushResume === 0"
-                      command="hadlePushAudit"
-                    >
-                      推送审核
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-if="row.pushResume === 1"
-                      disabled
-                    >
-                      已推送
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="changeJob">
-                    更改应聘职位
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 初选通过 -->
-            <template v-if="row.status === '2'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleArrange(row)"
-                >
-                  安排面试
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleArrange">
-                      安排面试
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 面试中 -->
-            <template v-if="row.status === '3'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleArrange(row)"
-                >
-                  重新安排面试
-                </el-button>
-                <el-button
-                  v-if="row.interview === 0"
-                  type="text"
-                  @click="handleSend(row)"
-                >
-                  发送面试登记表
-                </el-button>
-                <el-button
-                  v-else
-                  type="text"
-                  @click="loopUpInterview(row)"
-                >
-                  查看面试登记表
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleArrange">
-                      重新安排面试
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-if="row.interview === 0"
-                      command="handleSend"
-                    >
-                      发送面试登记表
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-else
-                      command="loopUpInterview"
-                    >
-                      查看面试登记表
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="weedOut">
-                    淘汰
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!--                  <el-dropdown-item command>-->
-                  <!--                    下载简历-->
-                  <!--                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 面试通过 -->
-            <template v-if="row.status === '4'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  v-if="!row.applyId"
-                  type="text"
-                  @click="handleApplyEmploy(row)"
-                >
-                  申请录用
-                </el-button>
-                <el-button
-                  v-else
-                  type="text"
-                  @click="handleCheckEmploy(row)"
-                >
-                  查看申请
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item
-                      v-if="!row.applyId"
-                      command="handleApplyEmploy"
-                    >
-                      申请录用
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-else
-                      command="handleCheckEmploy"
-                    >
-                      查看申请
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item
-                    v-if="!row.applyId"
-                    command="arrange"
-                  >
-                    安排复试
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
-                    command="reApply"
-                  >
-                    重新申请
-                  </el-dropdown-item>
-                  <el-dropdown-item command="InterviewEvaluation">
-                    查看面试评价
-                  </el-dropdown-item>
-                  <el-dropdown-item command="toRegistrationForm">
-                    查看面试登记表
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 待发Offer -->
-            <template v-if="row.status === '5'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleSendOffer(row)"
-                >
-                  发送Offer
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleSendOffer">
-                      发送Offer
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-            <!-- 已发Offer -->
-            <template v-if="row.status === '6'">
-              <template v-if="tabStatus !== 'all'">
-                <el-button
-                  type="text"
-                  @click="handleAcceptOffer(row)"
-                >
-                  接受
-                </el-button>
-                <el-button
-                  type="text"
-                  @click="handleWeedOut(row)"
-                >
-                  淘汰
-                </el-button>
-              </template>
-              <el-dropdown @command="handleCommand($event, row)">
-                <el-button
-                  type="text"
-                  style="margin-left: 10px"
-                >
-                  <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <template v-if="tabStatus === 'all'">
-                    <el-dropdown-item command="handleAcceptOffer">
-                      接受
-                    </el-dropdown-item>
-                    <el-dropdown-item command="handleWeedOut">
-                      淘汰
-                    </el-dropdown-item>
-                  </template>
-                  <el-dropdown-item command="offerChange">
-                    Offer变更
-                  </el-dropdown-item>
-                  <el-dropdown-item command="edit">
-                    编辑
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
+          <div class="handlerRow">
             <!-- 已淘汰 -->
-            <template v-if="row.status === '0'">
+            <template v-if="tabStatus === '0'">
               <template v-if="tabStatus !== 'all'">
                 <el-button
                   type="text"
@@ -757,6 +439,332 @@
                     <!-- <el-dropdown-item command>
                     下载简历
                   </el-dropdown-item> -->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+            </template>
+            <template v-else>
+              <!-- 待沟通 -->
+              <template v-if="row.status === '1'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    v-if="row.pushResume === 0"
+                    type="text"
+                    @click="hadlePushAudit(row)"
+                  >
+                    推送审核
+                  </el-button>
+                  <el-button
+                    v-if="row.pushResume === 1"
+                    type="text"
+                    disabled
+                  >
+                    已推送
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item
+                        v-if="row.pushResume === 0"
+                        command="hadlePushAudit"
+                      >
+                        推送审核
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-if="row.pushResume === 1"
+                        disabled
+                      >
+                        已推送
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="changeJob">
+                      更改应聘职位
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 初选通过 -->
+              <template v-if="row.status === '2'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleArrange(row)"
+                  >
+                    安排面试
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleArrange">
+                        安排面试
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 面试中 -->
+              <template v-if="row.status === '3'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleArrange(row)"
+                  >
+                    重新安排面试
+                  </el-button>
+                  <el-button
+                    v-if="row.interview === 0"
+                    type="text"
+                    @click="handleSend(row)"
+                  >
+                    发送面试登记表
+                  </el-button>
+                  <el-button
+                    v-else
+                    type="text"
+                    @click="loopUpInterview(row)"
+                  >
+                    查看面试登记表
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleArrange">
+                        重新安排面试
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-if="row.interview === 0"
+                        command="handleSend"
+                      >
+                        发送面试登记表
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-else
+                        command="loopUpInterview"
+                      >
+                        查看面试登记表
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="weedOut">
+                      淘汰
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!--                  <el-dropdown-item command>-->
+                    <!--                    下载简历-->
+                    <!--                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 面试通过 -->
+              <template v-if="row.status === '4'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    v-if="!row.applyId"
+                    type="text"
+                    @click="handleApplyEmploy(row)"
+                  >
+                    申请录用
+                  </el-button>
+                  <el-button
+                    v-else
+                    type="text"
+                    @click="handleCheckEmploy(row)"
+                  >
+                    查看申请
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item
+                        v-if="!row.applyId"
+                        command="handleApplyEmploy"
+                      >
+                        申请录用
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-else
+                        command="handleCheckEmploy"
+                      >
+                        查看申请
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item
+                      v-if="!row.applyId"
+                      command="arrange"
+                    >
+                      安排复试
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
+                      command="reApply"
+                    >
+                      重新申请
+                    </el-dropdown-item>
+                    <el-dropdown-item command="InterviewEvaluation">
+                      查看面试评价
+                    </el-dropdown-item>
+                    <el-dropdown-item command="toRegistrationForm">
+                      查看面试登记表
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 待发Offer -->
+              <template v-if="row.status === '5'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleSendOffer(row)"
+                  >
+                    发送Offer
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleSendOffer">
+                        发送Offer
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+              <!-- 已发Offer -->
+              <template v-if="row.status === '6'">
+                <template v-if="tabStatus !== 'all'">
+                  <el-button
+                    type="text"
+                    @click="handleAcceptOffer(row)"
+                  >
+                    接受
+                  </el-button>
+                  <el-button
+                    type="text"
+                    @click="handleWeedOut(row)"
+                  >
+                    淘汰
+                  </el-button>
+                </template>
+                <el-dropdown @command="handleCommand($event, row)">
+                  <el-button
+                    type="text"
+                    style="margin-left: 10px"
+                  >
+                    <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <template v-if="tabStatus === 'all'">
+                      <el-dropdown-item command="handleAcceptOffer">
+                        接受
+                      </el-dropdown-item>
+                      <el-dropdown-item command="handleWeedOut">
+                        淘汰
+                      </el-dropdown-item>
+                    </template>
+                    <el-dropdown-item command="offerChange">
+                      Offer变更
+                    </el-dropdown-item>
+                    <el-dropdown-item command="edit">
+                      编辑
+                    </el-dropdown-item>
+                    <!-- <el-dropdown-item command>
+                    下载简历
+                  </el-dropdown-item>-->
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -791,62 +799,16 @@
 </template>
 
 <script>
-import arrange from './components/arrangeInterview'
-import ChangeJobDialog from './components/changeJobDialog'
-import PushAuditDialog from './components/pushAuditDialog'
-import SearchPopover from '@/components/searchPopOver/index'
-import WeedOutDialog from './components/weedOutDialog'
-import { getOrgJob } from '@/api/personnel/roster'
-import { getOrgTreeSimple } from '@/api/org/org'
-import { numberToChinese } from '@/util/util'
-import {
-  acceptCandidateOffer,
-  changeCandidateOffer,
-  getCandidateList,
-  getCandidateOutList,
-  getCandidateStatusStat,
-  postRegisterSend
-} from '@/api/personnel/candidate'
-
-const APPROVAL_STATUS_DICTS = [
-  { dictKey: 'Approve', dictValue: '审批中' },
-  { dictKey: 'Pass', dictValue: '已通过' },
-  { dictKey: 'Reject', dictValue: '已拒绝' },
-  { dictKey: 'Cancel', dictValue: '已撤回' }
-]
-
-const PROGRESS_DICTS = [
-  {
-    dictKey: 'Approved',
-    dictValue: '审批通过'
-  },
-  {
-    dictKey: 'Finished',
-    dictValue: '已结束'
-  }
-]
-
-const STATUS_DICTS = [
-  { dictKey: '0', dictValue: '已淘汰' },
-  { dictKey: '1', dictValue: '待沟通' },
-  { dictKey: '2', dictValue: '初选通过' },
-  { dictKey: '3', dictValue: '面试中' },
-  { dictKey: '4', dictValue: '面试通过' },
-  { dictKey: '5', dictValue: '待发Offer' },
-  { dictKey: '6', dictValue: '已发Offer' }
-]
-
-const TABLE_COLUMNS = [
+const column = [
   {
     label: '姓名',
     prop: 'name',
     slot: true
   },
   {
-    formatter: ({ jobName, process }) => jobName + (_.eq('Finished', process) ? ' (停止招聘)' : ''),
     label: '应聘职位',
     prop: 'jobName',
-    width: 200
+    width: 100
   },
   {
     label: '用人部门',
@@ -977,98 +939,56 @@ const TABLE_COLUMNS = [
   }
 ]
 
-const SEARCH_POPOVER_REQUIRE_OPTIONS = [
-  {
-    type: 'input',
-    field: 'search',
-    label: '',
-    data: '',
-    config: { placeholder: '姓名/邮箱/手机号码', 'suffix-icon': 'el-icon-search' }
-  }
-]
-const SEARCH_POPOVER_POPOVER_OPTIONS = [
-  {
-    type: 'select',
-    field: 'jobId',
-    label: '应聘职位',
-    data: '',
-    options: [],
-    config: { optionLabel: 'jobName', optionValue: 'jobId' }
-  },
-  {
-    type: 'treeSelect',
-    field: 'orgId',
-    label: '用人部门',
-    data: '',
-    config: {
-      selectParams: {
-        placeholder: '请选择用人部门',
-        multiple: false
-      },
-      treeParams: {
-        data: [],
-        'check-strictly': true,
-        'default-expand-all': false,
-        'expand-on-click-node': false,
-        clickParent: true,
-        filterable: false,
-        props: {
-          children: 'children',
-          label: 'orgName',
-          disabled: 'disabled',
-          value: 'orgId'
-        }
-      }
-    }
-  },
-  {
-    type: 'select',
-    field: 'recruitment',
-    label: '应聘渠道',
-    data: '',
-    options: [],
-    config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
-  },
-  {
-    type: 'select',
-    data: '',
-    label: '性别',
-    field: 'sex',
-    config: {},
-    options: [
-      { label: '男', value: '1' },
-      { label: '女', value: '0' }
-    ]
-  },
-  {
-    type: 'dataPicker',
-    data: '',
-    label: '添加时间',
-    field: 'beginCreateDate,endCreateDate',
-    config: { type: 'daterange', 'range-separator': '至' }
-  }
-]
+import SearchPopover from '@/components/searchPopOver/index'
+import WeedOutDialog from './components/weedOutDialog'
+import PushAuditDialog from './components/pushAuditDialog'
+import ChangeJobDialog from './components/changeJobDialog'
 
-const SEARCH_POPOVER_CONFIG = {
-  popoverOptions: SEARCH_POPOVER_POPOVER_OPTIONS,
-  requireOptions: SEARCH_POPOVER_REQUIRE_OPTIONS
-}
+import {
+  getCandidateStatusStat,
+  getCandidateList,
+  getCandidateOutList,
+  acceptCandidateOffer,
+  changeCandidateOffer,
+  postRegisterSend
+} from '@/api/personnel/candidate'
+import { getOrgJob } from '@/api/personnel/roster'
+import { getOrgTreeSimple } from '@/api/org/org'
+import arrange from './components/arrangeInterview'
+import { numberToChinese } from '@/util/util'
 
 export default {
   name: 'Candidate',
   components: { SearchPopover, WeedOutDialog, PushAuditDialog, ChangeJobDialog, arrange },
-  filters: {
-    // 过滤不可见的列
-    columnsFilter: (visibleColProps) =>
-      _.filter(TABLE_COLUMNS, ({ prop }) => _.includes(visibleColProps, prop))
-  },
   data() {
     return {
       numberToChinese: numberToChinese,
       arrangeTitle: '',
       arrangeDialog: false,
-      columnsVisible: _.map(TABLE_COLUMNS, ({ prop }) => prop),
-      tableColumns: TABLE_COLUMNS,
+      row: {},
+      checkColumn: [
+        'name',
+        'jobName',
+        'orgName',
+        'userName',
+        'status',
+        'interview',
+        'sex',
+        'age',
+        'phonenum',
+        'email',
+        'provinceCode',
+        'educationalLevel',
+        'university',
+        'major',
+        'workAge',
+        'lastCompany',
+        'recruitment',
+        'monthSalary',
+        'remark',
+        'createTime'
+      ],
+      originColumn: column,
       candidateStatus: {
         '0': 0,
         '1': 0,
@@ -1079,26 +999,20 @@ export default {
         '6': 0
       },
       tabStatus: 'all',
-      dictionary: {
-        approveStatusWord: APPROVAL_STATUS_DICTS,
-        progress: PROGRESS_DICTS,
-        status: STATUS_DICTS
+      statusWord: {
+        '0': '已淘汰',
+        '1': '待沟通',
+        '2': '初选通过',
+        '3': '面试中',
+        '4': '面试通过',
+        '5': '待发Offer',
+        '6': '已发Offer'
       },
-      // statusWord: {
-      //   '0': '已淘汰',
-      //   '1': '待沟通',
-      //   '2': '初选通过',
-      //   '3': '面试中',
-      //   '4': '面试通过',
-      //   '5': '待发Offer',
-      //   '6': '已发Offer'
-      // },
-      tableLoading: false,
       approveStatusWord: { Approve: '审批中', Pass: '已通过', Reject: '已拒绝', Cancel: '已撤回' },
       interviewTypeWord: { Onsite: '现场面试', Phone: '电话面试', Video: '视频面试' },
       loading: false,
       data: [],
-      columns: TABLE_COLUMNS,
+      columns: column,
       tableConfig: {
         showHandler: true,
         rowKey: (row) => {
@@ -1119,7 +1033,81 @@ export default {
         total: 0
       },
       searchParams: {},
-      searchConfig: SEARCH_POPOVER_CONFIG,
+      searchConfig: {
+        requireOptions: [
+          {
+            type: 'input',
+            field: 'search',
+            label: '',
+            data: '',
+            options: [],
+            config: { placeholder: '姓名/邮箱/手机号码', 'suffix-icon': 'el-icon-search' }
+          }
+        ],
+        popoverOptions: [
+          {
+            type: 'select',
+            field: 'jobId',
+            label: '应聘职位',
+            data: '',
+            options: [],
+            config: { optionLabel: 'jobName', optionValue: 'jobId' }
+          },
+          {
+            type: 'treeSelect',
+            field: 'orgId',
+            label: '用人部门',
+            data: '',
+            config: {
+              selectParams: {
+                placeholder: '请选择用人部门',
+                multiple: false
+              },
+              treeParams: {
+                data: [],
+                'check-strictly': true,
+                'default-expand-all': false,
+                'expand-on-click-node': false,
+                clickParent: true,
+                filterable: false,
+                props: {
+                  children: 'children',
+                  label: 'orgName',
+                  disabled: 'disabled',
+                  value: 'orgId'
+                }
+              }
+            }
+          },
+          {
+            type: 'select',
+            field: 'recruitment',
+            label: '应聘渠道',
+            data: '',
+            options: [],
+            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
+          },
+          {
+            type: 'select',
+            data: '',
+            label: '性别',
+            field: 'sex',
+            config: {},
+            options: [
+              { label: '男', value: '1' },
+              { label: '女', value: '0' }
+            ]
+          },
+          {
+            type: 'dataPicker',
+            data: '',
+            label: '添加时间',
+            field: 'beginCreateDate,endCreateDate',
+            config: { type: 'daterange', 'range-separator': '至' }
+          }
+        ]
+      },
+      educationalDict: {},
       recruitmentChannel: {},
       weedOutgDialog: false,
       pushAuditDialog: false,
@@ -1144,10 +1132,16 @@ export default {
     }
   },
   created() {
-    this.pushDiction('RecruitmentChannel').then((dicts) => {
-      _.find(this.searchConfig.popoverOptions, {
-        field: 'recruitment'
-      }).options = dicts
+    this.$store.dispatch('CommonDict', 'RecruitmentChannel').then((res) => {
+      this.searchConfig.popoverOptions[2].options = res
+      res.forEach((item) => {
+        this.recruitmentChannel[item.dictKey] = item.dictValue
+      })
+    })
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      res.forEach((item) => {
+        this.educationalDict[item.dictKey] = item.dictValue
+      })
     })
     getOrgJob().then((res) => {
       this.searchConfig.popoverOptions[0].options = res
@@ -1305,6 +1299,11 @@ export default {
     handleRefresh() {
       this.loadAllData(1)
     },
+    columnChange() {
+      this.columns = column.filter((item) => {
+        return this.checkColumn.indexOf(item.prop) > -1
+      })
+    },
     handleRecover(data) {
       this.$refs.changeJobDialog.recover(data)
     },
@@ -1357,7 +1356,8 @@ export default {
             .then(() => {
               this.$message.success('发起成功')
               loading.close()
-              this.handleApplyEmploy(data)
+              // this.handleApplyEmploy(data)
+              this.loadAllData()
             })
             .catch(() => {
               loading.close()
@@ -1399,7 +1399,7 @@ export default {
       this.loadData(pageNo)
     },
     loadData(pageNo) {
-      if (this.tableLoading) return
+      if (this.loading) return
       let params = { ...this.searchParams }
       if (pageNo) this.page.currentPage = pageNo
       params.pageNo = this.page.currentPage
@@ -1416,10 +1416,10 @@ export default {
         .then((res) => {
           this.page.total = res.totalNum
           this.data = res.data
-          this.tableLoading = false
+          this.loading = false
         })
         .catch(() => {
-          this.tableLoading = false
+          this.loading = false
         })
     },
     currentChange(currentPage) {
@@ -1435,7 +1435,7 @@ export default {
       if (state === 'all') {
         let num = 0
         for (let key in this.candidateStatus) {
-          num += this.candidateStatus[key]
+          key !== '0' && (num += this.candidateStatus[key])
         }
         return num || 0
       } else {
@@ -1443,7 +1443,7 @@ export default {
       }
     },
     tabClick(status) {
-      if (this.tableLoading) return
+      if (this.loading) return
       this.tabStatus = status
       this.page.currentPage = 1
       this.$refs['searchPopover'].resetForm()
@@ -1457,30 +1457,6 @@ export default {
           this.$set(this.candidateStatus, item.status, item.statusNum)
         })
       })
-    },
-    // 查询字典字段
-    translator({ value, dictKey, $config: config }) {
-      if (!(dictKey = dictKey || _.get(config, 'dictKey'))) {
-        return value
-      }
-
-      let dicts = this.dictionary[dictKey]
-      // 如果字典为 undefined 时候加载字典
-      if (!dicts) this.pushDiction(dictKey)
-      let result = value
-      _.each(dicts, (item) => {
-        if (item.dictKey === _.trim(value)) {
-          result = item.dictValue
-          return false
-        }
-      })
-      return result
-    },
-    // 添加字典
-    async pushDiction(dictKey) {
-      const dict = await this.$store.dispatch('CommonDict', dictKey)
-      this.$set(this.dictionary, dictKey, dict)
-      return dict
     }
   }
 }
@@ -1595,31 +1571,28 @@ export default {
   overflow: scroll;
 }
 
+/deep/ .handlerRow {
+  display: flex;
+  justify-content: flex-end;
+  > .el-button--text {
+    text-align: center;
+    padding: 0 8px;
+    margin-left: 0px;
+    position: relative;
+    &::after {
+      content: '';
+      width: 1px;
+      height: 10px;
+      background-color: #e3e7e9;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+  }
+}
+
 .icon-basics-more-outlined {
   color: #a1a7ae;
 }
-</style>
-
-<style lang="sass" scoped>
-$color_table_handler_border: #e3e7e9;
-
-.CandidateManagement
-  height: 100%
-  .table__handler
-    display: flex
-    justify-content: flex-end
-    > .el-button--text
-      text-align: center
-      padding: 0 8px
-      margin-left: 0px
-      position: relative
-      &:not(:last-child)::after
-        background-color: $color_table_handler_border
-        content: ''
-        height: 10px
-        position: absolute
-        right: 0
-        top: 50%
-        transform: translateY(-50%)
-        width: 1px
 </style>
