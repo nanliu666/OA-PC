@@ -912,15 +912,27 @@ export default {
         : this.$refs.noticeModifyRegister.noticeInterview(params)
     },
     handlerConfirm() {
-      let params = {
-        recruitmentId: this.candidateInfo.recruitmentId,
-        personId: this.$route.query.personId,
-        type: this.$route.query.entry ? 'Entry' : 'Interview'
-      }
-      confirmInterviewRegister(params).then(() => {
-        this.$message.success('确认成功')
-        this.isEdit = false
-        this.getData()
+      this.$confirm(
+        `确认后将按面试登记表信息更新候选人信息，您确定要确认${
+          this.$route.query.entry ? '入职' : '面试'
+        }登记表吗？`,
+        `确认${this.$route.query.entry ? '入职' : '面试'}登记表？`,
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        let params = {
+          recruitmentId: this.candidateInfo.recruitmentId,
+          personId: this.$route.query.personId,
+          type: this.$route.query.entry ? 'Entry' : 'Interview'
+        }
+        confirmInterviewRegister(params).then(() => {
+          this.$message.success('确认成功')
+          this.isEdit = false
+          this.getData()
+        })
       })
     }
   }
