@@ -36,7 +36,7 @@ export const checkApplyNum = (params) => {
   return request({
     url: '/appr/v1/appr/apply/approve/num',
     method: 'get',
-    data: params
+    params: params
   })
 }
 
@@ -49,9 +49,9 @@ export const confirmLeave = (params) => {
   })
 }
 // 6、放弃离职，调用接口：员工放弃离职接口【POST /user/v1/user/leave/giveup】
-export const giveupLeave = ({ id }) => {
+export const giveupLeave = ({ userId }) => {
   return request({
-    url: `/api/user/v1/user/leave/giveup?id=${id}`,
+    url: `/api/user/v1/user/leave/giveup?userId=${userId}`,
     method: 'post'
     // params: params
   })

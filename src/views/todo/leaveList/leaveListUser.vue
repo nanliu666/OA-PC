@@ -45,19 +45,24 @@
           您的离职申请已通过，请在离职前尽快与相关部门办理以下离职交接事项：
         </div>
         <div
-          v-for="category in leaveNoteData.data"
-          :key="category.categoryId"
-          class="category-box"
+          v-for="(item, index) in categoryList"
+          :key="index"
         >
-          <div class="categoryName-row">
-            {{ category.categoryName }}
-          </div>
           <div
-            v-for="detail in category.details"
-            :key="detail.detailId"
-            class="detail-box"
+            v-for="category in item"
+            :key="category.categoryId"
+            class="category-box"
           >
-            {{ detail.detailName }}
+            <div class="categoryName-row">
+              {{ category.categoryName }}
+            </div>
+            <div
+              v-for="detail in category.details"
+              :key="detail.detailId"
+              class="detail-box"
+            >
+              {{ detail.detailName }}
+            </div>
           </div>
         </div>
       </div>
@@ -75,7 +80,8 @@ export default {
       loading: false,
       leaveUserId: '',
       groupId: '',
-      leaveNoteData: {}
+      leaveNoteData: {},
+      categoryList: []
     }
   },
   computed: {
@@ -90,7 +96,7 @@ export default {
       // let arrId = this.$route.query.id.split(',')
       // this.leaveUserId = arrId[0]
       // this.groupId = arrId[1]
-      this.leaveUserId = this.$route.query.biz_id
+      this.leaveUserId = this.$route.query.leaveUserId
       let params = {
         userId: this.userId,
         leaveUserId: this.leaveUserId
@@ -98,6 +104,9 @@ export default {
       getLeaveNote(params)
         .then((res) => {
           this.leaveNoteData = res[0]
+          res.forEach((item) => {
+            this.categoryList.push(item.data)
+          })
         })
         .finally(() => {
           this.loading = false
