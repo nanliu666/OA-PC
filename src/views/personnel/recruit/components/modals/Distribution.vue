@@ -9,7 +9,8 @@
   >
     <div class="main">
       <Overview
-        :value="form | overviewProps"
+        :value="form"
+        :props="overviewProps"
         style="margin:0"
       />
       <el-row class="info">
@@ -105,21 +106,6 @@ export default {
       $dialog: this
     }
   },
-  filters: {
-    overviewProps: (data) => {
-      if (_.isNil(data)) return []
-      return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
-        let res = { label, value: data[prop] }
-        if (config) {
-          res.$config = config
-          if (config.handler) {
-            res.value = config.handler(data)
-          }
-        }
-        return res
-      })
-    }
-  },
   props: {
     visible: {
       type: Boolean,
@@ -148,7 +134,9 @@ export default {
     },
     needNum() {
       return _.get(this.form, 'needNum', Infinity)
-    }
+    },
+
+    overviewProps: () => OVERVIEW_PROPS
   },
   methods: {
     close() {
@@ -201,7 +189,7 @@ export default {
 </script>
 
 <style lang="sass">
-$color_active: #368afa
+$color_active: #368AFA
 $dialog_padding: 3rem
 
 .Distribution

@@ -8,6 +8,7 @@
     <basic-container
       v-loading="loading"
       style="margin-button: 40px"
+      block
     >
       <el-row type="flex">
         <el-col
@@ -78,7 +79,10 @@
           label="分配信息"
           name="inrecruitment"
         >
-          <Overview :value="childData | overviewProps" />
+          <Overview
+            :value="childData"
+            :props="overviewProps"
+          />
           <h3 class="Header">
             分配详情
           </h3>
@@ -97,7 +101,10 @@
           label="招聘进度"
           name="inrecruitment"
         >
-          <Overview :value="childData | overviewProps" />
+          <Overview
+            :value="childData"
+            :props="overviewProps"
+          />
           <h3 class="Header">
             分配详情
           </h3>
@@ -116,7 +123,10 @@
           label="招聘进度"
           name="inrecruitment"
         >
-          <Overview :value="childData | overviewProps" />
+          <Overview
+            :value="childData"
+            :props="overviewProps"
+          />
           <h3 class="Header">
             关联候选人
             <el-button
@@ -219,24 +229,6 @@ export default {
     Entrystaff,
     Overview: () => import(/* webpackChunkName: "views" */ './components/Overview')
   },
-  filters: {
-    overviewProps: (data) => {
-      if (_.isNull(data)) return []
-      return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
-        let res = { label, value: data[prop] }
-        if (config) {
-          res.$config = _.cloneDeep(config)
-          if (config.handler) {
-            res.value = config.handler(data)
-          }
-          if (config.className && _.isFunction(config.className)) {
-            res.$config.className = config.className(data)
-          }
-        }
-        return res
-      })
-    }
-  },
   data() {
     return {
       loading: false,
@@ -263,7 +255,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId']),
+    overviewProps: () => OVERVIEW_PROPS
   },
   activated() {
     if (this.$route.query.id) {
@@ -324,6 +317,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.basic-container--block {
+  min-height: 100%;
+  height: 500px;
+}
+
 .pageHeader {
   line-height: 48px;
   font-size: 18px;

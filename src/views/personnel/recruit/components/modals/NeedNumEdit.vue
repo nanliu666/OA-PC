@@ -9,7 +9,8 @@
   >
     <div class="dialog__content">
       <Overview
-        :value="form | overviewProps"
+        :value="form"
+        :props="overviewProps"
         style="margin:0"
       />
       <common-form
@@ -108,21 +109,6 @@ export default {
     Overview: () =>
       import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/Overview')
   },
-  filters: {
-    overviewProps: (data) => {
-      if (_.isNil(data)) return []
-      return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
-        let res = { label, value: data[prop] }
-        if (config) {
-          res.$config = config
-          if (config.handler) {
-            res.value = config.handler(data)
-          }
-        }
-        return res
-      })
-    }
-  },
   props: {
     visible: {
       type: Boolean,
@@ -135,6 +121,9 @@ export default {
       formColumns: FORM_COLUMNS,
       submitting: false
     }
+  },
+  computed: {
+    overviewProps: () => OVERVIEW_PROPS
   },
   methods: {
     close() {

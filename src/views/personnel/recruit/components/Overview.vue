@@ -5,7 +5,7 @@
     :gutter="52"
   >
     <el-col
-      v-for="(col, index) of value"
+      v-for="(col, index) of $options.filters.valueFilter(value, props)"
       :key="index"
       :span="8"
       class="Overview__item"
@@ -26,12 +26,32 @@ export default {
     getClassName: ({ $config: config }) => {
       if (config && config.className) return config.className
       else return ''
+    },
+    valueFilter: (data, props) => {
+      if (_.isEmpty(data) || _.isEmpty(props)) return []
+      return _.map(props, ([prop, label, config]) => {
+        let res = { label, value: data[prop] }
+        if (config) {
+          res.$config = _.cloneDeep(config)
+          if (config.handler) {
+            res.value = config.handler(data)
+          }
+          if (config.className && _.isFunction(config.className)) {
+            res.$config.className = config.className(data)
+          }
+        }
+        return res
+      })
     }
   },
   props: {
-    value: {
+    props: {
       type: Array,
-      default: _.stubArray
+      default: () => []
+    },
+    value: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
