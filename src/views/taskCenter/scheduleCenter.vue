@@ -144,6 +144,7 @@
     <addSchDialog
       ref="schDialog"
       :refresh="loadData"
+      :choose-day="chooseDate"
     />
   </div>
 </template>
@@ -181,7 +182,6 @@ export default {
       dialogVisible: false
     }
   },
-
   computed: {
     ...mapGetters(['userId']),
     renderList: function() {
@@ -192,6 +192,15 @@ export default {
       }
     }
   },
+  watch: {
+    chooseDate(nval, oval) {
+      if (moment(nval).get('month') === moment(oval).get('month')) {
+        return
+      }
+      this.loadData()
+    }
+  },
+
   created() {
     this.loadData()
   },
@@ -200,8 +209,8 @@ export default {
     loadData() {
       this.loading = true
       this.query.userId = this.userId
-      this.query.beginRemindDate = moment(this.chooseDate).startOf('month')
-      this.query.endRemindDate = moment(this.chooseDate).endOf('month')
+      this.query.beginRemindDate = new Date(moment(this.chooseDate).startOf('month'))
+      this.query.endRemindDate = new Date(moment(this.chooseDate).endOf('month'))
       fetchScheduleinfo(this.query)
         .then((res) => {
           this.scheduleList = res

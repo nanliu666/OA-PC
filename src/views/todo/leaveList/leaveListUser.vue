@@ -90,7 +90,7 @@ export default {
       // let arrId = this.$route.query.id.split(',')
       // this.leaveUserId = arrId[0]
       // this.groupId = arrId[1]
-      this.leaveUserId = this.$route.query.biz_id
+      this.leaveUserId = this.$route.query.leaveUserId
       let params = {
         userId: this.userId,
         leaveUserId: this.leaveUserId

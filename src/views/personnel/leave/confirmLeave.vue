@@ -382,7 +382,7 @@ export default {
     },
     // 获取员工离职信息
     async getLeave() {
-      let { id, applyDate, lastDate, reason, remark, leaveDate } = await getLeaveInfo({
+      let { id, applyDate, lastDate, reason, remark, lastDate: leaveDate } = await getLeaveInfo({
         userId: this.userId
       })
       this.leaveData = {
