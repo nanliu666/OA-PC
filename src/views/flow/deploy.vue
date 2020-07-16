@@ -31,13 +31,13 @@ export default {
             label: '流程类型',
             prop: 'flowCategory',
             type: 'select',
-            dicUrl: `/api/blade-system/dict/dictionary?code=flow`,
             props: {
               label: 'dictValue',
               value: 'dictKey'
             },
             row: true,
             span: 12,
+            dicData: [],
             dataType: 'number',
             rules: [
               {
@@ -77,7 +77,12 @@ export default {
             prop: 'tenantId',
             type: 'tree',
             multiple: true,
-            dicUrl: '/api/blade-system/tenant/select',
+            dicData: [
+              {
+                tenantName: '百利宏',
+                tenantId: 'www.bestgrand.com.cn'
+              }
+            ],
             props: {
               label: 'tenantName',
               value: 'tenantId'
@@ -117,6 +122,14 @@ export default {
         }
       })
     }
+  },
+  mounted() {
+    // category
+
+    this.$store.dispatch('CommonDict', 'flow').then((res) => {
+      let category = this.option.column.find((it) => it.prop === 'flowCategory')
+      category.dicData = res
+    })
   },
   methods: {
     uploadBefore(file, done) {
