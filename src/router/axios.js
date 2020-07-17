@@ -85,7 +85,8 @@ instance.interceptors.response.use(
     if (status !== 200) {
       Message({
         message: message,
-        type: 'error'
+        type: 'error',
+        showClose: true
       })
       return Promise.reject(new Error(message))
     }
