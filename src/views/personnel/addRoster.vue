@@ -421,9 +421,9 @@ import {
   checkUserInfo,
   createUser
 } from '@/api/personnel/roster'
-import { mapGetters } from 'vuex'
-import { getOrgTreeSimple } from '@/api/org/org'
 // import TreeSelect from '@/components/treeSelect/treeSelect'
+import { getOrgTreeSimple } from '@/api/org/org'
+import { mapGetters } from 'vuex'
 import { regionData, provinceAndCityData } from 'element-china-area-data'
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 

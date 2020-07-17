@@ -40,7 +40,7 @@
       </div>
       <div class="matterList">
         <div class="matterItem">
-          <i :class="getRegisterStatus() !== '已确认' ? 'el-icon-warning' : 'el-icon-success'" />
+          <i :class="getRegisterStatus() === '未发送' ? 'el-icon-warning' : 'el-icon-success'" />
           <div class="title">
             入职登记表
           </div>
@@ -393,7 +393,8 @@ export default {
         recruitmentId: this.$route.query.recruitmentId,
         personId: this.$route.query.personId,
         entry: 1,
-        tagName: '入职登记表详情'
+        tagName: '入职登记表详情',
+        isUser: 1
       }
       this.$router.push({
         path: '/personnel/candidate/registrationForm',
@@ -401,7 +402,7 @@ export default {
       })
     },
     getRegisterStatus() {
-      if (this.$route.query.personInfo) {
+      if (this.$route.query.personId) {
         if (this.registerForm.register === 0) {
           return '未发送'
         } else if (this.registerForm.register === 1 && this.registerForm.entryRegister === 0) {
@@ -457,8 +458,8 @@ export default {
           this.contractStatus = true
         }
       })
-      if (this.$route.query.personInfo) {
-        getpersonInfo({ personId: this.$route.query.personInfo }).then((res) => {
+      if (this.$route.query.personId) {
+        getpersonInfo({ personId: this.$route.query.personId }).then((res) => {
           this.registerForm = res
         })
       }

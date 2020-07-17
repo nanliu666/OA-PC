@@ -478,9 +478,6 @@ export default {
   margin: 0 auto;
   text-align: right;
 }
-.select-btn {
-  margin-left: 8px;
-}
 .require-form {
   .el-form-item {
     padding-right: 6px;

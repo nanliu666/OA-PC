@@ -17,7 +17,7 @@
           v-if="!isTalent"
           class="status"
         >
-          {{ statusWord[personInfo.status] }}
+          {{ $route.query.status === '0' ? '已淘汰' : statusWord[personInfo.status] }}
         </div>
       </div>
       <div class="right">
@@ -583,7 +583,7 @@
     <change-job-dialog
       ref="changeJobDialog"
       :visible.sync="changeJobDialog"
-      @refresh="init"
+      @refresh="changeJobRdfresh"
     />
     <arrange
       v-if="arrangeDialog"
@@ -668,6 +668,13 @@ export default {
     this.getPersonRecord()
   },
   methods: {
+    changeJobRdfresh(type) {
+      if (type === 'recover') {
+        this.pageClose()
+      } else {
+        this.init()
+      }
+    },
     handleSendOffer() {
       this.$router.push({
         path: '/personnel/candidate/sendOffer',

@@ -190,7 +190,7 @@ export default {
           .then(() => {
             this.$message.success('操作成功')
             Object.assign(this.$data.form, this.$options.data().form)
-            this.$emit('refresh')
+            this.$emit('refresh', this.type)
             this.$emit('update:visible', false)
           })
           .catch(() => {

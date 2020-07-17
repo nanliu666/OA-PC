@@ -14,7 +14,7 @@
     <basic-container block>
       <common-table
         ref="table"
-        :columns="columnVisible | columnsFilter"
+        :columns="columnsVisible | columnsFilter"
         :config="tableConfig"
         :data="tableData"
         :loading="tableLoading"
@@ -70,7 +70,7 @@
 
                 <!-- 设置表格列可见性 -->
                 <div class="operations__column--visible">
-                  <el-checkbox-group v-model="columnVisible">
+                  <el-checkbox-group v-model="columnsVisible">
                     <el-checkbox
                       v-for="item of tableColumns"
                       :key="item.prop"
@@ -146,7 +146,7 @@
 import { deleteMenuInfo, getMenuInfo, postMenuInfo, putMenuInfo } from '@/api/system/menu'
 
 // 表格属性
-const TABLE_COLUMS = [
+const TABLE_COLUMNS = [
   {
     label: '菜单名称',
     minWidth: 150,
@@ -308,12 +308,12 @@ export default {
   filters: {
     // 过滤不可见的列
     columnsFilter: (visibleColProps) =>
-      _.filter(TABLE_COLUMS, ({ prop }) => _.includes(visibleColProps, prop))
+      _.filter(TABLE_COLUMNS, ({ prop }) => _.includes(visibleColProps, prop))
   },
   data() {
     return {
       // 默认选中所有列
-      columnVisible: _.map(TABLE_COLUMS, ({ prop }) => prop),
+      columnsVisible: _.map(TABLE_COLUMNS, ({ prop }) => prop),
       menuEditVisible: false,
       parentId: '0',
       page: {
@@ -323,7 +323,7 @@ export default {
       },
       searchPopoverConfig: SEARCH_POPOVER_CONFIG,
       query: {},
-      tableColumns: TABLE_COLUMS,
+      tableColumns: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
       tableData: [],
       tableLoading: false,
@@ -431,7 +431,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scope>
+<style lang="sass" scoped>
 $color_icon: #A0A8AE
 
 .basic-container--block
@@ -477,13 +477,13 @@ $color_icon: #A0A8AE
       padding: 0 8px
       margin-left: 0px
       position: relative
-      &::after
-        content: ''
-        width: 1px
-        height: 10px
+      &:not(:last-child)::after
         background-color: #e3e7e9
+        content: ''
+        height: 10px
         position: absolute
-        top: 50%
         right: 0
+        top: 50%
         transform: translateY(-50%)
+        width: 1px
 </style>

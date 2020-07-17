@@ -1,16 +1,16 @@
 <template>
-  <div>
+  <div class="RecruitList">
     <page-header class="pageHeader">
       <div slot="title">
         <span
-          style="cursor:pointer"
-          :class="{ active: tab === 'iSubmit' }"
+          :class="{ 'pageHeader__link--active': tab === 'iSubmit' }"
+          class="pageHeader__link"
           @click="() => switchTab('iSubmit')"
         >我提交的招聘需求</span>
         <span style=" margin: 0 20px">|</span>
         <span
-          style="cursor:pointer"
-          :class="{ active: tab === 'all' }"
+          :class="{ 'pageHeader__link--active': tab === 'all' }"
+          class="pageHeader__link"
           @click="() => switchTab('all')"
         >全部招聘需求</span>
       </div>
@@ -40,7 +40,7 @@
           />
           <el-tab-pane
             label="已结束"
-            name="Finished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+            name="Finished"
           />
         </el-tabs>
         <under-approval v-if="activeName === 'UnderApproval'" />
@@ -61,26 +61,24 @@
           />
           <el-tab-pane
             label="已结束"
-            name="allFinished                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "
+            name="allFinished"
           />
         </el-tabs>
-        <All-list ref="all" />
+        <all-list ref="all" />
       </div>
     </basic-container>
   </div>
 </template>
 
 <script>
-import _ from 'lodash'
-
 const TAB_ACITVE_DEFAULT = 'iSubmit'
 
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList: () => import('./listfile/detailsList'),
-    AllList: () => import('./listfile/allList'),
-    underApproval: () => import('./listfile/underApproval')
+    DetailsList: () => import(/* webpackChunkName: "views" */ './listfile/detailsList'),
+    AllList: () => import(/* webpackChunkName: "views" */ './listfile/allList'),
+    UnderApproval: () => import(/* webpackChunkName: "views" */ './listfile/underApproval')
   },
   data() {
     return {
@@ -134,14 +132,43 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-/deep/ .el-radio-button__inner {
-  border-radius: 4px !important;
-}
-.active {
-  color: rgba(54, 138, 250, 1);
-}
-.newlyDemand {
-  float: right;
-}
+<style lang="sass" scoped>
+$color_active: #368AFA
+$color_link_active: $color_active
+
+.RecruitList
+  .el-radio-button__inner
+    border-radius: 4px !important
+
+  .pageHeader
+    &__link
+      cursor: pointer
+      &--active
+        color: $color_link_active
+
+  .newlyDemand
+    float: right
+</style>
+
+<style lang="sass" scoped>
+// 该页面下的表格handler样式
+.RecruitList
+  // 添加一个分隔号 "｜"
+  .table__handler
+    display: flex
+    justify-content: flex-end
+    > .el-button--text
+      text-align: center
+      padding: 0 8px
+      margin-left: 0px
+      position: relative
+      &:not(:last-child)::after
+        background-color: #e3e7e9
+        content: ''
+        height: 10px
+        position: absolute
+        right: 0
+        top: 50%
+        transform: translateY(-50%)
+        width: 1px
 </style>

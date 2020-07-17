@@ -399,24 +399,24 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
-  getWorkAddressList,
+  checkUserInfo,
+  createNewWorkNo,
+  createUser,
+  createWorkAddress,
   deleteWorkAddress,
   editWorkAddress,
-  createWorkAddress,
-  getOrgPosition,
-  getOrgJob,
   getOrganizationCompany,
-  createNewWorkNo,
-  checkUserInfo,
-  createUser
+  getOrgJob,
+  getOrgPosition,
+  getWorkAddressList
 } from '@/api/personnel/roster'
-import { getOrgTreeSimple } from '@/api/org/org'
+// import { getPersonInfo, } from '@/api/personnel/candidate'
 // import TreeSelect from '@/components/treeSelect/treeSelect'
+import { getCandidateAcceptDetail } from '@/api/personnel/entry'
+import { getOrgTreeSimple } from '@/api/org/org'
 import { regionData } from 'element-china-area-data'
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import PageHeader from '@/components/page-header/pageHeader'
-// import { getPersonInfo, } from '@/api/personnel/candidate'
-import { getCandidateAcceptDetail } from '@/api/personnel/entry'
 
 export default {
   name: 'ConfirmEntry',

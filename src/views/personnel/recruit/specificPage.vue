@@ -8,6 +8,7 @@
     <basic-container
       v-loading="loading"
       style="margin-button: 40px"
+      block
     >
       <el-row type="flex">
         <el-col
@@ -37,39 +38,39 @@
         type="flex"
         style="margin-top:20px"
       >
-        <el-col :span="6">
+        <el-col :span="7">
           <span class="nodetitle">需求编号:</span>
           <span>{{ user.id }}</span>
         </el-col>
         <template v-if="$route.query.status === 'iSubmit'">
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">分配人:</span>
             <span>{{ user.userName }}</span>
           </el-col>
 
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">分配时间:</span>
             <span>{{ user.createTime }}</span>
           </el-col>
         </template>
         <template v-else>
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">提交人:</span>
             <span>{{ user.userName }}</span>
           </el-col>
 
-          <el-col :span="6">
+          <el-col :span="7">
             <span class="nodetitle">提交时间:</span>
             <span>{{ user.createTime }}</span>
           </el-col>
         </template>
-        <el-col :span="6">
+        <el-col :span="3">
           <span class="nodetitle">状态:</span>
-          <span style="color: #207EFA">{{
-            user.needNum !== user.entryNum ? '招聘中' : '已结束'
-          }}</span>
+          <span style="color: #207EFA">
+            {{ translator({ dictKey: 'progress', value: user.progress }) }}
+          </span>
         </el-col>
-        <Buttongroup-from :child-data="childData" />
+        <ButtongroupFrom :child-data="childData" />
       </el-row>
       <el-tabs v-model="activeName">
         <!-- 全部招聘需求 -->
@@ -78,7 +79,10 @@
           label="分配信息"
           name="inrecruitment"
         >
-          <Overview :value="childData | overviewProps" />
+          <Overview
+            :data="childData"
+            :props="overviewProps"
+          />
           <h3 class="Header">
             分配详情
           </h3>
@@ -91,13 +95,16 @@
           </div>
         </el-tab-pane>
 
-        <!-- 我的招聘需求 -->
+        <!-- 我的任务 -->
         <el-tab-pane
           v-else-if="$route.query.status === 'mNeeds'"
           label="招聘进度"
           name="inrecruitment"
         >
-          <Overview :value="childData | overviewProps" />
+          <Overview
+            :data="childData"
+            :props="overviewProps"
+          />
           <h3 class="Header">
             分配详情
           </h3>
@@ -116,7 +123,10 @@
           label="招聘进度"
           name="inrecruitment"
         >
-          <Overview :value="childData | overviewProps" />
+          <Overview
+            :data="childData"
+            :props="overviewProps"
+          />
           <h3 class="Header">
             关联候选人
             <el-button
@@ -176,6 +186,7 @@ const OVERVIEW_PROPS = [
           case 'suit':
             className = 'color--success'
             break
+          default:
         }
         return className
       },
@@ -197,6 +208,17 @@ const OVERVIEW_PROPS = [
   ['candidateNum', '候选人数']
 ]
 
+const PROGRESS_DICTS = [
+  {
+    dictKey: 'Approved',
+    dictValue: '招聘中'
+  },
+  {
+    dictKey: 'Finished',
+    dictValue: '已结束'
+  }
+]
+
 export default {
   name: 'StaffList',
   components: {
@@ -207,28 +229,10 @@ export default {
     Entrystaff,
     Overview: () => import(/* webpackChunkName: "views" */ './components/Overview')
   },
-  filters: {
-    overviewProps: (data) => {
-      if (_.isNull(data)) return []
-      return _.map(OVERVIEW_PROPS, ([prop, label, config]) => {
-        let res = { label, value: data[prop] }
-        if (config) {
-          res.$config = _.cloneDeep(config)
-          if (config.handler) {
-            res.value = config.handler(data)
-          }
-          if (config.className && _.isFunction(config.className)) {
-            res.$config.className = config.className(data)
-          }
-        }
-        return res
-      })
-    }
-  },
   data() {
     return {
       loading: false,
-      childData: [],
+      childData: {},
       user: {
         joinDate: null,
         userName: null,
@@ -244,11 +248,15 @@ export default {
         showIndexColumn: false,
         enableMultiSelect: false,
         enablePagination: true
+      },
+      dictionary: {
+        progress: PROGRESS_DICTS
       }
     }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId']),
+    overviewProps: () => OVERVIEW_PROPS
   },
   activated() {
     if (this.$route.query.id) {
@@ -279,12 +287,42 @@ export default {
         path: '/personnel/editPerson',
         query: { recruitmentId: this.$route.query.id }
       })
+    },
+
+    // 翻译字典
+    translator({ value, dictKey, $config: config }) {
+      if (!(dictKey = dictKey || _.get(config, 'dictKey'))) {
+        return value
+      }
+
+      const dicts = this.dictionary[dictKey]
+      // 如果字典为 undefined 时候加载字典
+      if (!dicts) this.loadDictionary(dictKey)
+      let result = value
+      _.each(dicts, (item) => {
+        if (item.dictKey === _.trim(value)) {
+          result = item.dictValue
+          return false
+        }
+      })
+      return result
+    },
+    // 添加字典
+    async loadDictionary(dictKey) {
+      const dict = await this.$store.dispatch('CommonDict', dictKey)
+      this.$set(this.dictionary, dictKey, dict)
+      return dict
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.basic-container--block {
+  min-height: 100%;
+  height: 500px;
+}
+
 .pageHeader {
   line-height: 48px;
   font-size: 18px;

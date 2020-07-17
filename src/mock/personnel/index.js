@@ -1,5 +1,40 @@
 import Mock from 'mockjs'
 
+const EmerType = ['Super', 'urgent', 'common', 'suit']
+const EducationalLevel = [
+  'Primary',
+  'Juniormiddle',
+  'High',
+  'JuniorCollege',
+  'Undergraduate',
+  'Master',
+  'Doctor',
+  'PostDoctoral',
+  'VocationalHigh',
+  'SecondarySpecialized',
+  'Technical',
+  'SecondaryNormal',
+  'Other'
+]
+
+// 解析查询字符串
+const urlDecode = (url) =>
+  _.fromPairs(
+    _.replace(url, /^[^?]*\?/, '')
+      .split('&')
+      .map((p) => p.split('=').map((p) => decodeURIComponent(p)))
+  )
+
+// emun 工作性质列表
+const WORK_PROPERTY_LIST = [
+  'FullTime',
+  'Trainee',
+  'PartTime',
+  'Labor',
+  'FullTime',
+  'LaborOutsourcing'
+]
+
 const workAddress = {
   resCode: 200,
   resMsg: '',
@@ -360,10 +395,12 @@ export default ({ mock }) => {
           positionId: '岗位测试-@increment',
           positionName: '经理-@increment',
           // 调用字典组
-          workProperty: 'full-time',
+          '': 'full-time',
           // 调用字典组
-          emerType: 'urgent',
-          needNum: '@integer(1, 100)',
+          'emerType|1': EmerType,
+          needNum: function() {
+            return this.entryNum + _.random(50)
+          },
           entryNum: '@integer(1, 100)',
           candidateNum: '@integer(1, 100)',
           joinDate: '@date()',
@@ -376,8 +413,8 @@ export default ({ mock }) => {
           requirement: '测试全职-@increment',
           duty: '测试开发项目-@increment',
           userId: 'kenko',
-          userName: '@cname',
-          status: i / 2 == 0 ? 'Handled' : 'UnHandle'
+          userName: '@cname()',
+          'status|1': ['Handled', 'UnHandle']
         })
       )
     }
@@ -393,7 +430,7 @@ export default ({ mock }) => {
     return recruitList
   })
 
-  Mock.mock(new RegExp('/user/v1/recruitment/submit/list' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/user/v1/recruitment/submit/list' + '.*'), 'post', (req) => {
     let list = []
     for (let i = 0; i < 12; i++) {
       list.push(
@@ -406,9 +443,9 @@ export default ({ mock }) => {
           positionId: '岗位测试-@increment',
           positionName: '经理-@increment',
           // 调用字典组
-          workProperty: 'full-time',
+          'workProperty|1': WORK_PROPERTY_LIST,
           // 调用字典组
-          emerType: 'urgent',
+          'emerType|1': EmerType,
           needNum: '@integer(1, 100)',
           entryNum: '@integer(1, 100)',
           candidateNum: '@integer(1, 100)',
@@ -426,11 +463,13 @@ export default ({ mock }) => {
           requirement: '测试全职-@increment',
           duty: '测试开发项目-@increment',
           userId: 'kenko',
-          userName: '@cname'
+          // userName: '@cname',
+          'progress|1': ['Approved', 'Finished'],
+          'status|1': ['UnHandle', 'Handled']
         })
       )
     }
-    const submitList = {
+    const res = {
       resCode: 200,
       resMsg: '申请成功',
       response: {
@@ -439,11 +478,12 @@ export default ({ mock }) => {
         data: list
       }
     }
-    return submitList
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 
   // 我提交的招聘需求筛选接口
-  Mock.mock(new RegExp('/user/v1/recruitment/my/list' + '.*'), 'post', () => {
+  Mock.mock(new RegExp('/user/v1/recruitment/my/list' + '.*'), 'post', (req) => {
     let list = []
     for (let i = 0; i < 12; i++) {
       list.push(
@@ -456,9 +496,9 @@ export default ({ mock }) => {
           positionId: '岗位测试-@increment',
           positionName: '经理-@increment',
           // 调用字典组
-          workProperty: 'full-time',
+          'workProperty|1': WORK_PROPERTY_LIST,
           // 调用字典组
-          emerType: 'urgent',
+          'emerType|1': EmerType,
           needNum: '@integer(1, 100)',
           entryNum: '@integer(1, 100)',
           candidateNum: '@integer(1, 100)',
@@ -481,7 +521,7 @@ export default ({ mock }) => {
         })
       )
     }
-    const myList = {
+    const res = {
       resCode: 200,
       resMsg: '申请成功',
       response: {
@@ -490,7 +530,8 @@ export default ({ mock }) => {
         data: list
       }
     }
-    return myList
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 
   // 我提交的招聘需求筛选接口
@@ -503,54 +544,74 @@ export default ({ mock }) => {
     return taskList
   })
 
-  // 我提交的招聘需求筛选接口
-  Mock.mock(new RegExp('/user/v1/recruitment/detail' + '.*'), 'get', () => {
-    let list = []
-    for (let i = 0; i < 12; i++) {
-      list.push(
-        Mock.mock({
-          userId: '@integer(10000000000, 20000000000)',
-          name: '@cname',
-          phonenum: '@integer(10000000000, 20000000000)',
-          sex: '@integer(0, 1)',
-          age: '@integer(1, 100)',
-          email: '@email',
-          interview: '@integer(0, 1)',
-          provinceCode: 'Vm[Z',
-          proviceName: 'FmF',
-          cityCode: '1R2)@W',
-          cityName: 'F6z7tql',
-          educationalLevel: 'Primary',
-          university: 'RH92',
-          major: 'X[RRQ',
-          workAge: '@integer(0, 45)',
-          lastCompany: '@cword(3, 5)',
-          recruitment: '@natural(1, 14)',
-          monthSalary: '@natural(4000, 100000)',
-          resumeUrl: '@url',
-          attachmentUrl: '@url',
-          attachmentName: '@cword(3, 5)',
-          remark: '@sentence(3, 5)',
-          status: /[0-6]/,
-          recruitmentId: '@integer(1, 100)',
-          userName: '@cname'
-        })
-      )
-    }
-    const myList = {
+  // 招聘需求详情页面
+  Mock.mock(new RegExp('/user/v1/recruitment/task' + '.*'), 'get', (req) => {
+    const { recruitmentId } = urlDecode(req.url)
+    const res = Mock.mock({
       resCode: 200,
       resMsg: '申请成功',
-      response: {
-        totalNum: 12,
-        totalPage: 12,
-        data: list
-      }
+      response: _.times(3, () => ({
+        id: recruitmentId,
+        userId: /\d{5}/,
+        workNo: /\d{3}/,
+        name: '@cname()',
+        taskNum: '@integer(0,99)',
+        entryNum: '@integer(0,10)',
+        candidateNum: '@integer(0,99)'
+      }))
+    })
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
+  })
+
+  // 我提交的招聘需求筛选接口
+  Mock.mock(new RegExp('/user/v1/recruitment/detail' + '.*'), 'get', (req) => {
+    const response = Mock.mock({
+      id: '@integer(10000000000, 20000000000)',
+      orgId: '@integer(10000000000, 20000000000)',
+      orgName: '@integer(0, 1)',
+      jobId: '@integer(1, 100)',
+      jobName: '@email',
+      positionId: '@integer(0, 1)',
+      positionName: 'Vm[Z',
+      'workProperty|1': WORK_PROPERTY_LIST,
+      'emerType|1': EmerType,
+      needNum: '@integer(1, 100)',
+      entryNum: '@integer(1, 100)',
+      candidateNum: '@integer(1, 100)',
+      joinDate: '@date()',
+      workYear: '年-@increment',
+      educationalLevel: '本科',
+      minSalary: '@integer(5000, 10000)',
+      maxSalary: '@integer(8000, 13000)',
+      requirement: '测试全职-@increment',
+      duty: '测试开发项目-@increment',
+      reason: 'RecruitmentReason',
+      reasonNote: '测试-详细招聘原因-@increment',
+      remark: '测试-申请理由@increment',
+      userId: 'FmF',
+      userName: '1R2)@W',
+      companyId: '',
+      companyName: '',
+      'progress|1': ['Approved', 'Finished'],
+      'status|1': ['UnHandle', 'Handled'],
+      createTime: '454548784112',
+      stopUserId: 'FmF',
+      stopUserName: '@cname()',
+      stopReason: '@cword(5)',
+      stopTime: '454548784112'
+    })
+    const res = {
+      resCode: 200,
+      resMsg: '申请成功',
+      response
     }
-    return myList
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 
   //全部招聘需求审批筛选接口
-  Mock.mock(new RegExp('/appr/v1/recruitment/approve/list' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/appr/v1/recruitment/approve/list' + '.*'), 'get', (req) => {
     let list = []
     for (let i = 0; i < 12; i++) {
       list.push(
@@ -573,7 +634,7 @@ export default ({ mock }) => {
         })
       )
     }
-    const myList = {
+    const res = {
       resCode: 200,
       resMsg: '申请成功',
       response: {
@@ -582,18 +643,59 @@ export default ({ mock }) => {
         data: list
       }
     }
-    return myList
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 
   // 提交修改申请接口 （对应修改人数）
-  Mock.mock(new RegExp('/user/v1/recruitment/change/num' + '.*'), 'post', () => {
-    const myList = {
+  Mock.mock(new RegExp('/user/v1/recruitment/change/num' + '.*'), 'post', (req) => {
+    const res = {
       resCode: 200,
       resMsg: '申请成功',
       response: {
         id: '1270332900294000642'
       }
     }
-    return myList
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
+  })
+
+  Mock.mock(new RegExp('/user/v1/recruitment/stop' + '.*'), 'post', (req) => {
+    const res = {
+      resCode: 200,
+      resMsg: '操作成功',
+      response: {}
+    }
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
+  })
+
+  Mock.mock(new RegExp('/user/v1/recruitment/user/lis' + '.*'), 'get', (req) => {
+    const response = _.times(_.random(10), () =>
+      Mock.mock({
+        userId: '@id()',
+        name: '@cname()',
+        phonenum: /1\d{10}/,
+        email: '@email()',
+        workAge: _.random(1, 99),
+        university: '@cword(2,6)大学',
+        'educationalLevel|1': EducationalLevel,
+        tags: [
+          {
+            tagId: '',
+            name: '',
+            color: ''
+          }
+        ]
+      })
+    )
+    const res = {
+      resCode: 200,
+      resMsg: '成功',
+      response
+    }
+
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 }
