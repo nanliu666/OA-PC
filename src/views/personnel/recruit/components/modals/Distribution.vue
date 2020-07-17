@@ -187,7 +187,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 $color_active: #368AFA
 $dialog_padding: 3rem
 

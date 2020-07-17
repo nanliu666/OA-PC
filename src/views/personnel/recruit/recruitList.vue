@@ -132,7 +132,7 @@ export default {
   }
 }
 </script>
-<style lang="sass">
+<style lang="sass" scoped>
 $color_active: #368AFA
 $color_link_active: $color_active
 
@@ -150,7 +150,7 @@ $color_link_active: $color_active
     float: right
 </style>
 
-<style lang="sass">
+<style lang="sass" scoped>
 // 该页面下的表格handler样式
 .RecruitList
   // 添加一个分隔号 "｜"

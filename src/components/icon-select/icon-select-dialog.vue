@@ -68,7 +68,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 // colors
 $forecolor: #616266aa
 $color_border: #373B4D;

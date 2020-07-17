@@ -160,7 +160,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 $padding: 1rem
 
 .NeedNumEdit
