@@ -1,5 +1,5 @@
 // 表单计数公共逻辑
-import { getFormal } from '@/api/personnel/recruitment'
+import { getOrgUserList } from '@/api/system/user'
 
 export default {
   components: {
@@ -47,7 +47,7 @@ export default {
   methods: {
     loadUsers(param) {
       const { orgId } = this.$dialog.form
-      return getFormal(_.assign({ orgId }, param))
+      return getOrgUserList(_.assign({ orgId }, param))
     },
 
     handleFormItemDeleteBtnClick(target) {

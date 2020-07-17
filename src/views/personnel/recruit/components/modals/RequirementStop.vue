@@ -77,7 +77,7 @@ export default {
     },
     init(data = {}) {
       this.$emit('update:visible', true)
-      this.form = _.pick(data, ['recruitmentId', 'userId'])
+      this.form = _.pick(data, ['id', 'userId'])
       this.candidateNum = data.candidateNum
     },
     handleSubmit() {
@@ -98,7 +98,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scope>
+<style lang="sass">
 $color_active: #368afa;
 $form_padding: 1rem
 
