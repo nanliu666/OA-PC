@@ -45,7 +45,7 @@
         plain
         size="medium"
         type="danger"
-        @click="() => handleRequirementStopBtnClick(childData)"
+        @click="() => $refs.requirementStop.init(childData)"
       >
         停止招聘
       </el-button>
@@ -59,6 +59,7 @@
     <RequirementStop
       ref="requirementStop"
       :visible.sync="requirementStopVisible"
+      @submit="handleRequirementStopSubmit"
     />
     <Redistribution
       ref="redistribution"
@@ -73,7 +74,12 @@
   </div>
 </template>
 <script>
-import { getChange, putDistribution, taskDistribution } from '@/api/personnel/recruitment'
+import {
+  getChange,
+  putDistribution,
+  taskDistribution,
+  requirementStop
+} from '@/api/personnel/recruitment'
 import { renameKey } from '@/util/util'
 export default {
   name: 'Buttongroup',
@@ -144,6 +150,17 @@ export default {
           this.refresNew()
         })
     },
+    handleRequirementStopSubmit(data) {
+      requirementStop(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message.success('操作成功')
+          this.$refs.requirementStop.close()
+        })
+        .finally(() => {
+          this.$refs.requirementStop.submitting = false
+          this.refresh()
+        })
+    },
     handleRedistributionSubmit(data) {
       putDistribution(data)
         .then(() => {
@@ -162,9 +179,6 @@ export default {
     dataJump() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({ path: '/personnel/recruit/recruitList' })
-    },
-    handleRequirementStopBtnClick(childData) {
-      this.$refs.requirementStop.init(renameKey(childData, 'id', 'recruitmentId'))
     }
   }
 }
