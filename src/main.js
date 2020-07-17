@@ -17,6 +17,7 @@ import './styles/common.scss'
 import basicContainer from './components/basic-container/main'
 import pageHeader from './components/page-header/pageHeader'
 import commonForm from './components/common-form/commonForm'
+import OrgSelect from './components/Process/OrgSelect'
 import commonTable from 'vue-common-table'
 import website from '@/config/website'
 
@@ -37,6 +38,7 @@ Vue.use(window.AVUE, {
 Vue.use(loadmore)
 Vue.use(Permission)
 //注册全局容器
+Vue.component('FcOrgSelect', OrgSelect)
 Vue.component('basicContainer', basicContainer)
 Vue.component('commonTable', commonTable)
 Vue.component('pageHeader', pageHeader)
