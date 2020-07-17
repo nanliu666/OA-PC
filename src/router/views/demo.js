@@ -12,15 +12,15 @@ export default [
           fullscreen: true
         },
         component: () => import(/* webpackChunkName: "page" */ '@/views/demo/demoForm')
-      },
-      {
-        path: 'details',
-        name: 'debug_details',
-        meta: {
-          fullscreen: false
-        },
-        component: () => import(/* webpackChunkName: "page" */ '@/views/demo/details')
       }
+      // {
+      //   path: 'details',
+      //   name: 'debug_details',
+      //   meta: {
+      //     fullscreen: false
+      //   },
+      //   component: () => import(/* webpackChunkName: "page" */ '@/views/demo/details')
+      // }
     ]
   }
 ]
