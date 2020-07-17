@@ -194,8 +194,15 @@ export default {
       return copy
     },
     inputNumber(value, column) {
-      this.model[column.prop] = _.replace(value, /[^\d]/g, '')
+      const REG_VALID_NUMBER = /^(\+|-)?\d*(\.\d*)?$/
+
+      if (REG_VALID_NUMBER.test(value)) {
+        value = _.replace(value, '+', '') // 省略正号
+        value = _.replace(value, /\.$/, '') // 省略结束的小数点
+        this.model[column.prop] = _.toNumber(value)
+      }
     },
+
     getRules(column) {
       if (column.required) {
         let rules = [

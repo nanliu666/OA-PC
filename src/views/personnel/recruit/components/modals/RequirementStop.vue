@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import { requirementStop } from '@/api/personnel/recruitment'
 // 表单配置
 const FORM_COLUMNS = [
   {
@@ -82,17 +81,18 @@ export default {
       this.candidateNum = data.candidateNum
     },
     handleSubmit() {
-      this.$refs.form.validate().then((data) => {
-        this.submitting = true
-        requirementStop(data)
-          .then(() => {
-            this.$message.success('操作成功')
-          })
-          .finally(() => {
-            this.submitting = false
-            this.close()
-          })
-      })
+      this.validate()
+        .then((data) => {
+          this.submitting = true
+          this.$emit('submit', data)
+        })
+        .catch((err) => {
+          this.$message.error(err.message)
+        })
+    },
+
+    async validate() {
+      return await this.$refs.form.validate()
     }
   }
 }

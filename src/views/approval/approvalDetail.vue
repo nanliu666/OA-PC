@@ -225,7 +225,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .approval {
   padding-left: 200px !important;

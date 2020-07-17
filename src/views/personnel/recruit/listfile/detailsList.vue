@@ -157,12 +157,12 @@ const PROGRESS_DICTS = [
 ]
 const STATUS_DICTS = [
   {
-    dictKey: 'UnHandle',
-    dictValue: '待分配'
-  },
-  {
     dictKey: 'Handled',
     dictValue: '已分配'
+  },
+  {
+    dictKey: 'UnHandle',
+    dictValue: '待分配'
   }
 ]
 
@@ -391,7 +391,7 @@ export default {
     // 加载字典数据 并初始化搜索组件的 options
     _.each(['EducationalLevel', 'EmerType', 'WorkProperty', 'WorkYear'], async (dictKey) => {
       let item = _.find(this.searchPopoverConfig.popoverOptions, { field: _.lowerFirst(dictKey) })
-      _.set(item, 'options', await this.pushDiction(dictKey))
+      _.set(item, 'options', await this.loadDictionary(dictKey))
     })
   },
   methods: {
@@ -463,14 +463,15 @@ export default {
     },
 
     // 查询字典字段
+    // 翻译字典
     translator({ value, dictKey, $config: config }) {
       if (!(dictKey = dictKey || _.get(config, 'dictKey'))) {
         return value
       }
 
-      let dicts = this.dictionary[dictKey]
+      const dicts = this.dictionary[dictKey]
       // 如果字典为 undefined 时候加载字典
-      if (!dicts) this.pushDiction(dictKey)
+      if (!dicts) this.loadDictionary(dictKey)
       let result = value
       _.each(dicts, (item) => {
         if (item.dictKey === _.trim(value)) {
@@ -482,7 +483,7 @@ export default {
     },
 
     // 添加字典
-    async pushDiction(dictKey) {
+    async loadDictionary(dictKey) {
       const dict = await this.$store.dispatch('CommonDict', dictKey)
       this.$set(this.dictionary, dictKey, dict)
       return dict

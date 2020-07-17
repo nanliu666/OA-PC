@@ -41,7 +41,8 @@
   </div>
 </template>
 <script>
-import { getCandidateInfo, getCandidateOutInfo } from '@/api/personnel/candidate'
+import { getPersonInfo } from '@/api/personnel/candidate'
+import { getRecruitmentApply } from '@/api/approval/approval'
 import { createUniqueID } from '@/util/util'
 export default {
   name: 'PersonDetail',
@@ -193,16 +194,14 @@ export default {
     },
     getPersonInfo(personId) {
       this.loading = true
-      let getFun
-      if (this.status !== 'Reject') {
-        getFun = getCandidateInfo
-      } else {
-        getFun = getCandidateOutInfo
-      }
-      getFun({ personId: personId })
+      getPersonInfo({ personId: personId })
         .then((res) => {
-          this.personData = res
-          this.$emit('update', res)
+          Object.assign(this.personData, res)
+          this.$emit('update', this.personData)
+          getRecruitmentApply({ recruitmentId: this.recruitmentId }).then((resp) => {
+            this.personData = { ...this.personData, ...resp }
+            this.$emit('update', { ...res, ...resp })
+          })
         })
         .finally(() => {
           this.loading = false

@@ -397,6 +397,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   checkUserInfo,
   createNewWorkNo,
@@ -413,7 +414,6 @@ import {
 // import TreeSelect from '@/components/treeSelect/treeSelect'
 import { getCandidateAcceptDetail } from '@/api/personnel/entry'
 import { getOrgTreeSimple } from '@/api/org/org'
-import { mapGetters } from 'vuex'
 import { regionData } from 'element-china-area-data'
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import PageHeader from '@/components/page-header/pageHeader'
@@ -684,12 +684,7 @@ export default {
               this.$message.error('正式员工不可有试用期')
               return
             }
-            const params = _.assign(
-              {
-                entryUser: this.userId
-              },
-              this.form
-            )
+            const params = { ...this.form, entryUser: this.userId }
             if (!params.probation) params.probation = 0
             let inputValue = []
             if (this.$refs.workProvinceArr.inputValue) {

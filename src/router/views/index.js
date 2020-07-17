@@ -79,7 +79,7 @@ export default [
         component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/form')
       },
       {
-        path: 'handle/:taskId/:processInstanceId/:businessId',
+        path: 'handle/:taskId/:processInstanceId',
         name: '处理请假流程',
         meta: {
           i18n: 'work'
@@ -87,7 +87,7 @@ export default [
         component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/handle')
       },
       {
-        path: 'detail/:processInstanceId/:businessId',
+        path: 'detail/:processInstanceId',
         name: '请假流程详情',
         meta: {
           i18n: 'work'

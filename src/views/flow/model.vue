@@ -17,7 +17,6 @@
     >
       <template slot="menuLeft">
         <el-button
-          v-if="permission.flow_model_create"
           type="primary"
           size="small"
           icon="el-icon-circle-plus"
@@ -27,7 +26,6 @@
           创 建
         </el-button>
         <el-button
-          v-if="permission.flow_model_delete"
           type="danger"
           size="small"
           icon="el-icon-delete"
@@ -42,7 +40,6 @@
         slot-scope="scope"
       >
         <el-button
-          v-if="permission.flow_model_update"
           type="text"
           size="small"
           plain
@@ -52,7 +49,6 @@
           配置
         </el-button>
         <el-button
-          v-if="permission.flow_model_deploy"
           type="text"
           size="small"
           plain
@@ -62,7 +58,6 @@
           部署
         </el-button>
         <el-button
-          v-if="permission.flow_model_download"
           type="text"
           size="small"
           plain
@@ -72,7 +67,6 @@
           下载
         </el-button>
         <el-button
-          v-if="permission.flow_model_delete"
           type="text"
           size="small"
           plain
@@ -161,7 +155,6 @@ export default {
           {
             label: '流程类型',
             type: 'select',
-            dicUrl: '/api/blade-system/dict/dictionary?code=flow',
             props: {
               label: 'dictValue',
               value: 'dictKey'
@@ -208,7 +201,6 @@ export default {
             prop: 'tenantId',
             type: 'tree',
             multiple: true,
-            dicUrl: '/api/blade-system/tenant/select',
             props: {
               label: 'tenantName',
               value: 'tenantId'
@@ -379,7 +371,7 @@ export default {
         })
     },
     handleCreate() {
-      this.flowUrl = `${website.flowDesignUrl}/index.html`
+      this.flowUrl = `${website.flowDesignUrl}/approvalflow/`
       this.flowBox = true
     },
     handleUpdate(row) {
@@ -430,7 +422,7 @@ export default {
     onLoad(page, params = {}) {
       this.loading = true
       modelList(page.currentPage, page.pageSize, Object.assign(params, this.query)).then((res) => {
-        const data = res.data.data
+        const data = res
         this.page.total = data.total
         this.data = data.records
         this.loading = false

@@ -164,11 +164,10 @@ export default {
         .catch((err) => {
           this.$message.error(err.message)
         })
-        .finally(() => (this.submitting = false))
     },
 
     async validate() {
-      if (this.toAssigned !== 0) {
+      if (this.toAssigned > 0) {
         throw new Error('仍有待分配任务')
       }
       if (_.get(this.form, 'users', []).some((user) => _.isNull(user.userId))) {

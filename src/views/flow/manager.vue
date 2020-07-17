@@ -7,7 +7,6 @@
       :table-loading="loading"
       :data="data"
       :page="page"
-      :permission="permissionList"
       @search-change="searchChange"
       @search-reset="searchReset"
       @selection-change="selectionChange"
@@ -34,7 +33,6 @@
         slot-scope="scope"
       >
         <el-button
-          v-if="permission.flow_manager_state"
           type="text"
           size="small"
           plain
@@ -44,7 +42,6 @@
           变更状态
         </el-button>
         <el-button
-          v-if="permission.flow_manager_image"
           type="text"
           size="small"
           plain
@@ -54,7 +51,6 @@
           流程图
         </el-button>
         <el-button
-          v-if="permission.flow_manager_remove"
           type="text"
           size="small"
           plain
@@ -229,7 +225,6 @@ export default {
             label: '流程分类',
             type: 'select',
             row: true,
-            dicUrl: '/api/blade-system/dict/dictionary?code=flow',
             props: {
               label: 'dictValue',
               value: 'dictKey'
@@ -264,11 +259,11 @@ export default {
   },
   computed: {
     ...mapGetters(['permission']),
-    permissionList() {
-      return {
-        delBtn: this.vaildData(this.permission.flow_manager_remove, false)
-      }
-    },
+    // permissionList() {
+    //   return {
+    //     delBtn: this.vaildData(this.permission.flow_manager_remove, false)
+    //   }
+    // },
     ids() {
       let ids = []
       this.selectionList.forEach((ele) => {
@@ -288,6 +283,12 @@ export default {
     mode() {
       this.onLoad(this.page)
     }
+  },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'flow').then((res) => {
+      let category = this.option.column.find((it) => it.prop === 'category')
+      category.dicData = res
+    })
   },
   methods: {
     searchReset() {
@@ -396,13 +397,15 @@ export default {
         mode: this.mode
       }
       this.loading = true
-      managerList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then((res) => {
-        const data = res.data.data
-        this.page.total = data.total
-        this.data = data.records
-        this.loading = false
-        this.selectionClear()
-      })
+      managerList(page.currentPage, page.pageSize, Object.assign(values, this.query)).then(
+        (res) => {
+          const data = res
+          this.page.total = data.total
+          this.data = data.records
+          this.loading = false
+          this.selectionClear()
+        }
+      )
     }
   }
 }

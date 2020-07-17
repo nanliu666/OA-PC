@@ -172,7 +172,6 @@ export default {
         .catch((err) => {
           this.$message.error(err.message)
         })
-        .finally(() => (this.submitting = false))
     },
 
     async validate() {

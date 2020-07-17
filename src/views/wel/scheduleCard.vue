@@ -104,6 +104,7 @@
     <addSchDialog
       ref="schDialog"
       :refresh="loadData"
+      :choose-day="chooseDate"
     />
   </div>
 </template>

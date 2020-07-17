@@ -87,6 +87,7 @@
         <person-detail
           :person-id="InterviewInfo.personId"
           :recruitment-id="InterviewInfo.recruitmentId"
+          :status="InterviewInfo.status"
           @update="updatePersonData"
         />
       </div>
