@@ -43,9 +43,9 @@ module.exports = {
     proxy: {
       '/api': {
         // 庆荣
-        // target: 'http://192.168.1.36/',
+        target: 'http://192.168.1.37/',
         // 本地环境
-        target: 'http://192.168.1.100:8000/',
+        // target: 'http://192.168.1.100:8000/',
 
         // 开发环境
         // target: 'http://122.112.183.186/',
@@ -65,6 +65,14 @@ module.exports = {
     resolve: {
       alias: {
         src: resolve('src')
+      }
+    }
+  },
+  css: {
+    loaderOptions: {
+      // 给 stylus-loader 传递选项
+      stylus: {
+        import: '~@/assets/style/global.styl'
       }
     }
   }

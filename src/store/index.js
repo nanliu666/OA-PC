@@ -5,6 +5,7 @@ import common from './modules/common'
 import tags from './modules/tags'
 import logs from './modules/logs'
 import dict from './modules/dict'
+import process from './modules/process'
 import getters from './getters'
 
 Vue.use(Vuex)
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
     common,
     logs,
     tags,
-    dict
+    dict,
+    process
   },
   getters
 })

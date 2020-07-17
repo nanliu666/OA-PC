@@ -1,7 +1,20 @@
 import Layout from '@/page/index/'
 import demoRoutes from './demo'
 import todo from './todo'
+import Home from '@/views/admin/approver.vue'
 export default [
+  {
+    path: '/',
+    redirect: '/approver'
+  },
+  {
+    path: '/approver',
+    name: 'approver',
+    component: Home,
+    meta: {
+      keepAlive: true
+    }
+  },
   {
     path: '/wel',
     component: Layout,

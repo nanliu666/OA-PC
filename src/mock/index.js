@@ -35,7 +35,7 @@ import remind from './remind'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: false }
+const options = { mock: true }
 // 设置500毫秒的时延长
 Mock.setup({
   timeout: 500
