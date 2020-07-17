@@ -16,6 +16,13 @@
           v-bind="elFormItemAttrs(column)"
           :rules="getRules(column)"
         >
+          <el-input-number
+            v-if="column.itemType == 'inputNumber'"
+            v-model="model[column.prop]"
+            v-bind="itemAttrs(column)"
+            :placeholder="column.placeholder ? column.placeholder : `请输入${column.label}`"
+            @input="column.props && column.props.onlyNumber && inputNumber($event, column)"
+          />
           <el-input
             v-if="column.itemType == 'input'"
             v-model="model[column.prop]"
@@ -187,14 +194,23 @@ export default {
       return copy
     },
     inputNumber(value, column) {
-      this.model[column.prop] = value.replace(/[^\d]/g, '')
+      const REG_VALID_NUMBER = /^(\+|-)?\d*(\.\d*)?$/
+
+      if (REG_VALID_NUMBER.test(value)) {
+        value = _.replace(value, '+', '') // 省略正号
+        value = _.replace(value, /\.$/, '') // 省略结束的小数点
+        this.model[column.prop] = _.toNumber(value)
+      }
     },
+
     getRules(column) {
       if (column.required) {
         let rules = [
           {
             required: true,
-            message: `请${column.itemType == 'input' ? '输入' : '选择'}${column.label}`,
+            message: `请${
+              column.itemType == 'input' || column.itemType == 'inputNumber' ? '输入' : '选择'
+            }${column.label}`,
             trigger: `${column.itemType == 'input' ? 'blur' : 'change'}`
           },
           ...(column.rules ? column.rules : [])
@@ -240,9 +256,11 @@ export default {
 
 <style lang="scss" scoped>
 .el-input,
+.el-input-number,
 .el-cascader {
   width: 100%;
 }
+
 /deep/ .el-select {
   width: 100%;
 }
@@ -252,6 +270,15 @@ export default {
 /deep/ .el-form-item__content {
   min-height: 35px;
 }
+
+/deep/.el-input-number input::placeholder {
+  text-align: left;
+}
+/deep/ .el-input-number__decrease,
+/deep/.el-input-number__increase {
+  right: 1px !important; // overwrite Avue
+}
+
 .desc {
   line-height: 18px;
   color: #757c85;

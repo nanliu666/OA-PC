@@ -127,6 +127,10 @@ export const getApprove = (params) => {
   return get('/appr/v1/recruitment/approve/list', { ...params })
 }
 
+export const requirementStop = (params) => {
+  return post('/user/v1/recruitment/stop', params)
+}
+
 /*************************** 修改需求人数提交 ****************************************** */
 
 export const getChange = (params) => {

@@ -54,8 +54,8 @@
         </el-col>
       </el-row>
     </basic-container>
-    <cancel-edit
-      ref="CancelEdit"
+    <CancelEdit
+      ref="cancelEdit"
       :visible.sync="dialogVisible"
       @isDoNotSave="isDoNotSave"
     />
@@ -71,7 +71,7 @@ export default {
   name: 'Newrequirement',
   components: {
     ApprProgress: () => import('@/components/appr-progress/apprProgress'),
-    CancelEdit: () => import('@/views/personnel/recruit/details/cancelEdit'),
+    CancelEdit: () => import('@/views/personnel/recruit/components/modals/CancelEdit'),
     NumInterval: () => import('@/components/numInterval/numInterval')
   },
   data() {

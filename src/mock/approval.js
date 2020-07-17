@@ -352,7 +352,7 @@ export default ({ mock }) => {
   })
 
   // 招聘需求申请详情查询
-  Mock.mock(new RegExp('/user/v1/recruitment/detail' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/user/v1/recruitment/detail' + '.*'), 'get', (req) => {
     let response = Mock.mock({
       id: '@integer(100000, 10000000000)',
       orgId: '@integer(100000, 10000000000)',
@@ -387,9 +387,12 @@ export default ({ mock }) => {
       companyName: '公司名称'
     })
 
-    return {
+    const res = {
+      ...normalData,
       response
     }
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 
   // 录用申请详情查询
@@ -1002,5 +1005,16 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/appr/v1/appr/apply/submit' + '.*'), 'post', (options) => {
     console.log('提交审批：', options.url, JSON.parse(options.body))
     return success
+  })
+
+  Mock.mock(new RegExp('/appr/v1/appr/apply/approve/num' + '.*'), 'get', (req) => {
+    const res = {
+      ...normalData,
+      response: Mock.mock({
+        approveNum: '@integer(0,3)'
+      })
+    }
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 }

@@ -38,6 +38,7 @@ export default ({ mock }) => {
           interview: '@integer(0, 1)',
           provinceCode: 'Vm[Z',
           proviceName: 'FmF',
+          progress: () => ['Finished', 'Approved'][_.random()],
           cityCode: '1R2)@W',
           cityName: 'F6z7tql',
           educationalLevel: 'R1xtN0',
