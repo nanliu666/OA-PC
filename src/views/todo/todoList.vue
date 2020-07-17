@@ -275,6 +275,7 @@ export default {
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: row.bizId,
+            recruitmentId: row.bizId2,
             entry: 1,
             tagName: '入职登记表详情'
           }

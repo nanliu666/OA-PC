@@ -20,21 +20,27 @@
                   v-if="toDoListData.length"
                   slot="Pending"
                 >
-                  <div
+                  <el-tooltip
                     v-for="(item, index) in toDoListData"
                     :key="index"
                     class="item-row"
+                    :open-delay="500"
+                    :enterable="false"
+                    :content="item.title"
+                    placement="top"
                   >
-                    <div class="text-box">
-                      <p @click="jumpToDetail(item)">
-                        【{{ item.type | filterType }}】{{ item.title }}
-                      </p>
-                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                    <div>
+                      <div class="text-box">
+                        <p @click="jumpToDetail(item)">
+                          【{{ item.type | filterType }}】{{ item.title }}
+                        </p>
+                        <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                      </div>
+                      <div class="time-box">
+                        {{ item.createTime | filterDate }}
+                      </div>
                     </div>
-                    <div class="time-box">
-                      {{ item.createTime | filterDate }}
-                    </div>
-                  </div>
+                  </el-tooltip>
                 </div>
                 <div
                   v-else
@@ -56,21 +62,27 @@
                   v-if="warningList.length"
                   slot="Warning"
                 >
-                  <div
+                  <el-tooltip
                     v-for="(item, index) in warningList"
                     :key="index"
                     class="item-row"
+                    :open-delay="500"
+                    :enterable="false"
+                    :content="item.title"
+                    placement="top"
                   >
-                    <div class="text-box">
-                      <p @click="jumpToDetail(item)">
-                        【{{ item.type | filterType }}】{{ item.title }}
-                      </p>
-                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                    <div>
+                      <div class="text-box">
+                        <p @click="jumpToDetail(item)">
+                          【{{ item.type | filterType }}】{{ item.title }}
+                        </p>
+                        <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                      </div>
+                      <div class="time-box">
+                        {{ item.createTime | filterDate }}
+                      </div>
                     </div>
-                    <div class="time-box">
-                      {{ item.createTime | filterDate }}
-                    </div>
-                  </div>
+                  </el-tooltip>
                 </div>
                 <div
                   v-else
