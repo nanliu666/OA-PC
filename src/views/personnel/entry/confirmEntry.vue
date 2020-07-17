@@ -397,6 +397,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   getWorkAddressList,
   deleteWorkAddress,
@@ -532,6 +533,9 @@ export default {
       addressPageNo: 1,
       loading: false
     }
+  },
+  computed: {
+    ...mapGetters(['userId'])
   },
   created() {
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
@@ -680,7 +684,7 @@ export default {
               this.$message.error('正式员工不可有试用期')
               return
             }
-            const params = { ...this.form }
+            const params = { ...this.form, entryUser: this.userId }
             if (!params.probation) params.probation = 0
             let inputValue = []
             if (this.$refs.workProvinceArr.inputValue) {

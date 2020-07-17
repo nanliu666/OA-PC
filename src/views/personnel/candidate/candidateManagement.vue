@@ -803,7 +803,8 @@ const column = [
   {
     label: '姓名',
     prop: 'name',
-    slot: true
+    slot: true,
+    width: 100
   },
   {
     label: '应聘职位',

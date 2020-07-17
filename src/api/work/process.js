@@ -16,7 +16,8 @@ export const historyFlowList = (processInstanceId) => {
 
 export const leaveProcess = (data) => {
   return request({
-    url: '/api/blade-desk/process/leave/start-process',
+    // url: '/api/blade-desk/process/leave/start-process',
+    url: '/api/blade-flow/work/start-process',
     method: 'post',
     data
   })

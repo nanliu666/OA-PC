@@ -563,7 +563,12 @@ export default {
       })
     },
     clear() {
-      this.form = this.$options.data().form
+      const _form = this.$options.data().form
+      if (this.$route.query.recruitmentId) {
+        _form.recruitmentId = this.form.recruitmentId
+        _form.orgName = this.form.orgName
+      }
+      this.form = _form
       setTimeout(() => {
         this.$refs.form.clearValidate()
       })

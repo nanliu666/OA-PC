@@ -336,7 +336,7 @@ export default {
         uniqueKey: 'userId',
         showHandler: true,
         handlerColumn: {
-          minWidth: 220
+          minWidth: 200
         }
       },
       // 搜索框配置
@@ -436,7 +436,7 @@ export default {
       if (this.activeName == 'WaitLeave') {
         this.paramsInfo.status = 'WaitLeave'
         // 修改表格操作列的宽度
-        this.tableConfig.handlerColumn.minWidth = 300
+        this.tableConfig.handlerColumn.minWidth = 200
         this.getDataList()
       } else {
         this.paramsInfo.status = 'Leaved'

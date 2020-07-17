@@ -382,7 +382,7 @@ export default {
     },
     // 获取员工离职信息
     async getLeave() {
-      let { id, applyDate, lastDate, reason, remark, leaveDate } = await getLeaveInfo({
+      let { id, applyDate, lastDate, reason, remark, lastDate: leaveDate } = await getLeaveInfo({
         userId: this.userId
       })
       this.leaveData = {
@@ -428,7 +428,7 @@ export default {
     },
     // 点击催办
     handelUrging(data) {
-      userLeaveUrgeOrg({ groupId: data.id, userId: this.userId, type: 'B2C' }).then(() => {
+      userLeaveUrgeOrg({ groupId: data.id, userId: this.userId, type: 'C2B' }).then(() => {
         return this.$message.success('催办成功')
       })
     },
