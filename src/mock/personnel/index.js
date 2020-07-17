@@ -1,6 +1,21 @@
 import Mock from 'mockjs'
 
 const EmerType = ['Super', 'urgent', 'common', 'suit']
+const EducationalLevel = [
+  'Primary',
+  'Juniormiddle',
+  'High',
+  'JuniorCollege',
+  'Undergraduate',
+  'Master',
+  'Doctor',
+  'PostDoctoral',
+  'VocationalHigh',
+  'SecondarySpecialized',
+  'Technical',
+  'SecondaryNormal',
+  'Other'
+]
 
 // 解析查询字符串
 const urlDecode = (url) =>
@@ -651,6 +666,35 @@ export default ({ mock }) => {
       resMsg: '操作成功',
       response: {}
     }
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
+  })
+
+  Mock.mock(new RegExp('/user/v1/recruitment/user/lis' + '.*'), 'get', (req) => {
+    const response = _.times(_.random(10), () =>
+      Mock.mock({
+        userId: '@id()',
+        name: '@cname()',
+        phonenum: /1\d{10}/,
+        email: '@email()',
+        workAge: _.random(1, 99),
+        university: '@cword(2,6)大学',
+        'educationalLevel|1': EducationalLevel,
+        tags: [
+          {
+            tagId: '',
+            name: '',
+            color: ''
+          }
+        ]
+      })
+    )
+    const res = {
+      resCode: 200,
+      resMsg: '成功',
+      response
+    }
+
     window.console.debug(`${req.type} ${req.url}`, { req, res })
     return res
   })

@@ -1,5 +1,6 @@
 import Mock from 'mockjs'
 
+// TODO: 只有部分字典
 const STATIC_DICTIONARY_MAP = {
   EmerType: [
     {
@@ -50,6 +51,34 @@ const STATIC_DICTIONARY_MAP = {
       dictValue: '有合适的人选再进',
       sort: 4,
       remark: '有合适的人选再进',
+      isSealed: 0,
+      isDeleted: 0,
+      updateTime: ''
+    }
+  ],
+  sex: [
+    {
+      id: '1123598814738777321',
+      createTime: '',
+      parentId: '1123598814738777300',
+      code: 'sex',
+      dictKey: '0',
+      dictValue: '男',
+      sort: 1,
+      remark: '',
+      isSealed: 0,
+      isDeleted: 0,
+      updateTime: ''
+    },
+    {
+      id: '1123598814738777301',
+      createTime: '',
+      parentId: '1123598814738777300',
+      code: 'sex',
+      dictKey: '1',
+      dictValue: '女',
+      sort: 2,
+      remark: '',
       isSealed: 0,
       isDeleted: 0,
       updateTime: ''

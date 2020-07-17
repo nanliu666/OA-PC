@@ -405,7 +405,7 @@ const res = {
               },
               {
                 menuId: '12613143696669089999999999999999',
-                menuName: '我的招聘需求',
+                menuName: '我的任务',
                 menuType: 'Menu',
                 isOwn: 1,
                 isShow: 1,
