@@ -357,7 +357,7 @@ export default ({ mock }) => {
               isOwn: false
             },
             {
-              menuName: '我的招聘需求',
+              menuName: '我的任务',
               menuId: 6,
               isOwn: true,
               children: [

@@ -342,12 +342,6 @@ export default {
         query: { formKey: 'UserFormalInfo', apprNo: apprNo }
       })
     },
-    decorator(params) {
-      params.pageNo = this.page.currentPage
-      params.pageSize = this.page.size
-
-      return params
-    },
 
     currentPageChange(param) {
       this.page.currentPage = param

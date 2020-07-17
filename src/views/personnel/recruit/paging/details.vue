@@ -18,6 +18,31 @@
             :model="personnel"
             label-width="80px"
           >
+            <template v-if="personnel.progress === 'Finished'">
+              <el-row>
+                <el-col :span="10">
+                  <el-form-item label="停止招聘人">
+                    {{ personnel.stopName }}
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="10"
+                  :offset="4"
+                >
+                  <el-form-item label="停止招聘时间">
+                    {{ personnel.stopTime }}
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-row>
+                <el-col :span="24">
+                  <el-form-item label="停止招聘原因">
+                    {{ personnel.stopReason }}
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </template>
             <el-row>
               <el-col :span="10">
                 <el-form-item label="申请人">
@@ -166,7 +191,12 @@
 <script>
 export default {
   name: 'Details',
-  props: ['childData'],
+  props: {
+    childData: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       personnel: {

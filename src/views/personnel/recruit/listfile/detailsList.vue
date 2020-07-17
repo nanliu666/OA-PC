@@ -1,10 +1,10 @@
 <template>
   <div>
     <common-table
-      :loading="loading"
-      :data="data"
+      :loading="tableLoading"
+      :data="tableData"
       :page="page"
-      :columns="columns"
+      :columns="columnsVisible | columnsFilter"
       :page-config="pageConfig"
       :config="tableConfig"
       @current-page-change="currentPageChange"
@@ -15,9 +15,9 @@
           <div>
             <search-popover
               ref="searchPopover"
-              :require-options="searchConfig.requireOptions"
-              :popover-options="searchConfig.popoverOptions"
-              @submit="handleSubmit"
+              :require-options="searchPopoverConfig.requireOptions"
+              :popover-options="searchPopoverConfig.popoverOptions"
+              @submit="handleSearch"
             />
           </div>
           <div class="resetEdge">
@@ -36,12 +36,9 @@
               class="refresh"
             >
               <div class="checkColumn">
-                <el-checkbox-group
-                  v-model="checkColumn"
-                  @change="columnChange"
-                >
+                <el-checkbox-group v-model="columnsVisible">
                   <el-checkbox
-                    v-for="item in originColumn"
+                    v-for="item in tableColumns"
                     :key="item.prop"
                     :label="item.prop"
                     :disabled="item.prop === 'id' || item.prop === 'jobName'"
@@ -75,63 +72,191 @@
       </template>
 
       <template
-        slot="emerType"
-        slot-scope="{ row }"
+        v-for="dictName of ['progress', 'WorkProperty']"
+        #[_.lowerFirst(dictName)]="{row}"
       >
-        {{ EmerType[row.emerType] }}
+        {{ translator({ dictKey: dictName, value: _.get(row, _.lowerFirst(dictName)) }) }}
       </template>
 
-      <template
-        slot="workProperty"
+      <el-tag
+        slot="status"
         slot-scope="{ row }"
+        :type="row.status === 'Handled' ? 'primary' : 'danger'"
       >
-        {{ workProperty[row.workProperty] }}
+        {{ translator({ dictKey: 'status', value: row.status }) }}
+      </el-tag>
+
+      <template #emerType="{row}">
+        <cla-label :emertype="row.emerType" />
       </template>
 
-      <template
-        slot="accuracy"
-        slot-scope="{ row }"
-      >
-        {{ percentage(row) + '%' }}
+      <template #percentage="{row}">
+        {{ toPercentage(row) }}
       </template>
 
       <template
         slot="handler"
         slot-scope="{ row }"
       >
-        <el-button
-          v-if="params.progress === 'Approved'"
-          size="medium"
-          type="text"
-          @click="JumpChange(row)"
-        >
-          更改需求人数
-        </el-button>
-        <el-button
-          v-else
-          size="medium"
-          type="text"
-          @click="JumpNewlybuild(row.id)"
-        >
-          复制
-        </el-button>
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            <el-button
+              type="text"
+              icon="icon-basics-more-outlined"
+            />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-if="params.progress === 'Approved'">
+              <el-button
+                size="medium"
+                type="text"
+                @click="() => handleNeedNumEditBtnClick(row)"
+              >
+                更改需求人数
+              </el-button>
+            </el-dropdown-item>
+            <el-dropdown-item v-else>
+              <el-button
+                size="medium"
+                type="text"
+                @click="JumpNewlybuild(row.id)"
+              >
+                复制
+              </el-button>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </template>
     </common-table>
+
+    <need-num-edit
+      ref="needNumEdit"
+      :visible.sync="needNumEditVisible"
+      @submit="handleNeedNumEditSubmit"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { getMyRecruitment, getPost } from '@/api/personnel/recruitment'
-import { getOrgTreeSimple } from '@/api/org/org'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+import { getMyRecruitment, getPost, getChange } from '@/api/personnel/recruitment'
+import { getOrgTreeSimple } from '@/api/org/org'
+import { mapGetters } from 'vuex'
+import { renameKey } from '@/util/util'
 
-const column = [
+// 静态字典组
+const PROGRESS_DICTS = [
+  {
+    dictKey: 'Approved',
+    dictValue: '招聘中'
+  },
+  {
+    dictKey: 'Finished',
+    dictValue: '已结束'
+  }
+]
+const STATUS_DICTS = [
+  {
+    dictKey: 'Handled',
+    dictValue: '已分配'
+  },
+  {
+    dictKey: 'UnHandle',
+    dictValue: '待分配'
+  }
+]
+
+// 搜索配置
+const SEARCH_POPOVER_REQUIRE_OPTIONS = [
+  {
+    type: 'input',
+    field: 'jobName',
+    label: '',
+    data: '',
+    config: {
+      'suffix-icon': 'el-icon-search',
+      placeholder: '职位名称'
+    }
+  }
+]
+const SEARCH_POPOVER_POPOVER_OPTIONS = [
+  {
+    type: 'treeSelect',
+    field: 'orgId',
+    label: '用人部门',
+    config: {
+      selectParams: {
+        placeholder: '请输入内容',
+        multiple: false
+      },
+      treeParams: {
+        data: [],
+        'check-strictly': true,
+        'default-expand-all': false,
+        'expand-on-click-node': false,
+        clickParent: true,
+        filterable: false,
+        props: {
+          children: 'children',
+          label: 'orgName',
+          disabled: 'disabled',
+          value: 'orgId'
+        }
+      }
+    }
+  },
+  {
+    type: 'select',
+    data: '',
+    label: '岗位',
+    field: 'positionId',
+    arrField: 'positionId',
+    config: { optionLabel: 'name', optionValue: 'id' },
+    options: []
+  },
+  {
+    type: 'select',
+    data: '',
+    label: '工作年限',
+    field: 'workYear',
+    config: { optionLabel: 'dictValue', optionValue: 'dictKey' },
+    options: []
+  },
+  {
+    type: 'select',
+    data: '',
+    label: '学历要求',
+    field: 'educationalLevel',
+    options: [],
+    config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
+  },
+  {
+    type: 'select',
+    field: 'emerType',
+    data: '',
+    label: '紧急程度',
+    options: [],
+    config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
+  },
+  {
+    type: 'dataPicker',
+    data: '',
+    label: '到岗日期',
+    field: 'beginJoinDate,endJoinDate',
+    config: { type: 'daterange', 'range-separator': '至' }
+  }
+]
+const SEARCH_POPOVER_CONFIG = {
+  popoverOptions: SEARCH_POPOVER_POPOVER_OPTIONS,
+  requireOptions: SEARCH_POPOVER_REQUIRE_OPTIONS
+}
+
+const TABLE_COLUMNS = [
   {
     label: '需求编号',
     prop: 'id',
     slot: true,
-    minWidth: '120px'
+    minWidth: 150
   },
   {
     label: '职位',
@@ -155,6 +280,7 @@ const column = [
   },
   {
     label: '紧急程度',
+    minWidth: 100,
     prop: 'emerType',
     slot: true
   },
@@ -168,131 +294,74 @@ const column = [
     width: '100'
   },
   {
+    label: '需求进度',
+    prop: 'progress',
+    slot: true,
+    width: 100
+  },
+  {
     label: '招聘进度',
-    prop: 'accuracy',
-    minWidth: '120px',
-    slot: true
+    prop: 'percentage',
+    slot: true,
+    width: 100
+  },
+  // {
+  //   label: '招聘进度',
+  //   prop: 'accuracy',
+  //   minWidth: '120px',
+  //   slot: true
+  // },
+  {
+    label: '任务分配状态',
+    prop: 'status',
+    slot: true,
+    width: 150
   },
   {
     label: '候选人数',
     prop: 'candidateNum'
   }
 ]
+const TABLE_CONFIG = {
+  showHandler: true,
+  showIndexColumn: false,
+  enableMultiSelect: false,
+  enablePagination: true,
+  handlerColumn: {
+    width: 50
+  }
+}
+
 export default {
   name: 'DetailsList',
   components: {
+    ClaLabel: () =>
+      import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/claLabel'),
+    NeedNumEdit: () =>
+      import(
+        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
+      ),
     SearchPopover: () => import('@/components/searchPopOver/index')
+  },
+  filters: {
+    // 过滤不可见的列
+    columnsFilter: (visibleColProps) =>
+      _.filter(TABLE_COLUMNS, ({ prop }) => _.includes(visibleColProps, prop))
   },
   data() {
     return {
-      checkColumn: [
-        'id',
-        'jobName',
-        'orgName',
-        'positionName',
-        'emerType',
-        'status',
-        'needNum',
-        'entryNum',
-        'accuracy',
-        'workProperty',
-        'candidateNum'
-      ],
+      columnsVisible: _.map(TABLE_COLUMNS, ({ prop }) => prop),
       recruit: false,
       change: true,
-      loading: false,
       activeName: 'inrecruitment',
-      searchConfig: {
-        requireOptions: [
-          {
-            type: 'input',
-            field: 'jobName',
-            label: '',
-            data: '',
-            config: {
-              'suffix-icon': 'el-icon-search',
-              placeholder: '职位名称'
-            }
-          }
-        ],
-        popoverOptions: [
-          {
-            type: 'treeSelect',
-            field: 'orgId',
-            label: '用人部门',
-            config: {
-              selectParams: {
-                placeholder: '请输入内容',
-                multiple: false
-              },
-              treeParams: {
-                data: [],
-                'check-strictly': true,
-                'default-expand-all': false,
-                'expand-on-click-node': false,
-                clickParent: true,
-                filterable: false,
-                props: {
-                  children: 'children',
-                  label: 'orgName',
-                  disabled: 'disabled',
-                  value: 'orgId'
-                }
-              }
-            }
-          },
-          {
-            type: 'select',
-            data: '',
-            label: '岗位',
-            field: 'positionId',
-            arrField: 'positionId',
-            config: { optionLabel: 'name', optionValue: 'id' },
-            options: []
-          },
-          {
-            type: 'select',
-            data: '',
-            label: '工作年限',
-            field: 'workYear',
-            config: { optionLabel: 'dictValue', optionValue: 'dictKey' },
-            options: []
-          },
-          {
-            type: 'select',
-            data: '',
-            label: '学历要求',
-            field: 'educationalLevel',
-            options: [],
-            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
-          },
-          {
-            type: 'select',
-            field: 'emerType',
-            data: '',
-            label: '紧急程度',
-            options: [],
-            config: { optionLabel: 'dictValue', optionValue: 'dictKey' }
-          },
-          {
-            type: 'dataPicker',
-            data: '',
-            label: '到岗日期',
-            field: 'beginJoinDate,endJoinDate',
-            config: { type: 'daterange', 'range-separator': '至' }
-          }
-        ]
-      },
-      data: [],
-      columns: column,
-      tableConfig: {
-        showHandler: true,
-        showIndexColumn: false,
-        enableMultiSelect: false,
-        enablePagination: true
-      },
+      needNumEditVisible: false,
+      searchPopoverConfig: SEARCH_POPOVER_CONFIG,
+      tableData: [],
+      tableColumns: TABLE_COLUMNS,
+      tableConfig: TABLE_CONFIG,
+      tableLoading: false,
       params: {
-        progress: 'Approved',
+        progress: _.head(PROGRESS_DICTS).dictKey,
         userId: null
       },
       page: { currentPage: 1, size: 10, total: 0 },
@@ -300,20 +369,11 @@ export default {
         pageSizes: [10, 20, 30, 40, 50]
       },
       createOrgDailog: false,
-      setElement: [
-        {
-          choice: 'WorkYear',
-          target: 2
-        },
-        {
-          choice: 'EmerType',
-          target: 4
-        }
-      ],
-      workProperty: {},
-      EmerType: {},
-      searchParams: {},
-      originColumn: column
+      dictionary: {
+        status: STATUS_DICTS,
+        progress: PROGRESS_DICTS
+      },
+      searchParams: {}
     }
   },
   computed: {
@@ -322,44 +382,22 @@ export default {
   mounted() {
     this.getTableData()
     getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
-      this.searchConfig.popoverOptions[0].config.treeParams.data.push(...res)
+      this.searchPopoverConfig.popoverOptions[0].config.treeParams.data = res
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
     })
     getPost().then((res) => {
-      this.searchConfig.popoverOptions[1].options = res
+      this.searchPopoverConfig.popoverOptions[1].options = res
     })
-    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
-      (this.WorkYear = res),
-        res.forEach((item) => {
-          this.EmerType[item.dictKey] = item.dictValue
-        })
+    // 加载字典数据 并初始化搜索组件的 options
+    _.each(['EducationalLevel', 'EmerType', 'WorkProperty', 'WorkYear'], async (dictKey) => {
+      let item = _.find(this.searchPopoverConfig.popoverOptions, { field: _.lowerFirst(dictKey) })
+      _.set(item, 'options', await this.loadDictionary(dictKey))
     })
-    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
-      this.searchConfig.popoverOptions[3].options = res
-      res.forEach((item) => {
-        this.workProperty[item.dictKey] = item.dictValue
-      })
-    })
-    this.getDictionarygroup()
   },
   methods: {
-    columnChange() {
-      this.columns = column.filter((item) => {
-        return this.checkColumn.indexOf(item.prop) > -1
-      })
-    },
     getEducationalLevel(type) {
       let typeWord
       this.getLevel.forEach((item) => {
-        if (item.dictKey === type) {
-          typeWord = item.dictValue
-        }
-      })
-      return typeWord
-    },
-    getWorkYear(type) {
-      let typeWord
-      this.WorkYear.forEach((item) => {
         if (item.dictKey === type) {
           typeWord = item.dictValue
         }
@@ -375,14 +413,23 @@ export default {
       params.pageSize = this.page.size
       params.userId = this.userId
       params.progress = this.params.progress
-      this.loading = true
+      this.tableLoading = true
       getMyRecruitment(params).then((res) => {
-        this.loading = false
-        this.data = res.data.map((item) => ({ ...item, percentage: null }))
+        this.tableLoading = false
+        this.tableData = res.data.map((item) => ({ ...item, percentage: null }))
         this.page.total = res.totalNum
       })
     },
-    handleSubmit(params) {
+
+    handleNeedNumEditSubmit(data) {
+      getChange(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message({ type: 'success', message: '提交成功' })
+          this.$refs.needNumEdit.close()
+        })
+        .finally(() => (this.$refs.needNumEdit.submitting = false))
+    },
+    handleSearch(params) {
       this.searchParams = params
       this.getTableData(params)
     },
@@ -407,24 +454,39 @@ export default {
       this.getTableData()
     },
 
-    getDictionarygroup() {
-      this.setElement.forEach((item) => {
-        this.$store.dispatch('CommonDict', item.choice).then((res) => {
-          this.searchConfig.popoverOptions[item.target].options = res
-        })
-      })
-      this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
-        this.searchConfig.popoverOptions[3].options = res
-      })
+    handleNeedNumEditBtnClick(row) {
+      return this.$refs.needNumEdit.init(row)
     },
-    JumpChange(row) {
-      this.$router.push({
-        path: '/personnel/recruit/components/chang',
-        query: { id: row.id }
-      })
+    toPercentage(row) {
+      const num = claAccuracy(row.needNum, row.entryNum)
+      return `${_.isNumber(num) ? num + '%' : '-'}`
     },
-    percentage(row) {
-      return (row.percentage = claAccuracy(row.needNum, row.entryNum))
+
+    // 查询字典字段
+    // 翻译字典
+    translator({ value, dictKey, $config: config }) {
+      if (!(dictKey = dictKey || _.get(config, 'dictKey'))) {
+        return value
+      }
+
+      const dicts = this.dictionary[dictKey]
+      // 如果字典为 undefined 时候加载字典
+      if (!dicts) this.loadDictionary(dictKey)
+      let result = value
+      _.each(dicts, (item) => {
+        if (item.dictKey === _.trim(value)) {
+          result = item.dictValue
+          return false
+        }
+      })
+      return result
+    },
+
+    // 添加字典
+    async loadDictionary(dictKey) {
+      const dict = await this.$store.dispatch('CommonDict', dictKey)
+      this.$set(this.dictionary, dictKey, dict)
+      return dict
     }
   }
 }

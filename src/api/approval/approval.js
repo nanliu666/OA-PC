@@ -120,3 +120,13 @@ export const createdHasApprList = (params) => {
 export const createApprApply = (params) => {
   return post('/appr/v1/appr/apply/submit', params)
 }
+
+/**
+ * 用户审批中个数查询接口
+ * @param {object} params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.formKey 申请表单的formKey
+ */
+export const getApproveCount = (params) => {
+  return get('/appr/v1/appr/apply/approve/num', params)
+}
