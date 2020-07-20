@@ -160,7 +160,7 @@
           <fc-org-select
             :ref="'org' + index"
             v-model="item.conditionValue"
-            :tab-list="['dep']"
+            :tab-list="['org']"
           />
           <template v-slot:action>
             <i
@@ -219,7 +219,6 @@
             <fc-org-select
               ref="start-org"
               v-model="initiator"
-              :tab-list="['dep&user']"
             />
           </el-col>
         </el-row>
@@ -431,6 +430,7 @@
       <fc-org-select
         ref="copy-org"
         v-model="properties.menbers"
+        :tab-list="['dep']"
         button-type="button"
         title="抄送人"
       />
@@ -527,9 +527,7 @@ export default {
       // 当前节点数据
       properties: {},
       // 发起人  start节点和condition节点需要
-      initiator: {
-        'dep&user': []
-      },
+      initiator: [],
       priorityLength: 0, // 当为条件节点时  显示节点优先级选项的数据
       orgCollection: {
         dep: [],
@@ -643,9 +641,7 @@ export default {
         this.$set(this.orgCollection, key, [])
       }
     },
-    onOrgChange() {
-      // console.log(data)
-    },
+    onOrgChange() {},
     timeTangeLabel(item) {
       const index = ['fc-time-duration', 'fc-date-duration'].findIndex((t) => t === item.tag)
       if (index > -1) {
@@ -750,8 +746,8 @@ export default {
 
       this.properties.conditions = conditions
       // 发起人虽然是条件 但是这里把发起人放到外部单独判断
-      this.properties.initiator = this.initiator['dep&user']
-      this.initiator['dep&user'] &&
+      this.properties.initiator = this.initiator
+      this.initiator.length > 0 &&
         (nodeContent = `[发起人: ${this.getOrgSelectLabel('condition')}]` + '\n' + nodeContent)
       this.$emit('confirm', this.properties, nodeContent || '请设置条件')
       this.visible = false
@@ -764,7 +760,7 @@ export default {
      * 开始节点确认保存
      */
     startNodeComfirm() {
-      this.properties.initiator = this.initiator['dep&user']
+      this.properties.initiator = this.initiator
       const formOperates = this.startForm.formOperates.map((t) => ({
         formId: t.formId,
         formOperate: t.formOperate
@@ -780,7 +776,7 @@ export default {
       const assigneeType = this.approverForm.assigneeType
       let content = ''
       if (['optional', 'myself'].includes(assigneeType)) {
-        content = this.assigneeTypeOptions.find((t) => t.value === assigneeType).label
+        content = this.assigneeTypeOptions.find((t) => t.value === assigneeType).name
       } else if ('director' === assigneeType) {
         content = this.directorLevel === 1 ? '直接主管' : `第${this.directorLevel}级主管`
       } else {
@@ -846,7 +842,7 @@ export default {
 
     initInitiator() {
       const initiator = this.value.properties && this.value.properties.initiator
-      this.initiator['dep&user'] = Array.isArray(initiator) ? initiator : []
+      this.initiator = Array.isArray(initiator) ? initiator : []
     },
     /**
      * 初始化审批节点所需数据
@@ -870,7 +866,7 @@ export default {
     initConditionNodeData() {
       // 初始化条件表单数据
       let nodeConditions = this.value.properties && this.value.properties.conditions
-      this.pconditions = JSON.parse(JSON.stringify(this.$store.state.processConditions))
+      this.pconditions = JSON.parse(JSON.stringify(this.$store.state.process.processConditions))
       this.initiator['dep&user'] = this.value.properties.initiator
       if (Array.isArray(this.pconditions)) {
         let temp = undefined
