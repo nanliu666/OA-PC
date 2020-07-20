@@ -24,6 +24,7 @@
           v-model="form.entryDate"
           type="date"
           placeholder="请选择入职日期"
+          value-format="yyyy-MM-dd"
         />
       </el-form-item>
     </el-form>
