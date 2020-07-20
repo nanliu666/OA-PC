@@ -106,8 +106,7 @@ const OVERVIEW_PROPS = [
 export default {
   name: 'NeedNumEdit',
   components: {
-    Overview: () =>
-      import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/Overview')
+    Overview: () => import('@/views/personnel/recruit/components/Overview')
   },
   props: {
     visible: {

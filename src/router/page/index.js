@@ -20,7 +20,7 @@ export default [
     },
     path: '/getBackPW',
     name: '找回密码',
-    component: () => import(/* webpackChunkName: "views" */ '@/page/login/getBackPW')
+    component: () => import('@/page/login/getBackPW')
   },
 
   {

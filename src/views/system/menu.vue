@@ -302,8 +302,8 @@ const SEARCH_POPOVER_CONFIG = {
 export default {
   name: 'Menu',
   components: {
-    MenuEdit: () => import(/* webpackChunkName: "views" */ './components/menuEdit'),
-    SeachPopover: () => import(/* webpackChunkName: "views" */ '@/components/searchPopOver')
+    MenuEdit: () => import('./components/menuEdit'),
+    SeachPopover: () => import('@/components/searchPopOver')
   },
   filters: {
     // 过滤不可见的列

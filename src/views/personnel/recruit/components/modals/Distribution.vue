@@ -97,9 +97,8 @@ const OVERVIEW_PROPS = [
 export default {
   name: 'Distribution',
   components: {
-    Overview: () =>
-      import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/Overview'),
-    DistributionFormItem: () => import(/* webpackChunkName: "views" */ './DistributionFormItem')
+    Overview: () => import('@/views/personnel/recruit/components/Overview'),
+    DistributionFormItem: () => import('./DistributionFormItem')
   },
   provide() {
     return {

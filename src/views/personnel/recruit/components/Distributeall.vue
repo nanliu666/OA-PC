@@ -45,7 +45,7 @@ import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 export default {
   name: 'Distributeall',
   components: {
-    Distribution: () => import(/* webpackChunkName: "views" */ '../components/modals/Distribution')
+    Distribution: () => import('../components/modals/Distribution')
   },
   props: {
     childData: {
@@ -92,8 +92,7 @@ export default {
       nodeData: null,
       distributionVisible: false,
       tableConfig: {
-        showIndexColumn: false,
-        enableMultiSelect: false
+        showIndexColumn: false
       }
     }
   },
