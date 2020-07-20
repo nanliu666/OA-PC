@@ -560,7 +560,7 @@
           >
             <template slot>
               <div class="action-name">
-                {{ item.name }}
+                {{ item.name || ' ' }}
               </div>
               <div class="action-content">
                 {{ item.content }}
@@ -610,7 +610,7 @@ import {
   postRegisterSend
 } from '@/api/personnel/candidate'
 import { getpersonInfo as getHelperPersonInfo } from '@/api/personnel/selectedPerson'
-// import { getRecruitmentDetail } from '@/api/personnel/recruitment'
+import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 
 export default {
   name: 'Detail',
@@ -783,6 +783,10 @@ export default {
         getHelperPersonInfo({ personId: this.personId }).then((res) => {
           this.talentInterviewFill = res.interviewFill
           this.talentEntryFill = res.entryFill
+        })
+        getRecruitmentDetail(this.recruitmentId).then((res) => {
+          this.personInfo.jobName = res.jobName
+          this.personInfo.orgName = res.orgName
         })
       }
     },

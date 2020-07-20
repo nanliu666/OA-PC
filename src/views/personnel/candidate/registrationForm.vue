@@ -881,6 +881,7 @@ export default {
           this.personInfo.name = res.name
         })
         getRecruitmentApply(params).then((res) => {
+          this.candidateInfo.recruitmentId = this.$route.query.recruitmentId
           this.personInfo.department = res.orgName
           this.personInfo.position = res.jobName
         })
