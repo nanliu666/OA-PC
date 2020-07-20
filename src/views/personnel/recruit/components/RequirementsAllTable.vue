@@ -60,7 +60,7 @@
               <div class="operations__column--visible">
                 <el-checkbox-group v-model="columnsVisible">
                   <el-checkbox
-                    v-for="item of tableColumns"
+                    v-for="item of tableColumns.slice(1)"
                     :key="item.prop"
                     :disabled="item.prop === 'name'"
                     :label="item.prop"

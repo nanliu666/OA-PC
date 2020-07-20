@@ -171,6 +171,7 @@ $font_size_lg: 1.25 * $font_size_md
         color: $color_active
     .messages
       flex-grow: 1 // 占据所有多余的空间
-    .operations:not(:last-child)
-      margin-left: 1rem
+    .operations
+      .el-button
+        margin: 1rem 1rem 0 0
 </style>
