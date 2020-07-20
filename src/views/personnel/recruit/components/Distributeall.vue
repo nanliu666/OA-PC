@@ -30,24 +30,29 @@
         立即分配
       </el-button>
     </basic-container>
-    <Again
-      ref="Again"
-      :visible.sync="createAgain"
-      @dataJump="dataJump"
+
+    <Distribution
+      ref="distribution"
+      :visible.sync="distributionVisible"
+      @submit="handleDistributionSubmit"
     />
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { queryDistribution } from '@/api/personnel/recruitment'
+import { queryDistribution, taskDistribution } from '@/api/personnel/recruitment'
 import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
-import Again from '@/views/personnel/recruit/details/again'
 export default {
   name: 'Distributeall',
   components: {
-    Again
+    Distribution: () => import(/* webpackChunkName: "views" */ '../components/modals/Distribution')
   },
-  props: ['childData'],
+  props: {
+    childData: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       loading: true,
@@ -85,7 +90,7 @@ export default {
         }
       ],
       nodeData: null,
-      createAgain: false,
+      distributionVisible: false,
       tableConfig: {
         showIndexColumn: false,
         enableMultiSelect: false
@@ -121,7 +126,16 @@ export default {
     },
     DistributionContent() {
       this.$set(this.childData, 'jumpnot', true)
-      this.$refs.Again.init(this.childData)
+      this.$refs.distribution.init(this.childData)
+    },
+
+    handleDistributionSubmit(data) {
+      taskDistribution(data)
+        .then(() => this.$message.success('操作成功'))
+        .finally(() => {
+          this.$refs.distribution.close()
+          this.refresNew()
+        })
     }
   }
 }
