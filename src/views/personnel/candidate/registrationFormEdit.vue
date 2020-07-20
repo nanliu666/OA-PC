@@ -398,7 +398,16 @@ export default {
   },
   watch: {
     data: {
-      handler(val) {
+      handler(value) {
+        let val = JSON.parse(JSON.stringify(value))
+        if (this.$route.query.entry) {
+          this.form = Object.assign(this.form, {
+            bankName: '',
+            bankNo: '',
+            isFirstSs: '',
+            isFirstEpf: ''
+          })
+        }
         for (let key in this.form) {
           this.form[key] = val[key]
         }
