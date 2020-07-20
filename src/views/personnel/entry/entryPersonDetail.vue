@@ -10,7 +10,10 @@
           <div class="orgJob">
             {{ personInfo.name }}
           </div>
-          <div class="status">
+          <div
+            v-if="statusWord[personInfo.status]"
+            class="status"
+          >
             {{ statusWord[personInfo.status] }}
           </div>
         </div>
