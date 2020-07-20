@@ -435,7 +435,7 @@ export default {
     },
     jumpToDetail(row) {
       this.$router.push({
-        path: '/personnel/recruit/specificPage',
+        path: '/personnel/recruit/details',
         query: { id: row.id, status: 'mNeeds' }
       })
     },
