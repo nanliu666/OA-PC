@@ -17,7 +17,7 @@
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>{{ info.positionName }}</span>
+        <span>{{ info.positionName ? `${info.positionName}` : `- -` }}</span>
         <span>|</span>
         <span>{{ info.companyName }}</span>
       </div>

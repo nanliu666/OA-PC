@@ -14,7 +14,7 @@
             {{ leaveNoteData.userName }} 的离职交接事项
           </div>
           <div
-            v-if="leaveNoteData.status === 'UnConfirm'"
+            v-if="!isFinish"
             class="btn-box"
           >
             <el-button
