@@ -301,7 +301,6 @@ const TABLE_COLUMS = [
 const TABLE_CONFIG = {
   showHandler: true,
   showIndexColumn: false,
-  enableMultiSelect: false,
   enablePagination: true,
   handlerColumn: {
     width: 250

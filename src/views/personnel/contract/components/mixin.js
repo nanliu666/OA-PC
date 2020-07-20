@@ -10,7 +10,6 @@ const mixin = {
       // tableConfig: {
       //   showHandler: true,
       //   enablePagination: true,
-      //   enableMultiSelect: true,
       //   handlerColumn: {
       //     width: 120
       //   }

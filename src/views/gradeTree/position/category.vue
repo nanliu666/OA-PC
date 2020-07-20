@@ -154,6 +154,7 @@ export default {
       tableConfig: {
         showIndexColumn: false,
         showHandler: true,
+        rowKey: 'id',
         enableMultiSelect: true
       },
       columns: [

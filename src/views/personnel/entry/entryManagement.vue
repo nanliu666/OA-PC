@@ -289,9 +289,7 @@ export default {
       data: [],
       tableConfig: {
         showHandler: true,
-        // enableMultiSelect: true,
         enablePagination: true,
-        uniqueKey: 'personId',
         highlightSelect: true,
         showIndexColumn: false,
         handlerColumn: {

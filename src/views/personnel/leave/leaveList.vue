@@ -331,10 +331,7 @@ export default {
       // 表格配置
       tableConfig: {
         showIndexColumn: false,
-        // 选择列先去除
-        // enableMultiSelect: true,
         enablePagination: true,
-        uniqueKey: 'userId',
         showHandler: true,
         handlerColumn: {
           minWidth: 250

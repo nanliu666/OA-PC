@@ -206,6 +206,7 @@ export default {
         enableMultiSelect: true,
         enablePagination: true,
         showIndexColumn: false,
+        rowKey: 'jobId',
         handlerColumn: {
           width: 200
         }
