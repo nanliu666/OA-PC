@@ -15,7 +15,11 @@
               class="form__input--select"
               :disabled="_.get(form.$config, 'userId.disabled')"
               :load="loadUsers"
-              :option-props="{ key: 'userId', label: 'name', value: 'userId' }"
+              :option-props="{
+                key: 'userId',
+                formatter: (item) => `${item.name}(${item.workNo})`,
+                value: 'userId'
+              }"
               placeholder="请选择人员"
               searchable
               @change="(val) => validateUserId(val, form)"
@@ -30,7 +34,7 @@
           <span
             v-else
             class="form__text"
-            v-text="form.name"
+            v-text="`${form.name}(${form.workNo})`"
           />
         </el-col>
         <el-col :span="4">
