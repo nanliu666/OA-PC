@@ -59,6 +59,17 @@
           >
             停止招聘
           </el-button>
+
+          <!-- 招聘专员 -->
+          <el-button
+            v-if="userId"
+            v-show="!isStoped"
+            type="primary"
+            size="medium"
+            @click="() => handleCandidateAddBtnClick()"
+          >
+            添加候选人
+          </el-button>
         </template>
       </DetailsMainInfo>
 
@@ -163,6 +174,13 @@ export default {
   },
 
   methods: {
+    handleCandidateAddBtnClick() {
+      this.$router.push({
+        path: '/personnel/editPerson',
+        query: { recruitmentId: this.id }
+      })
+    },
+
     handleCopyBtnClick() {
       this.$router.push({
         path: '/personnel/recruit/recruitmentNeeds',
