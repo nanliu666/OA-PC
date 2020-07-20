@@ -406,7 +406,7 @@
                 </template>
                 <template v-else-if="item.prop === 'isSecret'">
                   <div class="row">
-                    {{ isSecret === 1 ? '有' : '无' }}
+                    {{ scope.row[item.prop] === 1 ? '有' : '无' }}
                   </div>
                 </template>
                 <template v-else>

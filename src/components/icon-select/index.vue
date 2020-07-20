@@ -27,7 +27,7 @@
 export default {
   name: 'IconSelect',
   components: {
-    IconSelectDialog: () => import(/* webpackChunkName: "views" */ './icon-select-dialog')
+    IconSelectDialog: () => import('./icon-select-dialog')
   },
   props: {
     iconList: {

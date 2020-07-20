@@ -128,7 +128,6 @@ export default {
   name: 'Details',
   components: {
     Distribution: () => import('@/views/personnel/recruit/components/modals/Distribution'),
-
     DetailsRecruitmentRequirement: () => import('./components/DetailsRecruitmentRequirement'),
     DetailsDistributionInformation: () => import('./components/DetailsDistributionInformation'),
     DetailsMainInfo: () => import('./components/DetailsMainInfo'),
