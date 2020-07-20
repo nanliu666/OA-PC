@@ -29,7 +29,7 @@
           </el-button>
           <el-button
             v-if="!userId"
-            v-show="_.eq(data.status, 'Unhandle')"
+            v-show="_.eq(data.status, 'UnHandle')"
             size="medium"
             type="primary"
             :disabled="isStoped"
