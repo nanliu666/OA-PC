@@ -226,7 +226,7 @@ export default {
       } else if (row.type === 'Recruitment') {
         // 招聘
         this.$router.push({
-          path: '/personnel/recruit/specificPage',
+          path: '/personnel/recruit/details',
           query: {
             id: row.bizId
           }

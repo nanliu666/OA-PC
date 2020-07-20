@@ -411,7 +411,7 @@ export default {
     },
     jumpToDetail(id) {
       this.$router.push({
-        path: '/personnel/recruit/specificPage',
+        path: '/personnel/recruit/details',
         query: { id: id, status: 'iSubmit' }
       })
     },
