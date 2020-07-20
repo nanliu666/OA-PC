@@ -89,10 +89,16 @@
       </template>
 
       <template
-        v-for="dictName of ['EmerType', 'handled', 'status', 'progress', 'WorkProperty']"
+        v-for="dictName of ['handled', 'status', 'progress', 'WorkProperty']"
         #[_.lowerFirst(dictName)]="{row}"
       >
         {{ translator({ dictKey: dictName, value: _.get(row, _.lowerFirst(dictName)) }) }}
+      </template>
+
+      <template #emerType="{row}">
+        <el-tag :type="emerTypeType(row)">
+          {{ translator({ dictKey: 'emerType', value: _.get(row, 'emerType') }) }}
+        </el-tag>
       </template>
 
       <template #handler="{row}">
@@ -275,6 +281,24 @@ export default {
   },
 
   methods: {
+    emerTypeType({ emerType }) {
+      // success/info/warning/danger
+      let type = ''
+      switch (emerType) {
+        case 'Super': // 与 urgent 相同处理
+        case 'urgent':
+          type = 'danger'
+          break
+        case 'common':
+          type = 'warning'
+          break
+        case 'suit':
+          type = 'success'
+          break
+        default:
+      }
+      return type
+    },
     handleNeedNumEditSubmit(data) {
       getChange(renameKey(data, 'id', 'recruitmentId'))
         .then(() => {
