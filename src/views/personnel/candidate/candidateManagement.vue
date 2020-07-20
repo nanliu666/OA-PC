@@ -665,12 +665,12 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <el-dropdown-item
+                    <!-- <el-dropdown-item
                       v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
                       command="reApply"
                     >
                       重新申请
-                    </el-dropdown-item>
+                    </el-dropdown-item> -->
                     <el-dropdown-item command="InterviewEvaluation">
                       查看面试评价
                     </el-dropdown-item>
@@ -1193,12 +1193,12 @@ export default {
         query: params
       })
     },
-    handleApplyEmploy(row) {
+    handleApplyEmploy(row, reApply = false) {
       this.$router.push({
         path: '/personnel/candidate/apply',
         query: {
           personId: row.personId,
-          applyId: row.applyId,
+          applyId: reApply ? '' : row.applyId,
           recruitmentId: row.recruitmentId
         }
       })
@@ -1355,7 +1355,7 @@ export default {
             .then(() => {
               this.$message.success('发起成功')
               loading.close()
-              // this.handleApplyEmploy(data)
+              this.handleApplyEmploy(data, true)
               this.loadAllData()
             })
             .catch(() => {
@@ -1384,7 +1384,7 @@ export default {
           query: params
         })
       } else if (command === 'reApply') {
-        this.handleApplyEmploy(data)
+        this.handleApplyEmploy(data, true)
       } else if (command) {
         this[command] && this[command](data)
       }

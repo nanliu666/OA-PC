@@ -62,7 +62,6 @@
                     class="operations__btns--item"
                     size="mini"
                     type="text"
-                    @click="getTableList"
                   >
                     <i class="iconfont iconicon_setting" />
                   </el-button>
@@ -334,8 +333,6 @@ export default {
     this.refreshTableData()
   },
   methods: {
-    // 获取表格数据
-    getTableList() {},
     //  处理页码改变
     handleCurrentPageChange() {},
     handlePageSizeChange() {},

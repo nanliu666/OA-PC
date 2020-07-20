@@ -293,10 +293,7 @@ export default {
     },
     handleCommand(command) {
       if (command === 'getOutEntry') {
-        this.$refs.giveOutEntryDialog.out({
-          personId: this.personInfo.personId,
-          name: this.personInfo.name
-        })
+        this.$refs.giveOutEntryDialog.out(this.personInfo)
       }
     },
     handleSend() {
