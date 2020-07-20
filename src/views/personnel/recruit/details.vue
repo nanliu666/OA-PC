@@ -12,6 +12,7 @@
       <DetailsMainInfo :data="data">
         <template #operations>
           <el-button
+            v-if="!userId"
             size="medium"
             type="primary"
             @click="handleCopyBtnClick"
@@ -49,6 +50,7 @@
           </el-button>
 
           <el-button
+            v-if="!userId"
             v-show="!isStoped"
             plain
             size="medium"
