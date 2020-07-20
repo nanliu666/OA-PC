@@ -136,7 +136,6 @@ export default {
         return {
           showHandler: true,
           enablePagination: true,
-          enableMultiSelect: false,
           handlerColumn: {
             width: 120
           }
@@ -149,14 +148,6 @@ export default {
       data: [],
       WorkProperty: [],
       ContractType: []
-      // tableConfig: {
-      //   showHandler: true,
-      //   enablePagination: true,
-      //   enableMultiSelect: false,
-      //   handlerColumn: {
-      //     width: 120
-      //   }
-      // }
     }
   },
   watch: {

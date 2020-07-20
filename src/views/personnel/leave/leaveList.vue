@@ -119,15 +119,16 @@
             >
               开具离职证明
             </el-button>
+            <!-- v-if="isWaitLeave && !row.leaveDate" -->
             <el-button
-              v-if="isWaitLeave && !row.leaveDate"
+              v-if="isWaitLeave"
               size="medium"
               type="text"
               @click="handelChange(row)"
             >
               调整离职信息
             </el-button>
-            <!-- v-if="isWaitLeave && !row.leaveDate" -->
+
             <el-dropdown
               v-if="isWaitLeave"
               @command="handleCommand($event, row)"
@@ -330,13 +331,10 @@ export default {
       // 表格配置
       tableConfig: {
         showIndexColumn: false,
-        // 选择列先去除
-        // enableMultiSelect: true,
         enablePagination: true,
-        uniqueKey: 'userId',
         showHandler: true,
         handlerColumn: {
-          minWidth: 200
+          minWidth: 250
         }
       },
       // 搜索框配置
@@ -436,7 +434,7 @@ export default {
       if (this.activeName == 'WaitLeave') {
         this.paramsInfo.status = 'WaitLeave'
         // 修改表格操作列的宽度
-        this.tableConfig.handlerColumn.minWidth = 200
+        this.tableConfig.handlerColumn.minWidth = 250
         this.getDataList()
       } else {
         this.paramsInfo.status = 'Leaved'

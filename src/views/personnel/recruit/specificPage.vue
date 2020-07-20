@@ -227,7 +227,7 @@ export default {
     DetailsDetails,
     DistriButeall,
     Entrystaff,
-    Overview: () => import(/* webpackChunkName: "views" */ './components/Overview')
+    Overview: () => import('./components/Overview')
   },
   data() {
     return {
@@ -246,7 +246,6 @@ export default {
       data: [],
       tableConfig: {
         showIndexColumn: false,
-        enableMultiSelect: false,
         enablePagination: true
       },
       dictionary: {

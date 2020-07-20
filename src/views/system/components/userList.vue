@@ -48,7 +48,7 @@
               class="addUser"
               @click="jumpAddUser"
             >添加员工</span>
-            <span
+            <i
               class="icon  el-icon-refresh-right"
               @click="loadData"
             />
@@ -141,7 +141,7 @@ export default {
         enableMultiSelect: true,
         enablePagination: true,
         showIndexColumn: false,
-        uniqueKey: 'userId',
+        rowKey: 'userId',
         handlerColumn: {
           width: '180'
         }
@@ -315,7 +315,7 @@ export default {
   border-right: 0.5px solid #e9e9e9;
 }
 .icon {
-  padding-left: 12px;
+  margin-left: 12px;
   font-size: 18px;
   color: #a0a8ae;
   cursor: pointer;

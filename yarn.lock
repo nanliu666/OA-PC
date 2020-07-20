@@ -9984,10 +9984,10 @@ vue-axios@^2.1.2:
   resolved "https://registry.npm.taobao.org/vue-axios/download/vue-axios-2.1.5.tgz#1af4bf1218ed71309c76afb38d0f683e312c24a7"
   integrity sha1-GvS/EhjtcTCcdq+zjQ9oPjEsJKc=
 
-vue-common-table@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/vue-common-table/-/vue-common-table-1.0.7.tgz#cfb578315785f868c530b8d9c830a7d17df9d45e"
-  integrity sha512-kG0ZU8d6s52N1HuaU0A8SkFG9rAXVg9vrwiwz0+MiEPmHdqQFUDQXcmmX4riVLN/w4v0Iu9FLxEuN+OmIMgtmQ==
+vue-common-table@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/vue-common-table/-/vue-common-table-1.0.10.tgz#3935775a38abe19cb7ad6c38ac9f4601872d8a9d"
+  integrity sha512-dHMiZ1kc1plCxkT262eT/Ir79wY0WMwYOH6ciFEEdFfQWWIpIhxRb5prjosFV/pJyM+vWFtA8D17PlZ6j9qWLg==
   dependencies:
     core-js "^3.6.4"
     element-ui "^2.13.1"

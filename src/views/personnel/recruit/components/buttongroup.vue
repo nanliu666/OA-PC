@@ -84,17 +84,10 @@ import { renameKey } from '@/util/util'
 export default {
   name: 'Buttongroup',
   components: {
-    Distribution: () => import(/* webpackChunkName: "views" */ '../components/modals/Distribution'),
-    Redistribution: () =>
-      import(/* webpackChunkName: "views" */ '../components/modals/Redistribution'),
-    RequirementStop: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/RequirementStop'
-      ),
-    NeedNumEdit: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
-      )
+    Distribution: () => import('../components/modals/Distribution'),
+    Redistribution: () => import('../components/modals/Redistribution'),
+    RequirementStop: () => import('@/views/personnel/recruit/components/modals/RequirementStop'),
+    NeedNumEdit: () => import('@/views/personnel/recruit/components/modals/NeedNumEdit')
   },
   props: {
     childData: {

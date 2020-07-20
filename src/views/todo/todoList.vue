@@ -226,7 +226,7 @@ export default {
       } else if (row.type === 'Recruitment') {
         // 招聘
         this.$router.push({
-          path: '/personnel/recruit/specificPage',
+          path: '/personnel/recruit/details',
           query: {
             id: row.bizId
           }
@@ -275,8 +275,10 @@ export default {
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: row.bizId,
+            recruitmentId: row.bizId2,
             entry: 1,
-            tagName: '入职登记表详情'
+            tagName: '入职登记表详情',
+            isUser: 1
           }
         })
       }

@@ -76,9 +76,9 @@ const TAB_ACITVE_DEFAULT = 'iSubmit'
 export default {
   name: 'RecruitList',
   components: {
-    DetailsList: () => import(/* webpackChunkName: "views" */ './listfile/detailsList'),
-    AllList: () => import(/* webpackChunkName: "views" */ './listfile/allList'),
-    UnderApproval: () => import(/* webpackChunkName: "views" */ './listfile/underApproval')
+    DetailsList: () => import('./listfile/detailsList'),
+    AllList: () => import('./listfile/allList'),
+    UnderApproval: () => import('./listfile/underApproval')
   },
   data() {
     return {
