@@ -3,7 +3,7 @@ import { getOrgUserList } from '@/api/system/user'
 
 export default {
   components: {
-    LazySelect: () => import(/* webpackChunkName: "views" */ '@/components/lazy-select/lazySelect')
+    LazySelect: () => import('@/components/lazy-select/lazySelect')
   },
   inject: ['$dialog'],
   props: {

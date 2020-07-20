@@ -335,12 +335,8 @@ const TABLE_CONFIG = {
 export default {
   name: 'DetailsList',
   components: {
-    ClaLabel: () =>
-      import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/claLabel'),
-    NeedNumEdit: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
-      ),
+    ClaLabel: () => import('@/views/personnel/recruit/components/claLabel'),
+    NeedNumEdit: () => import('@/views/personnel/recruit/components/modals/NeedNumEdit'),
     SearchPopover: () => import('@/components/searchPopOver/index')
   },
   filters: {

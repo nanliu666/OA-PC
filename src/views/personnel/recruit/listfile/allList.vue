@@ -312,15 +312,11 @@ export default {
   name: 'AllList',
   components: {
     ClaLabel,
-    Redistribution: () =>
-      import(/* webpackChunkName: "views" */ '../components/modals/Redistribution'),
-    Distribution: () => import(/* webpackChunkName: "views" */ '../components/modals/Distribution'),
+    Redistribution: () => import('../components/modals/Redistribution'),
+    Distribution: () => import('../components/modals/Distribution'),
 
     SearchPopover,
-    NeedNumEdit: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
-      )
+    NeedNumEdit: () => import('@/views/personnel/recruit/components/modals/NeedNumEdit')
   },
   filters: {
     // 过滤不可见的列
