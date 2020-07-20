@@ -19,6 +19,7 @@
             复制
           </el-button>
           <el-button
+            v-if="!userId"
             size="medium"
             type="primary"
             :disabled="isStoped"
@@ -27,6 +28,8 @@
             更改需求人数
           </el-button>
           <el-button
+            v-if="!userId"
+            v-show="_.eq(data.status, 'Unhandle')"
             size="medium"
             type="primary"
             :disabled="isStoped"
@@ -35,6 +38,8 @@
             分配需求
           </el-button>
           <el-button
+            v-if="!userId"
+            v-show="_.eq(data.status, 'Handled')"
             size="medium"
             type="primary"
             :disabled="isStoped"
