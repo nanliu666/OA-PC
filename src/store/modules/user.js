@@ -38,7 +38,8 @@ const user = {
             if (res.error_description) {
               Message({
                 message: res.error_description,
-                type: 'error'
+                type: 'error',
+                showClose: true
               })
             } else {
               commit('SET_TOKEN', res.access_token)

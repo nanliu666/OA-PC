@@ -24,6 +24,7 @@ module.exports = {
       })
     } else {
       config.externals({
+        axios: 'axios',
         gojs: 'go'
       })
       entry.add('@/mock').end()

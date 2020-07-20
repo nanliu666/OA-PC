@@ -127,11 +127,11 @@
               </div>
             </div>
             <!-- slot -->
-            <div slot="reference">
-              <div
-                slot="reference"
-                :class="data.isSelected ? 'is-selected' : ''"
-              >
+            <div
+              slot="reference"
+              class="reference-box"
+            >
+              <div :class="data.isSelected ? 'is-selected' : ''">
                 <div class="day-num">
                   {{ date.getDate() }}
                 </div>
@@ -393,7 +393,9 @@ export default {
     margin-bottom: 5px;
   }
 }
-
+.reference-box {
+  height: 100%;
+}
 .is-selected {
   margin-bottom: 8px;
   .day-num {

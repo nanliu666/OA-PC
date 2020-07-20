@@ -415,9 +415,9 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="tip">
-            与其它公司间有无守密义务或竞业禁止义务：无
-          </div>
+          <!-- <div class="tip">
+            与其它公司间有无守密义务或竞业禁止义务：{{ isSecret === 1 ? '有' : '无' }}
+          </div> -->
         </div>
       </div>
       <div class="train">
@@ -689,6 +689,22 @@ export default {
         {
           prop: 'witnessPhone',
           label: '证明人电话'
+        },
+        {
+          prop: 'isSecret',
+          label: '守密竞业禁止义务'
+        },
+        {
+          prop: 'beginSecretDate',
+          label: '遵守义务开始日期'
+        },
+        {
+          prop: 'endSecretDate',
+          label: '遵守义务截止日期'
+        },
+        {
+          prop: 'content',
+          label: '具体内容'
         }
       ],
       trainData: [],

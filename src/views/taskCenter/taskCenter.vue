@@ -58,7 +58,10 @@
           <div class="task-item">
             <!-- 任务内容 -->
             <div class="task-introduce">
-              <div class="title-row">
+              <div
+                class="title-row"
+                @click="jumpToDetail(row)"
+              >
                 <span class="type">{{ row.type | filterType }}需求:</span>
                 <span class="title">{{ row.title }}</span>
                 <span class="emerType">{{ row.emerType | filterEmerType(EmerType) }}</span>
@@ -311,6 +314,15 @@ export default {
           this[item] = targetArr
         })
       })
+    },
+    // 跳去任务详情
+    jumpToDetail({ bizId }) {
+      this.$router.push({
+        path: '/personnel/recruit/specificPage',
+        query: {
+          id: bizId
+        }
+      })
     }
   }
 }
@@ -349,9 +361,10 @@ export default {
       .title,
       .type {
         font-size: 14px;
-        color: #202940;
+        color: #207efa;
         line-height: 22px;
         font-weight: bold;
+        cursor: pointer;
       }
       .emerType {
         margin-left: 16px;

@@ -186,10 +186,10 @@ export default {
     genGroupHandover(group) {
       if (group.type === 'Org') {
         return '部门负责人'
-      } else if (group.type === 'Job') {
-        return group.orgName + '-' + group.jobName
       } else if (group.type === 'User') {
         return `${group.userName}(${group.workNo})`
+      } else {
+        return ''
       }
     },
     getResignCategory(group) {

@@ -9,7 +9,7 @@ import './cache' //页面缓存
 import store from './store'
 import { loadStyle } from './util/util'
 import * as urls from '@/config/env'
-import Element from 'element-ui'
+import Element, { Message } from 'element-ui'
 import { iconfontUrl, iconfontVersion } from '@/config/env'
 import i18n from './lang' // Internationalization
 import '@/styles/oa-custom/theme/index.css'
@@ -24,6 +24,25 @@ import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
 Vue.prototype._ = _
+
+const $message = (options) => {
+  return Message({
+    ...options,
+    showClose: true
+  })
+}
+;['success', 'warning', 'info', 'error'].forEach((type) => {
+  $message[type] = (options) => {
+    if (typeof options === 'string') {
+      options = {
+        message: options,
+        showClose: true
+      }
+    }
+    options.type = type
+    return Message(options)
+  }
+})
 
 Vue.use(router)
 Vue.use(VueAxios, axios)
@@ -51,6 +70,7 @@ Vue.prototype.website = website
 iconfontVersion.forEach((ele) => {
   loadStyle(iconfontUrl.replace('$key', ele))
 })
+Vue.prototype.$message = $message
 
 Vue.config.productionTip = false
 
