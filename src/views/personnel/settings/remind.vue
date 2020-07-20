@@ -216,7 +216,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .Remind
   .el-alert--info
     background: #edf8ff 100%

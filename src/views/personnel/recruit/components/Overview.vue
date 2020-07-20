@@ -88,7 +88,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 $color_active: #207EFA
 $color_background: #f7f8fa
 $color_border: #CCC
