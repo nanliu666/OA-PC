@@ -512,7 +512,7 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
         ],
         entryDate: [{ required: true, message: '请输入入职日期', trigger: 'blur' }],
         companyId: [{ required: true, message: '请选择入职公司', trigger: 'change' }],
