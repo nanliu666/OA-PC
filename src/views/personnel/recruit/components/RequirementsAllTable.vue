@@ -488,7 +488,7 @@ export default {
           pageNo: this.page.currentPage,
           pageSize: this.page.pageSize
         }
-        const { data, totalNum } = await this.load(_.assign({ userId: this.userId }, page, params))
+        const { data, totalNum } = await this.load(_.assign(null, page, params))
         this.tableData = data
         this.page.total = totalNum
       } catch (error) {
