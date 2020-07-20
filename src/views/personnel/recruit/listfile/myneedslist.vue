@@ -412,7 +412,7 @@ export default {
     jumpToDetail(id) {
       this.$router.push({
         path: '/personnel/recruit/details',
-        query: { id: id, status: 'iSubmit' }
+        query: { id: id, status: 'iSubmit', userId: this.userId }
       })
     },
 
