@@ -113,7 +113,7 @@ const TABLE_COLUMNS = [
     label: '需求编号',
     prop: 'id',
     slot: true,
-    minWidth: '140px'
+    minWidth: '145px'
   },
   {
     label: '职位',
