@@ -180,7 +180,7 @@
             <commonForm
               :ref="`work${i}`"
               :model="work.form"
-              :columns="work.work"
+              :columns="work | columnsFilter"
             />
           </div>
         </div>
@@ -300,6 +300,42 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'RegistrationFormEdit',
   components: {},
+  filters: {
+    columnsFilter: function({ work, form }) {
+      let columns = JSON.parse(JSON.stringify(work))
+      if (form.isSecret === 1) {
+        columns.push(
+          ...[
+            {
+              span: 10,
+              offset: 2,
+              prop: 'beginSecretDate',
+              type: 'date',
+              itemType: 'datePicker',
+              label: '遵守义务开始日期',
+              required: true
+            },
+            {
+              span: 10,
+              prop: 'endSecretDate',
+              type: 'date',
+              itemType: 'datePicker',
+              label: '遵守义务截止日期',
+              required: true
+            },
+            {
+              span: 10,
+              offset: 2,
+              prop: 'content',
+              itemType: 'input',
+              label: '具体内容'
+            }
+          ]
+        )
+      }
+      return columns
+    }
+  },
   props: {
     modity: {
       type: Boolean
@@ -664,6 +700,11 @@ export default {
             } else if (it.workTime.length > 0) {
               it.beginWorkDate = it.workTime[0]
               it.endWorkDate = it.workTime[1]
+            }
+            if (it.isSecret == 0) {
+              it.beginSecretDate = ''
+              it.endSecretDate = ''
+              it.content = ''
             }
           })
           train.map((it) => {
