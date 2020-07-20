@@ -150,8 +150,7 @@ const OVERVIEW_PROPS = [
 export default {
   name: 'DistributionInformation',
   components: {
-    Overview: () =>
-      import(/* webpackChunkName: "views" */ '@/views/personnel/recruit/components/Overview')
+    Overview: () => import('@/views/personnel/recruit/components/Overview')
   },
   filters: {
     progress: ({ entryNum, taskNum }) => claAccuracy(taskNum, entryNum)

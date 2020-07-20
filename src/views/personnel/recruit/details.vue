@@ -109,28 +109,13 @@ const TAB_ACITVE_DEFAULT = 'tabDistributionInformation'
 export default {
   name: 'Details',
   components: {
-    Distribution: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/Distribution'
-      ),
-
-    DetailsRecruitmentRequirement: () =>
-      import(/* webpackChunkName: "views" */ './components/DetailsRecruitmentRequirement'),
-    DetailsDistributionInformation: () =>
-      import(/* webpackChunkName: "views" */ './components/DetailsDistributionInformation'),
-    DetailsMainInfo: () => import(/* webpackChunkName: "views" */ './components/DetailsMainInfo'),
-    NeedNumEdit: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
-      ),
-    Redistribution: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/Redistribution'
-      ),
-    RequirementStop: () =>
-      import(
-        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/RequirementStop'
-      )
+    Distribution: () => import('@/views/personnel/recruit/components/modals/Distribution'),
+    DetailsRecruitmentRequirement: () => import('./components/DetailsRecruitmentRequirement'),
+    DetailsDistributionInformation: () => import('./components/DetailsDistributionInformation'),
+    DetailsMainInfo: () => import('./components/DetailsMainInfo'),
+    NeedNumEdit: () => import('@/views/personnel/recruit/components/modals/NeedNumEdit'),
+    Redistribution: () => import('@/views/personnel/recruit/components/modals/Redistribution'),
+    RequirementStop: () => import('@/views/personnel/recruit/components/modals/RequirementStop')
   },
   provide() {
     return {
