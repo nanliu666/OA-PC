@@ -167,10 +167,6 @@ export default {
           prop: 'name'
         },
         {
-          label: '在职人数',
-          prop: 'workNum'
-        },
-        {
           label: '描述',
           prop: 'remark'
         }
@@ -192,6 +188,9 @@ export default {
     this.getData()
   },
   mounted() {},
+  activated() {
+    this.getData()
+  },
   methods: {
     handlerDeleteAll(list) {
       let name = ''
