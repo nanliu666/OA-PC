@@ -354,7 +354,7 @@ export default {
       )
     },
     getWarnText(row) {
-      return moment().diff(moment(row.beginDate), 'days')
+      return moment().diff(moment(row.endDate), 'days')
     },
     // 点击查看代办事项全部，跳到代办中心
     goTodoCenter() {

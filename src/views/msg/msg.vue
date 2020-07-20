@@ -167,6 +167,13 @@ export default {
         this.page.currentPage = 1
         this.loadingData()
       }
+    },
+    'msgQuery.activeName': {
+      deep: true,
+      handler: function() {
+        this.page.currentPage = 1
+        this.loadingData()
+      }
     }
   },
   created() {

@@ -430,6 +430,12 @@ export default {
     this.getOrgNameList()
     this.getJobList()
   },
+  async activated() {
+    await this.getCommonDict()
+    this.getDataList()
+    this.getOrgNameList()
+    this.getJobList()
+  },
   methods: {
     //监听切换tag
     handleClick() {
