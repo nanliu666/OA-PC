@@ -92,8 +92,7 @@ export default {
       nodeData: null,
       distributionVisible: false,
       tableConfig: {
-        showIndexColumn: false,
-        enableMultiSelect: false
+        showIndexColumn: false
       }
     }
   },

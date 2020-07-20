@@ -289,7 +289,6 @@ export default {
       tableConfig: {
         showHandler: true,
         showIndexColumn: false,
-        enableMultiSelect: false,
         enablePagination: true
       },
       params: {

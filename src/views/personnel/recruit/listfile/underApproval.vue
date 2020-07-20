@@ -203,7 +203,6 @@ export default {
       ],
       tableConfig: {
         showIndexColumn: false,
-        enableMultiSelect: false,
         enablePagination: true
       },
       params: {

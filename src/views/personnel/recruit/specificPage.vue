@@ -246,7 +246,6 @@ export default {
       data: [],
       tableConfig: {
         showIndexColumn: false,
-        enableMultiSelect: false,
         enablePagination: true
       },
       dictionary: {

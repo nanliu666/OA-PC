@@ -277,10 +277,7 @@ export default {
       //   table设置
       tableConfig: {
         showIndexColumn: false,
-        // 选择列先去除
-        // enableMultiSelect: true,
-        enablePagination: true,
-        uniqueKey: 'userId'
+        enablePagination: true
       },
       //   分页器配置
       page: {
