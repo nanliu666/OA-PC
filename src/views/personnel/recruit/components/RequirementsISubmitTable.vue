@@ -104,9 +104,17 @@
             />
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
+            <el-dropdown-item v-show="_.eq(row.progress, 'Approved')">
               <el-button
-                v-show="_.eq(row.progress, 'Approved')"
+                size="medium"
+                type="text"
+                @click="() => $refs.requirementStop.init(row)"
+              >
+                停止招聘
+              </el-button>
+            </el-dropdown-item>
+            <el-dropdown-item v-show="_.eq(row.progress, 'Approved')">
+              <el-button
                 size="medium"
                 type="text"
                 @click="() => $refs.needNumEdit.init(row)"
@@ -133,12 +141,17 @@
       :visible.sync="needNumEditVisible"
       @submit="handleNeedNumEditSubmit"
     />
+    <RequirementStop
+      ref="requirementStop"
+      :visible.sync="requirementStopVisible"
+      @submit="handleRequirementStopSubmit"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { getChange, getPost } from '@/api/personnel/recruitment'
+import { getChange, getPost, requirementStop } from '@/api/personnel/recruitment'
 import { renameKey } from '@/util/util'
 import { getOrgTreeSimple } from '@/api/org/org'
 
@@ -188,6 +201,7 @@ export default {
   name: 'RequirementsISubmitTable',
   components: {
     NeedNumEdit: () => import('@/views/personnel/recruit/components/modals/NeedNumEdit'),
+    RequirementStop: () => import('@/views/personnel/recruit/components/modals/RequirementStop'),
     SearchPopover: () => import('@/components/searchPopOver')
   },
   filters: {
@@ -217,6 +231,7 @@ export default {
     return {
       columnsVisible: _.map(this.columns, ({ prop }) => prop),
       needNumEditVisible: false,
+      requirementStopVisible: false,
       parentId: '0',
       page: {
         currentPage: 1,
@@ -268,6 +283,17 @@ export default {
         })
         .finally(() => {
           this.$refs.needNumEdit.submitting = false
+          this.refresh()
+        })
+    },
+    handleRequirementStopSubmit(data) {
+      requirementStop(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message.success('操作成功')
+          this.$refs.requirementStop.close()
+        })
+        .finally(() => {
+          this.$refs.requirementStop.submitting = false
           this.refresh()
         })
     },

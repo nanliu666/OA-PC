@@ -3,6 +3,7 @@
     <page-header
       title="需求详情"
       show-back
+      @back="back"
     />
     <basic-container
       v-loading="loading"
@@ -173,6 +174,11 @@ export default {
   },
 
   methods: {
+    back() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.back()
+    },
+
     handleCandidateAddBtnClick() {
       this.$router.push({
         path: '/personnel/editPerson',
