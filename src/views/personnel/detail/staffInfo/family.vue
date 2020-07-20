@@ -76,7 +76,9 @@
                 v-show="curItemIndex != index"
                 label="关系:"
               >
-                <span class="info-item-value">{{ item.relationship }}</span>
+                <span class="info-item-value">{{
+                  getDictValue(UserRelationship, item.relationship)
+                }}</span>
               </el-form-item>
 
               <el-form-item
@@ -84,7 +86,15 @@
                 label="关系"
                 prop="relationship"
               >
-                <el-input v-model="item.relationship" />
+                <el-select v-model="item.relationship">
+                  <el-option
+                    v-for="it in UserRelationship"
+                    :key="it.dictKey"
+                    :label="it.dictValue"
+                    :value="it.dictKey"
+                  />
+                </el-select>
+                <!-- <el-input v-model="item.relationship" /> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -236,6 +246,7 @@ export default {
       familyInfo: [],
       curItemIndex: null,
       editClick: false,
+      UserRelationship: [],
       type: '',
       rules: {
         phone: [
@@ -279,8 +290,18 @@ export default {
   },
   created() {
     this.getBasicInfo()
+    this.$store.dispatch('CommonDict', 'UserRelationship').then((res) => {
+      this.UserRelationship = res
+    })
   },
   methods: {
+    getDictValue(arr, val) {
+      for (let item of arr) {
+        if (item.dictKey === val) {
+          return item.dictValue
+        }
+      }
+    },
     addInfo() {
       this.type = 'add'
       let item = {

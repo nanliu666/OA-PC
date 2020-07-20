@@ -25,10 +25,7 @@
             size="medium"
           >
             <el-row>
-              <el-col
-                v-if="!$route.query.isTalent"
-                :span="10"
-              >
+              <el-col :span="10">
                 <el-form-item
                   label="关联应聘职位"
                   prop="recruitmentId"
@@ -48,7 +45,6 @@
                 </el-form-item>
               </el-col>
               <el-col
-                v-if="!$route.query.isTalent"
                 :span="10"
                 :offset="4"
               >
