@@ -189,16 +189,16 @@
               <el-button
                 size="medium"
                 type="text"
-                @click="() => $refs.needNumEdit.init(row)"
+                @click="() => $refs.distribution.init(row)"
               >
-                分配
+                分配需求
               </el-button>
             </el-dropdown-item><el-dropdown-item v-else>
               <el-button
                 v-show="_.eq(row.progress, 'Approved')"
                 size="medium"
                 type="text"
-                @click="() => $refs.needNumEdit.init(row)"
+                @click="() => $refs.redistribution.init(row)"
               >
                 重新分配
               </el-button>
