@@ -28,7 +28,13 @@
             <span class="handler__btn">
               <el-button
                 type="text"
-                @click="() => editInit({ type: row['personnelEvent'].type })"
+                @click="
+                  () =>
+                    editInit({
+                      userId: _.get(row, 'executor.userId', null),
+                      type: row['personnelEvent'].type
+                    })
+                "
               >
                 <i class="icon-basics-edit-outlined" />
               </el-button>

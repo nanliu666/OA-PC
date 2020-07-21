@@ -231,12 +231,12 @@ export default {
       ],
       page: {
         pageSize: 10,
-        currentPage: 2,
-        total: 100
+        currentPage: 1,
+        total: 1
       },
       params: {
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 5,
         jobName: '',
         categoryId: ''
       }
@@ -244,6 +244,11 @@ export default {
   },
 
   mounted() {
+    this.getCategory()
+    this.getJobData()
+    this.getTree()
+  },
+  activated() {
     this.getCategory()
     this.getJobData()
     this.getTree()
@@ -317,11 +322,13 @@ export default {
         this.orgTree = res
       })
     },
-    getJobData({ pageNo = 1 } = {}) {
+    getJobData() {
       this.loading = true
-      this.params.pageNo = pageNo
-      this.params.pageSize = this.form.pageSize
       this.params.jobName = this.form.name
+      this.params = {
+        ...this.params,
+        ...this.page
+      }
       gotV1Job(this.params).then((res) => {
         this.loading = false
         this.data = res.data
@@ -356,11 +363,11 @@ export default {
       this.getJobData({ pageNo: 1, pageSize: this.form.pageSize })
     },
     sizeChange(val) {
-      this.form.pageSize = val
+      this.page.pageSize = val
       this.getJobData({ pageNo: 1 })
     },
     currentChange(val) {
-      this.form.pageNo = val
+      this.page.pageNo = val
       this.getJobData({ pageNo: val })
     },
     handleExport() {

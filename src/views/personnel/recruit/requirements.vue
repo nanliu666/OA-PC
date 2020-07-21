@@ -15,8 +15,14 @@
     </page-header>
 
     <basic-container block>
-      <RequirementsAllPane v-show="_.eq(tabPane, 'all')" />
-      <RequirementsISubmitPane v-show="_.eq(tabPane, 'iSubmit')" />
+      <RequirementsAllPane
+        v-show="_.eq(tabPane, 'all')"
+        ref="requirementsAllPane"
+      />
+      <RequirementsISubmitPane
+        v-show="_.eq(tabPane, 'iSubmit')"
+        ref="requirementsISubmitPane"
+      />
     </basic-container>
   </div>
 </template>
@@ -40,9 +46,29 @@ export default {
     }
   },
 
+  watch: {
+    tabPane(pane) {
+      this.refreshByPane(pane)
+    }
+  },
+
+  activated() {},
+
   methods: {
     handleCreateBtnClick() {
       this.$router.push('/personnel/recruit/recruitmentNeeds')
+    },
+
+    refreshByPane(pane) {
+      // 用于控制pane的数据更新事件
+      switch (pane) {
+        case 'iSubmit':
+          this.$nextTick(() => this.$refs.requirementsISubmitPane.refresh())
+          break
+        case 'all':
+          this.$nextTick(() => this.$refs.requirementsAllPane.refresh())
+          break
+      }
     }
   }
 }

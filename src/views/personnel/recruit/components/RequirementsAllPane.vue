@@ -6,6 +6,7 @@
         name="Approved"
       >
         <RequirementsAllTable
+          ref="approved"
           :load="paddingLoad"
           :columns="paddingTableColumns"
           :config="paddingTableConfig"
@@ -17,6 +18,7 @@
         name="Finished"
       >
         <RequirementsAllTable
+          ref="finished"
           :load="finishedLoad"
           :columns="finishedTableColumns"
           :config="finishedTableConfig"
@@ -29,7 +31,7 @@
 
 <script>
 import { renameKey } from '@/util/util'
-import { getAllRecruitment } from '../../../../api/personnel/recruitment'
+import { getAllRecruitment } from '@/api/personnel/recruitment'
 
 const TAB_ACITVE_DEFAULT = 'Approved'
 
@@ -251,6 +253,33 @@ export default {
     },
     finishedTableConfig: () => FINISHED_TABLE_CONFIG,
     finishedSearchConfig: () => FINISHED_SEARCH_CONFIG
+  },
+
+  watch: {
+    tab() {
+      this.refresh()
+    }
+  },
+
+  methods: {
+    // 刷新当前显示的tab(表格)
+    refresh() {
+      this.refreshByTab(this.tab)
+    },
+
+    refreshByTab(tab) {
+      switch (tab) {
+        case 'UnderApproval':
+          this.$nextTick(() => this.$refs.underApproval.refresh())
+          break
+        case 'Approved':
+          this.$nextTick(() => this.$refs.approved.refresh())
+          break
+        case 'Finished':
+          this.$nextTick(() => this.$refs.finished.refresh())
+          break
+      }
+    }
   }
 }
 </script>
