@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
 import { queryDistribution, getEntryDetails } from '@/api/personnel/recruitment'
 
 const DETAILS_TABLE_COLUMNS = [
@@ -145,7 +144,7 @@ const OVERVIEW_PROPS = [
       // 设置 CSS class 属性
       className: 'color--active text--bold',
       // 处理 value
-      handler: ({ needNum, entryNum }) => _.toString(claAccuracy(needNum, entryNum)) + '%'
+      handler: ({ needNum, entryNum }) => `${((100 * entryNum) / needNum).toFixed(1)}%`
     }
   ],
   ['candidateNum', '候选人数']
@@ -157,7 +156,7 @@ export default {
     Overview: () => import('@/views/personnel/recruit/components/Overview')
   },
   filters: {
-    progress: ({ entryNum, taskNum }) => claAccuracy(taskNum, entryNum)
+    progress: ({ needNum, entryNum }) => `${((100 * entryNum) / needNum).toFixed(1)}%`
   },
   props: {
     data: {
