@@ -357,9 +357,6 @@ export default {
     ...mapGetters(['userId'])
   },
 
-  created() {
-    this.refresh()
-  },
   mounted() {
     // 加载 popover
     _.each(['EducationalLevel', 'EmerType', 'WorkProperty', 'WorkYear'], async (dictKey) => {

@@ -260,9 +260,6 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  created() {
-    this.refresh()
-  },
 
   mounted() {
     // 加载 popover
