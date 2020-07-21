@@ -221,7 +221,7 @@ export default {
   filters: {
     formColumnsFilter: function(form) {
       let res = _(FORM_COLUMNS)
-      if (_.eq(form.menuType, 'Button')) {
+      if (_.eq(form.menuType, 'Button') || _.isNil(form.menuType)) {
         res = res.difference([_.find(FORM_COLUMNS, { prop: 'sort' })])
       }
       return res.value()

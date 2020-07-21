@@ -3,6 +3,7 @@
     <page-header
       title="需求详情"
       show-back
+      @back="back"
     />
     <basic-container
       v-loading="loading"
@@ -12,6 +13,7 @@
       <DetailsMainInfo :data="data">
         <template #operations>
           <el-button
+            v-if="!userId"
             size="medium"
             type="primary"
             @click="handleCopyBtnClick"
@@ -19,6 +21,7 @@
             复制
           </el-button>
           <el-button
+            v-if="!userId"
             size="medium"
             type="primary"
             :disabled="isStoped"
@@ -27,6 +30,8 @@
             更改需求人数
           </el-button>
           <el-button
+            v-if="!userId"
+            v-show="_.eq(data.status, 'UnHandle')"
             size="medium"
             type="primary"
             :disabled="isStoped"
@@ -35,6 +40,8 @@
             分配需求
           </el-button>
           <el-button
+            v-if="!userId"
+            v-show="_.eq(data.status, 'Handled')"
             size="medium"
             type="primary"
             :disabled="isStoped"
@@ -44,6 +51,7 @@
           </el-button>
 
           <el-button
+            v-if="!userId"
             v-show="!isStoped"
             plain
             size="medium"
@@ -51,6 +59,17 @@
             @click="() => $refs.requirementStop.init(data)"
           >
             停止招聘
+          </el-button>
+
+          <!-- 招聘专员 -->
+          <el-button
+            v-if="userId"
+            v-show="!isStoped"
+            type="primary"
+            size="medium"
+            @click="() => handleCandidateAddBtnClick()"
+          >
+            添加候选人
           </el-button>
         </template>
       </DetailsMainInfo>
@@ -155,6 +174,18 @@ export default {
   },
 
   methods: {
+    back() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.back()
+    },
+
+    handleCandidateAddBtnClick() {
+      this.$router.push({
+        path: '/personnel/editPerson',
+        query: { recruitmentId: this.id }
+      })
+    },
+
     handleCopyBtnClick() {
       this.$router.push({
         path: '/personnel/recruit/recruitmentNeeds',
