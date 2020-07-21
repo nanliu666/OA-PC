@@ -559,12 +559,12 @@ export default {
       })
     },
     clear() {
-      const _form = this.$options.data().form
+      const _form = {}
       if (this.$route.query.recruitmentId) {
         _form.recruitmentId = this.form.recruitmentId
         _form.orgName = this.form.orgName
       }
-      this.form = _form
+      this.form = Object.assign({}, this.$options.data().form, _form)
       setTimeout(() => {
         this.$refs.form.clearValidate()
       })

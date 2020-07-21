@@ -139,7 +139,7 @@ export default {
             trigger: 'change'
           }
         ],
-        apprProgress: [{ required: true, validator: checkAppr }]
+        apprProgress: [{ required: true, validator: checkAppr, trigger: 'change' }]
       },
       signedData,
       infoForm: {
