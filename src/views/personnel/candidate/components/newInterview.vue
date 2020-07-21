@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+      v-loading="loading"
       :title="title"
       :visible.sync="dialog"
       width="550px"
@@ -120,6 +121,7 @@ export default {
       }
     }
     return {
+      loading: false,
       title: '',
       isShowAddress: false,
       options: regionData,

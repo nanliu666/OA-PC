@@ -38,8 +38,8 @@
             :loading="loading"
             :config="tableConfig"
             :columns="columns"
-            @pageSizeChange="sizeChange"
-            @currentPageChange="currentChange"
+            @page-size-change="sizeChange"
+            @current-page-change="currentChange"
           >
             <template slot="topMenu">
               <div class="flex-flow flex justify-content align-items ">
@@ -233,6 +233,10 @@ export default {
     getData() {
       this.loading = true
       this.params.name = this.form.name
+      this.params = {
+        ...this.params,
+        ...this.page
+      }
       getCategoryDefine(this.params).then((res) => {
         this.data = res.data
         this.page.total = res.totalNum
@@ -291,14 +295,13 @@ export default {
       this.show = false
     },
     sizeChange(val) {
-      this.params.pageSize = val
-      this.params.pageNo = 1
-      this.page.pagerCount = 1
+      this.page.pageNo = 1
+      this.page.pageSize = val
       this.getData()
     },
     currentChange(val) {
-      this.params.pageNo = val
-      this.page.pagerCount = val
+      // this.params.pageNo = val
+      this.page.pageNo = val
       this.getData()
     },
     handleEdit(row) {

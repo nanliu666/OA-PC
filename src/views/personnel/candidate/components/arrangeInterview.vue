@@ -7,7 +7,7 @@
       append-to-body
       :before-close="handleClose"
     >
-      <div>
+      <div v-loading="loading">
         <div>
           <commonForm
             ref="form"
@@ -97,7 +97,6 @@
           <el-button
             type="primary"
             size="medium"
-            :loading="loading"
             @click="onsubmit"
           >
             确 定
@@ -377,7 +376,9 @@ export default {
         pageNo: 1,
         pageSize: 10000
       }
+      this.loading = true
       getWorklist(params).then((res) => {
+        this.loading = false
         let i = this.filterData(this.columns, 'userId')
         this.columns[i].options = res.data
       })
