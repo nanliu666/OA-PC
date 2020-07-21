@@ -31,8 +31,11 @@
             :data="entryTableData"
             :loading="entryTableLoading"
           >
-            <template #sex="{row}">
-              {{ translator({ dictKey: 'sex', value: row.sex }) }}
+            <template
+              v-for="dictName of ['sex', 'EducationalLevel']"
+              #[_.lowerFirst(dictName)]="{row}"
+            >
+              {{ translator({ dictKey: dictName, value: _.get(row, _.lowerFirst(dictName)) }) }}
             </template>
           </common-table>
         </div>
@@ -94,6 +97,7 @@ const ENTRY_TABLE_COLUMNS = [
     prop: 'university'
   },
   {
+    formatter: ({ workAge }) => (_.isNumber(workAge) ? `${workAge}年` : '-'),
     label: '工作年限',
     prop: 'workAge'
   },

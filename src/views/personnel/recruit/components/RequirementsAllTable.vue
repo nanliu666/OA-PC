@@ -60,7 +60,7 @@
               <div class="operations__column--visible">
                 <el-checkbox-group v-model="columnsVisible">
                   <el-checkbox
-                    v-for="item of tableColumns"
+                    v-for="item of tableColumns.slice(1)"
                     :key="item.prop"
                     :disabled="item.prop === 'name'"
                     :label="item.prop"
@@ -158,10 +158,16 @@
       </template>
 
       <template
-        v-for="dictName of ['EmerType', 'handled', 'status', 'progress', 'WorkProperty']"
+        v-for="dictName of ['handled', 'status', 'progress', 'WorkProperty']"
         #[_.lowerFirst(dictName)]="{row}"
       >
         {{ translator({ dictKey: dictName, value: _.get(row, _.lowerFirst(dictName)) }) }}
+      </template>
+
+      <template #emerType="{row}">
+        <el-tag :type="emerTypeType(row)">
+          {{ translator({ dictKey: 'emerType', value: _.get(row, 'emerType') }) }}
+        </el-tag>
       </template>
 
       <template #handler="{row}">
@@ -189,16 +195,16 @@
               <el-button
                 size="medium"
                 type="text"
-                @click="() => $refs.needNumEdit.init(row)"
+                @click="() => $refs.distribution.init(row)"
               >
-                分配
+                分配需求
               </el-button>
             </el-dropdown-item><el-dropdown-item v-else>
               <el-button
                 v-show="_.eq(row.progress, 'Approved')"
                 size="medium"
                 type="text"
-                @click="() => $refs.needNumEdit.init(row)"
+                @click="() => $refs.redistribution.init(row)"
               >
                 重新分配
               </el-button>
@@ -371,6 +377,24 @@ export default {
   },
 
   methods: {
+    emerTypeType({ emerType }) {
+      // success/info/warning/danger
+      let type = ''
+      switch (emerType) {
+        case 'Super': // 与 urgent 相同处理
+        case 'urgent':
+          type = 'danger'
+          break
+        case 'common':
+          type = 'warning'
+          break
+        case 'suit':
+          type = 'success'
+          break
+        default:
+      }
+      return type
+    },
     handleNeedNumEditSubmit(data) {
       getChange(renameKey(data, 'id', 'recruitmentId'))
         .then(() => {
@@ -405,10 +429,10 @@ export default {
         })
     },
 
-    handleCopyBtnClick() {
+    handleCopyBtnClick({ id }) {
       this.$router.push({
         path: '/personnel/recruit/recruitmentNeeds',
-        query: { id: this.id }
+        query: { id }
       })
     },
 
@@ -464,7 +488,7 @@ export default {
           pageNo: this.page.currentPage,
           pageSize: this.page.pageSize
         }
-        const { data, totalNum } = await this.load(_.assign({ userId: this.userId }, page, params))
+        const { data, totalNum } = await this.load(_.assign(null, page, params))
         this.tableData = data
         this.page.total = totalNum
       } catch (error) {
