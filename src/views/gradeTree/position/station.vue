@@ -36,7 +36,6 @@
           <common-table
             style="width: 100%"
             :data="data"
-            :page="page"
             :config="tableConfig"
             :columns="columns"
             :loading="loading"
@@ -154,13 +153,13 @@ export default {
         }
       ],
       page: {
-        pageSize: 100,
+        pageSize: 10,
         pagerCount: 1,
         total: 10
       },
       params: {
         pageNo: 1,
-        pageSize: 100,
+        pageSize: 10,
         name: ''
       }
     }
@@ -171,6 +170,9 @@ export default {
     this.getData()
   },
   mounted() {},
+  activated() {
+    this.getData()
+  },
   methods: {
     handlerDeleteAll(list) {
       this.$confirm('您确定要删除你选中的岗位吗?', {
