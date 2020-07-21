@@ -332,10 +332,25 @@ export default {
         sex: 0,
         phonenum: '',
         email: ''
-      }
+      },
+      workAddress: []
     }
   },
   watch: {
+    'infoForm.workAddressId': {
+      handler(val) {
+        if (val) {
+          this.workAddress.map((it) => {
+            if (it.id === val) {
+              let { provinceCode, cityCode } = { ...it }
+              this.infoForm.city = [provinceCode, cityCode]
+            }
+          })
+        }
+      },
+      immediate: true,
+      deep: true
+    },
     'infoForm.contractBeginDate': {
       handler(val) {
         if (val && this.infoForm.contractPeriod) {
@@ -533,6 +548,7 @@ export default {
         pageSize: 10000
       }
       getWorkAddress(params).then((res) => {
+        this.workAddress = res.data
         this.options(this.employment, 'workAddressId', res.data)
       })
     },
