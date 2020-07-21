@@ -273,6 +273,10 @@ export default {
     }
   },
 
+  activated() {
+    this.refresh()
+  },
+
   methods: {
     // 刷新当前显示的tab(表格)
     refresh() {
@@ -280,6 +284,9 @@ export default {
     },
 
     refreshByTab(tab) {
+      if (_.isEmpty(this.$refs)) {
+        return
+      }
       switch (tab) {
         case 'UnderApproval':
           this.$nextTick(() => this.$refs.underApproval.refresh())
