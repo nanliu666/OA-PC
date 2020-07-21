@@ -224,11 +224,16 @@
                   </span>
                 </el-form-item>
               </el-col>
-              <!-- <el-col :span="10" :push="2">
+              <el-col
+                :span="10"
+                :push="2"
+              >
                 <el-form-item label="入职登记表:">
-                  <span class="info-item-value" />
+                  <span class="info-item-value">{{
+                    personInfo.register === 1 ? '已发送' : '未发送'
+                  }}</span>
                 </el-form-item>
-              </el-col>-->
+              </el-col>
             </el-form>
           </div>
         </el-row>

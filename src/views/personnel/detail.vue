@@ -43,7 +43,6 @@
                 <div class="personnel-change-btn">
                   <template v-if="allInfo.status === 'Try' || allInfo.status === 'Formal'">
                     <el-button
-                      type="info"
                       size="medium"
                       @click="jumpToApply(allInfo.userId)"
                     >
@@ -52,6 +51,7 @@
                   </template>
                   <template v-if="allInfo.status === 'WaitLeave'">
                     <el-button
+                      v-if="!leaveInfo.lastDate"
                       type="primary"
                       size="medium"
                       @click="jumpToLeave"
@@ -65,6 +65,7 @@
                       调整离职信息
                     </el-button>
                     <el-button
+                      v-if="!leaveInfo.lastDate"
                       size="medium"
                       @click="giveupLeave"
                     >

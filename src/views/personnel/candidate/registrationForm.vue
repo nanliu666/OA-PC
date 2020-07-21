@@ -409,6 +409,15 @@
                     {{ scope.row[item.prop] === 1 ? '有' : '无' }}
                   </div>
                 </template>
+                <template v-else-if="item.prop === 'beginSecretDate'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
+                <template v-else-if="item.prop === 'content'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
+                <template v-else-if="item.prop === 'endSecretDate'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
                 <template v-else>
                   {{ scope.row[item.prop] }}
                 </template>
