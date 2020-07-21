@@ -111,7 +111,7 @@ const PADDING_TABLE_CONFIG = {
   showIndexColumn: false,
   enablePagination: true,
   handlerColumn: {
-    minWidth: 50
+    minWidth: 100
   }
 }
 const FINISHED_TABLE_CONFIG = {
@@ -120,7 +120,7 @@ const FINISHED_TABLE_CONFIG = {
   showIndexColumn: false,
   enablePagination: true,
   handlerColumn: {
-    minWidth: 50
+    minWidth: 100
   }
 }
 
