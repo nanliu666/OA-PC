@@ -30,8 +30,14 @@
           </h3>
           <div class="detail-wrap">
             <p class="detail">
-              {{ userInfo.name }} {{ userInfo.idNo ? `（身份证号： ${userInfo.idNo} ）` : '' }} 于
-              {{ userInfo.entryDate }}入职我公司，在我公司
+              <span class="item"> {{ userInfo.name }}</span>
+              <span
+                v-if="userInfo.idNo"
+                class="item"
+              >{{
+                userInfo.idNo ? `（身份证号： ${userInfo.idNo} ）` : ''
+              }}</span>
+              于 <span class="item">{{ userInfo.entryDate }}</span> 入职我公司，在我公司
               <span class="item">{{ userInfo.orgName }}</span> 任
               <span class="item"> {{ userInfo.jobName }}</span>。现协商解除劳动合同关系，并于
               <span class="item">{{ userInfo.relieveDate }}</span> 日协商解除，不再履行。自
