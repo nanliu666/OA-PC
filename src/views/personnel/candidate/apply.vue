@@ -365,7 +365,7 @@ export default {
       if (this.active === 3) {
         setStore({ name: 'apply_active', content: this.active, type: 'session' })
         setStore({ name: 'apply_personId', content: this.$route.query.personId, type: 'session' })
-        setStore({ name: 'apply_apprNo', content: this.active, type: 'session' })
+        setStore({ name: 'apply_apprNo', content: this.apprNo, type: 'session' })
         setStore({ name: 'apply_applyId', content: this.applyId, type: 'session' })
       }
     })
