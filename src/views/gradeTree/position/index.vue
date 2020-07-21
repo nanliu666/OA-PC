@@ -360,15 +360,16 @@ export default {
     },
     search() {
       this.params.jobName = this.form.name
-      this.getJobData({ pageNo: 1, pageSize: this.form.pageSize })
+      this.getJobData()
     },
     sizeChange(val) {
+      this.page.pageNo = 1
       this.page.pageSize = val
-      this.getJobData({ pageNo: 1 })
+      this.getJobData()
     },
     currentChange(val) {
       this.page.pageNo = val
-      this.getJobData({ pageNo: val })
+      this.getJobData()
     },
     handleExport() {
       this.$confirm('是否导出数据?', '提示', {
@@ -395,6 +396,7 @@ export default {
     handleAside(item, index) {
       this.active = index
       this.params.categoryId = item.categoryId
+      this.page.pageNo = 1
       this.getJobData()
     },
     handleCheck(row) {

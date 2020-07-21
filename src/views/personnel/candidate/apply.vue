@@ -358,7 +358,24 @@ export default {
       deep: true
     }
   },
+  created() {},
   async mounted() {
+    window.addEventListener('beforeunload', () => {
+      if (this.active === 3) {
+        sessionStorage.setItem('personId', this.$route.query.personId)
+        sessionStorage.setItem('active', this.active)
+        sessionStorage.setItem('apprNo', this.apprNo)
+        sessionStorage.setItem('applyId', this.applyId)
+      }
+    })
+    let personId = sessionStorage.getItem('personId')
+    if (personId) {
+      this.active = parseInt(sessionStorage.getItem('active'))
+      sessionStorage.setItem('personId', '')
+      sessionStorage.setItem('apprNo', '')
+      sessionStorage.setItem('applyId', '')
+      sessionStorage.setItem('active', '')
+    }
     this.personId = this.$route.query.personId
     this.recruitmentId = this.$route.query.recruitmentId
     this.infoForm = {

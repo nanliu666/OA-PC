@@ -84,7 +84,7 @@
                 <el-button
                   type="text"
                   size="medium"
-                  @click.stop="handleEdit(scope.row, scope.index)"
+                  @click.stop="handleEdit(scope.row, 'edit')"
                 >
                   编辑
                 </el-button>
@@ -162,7 +162,7 @@
                   v-if="scope.row.contractStatus === contractStatus[3]"
                   type="text"
                   size="medium"
-                  @click.stop="handleEdit(scope.row, scope.index)"
+                  @click.stop="handleEdit(scope.row)"
                 >
                   签订合同
                 </el-button>
@@ -812,7 +812,7 @@ export default {
         query: params
       })
     },
-    handleEdit(row) {
+    handleEdit(row, edit) {
       let params = {
         jobName: row.jobName,
         orgName: row.orgName,
@@ -821,6 +821,9 @@ export default {
         name: row.name,
         userId: row.userId,
         contractId: row.contractId
+      }
+      if (edit) {
+        params.edit = edit
       }
       this.$router.push({
         path: '/personnel/contract/signedContract',
