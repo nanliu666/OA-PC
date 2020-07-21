@@ -99,7 +99,7 @@ export default {
       form: { recruitmentId: '', status: '' },
       recruitmentList: [],
       rules: {
-        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }],
+        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'change' }],
         status: [{ required: true, message: '请选择候选人恢复后状态', trigger: 'blur' }]
       },
       orgId: '',
