@@ -41,7 +41,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { queryDistribution, taskDistribution } from '@/api/personnel/recruitment'
-import { claAccuracy } from '@/views/personnel/recruit/components/percentage'
+
 export default {
   name: 'Distributeall',
   components: {
@@ -111,7 +111,8 @@ export default {
           this.loading = false
           this.data = res.map((item) => ({
             ...item,
-            nodeData: claAccuracy(item.taskNum, item.entryNum)
+
+            nodeData: `${((100 * item.taskNum) / item.entryNum).toFixed(1)}%`
           }))
         })
         .catch(() => {
