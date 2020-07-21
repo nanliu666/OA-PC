@@ -299,7 +299,7 @@ export default {
           label: '审批流程',
           prop: 'progress',
           itemType: 'slot',
-          rules: [{ validator: checkAppr, trigger: 'change' }]
+          rules: [{ validator: checkAppr, trigger: 'change', required: true }]
         }
       ]
     }
@@ -365,10 +365,7 @@ export default {
     },
     loadOrgData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        if (!_.isEmpty(res)) {
-          res[0].children = _.reject(res[0].children, { orgType: 'Company' })
-        }
-        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data = res[0].children
+        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data.push(...res)
       })
     },
     dictionaryGroup() {
