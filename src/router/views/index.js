@@ -14,7 +14,7 @@ export default [
           i18n: 'dashboard',
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/wel/index')
+        component: () => import('@/views/wel/index')
       },
       {
         path: 'dashboard',
@@ -23,7 +23,7 @@ export default [
           i18n: 'dashboard',
           menu: false
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/wel/dashboard')
+        component: () => import('@/views/wel/dashboard')
       }
     ]
   },
@@ -38,12 +38,12 @@ export default [
         meta: {
           i18n: 'info'
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/system/userinfo')
+        component: () => import('@/views/system/userinfo')
       },
       {
         path: 'securitySetting',
         name: '安全设置',
-        component: () => import(/* webpackChunkName: "views" */ '@/views/system/securitySetting')
+        component: () => import('@/views/system/securitySetting')
       }
     ]
   },
@@ -54,14 +54,12 @@ export default [
       {
         path: '/personnel/administration/apply',
         name: '转正申请',
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/personnel/administration/apply')
+        component: () => import('@/views/personnel/administration/apply')
       },
       {
         path: '/personnel/leave/applyLeave',
         name: '离职申请',
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/personnel/leave/applyLeave')
+        component: () => import('@/views/personnel/leave/applyLeave')
       }
     ]
   },
@@ -76,7 +74,7 @@ export default [
         meta: {
           i18n: 'work'
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/form')
+        component: () => import('@/views/work/process/leave/form')
       },
       {
         path: 'handle/:taskId/:processInstanceId',
@@ -84,7 +82,7 @@ export default [
         meta: {
           i18n: 'work'
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/handle')
+        component: () => import('@/views/work/process/leave/handle')
       },
       {
         path: 'detail/:processInstanceId',
@@ -92,7 +90,7 @@ export default [
         meta: {
           i18n: 'work'
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/work/process/leave/detail')
+        component: () => import('@/views/work/process/leave/detail')
       }
     ]
   },

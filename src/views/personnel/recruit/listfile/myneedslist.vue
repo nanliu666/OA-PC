@@ -113,7 +113,7 @@ const TABLE_COLUMNS = [
     label: '需求编号',
     prop: 'id',
     slot: true,
-    minWidth: '140px'
+    minWidth: '145px'
   },
   {
     label: '职位',
@@ -289,7 +289,6 @@ export default {
       tableConfig: {
         showHandler: true,
         showIndexColumn: false,
-        enableMultiSelect: false,
         enablePagination: true
       },
       params: {
@@ -411,8 +410,8 @@ export default {
     },
     jumpToDetail(id) {
       this.$router.push({
-        path: '/personnel/recruit/specificPage',
-        query: { id: id, status: 'iSubmit' }
+        path: '/personnel/recruit/details',
+        query: { id: id, status: 'iSubmit', userId: this.userId }
       })
     },
 

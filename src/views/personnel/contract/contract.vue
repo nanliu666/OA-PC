@@ -501,7 +501,6 @@ export default {
       recordTableConfig: {
         showHandler: false,
         enablePagination: true,
-        enableMultiSelect: false,
         handlerColumn: {
           width: 120
         }

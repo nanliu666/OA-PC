@@ -12,13 +12,15 @@
           class="left-aside"
         >
           <el-input
-            v-model="filterText"
+            v-model.lazy="filterText"
             placeholder="组织/员工"
             class="input-with-select"
+            @keyup.enter.native="handelSearch(filterText)"
           >
             <i
               slot="append"
               class="el-icon-search"
+              @click="handelSearch(filterText)"
             />
           </el-input>
           <!--  -->
@@ -187,7 +189,8 @@
             class="orgName-wrap"
           >
             <div class="orgName-row">
-              {{ orgInfo.orgName }} {{ `${orgInfo.staffNum}(人)` }}
+              {{ orgInfo.orgName }}
+              {{ orgInfo.staffNum === undefined ? '' : `${orgInfo.staffNum}(人)` }}
             </div>
           </div>
         </div>
@@ -229,9 +232,10 @@ export default {
 
   watch: {
     // 监听输入的关键字刷选员工和组织
-    filterText(val) {
-      this.handelSearch(val)
-      // this.$refs.tree.filter(val)
+    filterText(nval, oval) {
+      if (!oval) {
+        this.handelSearch(nval)
+      }
     }
   },
   created() {
@@ -339,7 +343,9 @@ export default {
 .el-input {
   margin-bottom: 20px;
 }
-
+.el-icon-search {
+  cursor: pointer;
+}
 // .custom-tree-node {
 // 	height: 36px;
 // 	.el-icon-folder-opened {

@@ -12,7 +12,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/todo/todoList')
+        component: () => import('@/views/todo/todoList')
       },
       {
         path: '/todo/interviewDetail',
@@ -20,7 +20,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/todo/interviewDetail')
+        component: () => import('@/views/todo/interviewDetail')
       },
       {
         path: '/todo/interviewEdit',
@@ -28,7 +28,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/todo/interviewEdit')
+        component: () => import('@/views/todo/interviewEdit')
       },
       {
         path: '/todo/resumeReview',
@@ -36,7 +36,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/todo/resumeReview')
+        component: () => import('@/views/todo/resumeReview')
       },
       {
         path: '/msg/msg',
@@ -44,7 +44,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/msg/msg')
+        component: () => import('@/views/msg/msg')
       },
       {
         path: '/todo/leaveListOrg',
@@ -52,8 +52,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/todo/leaveList/leaveListOrg')
+        component: () => import('@/views/todo/leaveList/leaveListOrg')
       },
       {
         path: '/todo/leaveListUser',
@@ -61,8 +60,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () =>
-          import(/* webpackChunkName: "views" */ '@/views/todo/leaveList/leaveListUser')
+        component: () => import('@/views/todo/leaveList/leaveListUser')
       },
       {
         path: '/taskCenter/taskCenter',
@@ -70,7 +68,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/taskCenter/taskCenter')
+        component: () => import('@/views/taskCenter/taskCenter')
       },
       {
         path: '/quickAccess/mailList',
@@ -78,7 +76,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/quickAccess/mailList')
+        component: () => import('@/views/quickAccess/mailList')
       },
       {
         path: '/taskCenter/scheduleCenter',
@@ -86,7 +84,7 @@ export default [
         meta: {
           fullscreen: true
         },
-        component: () => import(/* webpackChunkName: "views" */ '@/views/taskCenter/scheduleCenter')
+        component: () => import('@/views/taskCenter/scheduleCenter')
       }
     ]
   }

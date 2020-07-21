@@ -17,7 +17,7 @@
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>{{ info.positionName }}</span>
+        <span>{{ info.positionName ? `${info.positionName}` : `- -` }}</span>
         <span>|</span>
         <span>{{ info.companyName }}</span>
       </div>
@@ -112,11 +112,17 @@
       <div class="main-wrap">
         <div class="content">
           <div class="content-item">
-            <span class="num-box">{{ numObj.waitNum }}</span>
+            <span
+              class="num-box"
+              @click="jumpToWaitAppr"
+            >{{ numObj.waitNum }}</span>
             <span class="handel">待我处理</span>
           </div>
           <div class="content-item">
-            <span class="num-box">{{ numObj.myNum }}</span>
+            <span
+              class="num-box"
+              @click="jumpToApprByMe"
+            >{{ numObj.myNum }}</span>
             <span class="handel">我发起的</span>
           </div>
           <div class="content-item">
@@ -192,6 +198,12 @@ export default {
       this.$router.push({
         path: '/quickAccess/mailList'
       })
+    },
+    jumpToWaitAppr() {
+      this.$router.push({ path: '/approval/appr/waitAppr' })
+    },
+    jumpToApprByMe() {
+      this.$router.push({ path: '/approval/appr/apprByMe' })
     }
   }
 }

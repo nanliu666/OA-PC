@@ -83,7 +83,7 @@ const FORM_COLUMNS = []
 export default {
   name: 'Redistribution',
   components: {
-    RedistributionFormItem: () => import(/* webpackChunkName: "views" */ './RedistributionFormItem')
+    RedistributionFormItem: () => import('./RedistributionFormItem')
   },
   provide() {
     return {

@@ -62,7 +62,6 @@
                     class="operations__btns--item"
                     size="mini"
                     type="text"
-                    @click="getTableList"
                   >
                     <i class="iconfont iconicon_setting" />
                   </el-button>
@@ -302,8 +301,8 @@ const SEARCH_POPOVER_CONFIG = {
 export default {
   name: 'Menu',
   components: {
-    MenuEdit: () => import(/* webpackChunkName: "views" */ './components/menuEdit'),
-    SeachPopover: () => import(/* webpackChunkName: "views" */ '@/components/searchPopOver')
+    MenuEdit: () => import('./components/menuEdit'),
+    SeachPopover: () => import('@/components/searchPopOver')
   },
   filters: {
     // 过滤不可见的列
@@ -334,8 +333,6 @@ export default {
     this.refreshTableData()
   },
   methods: {
-    // 获取表格数据
-    getTableList() {},
     //  处理页码改变
     handleCurrentPageChange() {},
     handlePageSizeChange() {},

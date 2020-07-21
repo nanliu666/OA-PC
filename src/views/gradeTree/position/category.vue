@@ -154,6 +154,7 @@ export default {
       tableConfig: {
         showIndexColumn: false,
         showHandler: true,
+        rowKey: 'id',
         enableMultiSelect: true
       },
       columns: [
@@ -164,10 +165,6 @@ export default {
         {
           label: '职位类别',
           prop: 'name'
-        },
-        {
-          label: '在职人数',
-          prop: 'workNum'
         },
         {
           label: '描述',
@@ -191,6 +188,9 @@ export default {
     this.getData()
   },
   mounted() {},
+  activated() {
+    this.getData()
+  },
   methods: {
     handlerDeleteAll(list) {
       let name = ''

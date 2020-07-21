@@ -35,7 +35,7 @@
     "uuid": "^7.0.3",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.2",
-    "vue-common-table": "^1.0.7",
+    "vue-common-table": "^1.0.10",
     "vue-i18n": "^8.7.0",
     "vue-router": "^3.1.6",
     "vuex": "^3.3.0"

@@ -487,10 +487,6 @@
                   <div>备注 :</div>
                   <div>{{ applyData.remark }}</div>
                 </div>
-                <div class="detail-item">
-                  <div>提交人姓名 :</div>
-                  <div>{{ applyData.userName }}</div>
-                </div>
               </div>
             </div>
           </div>

@@ -14,7 +14,7 @@
             {{ leaveNoteData.userName }} 的离职交接事项
           </div>
           <div
-            v-if="leaveNoteData.status === 'UnConfirm'"
+            v-if="!isFinish"
             class="btn-box"
           >
             <el-button
@@ -34,9 +34,7 @@
           </div>
           <div>
             状态:
-            <span class="status-box">{{
-              leaveNoteData.status === 'UnConfirm' ? '待确认' : '已确认'
-            }}</span>
+            <span class="status-box">{{ isFinish ? '已确认' : '待确认' }}</span>
           </div>
         </div>
       </div>
@@ -81,7 +79,8 @@ export default {
       leaveUserId: '',
       groupId: '',
       leaveNoteData: {},
-      categoryList: []
+      categoryList: [],
+      isFinish: true
     }
   },
   computed: {
@@ -105,6 +104,9 @@ export default {
         .then((res) => {
           this.leaveNoteData = res[0]
           res.forEach((item) => {
+            if (item.status === 'UnConfirm') {
+              this.isFinish = false
+            }
             this.categoryList.push(item.data)
           })
         })
