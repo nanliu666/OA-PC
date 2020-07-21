@@ -265,6 +265,7 @@ import { getOrgTreeSimple } from '@/api/org/org'
 import { CodeToText } from 'element-china-area-data'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
+import { setStore, getStore } from '@/util/store'
 moment.locale('zh-cn')
 export default {
   name: 'Apply',
@@ -362,19 +363,19 @@ export default {
   async mounted() {
     window.addEventListener('beforeunload', () => {
       if (this.active === 3) {
-        sessionStorage.setItem('personId', this.$route.query.personId)
-        sessionStorage.setItem('active', this.active)
-        sessionStorage.setItem('apprNo', this.apprNo)
-        sessionStorage.setItem('applyId', this.applyId)
+        setStore({ name: 'apply_active', content: this.active })
+        setStore({ name: 'apply_personId', content: this.$route.query.personId })
+        setStore({ name: 'apply_apprNo', content: this.active })
+        setStore({ name: 'apply_applyId', content: this.applyId })
       }
     })
-    let personId = sessionStorage.getItem('personId')
+    let personId = getStore({ name: 'apply_personId' })
     if (personId) {
-      this.active = parseInt(sessionStorage.getItem('active'))
-      sessionStorage.setItem('personId', '')
-      sessionStorage.setItem('apprNo', '')
-      sessionStorage.setItem('applyId', '')
-      sessionStorage.setItem('active', '')
+      this.active = parseInt(getStore({ name: 'apply_active' }))
+      setStore({ name: 'apply_active', content: '' })
+      setStore({ name: 'apply_personId', content: '' })
+      setStore({ name: 'apply_apprNo', content: '' })
+      setStore({ name: 'apply_applyId', content: '' })
     }
     this.personId = this.$route.query.personId
     this.recruitmentId = this.$route.query.recruitmentId
