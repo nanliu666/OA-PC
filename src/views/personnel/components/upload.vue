@@ -35,6 +35,7 @@
       :visible.sync="openUpload"
       :close-on-click-modal="false"
       :append-to-body="true"
+      @closed="firstEnter = true"
     >
       <div
         slot="title"

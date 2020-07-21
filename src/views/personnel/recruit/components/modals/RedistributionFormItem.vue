@@ -15,7 +15,11 @@
               class="form__input--select"
               :disabled="_.get(form.$config, 'userId.disabled')"
               :load="loadUsers"
-              :option-props="{ key: 'userId', label: 'name', value: 'userId' }"
+              :option-props="{
+                key: 'userId',
+                formatter: (item) => `${item.name}(${item.workNo})`,
+                value: 'userId'
+              }"
               placeholder="请选择人员"
               searchable
               @change="(val) => validateUserId(val, form)"
@@ -30,7 +34,7 @@
           <span
             v-else
             class="form__text"
-            v-text="form.name"
+            v-text="`${form.name}(${form.workNo})`"
           />
         </el-col>
         <el-col :span="4">
@@ -90,7 +94,7 @@
               :max="getMax(localValue.filter((i) => i !== form))"
               :min="0"
               :precision="0"
-              :value="_.get(form, 'taskNum')"
+              :value="_.min([_.get(form, 'taskNum'), getMax(localValue.filter((i) => i !== form))])"
               class="form__input--number"
               controls-position="right"
               @change="(val) => handleTaskNumInput(val, form)"

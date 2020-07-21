@@ -202,7 +202,7 @@ export default {
       )
     },
     getWarnText(row) {
-      return moment().diff(moment(row.beginDate), 'days')
+      return moment().diff(moment(row.endDate), 'days')
     },
     handleTabChange() {
       this.page.currentPage = 1

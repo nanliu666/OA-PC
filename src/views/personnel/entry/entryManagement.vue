@@ -94,11 +94,20 @@
         >
           {{ workProperty[row.workProperty] }}
         </template>
+
         <template
-          slot="entryDate"
+          slot="entryRegister"
           slot-scope="{ row }"
         >
-          {{ row.entryDate.split(' ')[0] }}
+          {{
+            row.entryRegister === 1
+              ? '已确认'
+              : row.entryFill === 1
+                ? '已填写'
+                : row.register === 1
+                  ? '已发送'
+                  : '未发送'
+          }}
         </template>
         <template
           slot="handler"
@@ -212,6 +221,12 @@ const column = [
     label: '工作性质',
     prop: 'workProperty',
     slot: true
+  },
+  {
+    label: '入职登记表',
+    prop: 'entryRegister',
+    slot: true,
+    width: 120
   },
   {
     label: '手机号',
@@ -437,9 +452,16 @@ export default {
     },
     toDetail(row) {
       if (this.status !== 'latelyEntry') {
-        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${row.applyId}`)
+        this.$router.push({
+          path: `/personnel/entry/entryPersonDetail?applyId=${row.applyId}`,
+          query: {
+            tagName: this.status === '7' ? '待入职员工详情' : '放弃入职员工详情'
+          }
+        })
       } else {
-        this.$router.push('/personnel/detail/' + row.userId)
+        this.$router.push({
+          path: `/personnel/detail/${row.userId}`
+        })
       }
     },
     toEntryMatters(row) {

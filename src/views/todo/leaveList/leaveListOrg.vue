@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import { checkTime } from './common'
 import { getLeaveNote, postConfirmleaveNote, postUrgeleaveNote } from '@/api/todo/todo'
 import { mapGetters } from 'vuex'
 export default {
@@ -138,12 +139,16 @@ export default {
     },
     // 催办
     async urgeleaveNote() {
+      if (checkTime(this.listData.b2cUrgeTime)) {
+        return this.$message.info('今天已经催办过了')
+      }
       await postUrgeleaveNote({
         groupId: this.groupId,
         userId: this.leaveUserId,
         type: 'B2C'
       })
       this.$message.success('催办成功')
+      this.loadingData()
     }
   }
 }

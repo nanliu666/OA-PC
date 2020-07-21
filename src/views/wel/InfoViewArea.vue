@@ -17,7 +17,7 @@
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>{{ info.positionName }}</span>
+        <span>{{ info.positionName ? `${info.positionName}` : `- -` }}</span>
         <span>|</span>
         <span>{{ info.companyName }}</span>
       </div>
@@ -47,7 +47,7 @@
           </div>
           <div
             class="content-item"
-            @click="handelClick"
+            @click="jumpToCommonAppr"
           >
             <div class="Smectite" />
             <div class="icon-box apply">
@@ -199,11 +199,17 @@ export default {
         path: '/quickAccess/mailList'
       })
     },
+    // 跳去待我处理
     jumpToWaitAppr() {
       this.$router.push({ path: '/approval/appr/waitAppr' })
     },
+    // 跳去我发起的
     jumpToApprByMe() {
       this.$router.push({ path: '/approval/appr/apprByMe' })
+    },
+    // 跳去通用申请
+    jumpToCommonAppr() {
+      this.$router.push({ path: '/approval/launchApply' })
     }
   }
 }

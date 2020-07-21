@@ -169,7 +169,7 @@
           <el-button
             style="cursor: pointer"
             type="text"
-            @click="toUserDetail(row)"
+            @click.stop="toUserDetail(row)"
           >
             {{ row.name }}
           </el-button>
