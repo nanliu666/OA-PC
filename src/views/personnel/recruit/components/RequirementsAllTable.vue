@@ -429,10 +429,10 @@ export default {
         })
     },
 
-    handleCopyBtnClick() {
+    handleCopyBtnClick({ id }) {
       this.$router.push({
         path: '/personnel/recruit/recruitmentNeeds',
-        query: { id: this.id }
+        query: { id }
       })
     },
 
