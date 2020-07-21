@@ -128,8 +128,8 @@ export default {
       ],
       // 表格数据
       dataList: [],
+      currentPage: 1,
       page: {
-        currentPage: 1,
         size: 10,
         total: 0
       },
