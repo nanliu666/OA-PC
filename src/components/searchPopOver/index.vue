@@ -16,11 +16,17 @@
           v-model="item.data"
           :type="item.config && item.config.type ? item.config.type : 'text'"
           :placeholder="item.config.placeholder || '请输入' + item.label"
-          :suffix-icon="item.config && item.config['suffix-icon']"
           class="elInput"
           @keyup.enter.native="change"
-          @change="change"
-        />
+        >
+          <i
+            v-if="item.config && item.config['suffix-icon']"
+            slot="suffix"
+            :class="item.config['suffix-icon']"
+            class="el-input__icon el-icon-search pointer"
+            @click="change"
+          />
+        </el-input>
         <el-select
           v-if="item.type === 'select'"
           v-model="item.data"

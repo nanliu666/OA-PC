@@ -253,6 +253,8 @@ export default {
     this.educationalLevelOptions = await this.$store.dispatch('CommonDict', 'EducationalLevel')
     this.searchConfig.popoverOptions[0].options = this.educationalLevelOptions
     this.recruitmentOptions = await this.$store.dispatch('CommonDict', 'RecruitmentChannel')
+  },
+  activated() {
     this.loadData()
   },
   methods: {

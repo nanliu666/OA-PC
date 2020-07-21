@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import { checkTime } from './common'
 import { getLeaveNote, postUrgeleaveNote } from '@/api/todo/todo'
 import { mapGetters } from 'vuex'
 export default {
@@ -103,10 +104,12 @@ export default {
       getLeaveNote(params)
         .then((res) => {
           this.leaveNoteData = res[0]
+          this.categoryList = []
           res.forEach((item) => {
             if (item.status === 'UnConfirm') {
               this.isFinish = false
             }
+
             this.categoryList.push(item.data)
           })
         })
@@ -116,12 +119,16 @@ export default {
     },
     // 催办
     async urgeleaveNote() {
+      if (checkTime(this.leaveNoteData.urgeTime)) {
+        return this.$message.info('今天已经催办过了')
+      }
       await postUrgeleaveNote({
         groupId: '',
         userId: this.userId,
         type: 'C2B'
       })
       this.$message.success('催办成功')
+      this.loadingData()
     }
   }
 }

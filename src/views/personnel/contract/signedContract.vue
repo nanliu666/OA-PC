@@ -139,6 +139,12 @@ export default {
     this.getCompany()
     this.signedData.basicAttrs.find((it) => it.props === 'endDate').rules.push(this.rule)
     this.getContractLatest()
+    if (this.$route.query.edit) {
+      let disabledList = ['name', 'type', 'beginDate', 'endDate']
+      disabledList.map((it) => {
+        this.signedData.basicAttrs.find((item) => item.props === it).disabled = true
+      })
+    }
   },
   methods: {
     /**

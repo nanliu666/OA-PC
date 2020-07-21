@@ -63,7 +63,7 @@
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-          <template v-if="personInfo.status === '8'">
+          <template v-if="personInfo.status === ''">
             <el-button
               type="primary"
               size="medium"
@@ -224,11 +224,16 @@
                   </span>
                 </el-form-item>
               </el-col>
-              <!-- <el-col :span="10" :push="2">
+              <el-col
+                :span="10"
+                :push="2"
+              >
                 <el-form-item label="入职登记表:">
-                  <span class="info-item-value" />
+                  <span class="info-item-value">{{
+                    personInfo.register === 1 ? '已发送' : '未发送'
+                  }}</span>
                 </el-form-item>
-              </el-col>-->
+              </el-col>
             </el-form>
           </div>
         </el-row>
@@ -258,12 +263,20 @@ export default {
     return {
       personInfo: {},
       applyInfo: {},
-      statusWord: { '7': '待入职', '8': '放弃入职' },
+      statusWord: { '7': '待入职', '': '放弃入职' },
       workProperty: {},
       giveOutEntryDialog: false
     }
   },
   created() {
+    this.getPersonInfo()
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      res.forEach((item) => {
+        this.workProperty[item.dictKey] = item.dictValue
+      })
+    })
+  },
+  activated() {
     this.getPersonInfo()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       res.forEach((item) => {
@@ -280,10 +293,12 @@ export default {
       }).then(() => {
         let params = {
           personId: this.personInfo.personId,
-          userId: this.$store.state.user.userInfo.user_id
+          userId: this.$store.state.user.userInfo.user_id,
+          recruitmentId: this.personInfo.recruitmentId
         }
         addOutCandidateAccept(params)
           .then(() => {
+            this.getPersonInfo()
             this.$message.success('添加成功')
           })
           .catch(() => {

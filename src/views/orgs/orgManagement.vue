@@ -364,6 +364,8 @@ export default {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
       this.searchConfig.requireOptions[0].data = res[0].orgId
     })
+  },
+  activated() {
     this.getOrgTree()
   },
   methods: {
