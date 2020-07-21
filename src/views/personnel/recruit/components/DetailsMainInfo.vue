@@ -12,30 +12,45 @@
     </div>
 
     <div class="content">
-      <el-row class="messages">
+      <el-row
+        :gutter="20"
+        class="messages"
+      >
         <el-col
           class="content__info"
-          :span="6"
+          :xl="6"
+          :lg="6"
+          :sm="12"
+          :xs="12"
         >
           <span class="content__info--label">需求编号:</span>
-          <span class="content__info--value">{{ data.id }}</span>
+          <span class="content__info--value text__overflow">{{ data.id }}</span>
         </el-col><el-col
           class="content__info"
-          :span="6"
+          :xl="6"
+          :lg="6"
+          :sm="12"
+          :xs="12"
         >
           <span class="content__info--label">提交人:</span>
           <span class="content__info--value">{{ data.userName }}</span>
         </el-col>
         <el-col
           class="content__info"
-          :span="6"
+          :xl="6"
+          :lg="6"
+          :sm="12"
+          :xs="12"
         >
           <span class="content__info--label">提交时间:</span>
           <span class="content__info--value">{{ data.createTime }}</span>
         </el-col>
         <el-col
           class="content__info"
-          :span="6"
+          :xl="6"
+          :lg="6"
+          :sm="12"
+          :xs="12"
         >
           <span class="content__info--label">状态:</span>
           <span class="content__info--value content__info--active">
@@ -171,6 +186,11 @@ $font_size_lg: 1.25 * $font_size_md
         color: $color_active
     .messages
       flex-grow: 1 // 占据所有多余的空间
-    .operations:not(:last-child)
-      margin-left: 1rem
+    .operations
+      .el-button
+        margin: 1rem 1rem 0 0
+  .text__overflow
+    display: block
+    text-overflow: ellipsis
+    overflow: hidden
 </style>

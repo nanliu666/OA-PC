@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="RecruitmentNeeds">
     <page-header
       title="新建招聘需求"
       show-back
@@ -450,5 +450,11 @@ export default {
 .page-bottom {
   display: inline-block;
   padding-bottom: 20px;
+}
+.RecruitmentNeeds {
+  /deep/ .el-input__count {
+    transform: translate(25%, 100%);
+    background: #0000;
+  }
 }
 </style>

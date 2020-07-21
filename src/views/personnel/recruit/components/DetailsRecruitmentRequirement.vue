@@ -27,7 +27,7 @@ const FORM_COLUMNS = [
   {
     itemType: 'slot',
     label: '停止招聘人',
-    prop: 'stopUserName',
+    prop: 'stopName',
     span: 12
   },
   {

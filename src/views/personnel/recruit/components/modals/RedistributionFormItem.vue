@@ -94,7 +94,7 @@
               :max="getMax(localValue.filter((i) => i !== form))"
               :min="0"
               :precision="0"
-              :value="_.get(form, 'taskNum')"
+              :value="_.min([_.get(form, 'taskNum'), getMax(localValue.filter((i) => i !== form))])"
               class="form__input--number"
               controls-position="right"
               @change="(val) => handleTaskNumInput(val, form)"
