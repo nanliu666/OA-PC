@@ -365,7 +365,10 @@ export default {
     },
     loadOrgData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data.push(...res)
+        if (!_.isEmpty(res)) {
+          res[0].children = _.reject(res[0].children, { orgType: 'Company' })
+        }
+        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data = res[0].children
       })
     },
     dictionaryGroup() {
