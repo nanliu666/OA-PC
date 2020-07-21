@@ -4,6 +4,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
+const CompressWebpackPlugin = require('compress-webpack-plugin')
 
 module.exports = {
   //路径前缀
@@ -120,6 +121,13 @@ module.exports = {
     plugins: [
       new MomentLocalesPlugin({
         localesToKeep: ['zh-cn']
+      }),
+      new CompressWebpackPlugin({
+        asset: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: new RegExp('\\.(js|css)$'),
+        threshold: 10240,
+        minRatio: 0.8
       })
     ]
   }

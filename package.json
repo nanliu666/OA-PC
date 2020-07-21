@@ -48,6 +48,7 @@
     "archiver": "^4.0.1",
     "babel-eslint": "^10.1.0",
     "chai": "^4.1.2",
+    "compress-webpack-plugin": "^1.0.6",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
