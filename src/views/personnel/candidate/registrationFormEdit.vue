@@ -297,6 +297,7 @@ import {
 } from './components/userInfo'
 import { cardid, HMCardValid, TWCardValid } from '@/util/validate'
 import { mapGetters } from 'vuex'
+import { compareDate } from '@/util/util'
 export default {
   name: 'RegistrationFormEdit',
   components: {},
@@ -657,6 +658,17 @@ export default {
         }
       })
       return num
+    },
+    compareDateRange(arr, beginKey, endKey) {
+      let beginArr = arr.map((item) => {
+        if (item.operatorType !== 'Del') {
+          return item.form[beginKey]
+        }
+      })
+      let endArr = arr.map((item) => {
+        return item.form[endKey]
+      })
+      return compareDate(beginArr, endArr)
     },
     /**
      * @author guanfenda
