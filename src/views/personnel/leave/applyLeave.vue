@@ -188,7 +188,7 @@ export default {
             trigger: 'change'
           }
         ],
-        apprProgress: [{ validator: checkAppr, required: true }]
+        apprProgress: [{ validator: checkAppr, required: true, trigger: 'change' }]
       },
       // 离职原因字典组
       LeaveReason: [],
