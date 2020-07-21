@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="PerChange">
     <page-header title="人事异动" />
-    <basic-container>
+    <basic-container block>
       <!-- table表格 -->
       <commonTable
         :data="tableData"
@@ -411,5 +411,12 @@ export default {
   font-size: 16px;
   line-height: 40px;
   cursor: pointer;
+}
+.PerChange {
+  height: 100%;
+  .basic-container--block {
+    min-height: calc(100% - 92px);
+    height: 0;
+  }
 }
 </style>

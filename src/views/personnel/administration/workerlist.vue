@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="Workerlist">
     <page-header>
       <span slot="title">
         转正管理 (试用期员工共计<i>{{ numberofpersonnel }}</i>人)
       </span>
     </page-header>
-    <basic-container>
+    <basic-container block>
       <common-table
         :loading="loading"
         style="width: 100%"
@@ -402,5 +402,12 @@ export default {
   font-size: 16px;
   cursor: pointer;
   margin: 0 12px;
+}
+.Workerlist {
+  height: 100%;
+  .basic-container--block {
+    min-height: calc(100% - 92px);
+    height: 0;
+  }
 }
 </style>
