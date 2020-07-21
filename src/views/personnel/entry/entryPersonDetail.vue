@@ -10,10 +10,7 @@
           <div class="orgJob">
             {{ personInfo.name }}
           </div>
-          <div
-            v-if="statusWord[personInfo.status]"
-            class="status"
-          >
+          <div class="status">
             {{ statusWord[personInfo.status] }}
           </div>
         </div>
@@ -66,7 +63,7 @@
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-          <template v-if="personInfo.status === '8'">
+          <template v-if="personInfo.status === ''">
             <el-button
               type="primary"
               size="medium"
@@ -261,12 +258,20 @@ export default {
     return {
       personInfo: {},
       applyInfo: {},
-      statusWord: { '7': '待入职', '8': '放弃入职' },
+      statusWord: { '7': '待入职', '': '放弃入职' },
       workProperty: {},
       giveOutEntryDialog: false
     }
   },
   created() {
+    this.getPersonInfo()
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      res.forEach((item) => {
+        this.workProperty[item.dictKey] = item.dictValue
+      })
+    })
+  },
+  activated() {
     this.getPersonInfo()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       res.forEach((item) => {
@@ -283,10 +288,12 @@ export default {
       }).then(() => {
         let params = {
           personId: this.personInfo.personId,
-          userId: this.$store.state.user.userInfo.user_id
+          userId: this.$store.state.user.userInfo.user_id,
+          recruitmentId: this.personInfo.recruitmentId
         }
         addOutCandidateAccept(params)
           .then(() => {
+            this.getPersonInfo()
             this.$message.success('添加成功')
           })
           .catch(() => {

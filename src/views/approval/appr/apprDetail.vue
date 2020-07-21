@@ -343,7 +343,7 @@
                 </div>
                 <div class="detail-item">
                   <div>试用期 :</div>
-                  <div>{{ applyData.probation }} 月</div>
+                  <div>{{ applyData.probation ? `${applyData.probation}月` : '' }}</div>
                 </div>
                 <div class="detail-item">
                   <div>入职公司名称 :</div>
@@ -390,11 +390,11 @@
               <div class="detail-box">
                 <div class="detail-item">
                   <div>试用期月薪 :</div>
-                  <div>{{ applyData.probationSalary }} 元</div>
+                  <div>{{ applyData.probationSalary ? `${applyData.probationSalary}元` : '' }}</div>
                 </div>
                 <div class="detail-item">
                   <div>转正月薪 :</div>
-                  <div>{{ applyData.formalSalary }} 元</div>
+                  <div>{{ applyData.formalSalary ? `${applyData.formalSalary}元` : '' }}</div>
                 </div>
               </div>
             </div>
@@ -417,7 +417,7 @@
                 </div>
                 <div class="detail-item">
                   <div>合同期限 :</div>
-                  <div>{{ applyData.contractPeriod }} 年</div>
+                  <div>{{ applyData.contractPeriod ? `${applyData.contractPeriod}年` : '' }}</div>
                 </div>
               </div>
             </div>
@@ -432,7 +432,7 @@
                 </div>
                 <div class="detail-item">
                   <div>社会保险基数 :</div>
-                  <div>{{ applyData.baseMoney }} 元</div>
+                  <div>{{ applyData.baseMoney ? `${applyData.baseMoney}元` : '' }}</div>
                 </div>
                 <div class="detail-item">
                   <div>其他 :</div>
