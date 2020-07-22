@@ -20,7 +20,7 @@
   left: 0;
   top: 56px;
   width: 224px;
-  height: 100%;
+  height: calc(100% - 56px);
   z-index: 1025;
 }
 

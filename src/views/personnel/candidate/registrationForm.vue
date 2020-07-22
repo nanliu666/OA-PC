@@ -409,6 +409,15 @@
                     {{ scope.row[item.prop] === 1 ? '有' : '无' }}
                   </div>
                 </template>
+                <template v-else-if="item.prop === 'beginSecretDate'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
+                <template v-else-if="item.prop === 'content'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
+                <template v-else-if="item.prop === 'endSecretDate'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
                 <template v-else>
                   {{ scope.row[item.prop] }}
                 </template>
@@ -824,7 +833,7 @@ export default {
           params = this.value(this.nation, data)
           break
         case 'marriage':
-          params = data === 1 ? '已婚' : data === 1 ? '未婚' : ''
+          params = data === 1 ? '已婚' : data === 0 ? '未婚' : ''
           break
         case 'politicalStatus':
           params = this.value(this.PoliticalStatus, data)
@@ -833,10 +842,10 @@ export default {
           params = this.value(this.HouseholdType, data)
           break
         case 'isFirstSs':
-          params = data === 1 ? '是' : '否'
+          params = data === 1 ? '是' : data === 0 ? '否' : ''
           break
         case 'isFirstEpf':
-          params = data === 1 ? '是' : '否'
+          params = data === 1 ? '是' : data === 0 ? '否' : ''
           break
         default:
           params = data

@@ -422,7 +422,7 @@ export default {
         type: [{ required: true, message: '请选择异动类型', trigger: 'blur' }],
         reason: [{ required: true, message: '请选择异动原因', trigger: 'change' }],
         effectDate: [{ required: true, message: '请选择生效日期', trigger: 'blur' }],
-        apprProgress: [{ validator: checkAppr, required: true }]
+        apprProgress: [{ validator: checkAppr, required: true, trigger: 'change' }]
       },
       // 字典组异动原因
       changeReason: [],

@@ -21,6 +21,9 @@
             key: 'userId',
             value: 'userId'
           }"
+          :first-option="
+            form.userId ? { userId: form.userId, name: form.userName, workNo: form.workNo } : null
+          "
           placeholder="请选择人员"
           searchable
         />

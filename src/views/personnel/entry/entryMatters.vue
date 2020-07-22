@@ -454,7 +454,16 @@ export default {
         this.personInfo = res
       })
       getConpactInfo({ userId: this.$route.params.userId }).then((res) => {
-        if (res.length > 0) {
+        if (
+          res.findIndex((item) => {
+            if (!item.signDate) {
+              this.form = Object.assign(this.form, item)
+            }
+            return !item.signDate
+          }) > -1
+        ) {
+          this.contractStatus = false
+        } else {
           this.contractStatus = true
         }
       })

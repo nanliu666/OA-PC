@@ -31,6 +31,8 @@
                 @click="
                   () =>
                     editInit({
+                      name: _.get(row, 'executor.name', null),
+                      workNo: _.get(row, 'executor.workNo', null),
                       userId: _.get(row, 'executor.userId', null),
                       type: row['personnelEvent'].type
                     })
@@ -66,6 +68,7 @@
               key: 'userId',
               value: 'userId'
             }"
+            :first-option="{ userId: form.userId, name: form.name, workNo: form.workNo }"
             placeholder="请选择人员"
             searchable
           />
@@ -184,6 +187,7 @@ export default {
   methods: {
     editClose() {
       this.editVisible = false
+      this.form = {}
     },
     editInit(data) {
       this.editVisible = true

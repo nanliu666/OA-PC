@@ -1,5 +1,5 @@
 <template>
-  <div class="RequirementsAllTable">
+  <div class="MyrecruitmentTable">
     <common-table
       :columns="columns | columnsFilter(columnsVisible)"
       :config="tableConfig"
@@ -60,7 +60,7 @@
               <div class="operations__column--visible">
                 <el-checkbox-group v-model="columnsVisible">
                   <el-checkbox
-                    v-for="item of tableColumns.slice(1)"
+                    v-for="item of tableColumns"
                     :key="item.prop"
                     :disabled="item.prop === 'name'"
                     :label="item.prop"
@@ -137,7 +137,7 @@
               :span="4"
               :class="{ 'font__color--danger': _.eq(item.entryNum, 0) }"
             >
-              {{ item.taskNum ? `${((100 * item.entryNum) / item.taskNum).toFixed(1)}%` : '-' }}
+              {{ `${((100 * item.entryNum) / item.taskNum).toFixed(1)}%` }}
             </el-col>
           </el-row>
         </div>
@@ -165,26 +165,29 @@
       </template>
 
       <template #emerType="{row}">
-        <el-tag :type="emerTypeType(row)">
+        <el-tag
+          v-show="!_.isEmpty(_.trim(_.get(row, 'emerType')))"
+          :type="emerTypeType(row)"
+        >
           {{ translator({ dictKey: 'emerType', value: _.get(row, 'emerType') }) }}
         </el-tag>
       </template>
 
       <template #handler="{row}">
-        <el-dropdown>
+        <el-button
+          size="medium"
+          type="text"
+          @click="() => handleAddCandidateBtnClick(row)"
+        >
+          添加候选人
+        </el-button>
+        <!-- <el-dropdown>
           <span class="el-dropdown-link">
-            <el-button
-              type="text"
-              icon="icon-basics-more-outlined"
-            />
+            <el-button type="text" icon="icon-basics-more-outlined" />
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-show="_.eq(row.progress, 'Approved')">
-              <el-button
-                size="medium"
-                type="text"
-                @click="() => $refs.needNumEdit.init(row)"
-              >
+              <el-button size="medium" type="text" @click="() => $refs.needNumEdit.init(row)">
                 更改需求人数
               </el-button>
             </el-dropdown-item>
@@ -192,14 +195,10 @@
               v-if="_.eq(row.handled, 'UnHandle')"
               v-show="_.eq(row.progress, 'Approved')"
             >
-              <el-button
-                size="medium"
-                type="text"
-                @click="() => $refs.distribution.init(row)"
-              >
+              <el-button size="medium" type="text" @click="() => $refs.distribution.init(row)">
                 分配需求
-              </el-button>
-            </el-dropdown-item><el-dropdown-item v-else>
+              </el-button> </el-dropdown-item
+            ><el-dropdown-item v-else>
               <el-button
                 v-show="_.eq(row.progress, 'Approved')"
                 size="medium"
@@ -210,16 +209,12 @@
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
-              <el-button
-                size="medium"
-                type="text"
-                @click="() => handleCopyBtnClick(row)"
-              >
+              <el-button size="medium" type="text" @click="() => handleCopyBtnClick(row)">
                 复制
               </el-button>
             </el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
       </template>
     </common-table>
 
@@ -259,7 +254,7 @@ import { getOrgTreeSimple } from '@/api/org/org'
 const PROGRESS_DICTS = [
   {
     dictKey: 'Approved',
-    dictValue: '招聘中'
+    dictValue: '审批通过'
   },
   {
     dictKey: 'Finished',
@@ -298,7 +293,7 @@ const STATUS_DICTS = [
 ]
 
 export default {
-  name: 'RequirementsAllTable',
+  name: 'MyrecruitmentTable',
   filters: {
     // 过滤不可见的列
     columnsFilter: (columns, visibleColProps) =>
@@ -433,6 +428,13 @@ export default {
       })
     },
 
+    handleAddCandidateBtnClick({ id }) {
+      this.$router.push({
+        path: '/personnel/editPerson',
+        query: { recruitmentId: id }
+      })
+    },
+
     handleCurrentPageChange(page) {
       this.page.currentPage = page
       this.loadTableData()
@@ -456,7 +458,7 @@ export default {
       // 从全部任务跳转的为招聘主管, 不使用userId
       this.$router.push({
         path: '/personnel/recruit/details',
-        query: { id: id, status: 'iSubmit' /* , userId: this.userId */ }
+        query: { id: id, status: 'iSubmit', userId: this.userId }
       })
     },
 
@@ -528,7 +530,7 @@ $color_danger: #ff6464
 $color_icon: #A0A8AE
 $color_hover: #207EFA
 
-.RequirementsAllTable
+.MyrecruitmentTable
   .table__link
     color: $color_active
     &:hover

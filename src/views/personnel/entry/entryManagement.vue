@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="EntryManagement">
     <page-header title="入职管理" />
-    <basic-container>
+    <basic-container block>
       <el-tabs
         v-model="status"
         :before-leave="handleBeforeClick"
@@ -68,7 +68,7 @@
                 导出
               </el-button>-->
               <el-button
-                icon="el-icon-refresh-right"
+                icon="icon-basics-refresh-outlined"
                 size="medium"
                 class="topBtn"
                 type="text"
@@ -628,5 +628,16 @@ export default {
 
 /deep/ .el-tabs__active-bar {
   height: 3px;
+}
+/deep/ .topBtn i {
+  color: #a0a8ae;
+  font-size: 16px;
+}
+.EntryManagement {
+  height: 100%;
+  .basic-container--block {
+    min-height: calc(100% - 92px);
+    height: 0;
+  }
 }
 </style>

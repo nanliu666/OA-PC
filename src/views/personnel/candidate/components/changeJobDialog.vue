@@ -99,7 +99,7 @@ export default {
       form: { recruitmentId: '', status: '' },
       recruitmentList: [],
       rules: {
-        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'blur' }],
+        recruitmentId: [{ required: true, message: '请选择关联应聘职位', trigger: 'change' }],
         status: [{ required: true, message: '请选择候选人恢复后状态', trigger: 'blur' }]
       },
       orgId: '',
@@ -192,9 +192,6 @@ export default {
             Object.assign(this.$data.form, this.$options.data().form)
             this.$emit('refresh', this.type)
             this.$emit('update:visible', false)
-          })
-          .catch(() => {
-            this.$message.error('操作失败')
           })
           .finally(() => {
             this.loading = false

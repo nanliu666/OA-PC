@@ -65,6 +65,7 @@ export let signedData = {
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择合同公司', // 提示必填提示
       props: 'name',
+      disabled: false,
       span: 12,
       rules: [
         {
@@ -81,6 +82,7 @@ export let signedData = {
       inType: 2, // 当前input类型 1：文本 2：单选框 3：多选框  4：日期 5:按钮
       message: '请选择合同类型', // 提示必填提示
       props: 'type',
+      disabled: false,
       span: 12,
       rules: [
         {
