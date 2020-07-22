@@ -19,7 +19,9 @@
         <div class="person_position flex flex-items flex-flow">
           <div>{{ personInfo.department }}</div>
           <div>{{ personInfo.position }}</div>
-          <div>{{ personInfo.status }}</div>
+          <div v-if="personInfo.status">
+            {{ personInfo.status }}
+          </div>
         </div>
         <div class="flex flex-items flex-flow">
           <div v-if="!$route.query.entry">
@@ -833,7 +835,7 @@ export default {
           params = this.value(this.nation, data)
           break
         case 'marriage':
-          params = data === 1 ? '已婚' : data === 0 ? '未婚' : ''
+          params = data === 2 ? '已婚已育' : data === 1 ? '已婚' : data === 0 ? '未婚' : ''
           break
         case 'politicalStatus':
           params = this.value(this.PoliticalStatus, data)
@@ -884,8 +886,10 @@ export default {
         this.candidateInfo.interviewFill = res.interviewFill
         this.candidateInfo.entryFill = res.entryFill
       })
-      if (this.$route.query.isUser) {
-        this.candidateInfo.register = 1
+      if (this.$route.query.isUser || this.$route.query.isInterview) {
+        this.$route.query.isUser
+          ? (this.candidateInfo.register = 1)
+          : (this.candidateInfo.interview = 1)
         getPersonInfo(params).then((res) => {
           this.personInfo.name = res.name
         })

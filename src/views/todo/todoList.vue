@@ -246,7 +246,8 @@ export default {
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: row.bizId,
-            recruitmentId: row.bizId2
+            recruitmentId: row.bizId2,
+            isInterview: 1
           }
         })
         //
