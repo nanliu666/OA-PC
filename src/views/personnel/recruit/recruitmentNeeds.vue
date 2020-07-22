@@ -365,7 +365,11 @@ export default {
     },
     loadOrgData() {
       getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data.push(...res)
+        // 过滤掉集团下面orgType为"Company“”的
+        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data = _.reject(
+          res[0].children,
+          { orgType: 'Company' }
+        )
       })
     },
     dictionaryGroup() {
