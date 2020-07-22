@@ -17,12 +17,12 @@
         @click="show = true"
       >
         <el-tag
-          v-for="(item, index) in selectedData"
+          v-for="item in selectedData"
           :key="item.key"
           v-bind="tagConfig"
           class="org-tag"
           size="medium"
-          @close="onClose(item, index)"
+          @close="onClose(item, orgSelect)"
         >
           {{ item.name }}
         </el-tag>
@@ -31,12 +31,13 @@
     <approvalDialog
       v-if="show"
       :visible.sync="show"
-      :users="value"
+      :users="selectOldData"
       @addUser="adduser"
     />
   </div>
 </template>
 <script>
+/* eslint-disable vue/require-prop-type-constructor */
 import approvalDialog from './approvalDialog'
 export default {
   name: 'FcOrgSelect',
@@ -49,12 +50,15 @@ export default {
   },
   props: {
     value: {
-      type: Object,
+      type: Object | Array,
+      default: function() {
+        return {}
+      },
       required: true
     },
     tabList: {
       type: Array,
-      default: () => ['dep']
+      default: () => []
     },
     title: {
       type: String,
@@ -90,18 +94,33 @@ export default {
       tabKeys: [],
       show: false,
       innerValue: null,
-      selectedData: []
+      selectedData: [],
+      selectOldData: []
     }
   },
   computed: {
     selectedLabels() {
-      return this.selectedData.map((t) => t.label).join(',')
+      return this.selectedData.map((t) => t.name).join(',')
     }
   },
   watch: {
     value: {
       handler: function(val) {
         if (!val) return
+        if (this.tabList.length > 0) {
+          this.selectedData = val[this.tabList[0]]
+          this.selectOldData = JSON.parse(JSON.stringify(val[this.tabList[0]]))
+        } else {
+          if (val.constructor === Array) {
+            this.selectedData = val
+            this.selectOldData = JSON.parse(JSON.stringify(val))
+          } else {
+            this.selectedData = []
+            this.selectOldData = []
+          }
+        }
+
+        // console.log(val)
         // this.reloadCmpData()
       },
       immediate: true,
@@ -120,7 +139,27 @@ export default {
     adduser(data) {
       this.selectedData = data
       // this.$emit('change', this.selectedData)
-      this.$emit('change', data)
+      if (this.tabList.length > 0) {
+        let orgCollection = {
+          dep: [],
+          role: [],
+          user: [],
+          position: []
+        }
+        orgCollection[this.tabList[0]] = data
+        for (let key in orgCollection) {
+          if (key !== key) {
+            delete orgCollection[key]
+          }
+        }
+
+        orgCollection = Object.assign(this.value, orgCollection)
+        this.$emit('change', orgCollection)
+      } else {
+        // this.selectedData = data
+        this.selectOldData = data
+        this.$emit('change', data)
+      }
     },
     reloadCmpData() {
       this.innerValue = {}

@@ -17,7 +17,7 @@ import './styles/common.scss'
 import basicContainer from './components/basic-container/main'
 import pageHeader from './components/page-header/pageHeader'
 import commonForm from './components/common-form/commonForm'
-import OrgSelect from './components/Process/OrgSelect'
+import OrgSelect from './components/Process/OrgSelect/orgSelect'
 import commonTable from 'vue-common-table'
 import website from '@/config/website'
 

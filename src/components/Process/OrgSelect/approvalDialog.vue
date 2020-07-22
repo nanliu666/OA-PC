@@ -116,6 +116,8 @@ export default {
   watch: {
     users: {
       handler(val) {
+        // console.log('val______', val)
+        // if()
         val.map((it) => this.checked.push(it.id))
         this.selectList = val
       },
