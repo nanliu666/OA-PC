@@ -256,6 +256,7 @@
                 v-model="approverForm.optionalMultiUser"
                 active-color="#13ce66"
               />
+
               <p>选择范围</p>
               <el-select
                 v-model="approverForm.optionalRange"
@@ -569,28 +570,29 @@ export default {
 
       assigneeTypeOptions: [
         {
-          label: '指定成员',
-          value: 'user'
+          label: '发起人自选',
+          value: 'optional'
         },
         {
-          label: '主管',
+          label: '上级领导',
           value: 'director'
         },
         {
-          label: '角色',
+          label: '指定成员',
+          value: 'user'
+        },
+
+        {
+          label: '指定职位',
           value: 'role'
         },
         {
-          label: '岗位',
+          label: '指定岗位',
           value: 'position'
         },
         {
-          label: '发起人自己',
+          label: '指定标签',
           value: 'myself'
-        },
-        {
-          label: '发起人自选',
-          value: 'optional'
         }
       ]
     }
