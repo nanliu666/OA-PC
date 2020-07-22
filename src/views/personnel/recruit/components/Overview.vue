@@ -2,7 +2,6 @@
   <el-row
     class="Overview"
     type="flex"
-    :gutter="52"
   >
     <el-col
       v-for="(col, index) of $options.filters.dataFilter(data, props)"
