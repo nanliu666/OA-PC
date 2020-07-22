@@ -38,7 +38,9 @@
   </el-select>
 </template>
 <script>
+import Emitter from '@/mixins/elFormEmitter'
 export default {
+  mixins: [Emitter],
   model: {
     prop: 'value',
     event: 'change'
@@ -47,6 +49,14 @@ export default {
     value: {
       type: [String, Boolean],
       default: ''
+    },
+    /** 默认选项
+     * 解决初始已选中的值没有被翻译的问题
+     * 对应值的跟optionProps相匹配
+     */
+    firstOption: {
+      type: Object,
+      default: null
     },
     load: {
       type: Function,
@@ -75,7 +85,7 @@ export default {
   },
   data() {
     return {
-      optionList: [],
+      optionList: this.firstOption ? [this.firstOption] : [],
       loading: false,
       noMore: false,
       pageNo: 1,
@@ -87,20 +97,22 @@ export default {
   },
   methods: {
     visibleChange(visible) {
-      if (visible === false) {
+      if (visible === false && this.searchable) {
         this.search = ''
         this.loadOptionData(true)
       }
     },
     handleChange(value) {
       this.$emit('change', value)
+      this.dispatch('ElFormItem', 'el.form.change', value)
     },
     loadOptionData(refresh = false) {
       if ((this.noMore && !refresh) || this.loading) {
         return
       }
+      const firstOption = this.firstOption
       if (refresh) {
-        this.optionList = []
+        this.optionList = firstOption ? [firstOption] : []
         this.pageNo = 1
       }
       this.loading = true
@@ -108,7 +120,16 @@ export default {
       this.load({ pageNo: this.pageNo, pageSize: this.pageSize, search: this.search })
         .then((res) => {
           this.pageNo += 1
-          this.optionList.push(...res.data)
+          if (firstOption) {
+            this.optionList.push(
+              ...res.data.filter(
+                (item) => item[this.optionProps.value] !== firstOption[this.optionProps.value]
+              )
+            )
+          } else {
+            this.optionList.push(...res.data)
+          }
+
           if (res.data.length < this.pageSize) {
             this.noMore = true
           } else {
