@@ -1186,7 +1186,8 @@ export default {
     handleCheckEmploy(row) {
       let params = {
         formId: row.applyId,
-        formKey: 'PersonOfferApply'
+        formKey: 'PersonOfferApply',
+        recruitmentId: row.recruitmentId
       }
       this.$router.push({
         path: '/approval/appr/apprDetail',

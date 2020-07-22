@@ -222,12 +222,7 @@ const column = [
     prop: 'workProperty',
     slot: true
   },
-  {
-    label: '入职登记表',
-    prop: 'entryRegister',
-    slot: true,
-    width: 120
-  },
+
   {
     label: '手机号',
     prop: 'phonenum',
@@ -236,6 +231,12 @@ const column = [
 ]
 
 const willEntryColumn = [
+  {
+    label: '入职登记表',
+    prop: 'entryRegister',
+    slot: true,
+    width: 120
+  },
   {
     label: '邮箱',
     prop: 'email',

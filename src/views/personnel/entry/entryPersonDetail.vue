@@ -242,7 +242,7 @@
     <give-out-entry-dialog
       ref="giveOutEntryDialog"
       :visible.sync="giveOutEntryDialog"
-      @refresh="getPersonInfo()"
+      @refresh="pageClose()"
     />
   </div>
 </template>
@@ -300,6 +300,7 @@ export default {
           .then(() => {
             this.getPersonInfo()
             this.$message.success('添加成功')
+            this.pageClose()
           })
           .catch(() => {
             this.$message.error('添加失败')
@@ -349,6 +350,10 @@ export default {
         path: '/personnel/candidate/registrationForm',
         query: params
       })
+    },
+    pageClose() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.push('/personnel/entry/entryManagement')
     }
   }
 }
