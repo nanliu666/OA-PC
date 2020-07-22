@@ -157,6 +157,7 @@
               <postInfo
                 v-if="activeName == 'first'"
                 :info.sync="allInfo"
+                :left-info="leaveInfo"
               />
             </el-tab-pane>
             <el-tab-pane
@@ -320,13 +321,16 @@ export default {
         res.status === 'WaitLeave' &&
           getLeaveApply(params).then((response) => {
             this.leaveInfo = response
-          })
-        res.status === 'WaitLeave' &&
+          }) &&
           this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
             this.LeaveReasonDict = res
             res.forEach((item) => {
               this.LeaveReason[item.dictKey] = item.dictValue
             })
+          })
+        res.status === 'Leaved' &&
+          getLeaveApply(params).then((response) => {
+            this.leaveInfo = response
           })
       })
     },

@@ -95,7 +95,7 @@
       v-show="compactInfo.length > 0 && !showOtherCompact"
       class="display-compact"
     >
-      <span>共签订{{ compactInfo.length }}份合同，</span>
+      <span>共签订{{ compactInfo | signCompactNum }}份合同，</span>
       <span
         class="disply-button"
         @click="displayCompact()"
@@ -108,7 +108,7 @@
       v-show="showOtherCompact"
       class="display-compact"
     >
-      <span>共签订{{ compactInfo.length }}份合同，</span>
+      <span>共签订{{ compactInfo | signCompactNum }}份合同，</span>
       <span
         class="disply-button"
         @click="hiddenOtherCompact()"
@@ -118,7 +118,7 @@
       </span>
     </div>
     <div
-      v-for="(item, index) in compactInfo"
+      v-for="(item, index) in signCompact"
       v-show="showOtherCompact"
       :key="index"
       class="info-content no-back-color"
@@ -316,15 +316,21 @@ export default {
   data() {
     return {
       showOtherCompact: false,
-      compactInfo: {},
+      compactInfo: [],
       contractType: []
+    }
+  },
+  computed: {
+    signCompact() {
+      return this.compactInfo.filter((item) => {
+        return item.signDate
+      })
     }
   },
   created() {
     this.getDictionaryData()
     this.getCompactInfo()
   },
-
   methods: {
     getPeriod(period) {
       return period && period > 0 ? period + '年' : ''

@@ -436,9 +436,9 @@
                     <el-dropdown-item command="handleRecover">
                       淘汰
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item> -->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -499,9 +499,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -540,9 +540,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -601,9 +601,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!--                  <el-dropdown-item command>-->
-                    <!--                    下载简历-->
-                    <!--                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -677,9 +677,9 @@
                     <el-dropdown-item command="toRegistrationForm">
                       查看面试登记表
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -718,9 +718,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -762,9 +762,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                    下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -1386,6 +1386,12 @@ export default {
         })
       } else if (command === 'reApply') {
         this.handleApplyEmploy(data, true)
+      } else if (command === 'download') {
+        if (data.resumeUrl) {
+          window.open(data.resumeUrl)
+        } else {
+          this.$message.error('该用户暂无简历附件')
+        }
       } else if (command) {
         this[command] && this[command](data)
       }
