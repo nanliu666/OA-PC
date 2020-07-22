@@ -204,6 +204,9 @@ export default {
       this.loadData()
     }
   },
+  created() {
+    this.loadData()
+  },
   activated() {
     this.loadData()
   },
