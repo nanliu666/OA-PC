@@ -52,9 +52,9 @@
                 >
                   查看入职登记表
                 </el-dropdown-item>
-                <!-- <el-dropdown-item command>
+                <el-dropdown-item command="download">
                   下载简历
-                </el-dropdown-item> -->
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -70,7 +70,7 @@
               >
                 恢复为候选人
               </el-button>
-              <!-- <el-dropdown @command="handleCommand">
+              <el-dropdown @command="handleCommand">
                 <el-button
                   size="medium"
                   style="margin-left: 16px"
@@ -79,11 +79,11 @@
                   <i class="el-icon-arrow-down el-icon--right" />
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command>
-                  下载简历
-                </el-dropdown-item>
+                  <el-dropdown-item command="download">
+                    下载简历
+                  </el-dropdown-item>
                 </el-dropdown-menu>
-              </el-dropdown>-->
+              </el-dropdown>
             </template>
             <!-- 候选人详情 -->
             <template v-else>
@@ -126,9 +126,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -160,9 +160,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -206,9 +206,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -231,6 +231,10 @@
                   查看申请
                 </el-button>
                 <el-button
+                  v-if="
+                    !personInfo.applyId ||
+                      (personInfo.applyId && personInfo.approveStatus === 'Cancel')
+                  "
                   type="danger"
                   size="medium"
                   @click="handleWeedOut"
@@ -270,9 +274,9 @@
                     <el-dropdown-item command="toRegistrationForm">
                       查看面试登记表
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -304,9 +308,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -341,9 +345,9 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item command>
-                  下载简历
-                  </el-dropdown-item>-->
+                    <el-dropdown-item command="download">
+                      下载简历
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -713,7 +717,7 @@ export default {
       }
       postRegisterSend(params).then(() => {
         this.$message.success('发送成功')
-        this.loadAllData()
+        this.init()
       })
     },
     handleCheckEmploy() {
@@ -874,6 +878,12 @@ export default {
         this.handleApplyEmploy(this.personInfo)
       } else if (command === 'checkEntry') {
         this.loopUpInterview('entry')
+      } else if (command === 'download') {
+        if (this.personInfo.resumeUrl) {
+          window.open(this.personInfo.resumeUrl)
+        } else {
+          this.$message.error('该用户暂无简历附件')
+        }
       }
     },
     handleAcceptOffer() {

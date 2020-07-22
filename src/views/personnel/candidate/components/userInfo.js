@@ -13,6 +13,10 @@ let sixList = [
 ]
 let marriageList = [
   {
+    label: '已婚已育',
+    value: 2
+  },
+  {
     label: '已婚',
     value: 1
   },

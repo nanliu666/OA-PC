@@ -283,7 +283,15 @@
               label="婚姻状况:"
             >
               <span class="info-item-value">
-                {{ staffInfo.marriage == '1' ? '已婚' : '未婚' }}
+                {{
+                  staffInfo.marriage == '2'
+                    ? '已婚已育'
+                    : staffInfo.marriage == '1'
+                      ? '已婚'
+                      : staffInfo.marriage == '0'
+                        ? '未婚'
+                        : ''
+                }}
               </span>
             </el-form-item>
             <el-form-item
@@ -299,6 +307,10 @@
                 <el-option
                   label="已婚"
                   :value="1"
+                />
+                <el-option
+                  label="已婚已育"
+                  :value="2"
                 />
               </el-select>
             </el-form-item>
@@ -632,7 +644,7 @@ export default {
   },
   computed: {
     getAge() {
-      let age = 0
+      let age = ''
       if (this.staffInfo.birthDate) {
         let curYear = new Date().getFullYear()
         let birthYear = new Date(this.staffInfo.birthDate).getFullYear()
@@ -646,7 +658,7 @@ export default {
       return this.staffInfo.nativeProvinceName + this.staffInfo.nativeCityName
     },
     calcWorkAge() {
-      let workAge = 0
+      let workAge = ''
       if (this.staffInfo.firstWorkDate) {
         let fomatToMS = new Date().getTime() - new Date(this.staffInfo.firstWorkDate).getTime()
         let dayToMS = 1000 * 60 * 60 * 24

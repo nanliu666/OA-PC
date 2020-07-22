@@ -44,7 +44,8 @@ export default {
     return {
       data: [],
       oldData: [],
-      loading: true
+      loading: true,
+      sameNameMessage: false
     }
   },
   created() {
@@ -54,19 +55,36 @@ export default {
     this.getOrgTree()
   },
   methods: {
+    messageFun() {
+      if (this.sameNameMessage) return
+      this.$message.error({
+        message: '该组织名称在目标层级已存在',
+        onClose: () => {
+          this.sameNameMessage = false
+        }
+      })
+    },
     allowDrop(draggingNode, dropNode, type) {
       if (type === 'prev' || type === 'next') {
         let parentOrg = this.findParentOrg(dropNode.data.orgId)
         if (parentOrg && parentOrg.children) {
           for (let i = 0; i < parentOrg.children.length; i++) {
-            if (parentOrg.children[i].orgName === draggingNode.data.orgName) return false
+            if (parentOrg.children[i].orgName === draggingNode.data.orgName) {
+              this.messageFun()
+              this.sameNameMessage = true
+              return false
+            }
           }
         }
         return true
       } else if (type === 'inner') {
         if (dropNode.data.children) {
           for (let i = 0; i < dropNode.data.children.length; i++) {
-            if (dropNode.data.children[i].orgName === draggingNode.data.orgName) return false
+            if (dropNode.data.children[i].orgName === draggingNode.data.orgName) {
+              this.messageFun()
+              this.sameNameMessage = true
+              return false
+            }
           }
         }
         return true
