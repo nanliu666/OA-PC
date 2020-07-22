@@ -17,7 +17,8 @@
             <template #progress="{row}">
               <el-progress
                 class="progress"
-                :percentage="row | progress"
+                :percentage="_.min([getProgress(row), 100])"
+                :format="() => `${getProgress(row)}%`"
               />
             </template>
           </common-table>
@@ -155,9 +156,6 @@ export default {
   components: {
     Overview: () => import('@/views/personnel/recruit/components/Overview')
   },
-  filters: {
-    progress: ({ needNum, entryNum }) => `${((100 * entryNum) / needNum).toFixed(1)}%`
-  },
   props: {
     data: {
       type: Object,
@@ -189,6 +187,13 @@ export default {
     refresh() {
       this.loadDetailsTableData()
       this.loadEntryTableData()
+    },
+
+    getProgress: ({ taskNum, entryNum }) => {
+      if (+taskNum === 0) {
+        return 100
+      }
+      return (100 * entryNum) / taskNum
     },
 
     // 翻译字典
