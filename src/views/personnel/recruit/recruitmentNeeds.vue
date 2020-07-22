@@ -299,7 +299,7 @@ export default {
           label: '审批流程',
           prop: 'progress',
           itemType: 'slot',
-          rules: [{ validator: checkAppr }]
+          rules: [{ validator: checkAppr, trigger: 'change', required: true }]
         }
       ]
     }

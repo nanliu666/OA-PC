@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="roletree">
     <div
       v-if="showSearch"
       class="search-input"
@@ -11,50 +11,53 @@
         suffix-icon="el-icon-search"
       />
     </div>
-    <el-tree
-      ref="tree"
-      :data="treeList || []"
-      :node-key="props.id"
-      :default-expanded-keys="[currentId]"
-      :highlight-current="true"
-      :filter-node-method="filterNode"
-      @node-click="node"
-    >
-      <div
-        slot-scope="{ node, data }"
-        class="custom-tree-node"
-        @click.prevent="onClickNode(node, data)"
+    <el-scrollbar class="scroll-item">
+      <el-tree
+        ref="tree"
+        :data="treeList || []"
+        :node-key="props.id"
+        class="tree_"
+        :default-expanded-keys="[currentId]"
+        :highlight-current="true"
+        :filter-node-method="filterNode"
+        @node-click="node"
       >
-        <span><i
-                v-if="node.level === 1 && showFolder"
-                class="el-icon-folder"
-                style="margin-right: 5px;"
-              />{{ data[props.label] }}
-          <span v-if="data.roleNum">{{ `(${data.roleNum})` }}</span>
-        </span>
-        <el-dropdown
-          v-if="showMore"
-          class="right-content"
-          trigger="hover"
-          @command="handleCommand($event, node, data)"
+        <div
+          slot-scope="{ node, data }"
+          class="custom-tree-node"
+          @click.prevent="onClickNode(node, data)"
         >
-          <span
-            class="el-dropdown-link more-column"
-            @click.stop=""
-          >
-            <i class="el-icon-more" />
+          <span><i
+                  v-if="node.level === 1 && showFolder"
+                  class="el-icon-folder"
+                  style="margin-right: 5px;"
+                />{{ data[props.label] }}
+            <span v-if="data.roleNum">{{ `(${data.roleNum})` }}</span>
           </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="edit">
-              编辑
-            </el-dropdown-item>
-            <el-dropdown-item command="del">
-              删除
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-    </el-tree>
+          <el-dropdown
+            v-if="showMore"
+            class="right-content"
+            trigger="hover"
+            @command="handleCommand($event, node, data)"
+          >
+            <span
+              class="el-dropdown-link more-column"
+              @click.stop=""
+            >
+              <i class="el-icon-more" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="edit">
+                编辑
+              </el-dropdown-item>
+              <el-dropdown-item command="del">
+                删除
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-tree>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -146,10 +149,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.roletree {
+  height: 100%;
+
+  /*min-height: 100px;*/
+}
 .search-input {
   margin-bottom: 10px;
 }
-
+.scroll-item {
+  height: 500px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+.tree_ {
+}
 .custom-tree-node {
   flex: 1;
   display: flex;

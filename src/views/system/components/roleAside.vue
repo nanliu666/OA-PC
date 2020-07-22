@@ -6,15 +6,17 @@
           角色分类
         </div>
         <el-divider />
-        <asideTree
-          :props="props"
-          :current-id="currentId"
-          :tree-list="treeList"
-          :group-id.sync="cateForm.groupId"
-          @del="handleDel"
-          @edit="handleEdit"
-          @reload="reload"
-        />
+        <div class="tree">
+          <asideTree
+            :props="props"
+            :current-id="currentId"
+            :tree-list="treeList"
+            :group-id.sync="cateForm.groupId"
+            @del="handleDel"
+            @edit="handleEdit"
+            @reload="reload"
+          />
+        </div>
       </div>
       <div class="bottom-wrap">
         <div
@@ -643,5 +645,9 @@ export default {
     color: #409eff;
     cursor: pointer;
   }
+}
+.tree {
+  /*overflow-y: auto;*/
+  height: calc(100% - 50px);
 }
 </style>
