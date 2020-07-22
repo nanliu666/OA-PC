@@ -75,10 +75,10 @@
 
 <script>
 // @ is an alias to /src
-import Process from '@/components/Process'
-import FormDesign from '@/components/FormDesign/FormDesign'
-import BasicSetting from '@/components/BasicSetting'
-import AdvancedSetting from '@/components/AdvancedSetting'
+import Process from './components/Process/Process'
+import FormDesign from './components/FormDesign/FormDesign'
+import BasicSetting from './components/BasicSetting/BasicSetting'
+import AdvancedSetting from './components/AdvancedSetting/AdvancedSetting'
 import MockData from './mockData.js'
 import { postDeploy } from '../../api'
 

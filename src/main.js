@@ -17,13 +17,14 @@ import './styles/common.scss'
 import basicContainer from './components/basic-container/main'
 import pageHeader from './components/page-header/pageHeader'
 import commonForm from './components/common-form/commonForm'
-import OrgSelect from './components/Process/OrgSelect/orgSelect'
+import OrgSelect from './components/OrgSelect/orgSelect'
 import commonTable from 'vue-common-table'
 import website from '@/config/website'
 
 import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
+
 Vue.prototype._ = _
 
 Vue.use(router)

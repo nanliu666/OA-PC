@@ -1,16 +1,16 @@
 import Layout from '@/page/index/'
+import ProcessDesign from '@/views/processDesign/ProcessDesign'
 import demoRoutes from './demo'
 import todo from './todo'
-import Home from '@/views/admin/approver.vue'
 export default [
   {
     path: '/',
-    redirect: '/approver'
+    redirect: '/wel'
   },
   {
-    path: '/approver',
-    name: 'approver',
-    component: Home,
+    path: '/process/design',
+    name: 'ProcessDesign',
+    component: ProcessDesign,
     meta: {
       keepAlive: true
     }

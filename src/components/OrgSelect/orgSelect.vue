@@ -28,7 +28,7 @@
         </el-tag>
       </div>
     </div>
-    <approvalDialog
+    <userSelect
       v-if="show"
       :visible.sync="show"
       :users="selectOldData"
@@ -38,11 +38,11 @@
 </template>
 <script>
 /* eslint-disable vue/require-prop-type-constructor */
-import approvalDialog from './approvalDialog'
+import userSelect from './userSelect'
 export default {
   name: 'FcOrgSelect',
   components: {
-    approvalDialog
+    userSelect
   },
   model: {
     prop: 'value',

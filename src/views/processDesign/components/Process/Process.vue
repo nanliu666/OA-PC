@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable no-unused-vars */
-import FlowCard from './FlowCard/index.vue'
+import FlowCard from './FlowCard/FlowCard.vue'
 import PropPanel from './PropPanel/PropPanel.vue'
 import { NodeUtils, getMockData } from './FlowCard/util.js'
 
