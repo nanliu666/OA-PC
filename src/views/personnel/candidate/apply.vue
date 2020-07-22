@@ -484,6 +484,7 @@ export default {
       })
     },
     jumpMyApproval() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/approval/appr/waitAppr'
       })
@@ -666,6 +667,7 @@ export default {
         formKey: 'PersonOfferApply',
         page: 'apply'
       }
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/approval/appr/apprDetail',
         query: params
