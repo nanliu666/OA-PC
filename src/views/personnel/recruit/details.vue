@@ -12,7 +12,7 @@
       <!--  所有的招聘需求的详情，使用字段的状态进行判断 -->
       <DetailsMainInfo :data="data">
         <template #operations>
-          <el-button
+          <!-- <el-button
             v-if="!userId"
             size="medium"
             type="primary"
@@ -28,7 +28,7 @@
             @click="() => $refs.needNumEdit.init(data)"
           >
             更改需求人数
-          </el-button>
+          </el-button> -->
           <el-button
             v-if="!userId"
             v-show="_.eq(data.status, 'UnHandle')"
