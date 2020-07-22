@@ -89,7 +89,8 @@ const PADDING_TABLE_COLUMNS = [
     width: 100
   },
   {
-    formatter: ({ needNum, entryNum }) => `${((100 * entryNum) / needNum).toFixed(1)}%`,
+    formatter: ({ needNum, entryNum }) =>
+      +needNum ? ((100 * entryNum) / needNum).toFixed(1) + '%' : '-',
     label: '招聘进度',
     prop: 'percentage',
     width: 100

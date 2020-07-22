@@ -137,7 +137,7 @@
               :span="4"
               :class="{ 'font__color--danger': _.eq(item.entryNum, 0) }"
             >
-              {{ `${((100 * item.entryNum) / item.taskNum).toFixed(1)}%` }}
+              {{ item.taskNum ? `${((100 * item.entryNum) / item.taskNum).toFixed(1)}%` : '-' }}
             </el-col>
           </el-row>
         </div>
