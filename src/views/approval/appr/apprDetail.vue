@@ -12,7 +12,7 @@
         <div class="title">
           <div>{{ ApplyInfo.userName }}提交的{{ title }}申请</div>
           <el-button
-            v-if="isReapply"
+            v-if="isReapply && !$route.query.toDoList"
             type="primary"
             size="medium"
             @click="goToReapply"

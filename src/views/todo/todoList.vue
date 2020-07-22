@@ -220,7 +220,8 @@ export default {
         this.$router.push({
           path: '/approval/appr/apprDetail',
           query: {
-            apprNo: row.bizId
+            apprNo: row.bizId,
+            toDoList: true
           }
         })
       } else if (row.type === 'Recruitment') {
