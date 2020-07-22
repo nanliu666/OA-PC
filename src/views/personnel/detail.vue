@@ -51,7 +51,7 @@
                   </template>
                   <template v-if="allInfo.status === 'WaitLeave'">
                     <el-button
-                      v-if="!leaveInfo.lastDate"
+                      v-if="!leaveInfo.leaveDate"
                       type="primary"
                       size="medium"
                       @click="jumpToLeave"
@@ -65,7 +65,7 @@
                       调整离职信息
                     </el-button>
                     <el-button
-                      v-if="!leaveInfo.lastDate"
+                      v-if="!leaveInfo.leaveDate"
                       size="medium"
                       @click="giveupLeave"
                     >
@@ -284,7 +284,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        giveupLeave({ id: this.leaveInfo.id }).then(() => {
+        giveupLeave({ userId: this.leaveInfo.userId }).then(() => {
           this.$message.success('操作成功')
           this.getBasicInfo()
         })

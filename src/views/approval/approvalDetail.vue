@@ -107,6 +107,10 @@ export default {
     this.title = this.$route.query.title
     this.getData()
   },
+  activated() {
+    this.title = this.$route.query.title
+    this.getData()
+  },
   methods: {
     /**
      * @author guanfenda
