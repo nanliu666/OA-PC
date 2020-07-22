@@ -85,7 +85,7 @@
             :push="4"
           >
             <el-form-item label="合同签订次数:">
-              <span class="info-item-value">{{ compactInfo.length }}次</span>
+              <span class="info-item-value">{{ compactInfo | signCompactNum }}次</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -302,6 +302,17 @@
 <script>
 import { getConpactInfo } from '../../../../api/personalInfo'
 export default {
+  filters: {
+    signCompactNum(val) {
+      let num = 0
+      val.forEach((item) => {
+        if (item.signDate) {
+          num += 1
+        }
+      })
+      return num
+    }
+  },
   data() {
     return {
       showOtherCompact: false,

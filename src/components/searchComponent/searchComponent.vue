@@ -31,7 +31,7 @@
       <el-form-item style="float: right">
         <el-button
           type="text"
-          icon="el-icon-refresh-right"
+          icon="icon-basics-refresh-outlined"
           size="medium"
           class="topBtn"
           @click="handleRefresh"

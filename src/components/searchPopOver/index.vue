@@ -448,7 +448,8 @@ export default {
           item.data = { min: '', max: '' }
         } else if (
           (item.type === 'treeSelect' && item.config.selectParams.multiple) ||
-          (item.config && item.config.type && item.config.type.indexOf('range') > -1)
+          (item.config && item.config.type && item.config.type.indexOf('range') > -1) ||
+          (item.type === 'select' && item.config.multiple)
         ) {
           item.data = []
         } else {

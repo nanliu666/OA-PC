@@ -103,7 +103,7 @@
               @currentChange="currentChangeTodo"
             >
               <template
-                v-if="signedtotalNum"
+                v-if="signedTodoTotalNum"
                 slot="nav"
               >
                 <nav
@@ -122,7 +122,7 @@
                     <span class="flex flex-flow-column flex-items">
                       <span
                         class="flex flex-flow flex-items"
-                      >：近2个月内共有 {{ signedTodoTotalNum }} 名员工合同即将到期
+                      >： {{ signedTodoTotalNum }} 名员工合同到期未续签
                         <el-link
                           style="margin:0 10px;"
                           type="primary"
@@ -134,7 +134,7 @@
               </template>
               <template v-slot:screen>
                 <SearchPopover
-                  ref="searchPopover"
+                  ref="searchPopoverTodo"
                   :require-options="searchConfigTodo.requireOptions"
                   :popover-options="searchConfigTodo.popoverOptions"
                   @submit="handleSubmitTodo"
@@ -650,14 +650,27 @@ export default {
       this.endEndDate = moment()
         .add(2, 'M')
         .format('YYYY-MM-DD')
+      this.searchConfig.popoverOptions.forEach((item) => {
+        if (item.field === 'beginEndDate,endEndDate') {
+          item.data = [beginEndDate, this.endEndDate]
+        }
+      })
       this.getData(beginEndDate, this.endEndDate)
     },
     handleLookTodo() {
-      let beginEndDate = moment().format('YYYY-MM-DD')
-      this.endDateTodo = moment()
-        .add(2, 'M')
-        .format('YYYY-MM-DD')
-      this.getTodoData(beginEndDate, this.endDateTodo)
+      // let beginEndDate = moment().format('YYYY-MM-DD')
+      // this.endDateTodo = moment()
+      //   .add(2, 'M')
+      //   .format('YYYY-MM-DD')
+      this.$refs.searchPopoverTodo.resetForm()
+      this.searchConfigTodo.popoverOptions.forEach((item) => {
+        if (item.field === 'contractStatuses') {
+          item.data = ['Expired']
+        }
+      })
+
+      this.$refs.searchPopoverTodo.submitSearch()
+      // this.getTodoData()
     },
     refresh() {
       this.getData()
@@ -715,13 +728,10 @@ export default {
       this.getData()
     },
     getTowTodoData() {
-      let endDate = moment()
-        .add(2, 'M')
-        .format('YYYY-MM-DD')
       let params = {
         pageNo: 1,
         pageSize: 10,
-        endDate,
+        contractStatuses: ['Expired'],
         ...this.searchFormTodo
       }
       postContractTodo(params).then((res) => {
