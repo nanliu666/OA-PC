@@ -294,6 +294,13 @@ const SEARCH_CONFIG = {
   ]
 }
 
+const EMPLOYEE_STATUS_DICTS = [
+  { dictKey: 'Try', dictValue: '试用期' },
+  { dictKey: 'Formal', dictValue: '正式' },
+  { dictKey: 'Leaved', dictValue: '已离职' },
+  { dictKey: 'WaitLeave', dictValue: '待离职' }
+]
+
 const APPROVE_STATUS_DICTS = [
   {
     dictKey: 'Approve',
@@ -349,7 +356,8 @@ export default {
       },
       dictionary: {
         approveStatus: APPROVE_STATUS_DICTS,
-        probation: PROBATION_DICTS
+        probation: PROBATION_DICTS,
+        EmployeeStatus: EMPLOYEE_STATUS_DICTS
       }
     }
   },
