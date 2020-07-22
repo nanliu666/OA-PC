@@ -60,5 +60,8 @@ export const noneItemAttrs = [
 export const defaultAttrs = {
   datePicker: {
     valueFormat: 'yyyy-MM-dd'
+  },
+  inputNumber: {
+    controlsPosition: 'right'
   }
 }

@@ -24,10 +24,11 @@
             <div class="title-row">
               <span class="type">{{ item.type | filterType }}需求:</span>
               <span class="title">{{ item.title }}</span>
-              <span class="emerType">{{ item.emerType | filterEmerType(EmerTypeList) }}</span>
+              <span class="emerType">{{ item.emerType | filterEmerType(EmerType) }}</span>
             </div>
             <div class="education-row">
-              {{ item.brief }}
+              {{ item.education | CommonDictType(EducationalLevel) }} |
+              {{ item.workYears | CommonDictType(WorkYear) }}
             </div>
           </div>
           <!-- 任务类型 -->
@@ -124,6 +125,19 @@ export default {
         })
       }
       return result
+    },
+    //
+    CommonDictType: (value, CommonDictarr) => {
+      if (!value) return ''
+      let result = ''
+      CommonDictarr.forEach((item) => {
+        if (item.dictKey == value.trim()) {
+          result = item.dictValue
+          return
+        }
+      })
+
+      return result
     }
   },
 
@@ -158,7 +172,9 @@ export default {
       // 任务数据
       taskDataList: [],
       // 紧急程度字典组
-      EmerTypeList: [],
+      EmerType: [],
+      WorkYear: [],
+      EducationalLevel: [],
       nowDate: new Date()
     }
   },
@@ -190,9 +206,10 @@ export default {
 
   created() {
     this.loadData()
-    this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
-      this.EmerTypeList = res
-    })
+    this.getCommonDict()
+    // this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
+    // 	this.EmerType = res
+    // })
   },
   methods: {
     // 获取数据
@@ -202,8 +219,36 @@ export default {
       let { data } = await fetchTaskList(this.taskQuery).finally(() => {
         this.taskLoading = false
       })
-
       this.taskDataList = data
+      this.taskDataList.forEach((item) => {
+        let arr = item.brief.split('|')
+        item.education = arr[0]
+        item.workYears = arr[1]
+      })
+    },
+    // 获取相关字典组
+    getCommonDict() {
+      let commonDictNameArr = [
+        'EmerType',
+        'WorkYear',
+        'EducationalLevel'
+        // 'RecruitmentReason',
+        // 'WorkProperty',
+        // 'ContractType',
+        // 'LeaveReason',
+        // 'ChangeReason'
+      ]
+      commonDictNameArr.forEach((item) => {
+        this.$store.dispatch('CommonDict', item).then((res) => {
+          // this.workPropertyList = res
+          // 将res =》 [{dictKey:"",dictValue:"",id:""},{dictKey:"",dictValue:"",id:""}]
+          let targetArr = []
+          res.forEach((el) => {
+            targetArr.push({ dictKey: el.dictKey, dictValue: el.dictValue, id: el.id })
+          })
+          this[item] = targetArr
+        })
+      })
     },
     // 跳去任务中心
     goTOTaskCenter() {

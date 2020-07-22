@@ -385,6 +385,21 @@ export const createUniqueID = (() => {
   }
 })()
 
+/**
+ * 对象的属性进行重命名
+ * @param {object} obj 对象
+ * @param {string|string[]} keys 要重命名的键
+ * @param {string|string[]} names 重命名的名称数组
+ * @returns {object} 不修改原对象，返回一个新的对象
+ */
+export const renameKey = (target, keys, names) => {
+  const cloned = _.omit(target, keys)
+  _.isArray(keys)
+    ? _.each(keys, (key, i) => (cloned[names[i]] = target[key]))
+    : (cloned[names] = target[keys])
+  return cloned
+}
+
 export const numberToChinese = (num) => {
   if (!/^\d*(\.\d*)?$/.test(num)) {
     alert('Number is wrong!')

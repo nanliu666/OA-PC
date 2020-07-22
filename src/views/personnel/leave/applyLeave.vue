@@ -148,7 +148,8 @@
 </template>
 
 <script>
-import { applyLeaveInfo, checkApplyNum } from '@/api/leave/leave'
+// checkApplyNum
+import { applyLeaveInfo } from '@/api/leave/leave'
 import { mapGetters } from 'vuex'
 export default {
   components: {
@@ -223,14 +224,15 @@ export default {
         this.queryInfo.userId = this.userId
         this.btnLoading = true
         // 检查是否已经有正在审批中的离职申请
-        checkApplyNum({ userId: this.userId, formKey: 'UserLeaveInfo' })
-          .then((res) => {
-            if (res.approveNum !== 0) {
-              this.$message.info('你已提交了离职申请,不能重复提交')
-              return
-            }
-            return applyLeaveInfo(this.queryInfo)
-          })
+        // checkApplyNum({ userId: this.userId, formKey: 'UserLeaveInfo' })
+        //   .then((res) => {
+        //     if (res.approveNum !== 0) {
+        //       this.$message.info('你已提交了离职申请,不能重复提交')
+        //       return
+        //     }
+        //     return applyLeaveInfo(this.queryInfo)
+        //   })
+        applyLeaveInfo(this.queryInfo)
           .then((res) => {
             if (res && res.id) {
               this.$refs['apprProgress'].submit(res.id).then(() => {

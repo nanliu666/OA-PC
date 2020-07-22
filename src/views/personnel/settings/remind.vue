@@ -22,7 +22,9 @@
 
         <template #executor="{row}">
           <div class="handler">
-            <span class="handler__name">{{ _.get(row, 'executor.name', '') }}</span>
+            <span class="handler__name">{{
+              row.executor && `${row.executor.name}(${row.executor.workNo})`
+            }}</span>
             <span class="handler__btn">
               <el-button
                 type="text"
@@ -171,12 +173,7 @@ export default {
   },
 
   created() {
-    getRemindExecutor().then((users) => {
-      _.each(users, (user) => {
-        _.find(TABLE_DATA, { personnelEvent: { type: user.type } }).executor = user
-      })
-      this.tableData = TABLE_DATA
-    })
+    this.loadTableData()
   },
   methods: {
     editClose() {
@@ -196,12 +193,24 @@ export default {
               this.$message.success('提交成功')
               this.editClose()
             })
-            .finally(() => (this.editSubmitting = false))
+            .finally(() => {
+              this.editSubmitting = false
+              this.loadTableData()
+            })
         })
         .catch(() => {})
     },
     loadUsers(params) {
       return getWorklist(params)
+    },
+
+    loadTableData() {
+      getRemindExecutor().then((users) => {
+        _.each(users, (user) => {
+          _.find(TABLE_DATA, { personnelEvent: { type: user.type } }).executor = user
+        })
+        this.tableData = TABLE_DATA
+      })
     }
   }
 }

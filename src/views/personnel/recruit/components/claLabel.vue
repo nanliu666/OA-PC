@@ -67,24 +67,12 @@ export default {
   display: block;
 }
 
-.claLabel {
-  /deep/ .el-tag {
-    width: 100%;
-    text-align: center;
-    overflow: hidden;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .subelements {
-    text-align: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 100%;
-    display: inline-block;
-    vertical-align: top;
-  }
+.subelements {
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  display: inline-block;
+  vertical-align: top;
 }
 </style>

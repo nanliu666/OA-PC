@@ -397,25 +397,26 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
-  getWorkAddressList,
+  checkUserInfo,
+  createNewWorkNo,
+  createUser,
+  createWorkAddress,
   deleteWorkAddress,
   editWorkAddress,
-  createWorkAddress,
-  getOrgPosition,
-  getOrgJob,
   getOrganizationCompany,
-  createNewWorkNo,
-  checkUserInfo,
-  createUser
+  getOrgJob,
+  getOrgPosition,
+  getWorkAddressList
 } from '@/api/personnel/roster'
-import { getOrgTreeSimple } from '@/api/org/org'
+// import { getPersonInfo, } from '@/api/personnel/candidate'
 // import TreeSelect from '@/components/treeSelect/treeSelect'
+import { getCandidateAcceptDetail } from '@/api/personnel/entry'
+import { getOrgTreeSimple } from '@/api/org/org'
 import { regionData } from 'element-china-area-data'
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import PageHeader from '@/components/page-header/pageHeader'
-// import { getPersonInfo, } from '@/api/personnel/candidate'
-import { getCandidateAcceptDetail } from '@/api/personnel/entry'
 
 export default {
   name: 'ConfirmEntry',
@@ -532,6 +533,9 @@ export default {
       addressPageNo: 1,
       loading: false
     }
+  },
+  computed: {
+    ...mapGetters(['userId'])
   },
   created() {
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
@@ -680,7 +684,7 @@ export default {
               this.$message.error('正式员工不可有试用期')
               return
             }
-            const params = { ...this.form }
+            const params = { ...this.form, entryUser: this.userId }
             if (!params.probation) params.probation = 0
             let inputValue = []
             if (this.$refs.workProvinceArr.inputValue) {

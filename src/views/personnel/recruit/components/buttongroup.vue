@@ -18,7 +18,7 @@
         <el-button
           size="medium"
           type="primary"
-          @click="ChangeContent"
+          @click="() => handleNeedNumBtnClick(childData)"
         >
           更改需求人数
         </el-button>
@@ -31,32 +31,71 @@
         type="primary"
         @click="DistributionContent()"
       >
-        {{ childData.status === 'UnHandle' ? '分配' : '重新分配' }}
+        {{ childData.status === 'UnHandle' ? '分配需求' : '重新分配' }}
+      </el-button>
+      <el-button
+        size="medium"
+        type="defualt"
+        @click="() => handleNeedNumBtnClick(childData)"
+      >
+        更改需求人数
+      </el-button>
+
+      <el-button
+        plain
+        size="medium"
+        type="danger"
+        @click="() => handleRequirementStopBtnClick(childData)"
+      >
+        停止招聘
       </el-button>
     </template>
 
-    <Again
-      ref="Again"
-      :visible.sync="createAgain"
-      @dataJump="dataJump"
+    <Distribution
+      ref="distribution"
+      :visible.sync="distributionVisible"
+      @submit="handleDistributionSubmit"
     />
-    <Assigned
-      ref="Assigned"
-      :visible.sync="createAssigned"
-      @getTableData="dataJump"
+    <RequirementStop
+      ref="requirementStop"
+      :visible.sync="requirementStopVisible"
+    />
+    <Redistribution
+      ref="redistribution"
+      :visible.sync="redistributionVisible"
+      @submit="handleRedistributionSubmit"
+    />
+    <NeedNumEdit
+      ref="needNumEdit"
+      :visible.sync="needNumEditVisible"
+      @submit="handleNeedNumEditSubmit"
     />
   </div>
 </template>
 <script>
-import Again from '@/views/personnel/recruit/details/again'
-import Assigned from '@/views/personnel/recruit/details/Assigned'
+import { getChange, putDistribution, taskDistribution } from '@/api/personnel/recruitment'
+import { renameKey } from '@/util/util'
 export default {
   name: 'Buttongroup',
   components: {
-    Again,
-    Assigned
+    Distribution: () => import(/* webpackChunkName: "views" */ '../components/modals/Distribution'),
+    Redistribution: () =>
+      import(/* webpackChunkName: "views" */ '../components/modals/Redistribution'),
+    RequirementStop: () =>
+      import(
+        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/RequirementStop'
+      ),
+    NeedNumEdit: () =>
+      import(
+        /* webpackChunkName: "views" */ '@/views/personnel/recruit/components/modals/NeedNumEdit'
+      )
   },
-  props: ['childData'],
+  props: {
+    childData: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       user: {
@@ -65,8 +104,10 @@ export default {
         id: null
       },
       status: null,
-      createAgain: false,
-      createAssigned: false
+      distributionVisible: false,
+      requirementStopVisible: false,
+      redistributionVisible: false,
+      needNumEditVisible: false
     }
   },
   methods: {
@@ -74,18 +115,44 @@ export default {
     DistributionContent() {
       this.$set(this.childData, 'jumpnot', true)
       if (this.childData && this.childData.status === 'UnHandle') {
-        this.$refs.Again.init(this.childData)
+        this.$refs.distribution.init(this.childData)
       } else {
-        this.$refs.Assigned.init(this.childData)
+        this.$refs.redistribution.init(this.childData)
       }
     },
-    ChangeContent() {
-      this.$router.push({
-        path: '/personnel/recruit/components/chang',
-        query: { id: this.$route.query.id }
-      })
+    handleNeedNumBtnClick() {
+      // TODO:
+      this.$refs.needNumEdit.init(this.childData)
+      // this.$router.push({
+      //   path: '/personnel/recruit/components/chang',
+      //   query: { id: this.$route.query.id }
+      // })
     },
-
+    handleNeedNumEditSubmit(data) {
+      getChange(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message({ type: 'success', message: '提交成功' })
+          this.$refs.needNumEdit.close()
+        })
+        .finally(() => (this.$refs.needNumEdit.submitting = false))
+    },
+    handleDistributionSubmit(data) {
+      taskDistribution(data)
+        .then(() => this.$message.success('操作成功'))
+        .finally(() => {
+          this.$refs.distribution.close()
+          this.refresNew()
+        })
+    },
+    handleRedistributionSubmit(data) {
+      putDistribution(data)
+        .then(() => {
+          this.$message.success('操作成功')
+        })
+        .finally(() => {
+          this.$refs.redistribution.close()
+        })
+    },
     JumpNewlybuild() {
       this.$router.push({
         path: '/personnel/recruit/recruitmentNeeds',
@@ -95,6 +162,9 @@ export default {
     dataJump() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({ path: '/personnel/recruit/recruitList' })
+    },
+    handleRequirementStopBtnClick(childData) {
+      this.$refs.requirementStop.init(renameKey(childData, 'id', 'recruitmentId'))
     }
   }
 }
@@ -119,6 +189,6 @@ export default {
   display: block;
 }
 .Requirements {
-  width: 150px;
+  width: 500px;
 }
 </style>
