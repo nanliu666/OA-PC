@@ -434,38 +434,38 @@ export default {
       newJobList: [],
       // 变更岗位
       newPositionList: [],
-      // 树状选择框的配置
-      subOrgOptions: {
-        props: {
-          label: 'orgName',
-          value: 'orgId'
-        },
-        styles: {
-          width: '100%'
-        },
-        placeholder: '请选择部门',
-        dicData: [],
-        config: {
-          selectParams: {
-            placeholder: '请输入内容',
-            multiple: false
-          },
-          treeParams: {
-            data: [],
-            'check-strictly': true,
-            'default-expand-all': true,
-            'expand-on-click-node': true,
-            clickParent: false,
-            filterable: false,
-            props: {
-              children: 'children',
-              label: 'orgName',
-              disabled: 'disabled',
-              value: 'orgId'
-            }
-          }
-        }
-      },
+      // // 树状选择框的配置
+      // subOrgOptions: {
+      // 	props: {
+      // 		label: 'orgName',
+      // 		value: 'orgId'
+      // 	},
+      // 	styles: {
+      // 		width: '100%'
+      // 	},
+      // 	placeholder: '请选择部门',
+      // 	dicData: [],
+      // 	config: {
+      // 		selectParams: {
+      // 			placeholder: '请输入内容',
+      // 			multiple: false
+      // 		},
+      // 		treeParams: {
+      // 			data: [],
+      // 			'check-strictly': true,
+      // 			'default-expand-all': true,
+      // 			'expand-on-click-node': true,
+      // 			clickParent: false,
+      // 			filterable: false,
+      // 			props: {
+      // 				children: 'children',
+      // 				label: 'orgName',
+      // 				disabled: 'disabled',
+      // 				value: 'orgId'
+      // 			}
+      // 		}
+      // 	}
+      // },
       btnLoading: false
     }
   },

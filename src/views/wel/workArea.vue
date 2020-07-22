@@ -426,8 +426,8 @@ export default {
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
-            personId: bizId,
-            recruitmentId: bizId2
+            personId: bizId
+            // recruitmentId: bizId2
           }
         })
       } else if (type === 'Entry') {

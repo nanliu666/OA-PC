@@ -217,6 +217,7 @@ export default {
         this.infoForm = {
           ...res
         }
+        this.infoForm.beginDate = res.endDate
       })
     },
     handleBack() {
