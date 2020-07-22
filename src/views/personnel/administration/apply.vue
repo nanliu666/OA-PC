@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     // 提交之前hook
-    async preSubmit() {
+    async checkValid() {
       let valid = true
       if (
         _.get(
@@ -168,7 +168,7 @@ export default {
       return valid
     },
     async handleSubmit(params = {}) {
-      if (await this.preSubmit()) {
+      if (!(await this.checkValid())) {
         // 已经提交过了
         return this.$message.warning('已存在正在审批中的申请')
       }
