@@ -47,19 +47,28 @@ export default {
   },
 
   watch: {
-    tabPane(pane) {
-      this.refreshByPane(pane)
+    tabPane() {
+      this.refresh()
     }
   },
 
-  activated() {},
+  activated() {
+    this.refresh()
+  },
 
   methods: {
     handleCreateBtnClick() {
       this.$router.push('/personnel/recruit/recruitmentNeeds')
     },
 
+    refresh() {
+      this.refreshByPane(this.tabPane)
+    },
+
     refreshByPane(pane) {
+      if (_.isEmpty(this.$refs)) {
+        return
+      }
       // 用于控制pane的数据更新事件
       switch (pane) {
         case 'iSubmit':

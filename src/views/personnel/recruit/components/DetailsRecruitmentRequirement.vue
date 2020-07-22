@@ -1,6 +1,7 @@
 <template>
   <div class="DetailsRecruitmentRequirement">
     <common-form
+      class="form"
       :model="data"
       :columns="formColumns"
       :config="formConfig"
@@ -136,19 +137,19 @@ const FORM_COLUMNS = [
     itemType: 'slot',
     label: '职位要求',
     prop: 'requirement',
-    span: 12
+    span: 24
   },
   {
     itemType: 'slot',
     label: '工作职责',
     prop: 'duty',
-    span: 12
+    span: 24
   },
   {
     itemType: 'slot',
     label: '招聘原因',
     prop: 'reason',
-    span: 12,
+    span: 24,
     $config: {
       dictKey: 'RecruitmentReason'
     }
@@ -157,7 +158,7 @@ const FORM_COLUMNS = [
     itemType: 'slot',
     label: '申请理由',
     prop: 'remark',
-    span: 12
+    span: 24
   }
 ]
 const FORM_CONFIG = {
@@ -229,17 +230,7 @@ export default {
 $color_label: #212a3f
 
 .DetailsRecruitmentRequirement
-  .contents
-    &__item
-      margin-top: 2rem
-      .top-menu
-        height: 0 // @Overwrite
-      &--label
-        color: $color_label
-        font-family: PingFangSC-Regular
-        font-size: 14px
-        font-weight: bold
-        line-height: 30px
-        margin-bottom: 0px
-        margin-top: 10px
+  .form
+    margin-top: 2rem
+    margin-left: 5rem
 </style>

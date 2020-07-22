@@ -193,9 +193,6 @@ export default {
             this.$emit('refresh', this.type)
             this.$emit('update:visible', false)
           })
-          .catch(() => {
-            this.$message.error('操作失败')
-          })
           .finally(() => {
             this.loading = false
           })

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="LeaveList">
     <page-header title="离职管理" />
-    <basic-container>
+    <basic-container block>
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
@@ -649,6 +649,13 @@ export default {
       right: 0;
       transform: translateY(-50%);
     }
+  }
+}
+.LeaveList {
+  height: 100%;
+  .basic-container--block {
+    min-height: calc(100% - 92px);
+    height: 0;
   }
 }
 </style>
