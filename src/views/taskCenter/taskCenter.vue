@@ -302,9 +302,10 @@ export default {
     // 跳去任务详情
     jumpToDetail({ bizId }) {
       this.$router.push({
-        path: '/personnel/recruit/myrecruitment',
+        path: '/personnel/recruit/details',
         query: {
-          id: bizId
+          id: bizId,
+          userId: this.userId
         }
       })
     }
