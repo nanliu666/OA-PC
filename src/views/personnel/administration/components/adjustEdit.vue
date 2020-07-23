@@ -153,7 +153,7 @@ export default {
       })
     },
     async init(row) {
-      let { formalDate, probation, userId, entryDate } = row
+      let { formalDate, probation, userId, entryDate } = _.cloneDeep(row)
       this.entryDate = entryDate
       this.oldProbation = probation
       this.oldProbationDate = formalDate

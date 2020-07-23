@@ -125,9 +125,10 @@
           slot-scope="{ row }"
         >
           <el-button
+            v-show="!_.includes(['Pass', 'Approve'], row.approveStatus)"
             size="medium"
             type="text"
-            @click="() => handleAdjustEditBtnClick(row)"
+            @click="() => $refs.adjustEdit.init(row)"
           >
             调整试用期
           </el-button>
@@ -308,7 +309,7 @@ const APPROVE_STATUS_DICTS = [
   },
   {
     dictKey: 'Pass',
-    dictValue: '正式'
+    dictValue: '已通过'
   },
   {
     dictKey: 'Reject',
@@ -388,18 +389,6 @@ export default {
 
     refresh() {
       this.loadTableData()
-    },
-
-    handleAdjustEditBtnClick(row) {
-      if (row.approveStatus == 'Approve' || row.approveStatus == 'Pass') {
-        this.$message({
-          showClose: true,
-          message: '很抱歉，当前员工的转正申请流程尚未完成，请在完成后再发起',
-          type: 'warning'
-        })
-      } else {
-        this.$refs.adjustEdit.init(row)
-      }
     },
 
     handleAdjustEditSubmit(data) {
