@@ -476,7 +476,7 @@ export default {
       return dict
     },
 
-    isOverdue: (date) => moment(date).isAfter(new Date())
+    isOverdue: (date) => moment(date).isBefore(new Date())
   }
 }
 </script>
