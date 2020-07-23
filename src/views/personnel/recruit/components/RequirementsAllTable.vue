@@ -165,7 +165,10 @@
       </template>
 
       <template #emerType="{row}">
-        <el-tag :type="emerTypeType(row)">
+        <el-tag
+          v-show="!_.isEmpty(_.trim(_.get(row, 'emerType')))"
+          :type="emerTypeType(row)"
+        >
           {{ translator({ dictKey: 'emerType', value: _.get(row, 'emerType') }) }}
         </el-tag>
       </template>
