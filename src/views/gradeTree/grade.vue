@@ -1116,8 +1116,8 @@ export default {
 .scale {
   z-index: 999999999999999;
   position: absolute;
-  top: 120px;
-  right: 30px;
+  top: 70px;
+  right: 70px;
   display: flex;
   display: -webkit-flex;
   flex-flow: column nowrap;
