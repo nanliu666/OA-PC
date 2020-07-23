@@ -351,7 +351,7 @@ export default {
       // 从全部任务跳转的为招聘主管, 不使用userId
       this.$router.push({
         path: '/personnel/recruit/details',
-        query: { id: id, status: 'iSubmit' /* , userId: this.userId */ }
+        query: { id: id /* , userId: this.userId */ }
       })
     },
 
