@@ -10,11 +10,12 @@
       class="login-form"
       status-icon
       :rules="rules"
+      :model="form"
       label-width="0"
     >
       <el-form-item prop="groupName">
         <el-input
-          v-model="groupName"
+          v-model="form.groupName"
           placeholder="请输入分组名称"
         />
       </el-form-item>
@@ -50,12 +51,22 @@ export default {
     dialogVisible: {
       type: Boolean,
       default: false
+    },
+    dialogType: {
+      type: String,
+      default: ''
+    },
+    subGroupName: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
       loading: false,
-      groupName: '',
+      form: {
+        groupName: this.subGroupName
+      },
       rules: {
         groupName: [
           { required: true, message: '请输入分组名称', trigger: 'blur' },
@@ -66,15 +77,14 @@ export default {
   },
   computed: {
     submitDisable() {
-      let flag = true
-      window.console.log(validatenull(this.groupName))
-      if (!validatenull(this.groupName)) {
-        flag = false
+      let disable = true
+      if (!validatenull(this.form.groupName)) {
+        disable = false
       }
-      if (this.groupName.length > 20) {
-        flag = false
+      if (this.form.groupName.length > 20) {
+        disable = false
       }
-      return flag
+      return disable
     }
   },
   created() {},
@@ -85,7 +95,10 @@ export default {
     },
     clear() {},
     handleSubmit() {
-      this.$emit('addUser', '1')
+      // this.$emit('addUser', '1')
+      let messageText =
+        this.dialogType === 'add' ? `“${this.form.groupName}”分组创建成功` : '重命名成功'
+      this.$message.success(messageText)
       //   this.close()
     }
   }

@@ -19,7 +19,7 @@ const processListData = {
           processName: '入职申请',
           sort: 1,
           icon: 'approval-invitation-bicolor',
-          remark: '这里是入职申请的简介',
+          remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
           visibleRange: 'all'
         },
         {
@@ -27,7 +27,7 @@ const processListData = {
           processName: '转正申请',
           sort: 1,
           icon: 'approval-checkin-bicolor',
-          remark: '这里是转正申请的简介',
+          remark: '',
           visibleRange: 'all'
         },
         {
@@ -61,7 +61,7 @@ export default ({ mock }) => {
   if (!mock) return
   // v2版本接口
   // 审批列表查询，调用接口：审批流程列表查询接口【GET /appr/v2/appr/process/list】
-  Mock.mock(new RegExp('/appr/v2/appr/process/list' + '.*'), 'get', () => {
+  Mock.mock(new RegExp('/api/appr/v2/appr/process/list' + '.*'), 'get', () => {
     return processListData
   })
 }

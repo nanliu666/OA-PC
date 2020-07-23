@@ -45,6 +45,7 @@
                 <el-button
                   class="action-button"
                   type="text"
+                  @click="renameApproval(item.name)"
                 >
                   重命名
                 </el-button>
@@ -77,9 +78,20 @@
                     <div class="content-title">
                       {{ processesItem.processName }}
                     </div>
-                    <div class="content-des">
-                      {{ processesItem.remark }}
-                    </div>
+                    <el-popover
+                      v-if="processesItem.remark"
+                      placement="top-start"
+                      width="420"
+                      trigger="hover"
+                      :content="processesItem.remark"
+                    >
+                      <div
+                        slot="reference"
+                        class="content-des"
+                      >
+                        {{ processesItem.remark }}
+                      </div>
+                    </el-popover>
                   </div>
                 </div>
                 <div class="li-middle">
@@ -105,7 +117,12 @@
         </ul>
       </section>
     </basic-container>
-    <add-new-process-dialog :dialog-visible.sync="dialogVisible" />
+    <add-new-process-dialog
+      v-if="dialogVisible"
+      :dialog-visible.sync="dialogVisible"
+      :sub-group-name.sync="subGroupName"
+      :dialog-type="dialogType"
+    />
   </div>
 </template>
 <script>
@@ -119,6 +136,8 @@ export default {
     return {
       symbolKey: 'xlink:href',
       dialogVisible: false,
+      subGroupName: '',
+      dialogType: 'add',
       processListData: []
     }
   },
@@ -130,8 +149,15 @@ export default {
   },
   methods: {
     groupSort() {},
+    renameApproval(name) {
+      this.dialogVisible = true
+      this.subGroupName = name
+      this.dialogType = 'rename'
+    },
     addNewGroup() {
       this.dialogVisible = true
+      this.subGroupName = ''
+      this.dialogType = 'add'
     },
     createApproval() {}
   }
@@ -187,8 +213,9 @@ export default {
             background-color: #f2faff;
           }
           .li-left {
-            @include flexJustify;
             @include flexAlign;
+            justify-self: start;
+            min-width: calc(7 / 12 * 100%);
             .drag-i {
               width: 24px;
               height: 24px;
@@ -212,20 +239,29 @@ export default {
               .content-title {
                 font-size: 14px;
                 color: #202940;
-                margin-bottom: 4px;
               }
               .content-des {
+                margin-top: 4px;
+                max-width: 300px;
                 color: #757c85;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                cursor: pointer;
               }
             }
           }
           .li-middle {
+            min-width: calc(1 / 12 * 100%);
             .middle-span {
               color: #757c85;
               margin-top: 4px;
             }
           }
           .li-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
           }
         }
       }
