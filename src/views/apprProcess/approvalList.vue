@@ -211,7 +211,6 @@
                         <button
                           type="text"
                           class="disable-action-button"
-                          style="color: #a9beff"
                         >
                           删除
                         </button>
@@ -516,13 +515,14 @@ export default {
           }
           .action-box {
             .action-button {
-              color: #202940;
+              // color: #202940;
             }
           }
         }
       }
       .disable-action-button {
-        color: #c0c4cc;
+        // color: #c0c4cc;
+        color: #a9beff;
         cursor: pointer;
         display: inline-block;
         line-height: 1;

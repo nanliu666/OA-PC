@@ -76,6 +76,9 @@ export default {
             font-weight: 500;
           }
         }
+        &:hover {
+          cursor: move;
+        }
       }
     }
   }
