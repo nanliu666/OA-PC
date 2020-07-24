@@ -8,7 +8,10 @@
         <h2 class="h2-title">
           审批
         </h2>
-        <div class="button-box">
+        <div
+          v-if="!dragOptions.sortVisible"
+          class="button-box"
+        >
           <el-button
             size="medium"
             @click="groupSort"
@@ -29,8 +32,29 @@
             创建审批
           </el-button>
         </div>
+        <div
+          v-else
+          class="button-box"
+        >
+          <el-button
+            size="medium"
+            @click="cancelSort"
+          >
+            取消
+          </el-button>
+          <el-button
+            size="medium"
+            type="primary"
+            @click="saveSort"
+          >
+            保存
+          </el-button>
+        </div>
       </section>
-      <section class="approval-section">
+      <section
+        v-if="!dragOptions.sortVisible"
+        class="approval-section"
+      >
         <ul
           v-for="(item, index) in processListData"
           :key="index"
@@ -195,12 +219,16 @@
           </li>
         </ul>
       </section>
+      <drag-list
+        v-if="dragOptions.sortVisible"
+        :drag-options.sync="dragOptions"
+      />
     </basic-container>
     <process-dialog
       v-if="dialogOptions.dialogVisible"
       :dialog-options.sync="dialogOptions"
       :sub-group.sync="subGroup"
-      @reloadData="reloadFatherData"
+      @reloadData="refreshData"
     />
   </div>
 </template>
@@ -211,16 +239,22 @@ import {
   stopProcessCategory,
   getDraftList,
   deleteProcess,
-  releaseProcess
+  releaseProcess,
+  sortCategory
 } from '@/api/apprProcess/apprProcess'
 import processDialog from '@/views/apprProcess/components/processDialog'
+import dragList from '@/views/apprProcess/components/dragList'
 import { deepClone } from '@/util/util'
 export default {
   name: 'ApprovalIndex',
-  components: { processDialog },
+  components: { processDialog, dragList },
   data() {
     return {
       symbolKey: 'xlink:href',
+      dragOptions: {
+        sortVisible: false,
+        sortData: {}
+      },
       subGroup: {},
       dialogOptions: {
         dialogTitle: '',
@@ -234,13 +268,14 @@ export default {
     this.refreshData()
   },
   methods: {
-    reloadFatherData() {
-      this.refreshData()
-    },
+    /**
+     * 重新刷新数据
+     */
     async refreshData() {
       let resData = {}
       await getProcessList().then((res) => {
         resData = res
+        this.dragOptions.sortData = res
         // window.console.log('审批list res==', res)
       })
       await getDraftList().then((res) => {
@@ -328,7 +363,37 @@ export default {
     /**
      * 分组排序
      */
-    groupSort() {},
+    groupSort() {
+      this.dragOptions.sortVisible = true
+    },
+    /**
+     * 取消排序
+     */
+    cancelSort() {
+      this.dragOptions.sortVisible = false
+    },
+    /**
+     * 保存排序
+     */
+    saveSort() {
+      let params = []
+      this.dragOptions.sortData.map((item, index) => {
+        params.push({
+          id: item.id,
+          sort: index + 1
+        })
+      })
+      sortCategory(params).then(() => {
+        this.sortRefreshData()
+      })
+    },
+    /**
+     * 保存后选刷新列表，再关闭页面，防止抖动
+     */
+    async sortRefreshData() {
+      await this.refreshData()
+      this.dragOptions.sortVisible = false
+    },
     /**
      * 移动到
      */
