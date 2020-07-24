@@ -29,7 +29,7 @@ function renderFrom(h) {
         rules={this.rules}
       >
         {renderFormItem.call(this, h, formConfCopy.fields)}
-        {formBtns.call(this, h)}
+        {formConfCopy.showBtn ? formBtns.call(this, h) : null}
       </el-form>
     </el-row>
   )
@@ -40,7 +40,7 @@ function formBtns(h) {
   return (
     <el-col>
       <el-form-item size="large">
-        <el-button type="primary" onClick={this.submitForm}>
+        <el-button type="primary" onClick={this._submitForm}>
           提交
         </el-button>
         <el-button onClick={this.resetForm}>重置</el-button>
@@ -49,7 +49,7 @@ function formBtns(h) {
   )
 }
 
-function renderFormItem(h, elementList) {
+function renderFormItem(h, elementList = []) {
   return elementList.map((scheme) => {
     const config = scheme.__config__
     const layout = layouts[config.layout]
@@ -121,15 +121,26 @@ export default {
     this.buildRules(data.formConfCopy.fields, data.rules)
     return data
   },
+  watch: {
+    formConf(val) {
+      const form = {},
+        rules = {}
+      this.formConfCopy = deepClone(val)
+      this.initFormData(val.fields, form)
+      this.buildRules(val.fields, rules)
+      this.form = form
+      this.rules = rules
+    }
+  },
   methods: {
-    initFormData(componentList, formData) {
+    initFormData(componentList = [], formData) {
       componentList.forEach((cur) => {
         const config = cur.__config__
         if (cur.__vModel__) formData[cur.__vModel__] = config.defaultValue
         if (config.children) this.initFormData(config.children, formData)
       })
     },
-    buildRules(componentList, rules = {}) {
+    buildRules(componentList = [], rules = {}) {
       componentList.forEach((cur) => {
         const config = cur.__config__
 
@@ -152,12 +163,23 @@ export default {
       this.formConfCopy = deepClone(this.formConf)
       this.$refs.form.resetFields()
     },
-    submitForm() {
+    _submitForm() {
       this.$refs.form.validate((valid) => {
         if (!valid) return false
         // 触发sumit事件
         this.$emit('submit', this.form)
         return true
+      })
+    },
+    submit() {
+      return new Promise((resolve, reject) => {
+        this.$refs.form.validate((valid) => {
+          if (!valid) {
+            reject()
+            return
+          }
+          resolve(this.form)
+        })
       })
     }
   },
