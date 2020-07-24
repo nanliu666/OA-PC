@@ -196,7 +196,7 @@
         </ul>
       </section>
     </basic-container>
-    <add-new-process-dialog
+    <process-dialog
       v-if="dialogOptions.dialogVisible"
       :dialog-options.sync="dialogOptions"
       :sub-group.sync="subGroup"
@@ -213,11 +213,11 @@ import {
   deleteProcess,
   releaseProcess
 } from '@/api/apprProcess/apprProcess'
-import addNewProcessDialog from '@/views/apprProcess/components/addNewProcessDialog'
+import processDialog from '@/views/apprProcess/components/processDialog'
 import { deepClone } from '@/util/util'
 export default {
   name: 'ApprovalIndex',
-  components: { addNewProcessDialog },
+  components: { processDialog },
   data() {
     return {
       symbolKey: 'xlink:href',
@@ -325,6 +325,9 @@ export default {
           this.$message.info('已取消删除')
         })
     },
+    /**
+     * 分组排序
+     */
     groupSort() {},
     /**
      * 移动到
