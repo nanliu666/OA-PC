@@ -186,10 +186,7 @@
               <div slot="content">
                 流程条件：在流程设计里用于区分流程走向。
               </div>
-              <span
-                class="condition-text"
-                style="color:#aaa;"
-              >流程条件</span>
+              <span class="condition-text">流程条件</span>
             </el-tooltip>
             )
           </div>

@@ -144,7 +144,10 @@ export default {
       activeData: emptyActiveData,
       activeId: null,
       isPC: false,
-      saveDrawingListDebounce: debounce(saveDrawingList, 340)
+      saveDrawingListDebounce: debounce(saveDrawingList, 340),
+      formConf: {
+        showBtn: false
+      }
     }
   },
   watch: {
@@ -164,6 +167,12 @@ export default {
     this.activeFormItem(this.drawingList[0])
   },
   methods: {
+    getData() {
+      return {
+        ...this.formConf,
+        fields: this.drawingList
+      }
+    },
     isFilledPCon(formIds) {
       const processCmp = this.$parent.$children.find((t) => t.isProcessCmp)
       return processCmp && processCmp.isFilledPCon(formIds)
