@@ -164,6 +164,9 @@ export default {
     this.activeFormItem(this.drawingList[0])
   },
   methods: {
+    getData() {
+      return this.drawingList
+    },
     isFilledPCon(formIds) {
       const processCmp = this.$parent.$children.find((t) => t.isProcessCmp)
       return processCmp && processCmp.isFilledPCon(formIds)

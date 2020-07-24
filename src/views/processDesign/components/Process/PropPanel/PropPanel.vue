@@ -63,114 +63,151 @@
         <fc-org-select
           ref="condition-org"
           v-model="initiator"
-          :tab-list="['dep&user']"
+          :tab-list="['user']"
         />
       </row-wrapper>
-
-      <template v-for="(item, index) in pconditions">
-        <!-- 计数 -->
-        <row-wrapper
-          v-if="
-            couldShowIt(
-              item,
-              'el-input-number',
-              'fc-date-duration',
-              'fc-time-duration',
-              'fc-amount',
-              'fc-calculate'
-            )
-          "
-          :key="index"
-          :title="item.label"
+      <template>
+        <Parser
+          :form-conf="formConf"
+          @submit="sumbitForm"
         >
-          <num-input
-            :key="index"
-            v-model="item.conditionValue"
-            :title="timeTangeLabel(item)"
-            style="padding-right: 6px;"
-          />
-          <template v-slot:action>
-            <i
-              class="el-icon-delete"
-              style="cursor: pointer;"
-              @click="onDelCondition(item)"
-            />
-          </template>
-        </row-wrapper>
-        <!-- 单选组 -->
-        <row-wrapper
-          v-if="couldShowIt(item, 'el-radio-group')"
-          :key="index"
-          :title="item.label"
-        >
-          <el-radio-group
-            v-model="item.conditionValue"
-            class="radio-group"
-          >
-            <el-radio
-              v-for="item in item.options"
-              :key="item.label"
-              :label="item.label"
+          <template>
+            <!-- 计数 -->
+            <row-wrapper
+              v-if="
+                couldShowIt(
+                  item,
+                  'el-input-number',
+                  'fc-date-duration',
+                  'fc-time-duration',
+                  'fc-amount',
+                  'fc-calculate'
+                )
+              "
+              :key="index"
+              :title="item.label"
             >
-              {{ item.label }}
-            </el-radio>
-          </el-radio-group>
-          <template v-slot:action>
-            <i
-              class="el-icon-delete"
-              style="cursor: pointer;"
-              @click="onDelCondition(item)"
-            />
+              <num-input
+                :key="index"
+                v-model="item.conditionValue"
+                :title="timeTangeLabel(item)"
+                style="padding-right: 6px;"
+              />
+              <template v-slot:action>
+                <i
+                  class="el-icon-delete"
+                  style="cursor: pointer;"
+                  @click="onDelCondition(item)"
+                />
+              </template>
+            </row-wrapper>
           </template>
-        </row-wrapper>
-
-        <!-- 下拉 -->
-        <row-wrapper
-          v-if="couldShowIt(item, 'el-select')"
-          :key="index"
-          :title="item.label"
-        >
-          <el-select
-            v-model="item.conditionValue"
-            style="width: 280px"
-            placeholder="请选择"
-            size="small"
-          >
-            <el-option
-              v-for="item in item.options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          <template v-slot:action>
-            <i
-              class="el-icon-delete"
-              style="cursor: pointer;"
-              @click="onDelCondition(item)"
-            />
-          </template>
-        </row-wrapper>
-        <!-- 组织机构 -->
-        <row-wrapper
-          v-if="couldShowIt(item, 'fc-org-select')"
-          :key="index"
-          :title="item.label"
-        >
-          <fc-org-select
-            :ref="'org' + index"
-            v-model="item.conditionValue"
-            :tab-list="['org']"
-          />
-          <template v-slot:action>
-            <i
-              class="el-icon-delete"
-              style="cursor: pointer;"
-              @click="onDelCondition(item)"
-            />
-          </template>
-        </row-wrapper>
+        </Parser>
       </template>
+      <!--            <template v-for="(item, index) in pconditions">-->
+      <!--              &lt;!&ndash; 计数 &ndash;&gt;-->
+      <!--              <row-wrapper-->
+      <!--                v-if="-->
+      <!--                  couldShowIt(-->
+      <!--                    item,-->
+      <!--                    'el-input-number',-->
+      <!--                    'fc-date-duration',-->
+      <!--                    'fc-time-duration',-->
+      <!--                    'fc-amount',-->
+      <!--                    'fc-calculate'-->
+      <!--                  )-->
+      <!--                "-->
+      <!--                :key="index"-->
+      <!--                :title="item.label"-->
+      <!--              >-->
+      <!--                <num-input-->
+      <!--                  :key="index"-->
+      <!--                  v-model="item.conditionValue"-->
+      <!--                  :title="timeTangeLabel(item)"-->
+      <!--                  style="padding-right: 6px;"-->
+      <!--                />-->
+      <!--                <template v-slot:action>-->
+      <!--                  <i-->
+      <!--                    class="el-icon-delete"-->
+      <!--                    style="cursor: pointer;"-->
+      <!--                    @click="onDelCondition(item)"-->
+      <!--                  />-->
+      <!--                </template>-->
+      <!--              </row-wrapper>-->
+      <!--              &lt;!&ndash; 单选组 &ndash;&gt;-->
+      <!--              <row-wrapper-->
+      <!--                v-if="couldShowIt(item, 'el-radio-group')"-->
+      <!--                :key="index"-->
+      <!--                :title="item.label"-->
+      <!--              >-->
+      <!--                <el-radio-group-->
+      <!--                  v-model="item.conditionValue"-->
+      <!--                  class="radio-group"-->
+      <!--                >-->
+      <!--                  <el-radio-->
+      <!--                    v-for="item in item.options"-->
+      <!--                    :key="item.label"-->
+      <!--                    :label="item.label"-->
+      <!--                  >-->
+      <!--                    {{ item.label }}-->
+      <!--                  </el-radio>-->
+      <!--                </el-radio-group>-->
+      <!--                <template v-slot:action>-->
+      <!--                  <i-->
+      <!--                    class="el-icon-delete"-->
+      <!--                    style="cursor: pointer;"-->
+      <!--                    @click="onDelCondition(item)"-->
+      <!--                  />-->
+      <!--                </template>-->
+      <!--              </row-wrapper>-->
+
+      <!--              &lt;!&ndash; 下拉 &ndash;&gt;-->
+      <!--              <row-wrapper-->
+      <!--                v-if="couldShowIt(item, 'el-select')"-->
+      <!--                :key="index"-->
+      <!--                :title="item.label"-->
+      <!--              >-->
+      <!--                <el-select-->
+      <!--                  v-model="item.conditionValue"-->
+      <!--                  style="width: 280px"-->
+      <!--                  placeholder="请选择"-->
+      <!--                  size="small"-->
+      <!--                >-->
+      <!--                  <el-option-->
+      <!--                    v-for="item in item.options"-->
+      <!--                    :key="item.value"-->
+      <!--                    :label="item.label"-->
+      <!--                    :value="item.value"-->
+      <!--                  />-->
+      <!--                </el-select>-->
+      <!--                <template v-slot:action>-->
+      <!--                  <i-->
+      <!--                    class="el-icon-delete"-->
+      <!--                    style="cursor: pointer;"-->
+      <!--                    @click="onDelCondition(item)"-->
+      <!--                  />-->
+      <!--                </template>-->
+      <!--              </row-wrapper>-->
+      <!--              &lt;!&ndash; 组织机构 &ndash;&gt;-->
+      <!--              <row-wrapper-->
+      <!--                v-if="couldShowIt(item, 'fc-org-select')"-->
+      <!--                :key="index"-->
+      <!--                :title="item.label"-->
+      <!--              >-->
+      <!--                <fc-org-select-->
+      <!--                  :ref="'org' + index"-->
+      <!--                  v-model="item.conditionValue"-->
+      <!--                  :tab-list="['org']"-->
+      <!--                />-->
+      <!--                <template v-slot:action>-->
+      <!--                  <i-->
+      <!--                    class="el-icon-delete"-->
+      <!--                    style="cursor: pointer;"-->
+      <!--                    @click="onDelCondition(item)"-->
+      <!--                  />-->
+      <!--                </template>-->
+      <!--              </row-wrapper>-->
+      <!--            </template>-->
       <div style="padding-left:24px;margin-top:2em;">
         <el-button
           type="primary"
@@ -233,6 +270,7 @@
                 v-for="item in assigneeTypeOptions"
                 :key="item.value"
                 :label="item.value"
+                :disabled="item.disabled"
                 class="radio-item"
               >
                 {{ item.label }}
@@ -251,11 +289,19 @@
               v-else-if="approverForm.assigneeType === 'optional'"
               class="option-box"
             >
-              <p>可选多人</p>
-              <el-switch
-                v-model="approverForm.optionalMultiUser"
-                active-color="#13ce66"
-              />
+              <p>设置选择条件</p>
+              <el-radio-group v-model="approverForm.optionalMultiUser">
+                <el-radio :label="false">
+                  自选一个人
+                </el-radio>
+                <el-radio :label="true">
+                  自选多个人
+                </el-radio>
+              </el-radio-group>
+              <!--              <el-switch-->
+              <!--                v-model="approverForm.optionalMultiUser"-->
+              <!--                active-color="#13ce66"-->
+              <!--              />-->
 
               <p>选择范围</p>
               <el-select
@@ -271,6 +317,20 @@
                   :disabled="item.disabled"
                 />
               </el-select>
+              <div style="margin-top: 15px">
+                <fc-org-select
+                  ref="approver-org"
+                  v-model="orgCollection"
+                  button-type="button"
+                  title="指定成员"
+                  :tab-list="
+                    fcOrgTabList.includes(approverForm.assigneeType)
+                      ? [approverForm.assigneeType]
+                      : ['dep']
+                  "
+                  @change="onOrgChange"
+                />
+              </div>
             </div>
             <div v-else-if="approverForm.assigneeType === 'director'">
               <div style="font-size: 14px;padding-left: 24px;">
@@ -324,7 +384,7 @@
             v-if="
               (orgCollection[approverForm.assigneeType] &&
                 orgCollection[approverForm.assigneeType].length > 1) ||
-                ['optional'].includes(approverForm.assigneeType)
+                (['optional'].includes(approverForm.assigneeType) && approverForm.optionalMultiUser)
             "
             class="option-box"
           >
@@ -448,19 +508,46 @@
       :append-to-body="true"
       custom-class="condition-dialog"
     >
+      <div style="margin-bottom: 10px">
+        请选择用来区分审批流程的条件字段
+      </div>
       <el-checkbox-group v-model="showingPCons">
         <!-- 发起人默认就有 -->
-        <el-checkbox :label="-1">
+        <el-checkbox
+          style="margin-bottom: 10px;"
+          :label="-1"
+        >
           发起人
         </el-checkbox>
         <el-checkbox
           v-for="(item, index) in pconditions"
           :key="index"
-          :label="item.formId"
+          style="margin-bottom: 10px;"
+          class="flex justify-space-around"
+          :label="item.__config__.formId"
         >
-          {{ item.label }}
+          {{ item.__config__.label }}
         </el-checkbox>
       </el-checkbox-group>
+
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="medium"
+          @click="dialogVisible = false"
+        >
+          取 消
+        </el-button>
+        <el-button
+          size="medium"
+          type="primary"
+          @click="showCons()"
+        >
+          确 定
+        </el-button>
+      </div>
     </el-dialog>
 
     <div class="actions">
@@ -489,7 +576,7 @@ import Clickoutside from 'element-ui/src/utils/clickoutside'
 import { NodeUtils } from '../FlowCard/util.js'
 import RowWrapper from './RowWrapper'
 import NumInput from './NumInput'
-
+import Parser from '../../FormDesign/components/parser/Parser'
 const rangeType = {
   lt: '<',
   lte: '≤',
@@ -504,7 +591,7 @@ const defaultApproverForm = {
   counterSign: true, //是否为会签
   // 审批类型为自选 出现 optionalMultiUser optionalRange
   optionalMultiUser: false,
-  optionalRange: 'ALL' // USER<最多十个> / ALL / ROLE
+  optionalRange: 'USER' // USER<最多十个> / ALL / ROLE
 }
 export default {
   directives: {
@@ -512,12 +599,16 @@ export default {
   },
   components: {
     'num-input': NumInput,
-    'row-wrapper': RowWrapper
+    'row-wrapper': RowWrapper,
+    Parser: Parser
   },
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
-      fcOrgTabList: ['dep', 'role', 'user', 'position'],
+      formConf: {
+        fields: []
+      },
+      fcOrgTabList: ['dep', 'role', 'user', 'position', 'optional'],
       visible: false, // 控制面板显隐
       globalFormOperate: null, // 统一设置节点表单权限
       titleInputVisible: false, // 是否显示标题输入框  startNode 不显示
@@ -534,7 +625,8 @@ export default {
         dep: [],
         role: [],
         user: [],
-        position: []
+        position: [],
+        optional: []
       },
       useDirectorProxy: true, // 找不到主管时 上级主管代理审批
       directorLevel: 1, // 审批主管级别
@@ -555,44 +647,42 @@ export default {
       ],
       rangeOptions: [
         {
-          label: '全公司',
-          value: 'ALL'
-        },
-        {
           label: '指定成员',
           value: 'USER'
-        },
-        {
-          label: '角色',
-          value: 'ROLE'
         }
       ],
 
       assigneeTypeOptions: [
         {
           label: '发起人自选',
-          value: 'optional'
+          value: 'optional',
+          disabled: false
         },
         {
           label: '上级领导',
-          value: 'director'
+          value: 'director',
+          disabled: false
         },
         {
           label: '指定成员',
-          value: 'user'
+          value: 'user',
+          disabled: false
         },
 
         {
           label: '指定职位',
-          value: 'role'
+          value: 'role',
+          disabled: true
         },
         {
           label: '指定岗位',
-          value: 'position'
+          value: 'position',
+          disabled: true
         },
         {
           label: '指定标签',
-          value: 'myself'
+          value: 'myself',
+          disabled: true
         }
       ]
     }
@@ -632,6 +722,20 @@ export default {
     }
   },
   methods: {
+    showCons() {
+      this.formConf.fields = []
+      this.pconditions &&
+        this.pconditions.map((it) => {
+          if (this.showingPCons.includes(it.__config__.formId)) {
+            it.__pc__.span = 24
+            this.formConf.fields.push(it)
+          }
+        })
+      this.dialogVisible = false
+    },
+    sumbitForm() {
+      // console.log(data)
+    },
     getFormOperates() {
       let res = []
       this.isApproverNode() && (res = this.approverForm.formOperates)
@@ -777,7 +881,7 @@ export default {
     approverNodeComfirm() {
       const assigneeType = this.approverForm.assigneeType
       let content = ''
-      if (['optional', 'myself'].includes(assigneeType)) {
+      if (['myself'].includes(assigneeType)) {
         content = this.assigneeTypeOptions.find((t) => t.value === assigneeType).name
       } else if ('director' === assigneeType) {
         content = this.directorLevel === 1 ? '直接主管' : `第${this.directorLevel}级主管`
@@ -844,6 +948,7 @@ export default {
 
     initInitiator() {
       const initiator = this.value.properties && this.value.properties.initiator
+
       this.initiator = Array.isArray(initiator) ? initiator : []
     },
     /**

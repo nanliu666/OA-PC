@@ -89,7 +89,7 @@ export default {
         ],
         counterSign: true,
         optionalMultiUser: false,
-        optionalRange: 'ALL'
+        optionalRange: 'USER'
       },
       nodeId: 'Nb2',
       prevId: 'Gb2'
@@ -162,7 +162,7 @@ export default {
             ],
             counterSign: true,
             optionalMultiUser: false,
-            optionalRange: 'ALL'
+            optionalRange: 'USER'
           },
           nodeId: 'Wb2',
           prevId: 'Lb2',
@@ -250,7 +250,7 @@ export default {
             ],
             counterSign: true,
             optionalMultiUser: false,
-            optionalRange: 'ALL'
+            optionalRange: 'USER'
           },
           nodeId: 'Xb2',
           prevId: 'Mb2'

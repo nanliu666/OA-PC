@@ -46,6 +46,7 @@
         ref="basicSetting"
         :conf="mockData.basicSetting"
         tab-name="basicSetting"
+        @jump="jumpStep"
         @initiatorChange="onInitiatorChange"
       />
 
@@ -81,6 +82,7 @@ import BasicSetting from './components/BasicSetting/BasicSetting'
 import AdvancedSetting from './components/AdvancedSetting/AdvancedSetting'
 import MockData from './mockData.js'
 import { postDeploy } from '../../api'
+import { Base64 } from 'js-base64'
 
 const beforeUnload = function(e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容'
@@ -154,6 +156,9 @@ export default {
     }
   },
   methods: {
+    jumpStep(data) {
+      this.activeStep = data
+    },
     changeSteps(item) {
       this.activeStep = item.key
     },
@@ -169,7 +174,7 @@ export default {
           const param = {
             basicSetting: res[0].formData,
             processData: res[2].formData,
-            formData: res[1].formData,
+            formData: res[1],
             advancedSetting: getCmpData('advancedSetting')
           }
           this.sendToServer(param)
@@ -203,6 +208,41 @@ export default {
       }
       this.base.push(item)
       this.base = [...this.base, ...this.lineList, ...this.condition, ...this.endNode]
+      let { icon, processName, processAdmin, remark } = { ...param.basicSetting }
+      let { tip, isOpinion, approverDistinct } = { ...param.advancedSetting }
+      let processVisible = []
+      if (param.basicSetting.initiator) {
+        param.basicSetting.initiator.map((it) => {
+          let type = ''
+          if (it.type) {
+            type = 'User'
+          } else {
+            type = 'Org'
+          }
+          processVisible.push({
+            type: type,
+            bizId: '',
+            bizName: ''
+          })
+        })
+      } else {
+        // type
+        processVisible = [
+          {
+            type: 'All'
+          }
+        ]
+      }
+      let config = {
+        icon,
+        processName,
+        processAdmin,
+        remark,
+        processVisible,
+        tip,
+        isOpinion,
+        approverDistinct
+      }
       // 基础设置
       // "flowName": "转正申请",      // 流程名称
       //     // 流程ID，创建流程不用传；修改时传待修改的流程ID
@@ -210,6 +250,10 @@ export default {
       //     "flowKey": "UserFormalInfo", // 流程的标识
       //     "flowCategory": "leave"，    // 流程分类
       // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
+      // let bese64 = Base64.encode(JSON.stringify(processData))
+      // console.log('processData_____',bese64)
+      // let json =JSON.parse(Base64.decode(bese64))
+      // console.log('json_____',json)
       let params = {
         processData: this.base,
         processMap: this.processMap,
@@ -219,7 +263,8 @@ export default {
         typeNoAssignee: '0',
         flowKey: 'UserFormalInfoApply',
         flowCategory: 'cate_S',
-        baseJson: ''
+        baseJson: Base64.encode(JSON.stringify(param)),
+        ...config
       }
       postDeploy(params).then(() => {
         this.$message.success('提交成功')
@@ -434,7 +479,7 @@ export default {
     onInitiatorChange(val, labels) {
       const processCmp = this.$refs.processDesign
       const startNode = processCmp.data
-      startNode.properties.initiator = val['dep&user']
+      startNode.properties.initiator = val
       startNode.content = labels || '所有人'
       processCmp.forceUpdate()
     },
@@ -443,9 +488,7 @@ export default {
      */
     onStartChange(node) {
       const basicSetting = this.$refs.basicSetting
-      basicSetting.formData.initiator = {
-        'dep&user': node.properties.initiator
-      }
+      basicSetting.formData.initiator = node.properties.initiator
     }
   }
 }

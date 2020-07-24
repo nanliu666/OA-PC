@@ -28,7 +28,7 @@ import taskcenter from './taskcenter'
 import todo from './todo'
 import transction from './transction'
 import user from './user'
-
+import process from './process'
 /**
  * 模拟数据mock
  *
@@ -79,3 +79,5 @@ entry(options)
 taskcenter(options)
 schedule(options)
 remind(options)
+
+process({ mock: true })
