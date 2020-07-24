@@ -10,7 +10,7 @@ const processListData = {
   ...normalData,
   response: [
     {
-      id: 30,
+      id: 0,
       name: '人事审批',
       sort: 1,
       processes: [
@@ -36,6 +36,51 @@ const processListData = {
           sort: 1,
           icon: 'approval-leaveoffice-bicolor',
           remark: '这里是离职申请的简介',
+          visibleRange: 'all'
+        }
+      ]
+    },
+    {
+      id: 1,
+      name: '业务审批',
+      sort: 1,
+      processes: [
+        {
+          processId: '1',
+          processName: '入职申请',
+          sort: 1,
+          icon: 'approval-invitation-bicolor',
+          remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
+          visibleRange: 'all'
+        }
+      ]
+    },
+    {
+      id: 2,
+      name: '行政审批',
+      sort: 1,
+      processes: [
+        {
+          processId: '1',
+          processName: '入职申请',
+          sort: 1,
+          icon: 'approval-invitation-bicolor',
+          remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
+          visibleRange: 'all'
+        }
+      ]
+    },
+    {
+      id: 3,
+      name: '财务审批',
+      sort: 1,
+      processes: [
+        {
+          processId: '1',
+          processName: '入职申请',
+          sort: 1,
+          icon: 'approval-invitation-bicolor',
+          remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
           visibleRange: 'all'
         }
       ]
@@ -148,6 +193,10 @@ export default ({ mock }) => {
   })
   // 审批流程启用接口
   Mock.mock(new RegExp('/api/appr/v2/appr/process/release' + '.*'), 'post', () => {
+    return categoryData
+  })
+  // 审批分组排序接口
+  Mock.mock(new RegExp('/api/appr/v2/appr/category/sort' + '.*'), 'post', () => {
     return categoryData
   })
 }
