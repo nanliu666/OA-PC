@@ -37,7 +37,9 @@
             :push="2"
           >
             <el-form-item label="入职日期:">
-              <span class="info-item-value">{{ staffInfo.entryDate }}</span>
+              <span class="info-item-value">{{
+                (staffInfo.entryDate && staffInfo.entryDate.split(' ')[0]) || ''
+              }}</span>
             </el-form-item>
           </el-col>
           <el-col
@@ -55,7 +57,9 @@
             :push="2"
           >
             <el-form-item label="转正日期:">
-              <span class="info-item-value">{{ staffInfo.formalDate }}</span>
+              <span class="info-item-value">{{
+                (staffInfo.formalDate && staffInfo.formalDate.split(' ')[0]) || ''
+              }}</span>
             </el-form-item>
           </el-col>
           <el-col

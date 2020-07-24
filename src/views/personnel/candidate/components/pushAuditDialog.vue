@@ -33,6 +33,7 @@
         <el-select
           v-model="form.userId"
           v-loadmore="moreUserList"
+          :filterable="true"
           placeholder="请选择审核人"
         >
           <el-option

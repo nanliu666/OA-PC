@@ -21,7 +21,9 @@
             :push="2"
           >
             <el-form-item label="现合同公司:">
-              <span class="info-item-value">{{ compactInfo[0].name }}</span>
+              <span class="info-item-value">{{
+                signCompact.lenght > 0 ? compactInfo[0].name : ''
+              }}</span>
             </el-form-item>
           </el-col>
           <el-col
@@ -40,7 +42,7 @@
           >
             <el-form-item label="首次合同开始日期:">
               <span class="info-item-value">{{
-                compactInfo[compactInfo.length - 1].beginDate
+                signCompact.lenght > 0 ? compactInfo[compactInfo.length - 1].beginDate : ''
               }}</span>
             </el-form-item>
           </el-col>
@@ -59,7 +61,9 @@
             :push="2"
           >
             <el-form-item label="现合同开始日期:">
-              <span class="info-item-value">{{ compactInfo[0].beginDate }}</span>
+              <span class="info-item-value">{{
+                signCompact.lenght > 0 ? compactInfo[0].beginDate : ''
+              }}</span>
             </el-form-item>
           </el-col>
           <el-col
@@ -85,7 +89,9 @@
             :push="4"
           >
             <el-form-item label="合同签订次数:">
-              <span class="info-item-value">{{ compactInfo | signCompactNum }}次</span>
+              <span class="info-item-value">{{
+                signCompact.lenght > 0 ? (compactInfo | signCompactNum) + '次' : ''
+              }}</span>
             </el-form-item>
           </el-col>
         </el-row>
