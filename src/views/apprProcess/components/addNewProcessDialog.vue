@@ -1,7 +1,7 @@
 <template>
   <el-dialog
-    title="新建分组"
-    :visible="dialogVisible"
+    :title="dialogOptions.dialogTitle"
+    :visible="dialogOptions.dialogVisible"
     width="500px"
     append-to-body
     :before-close="close"
@@ -13,7 +13,27 @@
       :model="form"
       label-width="0"
     >
-      <el-form-item prop="groupName">
+      <el-form-item
+        v-if="dialogOptions.dialogType === 'move' || dialogOptions.dialogType === 'enable'"
+        prop="moveGroup"
+      >
+        <el-select
+          v-model="form.moveValue"
+          placeholder="请选择"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in groupNameOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        v-else
+        prop="groupName"
+      >
         <el-input
           v-model="form.groupName"
           placeholder="请输入分组名称"
@@ -45,61 +65,189 @@
 
 <script>
 import { validatenull } from '@/util/validate'
+import {
+  addProcessCategory,
+  renameProcessCategory,
+  getCategoryList,
+  moveProcess,
+  startProcess
+} from '@/api/apprProcess/apprProcess'
+
 export default {
   name: 'AddNewProcessDialog',
   props: {
-    dialogVisible: {
-      type: Boolean,
-      default: false
+    dialogOptions: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     },
-    dialogType: {
-      type: String,
-      default: ''
-    },
-    subGroupName: {
-      type: String,
-      default: ''
+    subGroup: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {
     return {
+      groupNameOptions: [],
       loading: false,
+      messageText: '',
       form: {
-        groupName: this.subGroupName
+        groupName: '',
+        moveValue: ''
       },
       rules: {
         groupName: [
           { required: true, message: '请输入分组名称', trigger: 'blur' },
-          { min: 3, max: 20, message: '分组名称长度不能超过20', trigger: 'blur' }
+          { max: 20, message: '分组名称长度不能超过20', trigger: 'blur' }
         ]
       }
     }
   },
   computed: {
     submitDisable() {
-      let disable = true
-      if (!validatenull(this.form.groupName)) {
+      let disable = true // 提交按钮是否可以点击
+      // 移动或者启用,未选择分组时候，不可以点击确认
+      if (this.dialogOptions.dialogType === 'move' || this.dialogOptions.dialogType === 'enable') {
+        if (!validatenull(this.form.moveValue)) {
+          disable = false
+        }
+      }
+      if (this.dialogOptions.dialogType === 'add') {
+        if (!validatenull(this.form.groupName)) {
+          disable = false
+        }
+        if (this.form.groupName.length > 20) {
+          disable = false
+        }
+      }
+      if (this.dialogOptions.dialogType === 'rename') {
         disable = false
       }
-      if (this.form.groupName.length > 20) {
-        disable = false
-      }
+      // debugger
       return disable
     }
   },
-  created() {},
+  created() {
+    this.initSetting()
+  },
   methods: {
-    close() {
-      this.clear()
-      this.$emit('update:dialogVisible', false)
+    /**
+     * 初始化配置
+     */
+    initSetting() {
+      if (JSON.stringify(this.subGroup) !== '{}') {
+        this.form.groupName = this.subGroup.name
+      }
+      if (this.dialogOptions.dialogType === 'move' || this.dialogOptions.dialogType === 'enable') {
+        this.getGroupList()
+      }
     },
-    clear() {},
+    /**
+     * 获取审批分组列表
+     */
+    getGroupList() {
+      getCategoryList().then((res) => {
+        window.console.log('审批分组数据==', res)
+        res.map((item) => {
+          this.groupNameOptions.push({
+            value: item.id,
+            label: item.name
+          })
+        })
+      })
+    },
+    close() {
+      this.dialogOptions.dialogVisible = false
+      this.$emit('update:dialogOptions', this.dialogOptions)
+    },
+    /**
+     * 新增操作
+     */
+    addNewGroup() {
+      addProcessCategory().then(() => {
+        this.messageText = `"${this.form.groupName}"分组创建成功`
+        this.handleDataBack()
+      })
+    },
+    /**
+     * 重命名操作
+     */
+    renameGroup() {
+      let parmas = {
+        id: this.subGroup.id,
+        name: this.subGroup.name
+      }
+      renameProcessCategory(parmas).then(() => {
+        // window.console.log(res)
+        this.messageText = `重命名成功`
+        this.handleDataBack()
+      })
+    },
+    /**
+     * 启用流程
+     */
+    enableGroup() {
+      let tragetArray = this.groupNameOptions.filter((item) => {
+        return this.form.moveValue === item.value
+      })
+      //TODO 这里的processId/categoryId 有点模糊
+      let parmas = {
+        processId: this.subGroup.processes.processId,
+        categoryId: tragetArray[0].value
+      }
+      startProcess(parmas).then((res) => {
+        window.console.log('移动到==', res)
+        this.messageText = `启用成功`
+        this.handleDataBack()
+      })
+    },
+    /**
+     * 移动分组
+     */
+    moveGroup() {
+      let tragetArray = this.groupNameOptions.filter((item) => {
+        return this.form.moveValue === item.value
+      })
+      //TODO 这里的processId/categoryId 有点模糊
+      let parmas = {
+        processId: this.subGroup.processes.processId,
+        categoryId: tragetArray[0].value
+      }
+      moveProcess(parmas).then((res) => {
+        window.console.log('移动到==', res)
+        this.messageText = `移动分组成功`
+        this.handleDataBack()
+      })
+    },
+    /**
+     * 接口返回后的相同处理步骤提取
+     */
+    handleDataBack() {
+      this.$message.success(this.messageText)
+      this.close()
+      this.$emit('reloadData')
+    },
+    /**
+     * 处理确认按钮
+     */
     handleSubmit() {
-      // this.$emit('addUser', '1')
-      let messageText =
-        this.dialogType === 'add' ? `“${this.form.groupName}”分组创建成功` : '重命名成功'
-      this.$message.success(messageText)
-      //   this.close()
+      switch (this.dialogOptions.dialogType) {
+        case 'add':
+          this.addNewGroup()
+          break
+        case 'rename':
+          this.renameGroup()
+          break
+        case 'move':
+          this.moveGroup()
+          break
+        case 'enable':
+          this.enableGroup()
+          break
+      }
     }
   }
 }
