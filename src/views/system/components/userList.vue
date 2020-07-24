@@ -130,7 +130,7 @@ export default {
       query: {
         name: ''
       },
-      loading: true,
+      loading: false,
       page: {
         currentPage: 1,
         size: 10,
