@@ -343,6 +343,7 @@ export default {
     },
     // 跳去异动申请
     jumpToApply(userId) {
+      // approveNum 不等于0  不能申请
       this.$router.push({
         path: '/personnel/transaction/changeApply',
         query: {

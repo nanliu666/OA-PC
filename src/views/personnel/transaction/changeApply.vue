@@ -214,13 +214,6 @@
                       :value="item.orgId"
                     />
                   </el-select>
-                  <!-- <el-tree-select
-										ref="orgTree"
-										v-model="applyParams.newOrgId"
-										:styles="subOrgOptions.styles"
-										:select-params="subOrgOptions.config.selectParams"
-										:tree-params="subOrgOptions.config.treeParams"
-									/> -->
                 </el-form-item>
               </el-col>
             </el-row>
@@ -345,7 +338,7 @@
               <el-col :span="10">
                 <el-button
                   size="medium"
-                  @click="handelCancel"
+                  @click="goBack"
                 >
                   取消
                 </el-button>
@@ -434,38 +427,6 @@ export default {
       newJobList: [],
       // 变更岗位
       newPositionList: [],
-      // // 树状选择框的配置
-      // subOrgOptions: {
-      // 	props: {
-      // 		label: 'orgName',
-      // 		value: 'orgId'
-      // 	},
-      // 	styles: {
-      // 		width: '100%'
-      // 	},
-      // 	placeholder: '请选择部门',
-      // 	dicData: [],
-      // 	config: {
-      // 		selectParams: {
-      // 			placeholder: '请输入内容',
-      // 			multiple: false
-      // 		},
-      // 		treeParams: {
-      // 			data: [],
-      // 			'check-strictly': true,
-      // 			'default-expand-all': true,
-      // 			'expand-on-click-node': true,
-      // 			clickParent: false,
-      // 			filterable: false,
-      // 			props: {
-      // 				children: 'children',
-      // 				label: 'orgName',
-      // 				disabled: 'disabled',
-      // 				value: 'orgId'
-      // 			}
-      // 		}
-      // 	}
-      // },
       btnLoading: false
     }
   },
@@ -677,10 +638,6 @@ export default {
       })
       this.changeReason = targetArr[index].options
     },
-    // 点击取消
-    handelCancel() {
-      this.$router.go(-1)
-    },
     // 点击提交
     handelSubmit() {
       this.$refs.applyForm.validate((valid) => {
@@ -740,7 +697,7 @@ export default {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
                   this.$message.success('提交成功', 3000)
-                  this.$router.go(-1)
+                  this.goBack()
                 })
               }
             })
