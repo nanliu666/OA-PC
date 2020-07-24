@@ -48,3 +48,7 @@ export const releaseProcess = (params) => post('/appr/v2/appr/process/release', 
  * 审批流程发布接口
  */
 export const sortCategory = (params) => post('/appr/v2/appr/category/sort', params)
+/**
+ * 审批流程排序接口
+ */
+export const sortProcess = (params) => post('/appr/v2/appr/process/sort', params)

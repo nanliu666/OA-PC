@@ -103,119 +103,124 @@
                 </el-tooltip>
               </div>
             </div>
-            <ul
-              v-for="(processesItem, processesIndex) in item.processes"
-              :key="processesIndex"
-              class="detail-ul"
+            <draggable
+              v-model="item.processes"
+              @end="dragEnd(item)"
             >
-              <li class="detail-li">
-                <div class="li-left">
-                  <i
-                    v-if="item.name !== '未启用'"
-                    class="icon-drag drag-i"
-                  />
-                  <div
-                    class="logo-box"
-                    :class="{ 'filter-gray': item.name === '未启用' }"
-                  >
-                    <svg
-                      class="icon"
-                      aria-hidden="true"
+              <ul
+                v-for="(processesItem, processesIndex) in item.processes"
+                :key="processesIndex"
+                class="detail-ul"
+              >
+                <li class="detail-li">
+                  <div class="li-left">
+                    <i
+                      v-if="item.name !== '未启用'"
+                      class="icon-drag drag-i"
+                    />
+                    <div
+                      class="logo-box"
+                      :class="{ 'filter-gray': item.name === '未启用' }"
                     >
-                      <use :[symbolKey]="'#icon-' + processesItem.icon" />
-                    </svg>
-                  </div>
-                  <div class="content-box">
-                    <div class="content-title">
-                      {{ processesItem.processName }}
-                    </div>
-                    <el-popover
-                      v-if="processesItem.remark"
-                      placement="top-start"
-                      width="420"
-                      trigger="hover"
-                      :content="processesItem.remark"
-                    >
-                      <div
-                        slot="reference"
-                        class="content-des"
+                      <svg
+                        class="icon"
+                        aria-hidden="true"
                       >
-                        {{ processesItem.remark }}
+                        <use :[symbolKey]="'#icon-' + processesItem.icon" />
+                      </svg>
+                    </div>
+                    <div class="content-box">
+                      <div class="content-title">
+                        {{ processesItem.processName }}
                       </div>
-                    </el-popover>
+                      <el-popover
+                        v-if="processesItem.remark"
+                        placement="top-start"
+                        width="420"
+                        trigger="hover"
+                        :content="processesItem.remark"
+                      >
+                        <div
+                          slot="reference"
+                          class="content-des"
+                        >
+                          {{ processesItem.remark }}
+                        </div>
+                      </el-popover>
+                    </div>
                   </div>
-                </div>
-                <div class="li-middle">
-                  <div>可见范围</div>
-                  <div class="middle-span">
-                    全部可见
+                  <div class="li-middle">
+                    <div>可见范围</div>
+                    <div class="middle-span">
+                      全部可见
+                    </div>
                   </div>
-                </div>
-                <div class="li-right">
-                  <el-button type="text">
-                    编辑
-                  </el-button>
-                  <div
-                    v-if="item.name !== '未启用'"
-                    class="margin-left-10"
-                  >
-                    <el-button
-                      type="text"
-                      @click="disableApproval(processesItem)"
-                    >
-                      停用
+                  <div class="li-right">
+                    <el-button type="text">
+                      编辑
                     </el-button>
-                    <el-button
-                      type="text"
-                      @click="moveApproval(item, processesItem)"
+                    <div
+                      v-if="item.name !== '未启用'"
+                      class="margin-left-10"
                     >
-                      移动到
-                    </el-button>
-                  </div>
-                  <div
-                    v-else
-                    class="margin-left-10"
-                  >
-                    <el-button
-                      v-if="processesItem.status === 1"
-                      type="text"
-                      @click="enableApproval(processesItem)"
-                    >
-                      启用
-                    </el-button>
-                    <el-button
-                      v-if="processesItem.status === 0"
-                      type="text"
-                      @click="publishApproval(item, processesItem)"
-                    >
-                      发布
-                    </el-button>
-                    <el-button
-                      v-if="processesItem.status === 0"
-                      type="text"
-                      @click="deleteProcesses(processesItem)"
-                    >
-                      删除
-                    </el-button>
-                    <el-tooltip
-                      v-if="processesItem.status === 1"
-                      class="item"
-                      effect="dark"
-                      content="无法删除，当前审批还有进行中的流程"
-                      placement="top-start"
-                    >
-                      <button
+                      <el-button
                         type="text"
-                        class="disable-action-button"
-                        style="color: #a9beff"
+                        @click="disableApproval(processesItem)"
+                      >
+                        停用
+                      </el-button>
+                      <el-button
+                        type="text"
+                        @click="moveApproval(item, processesItem)"
+                      >
+                        移动到
+                      </el-button>
+                    </div>
+                    <div
+                      v-else
+                      class="margin-left-10"
+                    >
+                      <el-button
+                        v-if="processesItem.status === 1"
+                        type="text"
+                        @click="enableApproval(processesItem)"
+                      >
+                        启用
+                      </el-button>
+                      <el-button
+                        v-if="processesItem.status === 0"
+                        type="text"
+                        @click="publishApproval(item, processesItem)"
+                      >
+                        发布
+                      </el-button>
+                      <el-button
+                        v-if="processesItem.status === 0"
+                        type="text"
+                        @click="deleteProcesses(processesItem)"
                       >
                         删除
-                      </button>
-                    </el-tooltip>
+                      </el-button>
+                      <el-tooltip
+                        v-if="processesItem.status === 1"
+                        class="item"
+                        effect="dark"
+                        content="无法删除，当前审批还有进行中的流程"
+                        placement="top-start"
+                      >
+                        <button
+                          type="text"
+                          class="disable-action-button"
+                          style="color: #a9beff"
+                        >
+                          删除
+                        </button>
+                      </el-tooltip>
+                    </div>
                   </div>
-                </div>
-              </li>
-            </ul>
+                </li>
+              </ul>
+            </draggable>
           </li>
         </ul>
       </section>
@@ -240,14 +245,16 @@ import {
   getDraftList,
   deleteProcess,
   releaseProcess,
-  sortCategory
+  sortCategory,
+  sortProcess
 } from '@/api/apprProcess/apprProcess'
 import processDialog from '@/views/apprProcess/components/processDialog'
 import dragList from '@/views/apprProcess/components/dragList'
+import draggable from 'vuedraggable'
 import { deepClone } from '@/util/util'
 export default {
   name: 'ApprovalIndex',
-  components: { processDialog, dragList },
+  components: { processDialog, dragList, draggable },
   data() {
     return {
       symbolKey: 'xlink:href',
@@ -283,6 +290,21 @@ export default {
       })
       window.console.log('审批列表数据==', resData)
       this.processListData = resData
+    },
+    /**
+     * 拖拽结束
+     */
+    dragEnd(data) {
+      let parmas = []
+      data.processes.map((item, index) => {
+        parmas.push({
+          processId: item.processId,
+          categoryId: data.id,
+          sort: index + 1
+        })
+      })
+      // window.console.log('parmas==', parmas)
+      sortProcess(parmas).then(() => {})
     },
     /**
      * 启用
@@ -416,6 +438,9 @@ export default {
         this.refreshData()
       })
     },
+    /**
+     * 删除分组
+     */
     deleteApproval(data) {
       // window.console.log('data==', data)
       this.$confirm('您确定要删除该审批分组吗？', '删除分组', {
@@ -532,6 +557,9 @@ export default {
               display: flex;
               justify-content: center;
               align-items: center;
+              &:hover {
+                cursor: move;
+              }
             }
             .logo-box {
               display: flex;

@@ -23,7 +23,7 @@ const processListData = {
           visibleRange: 'all'
         },
         {
-          processId: '1',
+          processId: '2',
           processName: '转正申请',
           sort: 1,
           icon: 'approval-checkin-bicolor',
@@ -31,7 +31,7 @@ const processListData = {
           visibleRange: 'all'
         },
         {
-          processId: '1',
+          processId: '3',
           processName: '离职申请',
           sort: 1,
           icon: 'approval-leaveoffice-bicolor',
@@ -197,6 +197,10 @@ export default ({ mock }) => {
   })
   // 审批分组排序接口
   Mock.mock(new RegExp('/api/appr/v2/appr/category/sort' + '.*'), 'post', () => {
+    return categoryData
+  })
+  // 审批流程排序接口
+  Mock.mock(new RegExp('/api/appr/v2/appr/process/sort' + '.*'), 'post', () => {
     return categoryData
   })
 }
