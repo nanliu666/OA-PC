@@ -165,7 +165,10 @@
       </template>
 
       <template #emerType="{row}">
-        <el-tag :type="emerTypeType(row)">
+        <el-tag
+          v-show="!_.isEmpty(_.trim(_.get(row, 'emerType')))"
+          :type="emerTypeType(row)"
+        >
           {{ translator({ dictKey: 'emerType', value: _.get(row, 'emerType') }) }}
         </el-tag>
       </template>
@@ -456,7 +459,7 @@ export default {
       // 从全部任务跳转的为招聘主管, 不使用userId
       this.$router.push({
         path: '/personnel/recruit/details',
-        query: { id: id, status: 'iSubmit' /* , userId: this.userId */ }
+        query: { id: id /* , userId: this.userId */ }
       })
     },
 

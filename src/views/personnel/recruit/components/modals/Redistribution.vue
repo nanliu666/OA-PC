@@ -157,9 +157,9 @@ export default {
           const data = {
             recruitmentId: res.id,
             assignUser: this.userId,
-            users: _.map(res.users, ({ userId, taskNum, $config }) => ({
+            users: _.map(res.users, ({ userId, taskNum, entryNum, $config }) => ({
               userId,
-              taskNum,
+              taskNum: taskNum + entryNum,
               operatorType: $config ? 'Add' : 'Update'
             }))
           }
