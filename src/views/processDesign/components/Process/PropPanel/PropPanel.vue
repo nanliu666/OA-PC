@@ -66,148 +66,111 @@
           :tab-list="['user']"
         />
       </row-wrapper>
-      <template>
-        <Parser
-          :form-conf="formConf"
-          @submit="sumbitForm"
+      <template v-for="(item, index) in pconditions">
+        <!-- 计数 -->
+        <row-wrapper
+          v-if="
+            couldShowIt(
+              item,
+              'el-input-number',
+              'fc-date-duration',
+              'fc-time-duration',
+              'fc-amount',
+              'fc-calculate',
+              'number'
+            )
+          "
+          :key="index"
+          :title="item.__config__.label"
         >
-          <template>
-            <!-- 计数 -->
-            <row-wrapper
-              v-if="
-                couldShowIt(
-                  item,
-                  'el-input-number',
-                  'fc-date-duration',
-                  'fc-time-duration',
-                  'fc-amount',
-                  'fc-calculate'
-                )
-              "
-              :key="index"
-              :title="item.label"
-            >
-              <num-input
-                :key="index"
-                v-model="item.conditionValue"
-                :title="timeTangeLabel(item)"
-                style="padding-right: 6px;"
-              />
-              <template v-slot:action>
-                <i
-                  class="el-icon-delete"
-                  style="cursor: pointer;"
-                  @click="onDelCondition(item)"
-                />
-              </template>
-            </row-wrapper>
+          <num-input
+            :key="index"
+            v-model="item.__config__.defaultValue"
+            :title="timeTangeLabel(item)"
+            style="padding-right: 6px;"
+          />
+          <template v-slot:action>
+            <i
+              class="el-icon-delete"
+              style="cursor: pointer;"
+              @click="onDelCondition(item)"
+            />
           </template>
-        </Parser>
-      </template>
-      <!--            <template v-for="(item, index) in pconditions">-->
-      <!--              &lt;!&ndash; 计数 &ndash;&gt;-->
-      <!--              <row-wrapper-->
-      <!--                v-if="-->
-      <!--                  couldShowIt(-->
-      <!--                    item,-->
-      <!--                    'el-input-number',-->
-      <!--                    'fc-date-duration',-->
-      <!--                    'fc-time-duration',-->
-      <!--                    'fc-amount',-->
-      <!--                    'fc-calculate'-->
-      <!--                  )-->
-      <!--                "-->
-      <!--                :key="index"-->
-      <!--                :title="item.label"-->
-      <!--              >-->
-      <!--                <num-input-->
-      <!--                  :key="index"-->
-      <!--                  v-model="item.conditionValue"-->
-      <!--                  :title="timeTangeLabel(item)"-->
-      <!--                  style="padding-right: 6px;"-->
-      <!--                />-->
-      <!--                <template v-slot:action>-->
-      <!--                  <i-->
-      <!--                    class="el-icon-delete"-->
-      <!--                    style="cursor: pointer;"-->
-      <!--                    @click="onDelCondition(item)"-->
-      <!--                  />-->
-      <!--                </template>-->
-      <!--              </row-wrapper>-->
-      <!--              &lt;!&ndash; 单选组 &ndash;&gt;-->
-      <!--              <row-wrapper-->
-      <!--                v-if="couldShowIt(item, 'el-radio-group')"-->
-      <!--                :key="index"-->
-      <!--                :title="item.label"-->
-      <!--              >-->
-      <!--                <el-radio-group-->
-      <!--                  v-model="item.conditionValue"-->
-      <!--                  class="radio-group"-->
-      <!--                >-->
-      <!--                  <el-radio-->
-      <!--                    v-for="item in item.options"-->
-      <!--                    :key="item.label"-->
-      <!--                    :label="item.label"-->
-      <!--                  >-->
-      <!--                    {{ item.label }}-->
-      <!--                  </el-radio>-->
-      <!--                </el-radio-group>-->
-      <!--                <template v-slot:action>-->
-      <!--                  <i-->
-      <!--                    class="el-icon-delete"-->
-      <!--                    style="cursor: pointer;"-->
-      <!--                    @click="onDelCondition(item)"-->
-      <!--                  />-->
-      <!--                </template>-->
-      <!--              </row-wrapper>-->
+        </row-wrapper>
+        <!-- 单选组 -->
+        <row-wrapper
+          v-if="couldShowIt(item, 'el-radio-group', 'radio')"
+          :key="index"
+          :title="item.__config__.label"
+        >
+          <el-radio-group
+            v-model="item.__config__.defaultValue"
+            class="radio-group"
+          >
+            <el-radio
+              v-for="item in item.__slot__.options"
+              :key="item.label"
+              :label="item.label"
+            >
+              {{ item.label }}
+            </el-radio>
+          </el-radio-group>
+          <template v-slot:action>
+            <i
+              class="el-icon-delete"
+              style="cursor: pointer;"
+              @click="onDelCondition(item)"
+            />
+          </template>
+        </row-wrapper>
 
-      <!--              &lt;!&ndash; 下拉 &ndash;&gt;-->
-      <!--              <row-wrapper-->
-      <!--                v-if="couldShowIt(item, 'el-select')"-->
-      <!--                :key="index"-->
-      <!--                :title="item.label"-->
-      <!--              >-->
-      <!--                <el-select-->
-      <!--                  v-model="item.conditionValue"-->
-      <!--                  style="width: 280px"-->
-      <!--                  placeholder="请选择"-->
-      <!--                  size="small"-->
-      <!--                >-->
-      <!--                  <el-option-->
-      <!--                    v-for="item in item.options"-->
-      <!--                    :key="item.value"-->
-      <!--                    :label="item.label"-->
-      <!--                    :value="item.value"-->
-      <!--                  />-->
-      <!--                </el-select>-->
-      <!--                <template v-slot:action>-->
-      <!--                  <i-->
-      <!--                    class="el-icon-delete"-->
-      <!--                    style="cursor: pointer;"-->
-      <!--                    @click="onDelCondition(item)"-->
-      <!--                  />-->
-      <!--                </template>-->
-      <!--              </row-wrapper>-->
-      <!--              &lt;!&ndash; 组织机构 &ndash;&gt;-->
-      <!--              <row-wrapper-->
-      <!--                v-if="couldShowIt(item, 'fc-org-select')"-->
-      <!--                :key="index"-->
-      <!--                :title="item.label"-->
-      <!--              >-->
-      <!--                <fc-org-select-->
-      <!--                  :ref="'org' + index"-->
-      <!--                  v-model="item.conditionValue"-->
-      <!--                  :tab-list="['org']"-->
-      <!--                />-->
-      <!--                <template v-slot:action>-->
-      <!--                  <i-->
-      <!--                    class="el-icon-delete"-->
-      <!--                    style="cursor: pointer;"-->
-      <!--                    @click="onDelCondition(item)"-->
-      <!--                  />-->
-      <!--                </template>-->
-      <!--              </row-wrapper>-->
-      <!--            </template>-->
+        <!-- 下拉 -->
+        <row-wrapper
+          v-if="couldShowIt(item, 'el-select', 'select')"
+          :key="index"
+          :title="item.label"
+        >
+          <el-select
+            v-model="item.__config__.defaultValue"
+            style="width: 280px"
+            placeholder="请选择"
+            size="small"
+          >
+            <el-option
+              v-for="item in item.__slot__.options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <template v-slot:action>
+            <i
+              class="el-icon-delete"
+              style="cursor: pointer;"
+              @click="onDelCondition(item)"
+            />
+          </template>
+        </row-wrapper>
+        <!-- 组织机构 -->
+        <row-wrapper
+          v-if="couldShowIt(item, 'fc-org-select')"
+          :key="index"
+          :title="item.label"
+        >
+          <fc-org-select
+            :ref="'org' + index"
+            v-model="item.__config__.defaultValue"
+            :tab-list="['org']"
+          />
+          <template v-slot:action>
+            <i
+              class="el-icon-delete"
+              style="cursor: pointer;"
+              @click="onDelCondition(item)"
+            />
+          </template>
+        </row-wrapper>
+      </template>
       <div style="padding-left:24px;margin-top:2em;">
         <el-button
           type="primary"
@@ -357,9 +320,9 @@
                 </el-row>
 
                 <br>
-                <el-checkbox v-model="useDirectorProxy">
-                  找不到主管时，由上级主管代审批
-                </el-checkbox>
+                <!--                <el-checkbox v-model="useDirectorProxy">-->
+                <!--                  找不到主管时，由上级主管代审批-->
+                <!--                </el-checkbox>-->
               </div>
             </div>
             <div
@@ -496,9 +459,9 @@
         title="抄送人"
       />
       <br>
-      <el-checkbox v-model="properties.userOptional">
-        允许发起人自选抄送人
-      </el-checkbox>
+      <!--      <el-checkbox v-model="properties.userOptional">-->
+      <!--        允许发起人自选抄送人-->
+      <!--      </el-checkbox>-->
     </section>
 
     <el-dialog
@@ -576,7 +539,7 @@ import Clickoutside from 'element-ui/src/utils/clickoutside'
 import { NodeUtils } from '../FlowCard/util.js'
 import RowWrapper from './RowWrapper'
 import NumInput from './NumInput'
-import Parser from '../../FormDesign/components/parser/Parser'
+
 const rangeType = {
   lt: '<',
   lte: '≤',
@@ -599,8 +562,7 @@ export default {
   },
   components: {
     'num-input': NumInput,
-    'row-wrapper': RowWrapper,
-    Parser: Parser
+    'row-wrapper': RowWrapper
   },
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
@@ -766,7 +728,9 @@ export default {
     },
     // 是否可以显示当前条件组件
     couldShowIt(item, ...tag) {
-      return tag.includes(item.tag) && this.showingPCons.includes(item.formId)
+      return (
+        tag.includes(item.__config__.type) && this.showingPCons.includes(item.__config__.formId)
+      )
     },
 
     initFormOperates(target) {
@@ -815,10 +779,10 @@ export default {
       let nodeContent = ''
       const conditions = []
       this.showingPCons
-        .map((fid) => this.pconditions.find((t) => t.formId === fid))
+        .map((fid) => this.pconditions.find((t) => t.__config__.formId === fid))
         .forEach((t) => {
           if (!t) return // 发起人条件时 t 为空 发起人在其他地方获取
-          const cValue = t.conditionValue
+          const cValue = t.__config__.defaultValue
           if (cValue === undefined || cValue === null) {
             return
           }
@@ -827,33 +791,36 @@ export default {
             'fc-date-duration',
             'fc-time-duration',
             'fc-amount',
-            'fc-calculate'
+            'fc-calculate',
+            'number'
           ]
-          if (numberTypeCmp.includes(t.tag)) {
+          const res = { formId: t.__config__.formId, defaultValue: cValue }
+          if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
               const numVal = cValue.value
               nodeContent +=
-                `[${numVal[0]} ${rangeType[numVal[1]]} ${t.label} ${rangeType[numVal[2]]} ${
-                  numVal[3]
-                }] ` + '\n'
+                `[${numVal[0]} ${rangeType[numVal[1]]} ${t.__config__.label} ${
+                  rangeType[numVal[2]]
+                } ${numVal[3]}] ` + '\n'
             } else {
-              nodeContent += `[${t.label} ${rangeType[cValue.type]} ${cValue.value}] ` + '\n'
+              nodeContent +=
+                `[${t.__config__.label} ${rangeType[cValue.type]} ${cValue.value}] ` + '\n'
             }
           } else if (t.tag === 'fc-org-select') {
             const index = this.pconditions.findIndex((p) => p.formId === t.formId)
             const labels = this.$refs['org' + index][0].selectedLabels
             nodeContent += `[${t.label} = ${labels}] ` + '\n'
           } else {
-            nodeContent += `[${t.label} = ${cValue}] ` + '\n'
+            nodeContent += `[${t.__config__.label} = ${cValue}] ` + '\n'
           }
-          const res = { formId: t.formId, conditionValue: cValue }
           conditions.push(res)
         }, [])
 
       this.properties.conditions = conditions
       // 发起人虽然是条件 但是这里把发起人放到外部单独判断
-      this.properties.initiator = this.initiator
-      this.initiator.length > 0 &&
+      this.properties.initiator = this.initiator['user']
+      this.initiator['user'] &&
+        this.initiator['user'].length > 0 &&
         (nodeContent = `[发起人: ${this.getOrgSelectLabel('condition')}]` + '\n' + nodeContent)
       this.$emit('confirm', this.properties, nodeContent || '请设置条件')
       this.visible = false
@@ -915,10 +882,10 @@ export default {
      * 删除流程条件
      */
     onDelCondition(condition) {
-      const index = this.showingPCons.findIndex((id) => id === condition.formId)
+      const index = this.showingPCons.findIndex((id) => id === condition.__config__.formId)
       if (index > -1) {
         this.showingPCons.splice(index, 1)
-        this.pconditions.find((t) => t.formId === condition.formId).conditionValue = undefined
+        this.pconditions.find((t) => t.formId === condition.formId).defaultValue = undefined
       }
     },
     // 配合getPriorityLength 获取前一个节点条件数组长度 用于设置优先级
@@ -974,19 +941,20 @@ export default {
       // 初始化条件表单数据
       let nodeConditions = this.value.properties && this.value.properties.conditions
       this.pconditions = JSON.parse(JSON.stringify(this.$store.state.process.processConditions))
-      this.initiator['dep&user'] = this.value.properties.initiator
+      this.initiator['user'] = this.value.properties.initiator
       if (Array.isArray(this.pconditions)) {
         let temp = undefined
         this.showingPCons = [-1] // 默认显示发起人
         this.pconditions.forEach((t) => {
           if (Array.isArray(nodeConditions)) {
-            const con = nodeConditions.find((item) => item.formId == t.formId)
+            // if(nodeConditions.)
+            const con = nodeConditions.find((item) => item.formId == t.__config__.formId)
             con &&
-              con.conditionValue &&
-              ((temp = con.conditionValue), this.showingPCons.push(t.formId))
+              con.defaultValue &&
+              ((temp = con.defaultValue), this.showingPCons.push(t.__config__.formId))
           }
 
-          this.$set(t, 'conditionValue', temp)
+          this.$set(t.__config__, 'defaultValue', temp)
         })
       }
     }
@@ -1004,6 +972,7 @@ export default {
 .drawer {
   font-size: 14px;
   color: #202940;
+
   >>> .el-drawer__header {
     margin-bottom: 0;
     /*border-bottom: 1px solid #c5c5c5;*/
@@ -1039,13 +1008,14 @@ export default {
 
 .actions {
   position: absolute;
-  bottom:20px;
+  bottom: 20px;
   left: 0;
   padding: 6px 12px;
   width: 100%;
   box-sizing: border-box;
   text-align: right;
-  .btn{
+
+  .btn {
     width: 84px;
   }
 }
@@ -1064,6 +1034,7 @@ export default {
 .form-auth-table {
   font-size: 14px;
   margin-top: 24px;
+
   .auth-table-header {
     background: #fafafa;
     line-height: 40px;
@@ -1110,7 +1081,7 @@ export default {
 }
 
 .condition-pane {
-  height: calc(100%-50px)
+  height: calc(100% -50px)
   ///*overflow scroll*/
 }
 
@@ -1137,25 +1108,29 @@ export default {
   border: 1px solid #C6CBCE;
   border-radius: 4px;
   width: 312px;
+
   > div {
     width: 156px;
     height: 34px;
     font-size: 14px;
     color: #202940;
     line-height: 34px;
-    cursor :pointer;
+    cursor: pointer;
   }
-  .active{
+
+  .active {
     background: #207EFA;
     color: #FFFFFF;
   }
 }
+
 /deep/ .el-radio {
   color: #202940;
   cursor: pointer;
   margin-right: 30px;
 }
-.formAuth{
+
+.formAuth {
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 100px)

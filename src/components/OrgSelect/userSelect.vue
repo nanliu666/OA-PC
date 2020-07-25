@@ -222,7 +222,7 @@ export default {
           if (node.users) {
             users = node.users.map((user) => ({
               ...user,
-              id: user.userId,
+              id: node.orgId + '_' + user.userId,
               type: 'user'
             }))
             if (node.children) {

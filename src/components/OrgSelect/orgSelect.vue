@@ -26,7 +26,7 @@
         >
           {{ item.name }}
         </el-tag>
-        <div v-if="selectedData.length < 1">
+        <div v-if="selectedData && selectedData.length < 1">
           所有人
         </div>
       </div>

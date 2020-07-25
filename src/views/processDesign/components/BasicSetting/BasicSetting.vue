@@ -153,6 +153,14 @@ export default {
     formData: {
       handler() {},
       immediate: true
+    },
+    conf: {
+      handler() {
+        if (typeof this.conf === 'object' && this.conf !== null) {
+          Object.assign(this.formData, this.conf)
+        }
+      },
+      deep: true
     }
   },
   created() {

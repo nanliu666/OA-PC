@@ -10,7 +10,7 @@ flex-center()
     align-items center
 
 //  三点省略 支持单行多行
-// Mixin { n:Number } n：省略行数限制 
+// Mixin { n:Number } n：省略行数限制
 ellipsis(n)
     overflow: hidden;
     text-overflow: ellipsis;
@@ -86,7 +86,7 @@ btn-bigger()
   text-align: center;
   flex-center()
   flex-direction column
-  
+
   &::before {
     content:"";
     width: 10px;
@@ -140,7 +140,7 @@ btn-bigger()
       background-color  #697A91
     }
   }
-  
+
 
   .header {
     padding-left: 16px;
@@ -261,7 +261,7 @@ btn-bigger()
     .title-text{
         color #1F7DF9
     }
-        
+
   }
 
   .body {
@@ -339,10 +339,12 @@ btn-bigger()
         flex-flow : row nowrap;
       align-items :center;
       justify-content : center;
-      .icon {
+      .icons {
         color: #3296fa;
         font-size :7px;
-        margin-top:2px;
+        font-weight :800;
+        margin-top:0px;
+        margin-left: 0.5px;
       }
     }
   }
@@ -394,7 +396,7 @@ btn-bigger()
                 width: 2px;
                 background: $line-color;
                 position absolute
-        > .btn 
+        > .btn
             z-index 99
             cursor pointer
             position: absolute;
@@ -416,7 +418,7 @@ btn-bigger()
     align-items center
     text-align center
     padding: 10px 20px;
-    >div:nth-child(1)  .iconfont   
+    >div:nth-child(1)  .iconfont
         color #FF943E
     >div:nth-child(2)  .iconfont
         color #3296FA
@@ -430,10 +432,10 @@ btn-bigger()
         font-size 12px
         cursor pointer
         margin-bottom 4px
-    
+
         .iconfont
             font-size 32px
-        
+
         &:hover
             background #3296FA
             box-shadow 0 0 8px 4px rgba(0,0,0,.1)

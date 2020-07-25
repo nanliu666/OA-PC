@@ -1,9 +1,20 @@
 export default {
   basicSetting: {
-    flowName: '入职',
-    flowImg: 12,
-    flowGroup: 2,
-    flowRemark: '简单入职背景填写'
+    icon: '12',
+    processName: '入职',
+    categoryId: '1283677855282483201',
+    initiator: [
+      {
+        hasChildren: false,
+        id: '1257943561580855298',
+        name: '后端组',
+        orgId: '1257943561580855298',
+        orgName: '后端组',
+        parentId: '1252523599903072261'
+      }
+    ],
+    processAdmin: '1285518000080068610',
+    remark: '简单入职背景填写'
   },
   processData: {
     type: 'start',
@@ -162,7 +173,7 @@ export default {
             ],
             counterSign: true,
             optionalMultiUser: false,
-            optionalRange: 'USER'
+            optionalRange: 'ALL'
           },
           nodeId: 'Wb2',
           prevId: 'Lb2',
@@ -250,7 +261,7 @@ export default {
             ],
             counterSign: true,
             optionalMultiUser: false,
-            optionalRange: 'USER'
+            optionalRange: 'ALL'
           },
           nodeId: 'Xb2',
           prevId: 'Mb2'
@@ -499,10 +510,8 @@ export default {
     formBtns: true
   },
   advancedSetting: {
-    autoRepeat: true,
-    myAuditAutoPass: true,
-    remarkTip: '这里是填写提示',
-    remarkRequired: true,
-    notVisibleForSponsor: true
+    approverDistinct: 1,
+    isOpinion: true,
+    tip: '这里是填写提示'
   }
 }

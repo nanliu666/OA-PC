@@ -9,9 +9,6 @@ export default {
   props: ['tabName', 'conf'],
   data() {
     let data = getMockData()
-    if (typeof this.conf === 'object' && this.conf !== null) {
-      Object.assign(data, this.conf)
-    }
     return {
       data, // 流程图数据
       scaleVal: 100, // 流程图缩放比例 100%
@@ -20,6 +17,19 @@ export default {
       activeData: null, // 被激活的流程卡片数据，用于属性面板编辑
       isProcessCmp: true,
       verifyMode: false
+    }
+  },
+  watch: {
+    conf: {
+      handler(val) {
+        // alert(12)
+        if (typeof val === 'object' && val !== null) {
+          this.data = Object.assign(this.data, val)
+        }
+        this.forceUpdate()
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {

@@ -80,9 +80,10 @@ import Process from './components/Process/Process'
 import FormDesign from './components/FormDesign/FormDesign'
 import BasicSetting from './components/BasicSetting/BasicSetting'
 import AdvancedSetting from './components/AdvancedSetting/AdvancedSetting'
-import MockData from './mockData.js'
-import { postDeploy } from '../../api'
+// import { postDeploy } from '../../api'
 import { Base64 } from 'js-base64'
+import { getApprProcess, postApprProcess } from '@/api/processDesign/basicSetting'
+// import mockData from "@/views/processDesign/mockData";
 
 const beforeUnload = function(e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容'
@@ -111,7 +112,7 @@ export default {
       lineList: [],
       condition: [],
       endNode: [],
-      mockData: MockData, // 可选择诸如 $route.param，Ajax获取数据等方式自行注入
+      mockData: {}, // 可选择诸如 $route.param，Ajax获取数据等方式自行注入
       activeStep: 'basicSetting', // 激活的步骤面板
       processMap: {},
       flowName: 'flowName',
@@ -155,7 +156,18 @@ export default {
       return `translateX(${this.steps.findIndex((t) => t.key === this.activeStep) * 100}%)`
     }
   },
+  created() {
+    this.initData()
+  },
   methods: {
+    initData() {
+      let params = {
+        processId: this.$route.query.processId
+      }
+      getApprProcess(params).then((res) => {
+        this.mockData = JSON.parse(Base64.decode(res.baseJson))
+      })
+    },
     jumpStep(data) {
       this.activeStep = data
     },
@@ -199,7 +211,7 @@ export default {
       // this.endNode = endN.nodeId
       let processData = JSON.parse(JSON.stringify(param.processData))
       this.resfun(processData)
-      this.recursion(processData)
+      this.recursion(processData, param.processData)
 
       let item = {
         id: 'end',
@@ -250,10 +262,6 @@ export default {
       //     "flowKey": "UserFormalInfo", // 流程的标识
       //     "flowCategory": "leave"，    // 流程分类
       // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
-      // let bese64 = Base64.encode(JSON.stringify(processData))
-      // console.log('processData_____',bese64)
-      // let json =JSON.parse(Base64.decode(bese64))
-      // console.log('json_____',json)
       let params = {
         processData: this.base,
         processMap: this.processMap,
@@ -266,9 +274,12 @@ export default {
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
-      postDeploy(params).then(() => {
+      postApprProcess(params).then(() => {
         this.$message.success('提交成功')
       })
+      // postDeploy(params).then(() => {
+      //   this.$message.success('提交成功')
+      // })
     },
     resfun(data) {
       let endChild = this.childNode(data)
@@ -291,7 +302,7 @@ export default {
         })
       }
     },
-    recursion(data) {
+    recursion(data, origin) {
       let type = {
         //类型
         start: 'start', //开始节点
@@ -333,10 +344,12 @@ export default {
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
+          origin.varible = 'optional_' + data.nodeId + '_id'
           item.assignee = '${optional_' + data.nodeId + '_id}'
           this.processMap['optional_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'director') {
           // 主管
+          origin.varible = 'director_' + data.nodeId + '_id'
           item.assignee = '${director_' + data.nodeId + '_id}'
           this.processMap['director_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'mySelf') {
@@ -387,7 +400,7 @@ export default {
         //过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
         this.base.push(item)
       }
-      data.childNode && this.recursion(data.childNode) //有子节点，递归节点
+      data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
       if (hasBranch(data)) {
         //判断是否存在条件，如果有。。。
         let conditionNextNodeId = data.childNode ? data.childNode.nodeId : '' //判断条件是否存在子节点
@@ -410,7 +423,7 @@ export default {
           target: 'gateway_' + data.nodeId
         }
         this.condition.push(newIt)
-        data.conditionNodes.map((d) => {
+        data.conditionNodes.map((d, index) => {
           let targetId = ''
           if (d.childNode) {
             targetId = d.childNode.nodeId
@@ -443,7 +456,7 @@ export default {
             }
             this.condition.push(endIt)
           }
-          this.recursion(d)
+          this.recursion(d, origin.conditionNodes[index])
         })
       }
     },
