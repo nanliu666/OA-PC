@@ -802,6 +802,17 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
+            menuId: '159011207563',
+            menuName: '审批提交',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 0,
+            code: 'submit_approval',
+            alias: 'submitApproval',
+            path: '/apprProcess/apprSubmit',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
             menuId: '159011207569132',
             menuName: '配置流程',
             menuType: 'Menu',

@@ -1,11 +1,11 @@
 <script>
 /**
- *Copyright: Copyright (c) 2020
- *Author:JakHuang
- *Version 1.0
- *Title: form-generator/ElementUI表单设计及代码生成器
- *GitHub: https://github.com/JakHuang/form-generator
- **/
+ * Copyright: Copyright (c) 2020
+ * Author:JakHuang
+ * Version 1.0
+ * Title: form-generator/ElementUI表单设计及代码生成器
+ * GitHub: https://github.com/JakHuang/form-generator
+ */
 import draggable from 'vuedraggable'
 import render from '../components/render/render'
 import renderMobile from '../components/renderMobile/render'

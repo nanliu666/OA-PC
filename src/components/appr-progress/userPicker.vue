@@ -1,6 +1,7 @@
 <template>
   <el-dialog
     title="请选择审批人"
+    class="user-picker"
     :visible="visible"
     width="800px"
     append-to-body
@@ -12,7 +13,10 @@
           v-model="filterText"
           placeholder="搜索部门或成员姓名"
         />
-        <div class="tree">
+        <div
+          v-loading="loading"
+          class="tree"
+        >
           <el-tree
             ref="tree"
             :data="orgTree"
@@ -29,7 +33,15 @@
       </div>
       <div class="divider" />
       <div class="selected-container">
-        已选择
+        <div class="header">
+          <div>已选中</div>
+          <el-button
+            type="text"
+            @click="clear()"
+          >
+            清空
+          </el-button>
+        </div>
         <div class="selected-list">
           <div
             v-for="item in selectList"
@@ -61,7 +73,6 @@
         @click="close"
       >取 消</el-button>
       <el-button
-        v-loading="loading"
         size="medium"
         type="primary"
         @click="handleSubmit"
@@ -77,7 +88,7 @@ import { getOrgUserTree } from '@/api/system/user'
 export default {
   name: 'UserPicker',
   props: {
-    visible: {
+    multiple: {
       type: Boolean,
       default: false
     }
@@ -87,6 +98,7 @@ export default {
       node: {},
       loading: false,
       filterText: '',
+
       props: {
         disabled: (data) => (data.type !== 'user' && data.users.length === 0) || data.orgName,
         label: (item) => item.orgName || item.name,
@@ -94,7 +106,9 @@ export default {
       },
       selectList: [],
       orgTree: [],
-      nodeId: null
+      nodeId: null,
+      visible: false,
+      callback: null
     }
   },
   watch: {
@@ -112,12 +126,15 @@ export default {
     },
     handleCheckChange(data, checked) {
       if (checked.checkedNodes.includes(data)) {
-        this.$refs.tree.setCheckedNodes([data])
-        this.selectList = [data]
+        if (this.multiple) {
+          this.selectList.push(data)
+        } else {
+          this.selectList = [data]
+        }
       } else {
-        this.$refs.tree.setCheckedNodes([])
-        this.selectList = []
+        this.selectList = this.selectList.filter((item) => item.id !== data.id)
       }
+      this.$refs.tree.setCheckedNodes(this.selectList)
     },
     handleUnselect(item) {
       this.selectList = this.selectList.filter((i) => i.id != item.id)
@@ -129,29 +146,37 @@ export default {
     },
     close() {
       this.clear()
-      this.$emit('update:visible', false)
+      this.visible = false
     },
     clear() {
       this.selectList = []
       this.$refs.tree.setCheckedKeys([])
+      this.$refs.tree.setCurrentKey(null)
     },
-    init({ nodeId, selectList }) {
-      this.nodeId = nodeId
+    init(selectList) {
       this.selectList = selectList.slice()
 
-      this.$emit('update:visible', true)
       this.$nextTick(() => {
         this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
       })
     },
     getOrgUserTree(tenantId) {
-      getOrgUserTree(tenantId).then((res) => {
-        this.resolveTree(res)
-        this.orgTree = res
-      })
+      this.loading = true
+      getOrgUserTree(tenantId)
+        .then((res) => {
+          this.resolveTree(res)
+          this.orgTree = res
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     handleSubmit() {
-      this.$emit('submit', { nodeId: this.nodeId, selectList: this.selectList })
+      if (this.callback) {
+        this.callback(this.selectList)
+      } else {
+        this.$emit('submit', this.selectList)
+      }
       this.close()
     },
     resolveTree(tree) {
@@ -164,7 +189,7 @@ export default {
           if (node.users) {
             users = node.users.map((user) => ({
               ...user,
-              id: user.userId,
+              id: node.orgId + '_' + user.userId,
               type: 'user'
             }))
             if (node.children) {
@@ -184,62 +209,74 @@ export default {
 }
 </script>
 <style lang="scss">
-.content-wr {
-  display: flex;
-  border: 1px solid #efefef;
-  padding: 0 24px;
-  .left {
-    width: 55%;
-    box-sizing: border-box;
-    padding: 24px 0;
+.user-picker {
+  /deep/ .el-tree-node.is-current > .el-tree-node__content {
+    color: inherit;
+    background-color: inherit;
   }
-  .divider {
-    width: 1px;
-    background: #e3e7e9;
-    margin: 0 24px;
-  }
-  .selected-container {
-    flex: 1;
-    padding: 24px 0;
-    .selected-list {
-      margin-top: 16px;
-      max-height: 400px;
-      overflow: auto;
-      .list-item {
+
+  .content-wr {
+    display: flex;
+    border: 1px solid #efefef;
+    padding: 0 24px;
+    .left {
+      width: 55%;
+      box-sizing: border-box;
+      padding: 24px 0;
+    }
+    .divider {
+      width: 1px;
+      background: #e3e7e9;
+      margin: 0 24px;
+    }
+    .selected-container {
+      flex: 1;
+      padding: 24px 0;
+      .header {
         display: flex;
-        height: 32px;
-        align-items: center;
         justify-content: space-between;
-        border-radius: 4px;
-        margin-bottom: 16px;
-        padding-right: 12px;
-        .head {
+        align-items: center;
+      }
+      .selected-list {
+        margin-top: 16px;
+        max-height: 400px;
+        overflow: auto;
+        .list-item {
           display: flex;
-          line-height: 32px;
-        }
-        .avatar {
           height: 32px;
-          width: 32px;
-          text-align: center;
-          background: #207efa;
-          border-radius: 50%;
-          margin-right: 8px;
-          i {
-            font-size: 16px;
+          align-items: center;
+          justify-content: space-between;
+          border-radius: 4px;
+          margin-bottom: 16px;
+          padding-right: 12px;
+          .head {
+            display: flex;
             line-height: 32px;
-            color: white;
           }
-        }
-        .close {
-          cursor: pointer;
+          .avatar {
+            height: 32px;
+            width: 32px;
+            text-align: center;
+            background: #207efa;
+            border-radius: 50%;
+            margin-right: 8px;
+            i {
+              font-size: 16px;
+              line-height: 32px;
+              color: white;
+            }
+          }
+          .close {
+            cursor: pointer;
+          }
         }
       }
     }
   }
-}
-.tree {
-  height: 400px;
-  overflow-y: auto;
-  padding-top: 10px;
+  .tree {
+    height: 400px;
+    overflow-y: auto;
+    padding-top: 10px;
+  }
 }
 </style>

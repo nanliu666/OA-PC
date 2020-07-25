@@ -255,6 +255,13 @@
 </template>
 
 <script>
+/**
+ * Copyright: Copyright (c) 2020
+ * Author:JakHuang
+ * Version 1.0
+ * Title: form-generator/ElementUI表单设计及代码生成器
+ * GitHub: https://github.com/JakHuang/form-generator
+ */
 import Draggable from 'vuedraggable'
 
 import { isArray } from 'util'
