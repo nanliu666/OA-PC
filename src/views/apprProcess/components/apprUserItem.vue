@@ -121,7 +121,7 @@ export default {
     },
     pickUser(userList) {
       pickUser(
-        userList.map((user) => ({ ...user, name: user.userName, id: user.userId })),
+        userList.map((user) => ({ ...user, name: user.userName, id: user.id || user.userId })),
         {
           callback: (selectedUsers) => {
             this.setUser(selectedUsers.map((user) => ({ ...user, userName: user.name })))

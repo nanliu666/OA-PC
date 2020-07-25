@@ -18,6 +18,18 @@
             :form-conf="formData"
           />
           <apprUser :process-data="processData" />
+          <div class="footer">
+            <el-button
+              size="medium"
+              type="primary"
+              @click="submit"
+            >
+              提交
+            </el-button>
+            <el-button size="medium">
+              取消
+            </el-button>
+          </div>
         </el-col>
       </el-row>
     </basic-container>
@@ -56,6 +68,12 @@ export default {
           this.advancedSetting = obj.advancedSetting
         }
       })
+    },
+    submit() {
+      this.$refs.form.submit().then((formData) => {
+        // eslint-disable-next-line
+        console.log('formData:', formData)
+      })
     }
   }
 }
@@ -63,5 +81,13 @@ export default {
 
 <style lang="scss" scoped>
 .apprSubmit {
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .el-button + .el-button {
+    margin-left: 16px;
+  }
 }
 </style>

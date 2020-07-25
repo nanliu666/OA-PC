@@ -98,7 +98,7 @@ export default ({ mock }) => {
                               "userName":"游荣昌"
                           }],
                       "assigneeType":"user",
-                      "counterSign":false,
+                      "counterSign":true,
                       "optionalMultiUser":true,
                       "optionalRange":"ALL"
                   },
