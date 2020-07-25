@@ -30,13 +30,14 @@ import transction from './transction'
 import user from './user'
 import apprProcess from './apprProcess'
 
+import process from './process'
 /**
  * 模拟数据mock
  *
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: false }
+const options = { mock: true }
 // 设置500毫秒的时延长
 Mock.setup({
   timeout: 500
@@ -81,3 +82,5 @@ entry(options)
 taskcenter(options)
 schedule(options)
 remind(options)
+
+process({ mock: true })

@@ -132,15 +132,20 @@ export default {
     this.buildRules(data.formConfCopy.fields, data.rules)
     return data
   },
+  computed: {},
   watch: {
-    formConf(val) {
-      const form = {},
-        rules = {}
-      this.formConfCopy = deepClone(val)
-      this.initFormData(val.fields, form)
-      this.buildRules(val.fields, rules)
-      this.form = form
-      this.rules = rules
+    formConf: {
+      handler(val) {
+        const form = {},
+          rules = {}
+        this.formConfCopy = deepClone(val)
+        this.initFormData(val.fields, form)
+        this.buildRules(val.fields, rules)
+        this.form = form
+        this.rules = rules
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {

@@ -48,8 +48,8 @@
         style="width:100%;overflow:hidden;margin-top:10px;"
       >
         <el-col
-          :span="6"
-          style="padding-left:0;"
+          :span="7"
+          style="padding-left:0;padding-right: 0"
         >
           <el-input-number
             v-model="cloneData.value[0]"
@@ -59,7 +59,10 @@
             @change="update"
           />
         </el-col>
-        <el-col :span="4">
+        <el-col
+          :span="3"
+          style="padding-left:0;padding-right: 0;position:relative; left: -5px"
+        >
           <el-select
             v-model="cloneData.value[1]"
             size="small"
@@ -83,7 +86,7 @@
         >
           {{ title }}
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-select
             v-model="cloneData.value[2]"
             size="small"
@@ -101,8 +104,8 @@
           </el-select>
         </el-col>
         <el-col
-          :span="6"
-          style="padding-left:0;"
+          :span="7"
+          style="padding-left:0;padding-right: 0"
         >
           <el-input-number
             v-model="cloneData.value[3]"
@@ -214,4 +217,7 @@ ellipsis(n) {
     }
   }
 }
+  /deep/ .el-input--suffix .el-input__inner{
+    padding-right: 15px;
+  }
 </style>
