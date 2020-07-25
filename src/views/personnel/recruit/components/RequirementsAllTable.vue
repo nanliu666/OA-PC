@@ -221,6 +221,15 @@
                 复制
               </el-button>
             </el-dropdown-item>
+            <el-dropdown-item v-show="_.eq(row.progress, 'Approved')">
+              <el-button
+                size="medium"
+                type="text"
+                @click="() => $refs.requirementStop.init(row)"
+              >
+                停止招聘
+              </el-button>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </template>
@@ -243,6 +252,11 @@
       :visible.sync="redistributionVisible"
       @submit="handleRedistributionSubmit"
     />
+    <RequirementStop
+      ref="requirementStop"
+      :visible.sync="requirementStopVisible"
+      @submit="handleRequirementStopSubmit"
+    />
   </div>
 </template>
 
@@ -253,7 +267,8 @@ import {
   getPost,
   taskDistribution,
   putDistribution,
-  queryDistribution
+  queryDistribution,
+  requirementStop
 } from '@/api/personnel/recruitment'
 import { renameKey } from '@/util/util'
 import { getOrgTreeSimple } from '@/api/org/org'
@@ -311,6 +326,7 @@ export default {
     Distribution: () => import('@/views/personnel/recruit/components/modals/Distribution'),
     NeedNumEdit: () => import('@/views/personnel/recruit/components/modals/NeedNumEdit'),
     Redistribution: () => import('@/views/personnel/recruit/components/modals/Redistribution'),
+    RequirementStop: () => import('@/views/personnel/recruit/components/modals/RequirementStop'),
     SearchPopover: () => import('@/components/searchPopOver')
   },
   props: {
@@ -337,6 +353,7 @@ export default {
       needNumEditVisible: false,
       distributionVisible: false,
       redistributionVisible: false,
+      requirementStopVisible: false,
       parentId: '0',
       page: {
         currentPage: 1,
@@ -425,6 +442,17 @@ export default {
         })
         .finally(() => {
           this.$refs.redistribution.submitting = false
+          this.refresh()
+        })
+    },
+    handleRequirementStopSubmit(data) {
+      requirementStop(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message.success('操作成功')
+          this.$refs.requirementStop.close()
+        })
+        .finally(() => {
+          this.$refs.requirementStop.submitting = false
           this.refresh()
         })
     },

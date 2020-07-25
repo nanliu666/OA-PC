@@ -366,7 +366,10 @@ export default {
         })
       })
     },
-    loadOrgData(orgId = '0') {
+    loadOrgData(orgId) {
+      if (_.isNil(orgId)) {
+        orgId = '0'
+      }
       getOrgTreeSimple({ parentOrgId: orgId }).then((res) => {
         // 过滤掉集团下面orgType为"Company“”的
         this.columns.find((item) => item.prop === 'orgId').props.treeParams.data = res
