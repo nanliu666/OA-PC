@@ -68,6 +68,77 @@ const workAddress = {
 
 export default ({ mock }) => {
   if (!mock) return
+
+  // 招聘管理 > 我的任务详情
+  Mock.mock(new RegExp('/user/v1/recruitment/task/detail' + '.*'), 'get', (req) => {
+    const res = {
+      resCode: 200,
+      resMsg: '成功',
+      response: Mock.mock({
+        id: '@id()', // [string]	是	招聘需求ID
+        orgId: '@id()', // [string]	是	部门ID
+        orgName: '@cword("一二三四五六七八九十")公司', // [string]	是	部门名称
+        jobId: '@id()', // [string]	是	职位ID
+        jobName: '@cword(2)员', // [string]	是	职位名称
+        positionId: '@id()', // [string]	是	岗位ID
+        positionName: '@cword(2)岗', // [string]	是	岗位名称
+        'workProperty|1': [
+          'FullTime',
+          'Trainee',
+          'PartTime',
+          'Labor',
+          'Retirement',
+          'LaborOutsourcing'
+        ], // [string]	是	工作性质，字典组：WorkProperty
+        'emerType|1': ['Super', 'urgent', 'common', 'suit'], // [string]	是	紧急程度，字典组：EmerType
+        needNum: _.random(10), // [int]	是	需求人数
+        taskNum: function() {
+          return _.random(this.needNum)
+        }, // [int]	是	负责招聘用户的招聘任务数
+        entryNum: function() {
+          return _.random(this.taskNum)
+        }, // [int]	是	负责招聘用户的已入职人数
+        candidateNum: _.random(10), // [int]	是	负责招聘用户的候选人数
+        joinDate: '@date()', // [date]	是	到岗日期
+        'workYear|1': ['Unlimit', 'Y01', 'Y02', 'Y03', 'Y04', 'Y05'], // [string]	是	工作年限，字典组：WorkYear
+        'educationalLevel|1': [
+          'Primary',
+          'Juniormiddle',
+          'High',
+          'JuniorCollege',
+          'Undergraduate',
+          'Master',
+          'Doctor',
+          'PostDoctoral',
+          'VocationalHigh',
+          'SecondarySpecialized',
+          'Technical',
+          'SecondaryNormal',
+          'Other'
+        ], // [string]	是	学历要求，字典组：EducationalLevel
+        minSalary: '@integer(100,1000)', // [int]	是	最低薪酬，单位：元
+        maxSalary: '@integer(100,1000)', // [int]	是	最高薪酬，单位：元
+        requirement: '@cparagraph()', // [string]		职位要求
+        duty: '@cparagraph()', // [string]		工作职责
+        'reason|1': ['Organization1', 'Organization2', 'Organization3', 'Organization4', 'Other'], // [string]		招聘原因，字典组：RecruitmentReason
+        reasonNote: '@cparagraph()', // [string]		原因补充说明
+        remark: '@cword()', // [string]		申请理由
+        userId: '@id()', // [string]	是	提交人ID
+        userName: '@cname()', // [string]	是	提交人姓名
+        companyId: '@id()', // [string]	是	公司ID
+        companyName: '@cword("一二三四五六七八九十")公司', // [string]	是	公司名称
+        status: ['Unhandle', 'Handled'][_.random()], // [string]	是	需求分配状态，UnHandle-待分配，Handled-已分配
+        progress: ['Approved', 'Finished'][_.random()], // [string]	是	需求进度，Approved-招聘中(审批通过)，Finished-已结束
+        createTime: '@date()', // [datetime]	是	提交需求时间
+        stopUserId: '@id()', // [string]		停止招聘的用户ID
+        stopUserName: '@cword()', // [string]		停止招聘的用户名
+        stopReason: '@cword()', // [string]		停止招聘的原因
+        stopTime复制: '@date()' // [datetime]		停止招聘的时间: ", // "
+      })
+    }
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
+  })
   //获取附件分类接口数据
   Mock.mock(new RegExp('/user/v1/user/attachment/category' + '.*'), 'get', () => {
     let list = []
@@ -682,9 +753,9 @@ export default ({ mock }) => {
         'educationalLevel|1': EducationalLevel,
         tags: [
           {
-            tagId: '',
-            name: '',
-            color: ''
+            tagId: '@id()',
+            name: '@cword(2)',
+            color: '@color()'
           }
         ]
       })
@@ -699,68 +770,32 @@ export default ({ mock }) => {
     return res
   })
 
-  Mock.mock(new RegExp('/user/v1/recruitment/task/detail' + '.*'), 'get', (req) => {
+  // 任务关联的候选人列表查询
+  Mock.mock(new RegExp('/user/v1/recruitment/candidate/list' + '.*'), 'get', (req) => {
+    const response = _.times(_.random(10), () =>
+      Mock.mock({
+        personId: '@id()',
+        name: '@cname()',
+        status: _.random(6),
+        sex: _.random(),
+        phonenum: /1\d{10}/,
+        email: '@email()',
+        workAge: _.random(1, 99),
+        university: '@cword(2,6)大学',
+        'educationalLevel|1': EducationalLevel,
+        tags: _.times(_.random(3), () => ({
+          tagId: '@id()',
+          name: '@cword()',
+          color: '@color()'
+        }))
+      })
+    )
     const res = {
       resCode: 200,
       resMsg: '成功',
-      response: {
-        id: '@id()', // [string]	是	招聘需求ID
-        orgId: '@id()', // [string]	是	部门ID
-        orgName: '@cword("一二三四五六七八九十")公司', // [string]	是	部门名称
-        jobId: '@id()', // [string]	是	职位ID
-        jobName: '@cword(2)员', // [string]	是	职位名称
-        positionId: '@id()', // [string]	是	岗位ID
-        positionName: '@cword(2)岗', // [string]	是	岗位名称
-        'workProperty|1': [
-          'FullTime',
-          'Trainee',
-          'PartTime',
-          'Labor',
-          'Retirement',
-          'LaborOutsourcing'
-        ], // [string]	是	工作性质，字典组：WorkProperty
-        'emerType|1': ['Super', 'urgent', 'common', 'suit'], // [string]	是	紧急程度，字典组：EmerType
-        needNum: _.random(10), // [int]	是	需求人数
-        taskNum: '@integer(0,@needNum())', // [int]	是	负责招聘用户的招聘任务数
-        entryNum: '@integer(0,@taskNum())', // [int]	是	负责招聘用户的已入职人数
-        candidateNum: _.random(10), // [int]	是	负责招聘用户的候选人数
-        joinDate: '@date()', // [date]	是	到岗日期
-        'workYear|1': ['Unlimit', 'Y01', 'Y02', 'Y03', 'Y04', 'Y05'], // [string]	是	工作年限，字典组：WorkYear
-        'educationalLevel|1': [
-          'Primary',
-          'Juniormiddle',
-          'High',
-          'JuniorCollege',
-          'Undergraduate',
-          'Master',
-          'Doctor',
-          'PostDoctoral',
-          'VocationalHigh',
-          'SecondarySpecialized',
-          'Technical',
-          'SecondaryNormal',
-          'Other'
-        ], // [string]	是	学历要求，字典组：EducationalLevel
-        minSalary: '@integer(100,1000)', // [int]	是	最低薪酬，单位：元
-        maxSalary: '@integer(100,1000)', // [int]	是	最高薪酬，单位：元
-        requirement: '@cparagraph()', // [string]		职位要求
-        duty: '@cparagraph()', // [string]		工作职责
-        reason: ['Organization1', 'Organization2', 'Organization3', 'Organization4', 'Other'], // [string]		招聘原因，字典组：RecruitmentReason
-        reasonNote: '@cparagraph()', // [string]		原因补充说明
-        remark: '@cword()', // [string]		申请理由
-        userId: '@id()', // [string]	是	提交人ID
-        userName: '@cname()', // [string]	是	提交人姓名
-        companyId: '@id()', // [string]	是	公司ID
-        companyName: '@cword("一二三四五六七八九十")公司', // [string]	是	公司名称
-        status: ['Unhandle', 'Handled'][_.random()], // [string]	是	需求分配状态，UnHandle-待分配，Handled-已分配
-        progress: ['Approved', 'Finished'][_.random()], // [string]	是	需求进度，Approved-招聘中(审批通过)，Finished-已结束
-        createTime: '@date()', // [datetime]	是	提交需求时间
-        stopUserId: '@id()', // [string]		停止招聘的用户ID
-        stopUserName: '@cword()', // [string]		停止招聘的用户名
-        stopReason: '@cword()', // [string]		停止招聘的原因
-        stopTime复制: '@date()' // [datetime]		停止招聘的时间: ", // "
-      }
+      response
     }
     window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 }
