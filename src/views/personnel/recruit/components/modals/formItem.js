@@ -1,5 +1,6 @@
+import { getWorklist } from '@/api/personnel/selectedPerson'
+
 // 表单计数公共逻辑
-import { getOrgUserList } from '@/api/system/user'
 
 export default {
   components: {
@@ -46,8 +47,7 @@ export default {
   },
   methods: {
     loadUsers(param) {
-      const { orgId } = this.$dialog.form
-      return getOrgUserList(_.assign({ orgId }, param))
+      return getWorklist(param)
     },
 
     handleFormItemDeleteBtnClick(target) {

@@ -31,20 +31,18 @@
           </el-button> -->
           <el-button
             v-if="!userId"
-            v-show="_.eq(data.status, 'UnHandle')"
+            v-show="_.eq(data.status, 'UnHandle') && !isStoped"
             size="medium"
             type="primary"
-            :disabled="isStoped"
             @click="() => $refs.distribution.init(data)"
           >
             分配需求
           </el-button>
           <el-button
             v-if="!userId"
-            v-show="_.eq(data.status, 'Handled')"
+            v-show="_.eq(data.status, 'Handled') && !isStoped"
             size="medium"
             type="primary"
-            :disabled="isStoped"
             @click="() => $refs.redistribution.init(data)"
           >
             重新分配
@@ -117,6 +115,7 @@
 import {
   getChange,
   getRecruitmentDetail,
+  getTaskDetail,
   putDistribution,
   requirementStop,
   taskDistribution
@@ -260,9 +259,12 @@ export default {
     },
 
     async loadData() {
+      const loadData = this.userId
+        ? async (id) => await getTaskDetail({ recruitmentId: id, userId: this.userId })
+        : getRecruitmentDetail
       try {
         this.loading = true
-        this.data = await getRecruitmentDetail(this.id)
+        this.data = await loadData(this.id)
       } catch (error) {
         this.$message.error(error.message)
       } finally {

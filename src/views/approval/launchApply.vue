@@ -37,7 +37,9 @@
 </template>
 
 <script>
+import { checkApplyNum } from '@/api/leave/leave'
 import { getApprForm } from '@/api/approval/approval'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Apply',
@@ -48,9 +50,13 @@ export default {
       showData: ['UserFormalInfo', 'UserLeaveInfo']
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   mounted() {
     this.getData()
   },
+
   methods: {
     jump(formKey) {
       if (formKey === this.showData[0]) {
@@ -63,8 +69,14 @@ export default {
           path: '/personnel/administration/apply'
         })
       } else if (formKey === this.showData[1]) {
-        this.$router.push({
-          path: '/personnel/leave/applyLeave'
+        // 检查是否已经有正在审批中的离职申请
+        checkApplyNum({ userId: this.userId, formKey: 'UserLeaveInfo' }).then(({ approveNum }) => {
+          if (!approveNum) {
+            return this.$router.push({
+              path: '/personnel/leave/applyLeave'
+            })
+          }
+          this.$message.error('你已提交了离职申请,不能重复提交')
         })
       }
       // /personnel/administration/apply

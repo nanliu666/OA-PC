@@ -121,7 +121,7 @@
             </el-button>
             <!-- v-if="isWaitLeave && !row.leaveDate" -->
             <el-button
-              v-if="isWaitLeave"
+              v-if="isWaitLeave && !row.leaveDate"
               size="medium"
               type="text"
               @click="handelChange(row)"
@@ -130,7 +130,7 @@
             </el-button>
 
             <el-dropdown
-              v-if="isWaitLeave"
+              v-if="isWaitLeave && !row.leaveDate"
               @command="handleCommand($event, row)"
             >
               <i
@@ -139,13 +139,14 @@
               />
 
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  v-if="!row.leaveDate"
-                  command="giveLeave"
-                >
+                <!-- v-if="!row.leaveDate" -->
+                <el-dropdown-item command="giveLeave">
                   放弃离职
                 </el-dropdown-item>
               </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown v-else>
+              <i class="seat" />
             </el-dropdown>
           </div>
           <!-- 离职日期 -->
@@ -657,5 +658,9 @@ export default {
     min-height: calc(100% - 92px);
     height: 0;
   }
+}
+.seat {
+  display: inline-block;
+  width: 16px;
 }
 </style>

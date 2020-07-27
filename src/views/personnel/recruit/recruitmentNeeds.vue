@@ -308,6 +308,9 @@ export default {
     ...mapGetters(['userId'])
   },
   watch: {
+    'form.companyId'(companyId) {
+      this.loadOrgData(companyId)
+    },
     'form.orgId': function(val) {
       if (val) {
         this.form.jobId = null
@@ -331,7 +334,7 @@ export default {
     this.getUseInformation()
     this.dictionaryGroup()
     await this.getPost()
-    this.loadOrgData()
+    // this.loadOrgData()
   },
 
   activated() {
@@ -363,9 +366,13 @@ export default {
         })
       })
     },
-    loadOrgData() {
-      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data.push(...res)
+    loadOrgData(orgId) {
+      if (_.isNil(orgId)) {
+        orgId = '0'
+      }
+      getOrgTreeSimple({ parentOrgId: orgId }).then((res) => {
+        // 过滤掉集团下面orgType为"Company“”的
+        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data = res
       })
     },
     dictionaryGroup() {

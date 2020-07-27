@@ -82,6 +82,16 @@ const PADDING_TABLE_COLUMNS = [
     minWidth: 100,
     prop: 'updateTime'
   },
+  // {
+  //   label: '分配用户id',
+  //   minWidth: 100,
+  //   prop: 'assignUserId'
+  // },
+  // {
+  //   label: '分配用户名',
+  //   minWidth: 100,
+  //   prop: 'assignUserName'
+  // },
   {
     label: '任务数',
     prop: 'taskNum'

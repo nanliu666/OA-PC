@@ -165,7 +165,10 @@
       </template>
 
       <template #emerType="{row}">
-        <el-tag :type="emerTypeType(row)">
+        <el-tag
+          v-show="!_.isEmpty(_.trim(_.get(row, 'emerType')))"
+          :type="emerTypeType(row)"
+        >
           {{ translator({ dictKey: 'emerType', value: _.get(row, 'emerType') }) }}
         </el-tag>
       </template>
@@ -218,6 +221,15 @@
                 复制
               </el-button>
             </el-dropdown-item>
+            <el-dropdown-item v-show="_.eq(row.progress, 'Approved')">
+              <el-button
+                size="medium"
+                type="text"
+                @click="() => $refs.requirementStop.init(row)"
+              >
+                停止招聘
+              </el-button>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </template>
@@ -240,6 +252,11 @@
       :visible.sync="redistributionVisible"
       @submit="handleRedistributionSubmit"
     />
+    <RequirementStop
+      ref="requirementStop"
+      :visible.sync="requirementStopVisible"
+      @submit="handleRequirementStopSubmit"
+    />
   </div>
 </template>
 
@@ -250,7 +267,8 @@ import {
   getPost,
   taskDistribution,
   putDistribution,
-  queryDistribution
+  queryDistribution,
+  requirementStop
 } from '@/api/personnel/recruitment'
 import { renameKey } from '@/util/util'
 import { getOrgTreeSimple } from '@/api/org/org'
@@ -308,6 +326,7 @@ export default {
     Distribution: () => import('@/views/personnel/recruit/components/modals/Distribution'),
     NeedNumEdit: () => import('@/views/personnel/recruit/components/modals/NeedNumEdit'),
     Redistribution: () => import('@/views/personnel/recruit/components/modals/Redistribution'),
+    RequirementStop: () => import('@/views/personnel/recruit/components/modals/RequirementStop'),
     SearchPopover: () => import('@/components/searchPopOver')
   },
   props: {
@@ -334,6 +353,7 @@ export default {
       needNumEditVisible: false,
       distributionVisible: false,
       redistributionVisible: false,
+      requirementStopVisible: false,
       parentId: '0',
       page: {
         currentPage: 1,
@@ -425,6 +445,17 @@ export default {
           this.refresh()
         })
     },
+    handleRequirementStopSubmit(data) {
+      requirementStop(renameKey(data, 'id', 'recruitmentId'))
+        .then(() => {
+          this.$message.success('操作成功')
+          this.$refs.requirementStop.close()
+        })
+        .finally(() => {
+          this.$refs.requirementStop.submitting = false
+          this.refresh()
+        })
+    },
 
     handleCopyBtnClick({ id }) {
       this.$router.push({
@@ -456,7 +487,7 @@ export default {
       // 从全部任务跳转的为招聘主管, 不使用userId
       this.$router.push({
         path: '/personnel/recruit/details',
-        query: { id: id, status: 'iSubmit' /* , userId: this.userId */ }
+        query: { id: id /* , userId: this.userId */ }
       })
     },
 

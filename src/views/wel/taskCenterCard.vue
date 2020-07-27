@@ -27,8 +27,7 @@
               <span class="emerType">{{ item.emerType | filterEmerType(EmerType) }}</span>
             </div>
             <div class="education-row">
-              {{ item.education | CommonDictType(EducationalLevel) }} |
-              {{ item.workYears | CommonDictType(WorkYear) }}
+              {{ item.brief | filterBrief(WorkYear, EducationalLevel) }}
             </div>
           </div>
           <!-- 任务类型 -->
@@ -111,32 +110,33 @@ export default {
       return taskTypeCN[val]
     },
     // 过滤紧急程度
-    filterEmerType(val, List) {
+    filterEmerType(val, obj) {
       if (!val) {
         return
       }
       let result = ''
       let showArr = ['Super', 'urgent']
       if (showArr.indexOf(val) !== -1) {
-        List.forEach((item) => {
-          if (item.dictKey === val) {
-            result = item.dictValue
-          }
-        })
+        result = obj[val]
       }
       return result
     },
-    //
-    CommonDictType: (value, CommonDictarr) => {
-      if (!value) return ''
+    // filter学历和工作年限
+    filterBrief(val, WorkYear, EducationalLevel) {
+      if (!val) {
+        return
+      }
       let result = ''
-      CommonDictarr.forEach((item) => {
-        if (item.dictKey == value.trim()) {
-          result = item.dictValue
-          return
-        }
-      })
-
+      let arr = val.split('|')
+      let work_year = ''
+      let educational_level = ''
+      educational_level = EducationalLevel[arr[0]]
+      work_year = WorkYear[arr[1]]
+      if (educational_level && work_year) {
+        result = `${educational_level} | ${work_year}`
+      } else {
+        result = `${educational_level ? educational_level : ''}${work_year ? work_year : ''}`
+      }
       return result
     }
   },
@@ -171,10 +171,10 @@ export default {
       },
       // 任务数据
       taskDataList: [],
-      // 紧急程度字典组
-      EmerType: [],
-      WorkYear: [],
-      EducationalLevel: [],
+      // 字典组
+      EmerType: {},
+      WorkYear: {},
+      EducationalLevel: {},
       nowDate: new Date()
     }
   },
@@ -207,9 +207,6 @@ export default {
   created() {
     this.loadData()
     this.getCommonDict()
-    // this.$store.dispatch('CommonDict', 'EmerType').then((res) => {
-    // 	this.EmerType = res
-    // })
   },
   methods: {
     // 获取数据
@@ -220,33 +217,17 @@ export default {
         this.taskLoading = false
       })
       this.taskDataList = data
-      this.taskDataList.forEach((item) => {
-        let arr = item.brief.split('|')
-        item.education = arr[0]
-        item.workYears = arr[1]
-      })
     },
     // 获取相关字典组
     getCommonDict() {
-      let commonDictNameArr = [
-        'EmerType',
-        'WorkYear',
-        'EducationalLevel'
-        // 'RecruitmentReason',
-        // 'WorkProperty',
-        // 'ContractType',
-        // 'LeaveReason',
-        // 'ChangeReason'
-      ]
+      let commonDictNameArr = ['EmerType', 'WorkYear', 'EducationalLevel']
       commonDictNameArr.forEach((item) => {
         this.$store.dispatch('CommonDict', item).then((res) => {
-          // this.workPropertyList = res
-          // 将res =》 [{dictKey:"",dictValue:"",id:""},{dictKey:"",dictValue:"",id:""}]
-          let targetArr = []
+          let obj = {}
           res.forEach((el) => {
-            targetArr.push({ dictKey: el.dictKey, dictValue: el.dictValue, id: el.id })
+            obj[el.dictKey] = el.dictValue
           })
-          this[item] = targetArr
+          this[item] = obj
         })
       })
     },
