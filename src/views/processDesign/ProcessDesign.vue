@@ -373,8 +373,10 @@ export default {
             }
             if (data.properties.assigneeType === 'user') {
               //如果有多个选项，指定成员人要用变量表达
+              origin.varible = 'taskUser_' + data.nodeId
               item.assignee = '${taskUser_' + data.nodeId + '}'
             }
+
             item.multi = {
               //如果有多个选项触发会签或者或签。
               completion: data.properties.counterSign ? '1' : '0', //0 或签，1会签
