@@ -1,4 +1,4 @@
-import { get, post, put, del } from '@/router/axios'
+import { del, get, post, put } from '@/router/axios'
 /**
  
  * 审批流程查询接口
@@ -60,3 +60,5 @@ export const sortCategory = (params) => post('/appr/v2/appr/category/sort', para
  * 审批流程排序接口
  */
 export const sortProcess = (params) => post('/appr/v2/appr/process/sort', params)
+
+export const getRecordList = (params) => get('/appr/v2/appr/approve/record/list', params)
