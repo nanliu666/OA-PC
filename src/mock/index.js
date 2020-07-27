@@ -37,7 +37,7 @@ import process from './process'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: true }
+const options = { mock: false }
 // 设置500毫秒的时延长
 Mock.setup({
   timeout: 500

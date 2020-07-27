@@ -19,11 +19,15 @@ export default {
   processData: {
     type: 'start',
     content: '所有人',
-    properties: { title: '发起人', initiator: 'ALL', formOperates: [] },
+    properties: {
+      title: '发起人',
+      initiator: 'ALL',
+      formOperates: []
+    },
     nodeId: 'Gb2',
     childNode: {
       type: 'approver',
-      content: '前端组,后端组',
+      content: '离职测测,李小龙',
       properties: {
         title: '审批人',
         assigneeType: 'optional',
@@ -33,24 +37,18 @@ export default {
         optionalRange: 'USER',
         approvers: [
           {
-            orgId: '1257922456241659905',
-            orgName: '前端组',
-            parentId: '1252523599903072261',
-            users: [],
-            id: '1257922456241659905',
-            hasChildren: false,
-            name: '前端组',
-            children: []
+            workNo: '4342',
+            name: '离职测测',
+            userId: '1283302477003075585',
+            id: '1252523599903072258_1283302477003075585',
+            type: 'user'
           },
           {
-            orgId: '1257943561580855298',
-            orgName: '后端组',
-            parentId: '1252523599903072261',
-            users: [],
-            id: '1257943561580855298',
-            hasChildren: false,
-            name: '后端组',
-            children: []
+            workNo: '4344',
+            name: '李小龙',
+            userId: '1283307826803585025',
+            id: '1252523599903072258_1283307826803585025',
+            type: 'user'
           }
         ]
       },
