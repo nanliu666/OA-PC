@@ -1,0 +1,181 @@
+<template>
+  <div>
+    <basicContainer
+      block
+      style="margin: 24px 0"
+    >
+      <ul
+        v-for="(item, index) in processListData"
+        :key="index"
+        class="approval-ul"
+      >
+        <li
+          class="approval-li"
+          :class="{ 'empty-approval': item.processes.length === 0 }"
+        >
+          <div class="title-box">
+            <span>{{ item.name }}（{{ item.processes.length }}）</span>
+            <span
+              v-if="item.processes.length !== 0"
+              class="hide-span"
+              @click="hideCurrent(index)"
+            >{{ currentIndexList.indexOf(index) === -1 ? '收起' : '展开' }}</span>
+          </div>
+          <ul
+            v-show="currentIndexList.indexOf(index) === -1"
+            class="detail-ul"
+          >
+            <li
+              v-for="(processesItem, processesIndex) in item.processes"
+              :key="processesIndex"
+              class="detail-li"
+            >
+              <div class="logo-box">
+                <svg
+                  class="icon"
+                  aria-hidden="true"
+                >
+                  <use :[symbolKey]="'#icon-' + processesItem.icon" />
+                </svg>
+              </div>
+              <div class="content-box">
+                <div class="content-title">
+                  {{ processesItem.processName }}
+                </div>
+                <el-popover
+                  v-if="processesItem.remark"
+                  placement="top-start"
+                  width="420"
+                  trigger="hover"
+                  :content="processesItem.remark"
+                >
+                  <div
+                    slot="reference"
+                    class="content-des"
+                  >
+                    {{ processesItem.remark }}
+                  </div>
+                </el-popover>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </basicContainer>
+  </div>
+</template>
+
+<script>
+import { getUserProcessList } from '@/api/apprProcess/apprProcess'
+
+export default {
+  name: 'Apply',
+  data() {
+    return {
+      symbolKey: 'xlink:href',
+      processListData: [],
+      currentIndexList: []
+    }
+  },
+  mounted() {
+    this.initData()
+  },
+  methods: {
+    /**
+     * 初始化数据
+     */
+    initData() {
+      getUserProcessList().then((res) => {
+        window.console.log('res==', res)
+        this.processListData = res
+      })
+    },
+    hideCurrent(index) {
+      let currentIndex = this.currentIndexList.indexOf(index)
+      if (currentIndex > -1) {
+        this.currentIndexList.splice(currentIndex, 1)
+      } else {
+        this.currentIndexList.push(index)
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '@/styles/mixin.scss';
+.approval-ul {
+  .approval-li {
+    padding-bottom: 15px;
+    .title-box {
+      @include flexJustify;
+      @include flexAlign;
+      height: 42px;
+      padding: 0 24px;
+      background-color: #f7f8fa;
+      font-size: 16px;
+      color: #202940;
+      font-weight: 500;
+      .hide-span {
+        cursor: pointer;
+      }
+    }
+  }
+  .empty-approval {
+    padding-bottom: 0;
+  }
+  .detail-ul {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    text-decoration: none;
+    &::after {
+      content: '';
+      height: 0;
+      width: calc((100% - 24px * 2) / 3);
+    }
+    .detail-li {
+      box-sizing: border-box;
+      margin-top: 15px;
+      margin-right: 24px;
+      width: calc((100% - 24px * 2) / 3);
+      height: 100px;
+      display: flex;
+      justify-content: flex-start;
+      height: 136px;
+      padding: 24px 24px 0;
+      border: 1px solid #e9e9e9;
+      border-radius: 4px;
+      &:nth-child(3n + 3) {
+        margin-right: 0;
+      }
+      .logo-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 14px 0 0;
+        width: 48px;
+        height: 48px;
+        svg {
+          width: 40px;
+          height: 40px;
+        }
+      }
+      .content-box {
+        .content-title {
+          font-size: 16px;
+          color: rgba(0, 0, 0, 0.85);
+          font-weight: 600;
+        }
+        .content-des {
+          margin-top: 8px;
+          max-width: 232px;
+          color: #757c85;
+          @include ellipsisMultiline(2);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+</style>

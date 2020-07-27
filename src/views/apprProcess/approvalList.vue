@@ -490,8 +490,6 @@ export default {
       color: #202940;
       margin: 0;
     }
-    .button-box {
-    }
   }
   .approval-section {
     padding-top: 16px;
@@ -581,6 +579,7 @@ export default {
               .content-title {
                 font-size: 14px;
                 color: #202940;
+                font-weight: 600;
               }
               .content-des {
                 margin-top: 4px;
