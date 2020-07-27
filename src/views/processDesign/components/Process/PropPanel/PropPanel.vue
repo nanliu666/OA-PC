@@ -219,6 +219,7 @@
             <fc-org-select
               ref="start-org"
               v-model="initiator"
+              :all="all"
             />
           </el-col>
         </el-row>
@@ -453,8 +454,8 @@
       <!--            <p style="margin-top:0;padding-top: 0;">抄送人</p>-->
       <fc-org-select
         ref="copy-org"
-        v-model="properties.members"
-        :tab-list="['dep']"
+        v-model="members"
+        :tab-list="['copy']"
         button-type="button"
         title="抄送人"
       />
@@ -567,6 +568,11 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
+      all: true, //显示所有人
+      members: {
+        //抄送节点
+        dep: []
+      },
       formConf: {
         fields: []
       },
@@ -623,7 +629,7 @@ export default {
         {
           label: '上级领导',
           value: 'director',
-          disabled: false
+          disabled: true
         },
         {
           label: '指定成员',
@@ -768,6 +774,13 @@ export default {
     },
 
     copyNodeConfirm() {
+      let attribute = []
+      this.members['copy'].map((it) => {
+        attribute.push(it.id)
+      })
+      attribute = attribute.join(',')
+      this.properties.attribute = attribute
+      this.properties.members = this.members['copy']
       this.$emit('confirm', this.properties, this.getOrgSelectLabel('copy') || '发起人自选')
       this.visible = false
     },
@@ -860,6 +873,13 @@ export default {
         formOperate: t.formOperate
       }))
       this.approverForm.approvers = this.orgCollection[assigneeType]
+      let attribute = []
+      this.orgCollection[assigneeType] &&
+        this.orgCollection[assigneeType].map((it) => {
+          attribute.push(it.id)
+        })
+      attribute = attribute.join(',')
+      this.properties.attribute = attribute
       Object.assign(this.properties, this.approverForm, { formOperates })
       this.$emit('confirm', this.properties, content || '请设置审批人')
       this.visible = false
