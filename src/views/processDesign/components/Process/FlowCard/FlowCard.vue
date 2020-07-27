@@ -119,7 +119,7 @@ function addNodeButton(ctx, data, h, isBranch = false) {
                 class="condition-icon"
                 onClick={ctx.eventLancher.bind(ctx, 'addApprovalNode', data, isBranch)}
               >
-                <i class="iconfont iconshenpi"></i>
+                <i class="iconfont icon-approval-Seal-bicolor"></i>
               </div>
               审批人
             </div>
@@ -129,7 +129,7 @@ function addNodeButton(ctx, data, h, isBranch = false) {
                 class="condition-icon"
                 onClick={ctx.eventLancher.bind(ctx, 'addCopyNode', data, isBranch)}
               >
-                <i class="el-icon-s-promotion iconfont" style="vertical-align: middle;"></i>
+                <i class="icon-CC-bicolor iconfont" style="vertical-align: middle;"></i>
               </div>
               抄送人
             </div>
@@ -139,14 +139,14 @@ function addNodeButton(ctx, data, h, isBranch = false) {
                 class="condition-icon"
                 onClick={this.eventLancher.bind(ctx, 'appendBranch', data, isBranch)}
               >
-                <i class="iconfont iconcondition"></i>
+                <i class="iconfont icon-branch-bicolor"></i>
               </div>
               条件分支
             </div>
           </div>
 
           <button class="btn" type="button" slot="reference">
-            <i class="el-icon-plus icon"></i>
+            <i class="el-icon-plus icons"></i>
           </button>
         </el-popover>
       </div>

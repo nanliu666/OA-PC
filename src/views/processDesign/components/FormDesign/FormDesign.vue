@@ -1,5 +1,3 @@
-/** *Copyright: Copyright (c) 2020 *Author:JakHuang *Version 1.0 *Title: form-generator/Element
-UI表单设计及代码生成器 *GitHub: https://github.com/JakHuang/form-generator */
 <template>
   <div class="form-design-container">
     <div class="left-container">
@@ -112,6 +110,13 @@ UI表单设计及代码生成器 *GitHub: https://github.com/JakHuang/form-gener
   </div>
 </template>
 <script>
+/**
+ * Copyright: Copyright (c) 2020
+ * Author:JakHuang
+ * Version 1.0
+ * Title: form-generator/ElementUI表单设计及代码生成器
+ * GitHub: https://github.com/JakHuang/form-generator
+ */
 import Draggable from 'vuedraggable'
 import DraggableItem from './components/DragableItem'
 import RightPanel from './components/RightPanel'
@@ -144,7 +149,10 @@ export default {
       activeData: emptyActiveData,
       activeId: null,
       isPC: false,
-      saveDrawingListDebounce: debounce(saveDrawingList, 340)
+      saveDrawingListDebounce: debounce(saveDrawingList, 340),
+      formConf: {
+        showBtn: false
+      }
     }
   },
   watch: {
@@ -164,6 +172,12 @@ export default {
     this.activeFormItem(this.drawingList[0])
   },
   methods: {
+    getData() {
+      return {
+        ...this.formConf,
+        fields: this.drawingList
+      }
+    },
     isFilledPCon(formIds) {
       const processCmp = this.$parent.$children.find((t) => t.isProcessCmp)
       return processCmp && processCmp.isFilledPCon(formIds)

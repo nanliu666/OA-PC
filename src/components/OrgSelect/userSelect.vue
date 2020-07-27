@@ -6,7 +6,10 @@
     append-to-body
     :before-close="close"
   >
-    <div class="content-wr">
+    <div
+      v-loading="loading"
+      class="content-wr"
+    >
       <div class="left">
         <el-input
           v-model="filterText"
@@ -116,8 +119,8 @@ export default {
   watch: {
     users: {
       handler(val) {
-        // console.log('val______', val)
         // if()
+
         val.map((it) => this.checked.push(it.id))
         this.selectList = val
       },
@@ -170,10 +173,15 @@ export default {
       })
     },
     getOrgUserTree(tenantId) {
-      getOrgUserTree(tenantId).then((res) => {
-        this.resolveTree(res)
-        this.orgTree = res
-      })
+      this.loading = true
+      getOrgUserTree(tenantId)
+        .then((res) => {
+          this.resolveTree(res)
+          this.orgTree = res
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     /**
      * 比较新旧list，新增,减少的数据分别添加标识
@@ -214,7 +222,7 @@ export default {
           if (node.users) {
             users = node.users.map((user) => ({
               ...user,
-              id: user.userId,
+              id: node.orgId + '_' + user.userId,
               type: 'user'
             }))
             if (node.children) {

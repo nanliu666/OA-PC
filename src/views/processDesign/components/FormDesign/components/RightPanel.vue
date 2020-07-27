@@ -186,10 +186,7 @@
               <div slot="content">
                 流程条件：在流程设计里用于区分流程走向。
               </div>
-              <span
-                class="condition-text"
-                style="color:#aaa;"
-              >流程条件</span>
+              <span class="condition-text">流程条件</span>
             </el-tooltip>
             )
           </div>
@@ -258,6 +255,13 @@
 </template>
 
 <script>
+/**
+ * Copyright: Copyright (c) 2020
+ * Author:JakHuang
+ * Version 1.0
+ * Title: form-generator/ElementUI表单设计及代码生成器
+ * GitHub: https://github.com/JakHuang/form-generator
+ */
 import Draggable from 'vuedraggable'
 
 import { isArray } from 'util'

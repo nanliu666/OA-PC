@@ -1,4 +1,11 @@
 <script>
+/**
+ * Copyright: Copyright (c) 2020
+ * Author:JakHuang
+ * Version 1.0
+ * Title: form-generator/ElementUI表单设计及代码生成器
+ * GitHub: https://github.com/JakHuang/form-generator
+ */
 import { deepClone } from '../../utils/index'
 import render from '../render/render.js'
 
@@ -29,7 +36,9 @@ function renderFrom(h) {
         rules={this.rules}
       >
         {renderFormItem.call(this, h, formConfCopy.fields)}
-        {formBtns.call(this, h)}
+
+        {// 控制按钮是否渲染
+        formConfCopy.showBtn ? formBtns.call(this, h) : null}
       </el-form>
     </el-row>
   )
@@ -40,7 +49,7 @@ function formBtns(h) {
   return (
     <el-col>
       <el-form-item size="large">
-        <el-button type="primary" onClick={this.submitForm}>
+        <el-button type="primary" onClick={this._submitForm}>
           提交
         </el-button>
         <el-button onClick={this.resetForm}>重置</el-button>
@@ -49,7 +58,7 @@ function formBtns(h) {
   )
 }
 
-function renderFormItem(h, elementList) {
+function renderFormItem(h, elementList = []) {
   return elementList.map((scheme) => {
     const config = scheme.__config__
     const layout = layouts[config.layout]
@@ -68,11 +77,12 @@ function renderChildren(h, scheme) {
 }
 
 const layouts = {
+  // 单个元素渲染
   colFormItem(h, scheme) {
     const config = scheme.__config__
     return (
       <el-col span={scheme.__pc__.span} class="parser-item">
-        <el-form-item prop={scheme.__vModel__} label={!config.noLabel ? config.label : ''}>
+        <el-form-item prop={scheme.__vModel__} label={config.label}>
           <render
             conf={scheme}
             onInput={(event) => {
@@ -84,6 +94,7 @@ const layouts = {
       </el-col>
     )
   },
+  // 父元素渲染，暂时不做
   rowFormItem(h, scheme) {
     let child = renderChildren.apply(this, arguments)
     if (scheme.type === 'flex') {
@@ -121,15 +132,33 @@ export default {
     this.buildRules(data.formConfCopy.fields, data.rules)
     return data
   },
+  computed: {},
+  watch: {
+    formConf: {
+      handler(val) {
+        const form = {},
+          rules = {}
+        this.formConfCopy = deepClone(val)
+        this.initFormData(val.fields, form)
+        this.buildRules(val.fields, rules)
+        this.form = form
+        this.rules = rules
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   methods: {
-    initFormData(componentList, formData) {
+    // 构建data属性
+    initFormData(componentList = [], formData) {
       componentList.forEach((cur) => {
         const config = cur.__config__
         if (cur.__vModel__) formData[cur.__vModel__] = config.defaultValue
         if (config.children) this.initFormData(config.children, formData)
       })
     },
-    buildRules(componentList, rules = {}) {
+    // 构建校验规则
+    buildRules(componentList = [], rules = {}) {
       componentList.forEach((cur) => {
         const config = cur.__config__
 
@@ -138,26 +167,43 @@ export default {
             required: config.required,
             message: cur.placeholder + config.label
           }
-          if (Array.isArray(config.defaultValue)) {
+          if (Array.isArray(config.defaultValue) && config.type !== 'daterange') {
             required.type = 'array'
             required.message = `请至少选择一个${config.label}`
           }
-          required.message === undefined && (required.message = `${config.label}不能为空`)
+          // 日期区间config的placeholder为空，所以单独定义message
+          if (config.type === 'daterange') {
+            required.message = '请选择' + config.label
+          }
           required.trigger = ruleTrigger[cur.__pc__.tag] || 'input'
           rules[cur.__vModel__] = required
         }
       })
     },
+    // 重置方法
     resetForm() {
       this.formConfCopy = deepClone(this.formConf)
       this.$refs.form.resetFields()
     },
-    submitForm() {
+    // 内部按钮调用的提交方法
+    _submitForm() {
       this.$refs.form.validate((valid) => {
         if (!valid) return false
         // 触发sumit事件
         this.$emit('submit', this.form)
         return true
+      })
+    },
+    // 外部调用的提交方法
+    submit() {
+      return new Promise((resolve, reject) => {
+        this.$refs.form.validate((valid) => {
+          if (!valid) {
+            reject()
+            return
+          }
+          resolve(this.form)
+        })
       })
     }
   },

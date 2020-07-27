@@ -63,10 +63,9 @@
         <fc-org-select
           ref="condition-org"
           v-model="initiator"
-          :tab-list="['dep&user']"
+          :tab-list="['user']"
         />
       </row-wrapper>
-
       <template v-for="(item, index) in pconditions">
         <!-- 计数 -->
         <row-wrapper
@@ -77,15 +76,16 @@
               'fc-date-duration',
               'fc-time-duration',
               'fc-amount',
-              'fc-calculate'
+              'fc-calculate',
+              'number'
             )
           "
           :key="index"
-          :title="item.label"
+          :title="item.__config__.label"
         >
           <num-input
             :key="index"
-            v-model="item.conditionValue"
+            v-model="item.__config__.defaultValue"
             :title="timeTangeLabel(item)"
             style="padding-right: 6px;"
           />
@@ -99,16 +99,16 @@
         </row-wrapper>
         <!-- 单选组 -->
         <row-wrapper
-          v-if="couldShowIt(item, 'el-radio-group')"
+          v-if="couldShowIt(item, 'el-radio-group', 'radio')"
           :key="index"
-          :title="item.label"
+          :title="item.__config__.label"
         >
           <el-radio-group
-            v-model="item.conditionValue"
+            v-model="item.__config__.defaultValue"
             class="radio-group"
           >
             <el-radio
-              v-for="item in item.options"
+              v-for="item in item.__slot__.options"
               :key="item.label"
               :label="item.label"
             >
@@ -126,18 +126,18 @@
 
         <!-- 下拉 -->
         <row-wrapper
-          v-if="couldShowIt(item, 'el-select')"
+          v-if="couldShowIt(item, 'el-select', 'select')"
           :key="index"
           :title="item.label"
         >
           <el-select
-            v-model="item.conditionValue"
+            v-model="item.__config__.defaultValue"
             style="width: 280px"
             placeholder="请选择"
             size="small"
           >
             <el-option
-              v-for="item in item.options"
+              v-for="item in item.__slot__.options"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -159,7 +159,7 @@
         >
           <fc-org-select
             :ref="'org' + index"
-            v-model="item.conditionValue"
+            v-model="item.__config__.defaultValue"
             :tab-list="['org']"
           />
           <template v-slot:action>
@@ -233,6 +233,7 @@
                 v-for="item in assigneeTypeOptions"
                 :key="item.value"
                 :label="item.value"
+                :disabled="item.disabled"
                 class="radio-item"
               >
                 {{ item.label }}
@@ -251,11 +252,19 @@
               v-else-if="approverForm.assigneeType === 'optional'"
               class="option-box"
             >
-              <p>可选多人</p>
-              <el-switch
-                v-model="approverForm.optionalMultiUser"
-                active-color="#13ce66"
-              />
+              <p>设置选择条件</p>
+              <el-radio-group v-model="approverForm.optionalMultiUser">
+                <el-radio :label="false">
+                  自选一个人
+                </el-radio>
+                <el-radio :label="true">
+                  自选多个人
+                </el-radio>
+              </el-radio-group>
+              <!--              <el-switch-->
+              <!--                v-model="approverForm.optionalMultiUser"-->
+              <!--                active-color="#13ce66"-->
+              <!--              />-->
 
               <p>选择范围</p>
               <el-select
@@ -271,6 +280,20 @@
                   :disabled="item.disabled"
                 />
               </el-select>
+              <div style="margin-top: 15px">
+                <fc-org-select
+                  ref="approver-org"
+                  v-model="orgCollection"
+                  button-type="button"
+                  title="指定成员"
+                  :tab-list="
+                    fcOrgTabList.includes(approverForm.assigneeType)
+                      ? [approverForm.assigneeType]
+                      : ['dep']
+                  "
+                  @change="onOrgChange"
+                />
+              </div>
             </div>
             <div v-else-if="approverForm.assigneeType === 'director'">
               <div style="font-size: 14px;padding-left: 24px;">
@@ -297,9 +320,9 @@
                 </el-row>
 
                 <br>
-                <el-checkbox v-model="useDirectorProxy">
-                  找不到主管时，由上级主管代审批
-                </el-checkbox>
+                <!--                <el-checkbox v-model="useDirectorProxy">-->
+                <!--                  找不到主管时，由上级主管代审批-->
+                <!--                </el-checkbox>-->
               </div>
             </div>
             <div
@@ -324,7 +347,7 @@
             v-if="
               (orgCollection[approverForm.assigneeType] &&
                 orgCollection[approverForm.assigneeType].length > 1) ||
-                ['optional'].includes(approverForm.assigneeType)
+                (['optional'].includes(approverForm.assigneeType) && approverForm.optionalMultiUser)
             "
             class="option-box"
           >
@@ -436,9 +459,9 @@
         title="抄送人"
       />
       <br>
-      <el-checkbox v-model="properties.userOptional">
-        允许发起人自选抄送人
-      </el-checkbox>
+      <!--      <el-checkbox v-model="properties.userOptional">-->
+      <!--        允许发起人自选抄送人-->
+      <!--      </el-checkbox>-->
     </section>
 
     <el-dialog
@@ -448,19 +471,46 @@
       :append-to-body="true"
       custom-class="condition-dialog"
     >
+      <div style="margin-bottom: 10px">
+        请选择用来区分审批流程的条件字段
+      </div>
       <el-checkbox-group v-model="showingPCons">
         <!-- 发起人默认就有 -->
-        <el-checkbox :label="-1">
+        <el-checkbox
+          style="margin-bottom: 10px;"
+          :label="-1"
+        >
           发起人
         </el-checkbox>
         <el-checkbox
           v-for="(item, index) in pconditions"
           :key="index"
-          :label="item.formId"
+          style="margin-bottom: 10px;"
+          class="flex justify-space-around"
+          :label="item.__config__.formId"
         >
-          {{ item.label }}
+          {{ item.__config__.label }}
         </el-checkbox>
       </el-checkbox-group>
+
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="medium"
+          @click="dialogVisible = false"
+        >
+          取 消
+        </el-button>
+        <el-button
+          size="medium"
+          type="primary"
+          @click="showCons()"
+        >
+          确 定
+        </el-button>
+      </div>
     </el-dialog>
 
     <div class="actions">
@@ -504,7 +554,7 @@ const defaultApproverForm = {
   counterSign: true, //是否为会签
   // 审批类型为自选 出现 optionalMultiUser optionalRange
   optionalMultiUser: false,
-  optionalRange: 'ALL' // USER<最多十个> / ALL / ROLE
+  optionalRange: 'USER' // USER<最多十个> / ALL / ROLE
 }
 export default {
   directives: {
@@ -517,7 +567,10 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
-      fcOrgTabList: ['dep', 'role', 'user', 'position'],
+      formConf: {
+        fields: []
+      },
+      fcOrgTabList: ['dep', 'role', 'user', 'position', 'optional'],
       visible: false, // 控制面板显隐
       globalFormOperate: null, // 统一设置节点表单权限
       titleInputVisible: false, // 是否显示标题输入框  startNode 不显示
@@ -534,7 +587,8 @@ export default {
         dep: [],
         role: [],
         user: [],
-        position: []
+        position: [],
+        optional: []
       },
       useDirectorProxy: true, // 找不到主管时 上级主管代理审批
       directorLevel: 1, // 审批主管级别
@@ -555,44 +609,42 @@ export default {
       ],
       rangeOptions: [
         {
-          label: '全公司',
-          value: 'ALL'
-        },
-        {
           label: '指定成员',
           value: 'USER'
-        },
-        {
-          label: '角色',
-          value: 'ROLE'
         }
       ],
 
       assigneeTypeOptions: [
         {
           label: '发起人自选',
-          value: 'optional'
+          value: 'optional',
+          disabled: false
         },
         {
           label: '上级领导',
-          value: 'director'
+          value: 'director',
+          disabled: false
         },
         {
           label: '指定成员',
-          value: 'user'
+          value: 'user',
+          disabled: false
         },
 
         {
           label: '指定职位',
-          value: 'role'
+          value: 'role',
+          disabled: true
         },
         {
           label: '指定岗位',
-          value: 'position'
+          value: 'position',
+          disabled: true
         },
         {
           label: '指定标签',
-          value: 'myself'
+          value: 'myself',
+          disabled: true
         }
       ]
     }
@@ -632,6 +684,20 @@ export default {
     }
   },
   methods: {
+    showCons() {
+      this.formConf.fields = []
+      this.pconditions &&
+        this.pconditions.map((it) => {
+          if (this.showingPCons.includes(it.__config__.formId)) {
+            it.__pc__.span = 24
+            this.formConf.fields.push(it)
+          }
+        })
+      this.dialogVisible = false
+    },
+    sumbitForm() {
+      // console.log(data)
+    },
     getFormOperates() {
       let res = []
       this.isApproverNode() && (res = this.approverForm.formOperates)
@@ -662,7 +728,9 @@ export default {
     },
     // 是否可以显示当前条件组件
     couldShowIt(item, ...tag) {
-      return tag.includes(item.tag) && this.showingPCons.includes(item.formId)
+      return (
+        tag.includes(item.__config__.type) && this.showingPCons.includes(item.__config__.formId)
+      )
     },
 
     initFormOperates(target) {
@@ -711,10 +779,10 @@ export default {
       let nodeContent = ''
       const conditions = []
       this.showingPCons
-        .map((fid) => this.pconditions.find((t) => t.formId === fid))
+        .map((fid) => this.pconditions.find((t) => t.__config__.formId === fid))
         .forEach((t) => {
           if (!t) return // 发起人条件时 t 为空 发起人在其他地方获取
-          const cValue = t.conditionValue
+          const cValue = t.__config__.defaultValue
           if (cValue === undefined || cValue === null) {
             return
           }
@@ -723,33 +791,36 @@ export default {
             'fc-date-duration',
             'fc-time-duration',
             'fc-amount',
-            'fc-calculate'
+            'fc-calculate',
+            'number'
           ]
-          if (numberTypeCmp.includes(t.tag)) {
+          const res = { formId: t.__config__.formId, defaultValue: cValue }
+          if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
               const numVal = cValue.value
               nodeContent +=
-                `[${numVal[0]} ${rangeType[numVal[1]]} ${t.label} ${rangeType[numVal[2]]} ${
-                  numVal[3]
-                }] ` + '\n'
+                `[${numVal[0]} ${rangeType[numVal[1]]} ${t.__config__.label} ${
+                  rangeType[numVal[2]]
+                } ${numVal[3]}] ` + '\n'
             } else {
-              nodeContent += `[${t.label} ${rangeType[cValue.type]} ${cValue.value}] ` + '\n'
+              nodeContent +=
+                `[${t.__config__.label} ${rangeType[cValue.type]} ${cValue.value}] ` + '\n'
             }
           } else if (t.tag === 'fc-org-select') {
             const index = this.pconditions.findIndex((p) => p.formId === t.formId)
             const labels = this.$refs['org' + index][0].selectedLabels
             nodeContent += `[${t.label} = ${labels}] ` + '\n'
           } else {
-            nodeContent += `[${t.label} = ${cValue}] ` + '\n'
+            nodeContent += `[${t.__config__.label} = ${cValue}] ` + '\n'
           }
-          const res = { formId: t.formId, conditionValue: cValue }
           conditions.push(res)
         }, [])
 
       this.properties.conditions = conditions
       // 发起人虽然是条件 但是这里把发起人放到外部单独判断
-      this.properties.initiator = this.initiator
-      this.initiator.length > 0 &&
+      this.properties.initiator = this.initiator['user']
+      this.initiator['user'] &&
+        this.initiator['user'].length > 0 &&
         (nodeContent = `[发起人: ${this.getOrgSelectLabel('condition')}]` + '\n' + nodeContent)
       this.$emit('confirm', this.properties, nodeContent || '请设置条件')
       this.visible = false
@@ -777,7 +848,7 @@ export default {
     approverNodeComfirm() {
       const assigneeType = this.approverForm.assigneeType
       let content = ''
-      if (['optional', 'myself'].includes(assigneeType)) {
+      if (['myself'].includes(assigneeType)) {
         content = this.assigneeTypeOptions.find((t) => t.value === assigneeType).name
       } else if ('director' === assigneeType) {
         content = this.directorLevel === 1 ? '直接主管' : `第${this.directorLevel}级主管`
@@ -811,10 +882,10 @@ export default {
      * 删除流程条件
      */
     onDelCondition(condition) {
-      const index = this.showingPCons.findIndex((id) => id === condition.formId)
+      const index = this.showingPCons.findIndex((id) => id === condition.__config__.formId)
       if (index > -1) {
         this.showingPCons.splice(index, 1)
-        this.pconditions.find((t) => t.formId === condition.formId).conditionValue = undefined
+        this.pconditions.find((t) => t.formId === condition.formId).defaultValue = undefined
       }
     },
     // 配合getPriorityLength 获取前一个节点条件数组长度 用于设置优先级
@@ -844,6 +915,7 @@ export default {
 
     initInitiator() {
       const initiator = this.value.properties && this.value.properties.initiator
+
       this.initiator = Array.isArray(initiator) ? initiator : []
     },
     /**
@@ -869,19 +941,20 @@ export default {
       // 初始化条件表单数据
       let nodeConditions = this.value.properties && this.value.properties.conditions
       this.pconditions = JSON.parse(JSON.stringify(this.$store.state.process.processConditions))
-      this.initiator['dep&user'] = this.value.properties.initiator
+      this.initiator['user'] = this.value.properties.initiator
       if (Array.isArray(this.pconditions)) {
         let temp = undefined
         this.showingPCons = [-1] // 默认显示发起人
         this.pconditions.forEach((t) => {
           if (Array.isArray(nodeConditions)) {
-            const con = nodeConditions.find((item) => item.formId == t.formId)
+            // if(nodeConditions.)
+            const con = nodeConditions.find((item) => item.formId == t.__config__.formId)
             con &&
-              con.conditionValue &&
-              ((temp = con.conditionValue), this.showingPCons.push(t.formId))
+              con.defaultValue &&
+              ((temp = con.defaultValue), this.showingPCons.push(t.__config__.formId))
           }
 
-          this.$set(t, 'conditionValue', temp)
+          this.$set(t.__config__, 'defaultValue', temp)
         })
       }
     }
@@ -899,6 +972,7 @@ export default {
 .drawer {
   font-size: 14px;
   color: #202940;
+
   >>> .el-drawer__header {
     margin-bottom: 0;
     /*border-bottom: 1px solid #c5c5c5;*/
@@ -934,13 +1008,14 @@ export default {
 
 .actions {
   position: absolute;
-  bottom:20px;
+  bottom: 20px;
   left: 0;
   padding: 6px 12px;
   width: 100%;
   box-sizing: border-box;
   text-align: right;
-  .btn{
+
+  .btn {
     width: 84px;
   }
 }
@@ -959,6 +1034,7 @@ export default {
 .form-auth-table {
   font-size: 14px;
   margin-top: 24px;
+
   .auth-table-header {
     background: #fafafa;
     line-height: 40px;
@@ -1005,7 +1081,7 @@ export default {
 }
 
 .condition-pane {
-  height: calc(100%-50px)
+  height: calc(100% -50px)
   ///*overflow scroll*/
 }
 
@@ -1032,25 +1108,29 @@ export default {
   border: 1px solid #C6CBCE;
   border-radius: 4px;
   width: 312px;
+
   > div {
     width: 156px;
     height: 34px;
     font-size: 14px;
     color: #202940;
     line-height: 34px;
-    cursor :pointer;
+    cursor: pointer;
   }
-  .active{
+
+  .active {
     background: #207EFA;
     color: #FFFFFF;
   }
 }
+
 /deep/ .el-radio {
   color: #202940;
   cursor: pointer;
   margin-right: 30px;
 }
-.formAuth{
+
+.formAuth {
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 100px)
