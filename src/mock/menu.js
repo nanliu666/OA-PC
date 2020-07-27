@@ -808,8 +808,8 @@ const res = {
             isOwn: 1,
             isShow: 1,
             code: 'approval_recordList',
-            alias: '/approval/recordList',
-            path: '/approval/recordList',
+            alias: '/apprProcess/recordList',
+            path: '/apprProcess/recordList',
             icon: 'iconfont iconicon_compile'
           },
           {
