@@ -45,7 +45,7 @@
                 <el-popover
                   v-if="processesItem.remark"
                   placement="top-start"
-                  width="420"
+                  width="350"
                   trigger="hover"
                   :content="processesItem.remark"
                 >
