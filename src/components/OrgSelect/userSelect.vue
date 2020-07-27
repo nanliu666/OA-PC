@@ -88,6 +88,10 @@ import { getOrgUserTree } from '@/api/system/user'
 export default {
   name: 'UserTagedEdit',
   props: {
+    org: {
+      type: Boolean,
+      default: false
+    },
     visible: {
       type: Boolean,
       default: false
@@ -105,7 +109,7 @@ export default {
       loading: false,
       filterText: '',
       props: {
-        // disabled: (data) => (data.type !== 'user' && data.users.length === 0) || data.orgName,
+        disabled: (data) => (data.type !== 'user' && data.users.length === 0) || data.orgName,
         label: (item) => item.orgName || item.name,
         children: 'children'
       },
@@ -117,6 +121,17 @@ export default {
     }
   },
   watch: {
+    org: {
+      handler(val) {
+        this.$nextTick(() => {
+          if (val) {
+            this.props.disabled = false
+          }
+        })
+      },
+      immediate: true,
+      deep: true
+    },
     users: {
       handler(val) {
         // if()

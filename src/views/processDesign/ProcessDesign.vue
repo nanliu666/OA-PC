@@ -157,7 +157,9 @@ export default {
     }
   },
   created() {
-    this.initData()
+    if (this.$route.query.processId) {
+      this.initData()
+    }
   },
   methods: {
     initData() {
@@ -274,6 +276,7 @@ export default {
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
+      // console.log(JSON.stringify(param.processData))
       postApprProcess(params).then(() => {
         this.$message.success('提交成功')
       })
