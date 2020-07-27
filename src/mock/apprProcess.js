@@ -16,7 +16,7 @@ const processListData = {
       processes: [
         {
           processId: '1',
-          processName: '入职申请',
+          processName: '入职申请1',
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
@@ -24,7 +24,7 @@ const processListData = {
         },
         {
           processId: '4',
-          processName: '入职申请',
+          processName: '入职申请2',
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark:
@@ -56,7 +56,7 @@ const processListData = {
       processes: [
         {
           processId: '1',
-          processName: '入职申请',
+          processName: '入职申请3',
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
@@ -71,7 +71,7 @@ const processListData = {
       processes: [
         {
           processId: '1',
-          processName: '入职申请',
+          processName: '入职申请4',
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
@@ -118,27 +118,20 @@ const draftData = {
   ...normalData,
   response: [
     {
-      id: 30,
-      name: '未启用',
-      sort: 1,
-      processes: [
-        {
-          processId: '1',
-          processName: '用印申请',
-          status: 0,
-          icon: 'approval-Seal-bicolor',
-          remark: '这里是入职申请的简介',
-          visibleRange: 'all'
-        },
-        {
-          processId: '1',
-          processName: '调岗申请',
-          status: 1,
-          icon: 'approval-Seal-bicolor',
-          remark: '这里是入职申请的简介',
-          visibleRange: 'all'
-        }
-      ]
+      processId: '1',
+      processName: '用印申请',
+      status: 0,
+      icon: 'approval-Seal-bicolor',
+      remark: '这里是入职申请的简介',
+      visibleRange: 'all'
+    },
+    {
+      processId: '1',
+      processName: '调岗申请',
+      status: 1,
+      icon: 'approval-Seal-bicolor',
+      remark: '这里是入职申请的简介',
+      visibleRange: 'all'
     }
   ]
 }

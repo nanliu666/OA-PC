@@ -46,20 +46,16 @@
                 <div class="content-title">
                   {{ processesItem.processName }}
                 </div>
-                <el-popover
+                <el-tooltip
                   v-if="processesItem.remark"
+                  effect="dark"
                   placement="top-start"
-                  width="350"
-                  trigger="hover"
                   :content="processesItem.remark"
                 >
-                  <div
-                    slot="reference"
-                    class="content-des"
-                  >
+                  <div class="content-des">
                     {{ processesItem.remark }}
                   </div>
-                </el-popover>
+                </el-tooltip>
               </div>
             </li>
           </ul>
