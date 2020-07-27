@@ -28,6 +28,39 @@ export default {
     return {
       pickerVisible: false
     }
+  },
+  methods: {
+    submit() {
+      if (!this.checkApprovers(this.processData)) {
+        return false
+      }
+      return this.createProcessMap(this.processData)
+    },
+    checkApprovers(data) {
+      if (data.type === 'approver' && data.properties.approvers.length === 0) {
+        return false
+      }
+      if (data.childNode) {
+        return this.checkApprovers(data.childNode)
+      }
+      return true
+    },
+    createProcessMap(data, map = {}) {
+      let users = []
+      if (data.variable) {
+        if (data.type === 'approver') {
+          users = data.properties.approvers
+        } else if (data.type === 'copy') {
+          users = data.properties.members
+        }
+        map[data.variable] = [...new Set(users.map((item) => item.id.split('_')[1]))]
+      }
+      if (data.childNode) {
+        return this.createProcessMap(data.childNode, map)
+      } else {
+        return map
+      }
+    }
   }
 }
 </script>

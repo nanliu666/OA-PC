@@ -276,7 +276,8 @@ export default {
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
-      // console.log(JSON.stringify(param.processData))
+      // eslint-disable-next-line
+      console.log(JSON.stringify(param))
       postApprProcess(params).then(() => {
         this.$message.success('提交成功')
       })
@@ -347,12 +348,12 @@ export default {
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
-          origin.varible = 'optional_' + data.nodeId + '_id'
+          origin.variable = 'optional_' + data.nodeId + '_id'
           item.assignee = '${optional_' + data.nodeId + '_id}'
           this.processMap['optional_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'director') {
           // 主管
-          origin.varible = 'director_' + data.nodeId + '_id'
+          origin.variable = 'director_' + data.nodeId + '_id'
           item.assignee = '${director_' + data.nodeId + '_id}'
           this.processMap['director_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'mySelf') {
@@ -376,7 +377,7 @@ export default {
             }
             if (data.properties.assigneeType === 'user') {
               //如果有多个选项，指定成员人要用变量表达
-              origin.varible = 'taskUser_' + data.nodeId
+              origin.variable = 'taskUser_' + data.nodeId
               item.assignee = '${taskUser_' + data.nodeId + '}'
             }
 
