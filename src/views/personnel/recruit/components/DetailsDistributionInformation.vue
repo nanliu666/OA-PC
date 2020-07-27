@@ -230,7 +230,7 @@ const USERS_OVERVIEW_PROPS = [
       dictKey: 'emerType'
     }
   ],
-  ['needNum', '任务数'],
+  ['taskNum', '任务数'],
   ['entryNum', '已入职'],
   [
     '$_process',
