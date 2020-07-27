@@ -15,7 +15,10 @@
           v-for="(item, index) in steps"
           :key="index"
           class="step"
-          :class="[activeStep == item.key ? 'active' : '']"
+          :class="[
+            activeStep == item.key ? 'active' : '',
+            { disable: formKey && item.key === 'formDesign' }
+          ]"
           @click="changeSteps(item)"
         >
           <span class="step-index">
@@ -119,6 +122,7 @@ export default {
       flowId: 'fsdf',
       flowCategory: 'fsd',
       baseJson: '',
+      formKey: null,
       steps: [
         {
           label: '基础设置',
@@ -157,7 +161,13 @@ export default {
     }
   },
   created() {
-    this.initData()
+    if (this.$route.query.processId) {
+      this.initData()
+    }
+    this.formKey = this.$route.query.formKey
+  },
+  activated() {
+    this.formKey = this.$route.query.formKey
   },
   methods: {
     initData() {
@@ -172,6 +182,14 @@ export default {
       this.activeStep = data
     },
     changeSteps(item) {
+      if (this.formKey && item.key === 'formDesign') {
+        this.$message({
+          showClose: true,
+          message: '特殊流程不可修改表单',
+          type: 'warning'
+        })
+        return
+      }
       this.activeStep = item.key
     },
     publish() {
@@ -274,6 +292,8 @@ export default {
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
+      // eslint-disable-next-line
+      console.log(JSON.stringify(param))
       postApprProcess(params).then(() => {
         this.$message.success('提交成功')
       })
@@ -344,12 +364,12 @@ export default {
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
-          origin.varible = 'optional_' + data.nodeId + '_id'
+          origin.variable = 'optional_' + data.nodeId + '_id'
           item.assignee = '${optional_' + data.nodeId + '_id}'
           this.processMap['optional_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'director') {
           // 主管
-          origin.varible = 'director_' + data.nodeId + '_id'
+          origin.variable = 'director_' + data.nodeId + '_id'
           item.assignee = '${director_' + data.nodeId + '_id}'
           this.processMap['director_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'mySelf') {
@@ -373,7 +393,7 @@ export default {
             }
             if (data.properties.assigneeType === 'user') {
               //如果有多个选项，指定成员人要用变量表达
-              origin.varible = 'taskUser_' + data.nodeId
+              origin.variable = 'taskUser_' + data.nodeId
               item.assignee = '${taskUser_' + data.nodeId + '}'
             }
 
@@ -590,6 +610,9 @@ $header-height = 54px;
                 &.active > .step-index {
                     background: white;
                     color: #202940;
+                }
+                &.disable{
+                  opacity:0.5
                 }
 
                 > .step-index {

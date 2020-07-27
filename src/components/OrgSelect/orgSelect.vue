@@ -33,6 +33,7 @@
     </div>
     <userSelect
       v-if="show"
+      :org="org"
       :visible.sync="show"
       :users="selectOldData"
       @addUser="adduser"
@@ -52,6 +53,10 @@ export default {
     event: 'change'
   },
   props: {
+    org: {
+      type: Boolean,
+      default: false
+    },
     value: {
       type: Object | Array,
       default: function() {

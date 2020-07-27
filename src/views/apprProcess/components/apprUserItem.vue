@@ -29,12 +29,13 @@
               <div class="appr-user-item__avatar">
                 <i class="icon-usercircle avatar" />
                 <i
+                  v-if="selectable"
                   class="icon-tips-error-small close"
                   @click="deleteUser(index)"
                 />
               </div>
               <div class="appr-user-item__username">
-                {{ user.userName }}
+                {{ user.name }}
               </div>
             </div>
           </template>
@@ -45,7 +46,7 @@
             {{ isCounterSign ? '+' : '/' }}
           </div>
           <div
-            v-if="isMulti || userList.length === 0"
+            v-if="(isMulti || userList.length === 0) && selectable"
             class="appr-user-item__plus"
             @click="pickUser(userList)"
           >
@@ -83,13 +84,16 @@ export default {
     },
     userList() {
       return this.processData.type === 'approver'
-        ? this._.get(this.processData.properties, 'approvers', [])
+        ? this._.get(this.processData, 'properties.approvers', [])
         : this.processData.type === 'copy'
-        ? this._.get(this.processData.properties, 'menbers', [])
+        ? this._.get(this.processData, 'properties.members', [])
         : []
     },
     isMulti() {
-      return this.processData.properties ? this.processData.properties.optionalMultiUser : false
+      return this._.get(this.processData, 'properties.optionalMultiUser', false)
+    },
+    selectable() {
+      return this._.get(this.processData, 'properties.assigneeType', null) === 'optional'
     },
     tips() {
       if (this.processData.type === 'approver') {
@@ -109,26 +113,23 @@ export default {
       if (this.processData.type === 'approver') {
         this.processData.properties.approvers.splice(index, 1)
       } else if (this.processData.type === 'copy') {
-        this.processData.properties.menbers.splice(index, 1)
+        this.processData.properties.members.splice(index, 1)
       }
     },
     setUser(userList) {
       if (this.processData.type === 'approver') {
         this.$set(this.processData.properties, 'approvers', userList)
       } else if (this.processData.type === 'copy') {
-        this.$set(this.processData.properties, 'menbers', userList)
+        this.$set(this.processData.properties, 'members', userList)
       }
     },
     pickUser(userList) {
-      pickUser(
-        userList.map((user) => ({ ...user, name: user.userName, id: user.id || user.userId })),
-        {
-          callback: (selectedUsers) => {
-            this.setUser(selectedUsers.map((user) => ({ ...user, userName: user.name })))
-          },
-          multiple: this.isMulti
-        }
-      )
+      pickUser(userList, {
+        callback: (selectedUsers) => {
+          this.setUser(selectedUsers.slice())
+        },
+        multiple: this.isMulti
+      })
     }
   }
 }

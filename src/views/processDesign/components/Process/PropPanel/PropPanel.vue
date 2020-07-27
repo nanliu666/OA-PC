@@ -453,7 +453,7 @@
       <!--            <p style="margin-top:0;padding-top: 0;">抄送人</p>-->
       <fc-org-select
         ref="copy-org"
-        v-model="properties.menbers"
+        v-model="properties.members"
         :tab-list="['dep']"
         button-type="button"
         title="抄送人"
