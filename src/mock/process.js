@@ -1,6 +1,6 @@
+import { Base64 } from 'js-base64'
 import Mock from 'mockjs'
 import mockData from '../views/processDesign/mockData'
-import { Base64 } from 'js-base64'
 
 const normalData = {
   code: 200,
@@ -28,33 +28,35 @@ const admin = {
 }
 const MockDate = {
   ...normalData,
-  response: {
-    processId: 'TjGL[8',
-    icon: '4cm',
-    processName: ')sij9X',
-    categoryId: 'K7XF5',
-    categoryName: 'OBG2',
-    processVisible: [
-      {
-        type: 'ukL!)L',
-        bizId: 'wO8!r3',
-        bizName: 'bPbMCT'
-      }
-    ],
-    processAdmin: [
-      {
-        userId: 'ycN8',
-        userName: '@nx4JLm'
-      }
-    ],
-    formKey: 'P(O9#',
-    remark: 'C87]r',
-    baseJson: Base64.encode(JSON.stringify(mockData)),
-    approverDistinct: 675464232012760,
-    approverNull: 8232155955641768,
-    isOpinion: 560916241239676,
-    tip: '^ec%'
-  }
+  response: [
+    {
+      processId: 'TjGL[8',
+      icon: '4cm',
+      processName: ')sij9X',
+      categoryId: 'K7XF5',
+      categoryName: 'OBG2',
+      processVisible: [
+        {
+          type: 'ukL!)L',
+          bizId: 'wO8!r3',
+          bizName: 'bPbMCT'
+        }
+      ],
+      processAdmin: [
+        {
+          userId: 'ycN8',
+          userName: '@nx4JLm'
+        }
+      ],
+      formKey: 'P(O9#',
+      remark: 'C87]r',
+      baseJson: Base64.encode(JSON.stringify(mockData)),
+      approverDistinct: 675464232012760,
+      approverNull: 8232155955641768,
+      isOpinion: 560916241239676,
+      tip: '^ec%'
+    }
+  ]
 }
 
 export default ({ mock }) => {
