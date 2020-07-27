@@ -301,13 +301,13 @@ export default {
   data() {
     return {
       candidateTableColumns: CANDIDATE_TABLE_COLUMNS,
-      candidateTableData: null,
+      candidateTableData: [],
       candidateTableLoading: false,
       detailsTableColumns: DETAILS_TABLE_COLUMNS,
-      detailsTableData: null,
+      detailsTableData: [],
       detailsTableLoading: false,
       entryTableColumns: ENTRY_TABLE_COLUMNS,
-      entryTableData: null,
+      entryTableData: [],
       entryTableLoading: false,
 
       dictionary: {}
