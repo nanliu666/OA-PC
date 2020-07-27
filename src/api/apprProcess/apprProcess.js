@@ -12,6 +12,11 @@ export const getProcessDetail = (params) => get('/appr/v2/appr/process', params)
  */
 export const getProcessList = (params) => get('/appr/v2/appr/process/list', params)
 /**
+ * 我发起的审批查询接口
+ * @param {*} params
+ */
+export const getMyApproveList = (params) => get('/appr/v2/appr/my/approve/list', params)
+/**
  * 可发起的审批流程查询接口
  * @param {*} params
  */
