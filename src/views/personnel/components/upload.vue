@@ -35,7 +35,8 @@
       :visible.sync="openUpload"
       :close-on-click-modal="false"
       :append-to-body="true"
-      @closed="firstEnter = true"
+      @close="dialogCLose"
+      @closed="dialogCLose"
     >
       <div
         slot="title"
@@ -100,7 +101,7 @@ export default {
       lookUpData: {
         //查询接口
         pageNo: 1,
-        pageSize: 15,
+        pageSize: this.limit,
         categoryId: this.id, //附件分类ID
         userId: this.$route.params.userId,
         name: '' //非必填
@@ -127,6 +128,7 @@ export default {
     },
     preserve() {
       this.openUpload = false
+      this.firstEnter = true
       // this.$emit('getUploadImg',this.)
     },
     openUploadBtn() {
@@ -137,6 +139,9 @@ export default {
       lookUpAttachmentInfo(this.lookUpData).then((res) => {
         this.$refs.viewPicture.init(res.data)
       })
+    },
+    dialogCLose() {
+      this.firstEnter = true
     }
   }
 }
