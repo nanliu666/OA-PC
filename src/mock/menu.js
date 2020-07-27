@@ -888,7 +888,7 @@ const res = {
             isShow: 1,
             code: 'approval_launchApply',
             alias: 'launchApply',
-            path: '/approval/launchApply',
+            path: '/apprProcess/launchApply',
             icon: 'iconfont iconicon_compile'
           }
         ]
