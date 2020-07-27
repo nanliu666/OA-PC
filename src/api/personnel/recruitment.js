@@ -8,6 +8,16 @@ export const getRecruitmentDetail = (recruitmentId) => {
 }
 
 /**
+ * 招聘任务详情查询接口
+ * @param {object} params 参数
+ * @param {string} params.recruitmentId 招聘需求ID
+ * @param {string} params.userId 用户ID（负责招聘任务的用户）
+ * */
+export const getTaskDetail = (params) => {
+  return get('/user/v1/recruitment/task/detail', params)
+}
+
+/**
  *  全部招聘需求筛选接口
  * @param {String} jobName - 	职位名称。模糊查询
  * @param {String} orgId - 	用人部门ID

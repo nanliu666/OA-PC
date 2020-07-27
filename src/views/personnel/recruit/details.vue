@@ -115,6 +115,7 @@
 import {
   getChange,
   getRecruitmentDetail,
+  getTaskDetail,
   putDistribution,
   requirementStop,
   taskDistribution
@@ -258,9 +259,12 @@ export default {
     },
 
     async loadData() {
+      const loadData = this.userId
+        ? async (id) => await getTaskDetail({ recruitmentId: id, userId: this.userId })
+        : getRecruitmentDetail
       try {
         this.loading = true
-        this.data = await getRecruitmentDetail(this.id)
+        this.data = await loadData(this.id)
       } catch (error) {
         this.$message.error(error.message)
       } finally {
