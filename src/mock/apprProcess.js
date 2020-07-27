@@ -16,10 +16,19 @@ const processListData = {
       processes: [
         {
           processId: '1',
-          processName: '入职申请',
+          processName: '入职申请1',
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
+          visibleRange: 'all'
+        },
+        {
+          processId: '4',
+          processName: '入职申请2',
+          sort: 1,
+          icon: 'approval-invitation-bicolor',
+          remark:
+            '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
           visibleRange: 'all'
         },
         {
@@ -47,7 +56,7 @@ const processListData = {
       processes: [
         {
           processId: '1',
-          processName: '入职申请',
+          processName: '入职申请3',
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
@@ -62,7 +71,7 @@ const processListData = {
       processes: [
         {
           processId: '1',
-          processName: '入职申请',
+          processName: '入职申请4',
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
@@ -109,27 +118,20 @@ const draftData = {
   ...normalData,
   response: [
     {
-      id: 30,
-      name: '未启用',
-      sort: 1,
-      processes: [
-        {
-          processId: '1',
-          processName: '用印申请',
-          status: 0,
-          icon: 'approval-Seal-bicolor',
-          remark: '这里是入职申请的简介',
-          visibleRange: 'all'
-        },
-        {
-          processId: '1',
-          processName: '调岗申请',
-          status: 1,
-          icon: 'approval-Seal-bicolor',
-          remark: '这里是入职申请的简介',
-          visibleRange: 'all'
-        }
-      ]
+      processId: '1',
+      processName: '用印申请',
+      status: 0,
+      icon: 'approval-Seal-bicolor',
+      remark: '这里是入职申请的简介',
+      visibleRange: 'all'
+    },
+    {
+      processId: '1',
+      processName: '调岗申请',
+      status: 1,
+      icon: 'approval-Seal-bicolor',
+      remark: '这里是入职申请的简介',
+      visibleRange: 'all'
     }
   ]
 }
@@ -153,6 +155,10 @@ export default ({ mock }) => {
   // v2版本接口
   // 审批列表查询，调用接口：审批流程列表查询接口【GET /appr/v2/appr/process/list】
   Mock.mock(new RegExp('/api/appr/v2/appr/process/list' + '.*'), 'get', () => {
+    return processListData
+  })
+  // 可发起的审批流程查询接口
+  Mock.mock(new RegExp('/api/appr/v2/appr/user/process/list' + '.*'), 'get', () => {
     return processListData
   })
   // 审批分组新建接口
