@@ -302,7 +302,7 @@ export default {
         ]
         resData = [...resData, ...resetData]
       })
-      window.console.log('审批列表数据==', resData)
+      // window.console.log('审批列表数据==', resData)
       this.processListData = resData
       // 拖拽的时候用来对比的原先的列表
       this.tempProcessList = deepClone(resData)
@@ -518,7 +518,7 @@ export default {
     createApproval(data) {
       this.$router.push({
         path: 'process/design',
-        query: data ? { processId: data.processId } : ''
+        query: data ? { processId: data.processId, formKey: data.formKey } : ''
       })
     }
   }

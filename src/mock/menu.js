@@ -842,7 +842,8 @@ const res = {
                 isShow: 1,
                 code: 'approval_approval',
                 alias: 'approval',
-                path: '/approval/appr/apprByMe',
+                path: '/apprProcess/appr/apprByMe',
+                // path: '/approval/appr/apprByMe',
                 icon: 'iconfont iconicon_compile'
               },
               {

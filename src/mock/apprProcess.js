@@ -20,7 +20,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '4',
@@ -29,7 +30,8 @@ const processListData = {
           icon: 'approval-invitation-bicolor',
           remark:
             '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '2',
@@ -37,7 +39,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-checkin-bicolor',
           remark: '',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '3',
@@ -45,7 +48,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-leaveoffice-bicolor',
           remark: '这里是离职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -60,7 +64,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -75,7 +80,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -90,7 +96,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -105,7 +112,8 @@ const processListData = {
         //   sort: 1,
         //   icon: 1,
         //   remark: '这里是入职申请的简介',
-        //   visibleRange: 'all'
+        //   visibleRange: 'all',
+        // formKey: ''
         // }
       ]
     }
