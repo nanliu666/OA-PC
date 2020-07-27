@@ -119,32 +119,6 @@
         border-bottom-right-radius: 24px;
       }
     }
-    &.is-pc {
-      .box-wraper {
-        border-radius: 12px;
-        padding: 10px;
-      }
-      .wraper-screen {
-        width: 720px;
-        border-radius: initial;
-      }
-      .field-list {
-        border-radius: initial;
-        background-color: #fff;
-      }
-      .field-list-header {
-        border-top-left-radius: initial;
-        border-top-right-radius: initial;
-      }
-      .center-scrollbar {
-        border-bottom-left-radius: initial;
-        border-bottom-right-radius: initial;
-        
-      }
-      .el-scrollbar__wrap{
-        padding: 0 16px;
-      }
-    }
     .field-list {
       height: 100%;
       background-color: #fff;
@@ -174,6 +148,9 @@
       .drawing-board {
         min-height: 100%;
         width: 100%;
+        padding-right: 6px;
+        padding-left: 6px;
+        box-sizing: border-box;
         .sortable-ghost {
           position: relative;
           display: block;
@@ -190,6 +167,35 @@
             z-index: 2;
           }
         }
+      }
+    }
+    &.is-pc {
+      .box-wraper {
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .wraper-screen {
+        width: 720px;
+        border-radius: initial;
+      }
+      .field-list {
+        border-radius: initial;
+        background-color: #fff;
+      }
+      .field-list-header {
+        border-top-left-radius: initial;
+        border-top-right-radius: initial;
+      }
+      .center-scrollbar {
+        border-bottom-left-radius: initial;
+        border-bottom-right-radius: initial;
+        
+      }
+      .el-scrollbar__wrap{
+        padding: 0 16px;
+      }
+      .drawing-board{
+        padding: 0;
       }
     }
   }

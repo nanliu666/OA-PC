@@ -1,262 +1,63 @@
 export default {
   basicSetting: {
-    flowName: '入职',
-    flowImg: 12,
-    flowGroup: 2,
-    flowRemark: '简单入职背景填写'
+    icon: '12',
+    processName: '入职',
+    categoryId: '1283677855282483201',
+    initiator: [
+      {
+        hasChildren: false,
+        id: '1257943561580855298',
+        name: '后端组',
+        orgId: '1257943561580855298',
+        orgName: '后端组',
+        parentId: '1252523599903072261'
+      }
+    ],
+    processAdmin: '1285518000080068610',
+    remark: '简单入职背景填写'
   },
   processData: {
     type: 'start',
     content: '所有人',
-    properties: {
-      title: '发起人',
-      initiator: 'ALL',
-      formOperates: [
-        {
-          formId: 2,
-          formOperate: 2
-        },
-        {
-          formId: 3,
-          formOperate: 2
-        },
-        {
-          formId: 4,
-          formOperate: 2
-        },
-        {
-          formId: 5,
-          formOperate: 2
-        },
-        {
-          formId: 6,
-          formOperate: 2
-        },
-        {
-          formId: 7,
-          formOperate: 2
-        },
-        {
-          formId: 8,
-          formOperate: 2
-        },
-        {
-          formId: 9,
-          formOperate: 2
-        }
-      ]
-    },
+    properties: { title: '发起人', initiator: 'ALL', formOperates: [] },
     nodeId: 'Gb2',
     childNode: {
       type: 'approver',
-      content: '发起人自选',
+      content: '前端组,后端组',
       properties: {
         title: '审批人',
         assigneeType: 'optional',
-        formOperates: [
-          {
-            formId: 2,
-            formOperate: 1
-          },
-          {
-            formId: 3,
-            formOperate: 1
-          },
-          {
-            formId: 4,
-            formOperate: 1
-          },
-          {
-            formId: 5,
-            formOperate: 1
-          },
-          {
-            formId: 6,
-            formOperate: 1
-          },
-          {
-            formId: 7,
-            formOperate: 1
-          },
-          {
-            formId: 8,
-            formOperate: 1
-          },
-          {
-            formId: 9,
-            formOperate: 1
-          }
-        ],
+        formOperates: [],
         counterSign: true,
         optionalMultiUser: false,
-        optionalRange: 'ALL'
+        optionalRange: 'USER',
+        approvers: [
+          {
+            orgId: '1257922456241659905',
+            orgName: '前端组',
+            parentId: '1252523599903072261',
+            users: [],
+            id: '1257922456241659905',
+            hasChildren: false,
+            name: '前端组',
+            children: []
+          },
+          {
+            orgId: '1257943561580855298',
+            orgName: '后端组',
+            parentId: '1252523599903072261',
+            users: [],
+            id: '1257943561580855298',
+            hasChildren: false,
+            name: '后端组',
+            children: []
+          }
+        ]
       },
       nodeId: 'Nb2',
-      prevId: 'Gb2'
-    },
-    conditionNodes: [
-      {
-        type: 'condition',
-        content: '[学历 = 博士生]',
-        properties: {
-          title: '条件1',
-          conditions: [
-            {
-              formId: 3,
-              conditionValue: '博士生'
-            }
-          ],
-          initiator: null,
-          priority: 0,
-          isDefault: false
-        },
-        nodeId: 'Lb2',
-        prevId: 'Gb2',
-        childNode: {
-          type: 'approver',
-          content: '张三',
-          properties: {
-            title: '审批人',
-            approvers: [
-              {
-                nodeId: 20,
-                userId: 20,
-                userName: '张三',
-                deptId: 1
-              }
-            ],
-            assigneeType: 'user',
-            formOperates: [
-              {
-                formId: 2,
-                formOperate: 1
-              },
-              {
-                formId: 3,
-                formOperate: 1
-              },
-              {
-                formId: 4,
-                formOperate: 1
-              },
-              {
-                formId: 5,
-                formOperate: 1
-              },
-              {
-                formId: 6,
-                formOperate: 1
-              },
-              {
-                formId: 7,
-                formOperate: 1
-              },
-              {
-                formId: 8,
-                formOperate: 1
-              },
-              {
-                formId: 9,
-                formOperate: 1
-              }
-            ],
-            counterSign: true,
-            optionalMultiUser: false,
-            optionalRange: 'ALL'
-          },
-          nodeId: 'Wb2',
-          prevId: 'Lb2',
-          childNode: {
-            type: 'copy',
-            content: 'xxx研发部',
-            properties: {
-              title: '抄送人',
-              menbers: {
-                dep: [
-                  {
-                    nodeId: 4,
-                    deptId: 4,
-                    deptName: 'xxx研发部',
-                    parentDeptId: 1
-                  }
-                ]
-              },
-              userOptional: true
-            },
-            nodeId: 'Yb2',
-            prevId: 'Wb2'
-          }
-        }
-      },
-      {
-        type: 'condition',
-        content: '其他情况进入此流程',
-        properties: {
-          title: '条件2',
-          conditions: [],
-          initiator: null,
-          priority: 1,
-          isDefault: true
-        },
-        nodeId: 'Mb2',
-        prevId: 'Gb2',
-        childNode: {
-          type: 'approver',
-          content: '王五',
-          properties: {
-            title: '审批人',
-            approvers: [
-              {
-                nodeId: 40,
-                userId: 40,
-                userName: '王五',
-                deptId: 1
-              }
-            ],
-            assigneeType: 'user',
-            formOperates: [
-              {
-                formId: 2,
-                formOperate: 1
-              },
-              {
-                formId: 3,
-                formOperate: 1
-              },
-              {
-                formId: 4,
-                formOperate: 1
-              },
-              {
-                formId: 5,
-                formOperate: 1
-              },
-              {
-                formId: 6,
-                formOperate: 1
-              },
-              {
-                formId: 7,
-                formOperate: 1
-              },
-              {
-                formId: 8,
-                formOperate: 1
-              },
-              {
-                formId: 9,
-                formOperate: 1
-              }
-            ],
-            counterSign: true,
-            optionalMultiUser: false,
-            optionalRange: 'ALL'
-          },
-          nodeId: 'Xb2',
-          prevId: 'Mb2'
-        }
-      }
-    ]
+      prevId: 'Gb2',
+      varible: 'optional_Nb2_id'
+    }
   },
   formData: {
     fields: [
@@ -499,10 +300,8 @@ export default {
     formBtns: true
   },
   advancedSetting: {
-    autoRepeat: true,
-    myAuditAutoPass: true,
-    remarkTip: '这里是填写提示',
-    remarkRequired: true,
-    notVisibleForSponsor: true
+    approverDistinct: 1,
+    isOpinion: true,
+    tip: '这里是填写提示'
   }
 }

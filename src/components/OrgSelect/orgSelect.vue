@@ -22,10 +22,13 @@
           v-bind="tagConfig"
           class="org-tag"
           size="medium"
-          @close="onClose(item, orgSelect)"
+          @close="onClose(item)"
         >
           {{ item.name }}
         </el-tag>
+        <div v-if="selectedData && selectedData.length < 1">
+          所有人
+        </div>
       </div>
     </div>
     <userSelect
@@ -109,7 +112,7 @@ export default {
         if (!val) return
         if (this.tabList.length > 0) {
           this.selectedData = val[this.tabList[0]]
-          this.selectOldData = JSON.parse(JSON.stringify(val[this.tabList[0]]))
+          this.selectOldData = JSON.parse(JSON.stringify(val[this.tabList[0]] || []))
         } else {
           if (val.constructor === Array) {
             this.selectedData = val
@@ -203,6 +206,7 @@ export default {
 
     onClose(item, i) {
       this.selectedData.splice(i, 1)
+      this.adduser(this.selectedData)
     }
   }
 }

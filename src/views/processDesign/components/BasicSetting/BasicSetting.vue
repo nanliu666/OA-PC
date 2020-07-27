@@ -13,15 +13,7 @@
           @change="emitInitiator"
         />
       </div>
-      <div slot="admin">
-        <fc-org-select
-          ref="org-selects"
-          v-model="formData.admin"
-          title="发起人"
-          @change="emitInitiator"
-        />
-      </div>
-      <div slot="flowImg">
+      <div slot="icon">
         <img
           :src="activeIconSrc"
           style="width: 28px;height: 28px;vertical-align: middle;"
@@ -68,6 +60,7 @@
 </template>
 <script>
 import { info } from './config'
+import { getApprCategory, getConfigAdmin } from '@/api/processDesign/basicSetting'
 
 export default {
   components: {},
@@ -82,10 +75,11 @@ export default {
       activeIcon: iconList[0].id,
       selectedIcon: iconList[0].id,
       formData: {
-        flowName: '',
-        flowImg: '',
-        flowGroup: undefined,
-        flowRemark: undefined,
+        icon: '',
+        processName: '',
+        categoryId: '',
+        processAdmin: [],
+        remark: '',
         initiator: []
       },
       rules: {
@@ -149,6 +143,24 @@ export default {
         this.formData.initiator = val
       },
       immediate: true
+    },
+    activeIcon: {
+      handler() {
+        this.formData.icon = this.activeIconSrc
+      },
+      immediate: true
+    },
+    formData: {
+      handler() {},
+      immediate: true
+    },
+    conf: {
+      handler() {
+        if (typeof this.conf === 'object' && this.conf !== null) {
+          Object.assign(this.formData, this.conf)
+        }
+      },
+      deep: true
     }
   },
   created() {
@@ -156,26 +168,59 @@ export default {
       Object.assign(this.formData, this.conf)
     }
   },
+  mounted() {
+    this.getCategory()
+    this.getAdmin()
+  },
   methods: {
-    emitInitiator() {
-      // console.log(this.formData.initiator)
-      // console.log('data_______',data)
-      // this.$nextTick(()=>{
-      //   // this.formData.initiator = data
-      //   // this.$emit('initiatorChange', this.formData.initiator, this.$refs['org-select'].selectedLabels)
-      // })
+    /**
+     *  author guanfenda
+     *  @desc 获取管理员列表
+     * */
+    getAdmin() {
+      let params = {}
+      getConfigAdmin(params).then((res) => {
+        this.info.find((it) => it.prop === 'processAdmin').options = res
+      })
+    },
+    /**
+     *  author fuanfenda
+     *  @desc 获取分类列表
+     * */
+    getCategory() {
+      let params = {
+        name: ''
+      }
+      getApprCategory(params).then((res) => {
+        this.info.find((it) => it.prop === 'categoryId').options = res
+      })
+    },
+    emitInitiator(data) {
+      this.$nextTick(() => {
+        this.formData.initiator = data
+        this.$emit(
+          'initiatorChange',
+          this.formData.initiator,
+          this.$refs['org-select'].selectedLabels
+        )
+      })
     },
     // 给父级页面提供得获取本页数据得方法
     getData() {
       return new Promise((resolve, reject) => {
-        this.$refs['elForm'].validate().then((valid) => {
-          if (!valid) {
-            reject({ target: this.tabName })
-            return
-          }
-          this.formData.flowImg = this.activeIcon
-          resolve({ formData: this.formData, target: this.tabName }) // TODO 提交表单
-        })
+        this.$refs['elForm']
+          .validate()
+          .then((valid) => {
+            if (!valid) {
+              reject({ target: this.tabName })
+              return
+            }
+            // this.formData.icon = this.activeIcon
+            resolve({ formData: this.formData, target: this.tabName }) // TODO 提交表单
+          })
+          .catch(() => {
+            this.$emit('jump', 'basicSetting')
+          })
       })
     }
   }

@@ -73,11 +73,18 @@ export default {
       ]
     }
   },
-  created() {
-    if (typeof this.conf === 'object' && this.conf !== null) {
-      Object.assign(this.formData, this.conf)
+  watch: {
+    conf: {
+      handler() {
+        if (typeof this.conf === 'object' && this.conf !== null) {
+          Object.assign(this.formData, this.conf)
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
+  created() {},
   methods: {
     handleCheckedCitiesChange() {},
     getData() {
