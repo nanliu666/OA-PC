@@ -13,13 +13,17 @@
           class="approval-li"
           :class="{ 'empty-approval': item.processes.length === 0 }"
         >
-          <div class="title-box">
+          <div
+            class="title-box"
+            @click.stop="hideCurrent(index)"
+          >
             <span>{{ item.name }}（{{ item.processes.length }}）</span>
             <span
               v-if="item.processes.length !== 0"
               class="hide-span"
-              @click="hideCurrent(index)"
-            >{{ currentIndexList.indexOf(index) === -1 ? '收起' : '展开' }}</span>
+            >{{
+              currentIndexList.indexOf(index) === -1 ? '收起' : '展开'
+            }}</span>
           </div>
           <ul
             v-show="currentIndexList.indexOf(index) === -1"
@@ -107,6 +111,9 @@ export default {
 .approval-ul {
   .approval-li {
     padding-bottom: 15px;
+    &:hover {
+      cursor: pointer;
+    }
     .title-box {
       @include flexJustify;
       @include flexAlign;
