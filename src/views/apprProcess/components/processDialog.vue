@@ -169,7 +169,7 @@ export default {
      */
     addNewGroup() {
       let parmas = { name: this.form.groupName }
-      window.console.log('parmas==', parmas)
+      // window.console.log('parmas==', parmas)
       addProcessCategory(parmas).then(() => {
         this.messageText = `"${this.form.groupName}"分组创建成功`
         this.handleDataBack()
@@ -183,7 +183,7 @@ export default {
         id: this.subGroup.id,
         name: this.form.groupName
       }
-      window.console.log('重命名parmas==', parmas)
+      // window.console.log('重命名parmas==', parmas)
       renameProcessCategory(parmas).then(() => {
         this.messageText = `重命名成功`
         this.handleDataBack()
@@ -200,7 +200,7 @@ export default {
         processId: this.subGroup.processes.processId,
         categoryId: tragetArray[0].value
       }
-      window.console.log('启用parmas==', parmas)
+      // window.console.log('启用parmas==', parmas)
       startProcess(parmas).then(() => {
         // window.console.log('启用到==', res)
         this.messageText = `启用成功`

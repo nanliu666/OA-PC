@@ -324,7 +324,7 @@ export default {
           isDiff = true
         }
       })
-      window.console.log('拖拽结束 parmas==', JSON.stringify(parmas))
+      // window.console.log('拖拽结束 parmas==', JSON.stringify(parmas))
       // 当拖拽后的结果与之前暂存的是同一个数组时，不需要调用排序
       if (!isDiff) return
       sortProcess(parmas).then(() => {
@@ -348,7 +348,7 @@ export default {
      * 发布
      */
     publishApproval(data, processesItem) {
-      window.console.log(data, processesItem)
+      // window.console.log(data, processesItem)
       let that = this
       this.$confirm(
         `
@@ -432,7 +432,7 @@ export default {
           sort: index + 1
         })
       })
-      window.console.log('保存排序参数==', params)
+      // window.console.log('保存排序参数==', params)
       sortCategory(params).then(() => {
         this.sortRefreshData()
       })
