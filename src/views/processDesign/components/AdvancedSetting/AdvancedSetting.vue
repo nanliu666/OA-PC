@@ -5,8 +5,6 @@
       :model="formData"
       :columns="info"
     >
-      \
-
       <div slot="approverDistinct">
         <el-select
           v-model="formData.approverDistinct"
