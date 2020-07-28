@@ -48,6 +48,7 @@
             :page-size="100"
             :option-list.sync="userList"
             placeholder="请选择入职联系人"
+            :searchable="true"
             :option-props="{
               label: 'name',
               value: 'userId',

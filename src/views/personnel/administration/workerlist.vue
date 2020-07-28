@@ -304,6 +304,10 @@ const EMPLOYEE_STATUS_DICTS = [
 
 const APPROVE_STATUS_DICTS = [
   {
+    dictKey: '',
+    dictValue: '未申请'
+  },
+  {
     dictKey: 'Approve',
     dictValue: '审批中'
   },

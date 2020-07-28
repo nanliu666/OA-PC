@@ -59,6 +59,7 @@
           :show-file-list="false"
           list-type="picture-card"
           :limit="limit"
+          :file-list="fileList"
           :before-upload="beforeAvatarUpload"
           :on-success="handleAvatarSuccess"
           :multiple="true"

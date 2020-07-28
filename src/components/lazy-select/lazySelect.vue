@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     visibleChange(visible) {
-      if (visible === false && this.searchable) {
+      if (visible === false && this.searchable && this.search !== '') {
         this.search = ''
         this.loadOptionData(true)
       }
