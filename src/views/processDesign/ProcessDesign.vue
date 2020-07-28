@@ -72,6 +72,7 @@
         v-show="activeStep === 'advancedSetting'"
         ref="advancedSetting"
         :conf="mockData.advancedSetting"
+        @jump="jumpStep"
       />
     </section>
   </div>
@@ -199,13 +200,15 @@ export default {
       const p1 = getCmpData('basicSetting')
       const p2 = getCmpData('formDesign')
       const p3 = getCmpData('processDesign')
-      Promise.all([p1, p2, p3])
+      const p4 = getCmpData('advancedSetting')
+
+      Promise.all([p1, p2, p3, p4])
         .then((res) => {
           const param = {
             basicSetting: res[0].formData,
             processData: res[2].formData,
             formData: res[1],
-            advancedSetting: getCmpData('advancedSetting')
+            advancedSetting: res[3]
           }
           this.sendToServer(param)
         })
@@ -238,8 +241,8 @@ export default {
       }
       this.base.push(item)
       this.base = [...this.base, ...this.lineList, ...this.condition, ...this.endNode]
-      let { icon, processName, processAdmin, remark } = { ...param.basicSetting }
-      let { tip, isOpinion, approverDistinct } = { ...param.advancedSetting }
+      let { icon, processName, processAdmin, remark, categoryId } = { ...param.basicSetting }
+      let { tip, isOpinion, approverDistinct, approverNull } = { ...param.advancedSetting }
       let processVisible = []
       if (param.basicSetting.initiator) {
         param.basicSetting.initiator.map((it) => {
@@ -266,12 +269,14 @@ export default {
       let config = {
         icon,
         processName,
-        processAdmin,
         remark,
         processVisible,
         tip,
-        isOpinion,
-        approverDistinct
+        approverDistinct,
+        categoryId,
+        isOpinion: isOpinion ? 1 : 0,
+        processAdmin: [processAdmin],
+        approverNull: approverNull
       }
       // 基础设置
       // "flowName": "转正申请",      // 流程名称

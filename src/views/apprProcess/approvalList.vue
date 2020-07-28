@@ -517,7 +517,7 @@ export default {
      */
     createApproval(data) {
       this.$router.push({
-        path: 'process/design',
+        path: '/process/design',
         query: data ? { processId: data.processId } : ''
       })
     }
