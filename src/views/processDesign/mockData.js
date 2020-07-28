@@ -3,6 +3,8 @@ export default {
     icon: '12',
     processName: '入职',
     categoryId: '1283677855282483201',
+    processAdmin: '1285518000080068610',
+    remark: '简单入职背景填写',
     initiator: [
       {
         hasChildren: false,
@@ -12,307 +14,71 @@ export default {
         orgName: '后端组',
         parentId: '1252523599903072261'
       }
-    ],
-    processAdmin: '1285518000080068610',
-    remark: '简单入职背景填写'
+    ]
   },
   processData: {
     type: 'start',
     content: '所有人',
-    properties: {
-      title: '发起人',
-      initiator: 'ALL',
-      formOperates: [
-        {
-          formId: 2,
-          formOperate: 2
-        },
-        {
-          formId: 3,
-          formOperate: 2
-        },
-        {
-          formId: 4,
-          formOperate: 2
-        },
-        {
-          formId: 5,
-          formOperate: 2
-        },
-        {
-          formId: 6,
-          formOperate: 2
-        },
-        {
-          formId: 7,
-          formOperate: 2
-        },
-        {
-          formId: 8,
-          formOperate: 2
-        },
-        {
-          formId: 9,
-          formOperate: 2
-        }
-      ]
-    },
+    properties: { title: '发起人', initiator: 'ALL', formOperates: [] },
     nodeId: 'Gb2',
     childNode: {
       type: 'approver',
-      content: '发起人自选',
+      content: '离职测测,李小龙',
       properties: {
         title: '审批人',
         assigneeType: 'optional',
-        formOperates: [
-          {
-            formId: 2,
-            formOperate: 1
-          },
-          {
-            formId: 3,
-            formOperate: 1
-          },
-          {
-            formId: 4,
-            formOperate: 1
-          },
-          {
-            formId: 5,
-            formOperate: 1
-          },
-          {
-            formId: 6,
-            formOperate: 1
-          },
-          {
-            formId: 7,
-            formOperate: 1
-          },
-          {
-            formId: 8,
-            formOperate: 1
-          },
-          {
-            formId: 9,
-            formOperate: 1
-          }
-        ],
+        formOperates: [],
         counterSign: true,
-        optionalMultiUser: false,
-        optionalRange: 'USER'
+        optionalMultiUser: true,
+        optionalRange: 'USER',
+        approvers: [
+          {
+            workNo: '4342',
+            name: '离职测测',
+            userId: '1283302477003075585',
+            id: '1252523599903072258_1283302477003075585',
+            type: 'user'
+          },
+          {
+            workNo: '4344',
+            name: '李小龙',
+            userId: '1283307826803585025',
+            id: '1252523599903072258_1283307826803585025',
+            type: 'user'
+          }
+        ]
       },
       nodeId: 'Nb2',
-      prevId: 'Gb2'
-    },
-    conditionNodes: [
-      {
-        type: 'condition',
-        content: '[学历 = 博士生]',
-        properties: {
-          title: '条件1',
-          conditions: [
-            {
-              formId: 3,
-              conditionValue: '博士生'
-            }
-          ],
-          initiator: null,
-          priority: 0,
-          isDefault: false
-        },
-        nodeId: 'Lb2',
-        prevId: 'Gb2',
-        childNode: {
-          type: 'approver',
-          content: '张三',
-          properties: {
-            title: '审批人',
-            approvers: [
-              {
-                nodeId: 20,
-                userId: 20,
-                userName: '张三',
-                deptId: 1
-              }
-            ],
-            assigneeType: 'user',
-            formOperates: [
-              {
-                formId: 2,
-                formOperate: 1
-              },
-              {
-                formId: 3,
-                formOperate: 1
-              },
-              {
-                formId: 4,
-                formOperate: 1
-              },
-              {
-                formId: 5,
-                formOperate: 1
-              },
-              {
-                formId: 6,
-                formOperate: 1
-              },
-              {
-                formId: 7,
-                formOperate: 1
-              },
-              {
-                formId: 8,
-                formOperate: 1
-              },
-              {
-                formId: 9,
-                formOperate: 1
-              }
-            ],
-            counterSign: true,
-            optionalMultiUser: false,
-            optionalRange: 'ALL'
-          },
-          nodeId: 'Wb2',
-          prevId: 'Lb2',
-          childNode: {
-            type: 'copy',
-            content: 'xxx研发部',
-            properties: {
-              title: '抄送人',
-              menbers: {
-                dep: [
-                  {
-                    nodeId: 4,
-                    deptId: 4,
-                    deptName: 'xxx研发部',
-                    parentDeptId: 1
-                  }
-                ]
-              },
-              userOptional: true
-            },
-            nodeId: 'Yb2',
-            prevId: 'Wb2'
-          }
-        }
-      },
-      {
-        type: 'condition',
-        content: '其他情况进入此流程',
-        properties: {
-          title: '条件2',
-          conditions: [],
-          initiator: null,
-          priority: 1,
-          isDefault: true
-        },
-        nodeId: 'Mb2',
-        prevId: 'Gb2',
-        childNode: {
-          type: 'approver',
-          content: '王五',
-          properties: {
-            title: '审批人',
-            approvers: [
-              {
-                nodeId: 40,
-                userId: 40,
-                userName: '王五',
-                deptId: 1
-              }
-            ],
-            assigneeType: 'user',
-            formOperates: [
-              {
-                formId: 2,
-                formOperate: 1
-              },
-              {
-                formId: 3,
-                formOperate: 1
-              },
-              {
-                formId: 4,
-                formOperate: 1
-              },
-              {
-                formId: 5,
-                formOperate: 1
-              },
-              {
-                formId: 6,
-                formOperate: 1
-              },
-              {
-                formId: 7,
-                formOperate: 1
-              },
-              {
-                formId: 8,
-                formOperate: 1
-              },
-              {
-                formId: 9,
-                formOperate: 1
-              }
-            ],
-            counterSign: true,
-            optionalMultiUser: false,
-            optionalRange: 'ALL'
-          },
-          nodeId: 'Xb2',
-          prevId: 'Mb2'
-        }
+      prevId: 'Gb2',
+      variable: 'optional_Nb2_id',
+      childNode: {
+        type: 'copy',
+        content: 'E',
+        properties: { title: '抄送人', members: [], userOptional: true },
+        nodeId: 'Ob2',
+        prevId: 'Nb2'
       }
-    ]
+    }
   },
   formData: {
+    showBtn: false,
     fields: [
       {
         __config__: {
-          name: '单行文本',
-          label: '姓名',
-          type: 'input',
-          layout: 'colFormItem',
-          icon: 'icon-basics-textfield-outlined',
-          shouldPrint: true,
-          required: true,
-          formId: 1,
-          renderKey: 1594631430990,
-          defaultValue: ''
-        },
-        __slot__: {},
-        __pc__: { span: 24, tag: 'el-input', props: {} },
-        __mobile__: {
-          tag: 'van-field',
-          renderType: 'input',
-          props: {}
-        },
-        placeholder: '请输入',
-        maxlength: 20,
-        __vModel__: 'field1'
-      },
-      {
-        __config__: {
           name: '多行文本',
-          label: '备注',
+          label: '多行文本',
           type: 'textarea',
           layout: 'colFormItem',
           icon: 'icon-basics-mtext-outlined',
           shouldPrint: true,
           required: true,
-          formId: 2,
-          renderKey: 1594631431915
+          formId: 1,
+          renderKey: 1594883288217,
+          error: false,
+          errorMsg: null
         },
         __slot__: {},
-        __pc__: {
-          span: 24,
-          tag: 'el-input',
-          props: { type: 'textarea', rows: '2' }
-        },
+        __pc__: { span: 24, tag: 'el-input', props: { type: 'textarea', rows: '2' } },
         __mobile__: {
           renderType: 'textarea',
           tag: 'van-field',
@@ -320,7 +86,53 @@ export default {
         },
         placeholder: '请输入',
         maxlength: 200,
-        __vModel__: 'field2'
+        __vModel__: 'field1'
+      },
+      {
+        __config__: {
+          name: '数字',
+          label: '数字',
+          type: 'number',
+          layout: 'colFormItem',
+          icon: 'icon-basics-digit-outlined',
+          shouldPrint: true,
+          required: true,
+          formId: 5,
+          renderKey: 1594885545764,
+          error: false,
+          errorMsg: null
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          tag: 'el-input-number',
+          style: { width: '100%' },
+          props: { 'controls-position': 'right' }
+        },
+        __mobile__: { renderType: 'input', tag: 'van-field', props: { type: 'number' } },
+        placeholder: '请输入',
+        __vModel__: 'field5'
+      },
+      {
+        __config__: {
+          name: '单行文本',
+          label: '单行文本',
+          type: 'input',
+          layout: 'colFormItem',
+          icon: 'icon-basics-textfield-outlined',
+          shouldPrint: true,
+          required: true,
+          formId: 7,
+          renderKey: 1594885546662,
+          error: false,
+          errorMsg: null
+        },
+        __slot__: {},
+        __pc__: { span: 24, tag: 'el-input', props: {} },
+        __mobile__: { tag: 'van-field', renderType: 'input', props: {} },
+        placeholder: '请输入',
+        maxlength: 20,
+        __vModel__: 'field7'
       },
       {
         __config__: {
@@ -329,107 +141,13 @@ export default {
           layout: 'colFormItem',
           icon: 'icon-basics-explain-outlined',
           shouldPrint: true,
-          formId: 3,
-          renderKey: 1594631432943
+          formId: 6,
+          renderKey: 1594885546293
         },
         __slot__: {},
         __pc__: { span: 24, tag: 'div', props: {} },
         __mobile__: { renderType: 'desc', tag: 'tips', props: {} },
-        placeholder: 'hello'
-      },
-      {
-        __config__: {
-          name: '数字',
-          label: '年龄',
-          type: 'number',
-          layout: 'colFormItem',
-          icon: 'icon-basics-digit-outlined',
-          shouldPrint: true,
-          required: true,
-          formId: 4,
-          renderKey: 1594631433763
-        },
-        __slot__: {},
-        __pc__: {
-          span: 12,
-          tag: 'el-input-number',
-
-          props: { 'controls-position': 'right' }
-        },
-        __mobile__: {
-          renderType: 'input',
-          tag: 'van-field',
-          props: { type: 'number' }
-        },
-        placeholder: '请输入',
-        __vModel__: 'field4'
-      },
-      {
-        __config__: {
-          name: '单选',
-          label: '单选',
-          type: 'radio',
-          icon: 'icon-basics-radio-outlined',
-          defaultValue: 2,
-          layout: 'colFormItem',
-          required: true,
-          shouldPrint: true,
-          formId: 5,
-          renderKey: 1594631434747
-        },
-        __slot__: {
-          options: [
-            { label: '选项一', value: 1 },
-            { label: '选项二', value: 2 }
-          ]
-        },
-        __pc__: {
-          span: 12,
-          tag: 'el-radio-group',
-          props: { size: 'medium' },
-          style: { width: '100%' }
-        },
-        __mobile__: {
-          renderType: 'select',
-          tag: 'van-field-select-picker',
-          props: {}
-        },
-        placeholder: '请选择',
-        __vModel__: 'field5'
-      },
-      {
-        __config__: {
-          name: '多选',
-          label: '多选',
-          type: 'checkbox',
-          icon: 'icon-basics-checkbox-outlined',
-          defaultValue: [],
-          layout: 'colFormItem',
-          shouldPrint: true,
-          required: true,
-          formId: 6,
-          renderKey: 1594631435830
-        },
-        __slot__: {
-          options: [
-            { label: '选项一', value: 1 },
-            { label: '选项二', value: 2 },
-            { label: '选项三', value: '选项三' }
-          ]
-        },
-        __pc__: {
-          span: 12,
-          tag: 'el-checkbox-group',
-          style: { width: '100%' },
-          props: {}
-        },
-        __mobile__: {
-          renderType: 'select',
-          tag: 'multi-picker',
-          props: {}
-        },
-        placeholder: '请选择',
-        __vModel__: 'field6'
+        placeholder: '请输入说明文字'
       },
       {
         __config__: {
@@ -442,18 +160,16 @@ export default {
           layout: 'colFormItem',
           shouldPrint: true,
           required: true,
-          formId: 7,
-          renderKey: 1594631437841
+          formId: 13,
+          renderKey: 1595658297902,
+          error: false,
+          errorMsg: null
         },
         __slot__: {},
         __pc__: {
-          span: 12,
+          span: 24,
           tag: 'el-date-picker',
-          props: {
-            type: 'date',
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd'
-          },
+          props: { type: 'date', format: 'yyyy-MM-dd', 'value-format': 'yyyy-MM-dd' },
           style: { width: '100%' }
         },
         __mobile__: {
@@ -462,7 +178,7 @@ export default {
           props: { pickerType: 'date', props: {} }
         },
         placeholder: '请选择',
-        __vModel__: 'field7'
+        __vModel__: 'field13'
       },
       {
         __config__: {
@@ -474,12 +190,14 @@ export default {
           defaultValue: [],
           shouldPrint: true,
           required: true,
-          formId: 8,
-          renderKey: 1594631438922
+          formId: 14,
+          renderKey: 1595658299794,
+          error: false,
+          errorMsg: null
         },
         __slot__: {},
         __pc__: {
-          span: 12,
+          span: 24,
           tag: 'el-date-picker',
           props: {
             type: 'daterange',
@@ -503,15 +221,9 @@ export default {
             autoCalc: true
           }
         },
-        __vModel__: 'field8'
+        __vModel__: 'field14'
       }
-    ],
-    disabled: false,
-    formBtns: true
+    ]
   },
-  advancedSetting: {
-    approverDistinct: 1,
-    isOpinion: true,
-    tip: '这里是填写提示'
-  }
+  advancedSetting: { approverDistinct: 1, isOpinion: true, tip: '这里是填写提示' }
 }

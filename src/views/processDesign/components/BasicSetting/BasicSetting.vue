@@ -10,6 +10,8 @@
           ref="org-select"
           v-model="formData.initiator"
           title="发起人"
+          :all="all"
+          :org="org"
           @change="emitInitiator"
         />
       </div>
@@ -70,6 +72,8 @@ export default {
     const iconList = req.keys().map((t, idx) => ({ src: req(t), id: idx }))
     return {
       info,
+      all: true, //显示所有人
+      org: true, //可以选择部门
       infoForm: {},
       dialogVisible: false,
       activeIcon: iconList[0].id,

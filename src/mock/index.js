@@ -29,7 +29,6 @@ import todo from './todo'
 import transction from './transction'
 import user from './user'
 import apprProcess from './apprProcess'
-
 import process from './process'
 /**
  * 模拟数据mock
@@ -45,9 +44,9 @@ Mock.setup({
 
 user(options)
 approval(options)
-apprProcess({ mock: true })
-menu({ mock: true })
-interview({ mock: false })
+apprProcess(options)
+menu(options)
+interview(options)
 
 candidate(options)
 selectPerson(options)
@@ -83,4 +82,4 @@ taskcenter(options)
 schedule(options)
 remind(options)
 
-process({ mock: true })
+process(options)

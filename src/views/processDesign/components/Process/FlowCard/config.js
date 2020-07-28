@@ -14,7 +14,7 @@ export default {
     content: '发起人自选',
     properties: {
       title: '抄送人',
-      menbers: [],
+      members: [],
       userOptional: true
     }
   },
