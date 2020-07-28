@@ -280,7 +280,7 @@ export default {
         resData = _.sortBy(resData, 'sort')
       })
       await getDraftList().then((res) => {
-        window.console.log('弃用res==', res)
+        // window.console.log('弃用res==', res)
         // 因接口返回数据不同，故专门写成如审批列表结构
         let resetData = [
           {
@@ -294,7 +294,7 @@ export default {
         resData = [...resData, ...resetData]
       })
       this.processListData = resData
-      window.console.log('加载审批列表数据==', resData)
+      // window.console.log('加载审批列表数据==', resData)
       // 拖拽的时候用来对比的原先的列表
       this.tempProcessList = deepClone(resData)
     },
