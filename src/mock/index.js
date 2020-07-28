@@ -44,9 +44,9 @@ Mock.setup({
 
 user(options)
 approval(options)
-apprProcess({ mock: true })
-menu({ mock: true })
-interview({ mock: true })
+apprProcess(options)
+menu(options)
+interview(options)
 
 candidate(options)
 selectPerson(options)

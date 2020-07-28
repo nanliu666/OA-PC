@@ -1,7 +1,10 @@
 <template>
   <div class="apprSubmit fill">
-    <page-header title="提交审批" />
-    <basic-container block>
+    <page-header :title="basicSetting.processName || ''" />
+    <basic-container
+      v-loading="loading"
+      block
+    >
       <el-row
         type="flex"
         justify="center"
@@ -17,7 +20,10 @@
             ref="form"
             :form-conf="formData"
           />
-          <apprUser :process-data="processData" />
+          <apprUser
+            ref="apprUser"
+            :process-data="processData"
+          />
           <div class="footer">
             <el-button
               size="medium"
@@ -39,6 +45,9 @@
 <script>
 import { getProcessDetail } from '@/api/apprProcess/apprProcess'
 import apprUser from './components/apprUser'
+
+import { Base64 } from 'js-base64'
+
 export default {
   name: 'ApprSubmit',
   components: {
@@ -50,7 +59,8 @@ export default {
       formData: {},
       processData: {},
       advancedSetting: {},
-      json: ''
+      json: '',
+      loading: false
     }
   },
   created() {
@@ -58,22 +68,29 @@ export default {
   },
   methods: {
     getProcess() {
-      getProcessDetail().then((res) => {
-        this.json = res.baseJson
-        const obj = JSON.parse(res.baseJson)
-        if (typeof obj === 'object') {
-          this.basicSetting = obj.basicSetting
-          this.formData = obj.formData
-          this.processData = obj.processData
-          this.advancedSetting = obj.advancedSetting
-        }
-      })
+      this.loading = true
+      getProcessDetail()
+        .then((res) => {
+          this.json = res.baseJson
+          const obj = JSON.parse(Base64.decode(res.baseJson))
+          if (typeof obj === 'object') {
+            this.basicSetting = obj.basicSetting
+            this.formData = obj.formData
+            this.processData = obj.processData
+            this.advancedSetting = obj.advancedSetting
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     submit() {
       this.$refs.form.submit().then((formData) => {
         // eslint-disable-next-line
         console.log('formData:', formData)
       })
+      // eslint-disable-next-line
+      console.log('apprUser:', this.$refs.apprUser.submit())
     }
   }
 }
@@ -89,5 +106,9 @@ export default {
   .el-button + .el-button {
     margin-left: 16px;
   }
+}
+.basic-container--block {
+  height: calc(100% - 92px);
+  min-height: calc(100% - 92px);
 }
 </style>
