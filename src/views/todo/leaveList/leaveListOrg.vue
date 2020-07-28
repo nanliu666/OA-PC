@@ -11,10 +11,10 @@
       <div class="header">
         <div class="name-row">
           <div class="name-box">
-            {{ listData.userName }} 的离职交接事项
+            {{ personData.userName }} 的离职交接事项
           </div>
           <div
-            v-if="listData.status === 'UnConfirm'"
+            v-if="status === 'UnConfirm'"
             class="btn-box"
           >
             <el-button
@@ -35,25 +35,24 @@
         </div>
         <div class="info-row">
           <div>
-            发起人: <span>{{ listData.userName }}</span>
+            发起人: <span>{{ personData.userName }}</span>
           </div>
           <div>
-            发起时间: <span>{{ listData.createTime }}</span>
+            发起时间: <span>{{ personData.createTime }}</span>
           </div>
           <div>
             状态:
-            <span class="status-box">{{
-              listData.status === 'UnConfirm' ? '待确认' : '已确认'
-            }}</span>
+            <span class="status-box">{{ status === 'UnConfirm' ? '待确认' : '已确认' }}</span>
           </div>
         </div>
       </div>
       <div class="main-wrap">
         <div class="tips-row">
-          员工 {{ listData.userName }},请尽快为他办理以下离职交接事项并确认：
+          员工 {{ personData.userName
+          }}{{ `(${personData.workNo})` }},请尽快为他办理以下离职交接事项并确认：
         </div>
         <div
-          v-for="category in listData.data"
+          v-for="category in categoryList"
           :key="category.categoryId"
           class="category-box"
         >
@@ -84,8 +83,17 @@ export default {
       loading: false,
       leaveUserId: '',
       groupId: '',
-      listData: {},
-      btnLoading: false
+      personData: {
+        userName: '',
+        workNo: '',
+        createTime: ''
+      },
+      // 是否完成
+      status: true,
+      // 事项分类
+      categoryList: [],
+      btnLoading: false,
+      b2cUrgeTime: ''
     }
   },
   computed: {
@@ -107,10 +115,11 @@ export default {
       }
       getLeaveNote(params)
         .then((res) => {
-          this.listData = res[0]
-        })
-        .catch(() => {
-          this.loading = false
+          let { userName, workNo, createTime, data } = res
+          this.personData = { userName, workNo, createTime }
+          this.status = data[0].status
+          this.b2cUrgeTime = data[0].b2cUrgeTime
+          this.categoryList = data[0].categories
         })
         .finally(() => {
           this.loading = false
@@ -139,7 +148,7 @@ export default {
     },
     // 催办
     async urgeleaveNote() {
-      if (checkTime(this.listData.b2cUrgeTime)) {
+      if (checkTime(this.b2cUrgeTime)) {
         return this.$message.info('今天已经催办过了')
       }
       await postUrgeleaveNote({

@@ -11,7 +11,7 @@
       <div class="header">
         <div class="name-row">
           <div class="name-box">
-            {{ leaveNoteData.userName }} 的离职交接事项
+            {{ personData.userName }} 的离职交接事项
           </div>
           <div
             v-if="!isFinish"
@@ -27,10 +27,10 @@
         </div>
         <div class="info-row">
           <div>
-            发起人: <span>{{ leaveNoteData.userName }}</span>
+            发起人: <span>{{ personData.userName }}</span>
           </div>
           <div>
-            发起时间: <span>{{ leaveNoteData.createTime }}</span>
+            发起时间: <span>{{ personData.createTime }}</span>
           </div>
           <div>
             状态:
@@ -43,23 +43,29 @@
           您的离职申请已通过，请在离职前尽快与相关部门办理以下离职交接事项：
         </div>
         <div
-          v-for="(item, index) in categoryList"
-          :key="index"
+          v-for="group in groupList"
+          :key="group.groupId"
         >
+          <div>{{ group.groupName }}</div>
           <div
-            v-for="category in item"
-            :key="category.categoryId"
-            class="category-box"
+            v-for="(item, index) in group"
+            :key="index"
           >
-            <div class="categoryName-row">
-              {{ category.categoryName }}
-            </div>
             <div
-              v-for="detail in category.details"
-              :key="detail.detailId"
-              class="detail-box"
+              v-for="category in item"
+              :key="category.categoryId"
+              class="category-box"
             >
-              {{ detail.detailName }}
+              <div class="categoryName-row">
+                {{ category.categoryName }}
+              </div>
+              <div
+                v-for="detail in category.details"
+                :key="detail.detailId"
+                class="detail-box"
+              >
+                {{ detail.detailName }}
+              </div>
             </div>
           </div>
         </div>
@@ -79,9 +85,11 @@ export default {
       loading: false,
       leaveUserId: '',
       groupId: '',
-      leaveNoteData: {},
-      categoryList: [],
-      isFinish: true
+      personData: {},
+      groupList: [],
+      isFinish: true,
+      // 催促时间
+      urgeTime: ''
     }
   },
   computed: {
@@ -93,9 +101,6 @@ export default {
   methods: {
     loadingData() {
       this.loading = true
-      // let arrId = this.$route.query.id.split(',')
-      // this.leaveUserId = arrId[0]
-      // this.groupId = arrId[1]
       this.leaveUserId = this.$route.query.leaveUserId
       let params = {
         userId: this.userId,
@@ -103,14 +108,18 @@ export default {
       }
       getLeaveNote(params)
         .then((res) => {
-          this.leaveNoteData = res[0]
-          this.categoryList = []
-          res.forEach((item) => {
+          let { userName, workNo, createTime, data } = res
+          this.personData = {
+            userName,
+            workNo,
+            createTime
+          }
+          this.groupList = data
+          this.urgeTime = data[0].urgeTime
+          data.forEach((item) => {
             if (item.status === 'UnConfirm') {
               this.isFinish = false
             }
-
-            this.categoryList.push(item.data)
           })
         })
         .finally(() => {
@@ -119,7 +128,7 @@ export default {
     },
     // 催办
     async urgeleaveNote() {
-      if (checkTime(this.leaveNoteData.urgeTime)) {
+      if (checkTime(this.urgeTime)) {
         return this.$message.info('今天已经催办过了')
       }
       await postUrgeleaveNote({
@@ -182,6 +191,7 @@ export default {
 
     margin-bottom: 16px;
   }
+
   .category-box {
     margin-left: 20px;
     .categoryName-row {

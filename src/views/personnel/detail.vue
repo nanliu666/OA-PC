@@ -59,6 +59,7 @@
                       确认离职
                     </el-button>
                     <el-button
+                      v-if="!leaveInfo.leaveDate"
                       size="medium"
                       @click="toChangeLeaveInfo"
                     >
