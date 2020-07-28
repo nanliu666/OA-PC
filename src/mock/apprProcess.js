@@ -20,7 +20,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '4',
@@ -29,7 +30,8 @@ const processListData = {
           icon: 'approval-invitation-bicolor',
           remark:
             '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '2',
@@ -37,7 +39,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-checkin-bicolor',
           remark: '',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '3',
@@ -45,7 +48,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-leaveoffice-bicolor',
           remark: '这里是离职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -60,7 +64,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -75,7 +80,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -90,7 +96,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -105,7 +112,8 @@ const processListData = {
         //   sort: 1,
         //   icon: 1,
         //   remark: '这里是入职申请的简介',
-        //   visibleRange: 'all'
+        //   visibleRange: 'all',
+        // formKey: ''
         // }
       ]
     }
@@ -150,12 +158,62 @@ const groupData = {
     }
   ]
 }
+const myApproveData = Mock.mock({
+  ...normalData,
+  response: {
+    totalNum: 40,
+    totalPage: 4,
+    'data|1-10': [
+      {
+        'apprNo|+1': [`${Mock.Random.id()}`, `${Mock.Random.id()}`],
+        'title|+1': [
+          `${Mock.Random.cname()}提交的离职审批`,
+          `${Mock.Random.cname()}提交的入职审批`,
+          `${Mock.Random.cname()}提交的转正审批`
+        ],
+        formKey: '离职审批',
+        formId: '申请单ID（对应businessId）',
+        orgId: '申请人部门ID',
+        'orgName|+1': [`销售部`, `技术部`, `运营部`],
+        userId: '申请人ID',
+        userName: '申请人名称',
+        jobId: '职位ID',
+        jobName: '职位名称',
+        processId: '流程ID',
+        processName: '流程名称',
+        'status|+1': [`Approve`, `Pass`, `Reject`, `Cancel`],
+        'applyTime|+1': [
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`,
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`
+        ],
+        'completeTime|+1': [
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`,
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`
+        ],
+        'approveUser|1-3': [
+          {
+            userId: '当前审批人ID',
+            'userName|+1': [
+              `${Mock.Random.cname()}`,
+              `${Mock.Random.cname()}`,
+              `${Mock.Random.cname()}`
+            ]
+          }
+        ]
+      }
+    ]
+  }
+})
 export default ({ mock }) => {
   if (!mock) return
   // v2版本接口
   // 审批列表查询，调用接口：审批流程列表查询接口【GET /appr/v2/appr/process/list】
   Mock.mock(new RegExp('/api/appr/v2/appr/process/list' + '.*'), 'get', () => {
     return processListData
+  })
+  // 我发起的审批查询接口
+  Mock.mock(new RegExp('/api/appr/v2/appr/my/approve/list' + '.*'), 'get', () => {
+    return myApproveData
   })
   //   用户申请详情查询接口
   Mock.mock(new RegExp('/appr/v2/appr/process/apply/detail' + '.*'), 'get', () => {

@@ -25,6 +25,16 @@ export const createApprCancel = (params) => post('/appr/v2/appr/apply/cancel', p
 // 催一下
 export const createApprUrge = (params) => post('/appr/v2/appr/apply/urge', params)
 /**
+ * 我发起的审批查询接口
+ * @param {*} params
+ */
+export const getMyApproveList = (params) => get('/appr/v2/appr/my/approve/list', params)
+/**
+ * 待我审批查询接口
+ * @param {*} params
+ */
+export const getWaitApproveList = (params) => get('/appr/v2/appr/wait/approve/list', params)
+/**
  * 可发起的审批流程查询接口
  * @param {*} params
  */
@@ -44,7 +54,7 @@ export const deleteCategory = (params) => del('/appr/v2/appr/category', params)
 /**
  * 审批流程删除接口
  */
-export const deleteProcess = (params) => del('/appr/v2/appr/process/del', params)
+export const deleteProcess = (params) => post('/appr/v2/appr/process/del', params)
 /**
  * 审批流程停用接口
  */
