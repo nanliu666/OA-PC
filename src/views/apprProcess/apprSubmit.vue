@@ -1,6 +1,9 @@
 <template>
   <div class="apprSubmit fill">
-    <page-header :title="basicSetting.processName || ''" />
+    <page-header
+      :title="'发起' + basicSetting.processName + '申请'"
+      :show-back="true"
+    />
     <basic-container
       v-loading="loading"
       block
@@ -20,8 +23,8 @@
             ref="form"
             :form-conf="formData"
           />
-          <apprUser
-            ref="apprUser"
+          <appr-picker
+            ref="apprPicker"
             :process-data="processData"
           />
           <div class="footer">
@@ -32,7 +35,10 @@
             >
               提交
             </el-button>
-            <el-button size="medium">
+            <el-button
+              size="medium"
+              @click="goBack()"
+            >
               取消
             </el-button>
           </div>
@@ -44,14 +50,14 @@
 
 <script>
 import { getProcessDetail } from '@/api/apprProcess/apprProcess'
-import apprUser from './components/apprUser'
+import apprPicker from '@/components/appr-picker/apprPicker'
 
 import { Base64 } from 'js-base64'
 
 export default {
   name: 'ApprSubmit',
   components: {
-    apprUser
+    apprPicker
   },
   data() {
     return {
@@ -60,16 +66,25 @@ export default {
       processData: {},
       advancedSetting: {},
       json: '',
-      loading: false
+      loading: false,
+      processId: null
     }
   },
-  created() {
+  created() {},
+  activated() {
+    this.processId = this.$route.query.processId
     this.getProcess()
+  },
+  beforeRouteLeave() {
+    this.$refs.form.resetForm()
   },
   methods: {
     getProcess() {
+      if (!this.processId) {
+        return
+      }
       this.loading = true
-      getProcessDetail()
+      getProcessDetail({ processId: this.processId })
         .then((res) => {
           this.json = res.baseJson
           const obj = JSON.parse(Base64.decode(res.baseJson))
@@ -85,13 +100,26 @@ export default {
         })
     },
     submit() {
-      this.$refs.form.submit().then((formData) => {
-        // eslint-disable-next-line
-        console.log('formData:', formData)
+      Promise.all([this.$refs.form.validate(), this.$refs.apprPicker.validate()]).then(([data]) => {
+        this.submiting = true
+        this.$refs.apprPicker
+          .submit({
+            formData: data.formFields,
+            processId: this.processId,
+            processName: this.basicSetting.processName
+          })
+          .then(() => {
+            this.$message.success('审批提交成功')
+            this.goBack()
+          })
+          .finally(() => {
+            this.submiting = false
+          })
       })
-      // eslint-disable-next-line
-      console.log('apprUser:', this.$refs.apprUser.submit())
     }
+  },
+  goBack() {
+    this.$router.go(-1)
   }
 }
 </script>

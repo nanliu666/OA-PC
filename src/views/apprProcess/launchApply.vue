@@ -33,6 +33,7 @@
               v-for="(processesItem, processesIndex) in item.processes"
               :key="processesIndex"
               class="detail-li"
+              @click="jumpToSubmit(processesItem.processId)"
             >
               <div class="logo-box">
                 <svg
@@ -106,6 +107,14 @@ export default {
       } else {
         this.currentIndexList.push(index)
       }
+    },
+    jumpToSubmit(processId) {
+      this.$router.push({
+        path: '/apprProcess/apprSubmit',
+        query: {
+          processId
+        }
+      })
     }
   }
 }

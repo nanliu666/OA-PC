@@ -82,4 +82,4 @@ taskcenter(options)
 schedule(options)
 remind(options)
 
-process(options)
+process({ mock: false })

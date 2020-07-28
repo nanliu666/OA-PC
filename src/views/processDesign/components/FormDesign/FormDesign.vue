@@ -241,7 +241,7 @@ export default {
       if (config.layout === 'colFormItem') {
         clone.__config__.label !== undefined &&
           (clone.__config__.label = this.createCmpLabel(clone))
-        if (!['desc'].includes(config.type)) {
+        if (typeof config.defaultValue !== 'undefined') {
           clone.__vModel__ = `field${config.formId}`
         }
       } else if (config.layout === 'rowFormItem') {

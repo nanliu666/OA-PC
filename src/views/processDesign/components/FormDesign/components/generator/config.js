@@ -17,6 +17,7 @@ export const componentGroups = [
           type: 'input',
           layout: 'colFormItem',
           icon: 'icon-basics-textfield-outlined',
+          defaultValue: null,
           shouldPrint: true,
           required: true
         },
@@ -41,6 +42,7 @@ export const componentGroups = [
           type: 'textarea',
           layout: 'colFormItem',
           icon: 'icon-basics-mtext-outlined',
+          defaultValue: null,
           shouldPrint: true,
           required: true
         },
@@ -94,6 +96,7 @@ export const componentGroups = [
           type: 'number',
           layout: 'colFormItem',
           icon: 'icon-basics-digit-outlined',
+          defaultValue: null,
           shouldPrint: true,
           required: true
         },
@@ -127,7 +130,7 @@ export const componentGroups = [
           label: '单选',
           type: 'radio',
           icon: 'icon-basics-radio-outlined',
-          defaultValue: undefined,
+          defaultValue: null,
           layout: 'colFormItem',
           required: true,
           shouldPrint: true,

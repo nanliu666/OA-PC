@@ -73,9 +73,7 @@ export default {
           shouldPrint: true,
           required: true,
           formId: 1,
-          renderKey: 1594883288217,
-          error: false,
-          errorMsg: null
+          defaultValue: null
         },
         __slot__: {},
         __pc__: { span: 24, tag: 'el-input', props: { type: 'textarea', rows: '2' } },
@@ -98,9 +96,7 @@ export default {
           shouldPrint: true,
           required: true,
           formId: 5,
-          renderKey: 1594885545764,
-          error: false,
-          errorMsg: null
+          defaultValue: null
         },
         __slot__: {},
         __pc__: {
@@ -123,9 +119,7 @@ export default {
           shouldPrint: true,
           required: true,
           formId: 7,
-          renderKey: 1594885546662,
-          error: false,
-          errorMsg: null
+          defaultValue: null
         },
         __slot__: {},
         __pc__: { span: 24, tag: 'el-input', props: {} },
@@ -160,10 +154,7 @@ export default {
           layout: 'colFormItem',
           shouldPrint: true,
           required: true,
-          formId: 13,
-          renderKey: 1595658297902,
-          error: false,
-          errorMsg: null
+          formId: 13
         },
         __slot__: {},
         __pc__: {

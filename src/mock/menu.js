@@ -851,7 +851,7 @@ const res = {
                 menuName: '审批详情',
                 menuType: 'Menu',
                 isOwn: 1,
-                isShow: 1,
+                isShow: 0,
                 code: 'approval_approval',
                 alias: 'approval',
                 path: '/approval/appr/apprDetail',

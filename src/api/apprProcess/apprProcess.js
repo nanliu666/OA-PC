@@ -7,6 +7,10 @@ import { get, post, put, del } from '@/router/axios'
 export const getProcessDetail = (params) => get('/appr/v2/appr/process', params)
 
 /**
+ * 审批申请提交接口
+ * */
+export const submitApprApply = (params) => post('/appr/v2/appr/apply/submit', params)
+/**
  * 审批流程列表查询接口
  * @param {*} params
  */
