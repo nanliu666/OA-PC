@@ -101,7 +101,7 @@
             v-text="statusToText(row.status).text"
           />
         </template>
-        <!-- 状态列 -->
+        <!-- 当前审批人 -->
         <template
           slot="approveUser"
           slot-scope="{ row }"
@@ -175,38 +175,51 @@ const SEARCH_POPOVER_REQUIRE_OPTIONS = [
   {
     config: { placeholder: '审批编号、审批标题', 'suffix-icon': 'el-icon-search' },
     data: '',
-    field: 'name',
+    field: 'search',
     label: '',
     type: 'input'
   }
 ]
 const SEARCH_POPOVER_POPOVER_OPTIONS = [
   {
-    config: { placeholder: '请输入审批；类型' },
     data: '',
-    field: 'code',
+    field: 'processId',
     label: '审批类型',
-    type: 'input'
+    type: 'select',
+    options: [
+      { value: 'Enterprise', label: '企业' },
+      { value: 'Company', label: '公司' },
+      { value: 'Department', label: '部门' },
+      { value: 'Group', label: '小组' }
+    ],
+    config: { optionLabel: '', optionValue: '' }
   },
   {
-    config: { placeholder: '请输入部门' },
     data: '',
-    field: 'alia1s',
+    field: 'orgId',
     label: '部门',
-    type: 'input'
+    type: 'select',
+    options: [
+      { value: 'Enterprise', label: '企业' },
+      { value: 'Company', label: '公司' },
+      { value: 'Department', label: '部门' },
+      { value: 'Group', label: '小组' }
+    ],
+    config: { optionLabel: '', optionValue: '' }
   },
   {
-    config: { placeholder: '开始时间 - 结束时间' },
     data: '',
-    field: 'alias',
     label: '申请时间',
-    type: 'dataPicker'
+    type: 'dataPicker',
+    field: 'beginApplyTime,endApplyTime',
+    config: { type: 'daterange', 'range-separator': '至' }
   }
 ]
 const SEARCH_POPOVER_CONFIG = {
   popoverOptions: SEARCH_POPOVER_POPOVER_OPTIONS,
   requireOptions: SEARCH_POPOVER_REQUIRE_OPTIONS
 }
+// 状态配置
 const STATUS_TO_TEXT = {
   Approve: {
     text: '审批中',
@@ -289,7 +302,7 @@ export default {
     getApproveUser(data) {
       let nameList = []
       data.map((item) => {
-        nameList.push(item.tiuserNamele)
+        nameList.push(item.userName)
       })
       return nameList.join('，')
     },
@@ -314,7 +327,8 @@ export default {
     /**
      * 搜索
      */
-    handleSearch() {
+    handleSearch(searchParams) {
+      window.console.log('searchParams==', searchParams)
       //   this.loadTableData(_.pickBy(searchParams))
     },
     // 跳去审批详情
