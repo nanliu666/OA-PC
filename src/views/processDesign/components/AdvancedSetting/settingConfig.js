@@ -1,9 +1,31 @@
+const validate = (rule, value, callback) => {
+  callback()
+}
 export let info = [
   {
     span: 24,
     prop: 'approverDistinct',
     itemType: 'slot',
     label: '审批人去重'
+  },
+  {
+    span: 24,
+    prop: 'approverNull',
+    label: '审批人为空时',
+    itemType: 'slot',
+    props: {
+      label: 'label',
+      value: 'value'
+    },
+    rules: [
+      { required: true, validator: validate, trigger: 'change' },
+      {
+        required: true,
+        message: '请选择审批人为空时',
+        trigger: 'blur'
+      }
+    ]
+    // required: true
   },
   {
     span: 24,
@@ -15,6 +37,7 @@ export let info = [
       value: 'value'
     }
   },
+
   {
     span: 24,
     prop: 'tip',

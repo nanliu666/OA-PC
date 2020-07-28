@@ -776,7 +776,7 @@ export default {
     copyNodeConfirm() {
       let attribute = []
       this.members['copy'].map((it) => {
-        attribute.push(it.id)
+        attribute.push(it.id.split('_')[1])
       })
       attribute = attribute.join(',')
       this.properties.attribute = attribute
@@ -876,7 +876,7 @@ export default {
       let attribute = []
       this.orgCollection[assigneeType] &&
         this.orgCollection[assigneeType].map((it) => {
-          attribute.push(it.id)
+          attribute.push(it.id.split('_')[1])
         })
       attribute = attribute.join(',')
       this.properties.attribute = attribute
