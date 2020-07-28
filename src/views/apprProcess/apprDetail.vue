@@ -408,7 +408,7 @@ export default {
         Approve: '审批中',
         Pass: '已通过',
         Reject: '已拒绝',
-        Cancel: 'Cancel-已撤回'
+        Cancel: '已撤回'
       },
       show: false,
       // 审批进度
