@@ -47,7 +47,7 @@ approval(options)
 // apprProcess({ mock: true })
 menu({ mock: true })
 apprProcess(options)
-menu(options)
+menu({ mock: true })
 interview(options)
 
 candidate(options)

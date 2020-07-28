@@ -5,6 +5,8 @@
       :model="formData"
       :columns="info"
     >
+      \
+
       <div slot="approverDistinct">
         <el-select
           v-model="formData.approverDistinct"
@@ -19,6 +21,28 @@
             :disabled="item.disabled"
           />
         </el-select>
+      </div>
+      <div slot="approverNull">
+        <el-radio-group v-model="formData.approverNull">
+          <el-radio :label="0">
+            自动通过
+            <el-tooltip
+              content="当指定人员或主管为空的时候，审批单将自动通过"
+              placement="top"
+            >
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-radio>
+          <el-radio :label="1">
+            自动转交给管理员
+            <el-tooltip
+              content="当指定人员或主管为空的时候，审批单将自动转交给管理员"
+              placement="top"
+            >
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-radio>
+        </el-radio-group>
       </div>
       <div slot="isOpinion">
         <el-checkbox v-model="formData.isOpinion">
@@ -36,6 +60,7 @@
 </template>
 <script>
 import { info } from './settingConfig'
+
 export default {
   components: {},
   props: ['conf'],
@@ -88,21 +113,36 @@ export default {
   methods: {
     handleCheckedCitiesChange() {},
     getData() {
-      return this.formData
+      return new Promise((resolve, reject) => {
+        this.$refs['setting']
+          .validate()
+          .then((valid) => {
+            if (!valid) {
+              reject(false)
+              return
+            }
+            // this.formData.icon = this.activeIcon
+            resolve(this.formData)
+            // return this.formData// TODO 提交表单
+          })
+          .catch(() => {
+            this.$emit('jump', 'advancedSetting')
+          })
+      })
     }
   }
 }
 </script>
 <style lang="stylus" scoped>
 .setting-container {
-    width: 600px;
-    height: 100%;
-    margin: auto;
-    background: white;
-    padding: 16px;
+  width: 600px;
+  height: 100%;
+  margin: auto;
+  background: white;
+  padding: 16px;
 
-    >>> .el-form--label-top .el-form-item__label {
-        padding-bottom: 0;
-    }
+  >>> .el-form--label-top .el-form-item__label {
+    padding-bottom: 0;
+  }
 }</style
 >>
