@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
-const totalNum = _.random(11, 99)
-const totalPage = Math.ceil(totalNum / 10)
+let totalNum = _.random(11, 99)
+let totalPage = Math.ceil(totalNum / 10)
 
 // 解析查询字符串
 const urlDecode = (url) =>
@@ -218,12 +218,17 @@ export default ({ mock }) => {
 
   // 审批记录列表
   Mock.mock(new RegExp('/appr/v2/appr/approve/record/list' + '.*'), 'get', (req) => {
-    const { pageNo } = urlDecode(req.url)
+    const params = urlDecode(req.url)
+    const { pageNo, pageSize = 10 } = params
+    if (_.size(_.omit(params, ['pageNo', 'pageSize']))) {
+      totalNum = _.parseInt(totalNum * 0.75)
+    }
+    totalPage = _.ceil(totalNum / pageSize)
 
     const response = {
       totalNum,
       totalPage,
-      data: _.times(pageNo < totalPage ? 10 : totalNum % 10 || 10, () =>
+      data: _.times(pageNo < totalPage ? pageSize : totalNum % pageSize || pageSize, () =>
         Mock.mock({
           apprNo: '@id()',
           title: '@ctitle()',
