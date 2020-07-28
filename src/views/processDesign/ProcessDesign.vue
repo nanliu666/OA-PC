@@ -245,7 +245,7 @@ export default {
       let { icon, processName, processAdmin, remark, categoryId } = { ...param.basicSetting }
       let { tip, isOpinion, approverDistinct, approverNull } = { ...param.advancedSetting }
       let processVisible = []
-      if (param.basicSetting.initiator) {
+      if (param.basicSetting.initiator && param.basicSetting.initiator.length > 0) {
         param.basicSetting.initiator.map((it) => {
           let type = ''
           if (it.type) {
@@ -370,14 +370,9 @@ export default {
           item.assignee = '${position_' + data.nodeId + '_id}'
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
+          origin.variable = 'optional_' + data.nodeId + '_id'
+          this.processMap['optional_' + data.nodeId + '_id'] = ''
           // 发起人自选
-          //
-          // origin.variable = 'optional_' + data.nodeId + '_id'
-          // item.assignee = '${optional_' + data.nodeId + '_id}'
-          // this.processMap['optional_' + data.nodeId + '_id'] = ''
-          if (!data.properties.optionalMultiUser) {
-            item.assignee = 'optional_' + data.properties.attribute
-          }
         } else if (data.properties.assigneeType === 'director') {
           // 主管
           origin.variable = 'director_' + data.nodeId + '_id'
