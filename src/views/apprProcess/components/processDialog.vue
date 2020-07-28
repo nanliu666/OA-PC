@@ -138,6 +138,7 @@ export default {
      * 初始化配置
      */
     initSetting() {
+      // window.console.log('subGroup==', this.subGroup)
       if (JSON.stringify(this.subGroup) !== '{}') {
         this.form.groupName = this.subGroup.name
       }
@@ -150,7 +151,7 @@ export default {
      */
     getGroupList() {
       getCategoryList().then((res) => {
-        window.console.log('审批分组数据==', res)
+        // window.console.log('审批分组数据==', res)
         res.map((item) => {
           this.groupNameOptions.push({
             value: item.id,
@@ -167,7 +168,9 @@ export default {
      * 新增操作
      */
     addNewGroup() {
-      addProcessCategory().then(() => {
+      let parmas = { name: this.form.groupName }
+      window.console.log('parmas==', parmas)
+      addProcessCategory(parmas).then(() => {
         this.messageText = `"${this.form.groupName}"分组创建成功`
         this.handleDataBack()
       })
@@ -178,10 +181,10 @@ export default {
     renameGroup() {
       let parmas = {
         id: this.subGroup.id,
-        name: this.subGroup.name
+        name: this.form.groupName
       }
+      window.console.log('重命名parmas==', parmas)
       renameProcessCategory(parmas).then(() => {
-        // window.console.log(res)
         this.messageText = `重命名成功`
         this.handleDataBack()
       })
@@ -193,13 +196,13 @@ export default {
       let tragetArray = this.groupNameOptions.filter((item) => {
         return this.form.moveValue === item.value
       })
-      //TODO 这里的processId/categoryId 有点模糊
       let parmas = {
         processId: this.subGroup.processes.processId,
         categoryId: tragetArray[0].value
       }
-      startProcess(parmas).then((res) => {
-        window.console.log('移动到==', res)
+      window.console.log('启用parmas==', parmas)
+      startProcess(parmas).then(() => {
+        // window.console.log('启用到==', res)
         this.messageText = `启用成功`
         this.handleDataBack()
       })
@@ -211,13 +214,12 @@ export default {
       let tragetArray = this.groupNameOptions.filter((item) => {
         return this.form.moveValue === item.value
       })
-      //TODO 这里的processId/categoryId 有点模糊
       let parmas = {
         processId: this.subGroup.processes.processId,
         categoryId: tragetArray[0].value
       }
-      moveProcess(parmas).then((res) => {
-        window.console.log('移动到==', res)
+      moveProcess(parmas).then(() => {
+        // window.console.log('移动到==', res)
         this.messageText = `移动分组成功`
         this.handleDataBack()
       })
