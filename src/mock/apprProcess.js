@@ -57,6 +57,7 @@ const processListData = {
     }
   ]
 }
+
 export default ({ mock }) => {
   if (!mock) return
   // v2版本接口
@@ -64,382 +65,143 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/appr/v2/appr/process/list' + '.*'), 'get', () => {
     return processListData
   })
-
-  Mock.mock(new RegExp('/api/appr/v2/appr/process' + '.*'), 'get', () => {
+  //   用户申请详情查询接口
+  Mock.mock(new RegExp('/appr/v2/appr/process/apply/detail' + '.*'), 'get', () => {
+    let formData = []
+    for (let i = 0; i < 10; i++) {
+      formData.push(
+        Mock.mock({
+          'value|1-3': ['@cword(1, 2)'],
+          prop: '@string( 2, 10)',
+          label: '@cword(3, 5)'
+        })
+      )
+    }
+    let formDataJson = JSON.stringify(formData)
+    let data = Mock.mock({
+      apprNo: '@integer(1, 100)',
+      'title|1': ['离职', '转正'],
+      formKey: 'WcI5G',
+      formId: '*VFUR',
+      processInstanceId: '09w&A',
+      orgId: '0gNs',
+      processId: '%$bWzd5',
+      'status|1': ['Approve', 'Pass', 'Reject', 'Cancel'],
+      userId: 'BKLb#',
+      userName: '@cname',
+      jobId: 'SO%sO',
+      jobName: 'Nw7zx9$',
+      applyTime: '2013-03-10 08:42:38',
+      completeTime: '2003-01-20 05:05:29',
+      formData: formDataJson
+    })
     return {
-      ...normalData,
-      response: Mock.mock({
-        processId: '123',
-        processName: '用印申请',
-        baseJson: `{
-          "basicSetting":{
-              "flowName":"入职",
-              "flowImg":0,
-              "flowGroup":2,
-              "flowRemark":"简单入职背景填写"
-          },
-          "processData":{
-              "type":"start",
-              "content":"所有人",
-              "properties":{
-                  "title":"发起人",
-                  "initiator":"ALL"
-              },
-              "nodeId":"Gb2",
-              "childNode":{
-                  "type":"approver",
-                  "content":"张三",
-                  "properties":{
-                      "title":"审批人",
-                      "approvers":[
-                          {
-                              "nodeId":20,
-                              "userId":"1252523599903072258_1262998215033409537",
-                              "userName":"游荣昌"
-                          }],
-                      "assigneeType":"user",
-                      "counterSign":true,
-                      "optionalMultiUser":true,
-                      "optionalRange":"ALL"
-                  },
-                  "nodeId":"Wb2",
-                  "prevId":"Gb2",
-                  "childNode":{
-                      "type":"copy",
-                      "content":"xxx研发部",
-                      "properties":{
-                          "title":"抄送人",
-                          "optionalMultiUser":true,
-                          "menbers":[],
-                          "userOptional":true
-                      },
-                      "nodeId":"Yb2",
-                      "prevId":"Wb2",
-                      "childNode":{
-                          "type":"approver",
-                          "content":"发起人自选",
-                          "properties":{
-                              "title":"审批人",
-                              "assigneeType":"optional",
-                              "counterSign":true,
-                              "optionalMultiUser":false,
-                              "optionalRange":"ALL"
-                          },
-                          "nodeId":"Nb2",
-                          "prevId":"Yb2"
-                      }
-                  }
-              }
-          },
-          "formData":{
-              "fields":[
-                  {
-                      "__config__":{
-                          "name":"单行文本",
-                          "label":"姓名",
-                          "type":"input",
-                          "layout":"colFormItem",
-                          "icon":"icon-basics-textfield-outlined",
-                          "shouldPrint":true,
-                          "required":true,
-                          "formId":1,
-                          "renderKey":1594631430990,
-                          "defaultValue":""
-                      },
-                      "__slot__":{
-                      },
-                      "__pc__":{
-                          "span":24,
-                          "tag":"el-input",
-                          "props":{
-                          }
-                      },
-                      "__mobile__":{
-                          "tag":"van-field",
-                          "renderType":"input",
-                          "props":{
-                          }
-                      },
-                      "placeholder":"请输入",
-                      "maxlength":20,
-                      "__vModel__":"field1"
-                  },
-                  {
-                      "__config__":{
-                          "name":"多行文本",
-                          "label":"备注",
-                          "type":"textarea",
-                          "layout":"colFormItem",
-                          "icon":"icon-basics-mtext-outlined",
-                          "shouldPrint":true,
-                          "required":true,
-                          "formId":2,
-                          "renderKey":1594631431915
-                      },
-                      "__slot__":{
-                      },
-                      "__pc__":{
-                          "span":24,
-                          "tag":"el-input",
-                          "props":{
-                              "type":"textarea",
-                              "rows":"2"
-                          }
-                      },
-                      "__mobile__":{
-                          "renderType":"textarea",
-                          "tag":"van-field",
-                          "props":{
-                              "autosize":true,
-                              "type":"textarea"
-                          }
-                      },
-                      "placeholder":"请输入",
-                      "maxlength":200,
-                      "__vModel__":"field2"
-                  },
-                  {
-                      "__config__":{
-                          "name":"说明",
-                          "type":"desc",
-                          "layout":"colFormItem",
-                          "icon":"icon-basics-explain-outlined",
-                          "shouldPrint":true,
-                          "formId":3,
-                          "renderKey":1594631432943
-                      },
-                      "__slot__":{
-                      },
-                      "__pc__":{
-                          "span":24,
-                          "tag":"div",
-                          "props":{
-                          }
-                      },
-                      "__mobile__":{
-                          "renderType":"desc",
-                          "tag":"tips",
-                          "props":{
-                          }
-                      },
-                      "placeholder":"hello"
-                  },
-                  {
-                      "__config__":{
-                          "name":"数字",
-                          "label":"年龄",
-                          "type":"number",
-                          "layout":"colFormItem",
-                          "icon":"icon-basics-digit-outlined",
-                          "shouldPrint":true,
-                          "required":true,
-                          "formId":4,
-                          "renderKey":1594631433763
-                      },
-                      "__slot__":{
-                      },
-                      "__pc__":{
-                          "span":12,
-                          "tag":"el-input-number",
-                          "props":{
-                              "controls-position":"right"
-                          }
-                      },
-                      "__mobile__":{
-                          "renderType":"input",
-                          "tag":"van-field",
-                          "props":{
-                              "type":"number"
-                          }
-                      },
-                      "placeholder":"请输入",
-                      "__vModel__":"field4"
-                  },
-                  {
-                      "__config__":{
-                          "name":"单选",
-                          "label":"单选",
-                          "type":"radio",
-                          "icon":"icon-basics-radio-outlined",
-                          "defaultValue":2,
-                          "layout":"colFormItem",
-                          "required":true,
-                          "shouldPrint":true,
-                          "formId":5,
-                          "renderKey":1594631434747
-                      },
-                      "__slot__":{
-                          "options":[
-                              {
-                                  "label":"选项一",
-                                  "value":1
-                              },
-                              {
-                                  "label":"选项二",
-                                  "value":2
-                              }]
-                      },
-                      "__pc__":{
-                          "span":12,
-                          "tag":"el-radio-group",
-                          "props":{
-                              "size":"medium"
-                          },
-                          "style":{
-                              "width":"100%"
-                          }
-                      },
-                      "__mobile__":{
-                          "renderType":"select",
-                          "tag":"van-field-select-picker",
-                          "props":{
-                          }
-                      },
-                      "placeholder":"请选择",
-                      "__vModel__":"field5"
-                  },
-                  {
-                      "__config__":{
-                          "name":"多选",
-                          "label":"多选",
-                          "type":"checkbox",
-                          "icon":"icon-basics-checkbox-outlined",
-                          "defaultValue":[
-                          ],
-                          "layout":"colFormItem",
-                          "shouldPrint":true,
-                          "required":true,
-                          "formId":6,
-                          "renderKey":1594631435830
-                      },
-                      "__slot__":{
-                          "options":[
-                              {
-                                  "label":"选项一",
-                                  "value":1
-                              },
-                              {
-                                  "label":"选项二",
-                                  "value":2
-                              },
-                              {
-                                  "label":"选项三",
-                                  "value":"选项三"
-                              }]
-                      },
-                      "__pc__":{
-                          "span":12,
-                          "tag":"el-checkbox-group",
-                          "style":{
-                              "width":"100%"
-                          },
-                          "props":{
-                          }
-                      },
-                      "__mobile__":{
-                          "renderType":"select",
-                          "tag":"multi-picker",
-                          "props":{
-                          }
-                      },
-                      "placeholder":"请选择",
-                      "__vModel__":"field6"
-                  },
-                  {
-                      "__config__":{
-                          "name":"日期",
-                          "label":"日期",
-                          "type":"date",
-                          "icon":"icon-basics-date-outlined",
-                          "defaultValue":null,
-                          "span":24,
-                          "layout":"colFormItem",
-                          "shouldPrint":true,
-                          "required":true,
-                          "formId":7,
-                          "renderKey":1594631437841
-                      },
-                      "__slot__":{
-                      },
-                      "__pc__":{
-                          "span":12,
-                          "tag":"el-date-picker",
-                          "props":{
-                              "type":"date",
-                              "format":"yyyy-MM-dd",
-                              "value-format":"yyyy-MM-dd"
-                          },
-                          "style":{
-                              "width":"100%"
-                          }
-                      },
-                      "__mobile__":{
-                          "renderType":"select",
-                          "tag":"van-field-datetime-picker",
-                          "props":{
-                              "pickerType":"date",
-                              "props":{
-                              }
-                          }
-                      },
-                      "placeholder":"请选择",
-                      "__vModel__":"field7"
-                  },
-                  {
-                      "__config__":{
-                          "name":"日期区间",
-                          "label":"日期区间",
-                          "type":"daterange",
-                          "icon":"icon-basics-daterange-outlined",
-                          "layout":"colFormItem",
-                          "defaultValue":[
-                          ],
-                          "shouldPrint":true,
-                          "required":true,
-                          "formId":8,
-                          "renderKey":1594631438922
-                      },
-                      "__slot__":{
-                      },
-                      "__pc__":{
-                          "span":12,
-                          "tag":"el-date-picker",
-                          "props":{
-                              "type":"daterange",
-                              "range-separator":"至",
-                              "start-placeholder":"开始日期",
-                              "end-placeholder":"结束日期",
-                              "format":"yyyy-MM-dd",
-                              "value-format":"yyyy-MM-dd"
-                          },
-                          "style":{
-                              "width":"100%"
-                          }
-                      },
-                      "__mobile__":{
-                          "renderType":"daterange",
-                          "noLabel":true,
-                          "tag":"date-range-picker",
-                          "props":{
-                              "pickerType":"date",
-                              "startLabel":"开始时间",
-                              "endLabel":"结束时间",
-                              "placeholder":"请选择",
-                              "autoCalc":true
-                          }
-                      },
-                      "__vModel__":"field8"
-                  }]
-          },
-          "advancedSetting":{
-              "autoRepeat":true,
-              "myAuditAutoPass":true,
-              "remarkTip":"这里是填写提示",
-              "remarkRequired":true,
-              "notVisibleForSponsor":true
-          }
-      }`
-      })
+      response: data
+    }
+  })
+  Mock.mock(new RegExp('/appr/v2/appr/apply/record' + '.*'), 'get', () => {
+    let obj = Mock.mock({
+      apprNo: '@integer(1, 100)',
+      processId: '@integer(1, 100)',
+      processInstanceId: '@integer(1, 100)'
+    })
+    let list = [
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '黄浩',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '权育',
+        jobId: '23121214645',
+        jobName: 'CEO',
+        approveTime: '2004-10-23 18:26:45',
+        result: 'Pass',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '姚鹏',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '丁晨',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '庾轮',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      }
+    ]
+    // for (let i = 0; i < 5; i++) {
+    //   list.push(
+    //     Mock.mock({
+    //       taskId: '@integer(1, 100)',
+    //       userId: '@integer(1, 100)',
+    //       userName: '@cname',
+    //       jobId: '@integer(1, 100)',
+    //       'jobName|1': ['经理', 'ceo'],
+    //       approveTime: '2004-10-23 18:26:45',
+    //       'result|1': ['Pass', 'Reject', '', 'Cancel'],
+    //       remark: '@ctitle(3,5)'
+    //     })
+    //   )
+    // }
+
+    return {
+      response: {
+        ...obj,
+        data: list
+      }
+    }
+  })
+
+  //   撤销
+  Mock.mock(new RegExp('/appr/v2/appr/apply/cancel' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+  //   同意
+  Mock.mock(new RegExp('/appr/v2/appr/apply/pass' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+  //   拒绝
+  Mock.mock(new RegExp('/appr/v2/appr/apply/reject' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+  //   催一下
+  Mock.mock(new RegExp('/appr/v2/appr/apply/urge' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
     }
   })
 }
