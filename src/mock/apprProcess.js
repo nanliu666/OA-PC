@@ -20,7 +20,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '4',
@@ -29,7 +30,8 @@ const processListData = {
           icon: 'approval-invitation-bicolor',
           remark:
             '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '2',
@@ -37,7 +39,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-checkin-bicolor',
           remark: '',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         },
         {
           processId: '3',
@@ -45,7 +48,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-leaveoffice-bicolor',
           remark: '这里是离职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -60,7 +64,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -75,7 +80,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -90,7 +96,8 @@ const processListData = {
           sort: 1,
           icon: 'approval-invitation-bicolor',
           remark: '这里是入职申请的简介这里是入职申请的简介这里是入职申请的简介',
-          visibleRange: 'all'
+          visibleRange: 'all',
+          formKey: ''
         }
       ]
     },
@@ -105,7 +112,8 @@ const processListData = {
         //   sort: 1,
         //   icon: 1,
         //   remark: '这里是入职申请的简介',
-        //   visibleRange: 'all'
+        //   visibleRange: 'all',
+        // formKey: ''
         // }
       ]
     }
@@ -150,12 +158,200 @@ const groupData = {
     }
   ]
 }
+const myApproveData = Mock.mock({
+  ...normalData,
+  response: {
+    totalNum: 40,
+    totalPage: 4,
+    'data|1-10': [
+      {
+        'apprNo|+1': [`${Mock.Random.id()}`, `${Mock.Random.id()}`],
+        'title|+1': [
+          `${Mock.Random.cname()}提交的离职审批`,
+          `${Mock.Random.cname()}提交的入职审批`,
+          `${Mock.Random.cname()}提交的转正审批`
+        ],
+        formKey: '离职审批',
+        formId: '申请单ID（对应businessId）',
+        orgId: '申请人部门ID',
+        'orgName|+1': [`销售部`, `技术部`, `运营部`],
+        userId: '申请人ID',
+        userName: '申请人名称',
+        jobId: '职位ID',
+        jobName: '职位名称',
+        processId: '流程ID',
+        processName: '流程名称',
+        'status|+1': [`Approve`, `Pass`, `Reject`, `Cancel`],
+        'applyTime|+1': [
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`,
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`
+        ],
+        'completeTime|+1': [
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`,
+          `${Mock.Random.date('yyyy-MM-dd hh:mm')}`
+        ],
+        'approveUser|1-3': [
+          {
+            userId: '当前审批人ID',
+            'userName|+1': [
+              `${Mock.Random.cname()}`,
+              `${Mock.Random.cname()}`,
+              `${Mock.Random.cname()}`
+            ]
+          }
+        ]
+      }
+    ]
+  }
+})
 export default ({ mock }) => {
   if (!mock) return
   // v2版本接口
   // 审批列表查询，调用接口：审批流程列表查询接口【GET /appr/v2/appr/process/list】
   Mock.mock(new RegExp('/api/appr/v2/appr/process/list' + '.*'), 'get', () => {
     return processListData
+  })
+  // 我发起的审批查询接口
+  Mock.mock(new RegExp('/api/appr/v2/appr/my/approve/list' + '.*'), 'get', () => {
+    return myApproveData
+  })
+  //   用户申请详情查询接口
+  Mock.mock(new RegExp('/appr/v2/appr/process/apply/detail' + '.*'), 'get', () => {
+    let formData = []
+    for (let i = 0; i < 10; i++) {
+      formData.push(
+        Mock.mock({
+          'value|1-3': ['@cword(1, 2)'],
+          prop: '@string( 2, 10)',
+          label: '@cword(3, 5)'
+        })
+      )
+    }
+    let formDataJson = JSON.stringify(formData)
+    let data = Mock.mock({
+      apprNo: '@integer(1, 100)',
+      'title|1': ['离职', '转正'],
+      formKey: 'WcI5G',
+      formId: '*VFUR',
+      processInstanceId: '09w&A',
+      orgId: '0gNs',
+      processId: '%$bWzd5',
+      'status|1': ['Approve', 'Pass', 'Reject', 'Cancel'],
+      userId: 'BKLb#',
+      userName: '@cname',
+      jobId: 'SO%sO',
+      jobName: 'Nw7zx9$',
+      applyTime: '2013-03-10 08:42:38',
+      completeTime: '2003-01-20 05:05:29',
+      formData: formDataJson
+    })
+    return {
+      response: data
+    }
+  })
+  Mock.mock(new RegExp('/appr/v2/appr/apply/record' + '.*'), 'get', () => {
+    let obj = Mock.mock({
+      apprNo: '@integer(1, 100)',
+      processId: '@integer(1, 100)',
+      processInstanceId: '@integer(1, 100)'
+    })
+    let list = [
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '黄浩',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '权育',
+        jobId: '23121214645',
+        jobName: 'CEO',
+        approveTime: '2004-10-23 18:26:45',
+        result: 'Pass',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '姚鹏',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '丁晨',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      },
+      {
+        taskId: '23121214645',
+        userId: '23121214645',
+        userName: '庾轮',
+        jobId: '23121214645',
+        jobName: '经理',
+        approveTime: '2004-10-23 18:26:45',
+        result: '',
+        remark: '2132'
+      }
+    ]
+    // for (let i = 0; i < 5; i++) {
+    //   list.push(
+    //     Mock.mock({
+    //       taskId: '@integer(1, 100)',
+    //       userId: '@integer(1, 100)',
+    //       userName: '@cname',
+    //       jobId: '@integer(1, 100)',
+    //       'jobName|1': ['经理', 'ceo'],
+    //       approveTime: '2004-10-23 18:26:45',
+    //       'result|1': ['Pass', 'Reject', '', 'Cancel'],
+    //       remark: '@ctitle(3,5)'
+    //     })
+    //   )
+    // }
+
+    return {
+      response: {
+        ...obj,
+        data: list
+      }
+    }
+  })
+  //   撤销
+  Mock.mock(new RegExp('/appr/v2/appr/apply/cancel' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+  //   同意
+  Mock.mock(new RegExp('/appr/v2/appr/apply/pass' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+  //   拒绝
+  Mock.mock(new RegExp('/appr/v2/appr/apply/reject' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
+  })
+  //   催一下
+  Mock.mock(new RegExp('/appr/v2/appr/apply/urge' + '.*'), 'post', () => {
+    return {
+      response: 'ok'
+    }
   })
   // 可发起的审批流程查询接口
   Mock.mock(new RegExp('/api/appr/v2/appr/user/process/list' + '.*'), 'get', () => {
