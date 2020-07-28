@@ -67,6 +67,7 @@
 
 <script>
 import { getUserProcessList } from '@/api/apprProcess/apprProcess'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Apply',
@@ -77,15 +78,23 @@ export default {
       currentIndexList: []
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   mounted() {
     this.initData()
   },
+
   methods: {
     /**
      * 初始化数据
      */
     initData() {
-      getUserProcessList().then((res) => {
+      let parmas = {
+        userId: this.userId,
+        processName: ''
+      }
+      getUserProcessList(parmas).then((res) => {
         window.console.log('res==', res)
         this.processListData = res
       })
@@ -105,6 +114,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
 .approval-ul {
+  padding-bottom: 15px;
   .approval-li {
     padding-bottom: 15px;
     &:hover {
