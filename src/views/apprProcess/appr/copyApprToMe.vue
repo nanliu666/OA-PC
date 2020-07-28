@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { getMyApproveList } from '@/api/apprProcess/apprProcess'
+import { getCopyApproveList } from '@/api/apprProcess/apprProcess'
 
 // 表格属性
 const TABLE_COLUMNS = [
@@ -356,12 +356,12 @@ export default {
       try {
         this.queryInfo.userId = this.userId
         // window.console.log('列表参数==', this.queryInfo)
-        let { totalNum, data } = await getMyApproveList(this.queryInfo)
+        let { totalNum, data } = await getCopyApproveList(this.queryInfo)
         // window.console.log('列表数据data==', data)
         this.tableData = data
         this.page.total = totalNum
       } catch (error) {
-        // window.console.log(error)
+        window.console.log(error)
       } finally {
         this.tableLoading = false
       }

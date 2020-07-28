@@ -1,6 +1,6 @@
 <template>
   <div class="Menu fill">
-    <page-header title="我发起的" />
+    <page-header title="待我审批" />
     <basic-container block>
       <common-table
         ref="table"
@@ -101,20 +101,13 @@
             v-text="statusToText(row.status).text"
           />
         </template>
-        <!-- 当前审批人 -->
-        <template
-          slot="approveUser"
-          slot-scope="{ row }"
-        >
-          <span v-text="getApproveUser(row.approveUser)" />
-        </template>
       </common-table>
     </basic-container>
   </div>
 </template>
 
 <script>
-import { getMyApproveList } from '@/api/apprProcess/apprProcess'
+import { getWaitApproveList } from '@/api/apprProcess/apprProcess'
 
 // 表格属性
 const TABLE_COLUMNS = [
@@ -153,12 +146,6 @@ const TABLE_COLUMNS = [
     label: '当前状态',
     slot: true,
     prop: 'status',
-    minWidth: 100
-  },
-  {
-    label: '当前审批人',
-    slot: true,
-    prop: 'approveUser',
     minWidth: 100
   }
 ]
@@ -304,7 +291,7 @@ export default {
       data.map((item) => {
         nameList.push(item.userName)
       })
-      return nameList.join('+')
+      return nameList.join('，')
     },
     /**
      * 英文状态对应中文字段
@@ -328,7 +315,7 @@ export default {
      * 搜索
      */
     handleSearch(searchParams) {
-      // window.console.log('searchParams==', _.pickBy(searchParams))
+      //   window.console.log('searchParams==', searchParams)
       for (let i in _.pickBy(searchParams)) {
         this.queryInfo[i] = searchParams[i]
       }
@@ -355,13 +342,12 @@ export default {
       this.tableLoading = true
       try {
         this.queryInfo.userId = this.userId
-        // window.console.log('列表参数==', this.queryInfo)
-        let { totalNum, data } = await getMyApproveList(this.queryInfo)
+        let { totalNum, data } = await getWaitApproveList(this.queryInfo)
         // window.console.log('列表数据data==', data)
         this.tableData = data
         this.page.total = totalNum
       } catch (error) {
-        // window.console.log(error)
+        window.console.log(error)
       } finally {
         this.tableLoading = false
       }
