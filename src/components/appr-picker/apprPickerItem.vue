@@ -55,7 +55,7 @@
         </div>
       </div>
     </div>
-    <appr-user-item
+    <appr-picker-item
       v-if="processData.childNode"
       :process-data="processData.childNode"
     />
@@ -66,7 +66,7 @@
 import pickUser from '@/components/appr-progress/userPicker.js'
 
 export default {
-  name: 'ApprUserItem',
+  name: 'ApprPickerItem',
   props: {
     processData: {
       type: Object,
@@ -138,10 +138,6 @@ export default {
 <style lang="scss" scoped>
 .appr-user-item {
   position: relative;
-  padding-bottom: 20px;
-  &__first {
-    margin-top: 20px;
-  }
   &__tail {
     position: absolute;
     left: 4px;
@@ -158,10 +154,13 @@ export default {
     height: 12px;
     left: -1px;
   }
+  &__header {
+    line-height: 24px;
+  }
   &__wrapper {
     position: relative;
     padding-left: 28px;
-    top: -6px;
+    top: -3px;
   }
   &__title {
     font-size: 18px;
@@ -170,6 +169,7 @@ export default {
   &__content {
     display: flex;
     flex-wrap: wrap;
+    padding-bottom: 10px;
   }
   &__avatar {
     width: 40px;
@@ -181,6 +181,7 @@ export default {
     position: relative;
     .avatar {
       font-size: 40px;
+      line-height: 40px;
       color: #757c85;
     }
     .close {
@@ -190,6 +191,7 @@ export default {
       font-size: 14px;
       z-index: 100;
       cursor: pointer;
+      line-height: 14px;
     }
   }
   &__username {
