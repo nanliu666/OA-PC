@@ -55,6 +55,7 @@ export default async () => {
       questions: [
         {
           type: 'treeSelect',
+          // data多选是数组单选是字符串
           data: [],
           label: '部门',
           field: 'orgs',
@@ -81,6 +82,7 @@ export default async () => {
             }
           },
           firstLoad(flag, item, callBack) {
+            // fage为true，selsec框展开
             if (flag && item.config.treeParams.data.length === 0) {
               item.loadMoreFun(item, callBack)
             }
@@ -418,7 +420,8 @@ export default async () => {
           config: {},
           options: [
             { label: '未婚', value: '0' },
-            { label: '已婚', value: '1' }
+            { label: '已婚', value: '1' },
+            { label: '已婚已育', value: '2' }
           ]
         },
         { type: 'input', data: '', label: '健康状况', field: 'health', config: {} },
