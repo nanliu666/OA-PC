@@ -8,7 +8,7 @@
         >
           <i class="el-icon-arrow-left" /> 返回
         </div>
-        <div>{{ title }}</div>
+        <div>{{ title }} <span style="color: transparent">11</span></div>
       </div>
       <div class="step-tab">
         <div
@@ -107,7 +107,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '补卡申请'
+      default: ''
     }
   },
   data() {
@@ -176,6 +176,7 @@ export default {
         processId: this.$route.query.processId
       }
       getApprProcess(params).then((res) => {
+        this.title = res.processName
         this.mockData = JSON.parse(Base64.decode(res.baseJson))
       })
     },
@@ -511,10 +512,13 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '模拟返回!'
+          this.$router.push({
+            path: '/apprProcess/approvalList'
           })
+          // this.$message({
+          //   type: 'success',
+          //   message: '模拟返回!'
+          // })
         })
         .catch(() => {})
     },
