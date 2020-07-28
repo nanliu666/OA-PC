@@ -193,7 +193,7 @@ const myApproveData = Mock.mock({
         'approveUser|1-3': [
           {
             userId: '当前审批人ID',
-            'tiuserNamele|+1': [
+            'userName|+1': [
               `${Mock.Random.cname()}`,
               `${Mock.Random.cname()}`,
               `${Mock.Random.cname()}`
