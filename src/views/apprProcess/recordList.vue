@@ -443,6 +443,10 @@ $color_icon: #A0A8AE
 $color_hover: #207EFA
 
 .Recordlist
+  height: 100%
+  .basic-container--block
+    height: 0
+    min-height: calc( 100% - 92px )
   .table__link
     color: $color_active
     &:hover
