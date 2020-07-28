@@ -399,8 +399,8 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteProcess({ processId: data.processId }).then((res) => {
-            window.console.log('delete res==', res)
+          deleteProcess({ processId: data.processId }).then(() => {
+            // window.console.log('delete res==', res)
             this.$message.success(`删除成功`)
             this.refreshData()
           })
@@ -477,8 +477,8 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteCategory({ id: data.id }).then((res) => {
-            window.console.log('delete res==', res)
+          deleteCategory({ id: data.id }).then(() => {
+            // window.console.log('delete res==', res)
             this.$message.success(`删除成功`)
             this.refreshData()
           })
