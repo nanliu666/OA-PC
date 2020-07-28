@@ -1,6 +1,6 @@
 <template>
   <div class="Menu fill">
-    <page-header title="我发起的" />
+    <page-header title="我已审批" />
     <basic-container block>
       <common-table
         ref="table"
@@ -16,6 +16,7 @@
         <template #topMenu>
           <div class="operations">
             <SearchPopover
+              ref="searchPopover"
               :popover-options="searchPopoverConfig.popoverOptions"
               :require-options="searchPopoverConfig.requireOptions"
               @submit="handleSearch"
@@ -89,6 +90,7 @@
         </template>
         <!-- 状态列 -->
         <template
+          v-if="row.status"
           slot="status"
           slot-scope="{ row }"
         >
@@ -103,6 +105,7 @@
         </template>
         <!-- 当前审批人 -->
         <template
+          v-if="row.status"
           slot="approveUser"
           slot-scope="{ row }"
         >
@@ -114,7 +117,10 @@
 </template>
 
 <script>
-import { getHasApproveList } from '@/api/apprProcess/apprProcess'
+import { getCategoryList, getHasApproveList } from '@/api/apprProcess/apprProcess'
+import { getOrgTreeSimple } from '@/api/org/org'
+import { mapGetters } from 'vuex'
+import SearchPopover from '@/components/searchPopOver/index'
 
 // 表格属性
 const TABLE_COLUMNS = [
@@ -131,7 +137,7 @@ const TABLE_COLUMNS = [
   },
   {
     label: '审批类型',
-    prop: 'formKey',
+    prop: 'processName',
     minWidth: 100
   },
   {
@@ -180,32 +186,40 @@ const SEARCH_POPOVER_REQUIRE_OPTIONS = [
     type: 'input'
   }
 ]
-const SEARCH_POPOVER_POPOVER_OPTIONS = [
+let SEARCH_POPOVER_POPOVER_OPTIONS = [
   {
     data: '',
     field: 'processId',
     label: '审批类型',
     type: 'select',
-    options: [
-      { value: 'Enterprise', label: '企业' },
-      { value: 'Company', label: '公司' },
-      { value: 'Department', label: '部门' },
-      { value: 'Group', label: '小组' }
-    ],
-    config: { optionLabel: '', optionValue: '' }
+    options: [],
+    config: { optionLabel: 'name', optionValue: 'id' }
   },
   {
-    data: '',
+    type: 'treeSelect',
     field: 'orgId',
-    label: '部门',
-    type: 'select',
-    options: [
-      { value: 'Enterprise', label: '企业' },
-      { value: 'Company', label: '公司' },
-      { value: 'Department', label: '部门' },
-      { value: 'Group', label: '小组' }
-    ],
-    config: { optionLabel: '', optionValue: '' }
+    label: '用人部门',
+    data: '',
+    config: {
+      selectParams: {
+        placeholder: '请选择用人部门',
+        multiple: false
+      },
+      treeParams: {
+        data: [],
+        'check-strictly': true,
+        'default-expand-all': false,
+        'expand-on-click-node': false,
+        clickParent: true,
+        filterable: false,
+        props: {
+          children: 'children',
+          label: 'orgName',
+          disabled: 'disabled',
+          value: 'orgId'
+        }
+      }
+    }
   },
   {
     data: '',
@@ -215,7 +229,7 @@ const SEARCH_POPOVER_POPOVER_OPTIONS = [
     config: { type: 'daterange', 'range-separator': '至' }
   }
 ]
-const SEARCH_POPOVER_CONFIG = {
+let SEARCH_POPOVER_CONFIG = {
   popoverOptions: SEARCH_POPOVER_POPOVER_OPTIONS,
   requireOptions: SEARCH_POPOVER_REQUIRE_OPTIONS
 }
@@ -247,8 +261,6 @@ const STATUS_TO_TEXT = {
     backgroundColor: '#d9d9d9'
   }
 }
-import { mapGetters } from 'vuex'
-import SearchPopover from '@/components/searchPopOver/index'
 
 export default {
   name: 'ApprByMe',
@@ -293,9 +305,34 @@ export default {
     ...mapGetters(['userId'])
   },
   created() {
+    this.initData()
     this.refreshTableData()
   },
   methods: {
+    /**
+     * 初始化数据
+     */
+    initData() {
+      this.getOrgTree()
+      this.getApprType()
+    },
+    /**
+     * 获取用人部门
+     */
+    getOrgTree() {
+      getOrgTreeSimple({ parentOrgId: 0 }).then((res) => {
+        this.searchPopoverConfig.popoverOptions[1].config.treeParams.data.push(...res)
+        this.$refs['searchPopover'].treeDataUpdateFun(res, 'orgId')
+      })
+    },
+    /**
+     * 获取审批类型
+     */
+    getApprType() {
+      getCategoryList().then((res) => {
+        this.searchPopoverConfig.popoverOptions[0].options = res
+      })
+    },
     /**
      * 获取用户姓名列表
      */
@@ -329,7 +366,7 @@ export default {
      */
     handleSearch(searchParams) {
       // window.console.log('searchParams==', _.pickBy(searchParams))
-      for (let i in _.pickBy(searchParams)) {
+      for (let i in searchParams) {
         this.queryInfo[i] = searchParams[i]
       }
       this.loadTableData()
