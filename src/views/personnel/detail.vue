@@ -21,7 +21,7 @@
                   <div class="block">
                     <el-avatar
                       :size="80"
-                      :src="allInfo.circleUrl"
+                      :src="allInfo.avatarUrl"
                     />
                   </div>
                 </div>
