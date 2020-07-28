@@ -144,7 +144,7 @@ export default {
   watch: {
     initiator: {
       handler(val) {
-        this.formData.initiator = val
+        this.formData.initiator = val || []
       },
       immediate: true
     },
