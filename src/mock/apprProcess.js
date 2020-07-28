@@ -223,7 +223,7 @@ export default ({ mock }) => {
     const response = {
       totalNum,
       totalPage,
-      data: _.times(pageNo < totalPage ? 10 : totalNum % 10, () =>
+      data: _.times(pageNo < totalPage ? 10 : totalNum % 10 || 10, () =>
         Mock.mock({
           apprNo: '@id()',
           title: '@ctitle()',
