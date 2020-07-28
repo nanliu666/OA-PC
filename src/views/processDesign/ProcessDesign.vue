@@ -342,17 +342,18 @@ export default {
       }
       if (data.type === 'copy') {
         //抄送人节点
-        item.assignee = 'taskUser_' + data.content
+        item.assignee = 'copyUser_' + data.properties.attribute
       }
       if (data.type === 'approver') {
         //审批人节点
         if (data.properties.assigneeType === 'user') {
           //指定成员人，
-          if (data.content === '张三') {
-            item.assignee = 'taskUser_' + '1258244944030916609'
-          } else if (data.content === '王五') {
-            item.assignee = 'taskUser_' + '1262998215033409537'
-          }
+          item.assignee = 'taskUser_' + data.properties.attribute
+          // if (data.content === '张三') {
+          //   item.assignee = 'taskUser_' + '1258244944030916609'
+          // } else if (data.content === '王五') {
+          //   item.assignee = 'taskUser_' + '1262998215033409537'
+          // }
           // item.assignee='taskUser_'+data.content
         } else if (data.properties.assigneeType === 'role') {
           //角色
@@ -364,9 +365,13 @@ export default {
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
-          origin.variable = 'optional_' + data.nodeId + '_id'
-          item.assignee = '${optional_' + data.nodeId + '_id}'
-          this.processMap['optional_' + data.nodeId + '_id'] = ''
+          //
+          // origin.variable = 'optional_' + data.nodeId + '_id'
+          // item.assignee = '${optional_' + data.nodeId + '_id}'
+          // this.processMap['optional_' + data.nodeId + '_id'] = ''
+          if (!data.properties.optionalMultiUser) {
+            item.assignee = 'optional_' + data.properties.attribute
+          }
         } else if (data.properties.assigneeType === 'director') {
           // 主管
           origin.variable = 'director_' + data.nodeId + '_id'
@@ -376,7 +381,7 @@ export default {
           //发起人自己
           item.assignee = '${initiator}'
         } else {
-          item.assignee = 'taskUser_' + data.content
+          item.assignee = 'taskUser_' + data.properties.attribute
         }
 
         if (data.content) {
@@ -400,7 +405,7 @@ export default {
             item.multi = {
               //如果有多个选项触发会签或者或签。
               completion: data.properties.counterSign ? '1' : '0', //0 或签，1会签
-              collection: data.content,
+              collection: data.properties.attribute,
               element: elementType[data.properties.assigneeType] // 和审批人一一对应，移除${}后的值，如"assignee":"${element}",则"element": "element"
             }
           }

@@ -26,7 +26,7 @@
         >
           {{ item.name }}
         </el-tag>
-        <div v-if="selectedData && selectedData.length < 1">
+        <div v-if="all && selectedData && selectedData.length < 1">
           所有人
         </div>
       </div>
@@ -53,6 +53,10 @@ export default {
     event: 'change'
   },
   props: {
+    all: {
+      type: Boolean,
+      default: false
+    },
     org: {
       type: Boolean,
       default: false
@@ -108,7 +112,11 @@ export default {
   },
   computed: {
     selectedLabels() {
-      return this.selectedData.map((t) => t.name).join(',')
+      if (this.selectedData) {
+        return this.selectedData.map((t) => t.name).join(',')
+      } else {
+        return ''
+      }
     }
   },
   watch: {
@@ -141,6 +149,11 @@ export default {
         // this.reloadCmpData()
       },
       immediate: true
+    },
+    selectedData: {
+      handler() {},
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -165,6 +178,7 @@ export default {
         this.$emit('change', orgCollection)
       } else {
         // this.selectedData = data
+        alert(1)
         this.selectOldData = data
         this.$emit('change', data)
       }
