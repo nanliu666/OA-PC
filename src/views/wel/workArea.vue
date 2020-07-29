@@ -370,7 +370,7 @@ export default {
       } else if (type === 'Approve') {
         // 审批
         this.$router.push({
-          path: '/approval/appr/apprDetail',
+          path: '/apprProcess/apprDetail',
           query: {
             apprNo: bizId,
             toDoList: true
