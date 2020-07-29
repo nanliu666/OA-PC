@@ -215,6 +215,10 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/api/appr/v2/appr/my/approve/list' + '.*'), 'get', () => {
     return myApproveData
   })
+  // 待我审批查询接口
+  Mock.mock(new RegExp('/api/appr/v2/appr/wait/approve/list' + '.*'), 'get', () => {
+    return myApproveData
+  })
   //   用户申请详情查询接口
   Mock.mock(new RegExp('/appr/v2/appr/process/apply/detail' + '.*'), 'get', () => {
     let formData = []

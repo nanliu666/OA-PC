@@ -846,26 +846,27 @@ const res = {
                 // path: '/approval/appr/apprByMe',
                 icon: 'iconfont iconicon_compile'
               },
-              {
-                menuId: '0000002',
-                menuName: '审批详情',
-                menuType: 'Menu',
-                isOwn: 1,
-                isShow: 0,
-                code: 'approval_approval',
-                alias: 'approval',
-                path: '/approval/appr/apprDetail',
-                icon: 'iconfont iconicon_compile'
-              },
+              // {
+              //   menuId: '0000002',
+              //   menuName: '审批详情',
+              //   menuType: 'Menu',
+              //   isOwn: 1,
+              //   isShow: 1,
+              //   code: 'approval_approval',
+              //   alias: 'approval',
+              //   path: '/approval/appr/apprDetail',
+              //   icon: 'iconfont iconicon_compile'
+              // },
               {
                 menuId: '0000003',
                 menuName: '待我审批',
                 menuType: 'Menu',
                 isOwn: 1,
-                isShow: 1,
+                isShow: 0,
                 code: 'approval_approval',
                 alias: 'approval',
-                path: '/approval/appr/waitAppr',
+                path: '/apprProcess/appr/waitAppr',
+                // path: '/approval/appr/waitAppr',
                 icon: 'iconfont iconicon_compile'
               },
               {
@@ -876,11 +877,23 @@ const res = {
                 isShow: 1,
                 code: 'approval_approval',
                 alias: 'approval',
-                path: '/approval/appr/hasAppr',
+                // path: '/approval/appr/hasAppr',
+                path: '/apprProcess/appr/hasAppr',
                 icon: 'iconfont iconicon_compile'
               },
               {
                 menuId: '0000005',
+                menuName: '抄送我的',
+                menuType: 'Menu',
+                isOwn: 1,
+                isShow: 1,
+                code: 'approval_approval',
+                alias: 'approval',
+                path: '/apprProcess/appr/copyApprToMe',
+                icon: 'iconfont iconicon_compile'
+              },
+              {
+                menuId: '0000006',
                 menuName: '审批详情',
                 menuType: 'Menu',
                 isOwn: 1,

@@ -280,7 +280,7 @@ export default {
         resData = _.sortBy(resData, 'sort')
       })
       await getDraftList().then((res) => {
-        window.console.log('弃用res==', res)
+        // window.console.log('弃用res==', res)
         // 因接口返回数据不同，故专门写成如审批列表结构
         let resetData = [
           {
@@ -294,7 +294,7 @@ export default {
         resData = [...resData, ...resetData]
       })
       this.processListData = resData
-      window.console.log('加载审批列表数据==', resData)
+      // window.console.log('加载审批列表数据==', resData)
       // 拖拽的时候用来对比的原先的列表
       this.tempProcessList = deepClone(resData)
     },
@@ -324,7 +324,7 @@ export default {
           isDiff = true
         }
       })
-      window.console.log('拖拽结束 parmas==', JSON.stringify(parmas))
+      // window.console.log('拖拽结束 parmas==', JSON.stringify(parmas))
       // 当拖拽后的结果与之前暂存的是同一个数组时，不需要调用排序
       if (!isDiff) return
       sortProcess(parmas).then(() => {
@@ -348,7 +348,7 @@ export default {
      * 发布
      */
     publishApproval(data, processesItem) {
-      window.console.log(data, processesItem)
+      // window.console.log(data, processesItem)
       let that = this
       this.$confirm(
         `
@@ -399,8 +399,8 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteProcess({ processId: data.processId }).then((res) => {
-            window.console.log('delete res==', res)
+          deleteProcess({ processId: data.processId }).then(() => {
+            // window.console.log('delete res==', res)
             this.$message.success(`删除成功`)
             this.refreshData()
           })
@@ -432,7 +432,7 @@ export default {
           sort: index + 1
         })
       })
-      window.console.log('保存排序参数==', params)
+      // window.console.log('保存排序参数==', params)
       sortCategory(params).then(() => {
         this.sortRefreshData()
       })
@@ -477,8 +477,8 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteCategory({ id: data.id }).then((res) => {
-            window.console.log('delete res==', res)
+          deleteCategory({ id: data.id }).then(() => {
+            // window.console.log('delete res==', res)
             this.$message.success(`删除成功`)
             this.refreshData()
           })

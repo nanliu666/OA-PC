@@ -1,6 +1,6 @@
 <template>
   <div class="Menu fill">
-    <page-header title="我发起的" />
+    <page-header title="待我审批" />
     <basic-container block>
       <common-table
         ref="table"
@@ -103,25 +103,16 @@
             v-text="statusToText(row.status).text"
           />
         </template>
-        <!-- 当前审批人 -->
-        <template
-          slot="approveUser"
-          slot-scope="{ row }"
-        >
-          <span v-text="getApproveUser(row.approveUser)" />
-        </template>
       </common-table>
     </basic-container>
   </div>
 </template>
 
 <script>
-import { getCategoryList, getMyApproveList } from '@/api/apprProcess/apprProcess'
-// import moment from 'moment'
+import { getCategoryList, getWaitApproveList } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
-
 // 表格属性
 const TABLE_COLUMNS = [
   {
@@ -159,12 +150,6 @@ const TABLE_COLUMNS = [
     label: '当前状态',
     slot: true,
     prop: 'status',
-    minWidth: 100
-  },
-  {
-    label: '当前审批人',
-    slot: true,
-    prop: 'approveUser',
     minWidth: 100
   }
 ]
@@ -337,12 +322,11 @@ export default {
      * 获取用户姓名列表
      */
     getApproveUser(data) {
-      if (!Array.isArray(data)) return
       let nameList = []
       data.map((item) => {
         nameList.push(item.userName)
       })
-      return nameList.join('+')
+      return nameList.join('，')
     },
     /**
      * 英文状态对应中文字段
@@ -366,8 +350,8 @@ export default {
      * 搜索
      */
     handleSearch(searchParams) {
+      //   window.console.log('searchParams==', searchParams)
       for (let i in searchParams) {
-        // window.console.log(moment(searchParams[i]).unix())
         this.queryInfo[i] = searchParams[i]
       }
       this.loadTableData()
@@ -393,13 +377,12 @@ export default {
       this.tableLoading = true
       try {
         this.queryInfo.userId = this.userId
-        // window.console.log('列表参数==', this.queryInfo)
-        let { totalNum, data } = await getMyApproveList(this.queryInfo)
+        let { totalNum, data } = await getWaitApproveList(this.queryInfo)
         // window.console.log('列表数据data==', data)
         this.tableData = data
         this.page.total = totalNum
       } catch (error) {
-        // window.console.log(error)
+        window.console.log(error)
       } finally {
         this.tableLoading = false
       }

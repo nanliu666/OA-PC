@@ -1,6 +1,6 @@
 <template>
   <div class="Menu fill">
-    <page-header title="我发起的" />
+    <page-header title="抄送我的" />
     <basic-container block>
       <common-table
         ref="table"
@@ -116,12 +116,10 @@
 </template>
 
 <script>
-import { getCategoryList, getMyApproveList } from '@/api/apprProcess/apprProcess'
-// import moment from 'moment'
+import { getCategoryList, getCopyApproveList } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
-
 // 表格属性
 const TABLE_COLUMNS = [
   {
@@ -337,7 +335,6 @@ export default {
      * 获取用户姓名列表
      */
     getApproveUser(data) {
-      if (!Array.isArray(data)) return
       let nameList = []
       data.map((item) => {
         nameList.push(item.userName)
@@ -366,8 +363,8 @@ export default {
      * 搜索
      */
     handleSearch(searchParams) {
-      for (let i in searchParams) {
-        // window.console.log(moment(searchParams[i]).unix())
+      // window.console.log('searchParams==', _.pickBy(searchParams))
+      for (let i in _.pickBy(searchParams)) {
         this.queryInfo[i] = searchParams[i]
       }
       this.loadTableData()
@@ -394,12 +391,12 @@ export default {
       try {
         this.queryInfo.userId = this.userId
         // window.console.log('列表参数==', this.queryInfo)
-        let { totalNum, data } = await getMyApproveList(this.queryInfo)
+        let { totalNum, data } = await getCopyApproveList(this.queryInfo)
         // window.console.log('列表数据data==', data)
         this.tableData = data
         this.page.total = totalNum
       } catch (error) {
-        // window.console.log(error)
+        window.console.log(error)
       } finally {
         this.tableLoading = false
       }

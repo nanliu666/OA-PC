@@ -1,6 +1,6 @@
 <template>
   <div class="Menu fill">
-    <page-header title="我发起的" />
+    <page-header title="我已审批" />
     <basic-container block>
       <common-table
         ref="table"
@@ -105,6 +105,7 @@
         </template>
         <!-- 当前审批人 -->
         <template
+          v-if="row.status"
           slot="approveUser"
           slot-scope="{ row }"
         >
@@ -116,8 +117,7 @@
 </template>
 
 <script>
-import { getCategoryList, getMyApproveList } from '@/api/apprProcess/apprProcess'
-// import moment from 'moment'
+import { getCategoryList, getHasApproveList } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
@@ -337,7 +337,6 @@ export default {
      * 获取用户姓名列表
      */
     getApproveUser(data) {
-      if (!Array.isArray(data)) return
       let nameList = []
       data.map((item) => {
         nameList.push(item.userName)
@@ -366,8 +365,8 @@ export default {
      * 搜索
      */
     handleSearch(searchParams) {
+      // window.console.log('searchParams==', _.pickBy(searchParams))
       for (let i in searchParams) {
-        // window.console.log(moment(searchParams[i]).unix())
         this.queryInfo[i] = searchParams[i]
       }
       this.loadTableData()
@@ -394,12 +393,12 @@ export default {
       try {
         this.queryInfo.userId = this.userId
         // window.console.log('列表参数==', this.queryInfo)
-        let { totalNum, data } = await getMyApproveList(this.queryInfo)
+        let { totalNum, data } = await getHasApproveList(this.queryInfo)
         // window.console.log('列表数据data==', data)
         this.tableData = data
         this.page.total = totalNum
       } catch (error) {
-        // window.console.log(error)
+        window.console.log(error)
       } finally {
         this.tableLoading = false
       }

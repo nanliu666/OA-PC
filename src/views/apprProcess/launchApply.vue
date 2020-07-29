@@ -96,10 +96,12 @@ export default {
         processName: ''
       }
       getUserProcessList(parmas).then((res) => {
-        window.console.log('res==', res)
         this.processListData = res
       })
     },
+    /**
+     * 隐藏li
+     */
     hideCurrent(index) {
       let currentIndex = this.currentIndexList.indexOf(index)
       if (currentIndex > -1) {
@@ -125,7 +127,6 @@ export default {
 .approval-ul {
   padding-bottom: 15px;
   .approval-li {
-    padding-bottom: 15px;
     &:hover {
       cursor: pointer;
     }

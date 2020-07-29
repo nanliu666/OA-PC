@@ -39,6 +39,16 @@ export const getMyApproveList = (params) => get('/appr/v2/appr/my/approve/list',
  */
 export const getWaitApproveList = (params) => get('/appr/v2/appr/wait/approve/list', params)
 /**
+ * 我已审批查询接口
+ * @param {*} params
+ */
+export const getHasApproveList = (params) => get('/appr/v2/appr/has/approve/list', params)
+/**
+ * 抄送我的审批查询接口
+ * @param {*} params
+ */
+export const getCopyApproveList = (params) => get('/appr/v2/appr/cc/approve/list', params)
+/**
  * 可发起的审批流程查询接口
  * @param {*} params
  */
