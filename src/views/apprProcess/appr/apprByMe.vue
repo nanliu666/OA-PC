@@ -408,7 +408,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scope>
+<style lang="sass" scoped>
 $color_icon: #A0A8AE
 .status-span
     padding: 4px;
