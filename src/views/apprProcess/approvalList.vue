@@ -152,7 +152,7 @@
                     <div class="li-middle">
                       <div>可见范围</div>
                       <div class="middle-span">
-                        全部可见
+                        {{ processesItem.visibleRange }}
                       </div>
                     </div>
                     <div class="li-right">
@@ -186,7 +186,7 @@
                         <el-button
                           v-if="processesItem.status === 1"
                           type="text"
-                          @click="enableApproval(processesItem)"
+                          @click="enableApproval(item, processesItem)"
                         >
                           启用
                         </el-button>
@@ -198,26 +198,11 @@
                           发布
                         </el-button>
                         <el-button
-                          v-if="processesItem.status === 0"
                           type="text"
                           @click="deleteProcesses(processesItem)"
                         >
                           删除
                         </el-button>
-                        <el-tooltip
-                          v-if="processesItem.status === 1"
-                          class="item"
-                          effect="dark"
-                          content="无法删除，当前审批还有进行中的流程"
-                          placement="top-start"
-                        >
-                          <button
-                            type="text"
-                            class="disable-action-button"
-                          >
-                            删除
-                          </button>
-                        </el-tooltip>
                       </div>
                     </div>
                   </li>
@@ -287,9 +272,15 @@ export default {
       let resData = {}
       await getProcessList().then((res) => {
         resData = res
+        // window.console.log('可用res==', res)
         this.dragOptions.sortData = res
+        resData.map((item) => {
+          item.processes = _.sortBy(item.processes, 'sort')
+        })
+        resData = _.sortBy(resData, 'sort')
       })
       await getDraftList().then((res) => {
+        // window.console.log('弃用res==', res)
         // 因接口返回数据不同，故专门写成如审批列表结构
         let resetData = [
           {
@@ -297,13 +288,13 @@ export default {
             name: '未启用',
             code: DRAFTCODE,
             processes: res,
-            sort: 1
+            sort: 9999
           }
         ]
         resData = [...resData, ...resetData]
       })
-      window.console.log('审批列表数据==', resData)
       this.processListData = resData
+      // window.console.log('加载审批列表数据==', resData)
       // 拖拽的时候用来对比的原先的列表
       this.tempProcessList = deepClone(resData)
     },
@@ -333,7 +324,7 @@ export default {
           isDiff = true
         }
       })
-      // window.console.log('拖拽结束 isDiff==', isDiff)
+      // window.console.log('拖拽结束 parmas==', JSON.stringify(parmas))
       // 当拖拽后的结果与之前暂存的是同一个数组时，不需要调用排序
       if (!isDiff) return
       sortProcess(parmas).then(() => {
@@ -343,19 +334,21 @@ export default {
     /**
      * 启用
      */
-    enableApproval(processesItem) {
-      // TODO 直接启用到该审批流程之前所在分组，缺失信息，现在只做启用到选择分组
+    enableApproval(data, processesItem) {
       this.dialogOptions = {
         dialogTitle: `将"${processesItem.processName}"启用到`,
         dialogVisible: true,
         dialogType: 'enable'
       }
+      let target = deepClone(data)
+      target.processes = processesItem
+      this.subGroup = target
     },
     /**
      * 发布
      */
     publishApproval(data, processesItem) {
-      window.console.log(data, processesItem)
+      // window.console.log(data, processesItem)
       let that = this
       this.$confirm(
         `
@@ -399,15 +392,15 @@ export default {
      * 删除审批行程
      */
     deleteProcesses(data) {
-      window.console.log(data)
+      // window.console.log(data)
       this.$confirm('您确定要删除该审批流程吗？', '删除流程', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          deleteProcess({ id: data.processId }).then((res) => {
-            window.console.log('delete res==', res)
+          deleteProcess({ processId: data.processId }).then(() => {
+            // window.console.log('delete res==', res)
             this.$message.success(`删除成功`)
             this.refreshData()
           })
@@ -439,6 +432,7 @@ export default {
           sort: index + 1
         })
       })
+      // window.console.log('保存排序参数==', params)
       sortCategory(params).then(() => {
         this.sortRefreshData()
       })
@@ -454,13 +448,13 @@ export default {
      * 移动到
      */
     moveApproval(data, processesItem) {
-      let target = deepClone(data)
-      target.processes = processesItem
       this.dialogOptions = {
         dialogTitle: `将"${processesItem.processName}"移动到`,
         dialogVisible: true,
         dialogType: 'move'
       }
+      let target = deepClone(data)
+      target.processes = processesItem
       this.subGroup = target
     },
     /**
@@ -483,8 +477,8 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteCategory({ id: data.id }).then((res) => {
-            window.console.log('delete res==', res)
+          deleteCategory({ id: data.id }).then(() => {
+            // window.console.log('delete res==', res)
             this.$message.success(`删除成功`)
             this.refreshData()
           })
@@ -493,6 +487,9 @@ export default {
           this.$message.info('已取消删除')
         })
     },
+    /**
+     * 重命名
+     */
     renameApproval(data) {
       this.subGroup = data
       this.dialogOptions = {
@@ -517,8 +514,8 @@ export default {
      */
     createApproval(data) {
       this.$router.push({
-        path: 'process/design',
-        query: data ? { processId: data.processId } : ''
+        path: '/process/design',
+        query: data ? { processId: data.processId, formKey: data.formKey } : ''
       })
     }
   }

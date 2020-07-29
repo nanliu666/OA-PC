@@ -82,7 +82,11 @@ const layouts = {
     const config = scheme.__config__
     return (
       <el-col span={scheme.__pc__.span} class="parser-item">
-        <el-form-item prop={scheme.__vModel__} label={config.label}>
+        <el-form-item
+          prop={scheme.__vModel__}
+          label={config.label}
+          style={typeof config.defaultValue === 'undefined' ? 'margin-bottom:0' : ''}
+        >
           <render
             conf={scheme}
             onInput={(event) => {
@@ -123,14 +127,11 @@ export default {
     }
   },
   data() {
-    const data = {
-      formConfCopy: deepClone(this.formConf),
+    return {
+      formConfCopy: null,
       form: {},
       rules: {}
     }
-    this.initFormData(data.formConfCopy.fields, data.form)
-    this.buildRules(data.formConfCopy.fields, data.rules)
-    return data
   },
   computed: {},
   watch: {
@@ -182,27 +183,41 @@ export default {
     },
     // 重置方法
     resetForm() {
-      this.formConfCopy = deepClone(this.formConf)
+      // this.formConfCopy = deepClone(this.formConf)
       this.$refs.form.resetFields()
+    },
+    // 将form对象封装成包含字段信息的对象数组
+    genFormFields(form) {
+      const formFields = []
+      this.formConfCopy.fields.forEach((item) => {
+        if (typeof item.__vModel__ !== 'undefined') {
+          formFields.push({
+            label: item.__config__.label,
+            prop: item.__vModel__,
+            value: form[item.__vModel__]
+          })
+        }
+      })
+      return formFields
     },
     // 内部按钮调用的提交方法
     _submitForm() {
       this.$refs.form.validate((valid) => {
         if (!valid) return false
         // 触发sumit事件
-        this.$emit('submit', this.form)
+        this.$emit('submit', { formData: this.form, formFields: this.genFormFields(this.form) })
         return true
       })
     },
     // 外部调用的提交方法
-    submit() {
+    validate() {
       return new Promise((resolve, reject) => {
         this.$refs.form.validate((valid) => {
           if (!valid) {
             reject()
             return
           }
-          resolve(this.form)
+          resolve({ formData: this.form, formFields: this.genFormFields(this.form) })
         })
       })
     }

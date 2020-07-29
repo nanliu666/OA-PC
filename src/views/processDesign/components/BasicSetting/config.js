@@ -2,19 +2,19 @@
 //   callback()
 // }
 export let info = [
-  {
-    span: 24,
-    prop: 'icon',
-    itemType: 'slot',
-    label: '审批图标',
-    clearable: true,
-    options: [],
-    props: {
-      label: 'label',
-      value: 'value'
-    },
-    required: true
-  },
+  // {
+  //   span: 24,
+  //   prop: 'icon',
+  //   itemType: 'slot',
+  //   label: '审批图标',
+  //   clearable: true,
+  //   options: [],
+  //   props: {
+  //     label: 'label',
+  //     value: 'value'
+  //   },
+  //   required: true
+  // },
   {
     span: 24,
     prop: 'processName',

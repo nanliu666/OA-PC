@@ -178,7 +178,6 @@ export default {
         this.$emit('change', orgCollection)
       } else {
         // this.selectedData = data
-        alert(1)
         this.selectOldData = data
         this.$emit('change', data)
       }

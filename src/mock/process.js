@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import Mock from 'mockjs'
 import mockData from '../views/processDesign/mockData'
 import { Base64 } from 'js-base64'
@@ -71,5 +73,8 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/api/appr/v2/appr/process' + '.*'), 'get', () => {
     return MockDate
   })
-  // /api/appr/v2/appr/process
+  Mock.mock(new RegExp('/api/appr/v2/appr/apply/submit' + '.*'), 'post', (options) => {
+    console.log(options.url, JSON.parse(options.body))
+    return normalData
+  })
 }

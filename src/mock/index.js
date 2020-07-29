@@ -36,7 +36,7 @@ import process from './process'
  * mock是否开启模拟数据拦截
  */
 
-const options = { mock: true }
+const options = { mock: false }
 // 设置500毫秒的时延长
 Mock.setup({
   timeout: 500
@@ -44,8 +44,10 @@ Mock.setup({
 
 user(options)
 approval(options)
+// apprProcess({ mock: true })
+menu({ mock: true })
 apprProcess(options)
-menu(options)
+menu({ mock: true })
 interview(options)
 
 candidate(options)
@@ -82,4 +84,4 @@ taskcenter(options)
 schedule(options)
 remind(options)
 
-process(options)
+process({ mock: false })

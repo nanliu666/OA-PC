@@ -8,7 +8,7 @@
         >
           <i class="el-icon-arrow-left" /> 返回
         </div>
-        <div>{{ title }}</div>
+        <div>{{ title }} <span style="color: transparent">11</span></div>
       </div>
       <div class="step-tab">
         <div
@@ -72,6 +72,7 @@
         v-show="activeStep === 'advancedSetting'"
         ref="advancedSetting"
         :conf="mockData.advancedSetting"
+        @jump="jumpStep"
       />
     </section>
   </div>
@@ -106,7 +107,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '补卡申请'
+      default: ''
     }
   },
   data() {
@@ -175,6 +176,7 @@ export default {
         processId: this.$route.query.processId
       }
       getApprProcess(params).then((res) => {
+        this.title = res.processName
         this.mockData = JSON.parse(Base64.decode(res.baseJson))
       })
     },
@@ -199,13 +201,15 @@ export default {
       const p1 = getCmpData('basicSetting')
       const p2 = getCmpData('formDesign')
       const p3 = getCmpData('processDesign')
-      Promise.all([p1, p2, p3])
+      const p4 = getCmpData('advancedSetting')
+
+      Promise.all([p1, p2, p3, p4])
         .then((res) => {
           const param = {
             basicSetting: res[0].formData,
             processData: res[2].formData,
             formData: res[1],
-            advancedSetting: getCmpData('advancedSetting')
+            advancedSetting: res[3]
           }
           this.sendToServer(param)
         })
@@ -238,10 +242,10 @@ export default {
       }
       this.base.push(item)
       this.base = [...this.base, ...this.lineList, ...this.condition, ...this.endNode]
-      let { icon, processName, processAdmin, remark } = { ...param.basicSetting }
-      let { tip, isOpinion, approverDistinct } = { ...param.advancedSetting }
+      let { icon, processName, processAdmin, remark, categoryId } = { ...param.basicSetting }
+      let { tip, isOpinion, approverDistinct, approverNull } = { ...param.advancedSetting }
       let processVisible = []
-      if (param.basicSetting.initiator) {
+      if (param.basicSetting.initiator && param.basicSetting.initiator.length > 0) {
         param.basicSetting.initiator.map((it) => {
           let type = ''
           if (it.type) {
@@ -266,12 +270,14 @@ export default {
       let config = {
         icon,
         processName,
-        processAdmin,
         remark,
         processVisible,
         tip,
-        isOpinion,
-        approverDistinct
+        approverDistinct,
+        categoryId,
+        isOpinion: isOpinion ? 1 : 0,
+        processAdmin: [processAdmin],
+        approverNull: approverNull
       }
       // 基础设置
       // "flowName": "转正申请",      // 流程名称
@@ -364,14 +370,9 @@ export default {
           item.assignee = '${position_' + data.nodeId + '_id}'
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
+          origin.variable = 'optional_' + data.nodeId + '_id'
+          this.processMap['optional_' + data.nodeId + '_id'] = ''
           // 发起人自选
-          //
-          // origin.variable = 'optional_' + data.nodeId + '_id'
-          // item.assignee = '${optional_' + data.nodeId + '_id}'
-          // this.processMap['optional_' + data.nodeId + '_id'] = ''
-          if (!data.properties.optionalMultiUser) {
-            item.assignee = 'optional_' + data.properties.attribute
-          }
         } else if (data.properties.assigneeType === 'director') {
           // 主管
           origin.variable = 'director_' + data.nodeId + '_id'
@@ -506,10 +507,13 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '模拟返回!'
+          this.$router.push({
+            path: '/apprProcess/approvalList'
           })
+          // this.$message({
+          //   type: 'success',
+          //   message: '模拟返回!'
+          // })
         })
         .catch(() => {})
     },
