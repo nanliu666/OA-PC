@@ -375,7 +375,7 @@ export default {
     // 跳去审批详情
     jumpApprDetail({ apprNo, formKey }) {
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: { apprNo, formKey }
       })
     },
@@ -408,7 +408,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scope>
+<style lang="sass" scoped>
 $color_icon: #A0A8AE
 .status-span
     padding: 4px;

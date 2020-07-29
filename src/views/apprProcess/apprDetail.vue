@@ -10,7 +10,7 @@
       <!-- 申请信息 -->
       <div class="apply-info-wrap">
         <div class="title">
-          <div>{{ applyDetail.userName }}提交的{{ applyDetail.title }}申请</div>
+          <div>{{ applyDetail.title }}申请</div>
           <!-- <el-button
             v-if="isReapply"
             type="primary"
@@ -91,7 +91,7 @@
             class="detail-item"
           >
             <div>{{ `${item.label} :` }}</div>
-            <div>{{ item.value }}</div>
+            <div>{{ handelData(item.value) }}</div>
           </div>
 
           <div class="detail-item" />
@@ -164,7 +164,13 @@
                   <div>
                     <div
                       v-if="
-                        !isCancel && index != 0 && index == activeStep && !isShowBtns && !isReject
+                        !isCancel &&
+                          index != 0 &&
+                          index == activeStep &&
+                          !isShowBtns &&
+                          !isReject &&
+                          !isFished &&
+                          isUser
                       "
                       class="isUrge"
                       @click="handelUrge(item)"
@@ -300,10 +306,12 @@
         </div>
       </div>
       <!-- 按钮 -->
+      <!-- v-if="!isCancel && !isFished && !isReject" -->
       <div
         v-if="!isCancel && !isFished && !isReject"
         class="cancel-btn-box"
       >
+        <!-- v-if="!isShowCancel && isUser" -->
         <el-button
           v-if="!isShowCancel && isUser"
           type="primary"
@@ -312,6 +320,7 @@
         >
           撤回
         </el-button>
+        <!-- v-if="isShowBtns" -->
         <el-tooltip
           effect="dark"
           content="拒绝审批后，该审批将终止"
@@ -327,6 +336,7 @@
             拒绝
           </el-button>
         </el-tooltip>
+        <!-- v-if="isShowBtns" -->
         <el-tooltip
           effect="dark"
           content="同意该审批，审批将继续向下流转"
@@ -402,13 +412,15 @@ export default {
       processId: '',
       // 申请人ID
       applyUserId: '',
+      // 当前审批人id
+      apprUserId: '',
       // 审批详情
       applyDetail: {},
       StatusCN: {
         Approve: '审批中',
         Pass: '已通过',
         Reject: '已拒绝',
-        Cancel: 'Cancel-已撤回'
+        Cancel: '已撤回'
       },
       show: false,
       // 审批进度
@@ -501,6 +513,9 @@ export default {
   created() {
     this.loadData()
   },
+  activated() {
+    this.loadData()
+  },
   methods: {
     // loadData
     loadData() {
@@ -511,6 +526,15 @@ export default {
         .then((res) => {
           this.applyDetail = res
           this.applyDetail.formData = JSON.parse(this.applyDetail.formData)
+          if (this.status === 'Cancel') {
+            this.isCancel = true
+          }
+          if (this.status === 'Reject') {
+            this.isReject = true
+          }
+          if (this.status === 'Pass') {
+            this.isFished = true
+          }
         })
         .finally(() => {
           countAjax--
@@ -544,6 +568,8 @@ export default {
             this.activeStep = this.progressList.findIndex((item, index) => {
               return item.result === '' && index != 0
             })
+            // 当前审批人的ID
+            this.apprUserId = this.progressList[this.activeStep].userId
           }
 
           // 审批记录Data数组
@@ -647,6 +673,12 @@ export default {
           message: '催办成功'
         })
       })
+    },
+    handelData(value) {
+      if (Array.isArray(value) === true) {
+        return value.join('到')
+      }
+      return value
     }
   }
 }
