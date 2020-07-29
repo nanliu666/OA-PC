@@ -1,9 +1,6 @@
 <template>
-  <div>
-    <basicContainer
-      block
-      style="margin: 24px 0"
-    >
+  <div class="launch-style">
+    <basicContainer block>
       <ul
         v-for="(item, index) in processListData"
         :key="index"
@@ -115,6 +112,13 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
+.basic-container--block {
+  height: calc(100% - 48px);
+  min-height: calc(100% - 48px);
+}
+.launch-style {
+  margin-top: 24px;
+}
 .approval-ul {
   padding-bottom: 15px;
   .approval-li {
