@@ -372,7 +372,7 @@ export default {
     // 跳去审批详情
     jumpApprDetail({ apprNo, formKey }) {
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: { apprNo, formKey }
       })
     },
