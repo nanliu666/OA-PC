@@ -1,5 +1,5 @@
 <template>
-  <div class="launch-style">
+  <div class="launch-style fill">
     <basicContainer block>
       <ul
         v-for="(item, index) in processListData"
