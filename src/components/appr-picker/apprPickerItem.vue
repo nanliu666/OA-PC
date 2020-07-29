@@ -14,10 +14,10 @@
           <span class="appr-user-item__tips">{{ tips }}</span>
         </div>
         <div class="appr-user-item__content">
-          <template v-for="(user, index) in userList">
+          <template v-for="(user, index) in processData.userList">
             <div
               v-if="index !== 0"
-              :key="`icon-${index}`"
+              :key="`separator-${index}`"
               class="appr-user-item__separator"
             >
               {{ isCounterSign ? '+' : '/' }}
@@ -40,17 +40,32 @@
             </div>
           </template>
           <div
-            v-if="isMulti && userList.length > 0"
+            v-if="isMulti && processData.userList.length > 0"
             class="appr-user-item__separator"
           >
             {{ isCounterSign ? '+' : '/' }}
           </div>
           <div
-            v-if="(isMulti || userList.length === 0) && selectable"
+            v-if="(isMulti || processData.userList.length === 0) && selectable"
             class="appr-user-item__plus"
-            @click="pickUser(userList)"
           >
-            <i class="icon-tips-plus-outlined" />
+            <el-dropdown
+              trigger="click"
+              @command="handleSelect($event)"
+            >
+              <span class="el-dropdown-link">
+                <i class="icon-tips-plus-outlined" />
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="option in optionList"
+                  :key="option.id"
+                  :command="option"
+                >
+                  {{ option.name }}({{ option.workNo }})
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </div>
       </div>
@@ -63,14 +78,14 @@
 </template>
 
 <script>
-import pickUser from '@/components/appr-progress/userPicker.js'
+// import pickUser from '@/components/appr-progress/userPicker.js'
 
 export default {
   name: 'ApprPickerItem',
   props: {
     processData: {
       type: Object,
-      default: () => ({ properties: {} })
+      default: () => ({ properties: {}, userList: [] })
     },
     isFirst: {
       type: Boolean,
@@ -82,7 +97,7 @@ export default {
     isCounterSign() {
       return this.processData.properties ? this.processData.properties.counterSign : false
     },
-    userList() {
+    optionList() {
       return this.processData.type === 'approver'
         ? this._.get(this.processData, 'properties.approvers', [])
         : this.processData.type === 'copy'
@@ -103,33 +118,41 @@ export default {
             : '一人同意即可'
           : '一人审批'
       } else if (this.processData.type === 'copy') {
-        return `抄送${this.userList.length > 0 ? this.userList.length + '人' : ''}`
+        return `抄送${
+          this.processData.userList.length > 0 ? this.processData.userList.length + '人' : ''
+        }`
       }
       return ''
     }
   },
+  beforeMount() {
+    this.initUserList()
+  },
   methods: {
+    initUserList() {
+      let userList
+      if (this.selectable) {
+        userList = []
+      } else if (this.processData.type === 'approver') {
+        userList = this._.get(this.processData, 'properties.approvers', [])
+      } else if (this.processData.type === 'copy') {
+        userList = this._.get(this.processData, 'properties.members', [])
+      }
+      this.$set(this.processData, 'userList', userList)
+    },
+
+    handleSelect(data) {
+      this.processData.userList.push(data)
+    },
+    // pickUser(userList) {
+    //   pickUser(userList, {
+    //     callback: (selectedUsers) => {
+    //     },
+    //     multiple: this.isMulti
+    //   })
+    // },
     deleteUser(index) {
-      if (this.processData.type === 'approver') {
-        this.processData.properties.approvers.splice(index, 1)
-      } else if (this.processData.type === 'copy') {
-        this.processData.properties.members.splice(index, 1)
-      }
-    },
-    setUser(userList) {
-      if (this.processData.type === 'approver') {
-        this.$set(this.processData.properties, 'approvers', userList)
-      } else if (this.processData.type === 'copy') {
-        this.$set(this.processData.properties, 'members', userList)
-      }
-    },
-    pickUser(userList) {
-      pickUser(userList, {
-        callback: (selectedUsers) => {
-          this.setUser(selectedUsers.slice())
-        },
-        multiple: this.isMulti
-      })
+      this.processData.userList.splice(index, 1)
     }
   }
 }

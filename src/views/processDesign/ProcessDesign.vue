@@ -370,9 +370,9 @@ export default {
           item.assignee = '${position_' + data.nodeId + '_id}'
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
+          // 发起人自选
           origin.variable = 'optional_' + data.nodeId + '_id'
           this.processMap['optional_' + data.nodeId + '_id'] = ''
-          // 发起人自选
         } else if (data.properties.assigneeType === 'director') {
           // 主管
           origin.variable = 'director_' + data.nodeId + '_id'

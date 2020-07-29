@@ -12,6 +12,7 @@
         prop="approver"
       >
         <appr-picker-item
+          v-if="processData.childNode"
           :process-data="processData.childNode"
           :is-first="true"
         />
@@ -82,14 +83,10 @@ export default {
       return true
     },
     createProcessMap(data, map = {}) {
-      let users = []
       if (data.variable) {
-        if (data.type === 'approver') {
-          users = data.properties.approvers
-        } else if (data.type === 'copy') {
-          users = data.properties.members
-        }
-        map[data.variable] = [...new Set(users.map((item) => item.id.split('_')[1]))]
+        map[data.variable] = [...new Set(data.userList.map((item) => item.id.split('_')[1]))].join(
+          ','
+        )
       }
       if (data.childNode) {
         return this.createProcessMap(data.childNode, map)
