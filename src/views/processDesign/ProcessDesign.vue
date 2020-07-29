@@ -372,6 +372,7 @@ export default {
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
           origin.variable = 'optional_' + data.nodeId + '_id'
+          item.assignee = '${optional_' + data.nodeId + '_id}'
           this.processMap['optional_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'director') {
           // 主管
