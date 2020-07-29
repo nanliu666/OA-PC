@@ -75,8 +75,8 @@ export default {
     this.processId = this.$route.query.processId
     this.getProcess()
   },
-  beforeRouteLeave() {
-    this.$refs.form.resetForm()
+  beforeRouteLeave(from, to, next) {
+    this.$refs.form.resetForm(), next()
   },
   methods: {
     getProcess() {

@@ -169,7 +169,8 @@
                           index == activeStep &&
                           !isShowBtns &&
                           !isReject &&
-                          !isFished
+                          !isFished &&
+                          isUser
                       "
                       class="isUrge"
                       @click="handelUrge(item)"
@@ -306,9 +307,13 @@
       </div>
       <!-- 按钮 -->
       <!-- v-if="!isCancel && !isFished && !isReject" -->
-      <div class="cancel-btn-box">
+      <div
+        v-if="!isCancel && !isFished && !isReject"
+        class="cancel-btn-box"
+      >
         <!-- v-if="!isShowCancel && isUser" -->
         <el-button
+          v-if="!isShowCancel && isUser"
           type="primary"
           size="medium"
           @click="handelCancel"
@@ -323,6 +328,7 @@
           placement="top"
         >
           <el-button
+            v-if="isShowBtns"
             type="primary"
             size="medium"
             @click="handelClick('Reject')"
@@ -338,6 +344,7 @@
           placement="top"
         >
           <el-button
+            v-if="isShowBtns"
             type="primary"
             size="medium"
             @click="handelClick('Pass')"
@@ -405,6 +412,8 @@ export default {
       processId: '',
       // 申请人ID
       applyUserId: '',
+      // 当前审批人id
+      apprUserId: '',
       // 审批详情
       applyDetail: {},
       StatusCN: {
@@ -559,6 +568,8 @@ export default {
             this.activeStep = this.progressList.findIndex((item, index) => {
               return item.result === '' && index != 0
             })
+            // 当前审批人的ID
+            this.apprUserId = this.progressList[this.activeStep].userId
           }
 
           // 审批记录Data数组
