@@ -116,10 +116,10 @@ export default {
             this.submiting = false
           })
       })
+    },
+    goBack() {
+      this.$router.go(-1)
     }
-  },
-  goBack() {
-    this.$router.go(-1)
   }
 }
 </script>
