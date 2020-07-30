@@ -17,6 +17,7 @@ import org from './org'
 import person from './person'
 import personalInfo from './personalInfo'
 import personnel from './personnel/'
+import personnelDataboard from './personnel/databoard'
 import personnelSettings from './personnel/settings'
 import position from './position'
 import remind from './remind'
@@ -72,6 +73,7 @@ contact(options)
 leave(options)
 
 personnelSettings(options.mock)
+personnelDataboard(options)
 todo(options)
 msg(options)
 todo(options)
