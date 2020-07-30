@@ -355,6 +355,10 @@ export class NodeUtils {
       !customSettings.includes(props.assigneeType) &&
       isEmptyArray(props.approvers) &&
       (valid = false)
+    this.isApproverNode(node) &&
+      customSettings.includes(props.assigneeType) &&
+      isEmptyArray(props.approvers) &&
+      (valid = false)
     return valid
   }
   /**
