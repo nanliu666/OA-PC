@@ -526,15 +526,6 @@ export default {
         .then((res) => {
           this.applyDetail = res
           this.applyDetail.formData = JSON.parse(this.applyDetail.formData)
-          if (this.status === 'Cancel') {
-            this.isCancel = true
-          }
-          if (this.status === 'Reject') {
-            this.isReject = true
-          }
-          if (this.status === 'Pass') {
-            this.isFished = true
-          }
         })
         .finally(() => {
           countAjax--
@@ -616,7 +607,7 @@ export default {
     // 点击同意或拒绝按钮展示模态框
     handelClick(type) {
       this.apprType = type
-      ;(this.dialogVisible = true), (this.apprRemark = '')
+      ;(this.dialogVisible = true), (this.comment = '')
     },
     // 点击确定审批
     handelConfirm() {
@@ -645,7 +636,7 @@ export default {
           userId,
           taskId,
           processInstanceId: this.processInstanceId,
-          remark: this.apprRemark
+          comment: this.comment
         })
           .then(() => {
             this.$message({
