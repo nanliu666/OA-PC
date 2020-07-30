@@ -123,12 +123,12 @@ export default {
   props: {
     formConf: {
       type: Object,
-      required: true
+      default: () => ({})
     }
   },
   data() {
     return {
-      formConfCopy: null,
+      formConfCopy: {},
       form: {},
       rules: {}
     }
@@ -137,6 +137,9 @@ export default {
   watch: {
     formConf: {
       handler(val) {
+        if (this._.isEmpty(val)) {
+          return
+        }
         const form = {},
           rules = {}
         this.formConfCopy = deepClone(val)
@@ -144,6 +147,9 @@ export default {
         this.buildRules(val.fields, rules)
         this.form = form
         this.rules = rules
+        this.$nextTick(() => {
+          this.$refs.form.clearValidate()
+        })
       },
       deep: true,
       immediate: true

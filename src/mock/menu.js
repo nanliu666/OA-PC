@@ -843,20 +843,8 @@ const res = {
                 code: 'approval_approval',
                 alias: 'approval',
                 path: '/apprProcess/appr/apprByMe',
-                // path: '/approval/appr/apprByMe',
                 icon: 'iconfont iconicon_compile'
               },
-              // {
-              //   menuId: '0000002',
-              //   menuName: '审批详情',
-              //   menuType: 'Menu',
-              //   isOwn: 1,
-              //   isShow: 1,
-              //   code: 'approval_approval',
-              //   alias: 'approval',
-              //   path: '/approval/appr/apprDetail',
-              //   icon: 'iconfont iconicon_compile'
-              // },
               {
                 menuId: '0000003',
                 menuName: '待我审批',
@@ -866,7 +854,6 @@ const res = {
                 code: 'approval_approval',
                 alias: 'approval',
                 path: '/apprProcess/appr/waitAppr',
-                // path: '/approval/appr/waitAppr',
                 icon: 'iconfont iconicon_compile'
               },
               {
@@ -877,7 +864,6 @@ const res = {
                 isShow: 1,
                 code: 'approval_approval',
                 alias: 'approval',
-                // path: '/approval/appr/hasAppr',
                 path: '/apprProcess/appr/hasAppr',
                 icon: 'iconfont iconicon_compile'
               },

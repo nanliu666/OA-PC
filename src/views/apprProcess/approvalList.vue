@@ -1,9 +1,6 @@
 <template>
-  <div class="approval-index-style">
-    <basic-container
-      block
-      style="margin: 24px 0"
-    >
+  <div class="approval-index-style fill">
+    <basic-container block>
       <section class="index-header-box">
         <h2 class="h2-title">
           审批
@@ -527,7 +524,12 @@ export default {
 .flip-list-move {
   transition: transform 0.5s;
 }
+.basic-container--block {
+  height: calc(100% - 48px);
+  min-height: calc(100% - 48px);
+}
 .approval-index-style {
+  margin-top: 24px;
   .index-header-box {
     @include flexJustify;
     @include flexAlign;
@@ -543,6 +545,11 @@ export default {
       margin-left: 10px;
     }
     .approval-ul {
+      &:last-child {
+        .approval-li {
+          padding-bottom: 0;
+        }
+      }
       .approval-li {
         padding-bottom: 15px;
         .title-box {

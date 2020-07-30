@@ -3,6 +3,7 @@
     <page-header
       :title="'发起' + basicSetting.processName + '申请'"
       :show-back="true"
+      :back="goBack"
     />
     <basic-container
       v-loading="loading"
@@ -75,9 +76,6 @@ export default {
     this.processId = this.$route.query.processId
     this.getProcess()
   },
-  beforeRouteLeave(from, to, next) {
-    this.$refs.form.resetForm(), next()
-  },
   methods: {
     getProcess() {
       if (!this.processId) {
@@ -118,7 +116,11 @@ export default {
       })
     },
     goBack() {
+      this.clear()
       this.$router.go(-1)
+    },
+    clear() {
+      this.$refs.form.resetForm()
     }
   }
 }
