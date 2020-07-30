@@ -126,10 +126,13 @@ export default {
     }
   },
   watch: {
-    processData(val) {
-      if (!val.userList) {
-        this.initUserList(val)
-      }
+    processData: {
+      handler(val) {
+        if (!val.userList) {
+          this.initUserList(val)
+        }
+      },
+      immediate: true
     }
   },
   methods: {
