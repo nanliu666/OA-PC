@@ -9,7 +9,7 @@ export default [
   },
   {
     path: '/process/design',
-    name: 'ProcessDesign',
+    name: '流程设计器',
     component: ProcessDesign,
     meta: {
       keepAlive: true

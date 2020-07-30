@@ -57,6 +57,7 @@
         v-show="activeStep === 'formDesign'"
         ref="formDesign"
         :conf="mockData.formData"
+        :form-key="formKey"
         tab-name="formDesign"
       />
 
@@ -97,7 +98,7 @@ const beforeUnload = function(e) {
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
 export default {
-  name: 'Home',
+  name: 'ProcessDesign',
   components: {
     Process,
     FormDesign,
@@ -207,8 +208,8 @@ export default {
         .then((res) => {
           const param = {
             basicSetting: res[0].formData,
+            formData: res[1].formData,
             processData: res[2].formData,
-            formData: res[1],
             advancedSetting: res[3]
           }
           this.sendToServer(param)
