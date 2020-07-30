@@ -413,7 +413,7 @@ export default {
       // 申请人ID
       applyUserId: '',
       // 当前审批人id
-      apprUserId: '',
+      apprUserIdList: [],
       // 审批详情
       applyDetail: {},
       StatusCN: {
@@ -496,10 +496,16 @@ export default {
     },
     // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
     isShowBtns() {
-      if (this.userId === this.apprUserId) {
-        return true
-      }
-      return false
+      let result = false
+      this.apprUserIdList.forEach((item) => {
+        if (item == this.userId) {
+          result = true
+        }
+      })
+      // if (this.userId === this.apprUserId) {
+      // 	return true
+      // }
+      return result
     },
     // 提交人跟当前用户是否同一个人
     isUser() {
@@ -560,15 +566,23 @@ export default {
               return item.result === '' && index != 0
             })
             // 当前审批人的ID
-            this.apprUserId = this.progressList[this.activeStep].userId
+            // this.apprUserId = this.progressList[this.activeStep].userId
+            this.apprUserIdList = []
+            this.progressList.forEach((item, index) => {
+              if (item.result === '' && index != 0) {
+                this.apprUserIdList.push(item.userId)
+              }
+            })
           }
 
           // 审批记录Data数组
 
           // 已撤销
-          let arr = (data = data.slice(0, this.activeStep + 1))
+          // let arr = data.slice(0, this.activeStep + 1)
+          let arr = data.slice(0, data.length)
+          // let arr = data
           if (this.isCancel) {
-            this.recordList = data[0]
+            this.recordList = arr[0]
           }
           // 有拒绝显示到拒绝节点  没有拒绝节点显示到同意审批的下一个节点
           else if (this.isReject) {
