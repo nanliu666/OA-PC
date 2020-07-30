@@ -289,12 +289,6 @@ export default {
       let params = {
         processData: this.base,
         processMap: this.processMap,
-        flowName: '请假申请',
-        flowId: 'UserFormalInfoApply',
-        typeOneAssignee: '0',
-        typeNoAssignee: '0',
-        flowKey: 'UserFormalInfoApply',
-        flowCategory: 'cate_S',
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
@@ -372,6 +366,7 @@ export default {
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
           origin.variable = 'optional_' + data.nodeId + '_id'
+          item.assignee = '${optional_' + data.nodeId + '_id}'
           this.processMap['optional_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'director') {
           // 主管
