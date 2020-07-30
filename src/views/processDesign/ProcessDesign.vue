@@ -370,7 +370,7 @@ export default {
           // 发起人自选
           item.assignee = '${optional_' + data.nodeId + '_id}'
           let length = data.content.split(',').length
-          if (length < 1 && !data.properties.optionalMultiUser) {
+          if (length < 2 && !data.properties.optionalMultiUser) {
             origin.variable = 'optional_' + data.nodeId + '_id'
             this.processMap['optional_' + data.nodeId + '_id'] = ''
           }
