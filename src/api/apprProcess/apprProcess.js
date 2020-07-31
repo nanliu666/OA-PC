@@ -1,4 +1,4 @@
-import { get, post, put, del } from '@/router/axios'
+import { del, get, post, put } from '@/router/axios'
 /**
  * 审批流程查询接口
  * @param {Object} params - 参数
@@ -101,3 +101,18 @@ export const sortCategory = (params) => post('/appr/v2/appr/category/sort', para
  * 审批流程排序接口
  */
 export const sortProcess = (params) => post('/appr/v2/appr/process/sort', params)
+
+/**
+ * 审批记录查询接口
+ * @param {object} params 查询参数
+ */
+export const getRecordList = (params) => get('/appr/v2/appr/approve/record/list', params)
+
+/**
+ *
+ * 审批类型查询接口
+ * @package {obje}
+ * @param {object} [params] 查询参数
+ * @param {string} [params.processName] 流程名称，支持模糊搜索
+ */
+export const getProcessType = (params) => get('/appr/v2/appr/process/type', params)

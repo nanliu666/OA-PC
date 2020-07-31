@@ -807,7 +807,18 @@ export default {
             'fc-calculate',
             'number'
           ]
-          const res = { formId: t.__config__.formId, defaultValue: cValue }
+          const res = {
+            vModel: t.__vModel__,
+            type: t.__config__.type,
+            formId: t.__config__.formId,
+            defaultValue: cValue
+          }
+          if (t.__config__.type === 'radio') {
+            res.val = ''
+            t.__slot__.options.map((it) => {
+              it.label === cValue && (res.val = it.value)
+            })
+          }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
               const numVal = cValue.value
