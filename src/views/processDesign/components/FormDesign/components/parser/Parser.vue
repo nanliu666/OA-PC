@@ -192,6 +192,27 @@ export default {
       // this.formConfCopy = deepClone(this.formConf)
       this.$refs.form.resetFields()
     },
+    getFieldContent(field) {
+      let options = field.__slot__.options
+      let content
+      const form = this.form
+      if (options && Array.isArray(form[field.__vModel__])) {
+        content = options
+          .filter((option) => form[field.__vModel__].includes(option.value))
+          .map((option) => option.label)
+          .join(',')
+      } else if (options) {
+        content = options
+          .filter((option) => form[field.__vModel__] === option.value)
+          .map((option) => option.label)
+          .join(',')
+      } else if (field.__config__.type === 'daterange') {
+        content = form[field.__vModel__].join(' 至 ')
+      } else {
+        content = form[field.__vModel__]
+      }
+      return content
+    },
     // 将form对象封装成包含字段信息的对象数组
     genFormFields(form) {
       const formFields = []
@@ -200,7 +221,8 @@ export default {
           formFields.push({
             label: item.__config__.label,
             prop: item.__vModel__,
-            value: form[item.__vModel__]
+            value: form[item.__vModel__],
+            content: this.getFieldContent(item)
           })
         }
       })
