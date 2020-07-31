@@ -138,7 +138,7 @@ export default ({ mock }) => {
   // ----->  1. 统计概况
 
   // 在职人数统计查询接口
-  Mock.mock(new RegExp('/data/v1/data/stat/workNum' + '(?.*)?$'), 'get', (req) => {
+  Mock.mock(new RegExp('/data/v1/data/stat/workNum' + '(\\?.*)?$'), 'get', (req) => {
     const response = Mock.mock({ workNum: '@integer(0,100)' })
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
