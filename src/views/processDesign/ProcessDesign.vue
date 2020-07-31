@@ -451,6 +451,7 @@ export default {
                 '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
               )
           })
+          conditionExpression = conditionExpression.join('&&')
           // if(d.properties.conditions)
           // d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
           let newIt = {
