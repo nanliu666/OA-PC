@@ -21,7 +21,7 @@
                   <div class="block">
                     <el-avatar
                       :size="80"
-                      :src="allInfo.circleUrl"
+                      :src="allInfo.avatarUrl"
                     />
                   </div>
                 </div>
@@ -59,6 +59,7 @@
                       确认离职
                     </el-button>
                     <el-button
+                      v-if="!leaveInfo.leaveDate"
                       size="medium"
                       @click="toChangeLeaveInfo"
                     >

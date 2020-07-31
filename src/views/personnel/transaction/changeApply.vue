@@ -160,7 +160,10 @@
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="变更为">
+                <el-form-item
+                  label="变更为"
+                  prop="newCompanyId"
+                >
                   <el-select
                     v-model="applyParams.newCompanyId"
                     placeholder="请选择"
@@ -200,6 +203,7 @@
                 <el-form-item
                   label="变更为"
                   style="width:100%"
+                  prop="newOrgId"
                 >
                   <el-select
                     v-model="applyParams.newOrgId"
@@ -237,7 +241,10 @@
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="变更为">
+                <el-form-item
+                  label="变更为"
+                  prop="newJobId"
+                >
                   <el-select
                     v-model="applyParams.newJobId"
                     placeholder="请选择"
@@ -415,7 +422,28 @@ export default {
         type: [{ required: true, message: '请选择异动类型', trigger: 'blur' }],
         reason: [{ required: true, message: '请选择异动原因', trigger: 'change' }],
         effectDate: [{ required: true, message: '请选择生效日期', trigger: 'blur' }],
-        apprProgress: [{ validator: checkAppr, required: true, trigger: 'change' }]
+        apprProgress: [{ validator: checkAppr, required: true, trigger: 'change' }],
+        newCompanyId: [
+          {
+            required: true,
+            message: '请选择公司',
+            trigger: 'blur'
+          }
+        ],
+        newOrgId: [
+          {
+            required: true,
+            message: '请选择部门',
+            trigger: 'blur'
+          }
+        ],
+        newJobId: [
+          {
+            required: true,
+            message: '请选择职位',
+            trigger: 'blur'
+          }
+        ]
       },
       // 字典组异动原因
       changeReason: [],
@@ -444,22 +472,22 @@ export default {
           this.getReasonList(2)
         }
       }
-    },
-    'applyParams.newCompanyId': {
-      deep: true,
-      handler: function(newV, oldV) {
-        if (!oldV) {
-          return
-        }
-        this.getOrgName(newV)
-      }
-    },
-    'applyParams.newOrgId': {
-      deep: true,
-      handler: function(newV) {
-        this.getJob(newV)
-      }
     }
+    // 'applyParams.newCompanyId': {
+    //   deep: true,
+    //   handler: function(newV, oldV) {
+    //     if (!oldV) {
+    //       return
+    //     }
+    //     this.getOrgName(newV)
+    //   }
+    // },
+    // 'applyParams.newOrgId': {
+    //   deep: true,
+    //   handler: function(newV) {
+    //     this.getJob(newV)
+    //   }
+    // }
   },
   async mounted() {
     this.loading = true
@@ -521,52 +549,6 @@ export default {
         newJobName,
         newPositionName
       }
-      // .then((res) => {
-      // 	let {
-      // 		companyName,
-      // 		orgName,
-      // 		jobName,
-      // 		positionName,
-      // 		companyId,
-      // 		orgId,
-      // 		jobId,
-      // 		positionId,
-      // 		userId,
-      // 		workNo,
-      // 		name,
-      // 		companyId: newCompanyId,
-      // 		orgId: newOrgId,
-      // 		jobId: newJobId,
-      // 		positionId: newPositionId,
-      // 		companyName: newCompanyName,
-      // 		orgName: newOrgName,
-      // 		jobName: newJobName,
-      // 		positionName: newPositionName
-      // 	} = res
-      // 	this.applyParams = {
-      // 		...this.applyParams,
-      // 		companyName,
-      // 		orgName,
-      // 		jobName,
-      // 		positionName,
-      // 		companyId,
-      // 		orgId,
-      // 		jobId,
-      // 		positionId,
-      // 		userId,
-      // 		workNo,
-      // 		name,
-      // 		newCompanyId,
-      // 		newOrgId,
-      // 		newJobId,
-      // 		newPositionId,
-      // 		newCompanyName,
-      // 		newOrgName,
-      // 		newJobName,
-      // 		newPositionName
-      // 	}
-      // })
-      // .catch()
     },
     // 获取公司选择数组
     getCompany() {
@@ -596,12 +578,15 @@ export default {
         .catch()
     },
     // 清空选项
-    companyNameChange() {
+    companyNameChange(e) {
+      this.getOrgName(e)
+      this.newJobList = []
       this.applyParams.newOrgId = ''
       this.applyParams.newJobId = ''
     },
     // 清空选项
-    orgNameChange() {
+    orgNameChange(e) {
+      this.getJob(e)
       this.applyParams.newJobId = ''
     },
     // 获取异动原因

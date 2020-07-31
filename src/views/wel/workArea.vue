@@ -306,11 +306,18 @@ export default {
         }
       ],
       newActiveName: 'workNews',
-      msgQuery: {
+      workMsgQuery: {
         pageNo: '1',
         pageSize: '10',
         userId: '',
-        type: null,
+        type: 'Work',
+        isRead: null
+      },
+      systemMsgQuery: {
+        pageNo: '1',
+        pageSize: '10',
+        userId: '',
+        type: 'System',
         isRead: null
       },
       msgWorkList: [],
@@ -451,17 +458,15 @@ export default {
     async loadingMsgData() {
       try {
         this.warnLoading = true
-        this.msgQuery.userId = this.userId
-        let { data } = await getMsgList(this.msgQuery)
-        this.msgWorkList = data.filter((item) => {
-          return item.type === 'Work'
-        })
+        this.workMsgQuery.userId = this.userId
+        this.systemMsgQuery.userId = this.userId
+        let workRes = await getMsgList(this.workMsgQuery)
+        this.msgWorkList = workRes.data
         this.msgWorkList.sort((a, b) => {
           return a.isRead - b.isRead
         })
-        this.msgSystemList = data.filter((item) => {
-          return item.type === 'System'
-        })
+        let systemRes = await getMsgList(this.systemMsgQuery)
+        this.msgSystemList = systemRes.data
         this.msgSystemList.sort((a, b) => {
           return a.isRead - b.isRead
         })
