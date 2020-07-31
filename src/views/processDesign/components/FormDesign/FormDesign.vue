@@ -72,9 +72,7 @@
         <div class="box-wraper">
           <div class="wraper-screen">
             <div class="field-list">
-              <div class="field-list-header">
-                申请
-              </div>
+              <div class="field-list-header" />
               <el-scrollbar class="center-scrollbar">
                 <draggable
                   class="drawing-board"
@@ -121,8 +119,8 @@ import Draggable from 'vuedraggable'
 import DraggableItem from './components/DragableItem'
 import RightPanel from './components/RightPanel'
 import { componentGroups } from './components/generator/config.js'
-import { deepClone, debounce } from './utils/index'
-import { saveDrawingList, getDrawingList } from './utils/db'
+import { deepClone } from './utils/index'
+// import { saveDrawingList, getDrawingList } from './utils/db'
 
 const emptyActiveData = {
   style: {},
@@ -132,7 +130,7 @@ const emptyActiveData = {
 }
 
 let tempActiveData
-const drawingListInDB = getDrawingList()
+// const drawingListInDB = getDrawingList()
 
 export default {
   name: 'FormDesign',
@@ -141,31 +139,37 @@ export default {
     DraggableItem,
     RightPanel
   },
+  props: ['conf', 'tabName', 'formKey'],
   data() {
     return {
-      activeName: 'first',
+      // activeName: 'first',
       componentGroups,
       drawingList: [],
       activeData: emptyActiveData,
       activeId: null,
       isPC: false,
-      saveDrawingListDebounce: debounce(saveDrawingList, 340),
+      // saveDrawingListDebounce: debounce(saveDrawingList, 340),
       formConf: {
-        showBtn: false
+        showBtn: false,
+        fields: []
       }
     }
   },
-  watch: {
-    drawingList: {
-      handler(val) {
-        this.saveDrawingListDebounce(val)
-      },
-      deep: true
-    }
-  },
+  // 数据持久化暂时不做
+  // watch: {
+  //   drawingList: {
+  //     handler(val) {
+  //       this.saveDrawingListDebounce(val)
+  //     },
+  //     deep: true
+  //   }
+  // },
   mounted() {
-    if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
-      this.drawingList = drawingListInDB
+    if (typeof this.conf === 'object' && this.conf !== null) {
+      this.drawingList = this.conf.fields
+      Object.assign(this.formConf, this.conf)
+      // } else if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
+      //   this.drawingList = drawingListInDB
     } else {
       this.drawingList = []
     }
@@ -173,21 +177,45 @@ export default {
   },
   methods: {
     getData() {
-      return {
-        ...this.formConf,
-        fields: this.drawingList
-      }
+      return new Promise((resolve, reject) => {
+        // 有formKey时即为旧业务，不允许修改表单
+        if (this.formKey) {
+          resolve({ formData: {} })
+          return
+        }
+        // if(this.drawingList.length === 0 ){
+        //   reject({ msg: '您的行容器中没有组件', target: this.tabName})
+        //   return
+        // }
+        let firstErrorField = this.drawingList.find((item) => item.__config__.error)
+        if (firstErrorField) {
+          reject({
+            msg: `请填写完整表单设计中${firstErrorField.__config__.label}的数据`,
+            target: this.tabName
+          })
+          return
+        }
+        resolve({
+          formData: {
+            ...this.formConf,
+            fields: this.drawingList
+          }
+        })
+      })
     },
+
     isFilledPCon(formIds) {
       const processCmp = this.$parent.$children.find((t) => t.isProcessCmp)
       return processCmp && processCmp.isFilledPCon(formIds)
     },
     checkColItem(cmp) {
       if (!cmp) return false
-      const isPcon = this.$store.state.processConditions.find((t) => t.formId == cmp.formId)
+      const isPcon = this.$store.state.process.processConditions.find(
+        (t) => t.__config__.formId == cmp.__config__.formId
+      )
         ? true
         : false
-      return isPcon && this.isFilledPCon([cmp.formId])
+      return isPcon && this.isFilledPCon([cmp.__config__.formId])
     },
     // 判断是否已被流程图作为条件必填项了
     isProCondition(cmp) {
@@ -241,7 +269,7 @@ export default {
       if (config.layout === 'colFormItem') {
         clone.__config__.label !== undefined &&
           (clone.__config__.label = this.createCmpLabel(clone))
-        if (!['desc'].includes(config.type)) {
+        if (typeof config.defaultValue !== 'undefined') {
           clone.__vModel__ = `field${config.formId}`
         }
       } else if (config.layout === 'rowFormItem') {

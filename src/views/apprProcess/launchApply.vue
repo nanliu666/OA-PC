@@ -1,9 +1,6 @@
 <template>
-  <div>
-    <basicContainer
-      block
-      style="margin: 24px 0"
-    >
+  <div class="launch-style fill">
+    <basicContainer block>
       <ul
         v-for="(item, index) in processListData"
         :key="index"
@@ -33,6 +30,7 @@
               v-for="(processesItem, processesIndex) in item.processes"
               :key="processesIndex"
               class="detail-li"
+              @click="jumpToSubmit(processesItem.processId)"
             >
               <div class="logo-box">
                 <svg
@@ -67,6 +65,7 @@
 
 <script>
 import { getUserProcessList } from '@/api/apprProcess/apprProcess'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Apply',
@@ -77,19 +76,29 @@ export default {
       currentIndexList: []
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   mounted() {
     this.initData()
   },
+
   methods: {
     /**
      * 初始化数据
      */
     initData() {
-      getUserProcessList().then((res) => {
-        window.console.log('res==', res)
+      let parmas = {
+        userId: this.userId,
+        processName: ''
+      }
+      getUserProcessList(parmas).then((res) => {
         this.processListData = res
       })
     },
+    /**
+     * 隐藏li
+     */
     hideCurrent(index) {
       let currentIndex = this.currentIndexList.indexOf(index)
       if (currentIndex > -1) {
@@ -97,6 +106,14 @@ export default {
       } else {
         this.currentIndexList.push(index)
       }
+    },
+    jumpToSubmit(processId) {
+      this.$router.push({
+        path: '/apprProcess/apprSubmit',
+        query: {
+          processId
+        }
+      })
     }
   }
 }
@@ -104,9 +121,16 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
+.basic-container--block {
+  height: calc(100% - 48px);
+  min-height: calc(100% - 48px);
+}
+.launch-style {
+  margin-top: 24px;
+}
 .approval-ul {
+  padding-bottom: 15px;
   .approval-li {
-    padding-bottom: 15px;
     &:hover {
       cursor: pointer;
     }

@@ -17,7 +17,7 @@ interface Config {
   layout: 'colFormItem' | 'rowFormItem'
   // 图标
   icon: string
-  // 默认值
+  // 默认值, 除不可填的选项外defaultValue不能为undefined
   defaultValue?: string | string[]
   // 该字段是否打印
   shouldPrint: boolean

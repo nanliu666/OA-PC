@@ -5,63 +5,7 @@ let hasCondition = (state, formId, needIndex = false) => {
 
 const process = {
   state: {
-    processConditions: [
-      {
-        __config__: {
-          name: '单选',
-          label: '请假天数',
-          type: 'number',
-          icon: 'icon-basics-radio-outlined',
-          defaultValue: 2,
-          layout: 'colFormItem',
-          required: true,
-          shouldPrint: true,
-          formId: 5,
-          renderKey: 1594631434747
-        },
-        __slot__: {
-          options: [
-            { label: '选项一', value: 1 },
-            { label: '选项二', value: 2 }
-          ]
-        },
-        __pc__: {
-          span: 12,
-          tag: 'el-radio-group',
-          props: { size: 'medium' },
-          style: { width: '100%' }
-        },
-        __mobile__: { renderType: 'select', tag: 'van-field-select-picker', props: {} },
-        placeholder: '请选择',
-        __vModel__: 'field5',
-        tag: 'el-input-number'
-      },
-      {
-        __config__: {
-          name: '多选',
-          label: '是否需要假條',
-          type: 'radio',
-          icon: 'icon-basics-checkbox-outlined',
-          defaultValue: [],
-          layout: 'colFormItem',
-          shouldPrint: true,
-          required: true,
-          formId: 6,
-          renderKey: 1594631435830
-        },
-        __slot__: {
-          options: [
-            { label: '选项一', value: 1 },
-            { label: '选项二', value: 2 }
-          ]
-        },
-        __pc__: { span: 12, tag: 'el-checkbox-group', style: { width: '100%' }, props: {} },
-        __mobile__: { renderType: 'select', tag: 'multi-picker', props: {} },
-        placeholder: '请选择',
-        __vModel__: 'field6',
-        tag: 'el-radio-group'
-      }
-    ], // processConditions 用于传递流程图需要的条件
+    processConditions: [], // processConditions 用于传递流程图需要的条件
     formItemList: [] // 流程节点表单权限控制——组件列表
   },
   actions: {},

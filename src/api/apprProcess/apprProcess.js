@@ -7,6 +7,10 @@ import { del, get, post, put } from '@/router/axios'
 export const getProcessDetail = (params) => get('/appr/v2/appr/process', params)
 
 /**
+ * 审批申请提交接口
+ * */
+export const submitApprApply = (params) => post('/appr/v2/appr/apply/submit', params)
+/**
  * 审批流程列表查询接口
  * @param {*} params
  */
@@ -24,6 +28,26 @@ export const createApprReject = (params) => post('/appr/v2/appr/apply/reject', p
 export const createApprCancel = (params) => post('/appr/v2/appr/apply/cancel', params)
 // 催一下
 export const createApprUrge = (params) => post('/appr/v2/appr/apply/urge', params)
+/**
+ * 我发起的审批查询接口
+ * @param {*} params
+ */
+export const getMyApproveList = (params) => get('/appr/v2/appr/my/approve/list', params)
+/**
+ * 待我审批查询接口
+ * @param {*} params
+ */
+export const getWaitApproveList = (params) => get('/appr/v2/appr/wait/approve/list', params)
+/**
+ * 我已审批查询接口
+ * @param {*} params
+ */
+export const getHasApproveList = (params) => get('/appr/v2/appr/has/approve/list', params)
+/**
+ * 抄送我的审批查询接口
+ * @param {*} params
+ */
+export const getCopyApproveList = (params) => get('/appr/v2/appr/cc/approve/list', params)
 /**
  * 可发起的审批流程查询接口
  * @param {*} params
@@ -44,7 +68,7 @@ export const deleteCategory = (params) => del('/appr/v2/appr/category', params)
 /**
  * 审批流程删除接口
  */
-export const deleteProcess = (params) => del('/appr/v2/appr/process/del', params)
+export const deleteProcess = (params) => post('/appr/v2/appr/process/del', params)
 /**
  * 审批流程停用接口
  */

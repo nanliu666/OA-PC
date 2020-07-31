@@ -82,7 +82,11 @@ const layouts = {
     const config = scheme.__config__
     return (
       <el-col span={scheme.__pc__.span} class="parser-item">
-        <el-form-item prop={scheme.__vModel__} label={config.label}>
+        <el-form-item
+          prop={scheme.__vModel__}
+          label={config.label}
+          style={typeof config.defaultValue === 'undefined' ? 'margin-bottom:0' : ''}
+        >
           <render
             conf={scheme}
             onInput={(event) => {
@@ -119,23 +123,23 @@ export default {
   props: {
     formConf: {
       type: Object,
-      required: true
+      default: () => ({})
     }
   },
   data() {
-    const data = {
-      formConfCopy: deepClone(this.formConf),
+    return {
+      formConfCopy: {},
       form: {},
       rules: {}
     }
-    this.initFormData(data.formConfCopy.fields, data.form)
-    this.buildRules(data.formConfCopy.fields, data.rules)
-    return data
   },
   computed: {},
   watch: {
     formConf: {
       handler(val) {
+        if (this._.isEmpty(val)) {
+          return
+        }
         const form = {},
           rules = {}
         this.formConfCopy = deepClone(val)
@@ -143,6 +147,9 @@ export default {
         this.buildRules(val.fields, rules)
         this.form = form
         this.rules = rules
+        this.$nextTick(() => {
+          this.$refs.form.clearValidate()
+        })
       },
       deep: true,
       immediate: true
@@ -182,27 +189,63 @@ export default {
     },
     // 重置方法
     resetForm() {
-      this.formConfCopy = deepClone(this.formConf)
+      // this.formConfCopy = deepClone(this.formConf)
       this.$refs.form.resetFields()
+    },
+    getFieldContent(field) {
+      let options = field.__slot__.options
+      let content
+      const form = this.form
+      if (options && Array.isArray(form[field.__vModel__])) {
+        content = options
+          .filter((option) => form[field.__vModel__].includes(option.value))
+          .map((option) => option.label)
+          .join(',')
+      } else if (options) {
+        content = options
+          .filter((option) => form[field.__vModel__] === option.value)
+          .map((option) => option.label)
+          .join(',')
+      } else if (field.__config__.type === 'daterange') {
+        content = form[field.__vModel__].join(' 至 ')
+      } else {
+        content = form[field.__vModel__]
+      }
+      return content
+    },
+    // 将form对象封装成包含字段信息的对象数组
+    genFormFields(form) {
+      const formFields = []
+      this.formConfCopy.fields.forEach((item) => {
+        if (typeof item.__vModel__ !== 'undefined') {
+          formFields.push({
+            label: item.__config__.label,
+            prop: item.__vModel__,
+            value: form[item.__vModel__],
+            content: this.getFieldContent(item)
+          })
+        }
+      })
+      return formFields
     },
     // 内部按钮调用的提交方法
     _submitForm() {
       this.$refs.form.validate((valid) => {
         if (!valid) return false
         // 触发sumit事件
-        this.$emit('submit', this.form)
+        this.$emit('submit', { formData: this.form, formFields: this.genFormFields(this.form) })
         return true
       })
     },
     // 外部调用的提交方法
-    submit() {
+    validate() {
       return new Promise((resolve, reject) => {
         this.$refs.form.validate((valid) => {
           if (!valid) {
             reject()
             return
           }
-          resolve(this.form)
+          resolve({ formData: this.form, formFields: this.genFormFields(this.form) })
         })
       })
     }

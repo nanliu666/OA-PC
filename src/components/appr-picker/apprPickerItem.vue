@@ -14,10 +14,10 @@
           <span class="appr-user-item__tips">{{ tips }}</span>
         </div>
         <div class="appr-user-item__content">
-          <template v-for="(user, index) in userList">
+          <template v-for="(user, index) in processData.userList">
             <div
               v-if="index !== 0"
-              :key="`icon-${index}`"
+              :key="`separator-${index}`"
               class="appr-user-item__separator"
             >
               {{ isCounterSign ? '+' : '/' }}
@@ -40,22 +40,37 @@
             </div>
           </template>
           <div
-            v-if="isMulti && userList.length > 0"
+            v-if="isMulti && processData.userList.length > 0"
             class="appr-user-item__separator"
           >
             {{ isCounterSign ? '+' : '/' }}
           </div>
           <div
-            v-if="(isMulti || userList.length === 0) && selectable"
-            class="appr-user-item__plus"
-            @click="pickUser(userList)"
+            v-if="(isMulti || processData.userList.length === 0) && selectable"
+            class="appr-user-item__plusWr"
           >
-            <i class="icon-tips-plus-outlined" />
+            <el-dropdown
+              trigger="click"
+              @command="handleSelect($event)"
+            >
+              <div class="el-dropdown-link appr-user-item__plus">
+                <i class="icon-tips-plus-outlined" />
+              </div>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="option in optionList"
+                  :key="option.id"
+                  :command="option"
+                >
+                  {{ option.name }}({{ option.workNo }})
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </div>
       </div>
     </div>
-    <appr-user-item
+    <appr-picker-item
       v-if="processData.childNode"
       :process-data="processData.childNode"
     />
@@ -63,14 +78,14 @@
 </template>
 
 <script>
-import pickUser from '@/components/appr-progress/userPicker.js'
+// import pickUser from '@/components/appr-progress/userPicker.js'
 
 export default {
-  name: 'ApprUserItem',
+  name: 'ApprPickerItem',
   props: {
     processData: {
       type: Object,
-      default: () => ({ properties: {} })
+      default: () => ({ properties: {}, userList: [] })
     },
     isFirst: {
       type: Boolean,
@@ -82,7 +97,7 @@ export default {
     isCounterSign() {
       return this.processData.properties ? this.processData.properties.counterSign : false
     },
-    userList() {
+    optionList() {
       return this.processData.type === 'approver'
         ? this._.get(this.processData, 'properties.approvers', [])
         : this.processData.type === 'copy'
@@ -103,33 +118,47 @@ export default {
             : '一人同意即可'
           : '一人审批'
       } else if (this.processData.type === 'copy') {
-        return `抄送${this.userList.length > 0 ? this.userList.length + '人' : ''}`
+        return `抄送${
+          this.processData.userList.length > 0 ? this.processData.userList.length + '人' : ''
+        }`
       }
       return ''
     }
   },
+  watch: {
+    processData: {
+      handler(val) {
+        if (!val.userList) {
+          this.initUserList(val)
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
+    initUserList(processData) {
+      let userList
+      if (this.selectable) {
+        userList = []
+      } else if (processData.type === 'approver') {
+        userList = this._.get(processData, 'properties.approvers', [])
+      } else if (processData.type === 'copy') {
+        userList = this._.get(processData, 'properties.members', [])
+      }
+      this.$set(processData, 'userList', userList)
+    },
+    handleSelect(data) {
+      this.processData.userList.push(data)
+    },
+    // pickUser(userList) {
+    //   pickUser(userList, {
+    //     callback: (selectedUsers) => {
+    //     },
+    //     multiple: this.isMulti
+    //   })
+    // },
     deleteUser(index) {
-      if (this.processData.type === 'approver') {
-        this.processData.properties.approvers.splice(index, 1)
-      } else if (this.processData.type === 'copy') {
-        this.processData.properties.members.splice(index, 1)
-      }
-    },
-    setUser(userList) {
-      if (this.processData.type === 'approver') {
-        this.$set(this.processData.properties, 'approvers', userList)
-      } else if (this.processData.type === 'copy') {
-        this.$set(this.processData.properties, 'members', userList)
-      }
-    },
-    pickUser(userList) {
-      pickUser(userList, {
-        callback: (selectedUsers) => {
-          this.setUser(selectedUsers.slice())
-        },
-        multiple: this.isMulti
-      })
+      this.processData.userList.splice(index, 1)
     }
   }
 }
@@ -138,10 +167,6 @@ export default {
 <style lang="scss" scoped>
 .appr-user-item {
   position: relative;
-  padding-bottom: 20px;
-  &__first {
-    margin-top: 20px;
-  }
   &__tail {
     position: absolute;
     left: 4px;
@@ -158,10 +183,13 @@ export default {
     height: 12px;
     left: -1px;
   }
+  &__header {
+    line-height: 24px;
+  }
   &__wrapper {
     position: relative;
     padding-left: 28px;
-    top: -6px;
+    top: -3px;
   }
   &__title {
     font-size: 18px;
@@ -170,6 +198,7 @@ export default {
   &__content {
     display: flex;
     flex-wrap: wrap;
+    padding-bottom: 10px;
   }
   &__avatar {
     width: 40px;
@@ -181,6 +210,7 @@ export default {
     position: relative;
     .avatar {
       font-size: 40px;
+      line-height: 40px;
       color: #757c85;
     }
     .close {
@@ -190,6 +220,7 @@ export default {
       font-size: 14px;
       z-index: 100;
       cursor: pointer;
+      line-height: 14px;
     }
   }
   &__username {
@@ -201,6 +232,9 @@ export default {
     line-height: 40px;
     margin: 8px;
   }
+  &__plusWr {
+    margin: 8px 0 24px;
+  }
   &__plus {
     width: 40px;
     height: 40px;
@@ -208,11 +242,11 @@ export default {
     background: rgba(245, 246, 246, 0.5);
     border: 1px dashed rgba(117, 124, 133, 0.5);
     text-align: center;
-    margin: 8px 0 24px;
     cursor: pointer;
     color: #757c85;
     i {
       line-height: 40px;
+      height: 40px;
       font-size: 20px;
     }
   }
