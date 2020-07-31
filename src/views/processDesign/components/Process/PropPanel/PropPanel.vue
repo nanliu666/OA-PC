@@ -123,7 +123,29 @@
             />
           </template>
         </row-wrapper>
-
+        <!--        多选-->
+        <row-wrapper
+          v-if="couldShowIt(item, 'el-radio-group', 'checkbox')"
+          :key="index"
+          :title="item.__config__.label"
+        >
+          <el-checkbox-group v-model="item.__config__.defaultValue">
+            <el-checkbox
+              v-for="city in item.__slot__.options"
+              :key="city.label"
+              :label="city.label"
+            >
+              {{ city.label }}
+            </el-checkbox>
+          </el-checkbox-group>
+          <template v-slot:action>
+            <i
+              class="el-icon-delete"
+              style="cursor: pointer;"
+              @click="onDelCondition(item)"
+            />
+          </template>
+        </row-wrapper>
         <!-- 下拉 -->
         <row-wrapper
           v-if="couldShowIt(item, 'el-select', 'select')"
@@ -568,6 +590,7 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
+      coms: [],
       all: true, //显示所有人
       members: {
         //抄送节点
@@ -986,6 +1009,7 @@ export default {
           }
 
           this.$set(t.__config__, 'defaultValue', temp)
+          t.__config__.type === 'checkbox' && this.$set(t.__config__, 'defaultValue', [])
         })
       }
     }
