@@ -395,51 +395,6 @@ export default {
         } else {
           item.assignee = 'taskUser_' + data.properties.attribute
         }
-        // if (data.content) {
-        //   //如果是申请节点且有多个选项。
-        //
-        //   let length = data.content.split(',').length
-        //   if (length > 1) {
-        //     // 如果有多个选项触发会签或者或签
-        //     let elementType = {
-        //       user: 'taskUser_' + data.nodeId,
-        //       role: 'role_' + data.nodeId + '_id',
-        //       position: 'position_' + data.nodeId + '_id',
-        //       optional: 'optional_' + data.nodeId + '_id',
-        //       director: 'optional_' + data.nodeId + '_id'
-        //     }
-        //     if (data.properties.assigneeType === 'user') {
-        //       //如果有多个选项，指定成员人要用变量表达
-        //       origin.variable = 'taskUser_' + data.nodeId
-        //       item.assignee = '${taskUser_' + data.nodeId + '}'
-        //     }
-        //     // {
-        //     //   "type": "task",
-        //     //   "id": "Kb2",
-        //     //   "name": "审批人",
-        //     //   "assignee": "${taskUser_Kb2}",
-        //     //   "element": "taskUser_Kb2"
-        //     //   "completion": "1",
-        //     //   "collection": "co",
-        //
-        //     // },
-        //
-        //     // 1、会签和或签的 assignee 不用传processMap 变量；
-        //     // 2、collection 指定成员[taskUser_uid1, taskUser_uid2] , 发起人自选： 传变量，放在processMap中
-        //     //如果有多个选项触发会签或者或签。
-        //     item.completion=data.properties.counterSign ? '1' : '0'//0 或签，1会签
-        //     item.element=elementType[data.properties.assigneeType]
-        //     // if(data.properties.assigneeType !== 'user'){
-        //     //   item.collection=data.properties.assigneeType
-        //     // }
-        //     if(data.properties.assigneeType ==='optional'){
-        //       item.collection='optional_' + data.nodeId
-        //       this.processMap['optional_' + data.nodeId] = ''
-        //     }
-        //
-        //     // 和审批人一一对应，移除${}后的值，如"assignee":"${element}",则"element": "element"
-        //   }
-        // }
       }
       if (data.prevId && data.prevId !== 'no_flow' && data.type !== 'condition') {
         //有前节点且前节点不为no_flow,且节点类型不能为条件节点
@@ -489,8 +444,15 @@ export default {
             targetId = conditionNextNodeId || 'end'
           }
 
-          let conditionExpression =
-            d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
+          let conditionExpression = []
+          d.properties.conditions.map((it) => {
+            it.type === 'number' &&
+              conditionExpression.push(
+                '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
+              )
+          })
+          // if(d.properties.conditions)
+          // d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
           let newIt = {
             //出网关线
             type: 'flow',
