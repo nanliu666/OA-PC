@@ -129,6 +129,7 @@ export default {
     handleSelect(user, node) {
       this.$set(node, 'user', user)
       this.dispatch('ElFormItem', 'el.form.change', node)
+      this.$emit('change')
     }
   }
 }

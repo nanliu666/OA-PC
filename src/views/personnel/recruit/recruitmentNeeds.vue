@@ -32,6 +32,7 @@
               <appr-progress
                 ref="apprProgress"
                 form-key="Recruitment"
+                @change="() => $refs.form.clearValidate('progress')"
               />
             </template>
           </common-form>
@@ -77,7 +78,7 @@ export default {
   data() {
     var checkAppr = (rule, value, callback) => {
       if (!this.$refs['apprProgress'].validate()) {
-        callback(new Error('请选择审批人'))
+        callback(new Error('请选择审批流程'))
       } else {
         callback()
       }
