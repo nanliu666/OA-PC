@@ -606,13 +606,9 @@ export default {
               }
             })
           }
-
           // 审批记录Data数组
-
           // 已撤销
-          // let arr = data.slice(0, this.activeStep + 1)
           let arr = data.slice(0, data.length)
-          // let arr = data
           if (this.isCancel) {
             this.recordList = arr[0]
           }
