@@ -446,11 +446,14 @@ export default {
 
           let conditionExpression = []
           d.properties.conditions.map((it) => {
+            this.processMap[it.vModel] = ''
             it.type === 'number' &&
               conditionExpression.push(
                 '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
               )
           })
+          conditionExpression = conditionExpression.join('&&')
+          // this.processMap[conditionExpression] = ''
           // if(d.properties.conditions)
           // d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
           let newIt = {
@@ -462,7 +465,7 @@ export default {
             target: targetId, // 当前节点
             conditionExpression: conditionExpression
           }
-          this.processMap['days'] = ''
+
           this.condition.push(newIt)
           if (conditionNextNodeId && d.childNode) {
             let endNode = this.childNode(d.childNode) //
