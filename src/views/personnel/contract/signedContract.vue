@@ -84,7 +84,7 @@ export default {
         jodName: '人力资源'
       },
       loading: false,
-      signedData,
+      signedData: JSON.parse(JSON.stringify(signedData)),
       infoForm: {
         userId: '',
         code: '',
