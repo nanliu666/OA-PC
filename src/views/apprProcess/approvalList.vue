@@ -1,6 +1,9 @@
 <template>
   <div class="approval-index-style fill">
-    <basic-container block>
+    <basic-container
+      v-loading="loading"
+      block
+    >
       <section class="index-header-box">
         <h2 class="h2-title">
           审批
@@ -243,6 +246,7 @@ export default {
   components: { processDialog, dragList, draggable },
   data() {
     return {
+      loading: true,
       symbolKey: 'xlink:href',
       dragOptions: {
         sortVisible: false,
@@ -290,8 +294,8 @@ export default {
         ]
         resData = [...resData, ...resetData]
       })
+      this.loading = false
       this.processListData = resData
-      // window.console.log('加载审批列表数据==', resData)
       // 拖拽的时候用来对比的原先的列表
       this.tempProcessList = deepClone(resData)
     },
@@ -315,15 +319,15 @@ export default {
       this.tempProcessList[index].processes.forEach((tempItem) => {
         temProcessIdList.push(tempItem.processId)
       })
-      let isDiff = false // 当前两个数组是否相同，默认是两个相同的
+      let isSame = true // 当前两个数组是否相同，默认是两个相同的
       temProcessIdList.forEach((item, index) => {
         if (temDataIdList[index] !== item) {
-          isDiff = true
+          isSame = false
         }
       })
       // window.console.log('拖拽结束 parmas==', JSON.stringify(parmas))
       // 当拖拽后的结果与之前暂存的是同一个数组时，不需要调用排序
-      if (!isDiff) return
+      if (isSame) return
       sortProcess(parmas).then(() => {
         this.refreshData()
       })
@@ -337,6 +341,7 @@ export default {
         dialogVisible: true,
         dialogType: 'enable'
       }
+      // 深克隆防止污染渲染数组
       let target = deepClone(data)
       target.processes = processesItem
       this.subGroup = target
