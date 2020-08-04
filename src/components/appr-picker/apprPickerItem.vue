@@ -1,20 +1,17 @@
 <template>
   <div class="appr-user-item__box">
     <div :class="['appr-user-item', { 'appr-user-item__first': isFirst }]">
-      <div
-        v-if="processData.childNode"
-        class="appr-user-item__tail"
-      />
+      <div class="appr-user-item__tail" />
       <div class="appr-user-item__node" />
       <div class="appr-user-item__wrapper">
         <div class="appr-user-item__header">
           <span class="appr-user-item__title">{{
-            processData.properties ? processData.properties.title : ''
+            data && data.properties ? data.properties.title : ''
           }}</span>
           <span class="appr-user-item__tips">{{ tips }}</span>
         </div>
         <div class="appr-user-item__content">
-          <template v-for="(user, index) in processData.userList">
+          <template v-for="(user, index) in _.get(data, 'userList', [])">
             <div
               v-if="index !== 0"
               :key="`separator-${index}`"
@@ -40,13 +37,13 @@
             </div>
           </template>
           <div
-            v-if="isMulti && processData.userList.length > 0"
+            v-if="isMulti && _.get(data, 'userList.length', 0) > 0"
             class="appr-user-item__separator"
           >
             {{ isCounterSign ? '+' : '/' }}
           </div>
           <div
-            v-if="(isMulti || processData.userList.length === 0) && selectable"
+            v-if="(isMulti || _.get(data, 'userList.length', 0) === 0) && selectable"
             class="appr-user-item__plusWr"
           >
             <el-dropdown
@@ -71,8 +68,14 @@
       </div>
     </div>
     <appr-picker-item
-      v-if="processData.childNode"
-      :process-data="processData.childNode"
+      v-if="data && (data.childNode || data.conditionNodes)"
+      :child-node="data.childNode"
+      :form-data="formData"
+      :condition-nodes="data.conditionNodes"
+    />
+    <appr-picker-item
+      v-if="nextNode"
+      :child-node="nextNode"
     />
   </div>
 </template>
@@ -83,72 +86,130 @@
 export default {
   name: 'ApprPickerItem',
   props: {
-    processData: {
+    formData: {
       type: Object,
-      default: () => ({ properties: {}, userList: [] })
+      default: () => ({})
+    },
+    conditionNodes: {
+      type: Array,
+      default: null
+    },
+    childNode: {
+      type: Object,
+      default: null
     },
     isFirst: {
       type: Boolean,
       default: false
     }
   },
+  data() {
+    return {
+      data: null,
+      nextNode: null,
+      watchers: []
+    }
+  },
   computed: {
     // 是否会签
     isCounterSign() {
-      return this.processData.properties ? this.processData.properties.counterSign : false
+      return _.get(this.data, 'properties.optionalMultiUser', false)
     },
     optionList() {
-      return this.processData.type === 'approver'
-        ? this._.get(this.processData, 'properties.approvers', [])
-        : this.processData.type === 'copy'
-        ? this._.get(this.processData, 'properties.members', [])
+      return this.data.type === 'approver'
+        ? _.get(this.data, 'properties.approvers', [])
+        : this.data.type === 'copy'
+        ? _.get(this.data, 'properties.members', [])
         : []
     },
     isMulti() {
-      return this._.get(this.processData, 'properties.optionalMultiUser', false)
+      return _.get(this.data, 'properties.optionalMultiUser', false)
     },
     selectable() {
-      return this._.get(this.processData, 'properties.assigneeType', null) === 'optional'
+      return _.get(this.data, 'properties.assigneeType', null) === 'optional'
     },
     tips() {
-      if (this.processData.type === 'approver') {
+      if (_.get(this.data, 'type') === 'approver') {
         return this.isMulti
           ? this.isCounterSign
             ? '需所有审批人同意'
             : '一人同意即可'
           : '一人审批'
-      } else if (this.processData.type === 'copy') {
+      } else if (_.get(this.data, 'type') === 'copy') {
         return `抄送${
-          this.processData.userList.length > 0 ? this.processData.userList.length + '人' : ''
+          _.get(this.data, 'userList.length', 0) > 0
+            ? _.get(this.data, 'userList.length', 0) + '人'
+            : ''
         }`
       }
       return ''
     }
   },
-  watch: {
-    processData: {
-      handler(val) {
-        if (!val.userList) {
-          this.initUserList(val)
-        }
-      },
-      immediate: true
+  created() {
+    if (this.conditionNodes) {
+      this.nextNode = this.childNode
+      this.watchers.push(
+        this.$watch(
+          'formData',
+          function(val) {
+            let flag = this.conditionNodes.some((node) => {
+              let flag = true
+              node.properties.conditions.forEach((condition) => {
+                if (condition.type === 'number' && condition.defaultValue) {
+                  // defaultValue.type { lt: '<', lte: '≤', gt: '>', gte: '≥', eq: '=' }
+                  if (
+                    _[condition.defaultValue.type](
+                      val[condition.vModel],
+                      condition.defaultValue.value
+                    )
+                  ) {
+                    return
+                  }
+                } else if (condition.type === 'radio' && typeof condition.val !== 'undefined') {
+                  if (val[condition.vModel] === condition.val) {
+                    return
+                  }
+                } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
+                  if (val[condition.vModel] === condition.val) {
+                    return
+                  }
+                }
+                flag = false
+              })
+              if (flag) {
+                this.data = node.childNode
+                this.initUserList(this.data)
+              }
+              return flag
+            })
+            if (!flag) {
+              this.data = {}
+            }
+          },
+          { deep: true, immediate: true }
+        )
+      )
+    } else {
+      this.data = this.childNode
+      if (!this.data.userList) {
+        this.initUserList(this.data)
+      }
     }
   },
   methods: {
-    initUserList(processData) {
+    initUserList(data) {
       let userList
       if (this.selectable) {
         userList = []
-      } else if (processData.type === 'approver') {
-        userList = this._.get(processData, 'properties.approvers', [])
-      } else if (processData.type === 'copy') {
-        userList = this._.get(processData, 'properties.members', [])
+      } else if (data.type === 'approver') {
+        userList = _.get(data, 'properties.approvers', [])
+      } else if (data.type === 'copy') {
+        userList = _.get(data, 'properties.members', [])
       }
-      this.$set(processData, 'userList', userList)
+      this.$set(data, 'userList', userList)
     },
     handleSelect(data) {
-      this.processData.userList.push(data)
+      this.data.userList.push(data)
     },
     // pickUser(userList) {
     //   pickUser(userList, {
@@ -158,7 +219,7 @@ export default {
     //   })
     // },
     deleteUser(index) {
-      this.processData.userList.splice(index, 1)
+      this.data.userList.splice(index, 1)
     }
   }
 }

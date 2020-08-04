@@ -23,6 +23,8 @@ interface Config {
   shouldPrint: boolean
   // 该字段是否必填
   required: boolean
+  // 该字段是否可作为流程条件
+  proCondition: boolean
 }
 interface PCConfig {
   // 渲染组件时使用的tag

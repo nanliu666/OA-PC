@@ -98,7 +98,8 @@ export const componentGroups = [
           icon: 'icon-basics-digit-outlined',
           defaultValue: null,
           shouldPrint: true,
-          required: false
+          required: false,
+          proCondition: true
         },
         __slot__: {},
         __pc__: {
@@ -172,8 +173,7 @@ export const componentGroups = [
           defaultValue: [],
           layout: 'colFormItem',
           shouldPrint: true,
-          required: false,
-          proCondition: true
+          required: false
         },
         __slot__: {
           options: [

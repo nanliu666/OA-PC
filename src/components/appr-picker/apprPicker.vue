@@ -12,9 +12,15 @@
         prop="approver"
       >
         <appr-picker-item
-          :process-data="processData.childNode"
+          v-if="processData && conditionFieldsFullfilled"
+          :form-data="formData"
+          :child-node="processData.childNode"
+          :condition-nodes="processData.conditionNodes"
           :is-first="true"
         />
+        <div v-else>
+          必填信息填写后，流程将自动显示
+        </div>
       </el-form-item>
     </el-form>
   </div>
@@ -34,7 +40,11 @@ export default {
   props: {
     processData: {
       type: Object,
-      default: () => ({})
+      default: null
+    },
+    formData: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -47,9 +57,20 @@ export default {
     }
     return {
       pickerVisible: false,
+      conditionFieldsFullfilled: false,
       rules: {
         approver: [{ required: true, validator: checkAppr }]
       }
+    }
+  },
+  watch: {
+    formData: {
+      handler(val) {
+        this.conditionFieldsFullfilled = this.getConditionFields(this.processData).every(
+          (field) => !_.isNil(val[field])
+        )
+      },
+      deep: true
     }
   },
   computed: {
@@ -102,6 +123,21 @@ export default {
       } else {
         return map
       }
+    },
+    getConditionFields() {
+      const fields = new Set()
+      const loop = (node) => {
+        let conditions = _.get(node, 'properties.conditions', null)
+        if (Array.isArray(conditions)) {
+          conditions.forEach((condition) => {
+            fields.add(condition.vModel)
+          })
+        }
+        node.childNode && loop(node.childNode)
+        Array.isArray(node.conditionNodes) && node.conditionNodes.forEach(loop)
+      }
+      loop(this.processData)
+      return [...fields]
     }
   }
 }
