@@ -1,4 +1,16 @@
 /* eslint-disable no-console */
+
+let totalNum = _.random(11, 99)
+let totalPage = Math.ceil(totalNum / 10)
+
+// 解析查询字符串
+const urlDecode = (url) =>
+  _.fromPairs(
+    _.replace(url, /^[^?]*\?/, '')
+      .split('&')
+      .map((p) => p.split('=').map((p) => decodeURIComponent(p)))
+  )
+
 import Mock from 'mockjs'
 const normalData = {
   code: 200,
@@ -408,5 +420,50 @@ export default ({ mock }) => {
   // 审批流程排序接口
   Mock.mock(new RegExp('/api/appr/v2/appr/process/sort' + '.*'), 'post', () => {
     return categoryData
+  })
+
+  // 审批记录列表
+  Mock.mock(new RegExp('/appr/v2/appr/approve/record/list' + '.*'), 'get', (req) => {
+    const params = urlDecode(req.url)
+    const { pageNo, pageSize = 10 } = params
+    if (_.size(_.omit(params, ['pageNo', 'pageSize']))) {
+      totalNum = _.parseInt(totalNum * 0.75)
+    }
+    totalPage = _.ceil(totalNum / pageSize)
+
+    const response = {
+      totalNum,
+      totalPage,
+      data: _.times(pageNo < totalPage ? pageSize : totalNum % pageSize || pageSize, () =>
+        Mock.mock({
+          apprNo: '@id()',
+          title: '@ctitle()',
+          formKey: '@id()',
+          formId: '@id()',
+          orgId: '@id()',
+          orgName: '@cword(4)',
+          userId: '@id()',
+          userName: '@cname()',
+          jobId: '@id()',
+          jobName: '@cword()岗',
+          processId: '@id()',
+          processName: '@cword(2)流程',
+          'status|1': ['Approve', 'Pass', 'Reject', 'Cancel'],
+          applyTime: '@datetime()',
+          completeTime: '@datetime()',
+          approveUser: _.times(_.random(3), () => ({
+            userId: '@id()',
+            userName: '@cname()'
+          }))
+        })
+      )
+    }
+    const res = {
+      resCode: 200,
+      resMsg: '成功',
+      response
+    }
+    window.console.debug(`${req.type} ${req.url}`, { req, res })
+    return res
   })
 }

@@ -57,6 +57,7 @@
         v-show="activeStep === 'formDesign'"
         ref="formDesign"
         :conf="mockData.formData"
+        :form-key="formKey"
         tab-name="formDesign"
       />
 
@@ -97,7 +98,7 @@ const beforeUnload = function(e) {
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
 export default {
-  name: 'Home',
+  name: 'ProcessDesign',
   components: {
     Process,
     FormDesign,
@@ -207,8 +208,8 @@ export default {
         .then((res) => {
           const param = {
             basicSetting: res[0].formData,
+            formData: res[1].formData,
             processData: res[2].formData,
-            formData: res[1],
             advancedSetting: res[3]
           }
           this.sendToServer(param)
@@ -349,12 +350,14 @@ export default {
         if (data.properties.assigneeType === 'user') {
           //指定成员人，
           item.assignee = 'taskUser_' + data.properties.attribute
-          // if (data.content === '张三') {
-          //   item.assignee = 'taskUser_' + '1258244944030916609'
-          // } else if (data.content === '王五') {
-          //   item.assignee = 'taskUser_' + '1262998215033409537'
-          // }
-          // item.assignee='taskUser_'+data.content
+          let length = data.content.split(',').length
+          if (length > 1) {
+            origin.variable = 'optional_' + data.nodeId
+            item.assignee = '${taskUser_' + data.nodeId + '}'
+            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
+            item.element = 'taskUser_' + data.nodeId
+            item.collection = 'optional_' + data.nodeId
+          }
         } else if (data.properties.assigneeType === 'role') {
           //角色
           item.assignee = '${role_' + data.nodeId + '_id}'
@@ -365,9 +368,22 @@ export default {
           this.processMap['position_' + data.nodeId + '_id'] = ''
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
-          origin.variable = 'optional_' + data.nodeId + '_id'
           item.assignee = '${optional_' + data.nodeId + '_id}'
-          this.processMap['optional_' + data.nodeId + '_id'] = ''
+          let length = data.content.split(',').length
+          if (length < 2 && !data.properties.optionalMultiUser) {
+            origin.variable = 'optional_' + data.nodeId + '_id'
+            this.processMap['optional_' + data.nodeId + '_id'] = ''
+          }
+          if (
+            data.properties.optionalMultiUser ||
+            (length > 1 && !data.properties.optionalMultiUser)
+          ) {
+            origin.variable = 'optional_' + data.nodeId
+            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
+            item.collection = 'optional_' + data.nodeId
+            item.element = 'optional_' + data.nodeId + '_id'
+            this.processMap['optional_' + data.nodeId] = ''
+          }
         } else if (data.properties.assigneeType === 'director') {
           // 主管
           origin.variable = 'director_' + data.nodeId + '_id'
@@ -378,33 +394,6 @@ export default {
           item.assignee = '${initiator}'
         } else {
           item.assignee = 'taskUser_' + data.properties.attribute
-        }
-
-        if (data.content) {
-          //如果是申请节点且有多个选项。
-          let length = data.content.split(',').length
-          if (length > 1) {
-            // 如果有多个选项触发会签或者或签
-            let elementType = {
-              user: 'taskUser_' + data.nodeId,
-              role: 'role_' + data.nodeId + '_id',
-              position: 'position_' + data.nodeId + '_id',
-              optional: 'optional_' + data.nodeId + '_id',
-              director: 'optional_' + data.nodeId + '_id'
-            }
-            if (data.properties.assigneeType === 'user') {
-              //如果有多个选项，指定成员人要用变量表达
-              origin.variable = 'taskUser_' + data.nodeId
-              item.assignee = '${taskUser_' + data.nodeId + '}'
-            }
-
-            item.multi = {
-              //如果有多个选项触发会签或者或签。
-              completion: data.properties.counterSign ? '1' : '0', //0 或签，1会签
-              collection: data.properties.attribute,
-              element: elementType[data.properties.assigneeType] // 和审批人一一对应，移除${}后的值，如"assignee":"${element}",则"element": "element"
-            }
-          }
         }
       }
       if (data.prevId && data.prevId !== 'no_flow' && data.type !== 'condition') {
@@ -455,8 +444,18 @@ export default {
             targetId = conditionNextNodeId || 'end'
           }
 
-          let conditionExpression =
-            d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
+          let conditionExpression = []
+          d.properties.conditions.map((it) => {
+            this.processMap[it.vModel] = ''
+            it.type === 'number' &&
+              conditionExpression.push(
+                '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
+              )
+          })
+          conditionExpression = conditionExpression.join('&&')
+          // this.processMap[conditionExpression] = ''
+          // if(d.properties.conditions)
+          // d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
           let newIt = {
             //出网关线
             type: 'flow',
@@ -466,7 +465,7 @@ export default {
             target: targetId, // 当前节点
             conditionExpression: conditionExpression
           }
-          this.processMap['days'] = ''
+
           this.condition.push(newIt)
           if (conditionNextNodeId && d.childNode) {
             let endNode = this.childNode(d.childNode) //
@@ -535,127 +534,130 @@ export default {
 <style lang="stylus" scoped>
 $header-height = 54px;
 .page {
-    width: 100vw;
-    height: 100vh;
-    padding-top: $header-height;
+  width: 100vw;
+  height: 100vh;
+  padding-top: $header-height;
+  box-sizing: border-box;
+
+  .page__header {
+    width: 100%;
+    height: $header-height;
+    flex-center()
+    justify-content: space-between;
     box-sizing: border-box;
+    /*color: white;*/
+    /*background: #3296fa;*/
+    background: #fff;
+    color: #757C85;
+    font-size: 14px;
+    position: fixed;
+    top: 0;
 
-    .page__header {
-        width: 100%;
-        height: $header-height;
-        flex-center()
-        justify-content: space-between;
-        box-sizing: border-box;
-        /*color: white;*/
-        /*background: #3296fa;*/
-        background: #fff;
-        color: #757C85;
-        font-size: 14px;
-        position: fixed;
-        top: 0;
+    .page-actions {
+      height: 100%;
+      text-align: center;
+      line-height: $header-height;
 
-        .page-actions {
-            height: 100%;
-            text-align: center;
-            line-height: $header-height;
-
-            > div {
-                height: 100%;
-                padding-left: 20px;
-                padding-right: 20px;
-                display: inline-block;
-            }
-
-            i {
-                font-size: 22px;
-                vertical-align: middle;
-            }
-        }
-
-        .step-tab {
-            display: flex;
-            justify-content: center;
-            height: 100%;
-            position: relative;
-
-            > .step {
-                width: 140px;
-                font-size :16px;
-                line-height: $header-height;
-                text-align :center;
-                cursor: pointer;
-                position: relative;
-
-                &.ghost-step {
-                    position: absolute;
-                    height: $header-height;
-                    left: 0;
-                    z-index: -1;
-                    /*background: #4483f2;*/
-                    background:#fff;
-                    transition: transform .5s;
-
-                    &::after {
-                        content: '';
-                        border-width: 6px 6px 6px;
-                        border-style: solid;
-                        border-color: transparent transparent white;
-                        position: absolute;
-                        bottom: 0;
-                        left: 50%;
-                        margin-left: -6px;
-                    }
-                }
-                &.active{
-                    font-size: 16px;
-                    color: #202940;
-                    border-bottom:2px solid #207EFA;
-                }
-                &.active > .step-index {
-                    background: white;
-                    color: #202940;
-                }
-                &.disable{
-                  opacity:0.5
-                }
-
-                > .step-index {
-                    display: inline-block;
-                    width: 18px;
-                    height: 18px;
-                    border: 1px solid #fff;
-                    border-radius: 8px;
-                    line-height: 18px;
-                    text-align: center;
-                    box-sizing: border-box;
-                }
-            }
-        }
-    }
-
-    .page__content {
-        width: 100%;
+      > div {
         height: 100%;
-        overflow: hidden;
-        box-sizing: border-box;
-        background #f5f5f7;
-        padding-top:15px;
+        padding-left: 20px;
+        padding-right: 20px;
+        display: inline-block;
+      }
+
+      i {
+        font-size: 22px;
+        vertical-align: middle;
+      }
     }
+
+    .step-tab {
+      display: flex;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+
+      > .step {
+        width: 140px;
+        font-size: 16px;
+        line-height: $header-height;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+
+        &.ghost-step {
+          position: absolute;
+          height: $header-height;
+          left: 0;
+          z-index: -1;
+          /*background: #4483f2;*/
+          background: #fff;
+          transition: transform .5s;
+
+          &::after {
+            content: '';
+            border-width: 6px 6px 6px;
+            border-style: solid;
+            border-color: transparent transparent white;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            margin-left: -6px;
+          }
+        }
+
+        &.active {
+          font-size: 16px;
+          color: #202940;
+          border-bottom: 2px solid #207EFA;
+        }
+
+        &.active > .step-index {
+          background: white;
+          color: #202940;
+        }
+
+        &.disable {
+          opacity: 0.5
+        }
+
+        > .step-index {
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          border: 1px solid #fff;
+          border-radius: 8px;
+          line-height: 18px;
+          text-align: center;
+          box-sizing: border-box;
+        }
+      }
+    }
+  }
+
+  .page__content {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    background #f5f5f7;
+    padding-top: 15px;
+  }
 }
 
 .publish-btn {
-    margin-right: 20px;
-    /*color: #3296fa;*/
-    color: #fff;
-    background: #207EFA;
-    border-radius: 4px;
-    padding: 7px 20px;
-    font-size: 14px;
+  margin-right: 20px;
+  /*color: #3296fa;*/
+  color: #fff;
+  background: #207EFA;
+  border-radius: 4px;
+  padding: 7px 20px;
+  font-size: 14px;
 }
 
 .github {
-    position fixed
-    bottom 10px
-    left 20px
+  position fixed
+  bottom 10px
+  left 20px
 }
 </style>

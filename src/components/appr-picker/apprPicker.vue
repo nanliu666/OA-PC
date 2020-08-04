@@ -12,7 +12,6 @@
         prop="approver"
       >
         <appr-picker-item
-          v-if="processData.childNode"
           :process-data="processData.childNode"
           :is-first="true"
         />
@@ -73,6 +72,7 @@ export default {
         processMap: Object.assign({}, processMap, data.processMap)
       })
     },
+    // 递归检查审批人是否已选
     checkApprovers(data) {
       if (data.type === 'approver' && data.properties.approvers.length === 0) {
         return false
@@ -82,11 +82,20 @@ export default {
       }
       return true
     },
+    // 递归生成变量数据对象
     createProcessMap(data, map = {}) {
       if (data.variable) {
-        map[data.variable] = [...new Set(data.userList.map((item) => item.id.split('_')[1]))].join(
-          ','
-        )
+        if (
+          // 是否是会签或者或签，分为自选多个人和指定多个人
+          (data.properties.assigneeType == 'optional' && data.properties.optionalMultiUser) ||
+          (data.properties.assigneeType == 'user' && data.userList.length > 1)
+        ) {
+          map[data.variable] = [
+            ...new Set(data.userList.map((item) => 'taskUser_' + item.id.split('_')[1]))
+          ]
+        } else {
+          map[data.variable] = 'taskUser_' + data.userList[0].id.split('_')[1]
+        }
       }
       if (data.childNode) {
         return this.createProcessMap(data.childNode, map)

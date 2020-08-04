@@ -47,15 +47,15 @@
           </div>
           <div
             v-if="(isMulti || processData.userList.length === 0) && selectable"
-            class="appr-user-item__plus"
+            class="appr-user-item__plusWr"
           >
             <el-dropdown
               trigger="click"
               @command="handleSelect($event)"
             >
-              <span class="el-dropdown-link">
+              <div class="el-dropdown-link appr-user-item__plus">
                 <i class="icon-tips-plus-outlined" />
-              </span>
+              </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   v-for="option in optionList"
@@ -125,22 +125,28 @@ export default {
       return ''
     }
   },
-  beforeMount() {
-    this.initUserList()
+  watch: {
+    processData: {
+      handler(val) {
+        if (!val.userList) {
+          this.initUserList(val)
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
-    initUserList() {
+    initUserList(processData) {
       let userList
       if (this.selectable) {
         userList = []
-      } else if (this.processData.type === 'approver') {
-        userList = this._.get(this.processData, 'properties.approvers', [])
-      } else if (this.processData.type === 'copy') {
-        userList = this._.get(this.processData, 'properties.members', [])
+      } else if (processData.type === 'approver') {
+        userList = this._.get(processData, 'properties.approvers', [])
+      } else if (processData.type === 'copy') {
+        userList = this._.get(processData, 'properties.members', [])
       }
-      this.$set(this.processData, 'userList', userList)
+      this.$set(processData, 'userList', userList)
     },
-
     handleSelect(data) {
       this.processData.userList.push(data)
     },
@@ -226,6 +232,9 @@ export default {
     line-height: 40px;
     margin: 8px;
   }
+  &__plusWr {
+    margin: 8px 0 24px;
+  }
   &__plus {
     width: 40px;
     height: 40px;
@@ -233,11 +242,11 @@ export default {
     background: rgba(245, 246, 246, 0.5);
     border: 1px dashed rgba(117, 124, 133, 0.5);
     text-align: center;
-    margin: 8px 0 24px;
     cursor: pointer;
     color: #757c85;
     i {
       line-height: 40px;
+      height: 40px;
       font-size: 20px;
     }
   }

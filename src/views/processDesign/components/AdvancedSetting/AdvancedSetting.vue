@@ -67,7 +67,7 @@ export default {
       checkList: [],
       info,
       formData: {
-        approverDistinct: '', //审批意见填写提示
+        approverDistinct: 0, //审批意见填写提示
         approverNull: 0,
         isOpinion: '',
         tip: ''

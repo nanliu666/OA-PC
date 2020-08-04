@@ -19,7 +19,7 @@ export const componentGroups = [
           icon: 'icon-basics-textfield-outlined',
           defaultValue: null,
           shouldPrint: true,
-          required: true
+          required: false
         },
         __slot__: {},
         __pc__: {
@@ -44,7 +44,7 @@ export const componentGroups = [
           icon: 'icon-basics-mtext-outlined',
           defaultValue: null,
           shouldPrint: true,
-          required: true
+          required: false
         },
         __slot__: {},
         __pc__: {
@@ -98,7 +98,7 @@ export const componentGroups = [
           icon: 'icon-basics-digit-outlined',
           defaultValue: null,
           shouldPrint: true,
-          required: true
+          required: false
         },
         __slot__: {},
         __pc__: {
@@ -132,7 +132,7 @@ export const componentGroups = [
           icon: 'icon-basics-radio-outlined',
           defaultValue: null,
           layout: 'colFormItem',
-          required: true,
+          required: false,
           shouldPrint: true,
           proCondition: true
         },
@@ -172,7 +172,7 @@ export const componentGroups = [
           defaultValue: [],
           layout: 'colFormItem',
           shouldPrint: true,
-          required: true,
+          required: false,
           proCondition: true
         },
         __slot__: {
@@ -218,7 +218,7 @@ export const componentGroups = [
           span: 24,
           layout: 'colFormItem',
           shouldPrint: true,
-          required: true
+          required: false
         },
         __slot__: {},
         __pc__: {
@@ -250,7 +250,7 @@ export const componentGroups = [
           layout: 'colFormItem',
           defaultValue: [],
           shouldPrint: true,
-          required: true
+          required: false
         },
         __slot__: {},
         __pc__: {

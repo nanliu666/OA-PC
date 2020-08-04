@@ -91,7 +91,7 @@
             class="detail-item"
           >
             <div>{{ `${item.label} :` }}</div>
-            <div>{{ handelData(item.value) }}</div>
+            <div>{{ item.content || item.value }}</div>
           </div>
 
           <div class="detail-item" />
@@ -170,7 +170,7 @@
                           !isShowBtns &&
                           !isReject &&
                           !isFished &&
-                          isUser
+                          isApplyUser
                       "
                       class="isUrge"
                       @click="handelUrge(item)"
@@ -311,9 +311,9 @@
         v-if="!isCancel && !isFished && !isReject"
         class="cancel-btn-box"
       >
-        <!-- v-if="!isShowCancel && isUser" -->
+        <!-- v-if="!isShowCancel && isApplyUser" -->
         <el-button
-          v-if="!isShowCancel && isUser"
+          v-if="!isShowCancel && isApplyUser"
           type="primary"
           size="medium"
           @click="handelCancel"
@@ -361,13 +361,28 @@
       width="600px"
       top="40vh"
       :modal-append-to-body="false"
+      :before-close="resetRules"
     >
-      <el-input
-        v-model="comment"
-        type="textarea"
-        :rows="4"
-        placeholder="请输入审批意见"
-      />
+      <el-form
+        ref="apprForm"
+        label-position="top"
+        :model="apprForm"
+        :rules="rules"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item
+          label="审批意见"
+          :prop="isOpinion ? 'comment' : ''"
+        >
+          <el-input
+            v-model="apprForm.comment"
+            type="textarea"
+            :rows="4"
+            :placeholder="tip"
+          />
+        </el-form-item>
+      </el-form>
       <span
         slot="footer"
         class="dialog-footer"
@@ -395,7 +410,8 @@ import {
   createApprCancel,
   createApprPass,
   createApprReject,
-  createApprUrge
+  createApprUrge,
+  getProcessDetail
 } from '@/api/apprProcess/apprProcess'
 
 export default {
@@ -413,7 +429,7 @@ export default {
       // 申请人ID
       applyUserId: '',
       // 当前审批人id
-      apprUserId: '',
+      apprUserIdList: [],
       // 审批详情
       applyDetail: {},
       StatusCN: {
@@ -435,12 +451,26 @@ export default {
       // 控制显示模态框
       dialogVisible: false,
       btnloading: false,
-      // 审批意见
-      comment: '',
+      // 审批同意，拒绝参数
+      apprForm: {
+        processInstanceId: '',
+        taskId: '',
+        userId: '',
+        comment: ''
+      },
+
+      // 校验是否审批意见是否必填
+      rules: {
+        comment: [{ required: true, message: '请输入审批意见', trigger: 'blur' }]
+      },
       // 判断是同意审批还是拒绝审批
       apprType: '',
       // 头像配置
-      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      // 审批提示
+      tip: '',
+      // 审批意见是否必填
+      isOpinion: 0
     }
   },
 
@@ -479,8 +509,8 @@ export default {
     // 模态框标题
     apprTitle() {
       let apprTitleCN = {
-        Pass: '审批同意意见',
-        Reject: '审批拒绝意见'
+        Pass: '同意审批',
+        Reject: '拒绝审批'
       }
       return apprTitleCN[this.apprType] || ''
     },
@@ -496,13 +526,19 @@ export default {
     },
     // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
     isShowBtns() {
-      if (this.userId === this.apprUserId) {
-        return true
-      }
-      return false
+      let result = false
+      this.apprUserIdList.forEach((item) => {
+        if (item == this.userId) {
+          result = true
+        }
+      })
+      // if (this.userId === this.apprUserId) {
+      // 	return true
+      // }
+      return result
     },
     // 提交人跟当前用户是否同一个人
-    isUser() {
+    isApplyUser() {
       if (this.userId === this.applyUserId) {
         return true
       }
@@ -520,21 +556,13 @@ export default {
     // loadData
     loadData() {
       this.loading = true
+      // 计算发送请求的次数，countAjax=0则loading=false
       let countAjax = 2
       this.apprNo = this.$route.query.apprNo
       getApprDetail({ apprNo: this.apprNo })
         .then((res) => {
           this.applyDetail = res
           this.applyDetail.formData = JSON.parse(this.applyDetail.formData)
-          if (this.status === 'Cancel') {
-            this.isCancel = true
-          }
-          if (this.status === 'Reject') {
-            this.isReject = true
-          }
-          if (this.status === 'Pass') {
-            this.isFished = true
-          }
         })
         .finally(() => {
           countAjax--
@@ -543,6 +571,7 @@ export default {
       getApprRecord({ apprNo: this.apprNo })
         .then((res) => {
           let { data, processInstanceId, processId } = res
+          this.apprForm.processInstanceId = processInstanceId
           this.processInstanceId = processInstanceId
           this.processId = processId
           this.applyUserId = data[0].userId
@@ -569,15 +598,19 @@ export default {
               return item.result === '' && index != 0
             })
             // 当前审批人的ID
-            this.apprUserId = this.progressList[this.activeStep].userId
+            // this.apprUserId = this.progressList[this.activeStep].userId
+            this.apprUserIdList = []
+            this.progressList.forEach((item, index) => {
+              if (item.result === '' && index != 0) {
+                this.apprUserIdList.push(item.userId)
+              }
+            })
           }
-
           // 审批记录Data数组
-
           // 已撤销
-          let arr = (data = data.slice(0, this.activeStep + 1))
+          let arr = data.slice(0, data.length)
           if (this.isCancel) {
-            this.recordList = data[0]
+            this.recordList = arr[0]
           }
           // 有拒绝显示到拒绝节点  没有拒绝节点显示到同意审批的下一个节点
           else if (this.isReject) {
@@ -616,49 +649,59 @@ export default {
     // 点击同意或拒绝按钮展示模态框
     handelClick(type) {
       this.apprType = type
-      ;(this.dialogVisible = true), (this.apprRemark = '')
+      // 获取审批流程，获取审批意见是否必填，和审批提示语
+      getProcessDetail({ processId: this.processId }).then((res) => {
+        let { isOpinion, tip } = res
+        this.tip = tip
+        this.isOpinion = isOpinion
+        this.dialogVisible = true
+        this.apprForm.comment = ''
+      })
     },
     // 点击确定审批
     handelConfirm() {
-      this.btnloading = true
-      let { userId, taskId } = this.progressList[this.activeStep]
-      if (this.apprType === 'Reject') {
-        createApprReject({
-          userId,
-          taskId,
-          processInstanceId: this.processInstanceId,
-          comment: this.comment
-        })
-          .then(() => {
-            this.$message({
-              type: 'success',
-              message: '你已拒绝这个申请'
+      this.$refs.apprForm.validate((result) => {
+        if (!result) return
+        this.btnloading = true
+        let { userId, taskId } = this.progressList[this.activeStep]
+        if (this.apprType === 'Reject') {
+          createApprReject({
+            userId,
+            taskId,
+            processInstanceId: this.processInstanceId,
+            comment: this.comment
+          })
+            .then(() => {
+              this.$message({
+                type: 'success',
+                message: '你已拒绝这个申请'
+              })
             })
-          })
-          .finally(() => {
-            this.dialogVisible = false
-            this.btnloading = false
-            this.goBack()
-          })
-      } else if (this.apprType === 'Pass') {
-        createApprPass({
-          userId,
-          taskId,
-          processInstanceId: this.processInstanceId,
-          remark: this.apprRemark
-        })
-          .then(() => {
-            this.$message({
-              type: 'success',
-              message: '你已同意这个申请'
+            .finally(() => {
+              this.dialogVisible = false
+              this.btnloading = false
+              this.goBack()
             })
+        } else if (this.apprType === 'Pass') {
+          createApprPass({
+            userId,
+            taskId,
+            processInstanceId: this.processInstanceId,
+            comment: this.comment
           })
-          .finally(() => {
-            this.dialogVisible = false
-            this.btnloading = false
-            this.goBack()
-          })
-      }
+            .then(() => {
+              this.$message({
+                type: 'success',
+                message: '你已同意这个申请'
+              })
+            })
+            .finally(() => {
+              this.dialogVisible = false
+              this.btnloading = false
+              this.goBack()
+            })
+        }
+      })
     },
     // 点击催一下
     handelUrge(params) {
@@ -674,11 +717,10 @@ export default {
         })
       })
     },
-    handelData(value) {
-      if (Array.isArray(value) === true) {
-        return value.join('到')
-      }
-      return value
+    // 关闭表单后移出校验
+    resetRules(done) {
+      this.$refs.apprForm.resetFields()
+      done()
     }
   }
 }
@@ -984,5 +1026,13 @@ export default {
 .cancel-btn-box {
   display: flex;
   justify-content: center;
+}
+
+// 审批框
+/deep/.el-form--label-top .el-form-item__label {
+  padding: 0;
+}
+/deep/.el-dialog__body {
+  padding: 0 20px;
 }
 </style>
