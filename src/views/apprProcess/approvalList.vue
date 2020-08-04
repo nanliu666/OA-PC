@@ -273,7 +273,6 @@ export default {
       let resData = {}
       await getProcessList().then((res) => {
         resData = res
-        // window.console.log('可用res==', res)
         this.dragOptions.sortData = res
         resData.map((item) => {
           item.processes = _.sortBy(item.processes, 'sort')
@@ -281,7 +280,6 @@ export default {
         resData = _.sortBy(resData, 'sort')
       })
       await getDraftList().then((res) => {
-        // window.console.log('弃用res==', res)
         // 因接口返回数据不同，故专门写成如审批列表结构
         let resetData = [
           {
