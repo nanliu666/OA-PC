@@ -258,9 +258,7 @@ export default ({ mock }) => {
     const response = _.times(_.size(LEAVE_REASON_DICTS), (i) =>
       Mock.mock({
         leaveNum: _.random(100), // 离职人数
-        reason: LEAVE_REASON_DICTS[i], // 离职原因
-        orgId: '@id()',
-        orgName: '@cword(2)集团'
+        reason: LEAVE_REASON_DICTS[i] // 离职原因
       })
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
