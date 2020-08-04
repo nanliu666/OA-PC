@@ -451,6 +451,8 @@ export default {
               conditionExpression.push(
                 '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
               )
+            it.type === 'radio' &&
+              conditionExpression.push('${' + it.vModel + ' eq ' + it.val + '}')
           })
           conditionExpression = conditionExpression.join('&&')
           // this.processMap[conditionExpression] = ''
