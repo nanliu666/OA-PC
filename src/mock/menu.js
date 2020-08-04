@@ -785,7 +785,7 @@ const res = {
             isShow: 1,
             code: 'databoard',
             alias: 'databoard',
-            path: '/personnel/databoard',
+            path: '/personnel/databoard/statistical',
             icon: 'iconfont iconicon_roundadd',
             dataPrivileges: [],
             children: []
