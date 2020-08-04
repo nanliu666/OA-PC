@@ -1,6 +1,9 @@
 <template>
   <div class="approval-index-style fill">
-    <basic-container block>
+    <basic-container
+      v-loading="loading"
+      block
+    >
       <section class="index-header-box">
         <h2 class="h2-title">
           审批
@@ -243,6 +246,7 @@ export default {
   components: { processDialog, dragList, draggable },
   data() {
     return {
+      loading: true,
       symbolKey: 'xlink:href',
       dragOptions: {
         sortVisible: false,
@@ -290,8 +294,8 @@ export default {
         ]
         resData = [...resData, ...resetData]
       })
+      this.loading = false
       this.processListData = resData
-      // window.console.log('加载审批列表数据==', resData)
       // 拖拽的时候用来对比的原先的列表
       this.tempProcessList = deepClone(resData)
     },
