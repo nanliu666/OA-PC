@@ -107,6 +107,9 @@ export default {
         this.currentIndexList.push(index)
       }
     },
+    /**
+     * 跳转到提交页面
+     */
     jumpToSubmit(processId) {
       this.$router.push({
         path: '/apprProcess/apprSubmit',
