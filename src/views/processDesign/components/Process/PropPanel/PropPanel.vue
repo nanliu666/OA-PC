@@ -65,6 +65,7 @@
             ref="condition-org"
             v-model="initiator"
             :tab-list="['user']"
+            :org="org"
           />
         </row-wrapper>
         <template v-for="(item, index) in pconditions">
@@ -243,6 +244,7 @@
                 ref="start-org"
                 v-model="initiator"
                 :all="all"
+                :org="org"
               />
             </el-col>
           </el-row>
@@ -594,6 +596,7 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
+      org: true,
       coms: [],
       all: true, //显示所有人
       members: {
@@ -872,8 +875,12 @@ export default {
       this.properties.initiator = this.initiator['user']
       this.initiator['user'] &&
         this.initiator['user'].length > 0 &&
-        (nodeContent = `[发起人: ${this.getOrgSelectLabel('condition')}]` + '\n' + nodeContent)
+        (nodeContent = `[发起人: ${this.getOrgSelectLabel('condition')}]` + '\n' + nodeContent) &&
+        this.initiator['user'].map((it) => {
+          it.children && delete it.children
+        })
       this.$emit('confirm', this.properties, nodeContent || '请设置条件')
+
       this.visible = false
     },
 
@@ -884,7 +891,12 @@ export default {
      * 开始节点确认保存
      */
     startNodeComfirm() {
+      this.initiator.map((it) => {
+        it.children && delete it.children
+      })
+
       this.properties.initiator = this.initiator
+
       const formOperates = this.startForm.formOperates.map((t) => ({
         formId: t.formId,
         formOperate: t.formOperate
