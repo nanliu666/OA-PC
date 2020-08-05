@@ -340,6 +340,7 @@ export default {
       if (data.type === 'start') {
         //开始节点
         item.initiator = 'initiator'
+        item.id = 'start'
       }
       if (data.type === 'copy') {
         //抄送人节点
