@@ -270,7 +270,13 @@ export default {
         })
       } else if (row.type === 'Entry') {
         // 入职办理
-        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${row.bizId}`)
+        this.$router.push({
+          path: '/personnel/entry/entryPersonDetail',
+          query: {
+            applyId: row.bizId2,
+            personId: row.bizId
+          }
+        })
       } else if (row.type === 'EntryRegister') {
         // 入职登记表
         this.$router.push({

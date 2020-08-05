@@ -10,7 +10,10 @@
           <div class="orgJob">
             {{ personInfo.name }}
           </div>
-          <div class="status">
+          <div
+            v-if="statusWord[personInfo.status]"
+            class="status"
+          >
             {{ statusWord[personInfo.status] }}
           </div>
         </div>
@@ -63,21 +66,19 @@
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-          <template v-if="personInfo.status === ''">
-            <el-button
-              type="primary"
-              size="medium"
-              @click="addWillEntry"
-            >
-              添加到待入职
-            </el-button>
-            <!-- <el-button size="medium">
+          <!-- 因放弃入职和已经入职status都没空，无法判断，先暂时因此添加到待入职按钮 -->
+          <!-- <template v-if="personInfo.status === ''">
+            
+						<el-button type="primary" size="medium" @click="addWillEntry">
+							添加到待入职
+						</el-button>
+						<el-button size="medium">
               发送入职登记表
-            </el-button>-->
-            <!-- <el-button type="text">
+            </el-button>
+						<el-button type="text">
             查看入职登记表
-            </el-button>-->
-          </template>
+            </el-button>
+					</template> -->
         </div>
       </div>
     </div>
@@ -263,7 +264,7 @@ export default {
     return {
       personInfo: {},
       applyInfo: {},
-      statusWord: { '7': '待入职', '': '放弃入职' },
+      statusWord: { '7': '待入职' },
       workProperty: {},
       giveOutEntryDialog: false
     }
@@ -324,12 +325,16 @@ export default {
       })
     },
     getPersonInfo() {
-      getOfferApply({ id: this.$route.query.applyId }).then((apply) => {
-        this.applyInfo = apply
-        getCandidateAcceptDetail({ personId: apply.personId }).then((info) => {
+      getOfferApply({ id: this.$route.query.applyId })
+        .then((apply) => {
+          this.applyInfo = apply
+          return getCandidateAcceptDetail({
+            personId: apply.personId || this.$route.query.personId
+          })
+        })
+        .then((info) => {
           this.personInfo = info
         })
-      })
     },
     confirmEntry() {
       this.$router.push(
