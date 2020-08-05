@@ -396,23 +396,6 @@ export default {
           item.assignee = 'taskUser_' + data.properties.attribute
         }
       }
-      if (data.prevId && data.prevId !== 'no_flow' && data.type !== 'condition') {
-        //有前节点且前节点不为no_flow,且节点类型不能为条件节点
-        let items = {
-          //节点线
-          type: 'flow', // flow, start, end, task, ccTask, gateway
-          id: data.prevId + data.nodeId,
-          name: data.properties.title, // 非必填
-          source: data.prevId,
-          target: data.nodeId
-        }
-        this.lineList.push(items)
-      }
-      if (data.type !== 'condition') {
-        //过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
-        this.base.push(item)
-      }
-      data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
       if (hasBranch(data)) {
         //判断是否存在条件，如果有。。。
         let conditionNextNodeId = data.childNode ? data.childNode.nodeId : '' //判断条件是否存在子节点
@@ -452,7 +435,7 @@ export default {
                 '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
               )
             it.type === 'radio' &&
-              conditionExpression.push('${' + it.vModel + ' eq ' + it.val + '}')
+              conditionExpression.push('${' + it.vModel + " eq '" + it.val + "'}")
           })
           conditionExpression = conditionExpression.join('&&')
           // this.processMap[conditionExpression] = ''
@@ -483,6 +466,23 @@ export default {
           this.recursion(d, origin.conditionNodes[index])
         })
       }
+      if (data.prevId && data.prevId !== 'no_flow' && data.type !== 'condition') {
+        //有前节点且前节点不为no_flow,且节点类型不能为条件节点
+        let items = {
+          //节点线
+          type: 'flow', // flow, start, end, task, ccTask, gateway
+          id: data.prevId + data.nodeId,
+          name: data.properties.title, // 非必填
+          source: data.prevId,
+          target: data.nodeId
+        }
+        this.lineList.push(items)
+      }
+      if (data.type !== 'condition') {
+        //过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
+        this.base.push(item)
+      }
+      data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
     },
     childNode(data) {
       if (data.childNode) {

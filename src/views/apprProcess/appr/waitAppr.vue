@@ -53,7 +53,7 @@
                     class="operations__btns--item"
                     size="mini"
                     type="text"
-                    @click="getTableList"
+                    @click="refreshTableData"
                   >
                     <i class="iconfont iconicon_setting" />
                   </el-button>
@@ -139,11 +139,6 @@ const TABLE_COLUMNS = [
   {
     label: '申请时间',
     prop: 'applyTime',
-    minWidth: 100
-  },
-  {
-    label: '完成时间',
-    prop: 'completeTime',
     minWidth: 100
   },
   {
@@ -293,6 +288,9 @@ export default {
     this.initData()
     this.refreshTableData()
   },
+  activated() {
+    this.refreshTableData()
+  },
   methods: {
     /**
      * 初始化数据
@@ -301,6 +299,7 @@ export default {
       this.getOrgTree()
       this.getApprType()
     },
+
     /**
      * 获取用人部门
      */
@@ -335,17 +334,19 @@ export default {
       return STATUS_TO_TEXT[status]
     },
     /**
-     * 获取表格数据
-     */
-    getTableList() {},
-    /**
      * 处理页码改变
      */
-    handleCurrentPageChange() {},
+    handleCurrentPageChange(param) {
+      this.queryInfo.pageNo = param
+      this.loadTableData()
+    },
     /**
      * 处理页码大小更改
      */
-    handlePageSizeChange() {},
+    handlePageSizeChange(param) {
+      this.queryInfo.pageSize = param
+      this.loadTableData()
+    },
     /**
      * 搜索
      */

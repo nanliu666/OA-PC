@@ -53,7 +53,7 @@
                     class="operations__btns--item"
                     size="mini"
                     type="text"
-                    @click="getTableList"
+                    @click="refreshTableData"
                   >
                     <i class="iconfont iconicon_setting" />
                   </el-button>
@@ -304,6 +304,9 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
+  activated() {
+    this.refreshTableData()
+  },
   created() {
     this.initData()
     this.refreshTableData()
@@ -350,17 +353,19 @@ export default {
       return STATUS_TO_TEXT[status]
     },
     /**
-     * 获取表格数据
-     */
-    getTableList() {},
-    /**
      * 处理页码改变
      */
-    handleCurrentPageChange() {},
+    handleCurrentPageChange(param) {
+      this.queryInfo.pageNo = param
+      this.loadTableData()
+    },
     /**
      * 处理页码大小更改
      */
-    handlePageSizeChange() {},
+    handlePageSizeChange(param) {
+      this.queryInfo.pageSize = param
+      this.loadTableData()
+    },
     /**
      * 搜索
      */

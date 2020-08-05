@@ -842,8 +842,8 @@ export default {
           }
           if (t.__config__.type === 'radio') {
             res.val = ''
-            t.__slot__.options.map((it, i) => {
-              it.label === cValue && (res.val = i + 1)
+            t.__slot__.options.map((it) => {
+              it.label === cValue && (res.val = it.value)
             })
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
