@@ -66,7 +66,7 @@ export class NodeUtils {
    */
   static createNode(type, previousNodeId) {
     let res = JSON.parse(JSON.stringify(nodeConfig[type]))
-    res.nodeId = this.idGenerator()
+    res.nodeId = this.idGenerator() === 'Gb2' ? 'start' : this.idGenerator()
     res.prevId = previousNodeId
     return res
   }
