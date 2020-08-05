@@ -101,7 +101,6 @@ export class NodeUtils {
    */
   static deleteNode(nodeData, processData, checkEmpty = true) {
     let prevNode = this.getPreviousNode(nodeData.prevId, processData)
-    debugger
     if (checkEmpty && prevNode.type === 'empty') {
       if (this.isConditionNode(nodeData)) {
         this.deleteNode(prevNode, processData)

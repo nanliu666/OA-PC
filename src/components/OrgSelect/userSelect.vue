@@ -227,12 +227,22 @@ export default {
       this.$emit('addUser', this.selectList)
       this.close()
     },
-    resolveTree(tree) {
+    resolveTree(tree, priv) {
+      // console.log(' :org="org"',tree)conso.log()
       if (tree.length > 0) {
         tree.forEach((node) => {
           if (node.orgName) {
             node.name = node.orgName
           }
+
+          if (priv && node.orgId) {
+            if (!priv.newOrgId) {
+              node.newOrgId = priv.orgId + '_' + node.orgId
+            } else {
+              node.newOrgId = priv.newOrgId + '_' + node.orgId
+            }
+          }
+
           let users
           if (node.users) {
             users = node.users.map((user) => ({
@@ -242,7 +252,7 @@ export default {
             }))
             if (node.children) {
               node.children.push(...users)
-              this.resolveTree(node.children)
+              this.resolveTree(node.children, node)
             } else {
               node.children = users
             }
