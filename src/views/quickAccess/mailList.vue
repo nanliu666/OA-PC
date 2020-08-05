@@ -17,9 +17,9 @@
             class="input-with-select"
             @keyup.enter.native="handelSearch(filterText)"
           >
-            <i
+            <el-button
               slot="append"
-              class="el-icon-search"
+              icon="el-icon-search"
               @click="handelSearch(filterText)"
             />
           </el-input>
@@ -233,7 +233,7 @@ export default {
   watch: {
     // 监听输入的关键字刷选员工和组织
     filterText(nval, oval) {
-      if (!oval) {
+      if (!oval || !nval) {
         this.handelSearch(nval)
       }
     }
@@ -299,6 +299,7 @@ export default {
         (data) => data.orgId && data.label.indexOf(value) !== -1,
         true
       )
+      this.handelData(this.orgList)
       return data.label.indexOf(value) !== -1
     },
     // 搜索
@@ -340,10 +341,13 @@ export default {
   height: 36px;
   line-height: 36px;
 }
+/deep/.el-tree-node.is-current > .el-tree-node__content {
+  background-color: #ffffff;
+}
 .el-input {
   margin-bottom: 20px;
 }
-.el-icon-search {
+.el-button {
   cursor: pointer;
 }
 // .custom-tree-node {

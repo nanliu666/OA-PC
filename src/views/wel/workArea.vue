@@ -440,7 +440,14 @@ export default {
         })
       } else if (type === 'Entry') {
         // 入职办理
-        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${bizId}`)
+        // this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${bizId}`)
+        this.$router.push({
+          path: '/personnel/entry/entryPersonDetail',
+          query: {
+            applyId: bizId2,
+            personId: bizId
+          }
+        })
       } else if (type === 'EntryRegister') {
         // 入职登记表
         this.$router.push({
