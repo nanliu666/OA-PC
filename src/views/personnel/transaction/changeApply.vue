@@ -427,21 +427,21 @@ export default {
           {
             required: true,
             message: '请选择公司',
-            trigger: 'blur'
+            trigger: 'change'
           }
         ],
         newOrgId: [
           {
             required: true,
             message: '请选择部门',
-            trigger: 'blur'
+            trigger: 'change'
           }
         ],
         newJobId: [
           {
             required: true,
             message: '请选择职位',
-            trigger: 'blur'
+            trigger: 'change'
           }
         ]
       },
@@ -561,6 +561,8 @@ export default {
     async getOrgName(params) {
       let res = await getOrganizationTree({ parentOrgId: params })
       this.newOrgList = flatTree(res)
+      this.$refs.applyForm.clearValidate('newOrgId')
+      this.$refs.applyForm.clearValidate('newJobId')
     },
     // 获取职位选择数组
     async getJob(params) {
@@ -568,6 +570,7 @@ export default {
         return
       }
       this.newJobList = await getJobInfo({ orgId: params })
+      this.$refs.applyForm.clearValidate('newJobId')
     },
     // 获取岗位选择数组
     getPosition() {
@@ -579,10 +582,10 @@ export default {
     },
     // 清空选项
     companyNameChange(e) {
-      this.getOrgName(e)
-      this.newJobList = []
       this.applyParams.newOrgId = ''
       this.applyParams.newJobId = ''
+      this.newJobList = []
+      this.getOrgName(e)
     },
     // 清空选项
     orgNameChange(e) {
