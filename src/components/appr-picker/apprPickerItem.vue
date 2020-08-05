@@ -107,7 +107,7 @@ export default {
     return {
       data: null,
       nextNode: null,
-      watchers: []
+      watcher: null
     }
   },
   computed: {
@@ -145,49 +145,50 @@ export default {
       return ''
     }
   },
+  beforeDestroy() {
+    this.watcher && this.watcher()
+  },
   created() {
     if (this.conditionNodes) {
       this.nextNode = this.childNode
-      this.watchers.push(
-        this.$watch(
-          'formData',
-          function(val) {
-            let flag = this.conditionNodes.some((node) => {
-              let flag = true
-              node.properties.conditions.forEach((condition) => {
-                if (condition.type === 'number' && condition.defaultValue) {
-                  // defaultValue.type { lt: '<', lte: '≤', gt: '>', gte: '≥', eq: '=' }
-                  if (
-                    _[condition.defaultValue.type](
-                      val[condition.vModel],
-                      condition.defaultValue.value
-                    )
-                  ) {
-                    return
-                  }
-                } else if (condition.type === 'radio' && typeof condition.val !== 'undefined') {
-                  if (val[condition.vModel] === condition.val) {
-                    return
-                  }
-                } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
-                  if (val[condition.vModel] === condition.val) {
-                    return
-                  }
+      this.watcher = this.$watch(
+        'formData',
+        function(val) {
+          let flag = this.conditionNodes.some((node) => {
+            let flag = true
+            node.properties.conditions.forEach((condition) => {
+              if (condition.type === 'number' && condition.defaultValue) {
+                // defaultValue.type { lt: '<', lte: '≤', gt: '>', gte: '≥', eq: '=' }
+                if (
+                  _[condition.defaultValue.type](
+                    val[condition.vModel],
+                    condition.defaultValue.value
+                  )
+                ) {
+                  return
                 }
-                flag = false
-              })
-              if (flag) {
-                this.data = node.childNode
-                this.initUserList(this.data)
+              } else if (condition.type === 'radio' && typeof condition.val !== 'undefined') {
+                if (val[condition.vModel] === condition.val) {
+                  return
+                }
+              } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
+                if (val[condition.vModel] === condition.val) {
+                  return
+                }
               }
-              return flag
+              flag = false
             })
-            if (!flag) {
-              this.data = {}
+            if (flag) {
+              this.data = node.childNode
+              !this.data.userList && this.initUserList(this.data)
             }
-          },
-          { deep: true, immediate: true }
-        )
+            return flag
+          })
+          if (!flag) {
+            this.data = {}
+          }
+        },
+        { deep: true, immediate: true }
       )
     } else {
       this.data = this.childNode
