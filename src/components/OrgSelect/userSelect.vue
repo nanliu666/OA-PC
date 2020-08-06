@@ -101,6 +101,10 @@ export default {
       default: function() {
         return []
       }
+    },
+    isDepartment: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -243,21 +247,23 @@ export default {
             }
           }
 
-          let users
-          if (node.users) {
-            users = node.users.map((user) => ({
-              ...user,
-              id: node.orgId + '_' + user.userId,
-              type: 'user'
-            }))
-            if (node.children) {
-              node.children.push(...users)
-              this.resolveTree(node.children, node)
-            } else {
-              node.children = users
-            }
-            if (node.orgId) {
-              node.id = node.orgId
+          if (!this.isDepartment) {
+            let users
+            if (node.users) {
+              users = node.users.map((user) => ({
+                ...user,
+                id: node.orgId + '_' + user.userId,
+                type: 'user'
+              }))
+              if (node.children) {
+                node.children.push(...users)
+                this.resolveTree(node.children, node)
+              } else {
+                node.children = users
+              }
+              if (node.orgId) {
+                node.id = node.orgId
+              }
             }
           }
         })
