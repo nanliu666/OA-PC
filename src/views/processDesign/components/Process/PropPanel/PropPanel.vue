@@ -66,6 +66,7 @@
             v-model="initiator"
             :tab-list="['user']"
             :org="org"
+            :is-department="isDepartment"
           />
         </row-wrapper>
         <template v-for="(item, index) in pconditions">
@@ -245,6 +246,7 @@
                 v-model="initiator"
                 :all="all"
                 :org="org"
+                :is-department="isDepartment"
               />
             </el-col>
           </el-row>
@@ -372,7 +374,8 @@
             <div
               v-if="
                 (orgCollection[approverForm.assigneeType] &&
-                  orgCollection[approverForm.assigneeType].length > 1) ||
+                  orgCollection[approverForm.assigneeType].length > 1 &&
+                  !['optional'].includes(approverForm.assigneeType)) ||
                   (['optional'].includes(approverForm.assigneeType) &&
                     approverForm.optionalMultiUser)
               "
@@ -597,6 +600,7 @@ export default {
   data() {
     return {
       org: true,
+      isDepartment: true,
       coms: [],
       all: true, //显示所有人
       members: {
@@ -878,6 +882,7 @@ export default {
         (nodeContent = `[发起人: ${this.getOrgSelectLabel('condition')}]` + '\n' + nodeContent) &&
         this.initiator['user'].map((it) => {
           it.children && delete it.children
+          it.users && delete it.users
         })
       this.$emit('confirm', this.properties, nodeContent || '请设置条件')
 
@@ -892,6 +897,7 @@ export default {
      */
     startNodeComfirm() {
       this.initiator.map((it) => {
+        it.users && delete it.users
         it.children && delete it.children
       })
 
@@ -930,6 +936,9 @@ export default {
         })
       attribute = attribute.join(',')
       this.properties.attribute = attribute
+      this.approverForm.assigneeType === 'optional' &&
+        !this.approverForm.optionalMultiUser &&
+        (this.approverForm.counterSign = false)
       Object.assign(this.properties, this.approverForm, { formOperates })
       this.$emit('confirm', this.properties, content || '请设置审批人')
       this.visible = false

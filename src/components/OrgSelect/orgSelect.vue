@@ -33,6 +33,7 @@
     </div>
     <userSelect
       v-if="show"
+      :is-department="isDepartment"
       :org="org"
       :visible.sync="show"
       :users="selectOldData"
@@ -54,6 +55,10 @@ export default {
   },
   props: {
     all: {
+      type: Boolean,
+      default: false
+    },
+    isDepartment: {
       type: Boolean,
       default: false
     },

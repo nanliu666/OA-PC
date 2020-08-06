@@ -470,7 +470,8 @@ export default {
       // 审批提示
       tip: '',
       // 审批意见是否必填
-      isOpinion: 0
+      isOpinion: 0,
+      isFirst: true
     }
   },
 
@@ -550,80 +551,114 @@ export default {
     this.loadData()
   },
   activated() {
-    this.loadData()
+    if (!this.isFirst) {
+      this.loadData()
+    }
   },
   methods: {
     // loadData
-    loadData() {
+    async loadData() {
       this.loading = true
       // 计算发送请求的次数，countAjax=0则loading=false
       let countAjax = 2
       this.apprNo = this.$route.query.apprNo
-      getApprDetail({ apprNo: this.apprNo })
-        .then((res) => {
-          this.applyDetail = res
-          this.applyDetail.formData = JSON.parse(this.applyDetail.formData)
-        })
-        .finally(() => {
-          countAjax--
-          countAjax || (this.loading = false)
-        })
-      getApprRecord({ apprNo: this.apprNo })
-        .then((res) => {
-          let { data, processInstanceId, processId } = res
-          this.apprForm.processInstanceId = processInstanceId
-          this.processInstanceId = processInstanceId
-          this.processId = processId
-          this.applyUserId = data[0].userId
-          // 审批进度Data数组
-          this.progressList = res.data
-          // 判断是否已撤回，已拒绝,已完成
-          this.progressList.forEach((item, index) => {
-            if (item.result === 'Cancel') {
-              this.isCancel = true
-              this.activeStep = index
-            }
-            if (item.result === 'Reject') {
-              this.isReject = true
-              this.activeStep = index
-            }
-            if (index == this.progressList.length - 1 && item.result == 'Pass' && index != 0) {
-              this.isFished = true
-              this.activeStep = index
-            }
+      await new Promise((resolve, reject) => {
+        getApprDetail({ apprNo: this.apprNo })
+          .then((res) => {
+            this.applyDetail = res
+            this.applyDetail.formData = JSON.parse(this.applyDetail.formData)
+            resolve(true)
           })
-          //如果不是 以上状态 ，在审批中，获取流程走到哪个节点
-          if (!this.isCancel && !this.isReject && !this.isFished) {
-            this.activeStep = this.progressList.findIndex((item, index) => {
-              return item.result === '' && index != 0
-            })
-            // 当前审批人的ID
-            // this.apprUserId = this.progressList[this.activeStep].userId
-            this.apprUserIdList = []
+          .catch(() => {
+            reject(false)
+          })
+          .finally(() => {
+            countAjax--
+            countAjax || (this.loading = false)
+          })
+      })
+      await new Promise((resolve, reject) => {
+        getApprRecord({ apprNo: this.apprNo })
+          .then((res) => {
+            let { data, processInstanceId, processId } = res
+            this.apprForm.processInstanceId = processInstanceId
+            this.processInstanceId = processInstanceId
+            this.processId = processId
+            this.applyUserId = data[0].userId
+            // 审批进度Data数组
+            this.progressList = res.data
+            // 判断是否已撤回，已拒绝,已完成
             this.progressList.forEach((item, index) => {
-              if (item.result === '' && index != 0) {
-                this.apprUserIdList.push(item.userId)
+              if (item.result === 'Cancel') {
+                this.isCancel = true
+                this.activeStep = index
+              }
+              if (item.result === 'Reject') {
+                this.isReject = true
+                this.activeStep = index
+              }
+              if (index == this.progressList.length - 1 && item.result == 'Pass' && index != 0) {
+                this.isFished = true
+                this.activeStep = index
               }
             })
-          }
-          // 审批记录Data数组
-          // 已撤销
-          let arr = data.slice(0, data.length)
-          if (this.isCancel) {
-            this.recordList = arr[0]
-          }
-          // 有拒绝显示到拒绝节点  没有拒绝节点显示到同意审批的下一个节点
-          else if (this.isReject) {
-            this.recordList = arr.reverse()
-          }
-          // 审批中或者审批完成
-          else {
-            this.recordList = arr.reverse()
-          }
-        })
-        .finally(() => {
-          countAjax--
-          countAjax || (this.loading = false)
+            //如果不是 以上状态 ，在审批中，获取流程走到哪个节点
+            if (!this.isCancel && !this.isReject && !this.isFished) {
+              this.activeStep = this.progressList.findIndex((item, index) => {
+                return item.result === '' && index != 0
+              })
+              // 当前审批人的ID
+              // this.apprUserId = this.progressList[this.activeStep].userId
+              this.apprUserIdList = []
+              this.progressList.forEach((item, index) => {
+                if (item.result === '' && index != 0) {
+                  this.apprUserIdList.push(item.userId)
+                }
+              })
+            }
+            // 审批记录Data数组
+            // 已撤销
+            let arr = data.slice(0, data.length)
+            if (this.isCancel) {
+              this.recordList = arr[0]
+            }
+            // 有拒绝显示到拒绝节点  没有拒绝节点显示到同意审批的下一个节点
+            else if (this.isReject) {
+              this.recordList = arr.reverse()
+            }
+            // 审批中或者审批完成
+            else {
+              this.recordList = arr.reverse()
+            }
+            resolve(true)
+          })
+          .catch(() => {
+            reject(false)
+          })
+          .finally(() => {
+            countAjax--
+            countAjax || (this.loading = false)
+            this.isFirst = false
+          })
+      })
+      let nodeData = JSON.parse(this.applyDetail.nodeData || '{}')
+      this.progressList &&
+        this.progressList.length > 0 &&
+        this.progressList.map((it) => {
+          nodeData &&
+            nodeData.length > 0 &&
+            nodeData.map((item) => {
+              if (it.nodeId === item.type) {
+                item.approveTime = it.approveTime
+                item.userName = it.userName
+                item.result = it.result
+              }
+              if (it.nodeId === item.nodeId) {
+                item.approveTime = it.approveTime
+                item.userName = it.userName
+                item.result = it.result
+              }
+            })
         })
     },
     goBack() {

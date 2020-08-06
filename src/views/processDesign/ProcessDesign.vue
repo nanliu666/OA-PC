@@ -370,15 +370,10 @@ export default {
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
           item.assignee = '${optional_' + data.nodeId + '_id}'
-          let length = data.content.split(',').length
-          if (length < 2 && !data.properties.optionalMultiUser) {
+          if (!data.properties.optionalMultiUser) {
             origin.variable = 'optional_' + data.nodeId + '_id'
             this.processMap['optional_' + data.nodeId + '_id'] = ''
-          }
-          if (
-            data.properties.optionalMultiUser ||
-            (length > 1 && !data.properties.optionalMultiUser)
-          ) {
+          } else if (data.properties.optionalMultiUser) {
             origin.variable = 'optional_' + data.nodeId
             item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
             item.collection = 'optional_' + data.nodeId
