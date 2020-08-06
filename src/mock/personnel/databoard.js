@@ -446,7 +446,7 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/data/v1/data/user/educationalLevel' + '(\\?.*)?$'), 'get', (req) => {
     const response = _.times(_.size(EDUCATIONAL_LEVEL_DICTS), (i) =>
       Mock.mock({
-        workNum: _.random(100),
+        workNum: i < 4 ? 0 : _.random(100),
         educationalLevel: EDUCATIONAL_LEVEL_DICTS[i]
       })
     )
