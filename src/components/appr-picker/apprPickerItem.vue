@@ -1,7 +1,10 @@
 <template>
   <div class="appr-user-item__box">
-    <div :class="['appr-user-item', { 'appr-user-item__first': isFirst }]">
-      <div class="appr-user-item__tail" />
+    <div class="appr-user-item">
+      <div
+        v-if="!isLast"
+        class="appr-user-item__tail"
+      />
       <div class="appr-user-item__node" />
       <div class="appr-user-item__wrapper">
         <div class="appr-user-item__header">
@@ -69,12 +72,14 @@
     </div>
     <appr-picker-item
       v-if="data && (data.childNode || data.conditionNodes)"
+      :path="`${path}-0`"
       :child-node="data.childNode"
       :form-data="formData"
       :condition-nodes="data.conditionNodes"
     />
     <appr-picker-item
       v-if="nextNode"
+      :path="`${path}-1`"
       :child-node="nextNode"
     />
   </div>
@@ -90,6 +95,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    path: {
+      type: String,
+      default: '0'
+    },
     conditionNodes: {
       type: Array,
       default: null
@@ -97,19 +106,17 @@ export default {
     childNode: {
       type: Object,
       default: null
-    },
-    isFirst: {
-      type: Boolean,
-      default: false
     }
   },
   data() {
     return {
       data: null,
       nextNode: null,
-      watcher: null
+      watcher: null,
+      isLast: false
     }
   },
+  inject: ['isLastNode'],
   computed: {
     // 是否会签
     isCounterSign() {
@@ -147,6 +154,9 @@ export default {
   },
   beforeDestroy() {
     this.watcher && this.watcher()
+  },
+  mounted() {
+    this.isLast = this.isLastNode(this.path)
   },
   created() {
     if (this.conditionNodes) {

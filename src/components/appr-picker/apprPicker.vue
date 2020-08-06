@@ -14,6 +14,7 @@
         <appr-picker-item
           v-if="processData && conditionFieldsFullfilled"
           ref="apprPickerItem"
+          path="0"
           :form-data="formData"
           :child-node="processData.childNode"
           :condition-nodes="processData.conditionNodes"
@@ -84,6 +85,21 @@ export default {
       deep: true
     }
   },
+  provide: function() {
+    const that = this
+    return {
+      isLastNode: function(path) {
+        const pathList = []
+        const loop = ($el) => {
+          pathList.push($el.path)
+          let children = $el.$children.filter((item) => item.$options.name === 'ApprPickerItem')
+          children.forEach((child) => loop(child))
+        }
+        loop(that.$refs.apprPickerItem)
+        return path === _.max(pathList)
+      }
+    }
+  },
   methods: {
     validate() {
       return this.$refs.form.validate()
@@ -92,7 +108,7 @@ export default {
       if (!this.checkApprovers()) {
         return false
       }
-      const processMap = this.createProcessMap(this.$refs.apprPickerItem)
+      const processMap = this.createProcessMap()
       const nodeData = this.createNodeLine()
 
       return submitApprApply({
@@ -130,7 +146,7 @@ export default {
       return valid
     },
     // 递归生成变量数据对象
-    createProcessMap($root) {
+    createProcessMap() {
       let map = {}
       const loop = ($el) => {
         let data = $el.data
@@ -155,7 +171,7 @@ export default {
           children.forEach((child) => loop(child))
         }
       }
-      loop($root)
+      loop(this.$refs.apprPickerItem)
       return map
     },
     // 生成条件变量
@@ -204,7 +220,7 @@ export default {
         // 注意sort是为了将节点按上下顺序排序
         let children = $el.$children
           .filter((item) => item.$options.name === 'ApprPickerItem')
-          .sort((a, b) => a.$el.offsetTop - b.$el.offsetTop)
+          .sort((a, b) => a.path > b.path)
         children.forEach((child) => loop(child))
       }
       loop(this.$refs.apprPickerItem)
