@@ -94,8 +94,8 @@
         <template #approveUser="{row}">
           <span class="table__tags">
             <el-tag
-              v-for="tag of row.approveUser"
-              :key="tag.userId"
+              v-for="(tag, index) of row.approveUser"
+              :key="index"
               size="small"
             >
               {{ tag.userName }}
@@ -171,7 +171,7 @@ const TABLE_COLUMNS = [
 ]
 
 const TABLE_CONFIG = {
-  rowKey: (row) => row.id,
+  rowKey: 'apprNo',
   showHandler: true,
   showIndexColumn: false,
   enablePagination: true,
@@ -361,7 +361,7 @@ export default {
     // 处理跳转
     handleLinkApprNoClick(row) {
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
       })
     },
