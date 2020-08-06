@@ -306,12 +306,21 @@ export default ({ mock }) => {
   // 员工年代分布查询接口
   Mock.mock(new RegExp('/data/v1/data/user/year' + '(\\?.*)?$'), 'get', (req) => {
     const YAER_NAME = ['60后', '70后', '80后', '90后', '00后', '10后']
-    const response = _.times(_.size(YAER_NAME), (i) =>
-      Mock.mock({
-        workNum: _.random(100),
-        sex: _.random(),
-        yearName: YAER_NAME[i]
-      })
+    const response = _.concat(
+      _.times(_.size(YAER_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 0,
+          yearName: YAER_NAME[i]
+        })
+      ),
+      _.times(_.size(YAER_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 1,
+          yearName: YAER_NAME[i]
+        })
+      )
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
