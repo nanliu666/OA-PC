@@ -29,6 +29,7 @@ import taskcenter from './taskcenter'
 import todo from './todo'
 import transction from './transction'
 import user from './user'
+import mailList from './mailList'
 
 /**
  * 模拟数据mock
@@ -81,3 +82,4 @@ entry(options)
 taskcenter(options)
 schedule(options)
 remind(options)
+mailList(options)
