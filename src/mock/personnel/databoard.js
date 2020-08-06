@@ -470,12 +470,21 @@ export default ({ mock }) => {
   // 员工年龄查询接口
   Mock.mock(new RegExp('/data/v1/data/user/age' + '(\\?.*)?$'), 'get', (req) => {
     const AGE_NAME = ['小于20岁', '20-30岁', '31-40岁', '41-50岁', '51-60岁', '大于60岁']
-    const response = _.times(_.size(AGE_NAME), (i) =>
-      Mock.mock({
-        workNum: _.random(100),
-        sex: _.random(),
-        ageName: AGE_NAME[i]
-      })
+    const response = _.concat(
+      _.times(_.size(AGE_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 0,
+          ageName: AGE_NAME[i]
+        })
+      ),
+      _.times(_.size(AGE_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 1,
+          ageName: AGE_NAME[i]
+        })
+      )
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
