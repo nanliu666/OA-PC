@@ -431,12 +431,21 @@ export default ({ mock }) => {
 
   // 员工婚育状况查询接口
   Mock.mock(new RegExp('/data/v1/data/user/marriage' + '(\\?.*)?$'), 'get', (req) => {
-    const response = _.times(3, (i) =>
-      Mock.mock({
-        workNum: _.random(100),
-        sex: _.random(),
-        marriage: i
-      })
+    const response = _.concat(
+      _.times(3, (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 0,
+          marriage: i
+        })
+      ),
+      _.times(3, (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 1,
+          marriage: i
+        })
+      )
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
