@@ -258,9 +258,7 @@ export default ({ mock }) => {
     const response = _.times(_.size(LEAVE_REASON_DICTS), (i) =>
       Mock.mock({
         leaveNum: _.random(100), // 离职人数
-        reason: LEAVE_REASON_DICTS[i], // 离职原因
-        orgId: '@id()',
-        orgName: '@cword(2)集团'
+        reason: LEAVE_REASON_DICTS[i] // 离职原因
       })
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
@@ -308,12 +306,21 @@ export default ({ mock }) => {
   // 员工年代分布查询接口
   Mock.mock(new RegExp('/data/v1/data/user/year' + '(\\?.*)?$'), 'get', (req) => {
     const YAER_NAME = ['60后', '70后', '80后', '90后', '00后', '10后']
-    const response = _.times(_.size(YAER_NAME), (i) =>
-      Mock.mock({
-        workNum: _.random(100),
-        sex: _.random(),
-        yearName: YAER_NAME[i]
-      })
+    const response = _.concat(
+      _.times(_.size(YAER_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 0,
+          yearName: YAER_NAME[i]
+        })
+      ),
+      _.times(_.size(YAER_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 1,
+          yearName: YAER_NAME[i]
+        })
+      )
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
@@ -433,12 +440,21 @@ export default ({ mock }) => {
 
   // 员工婚育状况查询接口
   Mock.mock(new RegExp('/data/v1/data/user/marriage' + '(\\?.*)?$'), 'get', (req) => {
-    const response = _.times(3, (i) =>
-      Mock.mock({
-        workNum: _.random(100),
-        sex: _.random(),
-        marriage: i
-      })
+    const response = _.concat(
+      _.times(3, (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 0,
+          marriage: i
+        })
+      ),
+      _.times(3, (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 1,
+          marriage: i
+        })
+      )
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
@@ -448,7 +464,7 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/data/v1/data/user/educationalLevel' + '(\\?.*)?$'), 'get', (req) => {
     const response = _.times(_.size(EDUCATIONAL_LEVEL_DICTS), (i) =>
       Mock.mock({
-        workNum: _.random(100),
+        workNum: i < 4 ? 0 : _.random(100),
         educationalLevel: EDUCATIONAL_LEVEL_DICTS[i]
       })
     )
@@ -472,12 +488,21 @@ export default ({ mock }) => {
   // 员工年龄查询接口
   Mock.mock(new RegExp('/data/v1/data/user/age' + '(\\?.*)?$'), 'get', (req) => {
     const AGE_NAME = ['小于20岁', '20-30岁', '31-40岁', '41-50岁', '51-60岁', '大于60岁']
-    const response = _.times(_.size(AGE_NAME), (i) =>
-      Mock.mock({
-        workNum: _.random(100),
-        sex: _.random(),
-        ageName: AGE_NAME[i]
-      })
+    const response = _.concat(
+      _.times(_.size(AGE_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 0,
+          ageName: AGE_NAME[i]
+        })
+      ),
+      _.times(_.size(AGE_NAME), (i) =>
+        Mock.mock({
+          workNum: _.random(100),
+          sex: 1,
+          ageName: AGE_NAME[i]
+        })
+      )
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
