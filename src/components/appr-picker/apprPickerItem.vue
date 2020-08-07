@@ -75,6 +75,7 @@
       :path="`${path}-0`"
       :child-node="data.childNode"
       :form-data="formData"
+      :full-org-id="fullOrgId"
       :condition-nodes="data.conditionNodes"
     />
     <appr-picker-item
@@ -106,6 +107,11 @@ export default {
     childNode: {
       type: Object,
       default: null
+    },
+    // 当前用户所选组织全路径
+    fullOrgId: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -113,14 +119,15 @@ export default {
       data: null,
       nextNode: null,
       watcher: null,
-      isLast: false
+      isLast: false,
+      noMatchOrg: false
     }
   },
   inject: ['isLastNode'],
   computed: {
     // 是否会签
     isCounterSign() {
-      return _.get(this.data, 'properties.optionalMultiUser', false)
+      return _.get(this.data, 'properties.counterSign', false)
     },
     optionList() {
       return this.data.type === 'approver'
@@ -159,11 +166,11 @@ export default {
     this.isLast = this.isLastNode(this.path)
   },
   created() {
-    if (this.conditionNodes) {
+    if (this.conditionNodes && this.conditionNodes.length > 0) {
       this.nextNode = this.childNode
       this.watcher = this.$watch(
-        'formData',
-        function(val) {
+        () => JSON.stringify(this.formData) + this.fullOrgId,
+        function() {
           let flag = this.conditionNodes.some((node) => {
             let flag = true
             node.properties.conditions.forEach((condition) => {
@@ -171,23 +178,31 @@ export default {
                 // defaultValue.type { lt: '<', lte: '≤', gt: '>', gte: '≥', eq: '=' }
                 if (
                   _[condition.defaultValue.type](
-                    val[condition.vModel],
+                    this.formData[condition.vModel],
                     condition.defaultValue.value
                   )
                 ) {
                   return
                 }
               } else if (condition.type === 'radio' && typeof condition.val !== 'undefined') {
-                if (val[condition.vModel] === condition.val) {
+                if (this.formData[condition.vModel] === condition.val) {
                   return
                 }
               } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
-                if (val[condition.vModel] === condition.val) {
+                if (this.formData[condition.vModel] === condition.val) {
                   return
                 }
               }
               flag = false
             })
+            if (node.properties.initiator && node.properties.initiator.length > 0) {
+              flag =
+                this.fullOrgId &&
+                node.properties.initiator.some((item) =>
+                  _.includes(this.fullOrgId.split('.'), item.orgId)
+                )
+              this.noMatchOrg = !flag
+            }
             if (flag) {
               this.data = node.childNode
               !this.data.userList && this.initUserList(this.data)

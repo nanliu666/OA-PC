@@ -8,20 +8,41 @@
       label-position="top"
     >
       <el-form-item
+        v-if="conditonHasInitiator"
+        label="所在部门"
+      >
+        <el-select
+          v-model="fullOrgId"
+          placeholder="请选择部门"
+        >
+          <el-option
+            v-for="org of userOrgList"
+            :key="org.fullOrgId"
+            :label="org.orgName"
+            :value="org.fullOrgId"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item
         label="审批流程"
         prop="approver"
       >
         <appr-picker-item
-          v-if="processData && conditionFieldsFullfilled"
+          v-if="processData"
+          v-show="conditonHasInitiator ? !noMatchOrg() : conditionFieldsFullfilled"
           ref="apprPickerItem"
           path="0"
           :form-data="formData"
           :child-node="processData.childNode"
           :condition-nodes="processData.conditionNodes"
+          :full-org-id="fullOrgId"
           :is-first="true"
         />
-        <div v-if="!conditionFieldsFullfilled">
+        <div v-if="conditonHasInitiator ? !fullOrgId : !conditionFieldsFullfilled">
           必填信息填写后，流程将自动显示
+        </div>
+        <div v-if="fullOrgId && noMatchOrg()">
+          流程出错：当前条件没有设置审批人，请联系管理员
         </div>
       </el-form-item>
     </el-form>
@@ -30,7 +51,7 @@
 
 <script>
 import apprPickerItem from './apprPickerItem'
-import { submitApprApply } from '@/api/apprProcess/apprProcess'
+import { submitApprApply, getUserOrgList } from '@/api/apprProcess/apprProcess'
 
 import { mapGetters } from 'vuex'
 
@@ -63,8 +84,11 @@ export default {
     }
     return {
       pickerVisible: false,
+      conditonHasInitiator: false,
       conditionFieldsFullfilled: false,
       conditionFields: [],
+      userOrgList: [],
+      fullOrgId: null,
       rules: {
         approver: [{ required: true, validator: checkAppr }]
       }
@@ -77,12 +101,22 @@ export default {
   watch: {
     formData: {
       handler(val) {
-        // 动态检查条件对应的自身是否全部填写
+        // 动态检查条件对应的字段是否全部填写
         this.conditionFieldsFullfilled = this.getConditionFields(this.processData).every(
           (field) => !_.isNil(val[field])
         )
       },
       deep: true
+    },
+    processData: {
+      handler(val) {
+        this.conditonHasInitiator = _.get(val, 'conditionNodes', []).some(
+          (node) => _.get(node, 'properties.initiator.length') > 0
+        )
+        if (this.conditonHasInitiator) {
+          this.getUserOrgList()
+        }
+      }
     }
   },
   provide: function() {
@@ -101,6 +135,14 @@ export default {
     }
   },
   methods: {
+    noMatchOrg() {
+      return this.$refs.apprPickerItem && this.$refs.apprPickerItem.noMatchOrg
+    },
+    getUserOrgList() {
+      getUserOrgList({ userId: this.userId }).then((res) => {
+        this.userOrgList = res
+      })
+    },
     validate() {
       return this.$refs.form.validate()
     },
