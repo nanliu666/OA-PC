@@ -87,7 +87,7 @@ import BasicSetting from './components/BasicSetting/BasicSetting'
 import AdvancedSetting from './components/AdvancedSetting/AdvancedSetting'
 // import { postDeploy } from '../../api'
 import { Base64 } from 'js-base64'
-import { getApprProcess, postApprProcess } from '@/api/processDesign/basicSetting'
+import { getApprProcess, postApprProcess, putApprProcess } from '@/api/processDesign/basicSetting'
 // import mockData from "@/views/processDesign/mockData";
 
 const beforeUnload = function(e) {
@@ -288,6 +288,7 @@ export default {
       //     "flowCategory": "leave"，    // 流程分类
       // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
       let params = {
+        processId: this.$route.query.processId,
         processData: this.base,
         processMap: this.processMap,
         baseJson: Base64.encode(JSON.stringify(param)),
@@ -295,8 +296,15 @@ export default {
       }
       // eslint-disable-next-line
       console.log(JSON.stringify(param))
-      postApprProcess(params).then(() => {
+      let ApprProcess = ''
+      this.$route.query.processId ? (ApprProcess = putApprProcess) : postApprProcess
+      ApprProcess(params).then(() => {
         this.$message.success('提交成功')
+        setTimeout(() => {
+          this.$router.push({
+            path: '/apprProcess/approvalList'
+          })
+        }, 2000)
       })
       // postDeploy(params).then(() => {
       //   this.$message.success('提交成功')
