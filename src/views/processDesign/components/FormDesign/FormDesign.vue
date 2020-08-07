@@ -156,14 +156,22 @@ export default {
     }
   },
   // 数据持久化暂时不做
-  // watch: {
-  //   drawingList: {
-  //     handler(val) {
-  //       this.saveDrawingListDebounce(val)
-  //     },
-  //     deep: true
-  //   }
-  // },
+  watch: {
+    conf: {
+      handler(val) {
+        if (typeof val === 'object' && val !== null) {
+          this.drawingList = val.fields
+          Object.assign(this.formConf, val)
+        }
+      }
+    }
+    //   drawingList: {
+    //     handler(val) {
+    //       this.saveDrawingListDebounce(val)
+    //     },
+    //     deep: true
+    //   }
+  },
   mounted() {
     if (typeof this.conf === 'object' && this.conf !== null) {
       this.drawingList = this.conf.fields

@@ -110,7 +110,7 @@
             align-center
           >
             <el-step
-              v-for="(item, index) in progressList"
+              v-for="(item, index) in progressRecord"
               :key="index"
             >
               <!-- 自定义图标 -->
@@ -130,7 +130,7 @@
                     已拒绝
                   </div>
                   <div
-                    v-else-if="index == progressList.length - 1 && isFished"
+                    v-else-if="index == activeStep && isFished"
                     class="tip fished-text"
                   >
                     已通过
@@ -153,12 +153,41 @@
                   v-else
                   class="title"
                 >
-                  {{ `${item.jobName}审批` }}
+                  {{ `${item.jobName || ''}审批` }}
                 </div>
               </template>
               <!-- 自定义内容 -->
               <template slot="description">
                 <div class="description-box">
+                  <div v-if="item.approveList">
+                    <span
+                      v-for="(it, i) in item.approveList"
+                      :key="it.id"
+                    >
+                      <span :class="[it.result, !it.result ? 'result' : '']">
+                        {{ it.userName }}</span>
+                      <span v-if="item.properties.counterSign && i < item.approveList.length - 1">
+                        +
+                      </span>
+                      <span v-if="!item.properties.counterSign && i < item.approveList.length - 1">
+                        /
+                      </span>
+                    </span>
+                  </div>
+                  <div v-else-if="item.type !== 'start'">
+                    <span
+                      v-for="(it, i) in item.userList"
+                      :key="it.id"
+                    >
+                      <span>{{ it.name }}</span>
+                      <span v-if="item.properties.counterSign && i < item.userList.length - 1">
+                        +
+                      </span>
+                      <span v-if="!item.properties.counterSign && i < item.userList.length - 1">
+                        /
+                      </span>
+                    </span>
+                  </div>
                   <div>{{ item.userName }}</div>
                   <div>{{ item.approveTime }}</div>
                   <div>
@@ -419,6 +448,7 @@ export default {
 
   data() {
     return {
+      progressRecord: [],
       loading: false,
       // 审批编号
       apprNo: '',
@@ -587,26 +617,26 @@ export default {
             this.applyUserId = data[0].userId
             // 审批进度Data数组
             this.progressList = res.data
-            // 判断是否已撤回，已拒绝,已完成
-            this.progressList.forEach((item, index) => {
-              if (item.result === 'Cancel') {
-                this.isCancel = true
-                this.activeStep = index
-              }
-              if (item.result === 'Reject') {
-                this.isReject = true
-                this.activeStep = index
-              }
-              if (index == this.progressList.length - 1 && item.result == 'Pass' && index != 0) {
-                this.isFished = true
-                this.activeStep = index
-              }
-            })
+            // // 判断是否已撤回，已拒绝,已完成
+            // this.progressList.forEach((item, index) => {
+            //   if (item.result === 'Cancel') {
+            //     this.isCancel = true
+            //     this.activeStep = index
+            //   }
+            //   if (item.result === 'Reject') {
+            //     this.isReject = true
+            //     this.activeStep = index
+            //   }
+            //   if (index == this.progressList.length - 1 && item.result == 'Pass' && index != 0) {
+            //     this.isFished = true
+            //     this.activeStep = index
+            //   }
+            // })
             //如果不是 以上状态 ，在审批中，获取流程走到哪个节点
             if (!this.isCancel && !this.isReject && !this.isFished) {
-              this.activeStep = this.progressList.findIndex((item, index) => {
-                return item.result === '' && index != 0
-              })
+              // this.activeStep = this.progressList.findIndex((item, index) => {
+              //   return item.result === '' && index != 0
+              // })
               // 当前审批人的ID
               // this.apprUserId = this.progressList[this.activeStep].userId
               this.apprUserIdList = []
@@ -641,7 +671,9 @@ export default {
             this.isFirst = false
           })
       })
+
       let nodeData = JSON.parse(this.applyDetail.nodeData || '{}')
+      // 判断是否已撤回，已拒绝,已完成
       this.progressList &&
         this.progressList.length > 0 &&
         this.progressList.map((it) => {
@@ -654,12 +686,40 @@ export default {
                 item.result = it.result
               }
               if (it.nodeId === item.nodeId) {
-                item.approveTime = it.approveTime
-                item.userName = it.userName
-                item.result = it.result
+                !item.approveList && (item.approveList = [])
+                item.approveList.push(it)
               }
             })
         })
+      nodeData &&
+        nodeData.length > 0 &&
+        nodeData.map((it, index) => {
+          let result = []
+          it.approveList &&
+            it.approveList.length > 0 &&
+            it.approveList.map((item) => {
+              result.push(item.result)
+            })
+          if (it.approveList && it.approveList.length > 0) {
+            if (result.includes('Reject')) {
+              this.isReject = true
+              this.activeStep = index
+            } else if (result.includes('Cancel')) {
+              this.isCancel = true
+              this.activeStep = index
+            } else if (result.includes('')) {
+              this.activeStep = index
+            } else if (index === nodeData.length - 1 && result.includes('Pass')) {
+              this.isFished = true
+              this.activeStep = index
+            }
+          }
+          if (it.type === 'start') {
+            it.result === 'Cancel' && (this.isCancel = true)
+          }
+        })
+      // this./**/
+      this.progressRecord = nodeData
     },
     goBack() {
       // 返回
@@ -698,7 +758,12 @@ export default {
       this.$refs.apprForm.validate((result) => {
         if (!result) return
         this.btnloading = true
-        let { userId, taskId } = this.progressList[this.activeStep]
+        // let { userId, taskId } = this.progressList[this.activeStep]
+        let userId = this.userId
+        let taskId = ''
+        this.progressList.map((it) => {
+          userId === it.userId && (taskId = it.taskId)
+        })
         if (this.apprType === 'Reject') {
           createApprReject({
             userId,
@@ -722,7 +787,7 @@ export default {
             userId,
             taskId,
             processInstanceId: this.processInstanceId,
-            comment: this.comment
+            comment: this.apprForm.comment
           })
             .then(() => {
               this.$message({
@@ -739,12 +804,10 @@ export default {
       })
     },
     // 点击催一下
-    handelUrge(params) {
+    handelUrge() {
       createApprUrge({
         apprNo: this.apprNo,
-        processId: this.processId,
-        processInstanceId: this.processInstanceId,
-        taskId: params.taskId
+        processInstanceId: this.processInstanceId
       }).then(() => {
         this.$message({
           type: 'success',
@@ -771,51 +834,63 @@ export default {
     color: #333333;
     font-weight: bold;
   }
+
   .info {
     display: flex;
     justify-content: space-between;
+
     & > div {
       margin-top: 16px;
       height: 43px;
     }
+
     & > div :first-child {
       margin-bottom: 7px;
       font-family: PingFangSC-Regular;
       font-size: 14px;
       color: #545b66;
     }
+
     & > div :last-child {
       font-family: PingFangSC-Medium;
       font-size: 16px;
       color: #a1a7ae;
     }
+
     .num-box {
       flex: 1;
     }
+
     .apply-user-box {
       text-align: center;
       flex: 1;
       display: flex;
       justify-content: center;
+
       > div {
         text-align: start;
       }
+
       border-left: 1px solid #e3e7e9;
     }
+
     .apply-time {
       text-align: center;
       flex: 1.5;
       border-left: 1px solid #e3e7e9;
       display: flex;
       justify-content: center;
+
       > div {
         text-align: start;
       }
     }
+
     .apply-status {
       text-align: end;
       border-left: 1px solid #e3e7e9;
       flex: 0.5;
+
       :nth-child(2) {
         font-family: PingFangSC-Medium;
         font-size: 16px;
@@ -825,10 +900,12 @@ export default {
     }
   }
 }
+
 // 申请详情标题
 .apply-detail-title {
   margin-top: 24px;
   margin-bottom: 2px;
+
   .title-box {
     display: flex;
     justify-content: space-between;
@@ -840,6 +917,7 @@ export default {
       color: #333333;
       font-weight: bold;
     }
+
     .btn-box {
       font-family: PingFangSC-Regular;
       font-size: 14px;
@@ -849,18 +927,22 @@ export default {
     }
   }
 }
+
 // 审批详情
 .apply-detail {
   border-bottom: 2px transparent solid;
+
   .detail-box {
     display: flex;
     justify-content: start;
     flex-wrap: wrap;
+
     .detail-item {
       width: 50%;
       display: flex;
       margin-bottom: 30px;
       font-size: 14px;
+
       :first-child {
         margin-right: 15px;
         font-family: PingFangSC-Regular;
@@ -869,12 +951,14 @@ export default {
         width: 246px;
         vertical-align: middle;
       }
+
       :nth-child(2) {
         max-width: 252px;
       }
     }
   }
 }
+
 // 流程进度
 .progress-wrap {
   .progress-wrap-title {
@@ -885,43 +969,54 @@ export default {
     font-weight: bold;
     margin-bottom: 24px;
   }
+
   /deep/ .el-step__icon.is-text {
     border: 0px;
   }
+
   /deep/ .el-step__title.is-wait .title {
     color: #212a3f;
     font-size: 14px;
   }
-  /deep/.el-step__title.is-process {
+
+  /deep/ .el-step__title.is-process {
     font-weight: normal;
   }
-  /deep/.el-step__title.is-process .title {
+
+  /deep/ .el-step__title.is-process .title {
     font-family: PingFangSC-Regular;
     font-size: 14px;
     color: #212a3f;
   }
-  /deep/.el-step__title.is-finish .title {
+
+  /deep/ .el-step__title.is-finish .title {
     font-family: PingFangSC-Regular;
     font-size: 14px;
     color: #212a3f;
   }
+
   .icon-box {
     position: relative;
+
     .tip {
       position: absolute;
       top: -30px;
       left: -20px;
     }
+
     .cancel-text {
       color: red;
     }
+
     .reject-text {
       color: red;
     }
+
     .fished-text {
       color: #368afa;
     }
   }
+
   // 小圆圈
   .icon {
     width: 9px;
@@ -935,6 +1030,7 @@ export default {
     font-size: 14px;
     color: #738399;
   }
+
   // 催一下
   .isUrge {
     font-family: PingFangSC-Regular;
@@ -942,25 +1038,32 @@ export default {
     color: #368afa;
     cursor: pointer;
   }
+
   .active {
     background: #368afa;
   }
+
   .cancel {
     background: red;
   }
+
   .reject {
     background: red;
   }
 }
+
 // <!-- 审批记录 -->
 .record-wrap {
   margin-top: 43px;
+
   /deep/ .el-step__icon.is-text {
     border: 0px;
   }
-  /deep/.el-step__description.is-wait {
+
+  /deep/ .el-step__description.is-wait {
     padding-right: 0;
   }
+
   .record-wrap-title {
     font-family: PingFangSC-Medium;
     font-size: 18px;
@@ -969,6 +1072,7 @@ export default {
     font-weight: bold;
     margin-bottom: 24px;
   }
+
   // 小圆圈
   .icon {
     width: 9px;
@@ -976,20 +1080,24 @@ export default {
     background: #368afa;
     border-radius: 100%;
   }
+
   .icon.isReject {
     background: red;
   }
+
   .title {
     font-family: PingFangSC-Regular;
     font-size: 14px;
     color: #212a3f;
     line-height: 24px;
   }
+
   .description-box {
     margin-top: 5px;
     background: #f7f8fa;
     display: flex;
     margin-bottom: 50px;
+
     .img-box {
       width: 63px;
       height: 63px;
@@ -1006,16 +1114,19 @@ export default {
         height: 48px;
       }
     }
+
     .detail-box {
       margin-left: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-around;
+
       :first-child {
         font-family: PingFangSC-Medium;
         font-size: 14px;
         color: #333333;
         line-height: 30px;
+
         span {
           margin: 6px 0 0 8px;
           display: inline-block;
@@ -1024,32 +1135,39 @@ export default {
           line-height: 14px;
           padding: 5px 10px;
         }
+
         .isPass {
           background-color: #f2fbf3;
           color: #7ad683;
         }
+
         .isReject {
           color: #ff8b8a;
           background-color: #fff3f3;
         }
+
         .appring {
           color: #6aafff;
           background: #edf8ff;
         }
+
         .initiateAppl {
           color: #7ad683;
           background: #f0fff0;
         }
+
         .isCancel {
           color: #ff8b8a;
           background-color: #fff3f3;
         }
       }
+
       :nth-child(2) {
         font-family: PingFangSC-Regular;
         font-size: 14px;
         color: #757c85;
         display: flex;
+
         :nth-child(2) {
           margin-left: 18px;
           line-height: 30px;
@@ -1058,16 +1176,34 @@ export default {
     }
   }
 }
+
 .cancel-btn-box {
   display: flex;
   justify-content: center;
 }
 
 // 审批框
-/deep/.el-form--label-top .el-form-item__label {
+/deep/ .el-form--label-top .el-form-item__label {
   padding: 0;
 }
-/deep/.el-dialog__body {
+
+/deep/ .el-dialog__body {
   padding: 0 20px;
+}
+
+.result {
+  color: #6aafff;
+}
+
+.Pass {
+  color: #7ad683;
+}
+
+.Reject {
+  color: #ff8b8a;
+}
+
+.Cancel {
+  color: #ff8b8a;
 }
 </style>
