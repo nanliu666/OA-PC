@@ -166,7 +166,7 @@ export default {
     this.isLast = this.isLastNode(this.path)
   },
   created() {
-    if (this.conditionNodes && this.conditionNodes.length > 0) {
+    if (!_.isEmpty(this.conditionNodes)) {
       this.nextNode = this.childNode
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
@@ -195,7 +195,7 @@ export default {
               }
               flag = false
             })
-            if (node.properties.initiator && node.properties.initiator.length > 0) {
+            if (!_.isEmpty(node.properties.initiator)) {
               flag =
                 this.fullOrgId &&
                 node.properties.initiator.some((item) =>
@@ -217,9 +217,7 @@ export default {
       )
     } else {
       this.data = this.childNode
-      if (!this.data.userList) {
-        this.initUserList(this.data)
-      }
+      !this.data.userList && this.initUserList(this.data)
     }
   },
   methods: {

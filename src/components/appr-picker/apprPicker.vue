@@ -27,9 +27,15 @@
         label="审批流程"
         prop="approver"
       >
+        <!-- 当流程数据存在时挂载  -->
+        <!--如果第一级条件存在发起人时，需要校验是否选择了当前部门-->
         <appr-picker-item
           v-if="processData"
-          v-show="conditonHasInitiator ? !noMatchOrg() : conditionFieldsFullfilled"
+          v-show="
+            conditonHasInitiator
+              ? !noMatchOrg() && conditionFieldsFullfilled
+              : conditionFieldsFullfilled
+          "
           ref="apprPickerItem"
           path="0"
           :form-data="formData"
@@ -38,7 +44,13 @@
           :full-org-id="fullOrgId"
           :is-first="true"
         />
-        <div v-if="conditonHasInitiator ? !fullOrgId : !conditionFieldsFullfilled">
+        <div
+          v-if="
+            conditonHasInitiator
+              ? !fullOrgId || !conditionFieldsFullfilled
+              : !conditionFieldsFullfilled
+          "
+        >
           必填信息填写后，流程将自动显示
         </div>
         <div v-if="fullOrgId && noMatchOrg()">
@@ -72,15 +84,11 @@ export default {
   },
   data() {
     var checkAppr = (rule, value, callback) => {
-      if (!this.conditionFieldsFullfilled) {
-        callback(new Error('请先填写表单必填项'))
-        return
+      let res = this.checkValidate()
+      if (!res.valid) {
+        callback(new Error(res.message))
       }
-      if (!this.checkApprovers()) {
-        callback(new Error('请选择审批人'))
-      } else {
-        callback()
-      }
+      callback()
     }
     return {
       pickerVisible: false,
@@ -110,6 +118,7 @@ export default {
     },
     processData: {
       handler(val) {
+        // 监听流程数据判断有没有发起人条件，有的话并获取用户所在的组织
         this.conditonHasInitiator = _.get(val, 'conditionNodes', []).some(
           (node) => _.get(node, 'properties.initiator.length') > 0
         )
@@ -122,6 +131,7 @@ export default {
   provide: function() {
     const that = this
     return {
+      // 根据path判断是否是最后一个节点
       isLastNode: function(path) {
         const pathList = []
         const loop = ($el) => {
@@ -147,7 +157,7 @@ export default {
       return this.$refs.form.validate()
     },
     submit(data) {
-      if (!this.checkApprovers()) {
+      if (!this.checkValidate().valid) {
         return false
       }
       const processMap = this.createProcessMap()
@@ -166,6 +176,24 @@ export default {
         ),
         nodeData: JSON.stringify(nodeData)
       })
+    },
+    checkValidate() {
+      let message = null,
+        valid = true
+      if (this.conditonHasInitiator && !this.fullOrgId) {
+        message = '请先选择所在部门'
+        valid = false
+      } else if (this.conditonHasInitiator && this.noMatchOrg()) {
+        message = '当前条件没有设置审批人，请联系管理员'
+        valid = false
+      } else if (!this.conditionFieldsFullfilled) {
+        message = '请先填写表单必填项'
+        valid = false
+      } else if (!this.checkApprovers()) {
+        message = '请选择审批人'
+        valid = false
+      }
+      return { message, valid }
     },
     // 递归检查审批人是否已选
     checkApprovers() {
@@ -201,6 +229,7 @@ export default {
             (data.properties.assigneeType == 'optional' && data.properties.optionalMultiUser) ||
             (data.properties.assigneeType == 'user' && data.userList.length > 1)
           ) {
+            // 会签或者或签审批人变量需要传数组类型
             map[data.variable] = [
               ...new Set(data.userList.map((item) => 'taskUser_' + item.id.split('_')[1]))
             ]
@@ -223,6 +252,7 @@ export default {
         return acc
       }, {})
     },
+    // 获取条件对应的表单字段
     getConditionFields() {
       const fields = new Set()
       const loop = (node) => {
