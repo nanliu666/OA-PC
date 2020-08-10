@@ -107,6 +107,7 @@ export const componentGroups = [
           tag: 'el-input-number',
           style: { width: '100%' },
           props: {
+            value: undefined,
             'controls-position': 'right'
           }
         },

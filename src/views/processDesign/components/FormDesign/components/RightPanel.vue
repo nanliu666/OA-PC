@@ -169,6 +169,7 @@
             :class="{
               'required-checked__condition': activeData.__config__.proCondition
             }"
+            :disabled="usedAsCondition"
             @change="requireChange"
           >
             必填
@@ -272,7 +273,7 @@ export default {
   components: {
     Draggable
   },
-  props: ['visible', 'activeData', 'activeId', 'isPC'],
+  props: ['visible', 'activeData', 'activeId', 'isPC', 'usedAsCondition'],
   data() {
     return {
       currentTab: 'field',

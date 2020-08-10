@@ -116,3 +116,11 @@ export const getRecordList = (params) => get('/appr/v2/appr/approve/record/list'
  * @param {string} [params.processName] 流程名称，支持模糊搜索
  */
 export const getProcessType = (params) => get('/appr/v2/appr/process/type', params)
+
+/**
+ *
+ * 发起人所在部门查询接口
+ * @param {object} params 查询参数
+ * @param {string} params.userId
+ */
+export const getUserOrgList = (params) => get('/appr/v2/appr/user/org/list', params)

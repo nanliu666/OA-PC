@@ -103,6 +103,7 @@
       :visible="!!activeId"
       :active-data="activeData"
       :active-id="activeId"
+      :used-as-condition="usedAsCondition(activeData)"
       :is-p-c="isPC"
     />
   </div>
@@ -226,7 +227,7 @@ export default {
       return isPcon && this.isFilledPCon([cmp.__config__.formId])
     },
     // 判断是否已被流程图作为条件必填项了
-    isProCondition(cmp) {
+    usedAsCondition(cmp) {
       if (Array.isArray(cmp.children) && cmp.children.length) {
         // 容器组件需要检查子元素
         if (cmp.rowType === 'table') return false // 表格的子元素不可能为流程条件
