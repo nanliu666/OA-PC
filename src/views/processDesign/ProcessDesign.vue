@@ -297,7 +297,7 @@ export default {
       // eslint-disable-next-line
       console.log(JSON.stringify(param))
       let ApprProcess = ''
-      this.$route.query.processId ? (ApprProcess = putApprProcess) : postApprProcess
+      this.$route.query.processId ? (ApprProcess = putApprProcess) : (ApprProcess = postApprProcess)
       ApprProcess(params).then(() => {
         this.$message.success('提交成功')
         setTimeout(() => {
