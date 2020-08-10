@@ -22,11 +22,12 @@
         >
           <form-parser
             ref="form"
-            :form-conf="formData"
+            :form-data.sync="form"
           />
           <appr-picker
             ref="apprPicker"
             :process-data="processData"
+            :form-data="form"
           />
           <div class="footer">
             <el-button
@@ -64,7 +65,8 @@ export default {
     return {
       basicSetting: {},
       formData: {},
-      processData: {},
+      form: {},
+      processData: null,
       advancedSetting: {},
       json: '',
       loading: false,
@@ -91,6 +93,7 @@ export default {
             this.formData = obj.formData
             this.processData = obj.processData
             this.advancedSetting = obj.advancedSetting
+            this.$refs.form.init(obj.formData)
           }
         })
         .finally(() => {
@@ -116,7 +119,6 @@ export default {
       })
     },
     goBack() {
-      this.clear()
       this.$router.go(-1)
     },
     clear() {

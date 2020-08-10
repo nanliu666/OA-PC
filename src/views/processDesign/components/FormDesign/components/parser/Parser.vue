@@ -124,6 +124,10 @@ export default {
     formConf: {
       type: Object,
       default: () => ({})
+    },
+    formData: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -135,27 +139,32 @@ export default {
   },
   computed: {},
   watch: {
-    formConf: {
+    form: {
       handler(val) {
-        if (this._.isEmpty(val)) {
-          return
-        }
-        const form = {},
-          rules = {}
-        this.formConfCopy = deepClone(val)
-        this.initFormData(val.fields, form)
-        this.buildRules(val.fields, rules)
-        this.form = form
-        this.rules = rules
-        this.$nextTick(() => {
-          this.$refs.form.clearValidate()
-        })
+        this.$emit('update:formData', val)
       },
-      deep: true,
-      immediate: true
+      deep: true
     }
   },
+  mounted() {
+    this.init(this.formConf)
+  },
   methods: {
+    init(conf) {
+      if (this._.isEmpty(conf)) {
+        return
+      }
+      const form = {},
+        rules = {}
+      this.formConfCopy = deepClone(conf)
+      this.initFormData(conf.fields, form)
+      this.buildRules(conf.fields, rules)
+      this.form = form
+      this.rules = rules
+      this.$nextTick(() => {
+        this.$refs.form.clearValidate()
+      })
+    },
     // 构建data属性
     initFormData(componentList = [], formData) {
       componentList.forEach((cur) => {

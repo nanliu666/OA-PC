@@ -101,6 +101,10 @@ export default {
       default: function() {
         return []
       }
+    },
+    isDepartment: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -227,27 +231,39 @@ export default {
       this.$emit('addUser', this.selectList)
       this.close()
     },
-    resolveTree(tree) {
+    resolveTree(tree, priv) {
+      // console.log(' :org="org"',tree)conso.log()
       if (tree.length > 0) {
         tree.forEach((node) => {
           if (node.orgName) {
             node.name = node.orgName
           }
-          let users
-          if (node.users) {
-            users = node.users.map((user) => ({
-              ...user,
-              id: node.orgId + '_' + user.userId,
-              type: 'user'
-            }))
-            if (node.children) {
-              node.children.push(...users)
-              this.resolveTree(node.children)
+
+          if (priv && node.orgId) {
+            if (!priv.newOrgId) {
+              node.newOrgId = priv.orgId + '_' + node.orgId
             } else {
-              node.children = users
+              node.newOrgId = priv.newOrgId + '_' + node.orgId
             }
-            if (node.orgId) {
-              node.id = node.orgId
+          }
+
+          if (!this.isDepartment) {
+            let users
+            if (node.users) {
+              users = node.users.map((user) => ({
+                ...user,
+                id: node.orgId + '_' + user.userId,
+                type: 'user'
+              }))
+              if (node.children) {
+                node.children.push(...users)
+                this.resolveTree(node.children, node)
+              } else {
+                node.children = users
+              }
+              if (node.orgId) {
+                node.id = node.orgId
+              }
             }
           }
         })

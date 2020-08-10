@@ -87,7 +87,7 @@ import BasicSetting from './components/BasicSetting/BasicSetting'
 import AdvancedSetting from './components/AdvancedSetting/AdvancedSetting'
 // import { postDeploy } from '../../api'
 import { Base64 } from 'js-base64'
-import { getApprProcess, postApprProcess } from '@/api/processDesign/basicSetting'
+import { getApprProcess, postApprProcess, putApprProcess } from '@/api/processDesign/basicSetting'
 // import mockData from "@/views/processDesign/mockData";
 
 const beforeUnload = function(e) {
@@ -288,6 +288,7 @@ export default {
       //     "flowCategory": "leave"，    // 流程分类
       // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
       let params = {
+        processId: this.$route.query.processId,
         processData: this.base,
         processMap: this.processMap,
         baseJson: Base64.encode(JSON.stringify(param)),
@@ -295,8 +296,14 @@ export default {
       }
       // eslint-disable-next-line
       console.log(JSON.stringify(param))
-      postApprProcess(params).then(() => {
+      let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
+      ApprProcess(params).then(() => {
         this.$message.success('提交成功')
+        setTimeout(() => {
+          this.$router.push({
+            path: '/apprProcess/approvalList'
+          })
+        }, 1000)
       })
       // postDeploy(params).then(() => {
       //   this.$message.success('提交成功')
@@ -340,6 +347,7 @@ export default {
       if (data.type === 'start') {
         //开始节点
         item.initiator = 'initiator'
+        // item.id = 'start'
       }
       if (data.type === 'copy') {
         //抄送人节点
@@ -369,15 +377,10 @@ export default {
         } else if (data.properties.assigneeType === 'optional') {
           // 发起人自选
           item.assignee = '${optional_' + data.nodeId + '_id}'
-          let length = data.content.split(',').length
-          if (length < 2 && !data.properties.optionalMultiUser) {
+          if (!data.properties.optionalMultiUser) {
             origin.variable = 'optional_' + data.nodeId + '_id'
             this.processMap['optional_' + data.nodeId + '_id'] = ''
-          }
-          if (
-            data.properties.optionalMultiUser ||
-            (length > 1 && !data.properties.optionalMultiUser)
-          ) {
+          } else if (data.properties.optionalMultiUser) {
             origin.variable = 'optional_' + data.nodeId
             item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
             item.collection = 'optional_' + data.nodeId
@@ -396,23 +399,6 @@ export default {
           item.assignee = 'taskUser_' + data.properties.attribute
         }
       }
-      if (data.prevId && data.prevId !== 'no_flow' && data.type !== 'condition') {
-        //有前节点且前节点不为no_flow,且节点类型不能为条件节点
-        let items = {
-          //节点线
-          type: 'flow', // flow, start, end, task, ccTask, gateway
-          id: data.prevId + data.nodeId,
-          name: data.properties.title, // 非必填
-          source: data.prevId,
-          target: data.nodeId
-        }
-        this.lineList.push(items)
-      }
-      if (data.type !== 'condition') {
-        //过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
-        this.base.push(item)
-      }
-      data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
       if (hasBranch(data)) {
         //判断是否存在条件，如果有。。。
         let conditionNextNodeId = data.childNode ? data.childNode.nodeId : '' //判断条件是否存在子节点
@@ -451,6 +437,8 @@ export default {
               conditionExpression.push(
                 '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
               )
+            it.type === 'radio' &&
+              conditionExpression.push('${' + it.vModel + " eq '" + it.val + "'}")
           })
           conditionExpression = conditionExpression.join('&&')
           // this.processMap[conditionExpression] = ''
@@ -481,6 +469,23 @@ export default {
           this.recursion(d, origin.conditionNodes[index])
         })
       }
+      if (data.prevId && data.prevId !== 'no_flow' && data.type !== 'condition') {
+        //有前节点且前节点不为no_flow,且节点类型不能为条件节点
+        let items = {
+          //节点线
+          type: 'flow', // flow, start, end, task, ccTask, gateway
+          id: data.prevId + data.nodeId,
+          name: data.properties.title, // 非必填
+          source: data.prevId,
+          target: data.nodeId
+        }
+        this.lineList.push(items)
+      }
+      if (data.type !== 'condition') {
+        //过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
+        this.base.push(item)
+      }
+      data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
     },
     childNode(data) {
       if (data.childNode) {

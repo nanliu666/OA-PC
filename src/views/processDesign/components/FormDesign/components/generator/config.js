@@ -98,7 +98,8 @@ export const componentGroups = [
           icon: 'icon-basics-digit-outlined',
           defaultValue: null,
           shouldPrint: true,
-          required: false
+          required: false,
+          proCondition: true
         },
         __slot__: {},
         __pc__: {
@@ -106,6 +107,7 @@ export const componentGroups = [
           tag: 'el-input-number',
           style: { width: '100%' },
           props: {
+            value: undefined,
             'controls-position': 'right'
           }
         },
@@ -140,11 +142,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: 1
+              value: '1'
             },
             {
               label: '选项二',
-              value: 2
+              value: '2'
             }
           ]
         },
@@ -172,8 +174,7 @@ export const componentGroups = [
           defaultValue: [],
           layout: 'colFormItem',
           shouldPrint: true,
-          required: false,
-          proCondition: true
+          required: false
         },
         __slot__: {
           options: [

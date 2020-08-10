@@ -1,4 +1,4 @@
-import { get, post } from '@/router/axios'
+import { get, post, put } from '@/router/axios'
 
 // 审批配置管理者查询接口
 export const getConfigAdmin = (params) => get('/api/appr/v2/appr/config/admin', params)
@@ -9,3 +9,5 @@ export const getApprCategory = (params) => get('/api/appr/v2/appr/category', par
 export const getApprProcess = (params) => get('/api/appr/v2/appr/process', params)
 
 export const postApprProcess = (params) => post('/api/appr/v2/appr/process', params)
+
+export const putApprProcess = (params) => put('/api/appr/v2/appr/process', params)
