@@ -118,6 +118,11 @@ export default {
       treeSelectConfig: _.cloneDeep(TREE_SELECT_CONFIG)
     }
   },
+  provide() {
+    return {
+      searchParams: this.searchParams
+    }
+  },
   computed: {},
   watch: {
     tabPane(tab) {
