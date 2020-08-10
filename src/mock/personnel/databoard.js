@@ -1,7 +1,7 @@
 /**
  * @file 数据看板 mock数据
  */
-import Mock from 'mockjs'
+import Mock, { Random } from 'mockjs'
 import moment from 'moment'
 
 const RESPONSE_COMMON = {
@@ -406,7 +406,7 @@ export default ({ mock }) => {
       Mock.mock({
         workNum: _.random(100),
         provinceCode: '@word(2)',
-        provinceName: '@cword(2)'
+        provinceName: _.trimEnd(Random.province(), '省')
       })
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
