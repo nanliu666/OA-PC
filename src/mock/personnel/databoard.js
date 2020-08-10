@@ -377,10 +377,10 @@ export default ({ mock }) => {
 
   // 员工性别查询接口
   Mock.mock(new RegExp('/data/v1/data/user/sex' + '(\\?.*)?$'), 'get', (req) => {
-    const response = _.times(2, (i) =>
+    const response = _.times(3, (i) =>
       Mock.mock({
         workNum: _.random(100),
-        sex: i
+        sex: i === 2 ? -1 : i
       })
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })

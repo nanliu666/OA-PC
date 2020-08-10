@@ -17,20 +17,31 @@
           />
         </LazySkeleton>
       </el-col>
-
       <el-col
-        v-for="({ title, load, config, xaxisDictkey }, index) of chartBarConfigs"
-        :key="`section-1-${index}`"
+        :key="`section-1-0`"
+        :sm="24"
+        :lg="12"
+      >
+        <LazySkeleton>
+          <ChartSkeleton slot="skeleton" />
+          <ChartSpirit
+            :load="chartSexDistribution.load"
+            :title="chartSexDistribution.title"
+          />
+        </LazySkeleton>
+      </el-col>
+      <el-col
+        :key="`section-1-1`"
         :sm="24"
         :lg="12"
       >
         <LazySkeleton>
           <ChartSkeleton slot="skeleton" />
           <ChartBar
-            :config="config"
-            :load="load"
-            :title="title"
-            :xaxis-dictkey="xaxisDictkey"
+            :config="chartBarConfigs.config"
+            :load="chartBarConfigs.load"
+            :title="chartBarConfigs.title"
+            :xaxis-dictkey="chartBarConfigs.xaxisDictkey"
           />
         </LazySkeleton>
       </el-col>
@@ -139,6 +150,7 @@
 
 <script>
 import ChartBar from './ChartBar'
+import ChartSpirit from './ChartSpirit'
 import ChartPie from './ChartPie'
 import ChartFunnel from './ChartFunnel'
 import ChartSkeleton from './ChartSkeleton'
@@ -184,32 +196,15 @@ const CHART_PIE_CONFIGS = [
     subtext: (datas) => `未填写工龄${_.get(_.find(datas, { ageName: 'Other' }), 'workNum', 0)}人`
   }
 ]
-const CHART_BAR_CONFIGS = [
-  {
-    title: '性别分布',
-    load: getUserSex,
-    config: {
-      value: 'workNum',
-      label: 'sex'
-    },
-    xaxisDictkey: [
-      {
-        code: 'gender',
-        dictKey: '0',
-        dictValue: '女'
-      },
-      {
-        dictKey: '1',
-        dictValue: '男'
-      }
-    ]
-  },
-  {
-    title: '各部门入职人数',
-    load: getOrgEntryNum,
-    config: { value: 'entryNum', label: 'orgName' }
-  }
-]
+const CHART_SEX_DISTRIBUTION = {
+  title: '性别分布',
+  load: getUserSex
+}
+const CHART_BAR_CONFIGS = {
+  title: '各部门入职人数',
+  load: getOrgEntryNum,
+  config: { value: 'entryNum', label: 'orgName' }
+}
 
 /**
  * @description 用于将区分性别的两组数据进行合并成为一组数据
@@ -237,6 +232,7 @@ export default {
   name: 'StaffPane',
   components: {
     ChartBar,
+    ChartSpirit,
     ChartPie,
     ChartFunnel,
     ChartSkeleton,
@@ -244,6 +240,7 @@ export default {
   },
   computed: {
     chartBarConfigs: () => CHART_BAR_CONFIGS,
+    chartSexDistribution: () => CHART_SEX_DISTRIBUTION,
     chartPieConfigs: () => CHART_PIE_CONFIGS,
     getOrgEntryNum: () => getOrgEntryNum,
     getUserPosition: () => getUserPosition,
