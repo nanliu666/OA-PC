@@ -219,13 +219,13 @@
           审批记录
         </div>
         <!-- 没撤销 -->
-        <div v-if="!isCancel">
+        <div>
           <el-steps
             direction="vertical"
             align-center
           >
             <el-step
-              v-for="(item, index) in recordList"
+              v-for="(item, index) in recordlist"
               :key="index"
             >
               <!-- 自定义图标 -->
@@ -235,98 +235,133 @@
               <!-- 自定义标题 -->
               <template slot="title">
                 <div class="title">
-                  <!-- {{ item.name || '提交申请' }} -->
+                  <span v-if="item.type === 'start'">
+                    {{ item.name || '提交申请' }}
+                  </span>
+                  <span v-else>
+                    {{ item.properties.title || '' }}
+                    <span
+                      v-if="item.properties.counterSign"
+                      class="counterSign_text"
+                    >需所有人同意（会签）</span>
+                    <span
+                      v-else
+                      class="counterSign_text"
+                    >1人审批（或签）</span>
+                  </span>
                 </div>
               </template>
               <!-- 自定义内容 -->
               <template slot="description">
-                <div class="description-box">
+                <div
+                  v-if="item.type === 'start'"
+                  class="description-box"
+                >
                   <div class="img-box">
                     <el-avatar :src="circleUrl" />
                   </div>
-                  <div class="detail-box">
+                  <div class="flex flex-flow-column record_start">
                     <div>
-                      {{ item.userName
-                      }}<span
-                        v-if="index == recordList.length - 1"
-                        class="initiateAppl"
-                      >发起审批</span>
-                      <span
-                        v-else-if="item.result === 'Pass'"
-                        class="isPass"
-                      >同意</span>
-                      <span
-                        v-else-if="item.result === 'Reject'"
-                        class="isReject"
-                      >拒绝</span>
-                      <span
-                        v-else
-                        class="appring"
-                      >审批中</span>
+                      {{ item.userName }} <span class="text">{{ item.jobName }}</span>
+                      <span class="time">{{ item.approveTime }}</span>
                     </div>
-                    <div class="jobName-row">
-                      <div>{{ item.jobName }}</div>
-                      <div>{{ item.remark }}</div>
+                    <div style="color:#7ad683">
+                      发起审批
                     </div>
                   </div>
                 </div>
-              </template>
-            </el-step>
-          </el-steps>
-        </div>
-        <!-- 已撤销 -->
-        <div v-else>
-          <el-steps
-            direction="vertical"
-            align-center
-          >
-            <el-step>
-              <!-- 自定义图标 -->
-              <template slot="icon">
-                <div class="icon active" />
-              </template>
-              <!-- 自定义标题 -->
-              <template slot="title">
-                <div class="title">
-                  <!-- {{ recordList.name || '申请撤销' }} -->
-                </div>
-              </template>
-              <!-- 自定义内容 -->
-              <template slot="description">
-                <div class="description-box">
-                  <div class="img-box">
-                    <el-avatar :src="circleUrl" />
-                  </div>
-                  <div class="detail-box">
-                    <div>
-                      {{ recordList.userName }}
-                      <span class="isCancel">已撤回</span>
+                <div v-if="item.properties.counterSign">
+                  <div
+                    v-for="(it, i) in item.approveList"
+                    :key="i"
+                    class="description-box"
+                  >
+                    <div class="img-box">
+                      <el-avatar :src="circleUrl" />
                     </div>
-                    <div>{{ recordList.jobName }}</div>
+                    <div class="detail-box">
+                      <div>
+                        {{ it.userName }}
+                        <span class="text">{{ it.jobName }}</span>
+                        <span class="time">{{ it.approveTime }}</span>
+                      </div>
+                      <div :class="[it.result, !it.result ? 'result' : '']">
+                        {{ it.result | result }}
+                      </div>
+                      <div
+                        v-if="it.remark"
+                        :class="[it.result, !it.result ? 'result' : '']"
+                      >
+                        审批意见:{{ it.remark }}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </template>
-            </el-step>
-            <el-step>
-              <!-- 自定义图标 -->
-              <template slot="icon">
-                <div class="icon active" />
-              </template>
-              <!-- 自定义标题 -->
-              <template slot="title">
-                <div class="title">
-                  <!-- {{ recordList.jobName || '提交申请' }} -->
-                </div>
-              </template>
-              <!-- 自定义内容 -->
-              <template slot="description">
-                <div class="description-box">
-                  <div class="img-box">
-                    <el-avatar :src="circleUrl" />
-                  </div>
-                  <div class="detail-box">
-                    <div>{{ recordList.userName }}<span class="initiateAppl">发起审批</span></div>
-                    <div>{{ recordList.jobName }}</div>
+                <div v-else>
+                  <div>
+                    <div class="description-box ">
+                      <div
+                        v-for="(it, i) in item.approveList"
+                        :key="i"
+                        class="flex flex-items justify-center"
+                      >
+                        <div class="img-box">
+                          <el-avatar :src="circleUrl" />
+                        </div>
+                        <span
+                          v-if="
+                            !item.properties.counterSign &&
+                              i < item.userList.length - 1 &&
+                              item.approveList.length === item.userList.length
+                          "
+                          style="margin:5px;font-weight: 800"
+                        >
+                          /
+                        </span>
+                      </div>
+                      <div class="textName ">
+                        <span
+                          v-for="(it, i) in item.approveList"
+                          :key="it.id"
+                        >
+                          <span>{{ it.userName }}</span>
+                          <span
+                            v-if="
+                              !item.properties.counterSign &&
+                                i < item.userList.length - 1 &&
+                                item.approveList.length === item.userList.length
+                            "
+                            style="margin:5px;font-weight: 800"
+                          >
+                            /
+                          </span>
+                          <span
+                            v-if="it.approveTime && it.approveTime"
+                            style="margin:0 15px"
+                          >
+                            {{ it.jobName }}
+                          </span>
+                          <span v-if="it.approveTime">
+                            {{ it.approveTime }}
+                          </span>
+                        </span>
+                        <div
+                          v-for="(it, i) in item.approveList"
+                          :key="it.id"
+                        >
+                          <div
+                            v-if="i == 0"
+                            :class="[it.result, !it.result ? 'result' : '']"
+                          >
+                            {{ it.result | result }}
+                          </div>
+                          <span
+                            v-if="it.remark"
+                            :class="[it.result, !it.result ? 'result' : '']"
+                          >审批意见:{{ it.remark }}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </template>
@@ -337,7 +372,7 @@
       <!-- 按钮 -->
       <!-- v-if="!isCancel && !isFished && !isReject" -->
       <div
-        v-if="!isCancel && !isFished && !isReject"
+        v-if="!isCancel && !isFished"
         class="cancel-btn-box"
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
@@ -379,6 +414,23 @@
             @click="handelClick('Pass')"
           >
             同意
+          </el-button>
+        </el-tooltip>
+
+        <!--        重新申请-->
+        <el-tooltip
+          effect="dark"
+          content="重新申请"
+          :enterable="false"
+          placement="top"
+        >
+          <el-button
+            v-if="isReject && isApplyUser"
+            type="primary"
+            size="medium"
+            @click="jump"
+          >
+            重新申请
           </el-button>
         </el-tooltip>
       </div>
@@ -442,12 +494,25 @@ import {
   createApprUrge,
   getProcessDetail
 } from '@/api/apprProcess/apprProcess'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
 
+moment.locale('zh-cn')
 export default {
   name: 'Apprv2Detail',
-
+  filters: {
+    result(data) {
+      let result = {
+        Pass: '审批同意',
+        Reject: '审批拒绝',
+        Cancel: '审批已撤回'
+      }
+      return result[data] || '审批中'
+    }
+  },
   data() {
     return {
+      recordlist: [],
       progressRecord: [],
       loading: false,
       // 审批编号
@@ -577,6 +642,19 @@ export default {
     },
     ...mapGetters(['userId'])
   },
+  watch: {
+    progressRecord: {
+      handler(val) {
+        val && (this.recordlist = JSON.parse(JSON.stringify(val)).reverse())
+        this.recordlist = this.recordlist.filter((it) => {
+          if (it.type === 'start' || it.approveList) {
+            return it
+          }
+        })
+      },
+      deep: true
+    }
+  },
   created() {
     this.loadData()
   },
@@ -586,6 +664,13 @@ export default {
     }
   },
   methods: {
+    jump() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.push({
+        path: '/apprProcess/apprSubmit',
+        query: { processId: this.processId }
+      })
+    },
     // loadData
     async loadData() {
       this.loading = true
@@ -607,6 +692,7 @@ export default {
             countAjax || (this.loading = false)
           })
       })
+
       await new Promise((resolve, reject) => {
         getApprRecord({ apprNo: this.apprNo })
           .then((res) => {
@@ -617,48 +703,14 @@ export default {
             this.applyUserId = data[0].userId
             // 审批进度Data数组
             this.progressList = res.data
-            // // 判断是否已撤回，已拒绝,已完成
-            // this.progressList.forEach((item, index) => {
-            //   if (item.result === 'Cancel') {
-            //     this.isCancel = true
-            //     this.activeStep = index
-            //   }
-            //   if (item.result === 'Reject') {
-            //     this.isReject = true
-            //     this.activeStep = index
-            //   }
-            //   if (index == this.progressList.length - 1 && item.result == 'Pass' && index != 0) {
-            //     this.isFished = true
-            //     this.activeStep = index
-            //   }
-            // })
             //如果不是 以上状态 ，在审批中，获取流程走到哪个节点
             if (!this.isCancel && !this.isReject && !this.isFished) {
-              // this.activeStep = this.progressList.findIndex((item, index) => {
-              //   return item.result === '' && index != 0
-              // })
-              // 当前审批人的ID
-              // this.apprUserId = this.progressList[this.activeStep].userId
               this.apprUserIdList = []
               this.progressList.forEach((item, index) => {
                 if (item.result === '' && index != 0) {
                   this.apprUserIdList.push(item.userId)
                 }
               })
-            }
-            // 审批记录Data数组
-            // 已撤销
-            let arr = data.slice(0, data.length)
-            if (this.isCancel) {
-              this.recordList = arr[0]
-            }
-            // 有拒绝显示到拒绝节点  没有拒绝节点显示到同意审批的下一个节点
-            else if (this.isReject) {
-              this.recordList = arr.reverse()
-            }
-            // 审批中或者审批完成
-            else {
-              this.recordList = arr.reverse()
             }
             resolve(true)
           })
@@ -682,12 +734,24 @@ export default {
             nodeData.map((item) => {
               if (it.nodeId === item.type) {
                 item.approveTime = it.approveTime
+                item.jobName = it.jobName
                 item.userName = it.userName
                 item.result = it.result
               }
               if (it.nodeId === item.nodeId) {
+                !item.timeList && (item.timeList = [])
+                it.approveTime && item.timeList.push(Date.parse(it.approveTime))
+
                 !item.approveList && (item.approveList = [])
                 item.approveList.push(it)
+                let maxTime = item.timeList.length > 0 ? Math.max(...item.timeList) : 0
+                if (item.timeList.length === item.approveList.length) {
+                  //判断是否审批节点是否结束。结束才能赋值（时间）
+                  item.approveTime =
+                    maxTime > 0 ? moment(parseInt(maxTime)).format('YYYY-MM-DD hh:mm:ss') : ''
+                } else {
+                  item.approveTime = ''
+                }
               }
             })
         })
@@ -1096,7 +1160,7 @@ export default {
     margin-top: 5px;
     background: #f7f8fa;
     display: flex;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 
     .img-box {
       width: 63px;
@@ -1192,18 +1256,50 @@ export default {
 }
 
 .result {
-  color: #6aafff;
+  color: #6aafff !important;
 }
 
 .Pass {
-  color: #7ad683;
+  color: #7ad683 !important;
 }
 
 .Reject {
-  color: #ff8b8a;
+  color: #ff8b8a !important;
 }
 
 .Cancel {
-  color: #ff8b8a;
+  color: #ff8b8a !important;
+}
+
+.record_start {
+  line-height: 30px;
+  margin-left: 15px;
+  font-size: 14px;
+  color: #333;
+
+  .text {
+    color: #999;
+    margin: 0 12px;
+  }
+
+  .time {
+    color: #999;
+    font-size: 14px;
+  }
+}
+
+.counterSign_text {
+  margin-left: 8px;
+  color: #999;
+}
+
+.textName {
+  color: #333;
+  font-size: 14px;
+
+  span {
+    display: inline-block;
+    line-height: 30px;
+  }
 }
 </style>
