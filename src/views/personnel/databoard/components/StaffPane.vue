@@ -17,20 +17,31 @@
           />
         </LazySkeleton>
       </el-col>
-
       <el-col
-        v-for="({ title, load, config, xaxisDictkey }, index) of chartBarConfigs"
-        :key="`section-1-${index}`"
+        :key="`section-1-0`"
+        :sm="24"
+        :lg="12"
+      >
+        <LazySkeleton>
+          <ChartSkeleton slot="skeleton" />
+          <ChartSpirit
+            :load="chartSexDistribution.load"
+            :title="chartSexDistribution.title"
+          />
+        </LazySkeleton>
+      </el-col>
+      <el-col
+        :key="`section-1-1`"
         :sm="24"
         :lg="12"
       >
         <LazySkeleton>
           <ChartSkeleton slot="skeleton" />
           <ChartBar
-            :config="config"
-            :load="load"
-            :title="title"
-            :xaxis-dictkey="xaxisDictkey"
+            :config="chartBarConfigs.config"
+            :load="chartBarConfigs.load"
+            :title="chartBarConfigs.title"
+            :xaxis-dictkey="chartBarConfigs.xaxisDictkey"
           />
         </LazySkeleton>
       </el-col>
@@ -133,12 +144,28 @@
           />
         </LazySkeleton>
       </el-col>
+      <el-col
+        :key="`section-5-0`"
+        :sm="24"
+        :lg="12"
+      >
+        <LazySkeleton>
+          <ChartSkeleton slot="skeleton" />
+          <ChartComplexPie
+            :config="chartComplexPieConfigs.config"
+            :load="chartComplexPieConfigs.load"
+            :title="chartComplexPieConfigs.title"
+          />
+        </LazySkeleton>
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
 import ChartBar from './ChartBar'
+import ChartComplexPie from './ChartComplexPie'
+import ChartSpirit from './ChartSpirit'
 import ChartPie from './ChartPie'
 import ChartFunnel from './ChartFunnel'
 import ChartSkeleton from './ChartSkeleton'
@@ -153,6 +180,7 @@ import {
   getUserEducationalLevel,
   getUserMarriage,
   getUserCompanyAge,
+  getTalentJob,
   getUserWorkAge
 } from '@/api/personnel/databoard'
 
@@ -184,32 +212,20 @@ const CHART_PIE_CONFIGS = [
     subtext: (datas) => `未填写工龄${_.get(_.find(datas, { ageName: 'Other' }), 'workNum', 0)}人`
   }
 ]
-const CHART_BAR_CONFIGS = [
-  {
-    title: '性别分布',
-    load: getUserSex,
-    config: {
-      value: 'workNum',
-      label: 'sex'
-    },
-    xaxisDictkey: [
-      {
-        code: 'gender',
-        dictKey: '0',
-        dictValue: '女'
-      },
-      {
-        dictKey: '1',
-        dictValue: '男'
-      }
-    ]
-  },
-  {
-    title: '各部门入职人数',
-    load: getOrgEntryNum,
-    config: { value: 'entryNum', label: 'orgName' }
-  }
-]
+const CHART_SEX_DISTRIBUTION = {
+  title: '性别分布',
+  load: getUserSex
+}
+const CHART_BAR_CONFIGS = {
+  title: '各部门入职人数',
+  load: getOrgEntryNum,
+  config: { value: 'entryNum', label: 'orgName' }
+}
+// 人才库职位分布图
+const CHART_COMPLEX_BAR_CONFIGS = {
+  title: '人才库职位分布图',
+  load: getTalentJob
+}
 
 /**
  * @description 用于将区分性别的两组数据进行合并成为一组数据
@@ -236,7 +252,9 @@ function mergeSexByGroupName(arr, groupProp, valueProp = 'workNum') {
 export default {
   name: 'StaffPane',
   components: {
+    ChartComplexPie,
     ChartBar,
+    ChartSpirit,
     ChartPie,
     ChartFunnel,
     ChartSkeleton,
@@ -244,7 +262,9 @@ export default {
   },
   computed: {
     chartBarConfigs: () => CHART_BAR_CONFIGS,
+    chartSexDistribution: () => CHART_SEX_DISTRIBUTION,
     chartPieConfigs: () => CHART_PIE_CONFIGS,
+    chartComplexPieConfigs: () => CHART_COMPLEX_BAR_CONFIGS,
     getOrgEntryNum: () => getOrgEntryNum,
     getUserPosition: () => getUserPosition,
     getUserAge: () => async (params) => mergeSexByGroupName(await getUserAge(params), 'ageName'),
