@@ -45,7 +45,7 @@ Mock.setup({
 
 user(options)
 approval(options)
-menu({ mock: true })
+menu(options)
 interview({ mock: false })
 
 candidate(options)
@@ -74,7 +74,7 @@ contact(options)
 leave(options)
 
 personnelSettings(options.mock)
-personnelDataboard({ mock: true })
+personnelDataboard(options)
 todo(options)
 msg(options)
 todo(options)
