@@ -265,6 +265,13 @@ export default {
                 node.id = node.orgId
               }
             }
+          } else {
+            if (node.children) {
+              this.resolveTree(node.children, node)
+            }
+            if (node.orgId) {
+              node.id = node.orgId
+            }
           }
         })
       }
