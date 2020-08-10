@@ -81,12 +81,13 @@
           slot="apprNo"
           slot-scope="{ row }"
         >
-          <el-button
-            type="text"
+          <div
+            class="ellipsis"
+            style="color: #207EFA; cursor:pointer"
             @click="jumpApprDetail(row)"
           >
             {{ row.apprNo }}
-          </el-button>
+          </div>
         </template>
         <!-- 状态列 -->
         <template
