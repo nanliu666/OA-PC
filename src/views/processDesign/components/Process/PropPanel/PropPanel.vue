@@ -1063,8 +1063,10 @@ export default {
   }
 
   >>> .el-drawer__body {
-    padding-bottom: 60px;
+    padding-bottom: 0px;
     overflow: hidden;
+    overflow-y: auto;
+    margin-bottom: 60px;
   }
 
   .pane-tab {
