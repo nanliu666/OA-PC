@@ -425,7 +425,7 @@
           placement="top"
         >
           <el-button
-            v-if="isShowCancel && isApplyUser"
+            v-if="isReject && isApplyUser"
             type="primary"
             size="medium"
             @click="jump"
