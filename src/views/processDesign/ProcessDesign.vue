@@ -303,7 +303,7 @@ export default {
           this.$router.push({
             path: '/apprProcess/approvalList'
           })
-        }, 2000)
+        }, 1000)
       })
       // postDeploy(params).then(() => {
       //   this.$message.success('提交成功')
