@@ -153,12 +153,13 @@ export default {
           const TIMES = item.originValue.length >= MAX_LENGTH ? 1 : 2
           // 外圈颜色RGBA的最后一位从1慢慢变成0.2，不断赋值
           let color = groupColor
+          const replaceIndex = color.length - 2 // 需要更换的位置的索引
           // 计算公式： 1 - 基准线（0.1）* 倍数（1或者2）* 当前位置
           let colorNumber =
-            Number(color[color.length - 2]) - BASE_COLOR_LINE * TIMES * (originIndex + 1)
+            Number(color[replaceIndex]) - BASE_COLOR_LINE * TIMES * (originIndex + 1)
           colorNumber = colorNumber >= LEAST_COLOR ? colorNumber.toFixed(1) : LEAST_COLOR
           let replaceStr = `,${colorNumber})`
-          let tempColor = color.substr(0, color.length - 2 - 1) + replaceStr
+          let tempColor = color.substr(0, replaceIndex - 1) + replaceStr
           nameDatas.push({
             name: originItem.jobName,
             value: originItem.num,
