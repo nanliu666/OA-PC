@@ -61,6 +61,7 @@
                   v-for="option in optionList"
                   :key="option.id"
                   :command="option"
+                  :disabled="checkUserSelected(option)"
                 >
                   {{ option.name }}({{ option.workNo }})
                 </el-dropdown-item>
@@ -244,6 +245,9 @@ export default {
     // },
     deleteUser(index) {
       this.data.userList.splice(index, 1)
+    },
+    checkUserSelected(user) {
+      return !!_.find(this.data.userList, (item) => item.id === user.id)
     }
   }
 }
