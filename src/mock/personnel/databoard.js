@@ -538,11 +538,13 @@ export default ({ mock }) => {
 
   // 人才库职位查询接口
   Mock.mock(new RegExp('/data/v1/data/talent/job' + '(\\?.*)?$'), 'get', (req) => {
-    const response = _.times(10, () =>
+    const JOB_NAME = ['设计类', '研发类', '经理类']
+    const response = _.times(_.random(6, 20), () =>
       Mock.mock({
         num: _.random(100),
         jobId: '@id()',
-        jobName: '@cword(2)职位'
+        jobName: '@cword(2)职位',
+        name: JOB_NAME[_.random(0, 2)]
       })
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })

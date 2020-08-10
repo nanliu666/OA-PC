@@ -144,12 +144,27 @@
           />
         </LazySkeleton>
       </el-col>
+      <el-col
+        :key="`section-5-0`"
+        :sm="24"
+        :lg="12"
+      >
+        <LazySkeleton>
+          <ChartSkeleton slot="skeleton" />
+          <ChartComplexPie
+            :config="chartComplexPieConfigs.config"
+            :load="chartComplexPieConfigs.load"
+            :title="chartComplexPieConfigs.title"
+          />
+        </LazySkeleton>
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
 import ChartBar from './ChartBar'
+import ChartComplexPie from './ChartComplexPie'
 import ChartSpirit from './ChartSpirit'
 import ChartPie from './ChartPie'
 import ChartFunnel from './ChartFunnel'
@@ -165,6 +180,7 @@ import {
   getUserEducationalLevel,
   getUserMarriage,
   getUserCompanyAge,
+  getTalentJob,
   getUserWorkAge
 } from '@/api/personnel/databoard'
 
@@ -205,6 +221,11 @@ const CHART_BAR_CONFIGS = {
   load: getOrgEntryNum,
   config: { value: 'entryNum', label: 'orgName' }
 }
+// 人才库职位分布图
+const CHART_COMPLEX_BAR_CONFIGS = {
+  title: '人才库职位分布图',
+  load: getTalentJob
+}
 
 /**
  * @description 用于将区分性别的两组数据进行合并成为一组数据
@@ -231,6 +252,7 @@ function mergeSexByGroupName(arr, groupProp, valueProp = 'workNum') {
 export default {
   name: 'StaffPane',
   components: {
+    ChartComplexPie,
     ChartBar,
     ChartSpirit,
     ChartPie,
@@ -242,6 +264,7 @@ export default {
     chartBarConfigs: () => CHART_BAR_CONFIGS,
     chartSexDistribution: () => CHART_SEX_DISTRIBUTION,
     chartPieConfigs: () => CHART_PIE_CONFIGS,
+    chartComplexPieConfigs: () => CHART_COMPLEX_BAR_CONFIGS,
     getOrgEntryNum: () => getOrgEntryNum,
     getUserPosition: () => getUserPosition,
     getUserAge: () => async (params) => mergeSexByGroupName(await getUserAge(params), 'ageName'),

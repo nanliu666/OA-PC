@@ -1,4 +1,4 @@
-<!-- 象形柱图组件 -- 设置各种具象图形元素（如图片、SVG PathData 等）的柱状图 -->
+<!-- 象形柱图组件（男女比例分布） -- 设置各种具象图形元素（如图片、SVG PathData 等）的柱状图 -->
 <template>
   <div
     v-loading="loading"
