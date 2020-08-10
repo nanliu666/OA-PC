@@ -296,15 +296,14 @@ export default {
       }
       // eslint-disable-next-line
       console.log(JSON.stringify(param))
-      let ApprProcess = ''
-      this.$route.query.processId ? (ApprProcess = putApprProcess) : (ApprProcess = postApprProcess)
+      let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
       ApprProcess(params).then(() => {
         this.$message.success('提交成功')
         setTimeout(() => {
           this.$router.push({
             path: '/apprProcess/approvalList'
           })
-        }, 2000)
+        }, 1000)
       })
       // postDeploy(params).then(() => {
       //   this.$message.success('提交成功')

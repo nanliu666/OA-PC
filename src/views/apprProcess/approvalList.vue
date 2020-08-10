@@ -158,7 +158,8 @@
                     <div class="li-right">
                       <el-button
                         type="text"
-                        @click="createApproval(processesItem)"
+                        :disabled="!checkEditable(processesItem)"
+                        @click="createApproal(processesItem)"
                       >
                         编辑
                       </el-button>
@@ -168,6 +169,7 @@
                       >
                         <el-button
                           type="text"
+                          :disabled="!checkEditable(processesItem)"
                           @click="disableApproval(processesItem)"
                         >
                           停用
@@ -186,6 +188,7 @@
                         <el-button
                           v-if="processesItem.status === 1"
                           type="text"
+                          :disabled="!checkEditable(processesItem)"
                           @click="enableApproval(item, processesItem)"
                         >
                           启用
@@ -199,6 +202,7 @@
                         </el-button>
                         <el-button
                           type="text"
+                          :disabled="!checkEditable(processesItem)"
                           @click="deleteProcesses(processesItem)"
                         >
                           删除
@@ -240,6 +244,8 @@ import processDialog from '@/views/apprProcess/components/processDialog'
 import dragList from '@/views/apprProcess/components/dragList'
 import draggable from 'vuedraggable'
 import { deepClone } from '@/util/util'
+
+import { mapGetters } from 'vuex'
 const DRAFTCODE = 'draftProcess' // 定义弃用code
 export default {
   name: 'ApprovalIndex',
@@ -265,7 +271,13 @@ export default {
   mounted() {
     this.refreshData()
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   methods: {
+    checkEditable(process) {
+      return _.includes(process.admin, this.userId)
+    },
     /**
      * 重新刷新数据
      */
