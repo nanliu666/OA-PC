@@ -81,13 +81,12 @@
           slot="apprNo"
           slot-scope="{ row }"
         >
-          <div
-            class="ellipsis"
-            style="color: #207EFA; cursor:pointer"
+          <el-button
+            type="text"
             @click="jumpApprDetail(row)"
           >
             {{ row.apprNo }}
-          </div>
+          </el-button>
         </template>
         <!-- 状态列 -->
         <template
@@ -118,7 +117,7 @@ import SearchPopover from '@/components/searchPopOver/index'
 const TABLE_COLUMNS = [
   {
     label: '审批编号',
-    minWidth: 100,
+    width: 150,
     slot: true,
     prop: 'apprNo'
   },
