@@ -277,7 +277,7 @@ export default {
         approverDistinct,
         categoryId,
         isOpinion: isOpinion ? 1 : 0,
-        processAdmin: [processAdmin],
+        processAdmin: processAdmin,
         approverNull: approverNull
       }
       // 基础设置

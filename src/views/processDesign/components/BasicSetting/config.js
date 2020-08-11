@@ -55,6 +55,7 @@ export let info = [
     prop: 'processAdmin',
     itemType: 'select',
     label: '谁可以管理这个审批',
+    multiple: true,
     options: [],
     props: {
       label: 'userName',
