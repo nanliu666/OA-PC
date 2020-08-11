@@ -31,17 +31,17 @@
         </LazySkeleton>
       </el-col>
       <el-col
-        :key="`section-1-1`"
+        v-for="({ title, load, config }, index) of chartBarConfigs.slice(0, 1)"
+        :key="`section-1-${index + 1}`"
         :sm="24"
         :lg="12"
       >
         <LazySkeleton>
           <ChartSkeleton slot="skeleton" />
           <ChartBar
-            :config="chartBarConfigs.config"
-            :load="chartBarConfigs.load"
-            :title="chartBarConfigs.title"
-            :xaxis-dictkey="chartBarConfigs.xaxisDictkey"
+            :config="config"
+            :load="load"
+            :title="title"
           />
         </LazySkeleton>
       </el-col>
@@ -65,19 +65,17 @@
         </LazySkeleton>
       </el-col>
       <el-col
-        :key="`section-2-1`"
+        v-for="({ config, load, title }, index) of chartBarConfigs.slice(1, 2)"
+        :key="`section-2-${index + 1}`"
         :sm="24"
         :lg="12"
       >
         <LazySkeleton>
           <ChartSkeleton slot="skeleton" />
           <ChartBar
-            :config="[
-              { label: 'ageName', value: '1', name: '男' },
-              { label: 'ageName', value: '0', name: '女' }
-            ]"
-            :load="getUserAge"
-            title="年龄分布"
+            :config="config"
+            :load="load"
+            :title="title"
             transform
           />
         </LazySkeleton>
@@ -102,32 +100,23 @@
       </el-col>
 
       <el-col
-        :key="`section-4-0`"
+        v-for="({ config, load, title, xaxisDictkey }, index) of chartBarConfigs.slice(2, 4)"
+        :key="`section-4-${index}`"
         :sm="24"
         :lg="12"
       >
         <LazySkeleton>
           <ChartSkeleton slot="skeleton" />
           <ChartBar
-            :config="[
-              { label: 'marriage', value: '1', name: '男' },
-              { label: 'marriage', value: '0', name: '女' }
-            ]"
-            :load="getUserMarriage"
-            title="婚育状况"
-            :xaxis-dictkey="[
-              {
-                dictKey: '0',
-                dictValue: '未婚'
-              },
-              { dictKey: '1', dictValue: '已婚未育' },
-              { dictKey: '2', dictValue: '已婚已育' }
-            ]"
+            :config="config"
+            :load="load"
+            :title="title"
+            :xaxis-dictkey="xaxisDictkey"
           />
         </LazySkeleton>
       </el-col>
 
-      <el-col
+      <!-- <el-col
         :key="`section-4-1`"
         :sm="24"
         :lg="12"
@@ -143,18 +132,22 @@
             title="年代分布"
           />
         </LazySkeleton>
-      </el-col>
+      </el-col> -->
+
       <el-col
-        :key="`section-5-0`"
+        v-for="({ title, load, config }, index) of chartGeoMapConfigs"
+        :key="`section-5-${index}`"
         :sm="24"
         :lg="12"
       >
         <LazySkeleton>
           <ChartSkeleton slot="skeleton" />
-          <ChartComplexPie
-            :config="chartComplexPieConfigs.config"
-            :load="chartComplexPieConfigs.load"
-            :title="chartComplexPieConfigs.title"
+          <ChartGeoMap
+            :ref="`map${index}`"
+            :config="config"
+            :load="load"
+            :title="title"
+            @item-click="(e) => handleMapItemClick(e, `map${index}`)"
           />
         </LazySkeleton>
       </el-col>
@@ -164,24 +157,28 @@
 
 <script>
 import ChartBar from './ChartBar'
-import ChartComplexPie from './ChartComplexPie'
-import ChartSpirit from './ChartSpirit'
-import ChartPie from './ChartPie'
 import ChartFunnel from './ChartFunnel'
+import ChartGeoMap from './ChartGeoMap/ChartGeoMap'
+import ChartPie from './ChartPie'
 import ChartSkeleton from './ChartSkeleton'
+import ChartSpirit from './ChartSpirit'
 import LazySkeleton from '@/components/lazy-skeleton/LazySkeleton'
 import {
-  getUserWorkProperty,
-  getUserPosition,
-  getUserAge,
-  getUserSex,
-  getUserYear,
+  getNativeProvince,
+  getNativeCity,
   getOrgEntryNum,
+  getTalentJob,
+  getUserAge,
+  getUserCompanyAge,
   getUserEducationalLevel,
   getUserMarriage,
-  getUserCompanyAge,
-  getTalentJob,
-  getUserWorkAge
+  getUserPosition,
+  getUserSex,
+  getUserWorkAge,
+  getUserWorkProperty,
+  getUserYear,
+  getWorkProvince,
+  getWorkCity
 } from '@/api/personnel/databoard'
 
 const CHART_PIE_CONFIGS = [
@@ -216,11 +213,46 @@ const CHART_SEX_DISTRIBUTION = {
   title: '性别分布',
   load: getUserSex
 }
-const CHART_BAR_CONFIGS = {
-  title: '各部门入职人数',
-  load: getOrgEntryNum,
-  config: { value: 'entryNum', label: 'orgName' }
-}
+const CHART_BAR_CONFIGS = [
+  {
+    title: '各部门入职人数',
+    load: getOrgEntryNum,
+    config: { value: 'entryNum', label: 'orgName' }
+  },
+  {
+    title: '年龄分布',
+    load: async (params) => mergeSexByGroupName(await getUserAge(params), 'ageName'),
+    config: [
+      { label: 'ageName', value: '1', name: '男' },
+      { label: 'ageName', value: '0', name: '女' }
+    ]
+  },
+  {
+    title: '婚育状况',
+    load: async (params) => mergeSexByGroupName(await getUserMarriage(params), 'marriage'),
+    config: [
+      { label: 'marriage', value: '1', name: '男' },
+      { label: 'marriage', value: '0', name: '女' }
+    ],
+    xaxisDictkey: [
+      {
+        dictKey: '0',
+        dictValue: '未婚'
+      },
+      { dictKey: '1', dictValue: '已婚未育' },
+      { dictKey: '2', dictValue: '已婚已育' }
+    ]
+  },
+  {
+    title: '年代分布',
+    load: async (params) => mergeSexByGroupName(await getUserYear(params), 'yearName'),
+    config: [
+      { label: 'yearName', value: '1', name: '男', stack: true },
+      { label: 'yearName', value: '0', name: '女', stack: true }
+    ]
+  }
+]
+
 // 人才库职位分布图
 const CHART_COMPLEX_BAR_CONFIGS = {
   title: '人才库职位分布图',
@@ -252,32 +284,81 @@ function mergeSexByGroupName(arr, groupProp, valueProp = 'workNum') {
 export default {
   name: 'StaffPane',
   components: {
-    ChartComplexPie,
     ChartBar,
     ChartSpirit,
     ChartPie,
+    ChartGeoMap,
     ChartFunnel,
     ChartSkeleton,
     LazySkeleton
   },
   computed: {
-    chartBarConfigs: () => CHART_BAR_CONFIGS,
+    getNativeProvince() {
+      return async () => await getNativeProvince(this._searchParams)
+    },
+    getNativeCity() {
+      return async (provinceCode) =>
+        await getNativeCity(_.assign({ provinceCode }, this._searchParams))
+    },
+    getWorkProvince() {
+      return async () => await getWorkProvince(this._searchParams)
+    },
+    getWorkCity() {
+      return async (provinceCode) =>
+        await getWorkCity(_.assign({ provinceCode }, this._searchParams))
+    },
+    chartBarConfigs() {
+      return _.map(CHART_BAR_CONFIGS, (cfg) => ({
+        ...cfg,
+        load: async (params) => await cfg.load({ ...this._searchParams, ...params })
+      }))
+    },
     chartSexDistribution: () => CHART_SEX_DISTRIBUTION,
     chartPieConfigs: () => CHART_PIE_CONFIGS,
+    // 地图相关配置
+    chartGeoMapConfigs() {
+      return [
+        {
+          title: '在职员工籍贯分布情况',
+          config: [
+            { label: 'provinceName', value: 'workNum' },
+            { label: 'cityName', value: 'workNum' }
+          ],
+          load: [this.getNativeProvince, this.getNativeCity]
+        },
+        {
+          title: '在职员工工作地分布图',
+          config: [
+            { label: 'provinceName', value: 'workNum' },
+            { label: 'cityName', value: 'workNum' }
+          ],
+          load: [this.getWorkProvince, this.getWorkCity]
+        }
+      ]
+    },
     chartComplexPieConfigs: () => CHART_COMPLEX_BAR_CONFIGS,
     getOrgEntryNum: () => getOrgEntryNum,
     getUserPosition: () => getUserPosition,
-    getUserAge: () => async (params) => mergeSexByGroupName(await getUserAge(params), 'ageName'),
     getUserCompanyAge: () => getUserCompanyAge,
-    getUserMarriage: () => async (params) =>
-      mergeSexByGroupName(await getUserMarriage(params), 'marriage'),
     getUserSex: () => getUserSex,
-    getUserYear: () => async (params) => mergeSexByGroupName(await getUserYear(params), 'yearName'),
+
     getUserWorkProperty: () => getUserWorkProperty,
     getUserWorkAge: () => getUserWorkAge,
-    getUserEducationalLevel: () => getUserEducationalLevel
+    getUserEducationalLevel: () => getUserEducationalLevel,
+    // 招聘概况只对日期进行查询
+    _searchParams() {
+      return _.pick(this.searchParams, 'orgId')
+    }
   },
   methods: {
+    handleMapItemClick(e, refName) {
+      const map = _.head(this.$refs[refName])
+      const { name } = e
+      if (map.isProvince) {
+        map.loadMap(name)
+        map.loadData()
+      }
+    },
     // DEBUG:
     async refresh() {}
   }

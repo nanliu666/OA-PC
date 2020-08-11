@@ -194,5 +194,5 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import "./styles/chartCommon"
+@import "~@/views/personnel/databoard/components/styles/chartCommon"
 </style>

@@ -104,13 +104,13 @@ export default {
     opts() {
       const { data, transform } = this
       const config = _.isArray(this.config) ? this.config : [this.config]
-      let res = {}
+      let opts = {}
       if (this.title) {
-        res.title = {
+        opts.title = {
           text: this.title
         }
       }
-      res.series = _.map(config, (cfg) => ({
+      opts.series = _.map(config, (cfg) => ({
         name: cfg.name || this.title,
         type: cfg.type || 'bar',
         barMaxWidth: '35px',
@@ -129,12 +129,12 @@ export default {
             }
           : null)
       }))
-      res.color = this.colors
-      res.grid = _.assign(
-        { left: transform ? 100 : 50, right: transform ? 100 : 50 },
+      opts.color = this.colors
+      opts.grid = _.assign(
+        transform ? { left: 100, right: 100 } : { left: 50, right: 50 },
         CHART_CONFIG_DEFAULT.grid
       )
-      res[transform ? 'yAxis' : 'xAxis'] = _.merge(
+      opts[transform ? 'yAxis' : 'xAxis'] = _.merge(
         {
           axisLabel: {
             rotate: transform ? 0 : 15
@@ -142,14 +142,14 @@ export default {
         },
         CHART_CONFIG_DEFAULT.xAxis
       )
-      res[transform ? 'yAxis' : 'xAxis'].data = this.xaxisDictkey
+      opts[transform ? 'yAxis' : 'xAxis'].data = this.xaxisDictkey
         ? _.map(data, (item) =>
             this.translator({ dictKey: this.xaxisDictkey, value: item[config[0].label] })
           )
         : _.map(data, (item) => item[config[0].label])
-      res[transform ? 'xAxis' : 'yAxis'] = _.cloneDeep(CHART_CONFIG_DEFAULT.yAxis)
-      !_.some(config, (cfg) => cfg.yAxisIndex) && res[transform ? 'xAxis' : 'yAxis'].pop()
-      return _.defaults(res, this.options)
+      opts[transform ? 'xAxis' : 'yAxis'] = _.cloneDeep(CHART_CONFIG_DEFAULT.yAxis)
+      !_.some(config, (cfg) => cfg.yAxisIndex) && opts[transform ? 'xAxis' : 'yAxis'].pop()
+      return _.defaults(opts, this.options)
     }
   },
   watch: {
@@ -231,5 +231,5 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import "./styles/chartCommon"
+@import "~@/views/personnel/databoard/components/styles/chartCommon"
 </style>
