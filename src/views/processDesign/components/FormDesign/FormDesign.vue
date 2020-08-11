@@ -163,6 +163,12 @@ export default {
         if (typeof val === 'object' && val !== null) {
           this.drawingList = val.fields
           Object.assign(this.formConf, val)
+          this.$store.commit(
+            'initPConditions',
+            this.drawingList.filter(
+              (field) => field.__config__.proCondition && field.__config__.required
+            )
+          )
         }
       }
     }
@@ -182,6 +188,10 @@ export default {
     } else {
       this.drawingList = []
     }
+    this.$store.commit(
+      'initPConditions',
+      this.drawingList.filter((field) => field.__config__.proCondition && field.__config__.required)
+    )
     this.activeFormItem(this.drawingList[0])
   },
   methods: {
@@ -292,6 +302,10 @@ export default {
       return tempActiveData
     },
     drawingItemDelete(index, parent) {
+      if (this.usedAsCondition(parent[index])) {
+        this.$message.error('该控件已被使用作为条件，不能删除')
+        return
+      }
       parent.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length

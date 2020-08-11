@@ -102,13 +102,15 @@ export default {
       const loop = (data, callback) => {
         if (res || !data) return // 查找到就退出
         if (Array.isArray(data.conditionNodes)) {
-          const uesd = data.conditionNodes.some((c) => {
+          const used = data.conditionNodes.some((c) => {
             const cons = c.properties.conditions || []
-            return Array.isArray(formIds)
+            return Array.isArray(c.conditionNodes)
+              ? loop(c, callback)
+              : Array.isArray(formIds)
               ? cons.some((item) => formIds.includes(item.formId)) // 查询特定组件
               : cons.length > 0 // 只要有节点设置了条件 说明就有组件作为条件被使用
           })
-          uesd ? callback() : data.conditionNodes.forEach((t) => loopChild(t, callback))
+          used ? callback() : data.conditionNodes.forEach((t) => loopChild(t, callback))
         }
         loopChild(data, callback)
       }
