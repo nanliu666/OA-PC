@@ -353,11 +353,13 @@ export default ({ mock }) => {
 
   // 员工工作地省份分布查询接口
   Mock.mock(new RegExp('/data/v1/data/user/work/province' + '(\\?.*)?$'), 'get', (req) => {
-    const response = Mock.mock({
-      workNum: _.random(100),
-      provinceCode: '@word(2)',
-      provinceName: '@cword(2)'
-    })
+    const response = _.times(10, () =>
+      Mock.mock({
+        workNum: _.random(100),
+        provinceCode: '@word(2)',
+        provinceName: _.trimEnd(Random.province(), '省')
+      })
+    )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
   })
@@ -566,12 +568,21 @@ export default ({ mock }) => {
   // 人才库年龄查询接口
   Mock.mock(new RegExp('/data/v1/data/talent/age' + '(\\?.*)?$'), 'get', (req) => {
     const AGE_NAME = ['20岁', '20-30岁', '31-40岁', '41-50岁', '51-60岁', '大于60岁']
-    const response = _.times(_.size(AGE_NAME), (i) =>
-      Mock.mock({
-        num: _.random(100),
-        sex: _.random(),
-        ageName: AGE_NAME[i]
-      })
+    const response = _.concat(
+      _.times(_.size(AGE_NAME), (i) =>
+        Mock.mock({
+          num: _.random(100),
+          sex: 0,
+          ageName: AGE_NAME[i]
+        })
+      ),
+      _.times(_.size(AGE_NAME), (i) =>
+        Mock.mock({
+          num: _.random(100),
+          sex: 1,
+          ageName: AGE_NAME[i]
+        })
+      )
     )
     window.console.debug(`${req.type} ${req.url}`, { req, response })
     return _.defaults({ response }, RESPONSE_COMMON)
@@ -606,7 +617,9 @@ export default ({ mock }) => {
     const response = _.times(10, () =>
       Mock.mock({
         approvedNum: _.random(100),
-        finishedNum: _.random(100),
+        finishedNum: function() {
+          return _.parseInt(this.approvedNum * _.random(true))
+        },
         orgId: '@id()',
         orgName: '@cword(2)集团'
       })
