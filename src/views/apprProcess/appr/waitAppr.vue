@@ -117,7 +117,7 @@ import SearchPopover from '@/components/searchPopOver/index'
 const TABLE_COLUMNS = [
   {
     label: '审批编号',
-    minWidth: 100,
+    width: 150,
     slot: true,
     prop: 'apprNo'
   },
