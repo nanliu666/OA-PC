@@ -68,39 +68,49 @@
               <div class="li-title">
                 {{ item.name }}（{{ item.processes.length }}）
               </div>
-              <div
-                v-if="item.code !== 'draftProcess'"
-                class="action-box"
-              >
-                <el-button
-                  class="action-button"
-                  type="text"
-                  @click="renameApproval(item)"
+              <div class="li-button">
+                <div
+                  v-if="item.code !== 'draftProcess'"
+                  class="action-box"
                 >
-                  重命名
-                </el-button>
-                <el-button
-                  v-if="item.processes.length === 0"
-                  class="action-button"
-                  type="text"
-                  @click="deleteApproval(item)"
-                >
-                  删除
-                </el-button>
-                <el-tooltip
-                  v-if="item.processes.length !== 0"
-                  class="item"
-                  effect="dark"
-                  content="无法删除组，请先删除/移动组内审批"
-                  placement="top-start"
-                >
-                  <button
+                  <el-button
+                    class="action-button"
                     type="text"
-                    class="disable-action-button"
+                    @click="renameApproval(item)"
+                  >
+                    重命名
+                  </el-button>
+
+                  <el-button
+                    v-if="item.processes.length === 0"
+                    class="action-button"
+                    type="text"
+                    @click="deleteApproval(item)"
                   >
                     删除
-                  </button>
-                </el-tooltip>
+                  </el-button>
+                  <el-tooltip
+                    v-if="item.processes.length !== 0"
+                    class="item"
+                    effect="dark"
+                    content="无法删除组，请先删除/移动组内审批"
+                    placement="top-start"
+                  >
+                    <button
+                      type="text"
+                      class="disable-action-button"
+                    >
+                      删除
+                    </button>
+                  </el-tooltip>
+                </div>
+                <el-button
+                  class="action-button"
+                  type="text"
+                  @click="toggleShow(item)"
+                >
+                  {{ isHideList.indexOf(item.id) === -1 ? '收起' : '展开' }}
+                </el-button>
               </div>
             </div>
             <draggable
@@ -110,7 +120,10 @@
               :disabled="item.code === 'draftProcess'"
               @end="dragEnd(item, index)"
             >
-              <transition-group name="flip-list">
+              <transition-group
+                v-show="isHideList.indexOf(item.id) === -1"
+                name="flip-list"
+              >
                 <ul
                   v-for="(processesItem, processesIndex) in item.processes"
                   :key="processesIndex"
@@ -252,6 +265,7 @@ export default {
   components: { processDialog, dragList, draggable },
   data() {
     return {
+      isHideList: [],
       loading: true,
       symbolKey: 'xlink:href',
       dragOptions: {
@@ -279,13 +293,23 @@ export default {
       return _.includes(process.admin, this.userId)
     },
     /**
+     * 切换显示隐藏
+     */
+    toggleShow(data) {
+      let index = this.isHideList.indexOf(data.id)
+      if (index > -1) {
+        this.isHideList.splice(index, 1)
+      } else {
+        this.isHideList.push(data.id)
+      }
+    },
+    /**
      * 重新刷新数据
      */
     async refreshData() {
       let resData = {}
       await getProcessList().then((res) => {
         resData = res
-        // window.console.log('可用res==', res)
         this.dragOptions.sortData = res
         resData.map((item) => {
           item.processes = _.sortBy(item.processes, 'sort')
@@ -293,7 +317,6 @@ export default {
         resData = _.sortBy(resData, 'sort')
       })
       await getDraftList().then((res) => {
-        // window.console.log('弃用res==', res)
         // 因接口返回数据不同，故专门写成如审批列表结构
         let resetData = [
           {
@@ -581,7 +604,11 @@ export default {
             color: #202940;
             font-weight: 500;
           }
+          .li-button {
+            display: flex;
+          }
           .action-box {
+            margin-right: 10px;
             .action-button {
               // color: #202940;
             }
