@@ -80,10 +80,10 @@ export default {
       selectedIcon: iconList[0].id,
       formData: {
         icon: '',
-        processName: '',
-        categoryId: '',
-        processAdmin: [],
-        remark: '',
+        processName: '测试123455',
+        categoryId: '1',
+        processAdmin: '1258244944030916609',
+        remark: 'ces',
         initiator: []
       },
       rules: {

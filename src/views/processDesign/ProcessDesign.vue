@@ -330,7 +330,7 @@ export default {
         })
       }
     },
-    recursion(data, origin) {
+    recursion(data, origin, conditionNextNodeId_) {
       let type = {
         //类型
         start: 'start', //开始节点
@@ -401,31 +401,55 @@ export default {
       }
       if (hasBranch(data)) {
         //判断是否存在条件，如果有。。。
-        let conditionNextNodeId = data.childNode ? data.childNode.nodeId : '' //判断条件是否存在子节点
+        let conditionNextNodeId = conditionNextNodeId_
+          ? conditionNextNodeId_
+          : data.childNode
+          ? data.childNode.nodeId
+          : '' //判断条件是否存在子节点
         if (data.childNode) {
-          data.childNode.prevId = 'no_flow' //避免重新连线
+          data.childNode.prevId = 'no_flow' //避免重新连线（后面处理线，不给连线）
         }
         let newItem = {
+          //处理
           //网关节点
           type: 'gateway',
           id: 'gateway_' + data.nodeId,
           name: ''
         }
         this.condition.push(newItem)
-        let newIt = {
-          //进网关线
-          type: 'flow',
-          id: data.nodeId + 'gateway_' + data.nodeId,
-          name: '',
-          source: data.nodeId,
-          target: 'gateway_' + data.nodeId
+        if (data.condition) {
+          let newIt = {
+            //进网关线
+            type: 'flow',
+            id: data.nodeId + 'gateway_' + data.nodeId,
+            name: '',
+            source: data.VirtualNodeId.id,
+            target: 'gateway_' + data.nodeId,
+            conditionExpression: data.condition.conditionExpression
+          }
+
+          this.condition.push(newIt)
+        } else {
+          let newIt = {
+            //进网关线
+            type: 'flow',
+            id: data.nodeId + 'gateway_' + data.nodeId,
+            name: '',
+            source: data.nodeId,
+            target: 'gateway_' + data.nodeId
+          }
+          this.condition.push(newIt)
         }
-        this.condition.push(newIt)
+
         data.conditionNodes.map((d, index) => {
+          d.VirtualNodeId = newItem
+          // 虚拟节点
           let targetId = ''
           if (d.childNode) {
             targetId = d.childNode.nodeId
-            d.childNode.prevId = 'no_flow' // 避免重新连线
+            d.childNode.prevId = 'no_flow' // 避免重新连线（后面处理线，不给连线）
+          } else if (d.conditionNodes) {
+            targetId = data.VirtualNodeId ? data.VirtualNodeId.id : ''
           } else {
             targetId = conditionNextNodeId || 'end'
           }
@@ -444,17 +468,32 @@ export default {
           // this.processMap[conditionExpression] = ''
           // if(d.properties.conditions)
           // d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
-          let newIt = {
-            //出网关线
-            type: 'flow',
-            id: 'gateway_' + data.nodeId + d.nodeId + targetId,
-            name: d.properties.title,
-            source: 'gateway_' + data.nodeId, //前节点
-            target: targetId, // 当前节点
-            conditionExpression: conditionExpression
+          if (!d.conditionNodes) {
+            let newIt = {
+              //出网关线
+              type: 'flow',
+              id: 'gateway_' + data.nodeId + d.nodeId + targetId,
+              name: d.properties.title,
+              source: 'gateway_' + data.nodeId, //前节点
+              target: targetId, // 当前节点
+              conditionExpression: conditionExpression
+            }
+
+            this.condition.push(newIt)
+          } else {
+            let newIt = {
+              //出网关线
+              type: 'flow',
+              id: 'gateway_' + data.nodeId + d.nodeId + targetId,
+              name: d.properties.title,
+              source: 'gateway_' + data.nodeId, //前节点
+              target: targetId, // 当前节点
+              conditionExpression: conditionExpression
+            }
+            d.condition = newIt
+            // this.condition.push(newIt)
           }
 
-          this.condition.push(newIt)
           if (conditionNextNodeId && d.childNode) {
             let endNode = this.childNode(d.childNode) //
             let endIt = {
@@ -466,11 +505,16 @@ export default {
             }
             this.condition.push(endIt)
           }
-          this.recursion(d, origin.conditionNodes[index])
+          this.recursion(d, origin.conditionNodes[index], conditionNextNodeId)
         })
       }
-      if (data.prevId && data.prevId !== 'no_flow' && data.type !== 'condition') {
-        //有前节点且前节点不为no_flow,且节点类型不能为条件节点
+      if (
+        data.prevId &&
+        data.prevId !== 'no_flow' &&
+        data.type !== 'condition' &&
+        data.type !== 'start'
+      ) {
+        //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
         let items = {
           //节点线
           type: 'flow', // flow, start, end, task, ccTask, gateway
