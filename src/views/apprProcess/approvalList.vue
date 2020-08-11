@@ -64,46 +64,53 @@
             class="approval-li"
             :class="{ 'empty-approval': item.processes.length === 0 }"
           >
-            <div
-              class="title-box"
-              @click="toggleShow(item)"
-            >
+            <div class="title-box">
               <div class="li-title">
                 {{ item.name }}（{{ item.processes.length }}）
               </div>
-              <div
-                v-if="item.code !== 'draftProcess'"
-                class="action-box"
-              >
-                <el-button
-                  class="action-button"
-                  type="text"
-                  @click="renameApproval(item)"
+              <div class="li-button">
+                <div
+                  v-if="item.code !== 'draftProcess'"
+                  class="action-box"
                 >
-                  重命名
-                </el-button>
-                <el-button
-                  v-if="item.processes.length === 0"
-                  class="action-button"
-                  type="text"
-                  @click="deleteApproval(item)"
-                >
-                  删除
-                </el-button>
-                <el-tooltip
-                  v-if="item.processes.length !== 0"
-                  class="item"
-                  effect="dark"
-                  content="无法删除组，请先删除/移动组内审批"
-                  placement="top-start"
-                >
-                  <button
+                  <el-button
+                    class="action-button"
                     type="text"
-                    class="disable-action-button"
+                    @click="renameApproval(item)"
+                  >
+                    重命名
+                  </el-button>
+
+                  <el-button
+                    v-if="item.processes.length === 0"
+                    class="action-button"
+                    type="text"
+                    @click="deleteApproval(item)"
                   >
                     删除
-                  </button>
-                </el-tooltip>
+                  </el-button>
+                  <el-tooltip
+                    v-if="item.processes.length !== 0"
+                    class="item"
+                    effect="dark"
+                    content="无法删除组，请先删除/移动组内审批"
+                    placement="top-start"
+                  >
+                    <button
+                      type="text"
+                      class="disable-action-button"
+                    >
+                      删除
+                    </button>
+                  </el-tooltip>
+                </div>
+                <el-button
+                  class="action-button"
+                  type="text"
+                  @click="toggleShow(item)"
+                >
+                  {{ isHideList.indexOf(item.id) === -1 ? '收起' : '展开' }}
+                </el-button>
               </div>
             </div>
             <draggable
@@ -588,7 +595,6 @@ export default {
         .title-box {
           @include flexJustify;
           @include flexAlign;
-          cursor: pointer;
           height: 42px;
           padding: 0 24px;
           background-color: #f7f8fa;
@@ -598,7 +604,11 @@ export default {
             color: #202940;
             font-weight: 500;
           }
+          .li-button {
+            display: flex;
+          }
           .action-box {
+            margin-right: 10px;
             .action-button {
               // color: #202940;
             }
