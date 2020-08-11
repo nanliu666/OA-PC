@@ -286,9 +286,11 @@ export default {
       const line = [start]
       const loop = ($el) => {
         let data = JSON.parse(JSON.stringify($el.data))
-        delete data.conditionNodes
-        delete data.childNode
-        line.push(data)
+        if (!data.noData) {
+          delete data.conditionNodes
+          delete data.childNode
+          line.push(data)
+        }
         // 注意sort是为了将节点按上下顺序排序
         let children = $el.$children
           .filter((item) => item.$options.name === 'ApprPickerItem')

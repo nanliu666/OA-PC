@@ -172,7 +172,7 @@
                       <el-button
                         type="text"
                         :disabled="!checkEditable(processesItem)"
-                        @click="createApproal(processesItem)"
+                        @click="createApproval(processesItem)"
                       >
                         编辑
                       </el-button>

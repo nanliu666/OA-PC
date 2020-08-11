@@ -1,6 +1,9 @@
 <template>
   <div class="appr-user-item__box">
-    <div class="appr-user-item">
+    <div
+      v-show="!(data && data.noData)"
+      class="appr-user-item"
+    >
       <div
         v-if="!isLast"
         class="appr-user-item__tail"
@@ -205,8 +208,16 @@ export default {
               this.noMatchOrg = !flag
             }
             if (flag) {
-              this.data = node.childNode
-              !this.data.userList && this.initUserList(this.data)
+              this.data = node.childNode || { conditionNodes: node.conditionNodes }
+              // 当这个节点只有条件没有内容时设置noData为true
+              if (node.childNode) {
+                this.data = { ...node.childNode, noData: false }
+              } else if (node.conditionNodes) {
+                this.data = { noData: true, conditionNodes: node.conditionNodes }
+              } else {
+                this.data = { noData: true }
+              }
+              !this.data.noData && !this.data.userList && this.initUserList(this.data)
             }
             return flag
           })
@@ -218,7 +229,7 @@ export default {
       )
     } else {
       this.data = this.childNode
-      !this.data.userList && this.initUserList(this.data)
+      this.data && !this.data.userList && this.initUserList(this.data)
     }
   },
   methods: {
