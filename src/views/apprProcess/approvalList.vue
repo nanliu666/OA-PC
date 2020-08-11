@@ -64,7 +64,10 @@
             class="approval-li"
             :class="{ 'empty-approval': item.processes.length === 0 }"
           >
-            <div class="title-box">
+            <div
+              class="title-box"
+              @click="toggleShow(item)"
+            >
               <div class="li-title">
                 {{ item.name }}（{{ item.processes.length }}）
               </div>
@@ -110,7 +113,10 @@
               :disabled="item.code === 'draftProcess'"
               @end="dragEnd(item, index)"
             >
-              <transition-group name="flip-list">
+              <transition-group
+                v-show="isHideList.indexOf(item.id) === -1"
+                name="flip-list"
+              >
                 <ul
                   v-for="(processesItem, processesIndex) in item.processes"
                   :key="processesIndex"
@@ -252,6 +258,7 @@ export default {
   components: { processDialog, dragList, draggable },
   data() {
     return {
+      isHideList: [],
       loading: true,
       symbolKey: 'xlink:href',
       dragOptions: {
@@ -277,6 +284,17 @@ export default {
   methods: {
     checkEditable(process) {
       return _.includes(process.admin, this.userId)
+    },
+    /**
+     * 切换显示隐藏
+     */
+    toggleShow(data) {
+      let index = this.isHideList.indexOf(data.id)
+      if (index > -1) {
+        this.isHideList.splice(index, 1)
+      } else {
+        this.isHideList.push(data.id)
+      }
     },
     /**
      * 重新刷新数据
@@ -570,6 +588,7 @@ export default {
         .title-box {
           @include flexJustify;
           @include flexAlign;
+          cursor: pointer;
           height: 42px;
           padding: 0 24px;
           background-color: #f7f8fa;
