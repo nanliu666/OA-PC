@@ -5,7 +5,17 @@
       show-back
     />
     <el-card>
-      1
+      <div class="content-li">
+        <div class="li-label">
+          <span style="color: red">*</span>
+          <span>公告标题</span>
+        </div>
+        <el-input
+          v-model="form.title"
+          class="input-class"
+          placeholder="请输入公告标题"
+        />
+      </div>
     </el-card>
   </div>
 </template>
@@ -15,7 +25,10 @@ export default {
   name: 'NoticeEdit',
   data() {
     return {
-      title: '发布公告'
+      title: '发布公告',
+      form: {
+        title: ''
+      }
     }
   },
   beforeRouteEnter(to, form, next) {
@@ -31,5 +44,18 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
 .notice-edit {
+  .content-li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .li-label {
+      font-size: 16px;
+      color: #0e001c;
+      margin-right: 16px;
+    }
+    .input-class {
+      flex: 1;
+    }
+  }
 }
 </style>
