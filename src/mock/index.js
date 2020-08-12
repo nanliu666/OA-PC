@@ -29,6 +29,10 @@ import taskcenter from './taskcenter'
 import todo from './todo'
 import transction from './transction'
 import user from './user'
+
+import apprProcess from './apprProcess'
+import process from './process'
+
 import mailList from './mailList'
 import newCenter from './newsCenter'
 import noticeCenter from './noticeCenter'
@@ -46,9 +50,12 @@ Mock.setup({
 newCenter({ mock: true })
 noticeCenter({ mock: true })
 user(options)
-approval(options)
-menu({ mock: true })
-interview({ mock: false })
+
+apprProcess(options)
+menu(options)
+apprProcess(options)
+
+interview(options)
 
 candidate(options)
 selectPerson(options)
@@ -84,5 +91,7 @@ entry(options)
 taskcenter(options)
 schedule(options)
 remind(options)
-// mailList(options)
-mailList({ mock: true })
+
+process(options)
+
+mailList(options)

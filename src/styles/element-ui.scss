@@ -186,3 +186,9 @@ table tr {
   height: 26px;
   line-height: 26px;
 }
+.is-error .el-input-number__decrease,
+.is-error .el-input-number__increase,
+.is-success .el-input-number__decrease,
+.is-success .el-input-number__increase {
+  right: 1px !important;
+}

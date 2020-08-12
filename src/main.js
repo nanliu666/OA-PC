@@ -17,12 +17,16 @@ import './styles/common.scss'
 import basicContainer from './components/basic-container/main'
 import pageHeader from './components/page-header/pageHeader'
 import commonForm from './components/common-form/commonForm'
+import OrgSelect from './components/OrgSelect/orgSelect'
+import FormParser from '@/views/processDesign/components/FormDesign/components/parser/Parser'
 import commonTable from 'vue-common-table'
+
 import website from '@/config/website'
 
 import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
+
 Vue.prototype._ = _
 
 const $message = (options) => {
@@ -56,10 +60,12 @@ Vue.use(window.AVUE, {
 Vue.use(loadmore)
 Vue.use(Permission)
 //注册全局容器
+Vue.component('FcOrgSelect', OrgSelect)
 Vue.component('basicContainer', basicContainer)
 Vue.component('commonTable', commonTable)
 Vue.component('pageHeader', pageHeader)
 Vue.component('commonForm', commonForm)
+Vue.component('formParser', FormParser)
 // 加载相关url地址
 Object.keys(urls).forEach((key) => {
   Vue.prototype[key] = urls[key]
