@@ -824,14 +824,25 @@ const res = {
             icon: 'iconfont iconicon_compile'
           },
           {
-            menuId: '159011207569132',
-            menuName: '配置流程',
+            menuId: '1590112075691322',
+            menuName: '发起审批',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'approval_launchApply',
+            alias: 'launchApply',
+            path: '/apprProcess/launchApply',
+            icon: 'iconfont iconicon_compile'
+          },
+          {
+            menuId: '0000006',
+            menuName: '审批详情',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 0,
-            code: 'approval_approvalDetail',
+            code: 'approval_approval',
             alias: 'approval',
-            path: '/approval/approvalDetail',
+            path: '/apprProcess/apprDetail',
             icon: 'iconfont iconicon_compile'
           },
           {
@@ -845,17 +856,6 @@ const res = {
             path: '',
             icon: 'iconfont iconicon_compile',
             children: [
-              {
-                menuId: '0000001',
-                menuName: '我发起的',
-                menuType: 'Menu',
-                isOwn: 1,
-                isShow: 1,
-                code: 'approval_approval',
-                alias: 'approval',
-                path: '/apprProcess/appr/apprByMe',
-                icon: 'iconfont iconicon_compile'
-              },
               {
                 menuId: '0000003',
                 menuName: '待我审批',
@@ -890,28 +890,17 @@ const res = {
                 icon: 'iconfont iconicon_compile'
               },
               {
-                menuId: '0000006',
-                menuName: '审批详情',
+                menuId: '0000001',
+                menuName: '我发起的',
                 menuType: 'Menu',
                 isOwn: 1,
-                isShow: 0,
+                isShow: 1,
                 code: 'approval_approval',
                 alias: 'approval',
-                path: '/apprProcess/apprDetail',
+                path: '/apprProcess/appr/apprByMe',
                 icon: 'iconfont iconicon_compile'
               }
             ]
-          },
-          {
-            menuId: '1590112075691322',
-            menuName: '发起审批',
-            menuType: 'Menu',
-            isOwn: 1,
-            isShow: 1,
-            code: 'approval_launchApply',
-            alias: 'launchApply',
-            path: '/apprProcess/launchApply',
-            icon: 'iconfont iconicon_compile'
           }
         ]
       }
