@@ -142,7 +142,7 @@ export default {
       return _.defaults(opts, CHART_CONFIG_DEFAULT)
     },
 
-    // 当前视图是省份还是市
+    // 当前视图是省份还是市 true - 中国地图， false- 某个省的视图
     isProvince() {
       return _.eq(this.mapName, MAPNAME_DEFAULT)
     }
@@ -188,7 +188,9 @@ export default {
       try {
         const { provinceCode } = getProvinceByName(this.mapName)
         this.loading = true
-        const data = await this.load[this.isProvince ? 0 : 1](provinceCode)
+        const data = await this.load[this.isProvince ? 0 : 1](
+          this.isProvince ? null : { provinceCode }
+        )
         this.data = data
       } catch (error) {
         this.$message.error(error.message)

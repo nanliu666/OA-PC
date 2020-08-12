@@ -14,7 +14,7 @@
             />
             <ElTreeSelect
               ref="orgTree"
-              v-model="searchParams.orgId"
+              v-model="searchParams_orgId"
               :select-params="treeSelectConfig.selectParams"
               :tree-params="treeSelectConfig.treeParams"
             />
@@ -22,7 +22,7 @@
           <el-form-item v-show="tabPane !== 'staff'">
             <i class="icon-basics-date-outlined bold" />
             <el-date-picker
-              v-model="searchParams.qryMonth"
+              v-model="searchParams_qryMonth"
               type="month"
               placeholder="选择月"
             />
@@ -38,7 +38,10 @@
           </el-form-item>
         </el-form>
       </template>
-      <template #main>
+      <template
+        v-if="loaded"
+        #main
+      >
         <StatisticalPane
           v-show="tabPane === 'statistical'"
           ref="statistical"
@@ -59,19 +62,20 @@
 <script>
 import Layout from './components/Layout'
 import moment from 'moment'
-import StatisticalPane from './components/StatisticalPane'
-import RecruitmentPane from './components/RecruitmentPane'
-import StaffPane from './components/StaffPane'
+import StatisticalPane from './components/StatisticalPane' // 统计概况
+import RecruitmentPane from './components/RecruitmentPane' // 招聘概况
+import StaffPane from './components/StaffPane' // 员工概况
 import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import { getOrgTreeSimple } from '@/api/org/org'
 
+// pane 枚举类型
 const TAB_PANE_ENUMS = {
   statistical: 'statistical',
   staff: 'staff',
   recruitment: 'recruitment'
 }
-// DEBUG: 当前页面置于员工概况
-const TAB_ACTIVE_DEFAULT = TAB_PANE_ENUMS.recruitment
+const TAB_ACTIVE_DEFAULT = TAB_PANE_ENUMS.staff
+
 const TREE_SELECT_CONFIG = {
   selectParams: {
     placeholder: '请选择部门',
@@ -102,17 +106,10 @@ export default {
     ElTreeSelect,
     Layout
   },
-  filters: {
-    labelFormatter(arr) {
-      const sum = _.sumBy(arr, 'value')
-      return _.map(arr, ({ name, value }) => ({
-        value,
-        name: `${name}:  ${value}人  ${_.round((100 * value) / sum, 2)}%`
-      }))
-    }
-  },
   data() {
     return {
+      loaded: false, // 没有参数的时候不能进行查询，用一个变量进行标记
+      loading: false,
       tabPane: TAB_ACTIVE_DEFAULT,
       searchParams: {},
       treeSelectConfig: _.cloneDeep(TREE_SELECT_CONFIG)
@@ -123,27 +120,46 @@ export default {
       searchParams: this.searchParams
     }
   },
-  computed: {},
+  computed: {
+    searchParams_orgId: {
+      get() {
+        return this.searchParams.orgId || null
+      },
+      set(val) {
+        this.$set(this.searchParams, 'orgId', val)
+      }
+    },
+    searchParams_qryMonth: {
+      get() {
+        return this.searchParams.qryMonth || null
+      },
+      set(val) {
+        this.$set(this.searchParams, 'qryMonth', val)
+      }
+    }
+  },
   watch: {
-    tabPane(tab) {
-      this.$refs[tab].refresh()
+    tabPane() {
+      this.refresh()
     }
   },
   created() {
     getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
       this.treeSelectConfig.treeParams.data = res
       // 默认选中第一个(百利宏)
-      this.$set(this.searchParams, 'orgId', _.get(res, '[0].orgId', null))
+      this.searchParams_orgId = _.get(res, '[0].orgId', null)
       // 将日期设置为当前月
-      this.$set(this.searchParams, 'qryMonth', new Date(moment().format('YYYY-MM')))
-      this.refresh()
+      this.searchParams_qryMonth = moment().format('YYYY-MM')
+      this.loaded = true
+      this.$nextTick(() => this.refresh())
     })
   },
   methods: {
     handleSearch(searchParams) {
-      // TODO:
       this.searchParams = _.pickBy(searchParams)
-      this.loadPaneData()
+      this.loaded = false
+      // TODO: hack, refresh
+      this.$nextTick(() => (this.loaded = true))
     },
 
     refresh() {
@@ -151,7 +167,7 @@ export default {
     },
 
     refreshByPane(pane) {
-      if (_.isEmpty(this.$refs)) {
+      if (_.isNil(this.$refs[pane])) {
         return
       }
       // 用于控制pane的数据更新事件

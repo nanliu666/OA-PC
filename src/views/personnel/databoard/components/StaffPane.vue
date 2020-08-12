@@ -3,7 +3,7 @@
   <div class="StaffPane">
     <el-row :gutter="10">
       <el-col
-        v-for="({ title, load, config }, index) of chartPieConfigs.slice(0, 2)"
+        v-for="({ title, load, config, excludes, subtext }, index) of chartPieConfigs.slice(0, 2)"
         :key="`section-0-${index}`"
         :sm="24"
         :lg="12"
@@ -12,8 +12,10 @@
           <ChartSkeleton slot="skeleton" />
           <ChartPie
             :config="config"
+            :excludes="excludes"
             :load="load"
             :title="title"
+            :subtext="subtext"
           />
         </LazySkeleton>
       </el-col>
@@ -31,7 +33,7 @@
         </LazySkeleton>
       </el-col>
       <el-col
-        v-for="({ title, load, config }, index) of chartBarConfigs.slice(0, 1)"
+        v-for="({ config, load, title, xaxisDictkey }, index) of chartBarConfigs.slice(0, 1)"
         :key="`section-1-${index + 1}`"
         :sm="24"
         :lg="12"
@@ -42,6 +44,7 @@
             :config="config"
             :load="load"
             :title="title"
+            :xaxis-dictkey="xaxisDictkey"
           />
         </LazySkeleton>
       </el-col>
@@ -60,6 +63,11 @@
               dictKey: 'EducationalLevel'
             }"
             :load="getUserEducationalLevel"
+            :excludes="['-1']"
+            :subtext="
+              (datas) =>
+                `未填写学历分布${_.get(_.find(datas, { educationalLevel: '-1' }), 'workNum', 0)}人`
+            "
             title="学历分布"
           />
         </LazySkeleton>
@@ -90,6 +98,7 @@
         <LazySkeleton>
           <ChartSkeleton slot="skeleton" />
           <ChartPie
+            :key="`section-4-${index}`"
             :config="config"
             :excludes="excludes"
             :load="load"
@@ -115,24 +124,6 @@
           />
         </LazySkeleton>
       </el-col>
-
-      <!-- <el-col
-        :key="`section-4-1`"
-        :sm="24"
-        :lg="12"
-      >
-        <LazySkeleton>
-          <ChartSkeleton slot="skeleton" />
-          <ChartBar
-            :config="[
-              { label: 'yearName', value: '1', name: '男', stack: true },
-              { label: 'yearName', value: '0', name: '女', stack: true }
-            ]"
-            :load="getUserYear"
-            title="年代分布"
-          />
-        </LazySkeleton>
-      </el-col> -->
 
       <el-col
         v-for="({ title, load, config }, index) of chartGeoMapConfigs"
@@ -166,8 +157,7 @@ import LazySkeleton from '@/components/lazy-skeleton/LazySkeleton'
 import {
   getNativeProvince,
   getNativeCity,
-  getOrgEntryNum,
-  getTalentJob,
+  getUserNation,
   getUserAge,
   getUserCompanyAge,
   getUserEducationalLevel,
@@ -180,6 +170,25 @@ import {
   getWorkProvince,
   getWorkCity
 } from '@/api/personnel/databoard'
+
+const CHART_GEO_MAP_CONFIGS = [
+  {
+    title: '在职员工籍贯分布情况',
+    config: [
+      { label: 'provinceName', value: 'workNum' },
+      { label: 'cityName', value: 'workNum' }
+    ],
+    load: [getNativeProvince, getNativeCity]
+  },
+  {
+    title: '在职员工工作地分布图',
+    config: [
+      { label: 'provinceName', value: 'workNum' },
+      { label: 'cityName', value: 'workNum' }
+    ],
+    load: [getWorkProvince, getWorkCity]
+  }
+]
 
 const CHART_PIE_CONFIGS = [
   // section-0
@@ -198,15 +207,17 @@ const CHART_PIE_CONFIGS = [
     title: '司龄分布',
     load: getUserCompanyAge,
     config: { label: 'ageName', value: 'workNum' },
-    excludes: ['Other'],
-    subtext: (datas) => `未填写司龄${_.get(_.find(datas, { ageName: 'Other' }), 'workNum', 0)}人`
+    excludes: ['Other-未填写'],
+    subtext: (datas) =>
+      `未填写司龄${_.get(_.find(datas, { ageName: 'Other-未填写' }), 'workNum', 0)}人`
   },
   {
     title: '工龄分布',
     load: getUserWorkAge,
     config: { label: 'ageName', value: 'workNum' },
-    excludes: ['Other'],
-    subtext: (datas) => `未填写工龄${_.get(_.find(datas, { ageName: 'Other' }), 'workNum', 0)}人`
+    excludes: ['Other-未填写'],
+    subtext: (datas) =>
+      `未填写工龄${_.get(_.find(datas, { ageName: 'Other-未填写' }), 'workNum', 0)}人`
   }
 ]
 const CHART_SEX_DISTRIBUTION = {
@@ -215,9 +226,19 @@ const CHART_SEX_DISTRIBUTION = {
 }
 const CHART_BAR_CONFIGS = [
   {
-    title: '各部门入职人数',
-    load: getOrgEntryNum,
-    config: { value: 'entryNum', label: 'orgName' }
+    title: '民族分布',
+    load: async (params) =>
+      _(await getUserNation(params))
+        .map((item) => ({
+          ...item,
+          nation: item.nation === '-1' ? '未填写' : item.nation
+        }))
+        .sortBy('workNum')
+        .reverse()
+        .slice(0, 10)
+        .value(),
+    config: { value: 'workNum', label: 'nation' },
+    xaxisDictkey: 'Nation'
   },
   {
     title: '年龄分布',
@@ -253,12 +274,6 @@ const CHART_BAR_CONFIGS = [
   }
 ]
 
-// 人才库职位分布图
-const CHART_COMPLEX_BAR_CONFIGS = {
-  title: '人才库职位分布图',
-  load: getTalentJob
-}
-
 /**
  * @description 用于将区分性别的两组数据进行合并成为一组数据
  * @param {Array<{[propName: string]:string,sex:number,workNum: number}>} arr
@@ -273,8 +288,8 @@ function mergeSexByGroupName(arr, groupProp, valueProp = 'workNum') {
       (result, value, key) =>
         (result[key] = {
           [groupProp]: key,
-          0: _.find(value, { sex: 0 })[valueProp],
-          1: _.find(value, { sex: 1 })[valueProp]
+          0: _.get(_.find(value, { sex: 0 }), valueProp, 0),
+          1: _.get(_.find(value, { sex: 1 }), valueProp, 0)
         })
     )
     .map()
@@ -292,59 +307,34 @@ export default {
     ChartSkeleton,
     LazySkeleton
   },
+  inject: ['searchParams'],
   computed: {
-    getNativeProvince() {
-      return async () => await getNativeProvince(this._searchParams)
-    },
-    getNativeCity() {
-      return async (provinceCode) =>
-        await getNativeCity(_.assign({ provinceCode }, this._searchParams))
-    },
-    getWorkProvince() {
-      return async () => await getWorkProvince(this._searchParams)
-    },
-    getWorkCity() {
-      return async (provinceCode) =>
-        await getWorkCity(_.assign({ provinceCode }, this._searchParams))
-    },
     chartBarConfigs() {
       return _.map(CHART_BAR_CONFIGS, (cfg) => ({
         ...cfg,
-        load: async (params) => await cfg.load({ ...this._searchParams, ...params })
+        load: this.searchParamsDecorator(cfg.load)
       }))
     },
-    chartSexDistribution: () => CHART_SEX_DISTRIBUTION,
-    chartPieConfigs: () => CHART_PIE_CONFIGS,
+    chartSexDistribution() {
+      const cfg = CHART_SEX_DISTRIBUTION
+      return { ...cfg, load: this.searchParamsDecorator(cfg.load) }
+    },
+    chartPieConfigs() {
+      return _.map(CHART_PIE_CONFIGS, (cfg) => ({
+        ...cfg,
+        load: this.searchParamsDecorator(cfg.load)
+      }))
+    },
     // 地图相关配置
     chartGeoMapConfigs() {
-      return [
-        {
-          title: '在职员工籍贯分布情况',
-          config: [
-            { label: 'provinceName', value: 'workNum' },
-            { label: 'cityName', value: 'workNum' }
-          ],
-          load: [this.getNativeProvince, this.getNativeCity]
-        },
-        {
-          title: '在职员工工作地分布图',
-          config: [
-            { label: 'provinceName', value: 'workNum' },
-            { label: 'cityName', value: 'workNum' }
-          ],
-          load: [this.getWorkProvince, this.getWorkCity]
-        }
-      ]
+      return _.map(CHART_GEO_MAP_CONFIGS, (cfg) => ({
+        ...cfg,
+        load: _.map(cfg.load, this.searchParamsDecorator)
+      }))
     },
-    chartComplexPieConfigs: () => CHART_COMPLEX_BAR_CONFIGS,
-    getOrgEntryNum: () => getOrgEntryNum,
-    getUserPosition: () => getUserPosition,
-    getUserCompanyAge: () => getUserCompanyAge,
-    getUserSex: () => getUserSex,
-
-    getUserWorkProperty: () => getUserWorkProperty,
-    getUserWorkAge: () => getUserWorkAge,
-    getUserEducationalLevel: () => getUserEducationalLevel,
+    getUserEducationalLevel() {
+      return this.searchParamsDecorator(getUserEducationalLevel)
+    },
     // 招聘概况只对日期进行查询
     _searchParams() {
       return _.pick(this.searchParams, 'orgId')
@@ -360,7 +350,11 @@ export default {
       }
     },
     // DEBUG:
-    async refresh() {}
+    async refresh() {},
+
+    searchParamsDecorator(loadFn) {
+      return async (params) => await loadFn({ ...this._searchParams, ...params })
+    }
   }
 }
 </script>

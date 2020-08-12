@@ -30,6 +30,7 @@ const CHART_CONFIG_DEFAULT = {
     itemWidth: 14, // 图例颜色大小
     itemHeight: 14
   },
+  caculable: true,
   xAxis: {
     data: [],
     axisLabel: {
@@ -43,17 +44,18 @@ const CHART_CONFIG_DEFAULT = {
         color: '#757C85',
         fontSize: 16
       },
+      minInterval: '1',
       axisLine: { show: false },
       axisTick: { show: false }
     },
     {
       type: 'value',
       min: 0,
-      max: 1,
+      max: 100,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
-        formatter: (val) => `${val * 100} %`
+        formatter: (val) => `${val} %`
       }
     }
   ],
@@ -119,7 +121,7 @@ export default {
           ? {
               yAxisIndex: cfg.yAxisIndex,
               tooltip: {
-                formatter: ({ name, value }) => `${name}: ${_.round(value * 100, 2)} %`
+                formatter: ({ name, value }) => `${name}: ${_.round(value, 2)} %`
               }
             }
           : null),
