@@ -86,7 +86,9 @@
                 v-show="curItemIndex != index"
                 label="学历:"
               >
-                <span class="info-item-value">{{ item.educationalLevel }}</span>
+                <span class="info-item-value">{{
+                  getDictValue(EducationalLevel, item.educationalLevel)
+                }}</span>
               </el-form-item>
 
               <el-form-item
@@ -96,10 +98,10 @@
               >
                 <el-select v-model="item.educationalLevel">
                   <el-option
-                    v-for="ite in edubackOptions"
-                    :key="ite.value"
-                    :label="ite.label"
-                    :value="ite.value"
+                    v-for="ite in EducationalLevel"
+                    :key="ite.dictKey"
+                    :label="ite.dictValue"
+                    :value="ite.dictKey"
                   />
                 </el-select>
               </el-form-item>
@@ -115,19 +117,21 @@
                 v-show="curItemIndex != index"
                 label="教育类型:"
               >
-                <span class="info-item-value">{{ item.educationalType }}</span>
+                <span class="info-item-value">{{
+                  getDictValue(EducationalType, item.educationalType)
+                }}</span>
               </el-form-item>
               <el-form-item
                 v-show="curItemIndex == index"
                 label="教育类型:"
                 prop="educationalType"
               >
-                <el-select v-model="item.educationalType">
+                <el-select v-model="item.EducationalType">
                   <el-option
                     v-for="itemm in educationType"
-                    :key="itemm.value"
-                    :label="itemm.label"
-                    :value="itemm.value"
+                    :key="itemm.dictKey"
+                    :label="itemm.dictValue"
+                    :value="itemm.dictKey"
                   />
                 </el-select>
               </el-form-item>
@@ -239,6 +243,8 @@ export default {
       editClick: false,
       type: '',
       monthRange: [],
+      EducationalLevel: [],
+      EducationalType: [],
       rules: {
         monthRange: [
           {
@@ -264,81 +270,26 @@ export default {
             message: '学历不能为空'
           }
         ]
-      },
-      educationType: [
-        {
-          value: '统考',
-          label: '统考'
-        },
-        {
-          value: '自考',
-          label: '自考'
-        },
-        {
-          value: '函授',
-          label: '函授'
-        }
-      ],
-      edubackOptions: [
-        {
-          value: '小学',
-          label: '小学'
-        },
-        {
-          value: '初中',
-          label: '初中'
-        },
-        {
-          value: '高中',
-          label: '高中'
-        },
-        {
-          value: '大专',
-          label: '大专'
-        },
-        {
-          value: '本科',
-          label: '本科'
-        },
-        {
-          value: '硕士',
-          label: '硕士'
-        },
-        {
-          value: '博士',
-          label: '博士'
-        },
-        {
-          value: '博士后',
-          label: '博士后'
-        },
-        {
-          value: '职高',
-          label: '职高'
-        },
-        {
-          value: '中专',
-          label: '中专'
-        },
-        {
-          value: '技校',
-          label: '技校'
-        },
-        {
-          value: '中等师范学校',
-          label: '中等师范学校'
-        },
-        {
-          value: '其他',
-          label: '其他'
-        }
-      ]
+      }
     }
   },
   created() {
     this.getBasicInfo()
+    this.$store.dispatch('CommonDict', 'EducationalLevel').then((res) => {
+      this.EducationalLevel = res
+    })
+    this.$store.dispatch('CommonDict', 'EducationalType').then((res) => {
+      this.EducationalType = res
+    })
   },
   methods: {
+    getDictValue(arr, val) {
+      for (let item of arr) {
+        if (item.dictKey === val) {
+          return item.dictValue
+        }
+      }
+    },
     addInfo() {
       this.type = 'add'
       let item = {

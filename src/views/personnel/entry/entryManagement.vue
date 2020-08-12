@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="EntryManagement">
     <page-header title="入职管理" />
-    <basic-container>
+    <basic-container block>
       <el-tabs
         v-model="status"
         :before-leave="handleBeforeClick"
@@ -68,7 +68,7 @@
                 导出
               </el-button>-->
               <el-button
-                icon="el-icon-refresh-right"
+                icon="icon-basics-refresh-outlined"
                 size="medium"
                 class="topBtn"
                 type="text"
@@ -94,11 +94,20 @@
         >
           {{ workProperty[row.workProperty] }}
         </template>
+
         <template
-          slot="entryDate"
+          slot="entryRegister"
           slot-scope="{ row }"
         >
-          {{ row.entryDate.split(' ')[0] }}
+          {{
+            row.entryRegister === 1
+              ? '已确认'
+              : row.entryFill === 1
+                ? '已填写'
+                : row.register === 1
+                  ? '已发送'
+                  : '未发送'
+          }}
         </template>
         <template
           slot="handler"
@@ -213,6 +222,7 @@ const column = [
     prop: 'workProperty',
     slot: true
   },
+
   {
     label: '手机号',
     prop: 'phonenum',
@@ -221,6 +231,12 @@ const column = [
 ]
 
 const willEntryColumn = [
+  {
+    label: '入职登记表',
+    prop: 'entryRegister',
+    slot: true,
+    width: 120
+  },
   {
     label: '邮箱',
     prop: 'email',
@@ -289,9 +305,7 @@ export default {
       data: [],
       tableConfig: {
         showHandler: true,
-        // enableMultiSelect: true,
         enablePagination: true,
-        uniqueKey: 'personId',
         highlightSelect: true,
         showIndexColumn: false,
         handlerColumn: {
@@ -439,9 +453,16 @@ export default {
     },
     toDetail(row) {
       if (this.status !== 'latelyEntry') {
-        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${row.applyId}`)
+        this.$router.push({
+          path: `/personnel/entry/entryPersonDetail?applyId=${row.applyId}`,
+          query: {
+            tagName: this.status === '7' ? '待入职员工详情' : '放弃入职员工详情'
+          }
+        })
       } else {
-        this.$router.push('/personnel/detail/' + row.userId)
+        this.$router.push({
+          path: `/personnel/detail/${row.userId}`
+        })
       }
     },
     toEntryMatters(row) {
@@ -607,5 +628,16 @@ export default {
 
 /deep/ .el-tabs__active-bar {
   height: 3px;
+}
+/deep/ .topBtn i {
+  color: #a0a8ae;
+  font-size: 16px;
+}
+.EntryManagement {
+  height: 100%;
+  .basic-container--block {
+    min-height: calc(100% - 92px);
+    height: 0;
+  }
 }
 </style>

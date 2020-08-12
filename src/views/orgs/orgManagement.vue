@@ -56,6 +56,8 @@
               >
                 <el-checkbox-group
                   v-model="checkColumn"
+                  style="display: flex;
+    flex-direction: column;"
                   @change="columnChange"
                 >
                   <el-checkbox
@@ -364,6 +366,8 @@ export default {
       this.$refs['searchPopover'].treeDataUpdateFun(res, 'parentOrgId')
       this.searchConfig.requireOptions[0].data = res[0].orgId
     })
+  },
+  activated() {
     this.getOrgTree()
   },
   methods: {
@@ -398,6 +402,14 @@ export default {
           this.$message.error('顶级组织不可删除')
           return
         }
+        if (row.children > 0) {
+          this.$message.error('很抱歉，您选中的组织下存在子组织，请先将子组织调整后再删除!')
+          return
+        }
+        if (row.jobNum > 0) {
+          this.$message.error('很抱歉，您选中的组织下存在子职位，请先将子职位调整后再删除!')
+          return
+        }
         this.$confirm('您确定要删除选中的组织么？', '提醒', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -427,6 +439,14 @@ export default {
           .map((item) => {
             if (item.parentId === 0) {
               this.$message.error('顶级组织不可删除')
+              isError = true
+            }
+            if (item.children > 0) {
+              this.$message.error('很抱歉，您选中的组织下存在子组织，请先将子组织调整后再删除!')
+              isError = true
+            }
+            if (item.jobNum > 0) {
+              this.$message.error('很抱歉，您选中的组织下存在子职位，请先将子职位调整后再删除!')
               isError = true
             }
             return item.orgId

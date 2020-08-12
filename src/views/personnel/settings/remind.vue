@@ -28,7 +28,15 @@
             <span class="handler__btn">
               <el-button
                 type="text"
-                @click="() => editInit({ type: row['personnelEvent'].type })"
+                @click="
+                  () =>
+                    editInit({
+                      name: _.get(row, 'executor.name', null),
+                      workNo: _.get(row, 'executor.workNo', null),
+                      userId: _.get(row, 'executor.userId', null),
+                      type: row['personnelEvent'].type
+                    })
+                "
               >
                 <i class="icon-basics-edit-outlined" />
               </el-button>
@@ -60,6 +68,7 @@
               key: 'userId',
               value: 'userId'
             }"
+            :first-option="{ userId: form.userId, name: form.name, workNo: form.workNo }"
             placeholder="请选择人员"
             searchable
           />
@@ -145,7 +154,7 @@ const FORM_COLUMNS = [
 export default {
   name: 'Remind',
   components: {
-    LazySelect: () => import(/* webpackChunkName: "views" */ '@/components/lazy-select/lazySelect')
+    LazySelect: () => import('@/components/lazy-select/lazySelect')
   },
   filters: {
     description: (row) => _.get(row, _.head(TABLE_COLUMNS).prop + '.description'),
@@ -178,6 +187,7 @@ export default {
   methods: {
     editClose() {
       this.editVisible = false
+      this.form = {}
     },
     editInit(data) {
       this.editVisible = true
@@ -216,7 +226,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .Remind
   .el-alert--info
     background: #edf8ff 100%

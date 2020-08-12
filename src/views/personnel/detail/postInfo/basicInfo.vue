@@ -832,6 +832,8 @@ export default {
         positionId: this.staffInfo.positionId,
         orgId: this.staffInfo.orgId,
         orgName: this.staffInfo.orgName,
+        jobId: this.staffInfo.jobId,
+        jobName: this.staffInfo.jobName,
         leaderName: this.staffInfo.leaderName,
         userRemark: this.staffInfo.userRemark,
         recruitment: this.staffInfo.recruitment,

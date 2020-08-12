@@ -140,7 +140,7 @@ export default {
       rules: {
         summary: [{ required: true, message: '请简单说说您的工作心得', trigger: 'blur' }],
         advise: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }],
-        apprProgress: [{ required: true, validator: checkAppr }]
+        apprProgress: [{ required: true, validator: checkAppr, trigger: 'change' }]
       }
     }
   },
@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     // 提交之前hook
-    async preSubmit() {
+    async checkValid() {
       let valid = true
       if (
         _.get(
@@ -168,7 +168,7 @@ export default {
       return valid
     },
     async handleSubmit(params = {}) {
-      if (await this.preSubmit()) {
+      if (!(await this.checkValid())) {
         // 已经提交过了
         return this.$message.warning('已存在正在审批中的申请')
       }

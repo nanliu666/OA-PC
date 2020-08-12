@@ -202,7 +202,7 @@ export default {
       )
     },
     getWarnText(row) {
-      return moment().diff(moment(row.beginDate), 'days')
+      return moment().diff(moment(row.endDate), 'days')
     },
     handleTabChange() {
       this.page.currentPage = 1
@@ -220,13 +220,14 @@ export default {
         this.$router.push({
           path: '/apprProcess/apprDetail',
           query: {
-            apprNo: row.bizId
+            apprNo: row.bizId,
+            toDoList: true
           }
         })
       } else if (row.type === 'Recruitment') {
         // 招聘
         this.$router.push({
-          path: '/personnel/recruit/specificPage',
+          path: '/personnel/recruit/details',
           query: {
             id: row.bizId
           }
@@ -245,7 +246,8 @@ export default {
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: row.bizId,
-            recruitmentId: row.bizId2
+            recruitmentId: row.bizId2,
+            isInterview: 1
           }
         })
         //
@@ -268,15 +270,23 @@ export default {
         })
       } else if (row.type === 'Entry') {
         // 入职办理
-        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${row.bizId}`)
+        this.$router.push({
+          path: '/personnel/entry/entryPersonDetail',
+          query: {
+            applyId: row.bizId2,
+            personId: row.bizId
+          }
+        })
       } else if (row.type === 'EntryRegister') {
         // 入职登记表
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: row.bizId,
+            recruitmentId: row.bizId2,
             entry: 1,
-            tagName: '入职登记表详情'
+            tagName: '入职登记表详情',
+            isUser: 1
           }
         })
       }

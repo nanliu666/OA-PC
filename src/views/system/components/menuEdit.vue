@@ -216,12 +216,12 @@ const FORM_COLUMNS = [
 export default {
   name: 'MenuEdit',
   components: {
-    IconSelect: () => import(/* webpackChunkName: "views" */ '@/components/icon-select')
+    IconSelect: () => import('@/components/icon-select')
   },
   filters: {
     formColumnsFilter: function(form) {
       let res = _(FORM_COLUMNS)
-      if (_.eq(form.menuType, 'Button')) {
+      if (_.eq(form.menuType, 'Button') || _.isNil(form.menuType)) {
         res = res.difference([_.find(FORM_COLUMNS, { prop: 'sort' })])
       }
       return res.value()

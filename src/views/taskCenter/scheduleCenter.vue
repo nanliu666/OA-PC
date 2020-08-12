@@ -61,7 +61,7 @@
                   v-for="(item, index) in renderList(data)"
                   :key="index"
                   class="remind-item"
-                  :class="today - date <= 0 ? 'blue-tip' : 'grey-tip'"
+                  :class="showBlue(date) ? 'blue-tip' : 'grey-tip'"
                 >
                   {{ item.type | filterScheduleType }} {{ item.title }}
                   <i
@@ -95,7 +95,7 @@
                   v-for="(item, index) in renderList(data)"
                   :key="index"
                   class="remind-item"
-                  :class="today - date <= 0 ? 'blue-tip' : 'grey-tip'"
+                  :class="showBlue(date) ? 'blue-tip' : 'grey-tip'"
                 >
                   {{ item.type | filterScheduleType }} {{ item.title }}
                 </div>
@@ -127,11 +127,11 @@
               </div>
             </div>
             <!-- slot -->
-            <div slot="reference">
-              <div
-                slot="reference"
-                :class="data.isSelected ? 'is-selected' : ''"
-              >
+            <div
+              slot="reference"
+              class="reference-box"
+            >
+              <div :class="data.isSelected ? 'is-selected' : ''">
                 <div class="day-num">
                   {{ date.getDate() }}
                 </div>
@@ -235,6 +235,16 @@ export default {
         })
         this.loadData()
       })
+    },
+    showBlue(date) {
+      if (!date) {
+        return
+      }
+      let time = moment(date).format('YYYY-MM-DD')
+      let nowTime = moment(new Date()).format('YYYY-MM-DD')
+      if (time === nowTime || moment().diff(date) < 0) {
+        return true
+      }
     }
   }
 }
@@ -393,7 +403,9 @@ export default {
     margin-bottom: 5px;
   }
 }
-
+.reference-box {
+  height: 100%;
+}
 .is-selected {
   margin-bottom: 8px;
   .day-num {

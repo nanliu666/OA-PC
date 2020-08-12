@@ -542,24 +542,6 @@ export default {
       this.workPropertyList = res
     })
     this.loadSelectData()
-    // getPersonInfo({ personId: this.$route.params.personId }).then((res) => {
-    // 	this.form.name = res.name
-    // 	this.form.phonenum = res.phonenum
-    // 	this.form.sex = res.sex
-    // 	this.form.userEmail = res.email
-    // 	this.form.personId = res.personId
-    // 	this.form.recruitmentId = res.recruitmentId
-    // 	this.$refs.form.clearValidate()
-    // })
-    // getOfferApply({ id: this.$route.query.applyId }).then((res) => {
-    // 	this.form.orgId = res.orgId
-    // 	this.form.jobId = res.jobId
-    // 	this.form.positionId = res.positionId
-    // 	this.form.entryDate = res.entryDate
-    // 	this.form.companyId = res.companyId
-    // 	this.form.workProperty = res.workProperty
-    // 	this.$refs.form.clearValidate()
-    // })
     getCandidateAcceptDetail({ personId: this.$route.params.personId }).then((res) => {
       this.form.name = res.name
       this.form.phonenum = res.phonenum
@@ -656,9 +638,12 @@ export default {
       })
     },
     goBack() {
+      let tag = this.$store.state.tags.tagList.filter((item) => {
+        return item.value === '/personnel/entry/entryPersonDetail'
+      })
+      this.$store.commit('DEL_TAG', tag[0])
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-      this.$refs.form.clearValidate()
-      this.$router.back(-1)
+      this.$router.push('/personnel/entry/entryManagement')
     },
     handleCancal() {
       this.$confirm('您有未保存的数据，直接离开将丢失数据，您确定要离开吗？', '确定离开？', {

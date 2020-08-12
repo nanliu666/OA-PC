@@ -16,7 +16,8 @@ import oauth from './oauth'
 import org from './org'
 import person from './person'
 import personalInfo from './personalInfo'
-import personnel from './personnel'
+import personnel from './personnel/'
+import personnelDataboard from './personnel/databoard'
 import personnelSettings from './personnel/settings'
 import position from './position'
 import remind from './remind'
@@ -28,8 +29,12 @@ import taskcenter from './taskcenter'
 import todo from './todo'
 import transction from './transction'
 import user from './user'
+
 import apprProcess from './apprProcess'
 import process from './process'
+
+import mailList from './mailList'
+
 /**
  * 模拟数据mock
  *
@@ -43,11 +48,11 @@ Mock.setup({
 })
 
 user(options)
-approval(options)
-// apprProcess({ mock: true })
-menu({ mock: true })
+
 apprProcess(options)
-// menu({ mock: true })
+menu(options)
+apprProcess(options)
+
 interview(options)
 
 candidate(options)
@@ -76,6 +81,7 @@ contact(options)
 leave(options)
 
 personnelSettings(options.mock)
+personnelDataboard(options)
 todo(options)
 msg(options)
 todo(options)
@@ -84,4 +90,7 @@ taskcenter(options)
 schedule(options)
 remind(options)
 
-process({ mock: false })
+process(options)
+
+mailList(options)
+

@@ -12,19 +12,19 @@
           class="info__item"
           :span="8"
         >
+          <label>剩余需求总数: <span class="info__item">{{ needNum }}</span></label>
+        </el-col>
+        <el-col
+          class="info__item"
+          :span="8"
+        >
           <label>已分配: <span class="info__item--active">{{ hasAssigned }}</span></label>
         </el-col>
         <el-col
           class="info__item"
           :span="8"
         >
-          <label>待分配: <span class="info__item--active">{{ toAssigned }}</span></label>
-        </el-col>
-        <el-col
-          class="info__item"
-          :span="8"
-        >
-          <label>剩余需求总数: <span class="info__item--active">{{ needNum }}</span></label>
+          <label>待分配: <span class="info__item--danger">{{ toAssigned }}</span></label>
         </el-col>
       </el-row>
       <el-row
@@ -44,7 +44,7 @@
           <span class="form__header--label">候选人</span>
         </el-col>
         <el-col :span="6">
-          <span class="form__header--label">剩余任务</span>
+          <span class="form__header--label">分配任务</span>
         </el-col>
       </el-row>
 
@@ -83,7 +83,7 @@ const FORM_COLUMNS = []
 export default {
   name: 'Redistribution',
   components: {
-    RedistributionFormItem: () => import(/* webpackChunkName: "views" */ './RedistributionFormItem')
+    RedistributionFormItem: () => import('./RedistributionFormItem')
   },
   provide() {
     return {
@@ -118,7 +118,8 @@ export default {
       }
     },
     needNum() {
-      return _.get(this.form, 'needNum', Infinity)
+      let residual = _.get(this.form, 'needNum', Infinity) - _.get(this.form, 'entryNum', 0)
+      return residual
     }
   },
 
@@ -130,7 +131,10 @@ export default {
 
       queryDistribution({ recruitmentId: data.id }).then((users) => {
         // 设置taskNum初值
-        _.each(users, (user) => (user._taskNum = user.taskNum))
+        _.each(users, (user) => {
+          user._taskNum = user.taskNum
+          user.taskNum = 0
+        })
         this.$set(this.form, 'users', users)
       })
     },
@@ -153,9 +157,9 @@ export default {
           const data = {
             recruitmentId: res.id,
             assignUser: this.userId,
-            users: _.map(res.users, ({ userId, taskNum, $config }) => ({
+            users: _.map(res.users, ({ userId, taskNum, entryNum, $config }) => ({
               userId,
-              taskNum,
+              taskNum: taskNum + entryNum,
               operatorType: $config ? 'Add' : 'Update'
             }))
           }
@@ -181,6 +185,7 @@ export default {
 
 <style lang="sass">
 $color_active: #368afa;
+$color_danger: #FF8B8A
 $dialog_padding: 3rem
 
 .Redistribution
@@ -192,6 +197,8 @@ $dialog_padding: 3rem
       &__item
         &--active
           color: $color_active
+        &--danger
+          color: $color_danger
     .form__header
       margin-top: 2rem
       &--label

@@ -1,4 +1,5 @@
 import { validatenull } from './validate'
+import moment from 'moment'
 //表单序列化
 export const serialize = (data) => {
   let list = []
@@ -373,6 +374,26 @@ export const judgeRepeatedTime = (section1, section2) => {
   } else {
     return false
   }
+}
+
+/**
+ * 判断多个日期时间段是否有交集
+ */
+export const compareDate = (beginArr = [], overArr = []) => {
+  beginArr.forEach((item, index) => {
+    beginArr[index] = moment(item).valueOf()
+  })
+  overArr.forEach((item, index) => {
+    overArr[index] = moment(item).valueOf()
+  })
+  beginArr = beginArr.sort()
+  overArr = overArr.sort()
+  for (let i = 1; i < beginArr.length; i++) {
+    if (beginArr[i] <= overArr[i - 1]) {
+      return false
+    }
+  }
+  return true
 }
 
 /**

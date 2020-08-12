@@ -265,6 +265,7 @@ import { getOrgTreeSimple } from '@/api/org/org'
 import { CodeToText } from 'element-china-area-data'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
+import { setStore, getStore, removeStore } from '@/util/store'
 moment.locale('zh-cn')
 export default {
   name: 'Apply',
@@ -331,10 +332,25 @@ export default {
         sex: 0,
         phonenum: '',
         email: ''
-      }
+      },
+      workAddress: []
     }
   },
   watch: {
+    'infoForm.workAddressId': {
+      handler(val) {
+        if (val) {
+          this.workAddress.map((it) => {
+            if (it.id === val) {
+              let { provinceCode, cityCode } = { ...it }
+              this.infoForm.city = [provinceCode, cityCode]
+            }
+          })
+        }
+      },
+      immediate: true,
+      deep: true
+    },
     'infoForm.contractBeginDate': {
       handler(val) {
         if (val && this.infoForm.contractPeriod) {
@@ -358,7 +374,26 @@ export default {
       deep: true
     }
   },
+  created() {},
   async mounted() {
+    window.addEventListener('beforeunload', () => {
+      if (this.active === 3) {
+        setStore({ name: 'apply_active', content: this.active, type: 'session' })
+        setStore({ name: 'apply_personId', content: this.$route.query.personId, type: 'session' })
+        setStore({ name: 'apply_apprNo', content: this.apprNo, type: 'session' })
+        setStore({ name: 'apply_applyId', content: this.applyId, type: 'session' })
+      }
+    })
+    let personId = getStore({ name: 'apply_personId', type: 'session' })
+    if (personId) {
+      this.active = parseInt(getStore({ name: 'apply_active', type: 'session' }))
+      this.apprNo = getStore({ name: 'apply_apprNo', type: 'session' })
+      this.applyId = getStore({ name: 'apply_applyId', type: 'session' })
+      removeStore({ name: 'apply_active', type: 'session' })
+      removeStore({ name: 'apply_personId', type: 'session' })
+      removeStore({ name: 'apply_apprNo', type: 'session' })
+      removeStore({ name: 'apply_applyId', type: 'session' })
+    }
     this.personId = this.$route.query.personId
     this.recruitmentId = this.$route.query.recruitmentId
     this.infoForm = {
@@ -449,6 +484,7 @@ export default {
       })
     },
     jumpMyApproval() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/approval/appr/waitAppr'
       })
@@ -513,6 +549,7 @@ export default {
         pageSize: 10000
       }
       getWorkAddress(params).then((res) => {
+        this.workAddress = res.data
         this.options(this.employment, 'workAddressId', res.data)
       })
     },
@@ -630,6 +667,7 @@ export default {
         formKey: 'PersonOfferApply',
         page: 'apply'
       }
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
         path: '/approval/appr/apprDetail',
         query: params

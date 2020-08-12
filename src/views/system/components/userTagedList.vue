@@ -108,7 +108,7 @@ export default {
         enableMultiSelect: true,
         enablePagination: true,
         showIndexColumn: false,
-        uniqueKey: 'userId'
+        rowKey: 'userId'
       },
       columns: [
         {
@@ -229,7 +229,7 @@ export default {
   border-right: 0.5px solid #e9e9e9;
 }
 .icon {
-  padding-left: 12px;
+  margin-left: 12px;
   font-size: 18px;
   color: #a0a8ae;
   cursor: pointer;

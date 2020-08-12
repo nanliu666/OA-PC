@@ -11,14 +11,14 @@
       <div class="apply-info-wrap">
         <div class="title">
           <div>{{ ApplyInfo.userName }}提交的{{ title }}申请</div>
-          <!-- <el-button
-            v-if="isReapply"
+          <el-button
+            v-if="isReapply && !$route.query.toDoList"
             type="primary"
             size="medium"
             @click="goToReapply"
           >
             重新申请
-          </el-button> -->
+          </el-button>
         </div>
         <div class="info">
           <div class="num-box">
@@ -170,137 +170,6 @@
             <div>{{ applyData.companyName }}</div>
           </div>
         </div>
-
-        <!-- 录用审批详情 -->
-        <!-- <div v-else-if="ApplyInfo.formKey === 'PersonOfferApply'" class="detail-box">
-					<div class="detail-item">
-						<div>预计入职日期 :</div>
-						<div>{{ applyData.entryDate }}</div>
-					</div>
-					<div class="detail-item">
-						<div>试用期 :</div>
-						<div>{{ applyData.probation }} 月</div>
-					</div>
-					<div class="detail-item">
-						<div>入职公司名称 :</div>
-						<div>{{ applyData.companyName }}</div>
-					</div>
-					<div class="detail-item">
-						<div>部门名称 :</div>
-						<div>{{ applyData.orgName }}</div>
-					</div>
-					<div class="detail-item">
-						<div>职位名称 :</div>
-						<div>{{ applyData.jobName }}</div>
-					</div>
-					<div class="detail-item">
-						<div>岗位名称 :</div>
-						<div>{{ applyData.positionName }}</div>
-					</div>
-					<div class="detail-item">
-						<div>工作性质 :</div>
-						<div>{{ applyData.workProperty | CommonDictType(WorkProperty) }}</div>
-					</div>
-
-					<div class="detail-item">
-						<div>详细地址 :</div>
-						<div>{{ applyData.address }}</div>
-					</div>
-					<div class="detail-item">
-						<div>工作城市 :</div>
-						<div>
-							{{ applyData.workProvinceName + applyData.workCityName }}
-						</div>
-					</div>
-					<div class="detail-item">
-						<div>试用期月薪 :</div>
-						<div>{{ applyData.probationSalary }} 元</div>
-					</div>
-					<div class="detail-item">
-						<div>转正月薪 :</div>
-						<div>{{ applyData.formalSalary }} 元</div>
-					</div>
-					<div class="detail-item">
-						<div>合同类型 :</div>
-						<div>{{ applyData.contractType | CommonDictType(ContractType) }}</div>
-					</div>
-					<div class="detail-item">
-						<div>合同开始日期 :</div>
-						<div>{{ applyData.contractBeginDate }}</div>
-					</div>
-					<div class="detail-item">
-						<div>合同结束日期 :</div>
-						<div>{{ applyData.contractEndDate }}</div>
-					</div>
-					<div class="detail-item">
-						<div>合同期限 :</div>
-						<div>{{ applyData.contractPeriod }} 年</div>
-					</div>
-					<div class="detail-item">
-						<div>是否缴纳社会保险 :</div>
-						<div>{{ applyData.isShbx | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>社会保险基数 :</div>
-						<div>{{ applyData.baseMoney }} 元</div>
-					</div>
-					<div class="detail-item">
-						<div>是否缴纳养老保险 :</div>
-						<div>{{ applyData.isYangl | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>是否缴纳医疗保险 :</div>
-						<div>{{ applyData.isYil | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>是否缴纳工伤保险 :</div>
-						<div>{{ applyData.isGs | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>是否缴纳失业保险 :</div>
-						<div>{{ applyData.isShiy | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>是否缴纳生育保险 :</div>
-						<div>{{ applyData.isShengy | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>是否缴纳住房公积金 :</div>
-						<div>{{ applyData.isGjj | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>办公位安排 :</div>
-						<div>{{ applyData.officeSpace }}</div>
-					</div>
-					<div class="detail-item">
-						<div>电话配备 :</div>
-						<div>{{ applyData.telphone }}</div>
-					</div>
-					<div class="detail-item">
-						<div>是否电脑配备 :</div>
-						<div>{{ applyData.isComputer | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>其他 :</div>
-						<div>{{ applyData.other }}</div>
-					</div>
-					<div class="detail-item">
-						<div>是否安排住房 :</div>
-						<div>{{ applyData.isHouse | isOrNo }}</div>
-					</div>
-					<div class="detail-item">
-						<div>住房标准 :</div>
-						<div>{{ applyData.houseStandard }}</div>
-					</div>
-					<div class="detail-item">
-						<div>备注 :</div>
-						<div>{{ applyData.remark }}</div>
-					</div>
-					<div class="detail-item">
-						<div>提交人姓名 :</div>
-						<div>{{ applyData.userName }}</div>
-					</div>
-				</div> -->
         <div
           v-else-if="ApplyInfo.formKey === 'PersonOfferApply'"
           class="employment-box"
@@ -343,7 +212,7 @@
                 </div>
                 <div class="detail-item">
                   <div>试用期 :</div>
-                  <div>{{ applyData.probation }} 月</div>
+                  <div>{{ applyData.probation ? `${applyData.probation}月` : '' }}</div>
                 </div>
                 <div class="detail-item">
                   <div>入职公司名称 :</div>
@@ -390,11 +259,11 @@
               <div class="detail-box">
                 <div class="detail-item">
                   <div>试用期月薪 :</div>
-                  <div>{{ applyData.probationSalary }} 元</div>
+                  <div>{{ applyData.probationSalary ? `${applyData.probationSalary}元` : '' }}</div>
                 </div>
                 <div class="detail-item">
                   <div>转正月薪 :</div>
-                  <div>{{ applyData.formalSalary }} 元</div>
+                  <div>{{ applyData.formalSalary ? `${applyData.formalSalary}元` : '' }}</div>
                 </div>
               </div>
             </div>
@@ -417,7 +286,7 @@
                 </div>
                 <div class="detail-item">
                   <div>合同期限 :</div>
-                  <div>{{ applyData.contractPeriod }} 年</div>
+                  <div>{{ applyData.contractPeriod ? `${applyData.contractPeriod}年` : '' }}</div>
                 </div>
               </div>
             </div>
@@ -432,7 +301,7 @@
                 </div>
                 <div class="detail-item">
                   <div>社会保险基数 :</div>
-                  <div>{{ applyData.baseMoney }} 元</div>
+                  <div>{{ applyData.baseMoney ? `${applyData.baseMoney}元` : '' }}</div>
                 </div>
                 <div class="detail-item">
                   <div>其他 :</div>
@@ -486,10 +355,6 @@
                 <div class="detail-item">
                   <div>备注 :</div>
                   <div>{{ applyData.remark }}</div>
-                </div>
-                <div class="detail-item">
-                  <div>提交人姓名 :</div>
-                  <div>{{ applyData.userName }}</div>
                 </div>
               </div>
             </div>
@@ -1376,13 +1241,15 @@ export default {
     goToReapply() {
       let { personId } = this.applyData
       let { formId } = this.ApplyInfo
+      let { recruitmentId } = this.$route.query
 
       this.$router.push({
         // 缺招聘ID
         path: '/personnel/candidate/apply',
         query: {
           personId,
-          applyId: formId
+          applyId: formId,
+          recruitmentId
         }
       })
     },

@@ -86,6 +86,19 @@
           >
             添加到候选人
           </el-button>
+          <el-dropdown @command="handleCommand($event, row)">
+            <el-button
+              type="text"
+              style="margin-left: 10px"
+            >
+              <i class="el-icon-arrow-down iconfont icon-basics-more-outlined" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="download">
+                下载简历
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </common-table>
     </basic-container>
@@ -119,11 +132,10 @@ export default {
       },
       tableConfig: {
         showHandler: true,
-        // enableMultiSelect: true,
         showIndexColumn: false,
         enablePagination: true,
         handlerColumn: {
-          width: '180'
+          width: '140'
         }
       },
       columns: [
@@ -254,6 +266,8 @@ export default {
     this.educationalLevelOptions = await this.$store.dispatch('CommonDict', 'EducationalLevel')
     this.searchConfig.popoverOptions[0].options = this.educationalLevelOptions
     this.recruitmentOptions = await this.$store.dispatch('CommonDict', 'RecruitmentChannel')
+  },
+  activated() {
     this.loadData()
   },
   methods: {
@@ -264,9 +278,17 @@ export default {
       this.params = params
       this.loadData()
     },
-    handleCommand(command) {
+    handleCommand(command, row) {
       if (command === 'add') {
         this.$router.push('/personnel/editPerson?isTalent=1')
+      } else {
+        if (command === 'download') {
+          if (row.resumeUrl) {
+            window.open(row.resumeUrl)
+          } else {
+            this.$message.error('该用户暂无简历附件')
+          }
+        }
       }
     },
     jumpToDetail({ personId, recruitmentId }) {

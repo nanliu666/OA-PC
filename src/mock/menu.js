@@ -400,7 +400,7 @@ const res = {
                 isShow: 1,
                 code: 'personnl_editPerson',
                 alias: 'recruite',
-                path: '/personnel/recruit/recruitList',
+                path: '/personnel/recruit/requirements',
                 icon: 'iconfont iconicon_compile'
               },
               {
@@ -556,7 +556,7 @@ const res = {
             isShow: 0,
             code: 'personnel_editPerson',
             alias: 'recruit',
-            path: '/personnel/recruit/specificPage',
+            path: '/personnel/recruit/details',
             icon: 'iconfont iconicon_compile'
           },
           {
@@ -776,6 +776,19 @@ const res = {
                 children: []
               }
             ]
+          },
+          {
+            menuId: _.uniqueId(),
+            menuName: '数据看板',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'databoard',
+            alias: 'databoard',
+            path: '/personnel/databoard/statistical',
+            icon: 'iconfont iconicon_roundadd',
+            dataPrivileges: [],
+            children: []
           }
         ]
       },

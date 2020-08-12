@@ -21,7 +21,7 @@
                   <div class="block">
                     <el-avatar
                       :size="80"
-                      :src="allInfo.circleUrl"
+                      :src="allInfo.avatarUrl"
                     />
                   </div>
                 </div>
@@ -43,7 +43,6 @@
                 <div class="personnel-change-btn">
                   <template v-if="allInfo.status === 'Try' || allInfo.status === 'Formal'">
                     <el-button
-                      type="info"
                       size="medium"
                       @click="jumpToApply(allInfo.userId)"
                     >
@@ -52,6 +51,7 @@
                   </template>
                   <template v-if="allInfo.status === 'WaitLeave'">
                     <el-button
+                      v-if="!leaveInfo.leaveDate"
                       type="primary"
                       size="medium"
                       @click="jumpToLeave"
@@ -59,12 +59,14 @@
                       确认离职
                     </el-button>
                     <el-button
+                      v-if="!leaveInfo.leaveDate"
                       size="medium"
                       @click="toChangeLeaveInfo"
                     >
                       调整离职信息
                     </el-button>
                     <el-button
+                      v-if="!leaveInfo.leaveDate"
                       size="medium"
                       @click="giveupLeave"
                     >
@@ -156,6 +158,7 @@
               <postInfo
                 v-if="activeName == 'first'"
                 :info.sync="allInfo"
+                :left-info="leaveInfo"
               />
             </el-tab-pane>
             <el-tab-pane
@@ -282,7 +285,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        giveupLeave({ id: this.leaveInfo.id }).then(() => {
+        giveupLeave({ userId: this.leaveInfo.userId }).then(() => {
           this.$message.success('操作成功')
           this.getBasicInfo()
         })
@@ -319,13 +322,16 @@ export default {
         res.status === 'WaitLeave' &&
           getLeaveApply(params).then((response) => {
             this.leaveInfo = response
-          })
-        res.status === 'WaitLeave' &&
+          }) &&
           this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
             this.LeaveReasonDict = res
             res.forEach((item) => {
               this.LeaveReason[item.dictKey] = item.dictValue
             })
+          })
+        res.status === 'Leaved' &&
+          getLeaveApply(params).then((response) => {
+            this.leaveInfo = response
           })
       })
     },
@@ -338,6 +344,7 @@ export default {
     },
     // 跳去异动申请
     jumpToApply(userId) {
+      // approveNum 不等于0  不能申请
       this.$router.push({
         path: '/personnel/transaction/changeApply',
         query: {

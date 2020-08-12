@@ -49,6 +49,7 @@
               <apprProgress
                 ref="apprProgress"
                 form-key="UserContractInfo"
+                @change="() => $refs.formApply.clearValidate('apprProgress')"
               />
             </el-form-item>
           </el-form>
@@ -139,9 +140,9 @@ export default {
             trigger: 'change'
           }
         ],
-        apprProgress: [{ required: true, validator: checkAppr }]
+        apprProgress: [{ required: true, validator: checkAppr, trigger: 'change' }]
       },
-      signedData,
+      signedData: JSON.parse(JSON.stringify(signedData)),
       infoForm: {
         contractId: '',
         userId: '',
@@ -217,6 +218,7 @@ export default {
         this.infoForm = {
           ...res
         }
+        this.infoForm.beginDate = res.endDate
       })
     },
     handleBack() {

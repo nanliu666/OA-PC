@@ -2,7 +2,6 @@
   <el-row
     class="Overview"
     type="flex"
-    :gutter="52"
   >
     <el-col
       v-for="(col, index) of $options.filters.dataFilter(data, props)"
@@ -88,7 +87,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 $color_active: #207EFA
 $color_background: #f7f8fa
 $color_border: #CCC

@@ -17,7 +17,7 @@
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>{{ info.positionName }}</span>
+        <span>{{ info.positionName ? `${info.positionName}` : `- -` }}</span>
         <span>|</span>
         <span>{{ info.companyName }}</span>
       </div>
@@ -47,7 +47,7 @@
           </div>
           <div
             class="content-item"
-            @click="handelClick"
+            @click="jumpToCommonAppr"
           >
             <div class="Smectite" />
             <div class="icon-box apply">
@@ -112,11 +112,17 @@
       <div class="main-wrap">
         <div class="content">
           <div class="content-item">
-            <span class="num-box">{{ numObj.waitNum }}</span>
+            <span
+              class="num-box"
+              @click="jumpToWaitAppr"
+            >{{ numObj.waitNum }}</span>
             <span class="handel">待我处理</span>
           </div>
           <div class="content-item">
-            <span class="num-box">{{ numObj.myNum }}</span>
+            <span
+              class="num-box"
+              @click="jumpToApprByMe"
+            >{{ numObj.myNum }}</span>
             <span class="handel">我发起的</span>
           </div>
           <div class="content-item">
@@ -192,6 +198,18 @@ export default {
       this.$router.push({
         path: '/quickAccess/mailList'
       })
+    },
+    // 跳去待我处理
+    jumpToWaitAppr() {
+      this.$router.push({ path: '/approval/appr/waitAppr' })
+    },
+    // 跳去我发起的
+    jumpToApprByMe() {
+      this.$router.push({ path: '/approval/appr/apprByMe' })
+    },
+    // 跳去通用申请
+    jumpToCommonAppr() {
+      this.$router.push({ path: '/approval/launchApply' })
     }
   }
 }

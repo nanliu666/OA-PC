@@ -4,7 +4,7 @@
     :visible="visible"
     width="30%"
     :modal-append-to-body="false"
-    @close="handleClose"
+    @close="close"
   >
     <p class="riskSpan">
       TIPS：如调整试用期，计划转正日期将自动根据入职日期和试用期计算。试用期约定和合同签订有关，请勿随意变更避免出现用工风险。
@@ -31,7 +31,7 @@
       </el-col>
     </el-row>
     <el-form
-      ref="ruleForm"
+      ref="form"
       :model="form"
       :rules="rules"
       label-width="100px"
@@ -71,19 +71,19 @@
     >
       <el-button
         size="medium"
-        @click="handleClose"
+        @click="close"
       >取消</el-button>
       <el-button
-        type="primary"
+        :loading="submitting"
         size="medium"
-        @click="submit"
+        type="primary"
+        @click="handleSubmit"
       >保存</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { putProbation } from '@/api/personnel/person'
 import { getApplyRecord } from '@/api/approval/approval'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
@@ -98,6 +98,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       type: 'create',
       oldProbation: null,
       oldProbationDate: null,
@@ -145,21 +146,14 @@ export default {
     }
   },
   methods: {
-    submit() {
-      this.$refs.ruleForm.validate((valid) => {
-        if (!valid) {
-          return
-        }
-
-        putProbation({ userId: this.userId, probation: this.int }).then(() => {
-          this.$message({ type: 'success', message: '操作成功' })
-        })
-        this.$emit('getTableData')
-        return this.handleClose()
+    handleSubmit() {
+      this.$refs.form.validate().then(() => {
+        this.submitting = true
+        this.$emit('submit', { userId: this.userId, probation: this.int })
       })
     },
     async init(row) {
-      let { formalDate, probation, userId, entryDate } = row
+      let { formalDate, probation, userId, entryDate } = _.cloneDeep(row)
       this.entryDate = entryDate
       this.oldProbation = probation
       this.oldProbationDate = formalDate
@@ -183,7 +177,8 @@ export default {
           .format('YYYY-MM-DD')
       }
     },
-    handleClose() {
+    close() {
+      this.submitting = false
       this.form.probation = ''
       this.probationDate = ''
       this.$emit('update:visible', false)

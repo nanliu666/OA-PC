@@ -55,9 +55,11 @@
 import { getAppProcess, createApprApply } from '@/api/approval/approval'
 import { mapGetters } from 'vuex'
 import { FormKeysCN } from '@/const/approve'
+import Emitter from '@/mixins/elFormEmitter'
 
 export default {
   name: 'ApprProcess',
+  mixins: [Emitter],
   props: {
     formKey: {
       type: String,
@@ -126,6 +128,8 @@ export default {
     },
     handleSelect(user, node) {
       this.$set(node, 'user', user)
+      this.dispatch('ElFormItem', 'el.form.change', node)
+      this.$emit('change')
     }
   }
 }

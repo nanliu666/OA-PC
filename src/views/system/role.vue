@@ -166,6 +166,7 @@ export default {
       tableConfig: {
         showHandler: true,
         enableMultiSelect: true,
+        rowKey: 'roleId',
         handlerColumn: {
           width: 200
         }

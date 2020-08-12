@@ -58,14 +58,16 @@
           <div class="task-item">
             <!-- 任务内容 -->
             <div class="task-introduce">
-              <div class="title-row">
+              <div
+                class="title-row"
+                @click="jumpToDetail(row)"
+              >
                 <span class="type">{{ row.type | filterType }}需求:</span>
                 <span class="title">{{ row.title }}</span>
                 <span class="emerType">{{ row.emerType | filterEmerType(EmerType) }}</span>
               </div>
               <div class="education-row">
-                {{ row.education | CommonDictType(EducationalLevel) }} |
-                {{ row.workYears | CommonDictType(WorkYear) }}
+                {{ row.brief | filterBrief(WorkYear, EducationalLevel) }}
               </div>
             </div>
             <!-- 任务类型 -->
@@ -120,32 +122,33 @@ export default {
       return taskTypeCN[val]
     },
     // 过滤紧急程度
-    filterEmerType(val, List) {
+    filterEmerType(val, obj) {
       if (!val) {
         return
       }
       let result = ''
       let showArr = ['Super', 'urgent']
       if (showArr.indexOf(val) !== -1) {
-        List.forEach((item) => {
-          if (item.dictKey === val) {
-            result = item.dictValue
-          }
-        })
+        result = obj[val]
       }
       return result
     },
     //
-    CommonDictType: (value, CommonDictarr) => {
-      if (!value) return ''
+    filterBrief(val, WorkYear, EducationalLevel) {
+      if (!val) {
+        return
+      }
       let result = ''
-      CommonDictarr.forEach((item) => {
-        if (item.dictKey == value.trim()) {
-          result = item.dictValue
-          return
-        }
-      })
-
+      let arr = val.split('|')
+      let work_year = ''
+      let educational_level = ''
+      educational_level = EducationalLevel[arr[0]]
+      work_year = WorkYear[arr[1]]
+      if (educational_level && work_year) {
+        result = `${educational_level} | ${work_year}`
+      } else {
+        result = `${educational_level ? educational_level : ''}${work_year ? work_year : ''}`
+      }
       return result
     }
   },
@@ -224,9 +227,9 @@ export default {
         }
       ],
       // 字典组
-      EmerType: [],
-      WorkYear: [],
-      EducationalLevel: []
+      EmerType: {},
+      WorkYear: {},
+      EducationalLevel: {}
     }
   },
   computed: {
@@ -258,11 +261,6 @@ export default {
         this.loading = false
       })
       this.tableData = data
-      this.tableData.forEach((item) => {
-        let arr = item.brief.split('|')
-        item.education = arr[0]
-        item.workYears = arr[1]
-      })
       this.page.total = totalNum
     },
     // 切换完成没完成
@@ -290,26 +288,25 @@ export default {
     },
     // 获取相关字典组
     getCommonDict() {
-      let commonDictNameArr = [
-        'EmerType',
-        'WorkYear',
-        'EducationalLevel'
-        // 'RecruitmentReason',
-        // 'WorkProperty',
-        // 'ContractType',
-        // 'LeaveReason',
-        // 'ChangeReason'
-      ]
+      let commonDictNameArr = ['EmerType', 'WorkYear', 'EducationalLevel']
       commonDictNameArr.forEach((item) => {
         this.$store.dispatch('CommonDict', item).then((res) => {
-          // this.workPropertyList = res
-          // 将res =》 [{dictKey:"",dictValue:"",id:""},{dictKey:"",dictValue:"",id:""}]
-          let targetArr = []
+          let obj = {}
           res.forEach((el) => {
-            targetArr.push({ dictKey: el.dictKey, dictValue: el.dictValue, id: el.id })
+            obj[el.dictKey] = el.dictValue
           })
-          this[item] = targetArr
+          this[item] = obj
         })
+      })
+    },
+    // 跳去任务详情
+    jumpToDetail({ bizId }) {
+      this.$router.push({
+        path: '/personnel/recruit/details',
+        query: {
+          id: bizId,
+          userId: this.userId
+        }
       })
     }
   }
@@ -349,9 +346,10 @@ export default {
       .title,
       .type {
         font-size: 14px;
-        color: #202940;
+        color: #207efa;
         line-height: 22px;
         font-weight: bold;
+        cursor: pointer;
       }
       .emerType {
         margin-left: 16px;

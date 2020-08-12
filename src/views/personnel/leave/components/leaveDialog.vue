@@ -22,7 +22,7 @@
             justify="center"
             class="row-item"
           >
-            <el-col :span="14">
+            <el-col :span="24">
               <el-form-item
                 label="已选择"
                 style="width:80%"
@@ -36,7 +36,7 @@
             justify="center"
             class="row-item"
           >
-            <el-col :span="14">
+            <el-col :span="24">
               <el-form-item
                 label="离职日期"
                 prop="lastDate"
@@ -56,7 +56,7 @@
             justify="center"
             class="row-item"
           >
-            <el-col :span="14">
+            <el-col :span="24">
               <el-form-item label="离职原因">
                 <el-select
                   v-model="changeParams.reason"
@@ -78,7 +78,7 @@
             justify="center"
             class="row-item"
           >
-            <el-col :span="14">
+            <el-col :span="24">
               <el-form-item label="离职原因说明">
                 <el-input
                   v-model="changeParams.remark"
@@ -220,5 +220,8 @@ export default {
 
     height: 90px;
   }
+}
+/deep/.el-dialog__body {
+  padding: 10px 24px 24px;
 }
 </style>

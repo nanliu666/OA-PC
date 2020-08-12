@@ -10,7 +10,10 @@
           <div class="orgJob">
             {{ personInfo.name }}
           </div>
-          <div class="status">
+          <div
+            v-if="statusWord[personInfo.status]"
+            class="status"
+          >
             {{ statusWord[personInfo.status] }}
           </div>
         </div>
@@ -63,21 +66,19 @@
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-          <template v-if="personInfo.status === '8'">
-            <el-button
-              type="primary"
-              size="medium"
-              @click="addWillEntry"
-            >
-              添加到待入职
-            </el-button>
-            <!-- <el-button size="medium">
+          <!-- 因放弃入职和已经入职status都没空，无法判断，先暂时因此添加到待入职按钮 -->
+          <!-- <template v-if="personInfo.status === ''">
+            
+						<el-button type="primary" size="medium" @click="addWillEntry">
+							添加到待入职
+						</el-button>
+						<el-button size="medium">
               发送入职登记表
-            </el-button>-->
-            <!-- <el-button type="text">
+            </el-button>
+						<el-button type="text">
             查看入职登记表
-            </el-button>-->
-          </template>
+            </el-button>
+					</template> -->
         </div>
       </div>
     </div>
@@ -224,11 +225,16 @@
                   </span>
                 </el-form-item>
               </el-col>
-              <!-- <el-col :span="10" :push="2">
+              <el-col
+                :span="10"
+                :push="2"
+              >
                 <el-form-item label="入职登记表:">
-                  <span class="info-item-value" />
+                  <span class="info-item-value">{{
+                    personInfo.register === 1 ? '已发送' : '未发送'
+                  }}</span>
                 </el-form-item>
-              </el-col>-->
+              </el-col>
             </el-form>
           </div>
         </el-row>
@@ -237,7 +243,7 @@
     <give-out-entry-dialog
       ref="giveOutEntryDialog"
       :visible.sync="giveOutEntryDialog"
-      @refresh="getPersonInfo()"
+      @refresh="pageClose()"
     />
   </div>
 </template>
@@ -258,12 +264,20 @@ export default {
     return {
       personInfo: {},
       applyInfo: {},
-      statusWord: { '7': '待入职', '8': '放弃入职' },
+      statusWord: { '7': '待入职' },
       workProperty: {},
       giveOutEntryDialog: false
     }
   },
   created() {
+    this.getPersonInfo()
+    this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
+      res.forEach((item) => {
+        this.workProperty[item.dictKey] = item.dictValue
+      })
+    })
+  },
+  activated() {
     this.getPersonInfo()
     this.$store.dispatch('CommonDict', 'WorkProperty').then((res) => {
       res.forEach((item) => {
@@ -280,11 +294,14 @@ export default {
       }).then(() => {
         let params = {
           personId: this.personInfo.personId,
-          userId: this.$store.state.user.userInfo.user_id
+          userId: this.$store.state.user.userInfo.user_id,
+          recruitmentId: this.personInfo.recruitmentId
         }
         addOutCandidateAccept(params)
           .then(() => {
+            this.getPersonInfo()
             this.$message.success('添加成功')
+            this.pageClose()
           })
           .catch(() => {
             this.$message.error('添加失败')
@@ -293,10 +310,7 @@ export default {
     },
     handleCommand(command) {
       if (command === 'getOutEntry') {
-        this.$refs.giveOutEntryDialog.out({
-          personId: this.personInfo.personId,
-          name: this.personInfo.name
-        })
+        this.$refs.giveOutEntryDialog.out(this.personInfo)
       }
     },
     handleSend() {
@@ -311,12 +325,16 @@ export default {
       })
     },
     getPersonInfo() {
-      getOfferApply({ id: this.$route.query.applyId }).then((apply) => {
-        this.applyInfo = apply
-        getCandidateAcceptDetail({ personId: apply.personId }).then((info) => {
+      getOfferApply({ id: this.$route.query.applyId })
+        .then((apply) => {
+          this.applyInfo = apply
+          return getCandidateAcceptDetail({
+            personId: apply.personId || this.$route.query.personId
+          })
+        })
+        .then((info) => {
           this.personInfo = info
         })
-      })
     },
     confirmEntry() {
       this.$router.push(
@@ -337,6 +355,10 @@ export default {
         path: '/personnel/candidate/registrationForm',
         query: params
       })
+    },
+    pageClose() {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+      this.$router.push('/personnel/entry/entryManagement')
     }
   }
 }

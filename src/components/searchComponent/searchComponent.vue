@@ -9,12 +9,12 @@
         <el-input
           v-model="fuzzySearch"
           placeholder="姓名/手机号码/工号"
-          @blur="handleSearch"
           @keyup.enter.native="handleSearch"
         >
           <i
             slot="suffix"
-            class="el-input__icon el-icon-search"
+            class="el-input__icon el-icon-search pointer"
+            @click="handleSearch"
           />
         </el-input>
       </el-form-item>
@@ -31,7 +31,7 @@
       <el-form-item style="float: right">
         <el-button
           type="text"
-          icon="el-icon-refresh-right"
+          icon="icon-basics-refresh-outlined"
           size="medium"
           class="topBtn"
           @click="handleRefresh"
@@ -165,6 +165,7 @@
                       <el-date-picker
                         v-if="item.type === 'dataPicker'"
                         v-model="item.data"
+                        :unlink-panels="true"
                         :type="item.config && item.config.type ? item.config.type : 'data'"
                         placeholder="结束时间"
                         value-format="yyyy-MM-dd"

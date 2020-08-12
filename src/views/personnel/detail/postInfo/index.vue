@@ -10,6 +10,11 @@
         <postBasicInfo :info.sync="allInfo" />
         <!-- 员工状态 -->
         <staffStatus :info.sync="allInfo" />
+        <!-- 离职信息 -->
+        <leaveInfo
+          v-if="info.status === 'Leaved'"
+          :info="leftInfo"
+        />
         <!-- 合同信息 -->
         <compact />
         <!-- 任职记录 -->
@@ -47,15 +52,21 @@ import postBasicInfo from './basicInfo.vue'
 import staffStatus from './staffStatus.vue'
 import postRecord from './postRecord.vue'
 import compact from './conpact.vue'
+import LeaveInfo from './leaveInfo'
 export default {
   components: {
     postBasicInfo,
     staffStatus,
     postRecord,
-    compact
+    compact,
+    LeaveInfo
   },
   props: {
     info: {
+      type: Object,
+      default: () => {}
+    },
+    leftInfo: {
       type: Object,
       default: () => {}
     }

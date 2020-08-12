@@ -20,21 +20,27 @@
                   v-if="toDoListData.length"
                   slot="Pending"
                 >
-                  <div
+                  <el-tooltip
                     v-for="(item, index) in toDoListData"
                     :key="index"
                     class="item-row"
+                    :open-delay="500"
+                    :enterable="false"
+                    :content="item.title"
+                    placement="top"
                   >
-                    <div class="text-box">
-                      <p @click="jumpToDetail(item)">
-                        【{{ item.type | filterType }}】{{ item.title }}
-                      </p>
-                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                    <div>
+                      <div class="text-box">
+                        <p @click="jumpToDetail(item)">
+                          【{{ item.type | filterType }}】{{ item.title }}
+                        </p>
+                        <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                      </div>
+                      <div class="time-box">
+                        {{ item.createTime | filterDate }}
+                      </div>
                     </div>
-                    <div class="time-box">
-                      {{ item.createTime | filterDate }}
-                    </div>
-                  </div>
+                  </el-tooltip>
                 </div>
                 <div
                   v-else
@@ -56,21 +62,27 @@
                   v-if="warningList.length"
                   slot="Warning"
                 >
-                  <div
+                  <el-tooltip
                     v-for="(item, index) in warningList"
                     :key="index"
                     class="item-row"
+                    :open-delay="500"
+                    :enterable="false"
+                    :content="item.title"
+                    placement="top"
                   >
-                    <div class="text-box">
-                      <p @click="jumpToDetail(item)">
-                        【{{ item.type | filterType }}】{{ item.title }}
-                      </p>
-                      <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                    <div>
+                      <div class="text-box">
+                        <p @click="jumpToDetail(item)">
+                          【{{ item.type | filterType }}】{{ item.title }}
+                        </p>
+                        <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+                      </div>
+                      <div class="time-box">
+                        {{ item.createTime | filterDate }}
+                      </div>
                     </div>
-                    <div class="time-box">
-                      {{ item.createTime | filterDate }}
-                    </div>
-                  </div>
+                  </el-tooltip>
                 </div>
                 <div
                   v-else
@@ -294,11 +306,18 @@ export default {
         }
       ],
       newActiveName: 'workNews',
-      msgQuery: {
+      workMsgQuery: {
         pageNo: '1',
         pageSize: '10',
         userId: '',
-        type: null,
+        type: 'Work',
+        isRead: null
+      },
+      systemMsgQuery: {
+        pageNo: '1',
+        pageSize: '10',
+        userId: '',
+        type: 'System',
         isRead: null
       },
       msgWorkList: [],
@@ -342,7 +361,7 @@ export default {
       )
     },
     getWarnText(row) {
-      return moment().diff(moment(row.beginDate), 'days')
+      return moment().diff(moment(row.endDate), 'days')
     },
     // 点击查看代办事项全部，跳到代办中心
     goTodoCenter() {
@@ -379,7 +398,7 @@ export default {
       } else if (type === 'Recruitment') {
         // 招聘
         this.$router.push({
-          path: '/personnel/recruit/specificPage',
+          path: '/personnel/recruit/details',
           query: {
             id: bizId
           }
@@ -415,20 +434,30 @@ export default {
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: bizId,
-            recruitmentId: bizId2
+            recruitmentId: bizId2,
+            isInterview: 1
           }
         })
       } else if (type === 'Entry') {
         // 入职办理
-        this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${bizId}`)
+        // this.$router.push(`/personnel/entry/entryPersonDetail?applyId=${bizId}`)
+        this.$router.push({
+          path: '/personnel/entry/entryPersonDetail',
+          query: {
+            applyId: bizId2,
+            personId: bizId
+          }
+        })
       } else if (type === 'EntryRegister') {
         // 入职登记表
         this.$router.push({
           path: '/personnel/candidate/registrationForm',
           query: {
             personId: bizId,
+            recruitmentId: bizId2,
             entry: 1,
-            tagName: '入职登记表详情'
+            tagName: '入职登记表详情',
+            isUser: 1
           }
         })
       }
@@ -436,17 +465,15 @@ export default {
     async loadingMsgData() {
       try {
         this.warnLoading = true
-        this.msgQuery.userId = this.userId
-        let { data } = await getMsgList(this.msgQuery)
-        this.msgWorkList = data.filter((item) => {
-          return item.type === 'Work'
-        })
+        this.workMsgQuery.userId = this.userId
+        this.systemMsgQuery.userId = this.userId
+        let workRes = await getMsgList(this.workMsgQuery)
+        this.msgWorkList = workRes.data
         this.msgWorkList.sort((a, b) => {
           return a.isRead - b.isRead
         })
-        this.msgSystemList = data.filter((item) => {
-          return item.type === 'System'
-        })
+        let systemRes = await getMsgList(this.systemMsgQuery)
+        this.msgSystemList = systemRes.data
         this.msgSystemList.sort((a, b) => {
           return a.isRead - b.isRead
         })

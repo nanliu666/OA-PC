@@ -126,11 +126,10 @@ export default {
           label: '没读消息'
         }
       ],
-      isRead: '',
       // 表格数据
       dataList: [],
+      currentPage: 1,
       page: {
-        currentPage: 1,
         size: 10,
         total: 0
       },
@@ -165,6 +164,7 @@ export default {
       deep: true,
       handler: function() {
         this.page.currentPage = 1
+        this.msgQuery.pageNo = 1
         this.loadingData()
       }
     }
@@ -198,7 +198,7 @@ export default {
     },
     // 切换Work和System
     handleClick() {
-      this.page.currentPage = 1
+      this.msgQuery.pageNo = 1
       if (this.activeName === 'Work') {
         (this.msgQuery.type = 'Work'), this.loadingData()
       } else if (this.activeName === 'System') {

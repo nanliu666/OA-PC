@@ -199,8 +199,11 @@ export default {
           Object.assign(this.personData, res)
           this.$emit('update', this.personData)
           getRecruitmentApply({ recruitmentId: this.recruitmentId }).then((resp) => {
-            this.personData = { ...this.personData, ...resp }
-            this.$emit('update', { ...res, ...resp })
+            this.personData = {
+              ...this.personData,
+              ...{ orgName: resp.orgName, jobName: resp.jobName }
+            }
+            this.$emit('update', this.personData)
           })
         })
         .finally(() => {

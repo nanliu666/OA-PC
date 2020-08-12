@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="LeaveList">
     <page-header title="离职管理" />
-    <basic-container>
+    <basic-container block>
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
@@ -119,6 +119,7 @@
             >
               开具离职证明
             </el-button>
+            <!-- v-if="isWaitLeave && !row.leaveDate" -->
             <el-button
               v-if="isWaitLeave && !row.leaveDate"
               size="medium"
@@ -127,9 +128,9 @@
             >
               调整离职信息
             </el-button>
-            <!-- v-if="isWaitLeave && !row.leaveDate" -->
+
             <el-dropdown
-              v-if="isWaitLeave"
+              v-if="isWaitLeave && !row.leaveDate"
               @command="handleCommand($event, row)"
             >
               <i
@@ -138,13 +139,14 @@
               />
 
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  v-if="!row.leaveDate"
-                  command="giveLeave"
-                >
+                <!-- v-if="!row.leaveDate" -->
+                <el-dropdown-item command="giveLeave">
                   放弃离职
                 </el-dropdown-item>
               </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown v-else>
+              <i class="seat" />
             </el-dropdown>
           </div>
           <!-- 离职日期 -->
@@ -330,13 +332,10 @@ export default {
       // 表格配置
       tableConfig: {
         showIndexColumn: false,
-        // 选择列先去除
-        // enableMultiSelect: true,
         enablePagination: true,
-        uniqueKey: 'userId',
         showHandler: true,
         handlerColumn: {
-          minWidth: 200
+          minWidth: 250
         }
       },
       // 搜索框配置
@@ -429,6 +428,12 @@ export default {
     this.getOrgNameList()
     this.getJobList()
   },
+  async activated() {
+    await this.getCommonDict()
+    this.getDataList()
+    this.getOrgNameList()
+    this.getJobList()
+  },
   methods: {
     //监听切换tag
     handleClick() {
@@ -436,7 +441,7 @@ export default {
       if (this.activeName == 'WaitLeave') {
         this.paramsInfo.status = 'WaitLeave'
         // 修改表格操作列的宽度
-        this.tableConfig.handlerColumn.minWidth = 200
+        this.tableConfig.handlerColumn.minWidth = 250
         this.getDataList()
       } else {
         this.paramsInfo.status = 'Leaved'
@@ -646,5 +651,16 @@ export default {
       transform: translateY(-50%);
     }
   }
+}
+.LeaveList {
+  height: 100%;
+  .basic-container--block {
+    min-height: calc(100% - 92px);
+    height: 0;
+  }
+}
+.seat {
+  display: inline-block;
+  width: 16px;
 }
 </style>

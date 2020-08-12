@@ -1,9 +1,10 @@
+import { getWorklist } from '@/api/personnel/selectedPerson'
+
 // 表单计数公共逻辑
-import { getFormal } from '@/api/personnel/recruitment'
 
 export default {
   components: {
-    LazySelect: () => import(/* webpackChunkName: "views" */ '@/components/lazy-select/lazySelect')
+    LazySelect: () => import('@/components/lazy-select/lazySelect')
   },
   inject: ['$dialog'],
   props: {
@@ -46,8 +47,7 @@ export default {
   },
   methods: {
     loadUsers(param) {
-      const { orgId } = this.$dialog.form
-      return getFormal(_.assign({ orgId }, param))
+      return getWorklist(param)
     },
 
     handleFormItemDeleteBtnClick(target) {

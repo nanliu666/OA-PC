@@ -12,114 +12,90 @@
           class="left-aside"
         >
           <el-input
-            v-model="filterText"
+            v-model.lazy="filterText"
             placeholder="组织/员工"
             class="input-with-select"
+            @keyup.enter.native="handelSearch(filterText)"
           >
-            <i
+            <el-button
               slot="append"
-              class="el-icon-search"
+              icon="el-icon-search"
+              @click="handelSearch(filterText)"
             />
           </el-input>
-          <!--  -->
-
-          <el-tree
-            v-show="(!orgList.length && !userList.length) || !filterText"
-            ref="tree"
-            :data="treeData"
-            :expand-on-click-node="false"
-            :check-on-click-node="true"
-            :filter-node-method="filterNode"
-            node-key="id"
-            :default-expanded-keys="defaultExpandedArr"
-          >
-            <div
-              slot-scope="{ node, data }"
-              class="custom-tree-node"
+          <!-- 一开始显示的树 -->
+          <div v-show="isSearch">
+            <el-tree
+              :props="props"
+              :expand-on-click-node="false"
+              :check-on-click-node="true"
+              :load="loadNode"
+              lazy
             >
               <div
-                class="content"
-                @click="handelClickNode({ node, data })"
+                slot-scope="{ node, data }"
+                class="custom-tree-node"
               >
-                <i
-                  v-if="data.orgName"
-                  class="el-icon-folder-opened"
-                />
-                <el-avatar
-                  v-else
-                  src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-                />
-                <span
-                  class="item"
-                >{{ data.label }} {{ data.orgName ? `(${data.users.length})` : '' }}</span>
+                <div
+                  class="content"
+                  @click="handelClickNode({ node, data })"
+                >
+                  <i
+                    v-if="data.type"
+                    class="el-icon-folder-opened"
+                  />
+                  <el-avatar
+                    v-else
+                    src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                  />
+                  <span
+                    class="item"
+                  >{{ data.lable }}{{ data.workNum ? `(${data.workNum})` : `` }}</span>
+                </div>
               </div>
-            </div>
-          </el-tree>
-          <!-- 搜索部门列表 -->
-
-          <el-tree
-            v-show="orgList.length && filterText"
-            :data="orgList"
-            :expand-on-click-node="false"
-            :check-on-click-node="true"
-          >
-            <div
-              slot-scope="{ node, data }"
-              class="custom-tree-node"
+            </el-tree>
+          </div>
+          <!-- 搜素时显示的树 -->
+          <div v-show="!isSearch">
+            <el-tree
+              :data="treeData"
+              :props="props"
+              :expand-on-click-node="false"
+              :check-on-click-node="true"
+              :load="loadSeach"
+              lazy
             >
               <div
-                class="content"
-                @click="handelClickNode({ node, data })"
+                slot-scope="{ node, data }"
+                class="custom-tree-node"
               >
-                <i
-                  v-if="data.orgName"
-                  class="el-icon-folder-opened"
-                />
-                <el-avatar
-                  v-else
-                  src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-                />
-                <!-- <i :class="data.orgName ? 'el-icon-folder-opened' : 'el-icon-user-solid'"></i> -->
-                <span
-                  class="item"
-                >{{ data.label }} {{ data.orgName ? `(${data.users.length})` : '' }}</span>
+                <div
+                  class="content"
+                  @click="handelClickNode({ node, data })"
+                >
+                  <i
+                    v-if="data.type"
+                    class="el-icon-folder-opened"
+                  />
+                  <el-avatar
+                    v-else
+                    src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                  />
+                  <span
+                    class="item"
+                  >{{ data.lable }}{{ data.workNum ? `(${data.workNum})` : `` }}</span>
+                </div>
               </div>
-            </div>
-          </el-tree>
-          <!-- 搜索员工列表 -->
-          <el-tree
-            v-show="userList.length && filterText"
-            :data="userList"
-            :expand-on-click-node="false"
-            :check-on-click-node="true"
-          >
-            <div
-              slot-scope="{ node, data }"
-              class="custom-tree-node"
-            >
-              <div
-                class="content"
-                @click="handelClickNode({ node, data })"
-              >
-                <el-avatar
-                  src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-                />
-                <span class="item">{{ data.label }}</span>
-              </div>
-            </div>
-          </el-tree>
+            </el-tree>
+          </div>
         </div>
         <!-- 信息 -->
-        <div
-          v-loading="mailLoading"
-          class="main-connent"
-        >
+        <div class="main-connent">
           <div class="root-node">
             {{ rootNode }}
           </div>
           <div
             v-if="showUserOrOrg === 'user' ? true : false"
-            v-loading="userInfoLoading"
             class="userInfo-wrap"
           >
             <div class="header-wrap">
@@ -187,7 +163,8 @@
             class="orgName-wrap"
           >
             <div class="orgName-row">
-              {{ orgInfo.orgName }} {{ `${orgInfo.staffNum}(人)` }}
+              {{ orgInfo.orgName }}
+              {{ orgInfo.workNum === undefined ? '' : `${orgInfo.workNum}(人)` }}
             </div>
           </div>
         </div>
@@ -197,128 +174,126 @@
 </template>
 
 <script>
-import { getOrgUserTree } from '@/api/system/user'
-import { getStaffBasicInfo } from '@/api/personalInfo'
-import { filterTree, deepClone } from '@/util/util'
+// import { getOrgUserTree } from '@/api/system/user'
+// import { getStaffBasicInfo } from '@/api/personalInfo'
+import { getBookUser, getBookOrg } from '@/api/mailList/mailList'
+
 export default {
   name: 'MailList',
   data() {
     return {
       // 树状数据
       treeData: [],
-      userList: [],
-      orgList: [],
-      cloneList: [],
-      // loading
       mailLoading: false,
-      userInfoLoading: false,
       // 员工信息
       userInfo: {},
       // 部门信息
       orgInfo: {},
       // 搜索条件
       filterText: '',
-      // 默认展开第一列
-      defaultExpandedArr: [],
       //
       rootNode: '',
       // 显示部门或者人员信息
-      showUserOrOrg: 'org'
+      showUserOrOrg: 'org',
+      // 树配置
+      props: {
+        lable: 'lable',
+        children: 'children',
+        isLeaf: 'leaf'
+      },
+      // 控制树的显示
+      isSearch: true
     }
   },
 
-  watch: {
-    // 监听输入的关键字刷选员工和组织
-    filterText(val) {
-      this.handelSearch(val)
-      // this.$refs.tree.filter(val)
-    }
-  },
-  created() {
-    this.loadingData()
-  },
   methods: {
-    // load数据
-    async loadingData() {
-      this.mailLoading = true
-      this.treeData = await getOrgUserTree().finally(() => {
-        this.mailLoading = false
-      })
-      this.rootNode = this.treeData[0].orgName
-      this.orgInfo.orgName = this.treeData[0].orgName
-      this.orgInfo.staffNum = this.treeData[0].users.length
-      this.handelData(this.treeData)
-      // 默认展开第一列
-      this.defaultExpandedArr = [this.treeData[0].id]
-    },
-    // 处理数据
-    handelData(arr) {
-      arr.forEach((item) => {
-        if (!item.children) {
-          item.children = []
-        }
-        item.id = item.orgId || item.workNo
-        item.label = item.orgName || item.name
-        item.children.push(...(item.users || []))
-        // item.children = [...item.children,...(item.users||[])]
-        // item.children.push.apply(item.children, item.users)
-        this.handelData(item.children)
-      })
-    },
-    // 点击节点
-    async handelClickNode({ data }) {
-      if (data.userId) {
-        this.userInfoLoading = true
-        this.userInfo = await getStaffBasicInfo({ userId: data.userId }).finally(() => {
-          this.userInfoLoading = false
+    // 懒加载树节点
+    loadNode(node, resolve) {
+      if (node.level === 0) {
+        this.mailLoading = true
+        getBookOrg({
+          parentOrgId: 0
         })
-        this.showUserOrOrg = 'user'
-        return
-      } else {
-        this.orgInfo = {
-          staffNum: data.users.length,
-          orgName: data.orgName
-        }
-        this.showUserOrOrg = 'org'
-      }
-    },
-    // 帅选数据
-    filterNode(value, data) {
-      if (!value) return true
-      this.userList = filterTree(
-        this.cloneList,
-        (data) => !data.orgId && data.label.indexOf(value) !== -1,
-        true
-      )
-      this.orgList = filterTree(
-        this.cloneList,
-        (data) => data.orgId && data.label.indexOf(value) !== -1,
-        true
-      )
-      return data.label.indexOf(value) !== -1
-    },
-    // 搜索
-    handelSearch(val) {
-      this.cloneList = deepClone(this.treeData)
-      this.$refs.tree.filter(val)
-      // 右侧内容默认展示第一个信息
-      if (this.orgList.length) {
-        this.orgInfo.orgName = this.orgList[0].orgName
-        this.orgInfo.staffNum = this.orgList[0].users.length
-        this.showUserOrOrg = 'org'
-      }
-      if (!this.orgList.length && this.userList.length) {
-        let { userId } = this.userList[0]
-        this.showUserOrOrg = 'user'
-        this.userInfoLoading = true
-        getStaffBasicInfo({ userId })
           .then((res) => {
-            this.userInfo = res
+            res[0].lable = res[0].orgName
+            this.rootNode = res[0].orgName
+            this.orgInfo = res[0]
+            resolve(res)
           })
           .finally(() => {
-            this.userInfoLoading = false
+            this.mailLoading = false
           })
       }
+      if (node.level >= 1) {
+        Promise.all([
+          getBookOrg({ parentOrgId: node.data.orgId }),
+          getBookUser({ orgId: node.data.orgId })
+        ]).then((res) => {
+          let orgList = res[0]
+          let userList = res[1]
+          userList.forEach((item) => {
+            item.lable = item.name
+            item.leaf = true
+          })
+          orgList.forEach((item) => {
+            item.lable = item.orgName
+            item.name = 'children'
+          })
+          resolve([...orgList, ...userList])
+        })
+      }
+    },
+    // 点击节点
+    handelClickNode({ data }) {
+      if (data.code) {
+        this.showUserOrOrg = 'org'
+        this.orgInfo = data
+      } else {
+        this.showUserOrOrg = 'user'
+        this.userInfo = data
+      }
+    },
+    // 搜索
+    handelSearch(filterText) {
+      if (filterText === '') {
+        this.isSearch = true
+      } else {
+        Promise.all([getBookOrg({ orgName: filterText }), getBookUser({ name: filterText })]).then(
+          (res) => {
+            let orgList = res[0]
+            let userList = res[1]
+            userList.forEach((item) => {
+              item.lable = item.name
+              item.leaf = true
+            })
+            orgList.forEach((item) => {
+              item.lable = item.orgName
+              item.name = 'children'
+            })
+            this.treeData = [...orgList, ...userList]
+            this.isSearch = false
+          }
+        )
+      }
+    },
+    // 懒加载树节点
+    loadSeach(node, resolve) {
+      Promise.all([
+        getBookOrg({ parentOrgId: node.data.orgId }),
+        getBookUser({ orgId: node.data.orgId })
+      ]).then((res) => {
+        let orgList = res[0]
+        let userList = res[1]
+        userList.forEach((item) => {
+          item.lable = item.name
+          item.leaf = true
+        })
+        orgList.forEach((item) => {
+          item.lable = item.orgName
+          item.name = 'children'
+        })
+        resolve([...orgList, ...userList])
+      })
     }
   }
 }
@@ -336,10 +311,15 @@ export default {
   height: 36px;
   line-height: 36px;
 }
+/deep/.el-tree-node.is-current > .el-tree-node__content {
+  background-color: #ffffff;
+}
 .el-input {
   margin-bottom: 20px;
 }
-
+.el-button {
+  cursor: pointer;
+}
 // .custom-tree-node {
 // 	height: 36px;
 // 	.el-icon-folder-opened {

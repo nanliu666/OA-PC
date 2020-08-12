@@ -5,7 +5,7 @@
       :show-back="true"
       :back="goBack"
     />
-    <basic-container>
+    <basic-container v-loading="loading">
       <el-row
         type="flex"
         justify="center"
@@ -145,13 +145,13 @@
               <el-col :span="10">
                 <el-form-item label="原公司">
                   <el-select
-                    v-model="applyParams.companyName"
+                    v-model="applyParams.companyId"
                     disabled
                     style="width:100%"
                   >
                     <el-option
                       :label="applyParams.companyName"
-                      :value="applyParams.companyName"
+                      :value="applyParams.companyId"
                     />
                   </el-select>
                 </el-form-item>
@@ -160,18 +160,21 @@
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="变更为">
+                <el-form-item
+                  label="变更为"
+                  prop="newCompanyId"
+                >
                   <el-select
-                    v-model="applyParams.newCompanyName"
+                    v-model="applyParams.newCompanyId"
                     placeholder="请选择"
                     style="width:100%"
                     @change="companyNameChange"
                   >
                     <el-option
-                      v-for="item in newCompanyList"
-                      :key="item.orgId"
+                      v-for="(item, index) in newCompanyList"
+                      :key="index"
                       :label="item.orgName"
-                      :value="item.orgName"
+                      :value="item.orgId"
                     />
                   </el-select>
                 </el-form-item>
@@ -182,13 +185,13 @@
               <el-col :span="10">
                 <el-form-item label="原部门">
                   <el-select
-                    v-model="applyParams.orgName"
+                    v-model="applyParams.orgId"
                     disabled
                     style="width:100%"
                   >
                     <el-option
                       :label="applyParams.orgName"
-                      :value="applyParams.orgName"
+                      :value="applyParams.orgId"
                     />
                   </el-select>
                 </el-form-item>
@@ -200,14 +203,21 @@
                 <el-form-item
                   label="变更为"
                   style="width:100%"
+                  prop="newOrgId"
                 >
-                  <el-tree-select
-                    ref="orgTree"
-                    v-model="applyParams.newOrgName"
-                    :styles="subOrgOptions.styles"
-                    :select-params="subOrgOptions.config.selectParams"
-                    :tree-params="subOrgOptions.config.treeParams"
-                  />
+                  <el-select
+                    v-model="applyParams.newOrgId"
+                    placeholder="请选择"
+                    style="width:100%"
+                    @change="orgNameChange"
+                  >
+                    <el-option
+                      v-for="(item, index) in newOrgList"
+                      :key="index"
+                      :label="item.orgName"
+                      :value="item.orgId"
+                    />
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -216,13 +226,13 @@
               <el-col :span="10">
                 <el-form-item label="原职位">
                   <el-select
-                    v-model="applyParams.jobName"
+                    v-model="applyParams.jobId"
                     disabled
                     style="width:100%"
                   >
                     <el-option
                       :label="applyParams.jobName"
-                      :value="applyParams.jobName"
+                      :value="applyParams.jobId"
                     />
                   </el-select>
                 </el-form-item>
@@ -231,17 +241,20 @@
                 :span="10"
                 :offset="4"
               >
-                <el-form-item label="变更为">
+                <el-form-item
+                  label="变更为"
+                  prop="newJobId"
+                >
                   <el-select
-                    v-model="applyParams.newJobName"
+                    v-model="applyParams.newJobId"
                     placeholder="请选择"
                     style="width:100%"
                   >
                     <el-option
-                      v-for="item in newJobList"
-                      :key="item.jobId"
+                      v-for="(item, index) in newJobList"
+                      :key="index"
                       :label="item.jobName"
-                      :value="item.jobName"
+                      :value="item.jobId"
                     />
                   </el-select>
                 </el-form-item>
@@ -252,13 +265,13 @@
               <el-col :span="10">
                 <el-form-item label="原岗位">
                   <el-select
-                    v-model="applyParams.positionName"
+                    v-model="applyParams.positionId"
                     disabled
                     style="width:100%"
                   >
                     <el-option
                       :label="applyParams.positionName"
-                      :value="applyParams.positionName"
+                      :value="applyParams.positionId"
                     />
                   </el-select>
                 </el-form-item>
@@ -269,15 +282,15 @@
               >
                 <el-form-item label="变更为">
                   <el-select
-                    v-model="applyParams.newPositionName"
+                    v-model="applyParams.newPositionId"
                     placeholder="请选择"
                     style="width:100%"
                   >
                     <el-option
-                      v-for="item in newPositionList"
-                      :key="item.id"
+                      v-for="(item, index) in newPositionList"
+                      :key="index"
                       :label="item.name"
-                      :value="item.name"
+                      :value="item.id"
                     />
                   </el-select>
                 </el-form-item>
@@ -332,7 +345,7 @@
               <el-col :span="10">
                 <el-button
                   size="medium"
-                  @click="handelCancel"
+                  @click="goBack"
                 >
                   取消
                 </el-button>
@@ -358,13 +371,14 @@ import { changeApply } from '@/api/personnel/transction.js'
 import { getOrganizationCompany } from '@/api/personnel/roster'
 import { getJobInfo, getPositionInfo, getStaffBasicInfo } from '@/api/personalInfo.js'
 import { getOrganizationTree } from '@/api/organize/grade.js'
-import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
+// import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
 import apprProgress from '@/components/appr-progress/apprProgress'
+import { flatTree } from '@/util/util'
 // import getAppProcess from "@/api/approval/approval"
 export default {
   name: 'ChangeApply',
   components: {
-    ElTreeSelect,
+    // ElTreeSelect,
     apprProgress
   },
   data() {
@@ -386,21 +400,50 @@ export default {
         orgName: '',
         jobName: '',
         positionName: '',
+        companyId: '',
+        orgId: '',
+        jobId: '',
+        positionId: '',
         effectDate: '',
         remark: '',
         // 新公司信息
+        newCompanyId: '',
+        newOrgId: '',
+        newJobId: '',
+        newPositionId: '',
         newCompanyName: '',
         newOrgName: '',
         newJobName: '',
         newPositionName: ''
       },
-
+      loading: false,
       // 校验规则
       applyRules: {
         type: [{ required: true, message: '请选择异动类型', trigger: 'blur' }],
         reason: [{ required: true, message: '请选择异动原因', trigger: 'change' }],
         effectDate: [{ required: true, message: '请选择生效日期', trigger: 'blur' }],
-        apprProgress: [{ validator: checkAppr, required: true }]
+        apprProgress: [{ validator: checkAppr, required: true, trigger: 'change' }],
+        newCompanyId: [
+          {
+            required: true,
+            message: '请选择公司',
+            trigger: 'change'
+          }
+        ],
+        newOrgId: [
+          {
+            required: true,
+            message: '请选择部门',
+            trigger: 'change'
+          }
+        ],
+        newJobId: [
+          {
+            required: true,
+            message: '请选择职位',
+            trigger: 'change'
+          }
+        ]
       },
       // 字典组异动原因
       changeReason: [],
@@ -412,38 +455,6 @@ export default {
       newJobList: [],
       // 变更岗位
       newPositionList: [],
-      // 树状选择框的配置
-      subOrgOptions: {
-        props: {
-          label: 'orgName',
-          value: 'orgId'
-        },
-        styles: {
-          width: '100%'
-        },
-        placeholder: '请选择部门',
-        dicData: [],
-        config: {
-          selectParams: {
-            placeholder: '请输入内容',
-            multiple: false
-          },
-          treeParams: {
-            data: [],
-            'check-strictly': true,
-            'default-expand-all': true,
-            'expand-on-click-node': true,
-            clickParent: false,
-            filterable: false,
-            props: {
-              children: 'children',
-              label: 'orgName',
-              disabled: 'disabled',
-              value: 'orgName'
-            }
-          }
-        }
-      },
       btnLoading: false
     }
   },
@@ -462,53 +473,82 @@ export default {
         }
       }
     }
+    // 'applyParams.newCompanyId': {
+    //   deep: true,
+    //   handler: function(newV, oldV) {
+    //     if (!oldV) {
+    //       return
+    //     }
+    //     this.getOrgName(newV)
+    //   }
+    // },
+    // 'applyParams.newOrgId': {
+    //   deep: true,
+    //   handler: function(newV) {
+    //     this.getJob(newV)
+    //   }
+    // }
   },
-  mounted() {
-    this.getReasonList()
-    this.getPersonalInfo()
-    this.getCompany()
-    this.getOrgName()
-    this.getJob()
-    this.getPosition()
+  async mounted() {
+    this.loading = true
+    await this.getReasonList()
+    await this.getPersonalInfo()
+    await this.getCompany()
+    await this.getOrgName(this.applyParams.companyId)
+    await this.getJob(this.applyParams.orgId)
+    await this.getPosition()
+    this.loading = false
   },
 
   methods: {
     // 获取员工信息
-    getPersonalInfo() {
+    async getPersonalInfo() {
       let params = {
         userId: this.$route.query.userId
       }
-      getStaffBasicInfo(params)
-        .then((res) => {
-          let {
-            companyName,
-            orgName,
-            jobName,
-            positionName,
-            userId,
-            workNo,
-            name,
-            companyName: newCompanyName,
-            orgName: newOrgName,
-            jobName: newJobName,
-            positionName: newPositionName
-          } = res
-          this.applyParams = {
-            ...this.applyParams,
-            companyName,
-            orgName,
-            jobName,
-            positionName,
-            userId,
-            workNo,
-            name,
-            newCompanyName,
-            newOrgName,
-            newJobName,
-            newPositionName
-          }
-        })
-        .catch()
+      let {
+        companyName,
+        orgName,
+        jobName,
+        positionName,
+        companyId,
+        orgId,
+        jobId,
+        positionId,
+        userId,
+        workNo,
+        name,
+        companyId: newCompanyId,
+        orgId: newOrgId,
+        jobId: newJobId,
+        positionId: newPositionId,
+        companyName: newCompanyName,
+        orgName: newOrgName,
+        jobName: newJobName,
+        positionName: newPositionName
+      } = await getStaffBasicInfo(params)
+      this.applyParams = {
+        ...this.applyParams,
+        companyName,
+        orgName,
+        jobName,
+        positionName,
+        companyId,
+        orgId,
+        jobId,
+        positionId,
+        userId,
+        workNo,
+        name,
+        newCompanyId,
+        newOrgId,
+        newJobId,
+        newPositionId,
+        newCompanyName,
+        newOrgName,
+        newJobName,
+        newPositionName
+      }
     },
     // 获取公司选择数组
     getCompany() {
@@ -518,22 +558,19 @@ export default {
     },
 
     // 获取部门选择数组
-    getOrgName() {
-      getOrganizationTree({ parentOrgId: '0' })
-        .then((res) => {
-          // this.subOrgOptions.config.treeParams.data.push(res)
-          this.$refs['orgTree'].treeDataUpdateFun(res)
-          this.newOrgList = res
-        })
-        .catch()
+    async getOrgName(params) {
+      let res = await getOrganizationTree({ parentOrgId: params })
+      this.newOrgList = flatTree(res)
+      this.$refs.applyForm.clearValidate('newOrgId')
+      this.$refs.applyForm.clearValidate('newJobId')
     },
     // 获取职位选择数组
-    getJob() {
-      getJobInfo({})
-        .then((res) => {
-          this.newJobList = res
-        })
-        .catch()
+    async getJob(params) {
+      if (!params) {
+        return
+      }
+      this.newJobList = await getJobInfo({ orgId: params })
+      this.$refs.applyForm.clearValidate('newJobId')
     },
     // 获取岗位选择数组
     getPosition() {
@@ -544,12 +581,17 @@ export default {
         .catch()
     },
     // 清空选项
-    companyNameChange() {
-      this.applyParams.newOrgName = ''
-      this.applyParams.newJobName = ''
+    companyNameChange(e) {
+      this.applyParams.newOrgId = ''
+      this.applyParams.newJobId = ''
+      this.newJobList = []
+      this.getOrgName(e)
     },
     // 清空选项
-
+    orgNameChange(e) {
+      this.getJob(e)
+      this.applyParams.newJobId = ''
+    },
     // 获取异动原因
     getReasonList(index) {
       this.$store.dispatch('CommonDict', 'ChangeReason').then((res) => {
@@ -584,10 +626,6 @@ export default {
       })
       this.changeReason = targetArr[index].options
     },
-    // 点击取消
-    handelCancel() {
-      this.$router.go(-1)
-    },
     // 点击提交
     handelSubmit() {
       this.$refs.applyForm.validate((valid) => {
@@ -595,30 +633,59 @@ export default {
           return
         }
         let {
-          companyName,
-          orgName,
-          jobName,
-          positionName,
+          companyId,
+          orgId,
+          jobId,
+          positionId,
+          //   companyName,
+          //   orgName,
+          //   jobName,
+          //   positionName,
           // 新公司信息
-          newCompanyName,
-          newOrgName,
-          newJobName,
-          newPositionName
+          newCompanyId,
+          newOrgId,
+          newJobId,
+          newPositionId
+          //   newCompanyName,
+          //   newOrgName,
+          //   newJobName,
+          //   newPositionName
         } = this.applyParams
         // 公司/部门/职位/岗位”至少有存在一个变更
         if (
-          companyName !== newCompanyName ||
-          orgName !== newOrgName ||
-          jobName !== newJobName ||
-          positionName !== newPositionName
+          companyId !== newCompanyId ||
+          orgId !== newOrgId ||
+          jobId !== newJobId ||
+          positionId !== newPositionId
         ) {
           this.btnLoading = true
+          this.newCompanyList.forEach((item) => {
+            if (item.orgId == newCompanyId) {
+              this.applyParams.newCompanyName = item.orgName
+            }
+          })
+          flatTree(this.newOrgList).forEach((item) => {
+            if (item.orgId == newOrgId) {
+              this.applyParams.newOrgName = item.orgName
+            }
+          })
+          this.newJobList.forEach((item) => {
+            if (item.jobId == newJobId) {
+              this.applyParams.newJobName = item.jobName
+            }
+          })
+          this.newPositionList.forEach((item) => {
+            if (item.id == newPositionId) {
+              this.applyParams.newPositionName = item.name
+            }
+          })
+
           changeApply(this.applyParams)
             .then((res) => {
               if (res && res.id) {
                 this.$refs['apprProgress'].submit(res.id).then(() => {
                   this.$message.success('提交成功', 3000)
-                  this.$router.go(-1)
+                  this.goBack()
                 })
               }
             })
@@ -631,6 +698,8 @@ export default {
         }
       })
     },
+    // 根据新部门ID找新部门
+
     // goback
     goBack() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)

@@ -180,7 +180,7 @@
             <commonForm
               :ref="`work${i}`"
               :model="work.form"
-              :columns="work.work"
+              :columns="work | columnsFilter"
             />
           </div>
         </div>
@@ -297,9 +297,46 @@ import {
 } from './components/userInfo'
 import { cardid, HMCardValid, TWCardValid } from '@/util/validate'
 import { mapGetters } from 'vuex'
+import { compareDate } from '@/util/util'
 export default {
   name: 'RegistrationFormEdit',
   components: {},
+  filters: {
+    columnsFilter: function({ work, form }) {
+      let columns = JSON.parse(JSON.stringify(work))
+      if (form.isSecret === 1) {
+        columns.push(
+          ...[
+            {
+              span: 10,
+              offset: 2,
+              prop: 'beginSecretDate',
+              type: 'date',
+              itemType: 'datePicker',
+              label: '遵守义务开始日期',
+              required: true
+            },
+            {
+              span: 10,
+              prop: 'endSecretDate',
+              type: 'date',
+              itemType: 'datePicker',
+              label: '遵守义务截止日期',
+              required: true
+            },
+            {
+              span: 10,
+              offset: 2,
+              prop: 'content',
+              itemType: 'input',
+              label: '具体内容'
+            }
+          ]
+        )
+      }
+      return columns
+    }
+  },
   props: {
     modity: {
       type: Boolean
@@ -398,7 +435,16 @@ export default {
   },
   watch: {
     data: {
-      handler(val) {
+      handler(value) {
+        let val = JSON.parse(JSON.stringify(value))
+        if (this.$route.query.entry) {
+          this.form = Object.assign(this.form, {
+            bankName: '',
+            bankNo: '',
+            isFirstSs: '',
+            isFirstEpf: ''
+          })
+        }
         for (let key in this.form) {
           this.form[key] = val[key]
         }
@@ -613,6 +659,17 @@ export default {
       })
       return num
     },
+    compareDateRange(arr, beginKey, endKey) {
+      let beginArr = arr.map((item) => {
+        if (item.operatorType !== 'Del') {
+          return item.form[beginKey]
+        }
+      })
+      let endArr = arr.map((item) => {
+        return item.form[endKey]
+      })
+      return compareDate(beginArr, endArr)
+    },
     /**
      * @author guanfenda
      * 登记表提交
@@ -655,6 +712,11 @@ export default {
             } else if (it.workTime.length > 0) {
               it.beginWorkDate = it.workTime[0]
               it.endWorkDate = it.workTime[1]
+            }
+            if (it.isSecret == 0) {
+              it.beginSecretDate = ''
+              it.endSecretDate = ''
+              it.content = ''
             }
           })
           train.map((it) => {

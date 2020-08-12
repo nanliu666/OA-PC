@@ -25,10 +25,7 @@
             size="medium"
           >
             <el-row>
-              <el-col
-                v-if="!$route.query.isTalent"
-                :span="10"
-              >
+              <el-col :span="10">
                 <el-form-item
                   label="关联应聘职位"
                   prop="recruitmentId"
@@ -48,7 +45,6 @@
                 </el-form-item>
               </el-col>
               <el-col
-                v-if="!$route.query.isTalent"
                 :span="10"
                 :offset="4"
               >
@@ -563,12 +559,12 @@ export default {
       })
     },
     clear() {
-      const _form = this.$options.data().form
+      const _form = {}
       if (this.$route.query.recruitmentId) {
         _form.recruitmentId = this.form.recruitmentId
         _form.orgName = this.form.orgName
       }
-      this.form = _form
+      this.form = Object.assign({}, this.$options.data().form, _form)
       setTimeout(() => {
         this.$refs.form.clearValidate()
       })

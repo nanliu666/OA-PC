@@ -19,7 +19,9 @@
         <div class="person_position flex flex-items flex-flow">
           <div>{{ personInfo.department }}</div>
           <div>{{ personInfo.position }}</div>
-          <div>{{ personInfo.status }}</div>
+          <div v-if="personInfo.status">
+            {{ personInfo.status }}
+          </div>
         </div>
         <div class="flex flex-items flex-flow">
           <div v-if="!$route.query.entry">
@@ -406,8 +408,17 @@
                 </template>
                 <template v-else-if="item.prop === 'isSecret'">
                   <div class="row">
-                    {{ isSecret === 1 ? '有' : '无' }}
+                    {{ scope.row[item.prop] === 1 ? '有' : '无' }}
                   </div>
+                </template>
+                <template v-else-if="item.prop === 'beginSecretDate'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
+                <template v-else-if="item.prop === 'content'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
+                </template>
+                <template v-else-if="item.prop === 'endSecretDate'">
+                  {{ scope.row.isSecret === 1 ? scope.row[item.prop] : ' ' }}
                 </template>
                 <template v-else>
                   {{ scope.row[item.prop] }}
@@ -415,9 +426,9 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="tip">
-            与其它公司间有无守密义务或竞业禁止义务：无
-          </div>
+          <!-- <div class="tip">
+            与其它公司间有无守密义务或竞业禁止义务：{{ isSecret === 1 ? '有' : '无' }}
+          </div> -->
         </div>
       </div>
       <div class="train">
@@ -689,6 +700,22 @@ export default {
         {
           prop: 'witnessPhone',
           label: '证明人电话'
+        },
+        {
+          prop: 'isSecret',
+          label: '守密竞业禁止义务'
+        },
+        {
+          prop: 'beginSecretDate',
+          label: '遵守义务开始日期'
+        },
+        {
+          prop: 'endSecretDate',
+          label: '遵守义务截止日期'
+        },
+        {
+          prop: 'content',
+          label: '具体内容'
         }
       ],
       trainData: [],
@@ -808,7 +835,7 @@ export default {
           params = this.value(this.nation, data)
           break
         case 'marriage':
-          params = data === 1 ? '已婚' : data === 1 ? '未婚' : ''
+          params = data === 2 ? '已婚已育' : data === 1 ? '已婚' : data === 0 ? '未婚' : ''
           break
         case 'politicalStatus':
           params = this.value(this.PoliticalStatus, data)
@@ -817,10 +844,10 @@ export default {
           params = this.value(this.HouseholdType, data)
           break
         case 'isFirstSs':
-          params = data === 1 ? '是' : '否'
+          params = data === 1 ? '是' : data === 0 ? '否' : ''
           break
         case 'isFirstEpf':
-          params = data === 1 ? '是' : '否'
+          params = data === 1 ? '是' : data === 0 ? '否' : ''
           break
         default:
           params = data
@@ -859,12 +886,15 @@ export default {
         this.candidateInfo.interviewFill = res.interviewFill
         this.candidateInfo.entryFill = res.entryFill
       })
-      if (this.$route.query.isUser) {
-        this.candidateInfo.register = 1
+      if (this.$route.query.isUser || this.$route.query.isInterview) {
+        this.$route.query.isUser
+          ? (this.candidateInfo.register = 1)
+          : (this.candidateInfo.interview = 1)
         getPersonInfo(params).then((res) => {
           this.personInfo.name = res.name
         })
         getRecruitmentApply(params).then((res) => {
+          this.candidateInfo.recruitmentId = this.$route.query.recruitmentId
           this.personInfo.department = res.orgName
           this.personInfo.position = res.jobName
         })

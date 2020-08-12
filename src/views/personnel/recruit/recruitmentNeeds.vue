@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="RecruitmentNeeds">
     <page-header
       title="新建招聘需求"
       show-back
@@ -32,6 +32,7 @@
               <appr-progress
                 ref="apprProgress"
                 form-key="Recruitment"
+                @change="() => $refs.form.clearValidate('progress')"
               />
             </template>
           </common-form>
@@ -77,7 +78,7 @@ export default {
   data() {
     var checkAppr = (rule, value, callback) => {
       if (!this.$refs['apprProgress'].validate()) {
-        callback(new Error('请选择审批人'))
+        callback(new Error('请选择审批流程'))
       } else {
         callback()
       }
@@ -299,7 +300,7 @@ export default {
           label: '审批流程',
           prop: 'progress',
           itemType: 'slot',
-          rules: [{ validator: checkAppr }]
+          rules: [{ validator: checkAppr, trigger: 'change', required: true }]
         }
       ]
     }
@@ -308,6 +309,9 @@ export default {
     ...mapGetters(['userId'])
   },
   watch: {
+    'form.companyId'(companyId) {
+      this.loadOrgData(companyId)
+    },
     'form.orgId': function(val) {
       if (val) {
         this.form.jobId = null
@@ -331,7 +335,7 @@ export default {
     this.getUseInformation()
     this.dictionaryGroup()
     await this.getPost()
-    this.loadOrgData()
+    // this.loadOrgData()
   },
 
   activated() {
@@ -363,9 +367,13 @@ export default {
         })
       })
     },
-    loadOrgData() {
-      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
-        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data.push(...res)
+    loadOrgData(orgId) {
+      if (_.isNil(orgId)) {
+        orgId = '0'
+      }
+      getOrgTreeSimple({ parentOrgId: orgId }).then((res) => {
+        // 过滤掉集团下面orgType为"Company“”的
+        this.columns.find((item) => item.prop === 'orgId').props.treeParams.data = res
       })
     },
     dictionaryGroup() {
@@ -450,5 +458,11 @@ export default {
 .page-bottom {
   display: inline-block;
   padding-bottom: 20px;
+}
+.RecruitmentNeeds {
+  /deep/ .el-input__count {
+    transform: translate(25%, 100%);
+    background: #0000;
+  }
 }
 </style>

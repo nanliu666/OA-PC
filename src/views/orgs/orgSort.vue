@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div class="contain">
     <page-header
       title="调整排序"
       show-back
@@ -44,7 +44,8 @@ export default {
     return {
       data: [],
       oldData: [],
-      loading: true
+      loading: true,
+      sameNameMessage: false
     }
   },
   created() {
@@ -54,19 +55,36 @@ export default {
     this.getOrgTree()
   },
   methods: {
+    messageFun() {
+      if (this.sameNameMessage) return
+      this.$message.error({
+        message: '该组织名称在目标层级已存在',
+        onClose: () => {
+          this.sameNameMessage = false
+        }
+      })
+    },
     allowDrop(draggingNode, dropNode, type) {
       if (type === 'prev' || type === 'next') {
         let parentOrg = this.findParentOrg(dropNode.data.orgId)
         if (parentOrg && parentOrg.children) {
           for (let i = 0; i < parentOrg.children.length; i++) {
-            if (parentOrg.children[i].orgName === draggingNode.data.orgName) return false
+            if (parentOrg.children[i].orgName === draggingNode.data.orgName) {
+              this.messageFun()
+              this.sameNameMessage = true
+              return false
+            }
           }
         }
         return true
       } else if (type === 'inner') {
         if (dropNode.data.children) {
           for (let i = 0; i < dropNode.data.children.length; i++) {
-            if (dropNode.data.children[i].orgName === draggingNode.data.orgName) return false
+            if (dropNode.data.children[i].orgName === draggingNode.data.orgName) {
+              this.messageFun()
+              this.sameNameMessage = true
+              return false
+            }
           }
         }
         return true
@@ -130,16 +148,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.contain {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 .pageHeader {
   height: 48px;
   // padding: 0 24px;
   line-height: 48px;
   font-size: 18px;
-}
-.treeBox {
-  width: calc (100% - 160) px;
-  padding-bottom: 40px;
-  overflow: scroll;
 }
 
 /deep/ .is-always-shadow {
@@ -148,7 +166,7 @@ export default {
 .btnBox {
   margin: 0 0 10px 100px;
   height: 40px;
-  position: absolute;
+  // position: absolute;
   bottom: 0;
 }
 /deep/ .el-tree-node__content {
@@ -157,10 +175,27 @@ export default {
   border-bottom: 1px solid #f2f2f2;
 }
 /deep/ .basic-container {
+  flex: 1;
   height: calc(100% - 58px);
+  display: flex;
+  flex-direction: column;
   .el-card {
+    flex: 1;
     height: 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    .el-card__body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      .treeBox {
+        flex: 1;
+        width: calc (100% - 160) px;
+        // padding-bottom: 40px;
+        overflow: scroll;
+      }
+    }
   }
 }
 /deep/ .el-tree-node__expand-icon {
