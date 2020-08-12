@@ -2,7 +2,7 @@
 <template>
   <div
     v-loading="loading"
-    class="CharBar container"
+    class="ChartFunnel container"
   >
     <div
       ref="container"
@@ -17,7 +17,7 @@ import echarts from 'echarts'
 const CHART_CONFIG_DEFAULT = {
   tooltip: {
     trigger: 'item',
-    formatter: '{a} <br/>{b} : {c}'
+    formatter: '{a} <br/>{b} : {c}人'
   },
   legend: {
     type: 'scroll',
@@ -43,7 +43,6 @@ const CHART_CONFIG_DEFAULT = {
       max: 100,
       minSize: '0%',
       maxSize: '100%',
-      sort: 'ascending',
       gap: 2,
       label: {
         show: true,
@@ -70,11 +69,13 @@ const CHART_CONFIG_DEFAULT = {
 }
 
 export default {
-  name: 'CharBar',
+  name: 'ChartFunnel',
   filters: {
     dataFormatter(data) {
       // 过滤其中人数为0的项
-      return _.filter(data, ({ value }) => value)
+      return _(data)
+        .filter(({ value }) => value)
+        .value()
     }
   },
   props: {
@@ -82,10 +83,12 @@ export default {
       type: Array,
       default: () => [
         // blue
-        '#2d5186',
-        '#4073bf',
-        '#799dd2',
-        '#b3c7e6',
+        '#115fd4',
+        '#207efa',
+        '#4a9eff',
+        '#73b9ff',
+        '#9cd1ff',
+        '#c4e6ff',
         // red
         '#862d39',
         '#bf4051',
@@ -102,6 +105,10 @@ export default {
       type: [Array, Object],
       default: () => ({ label: 'label', value: 'value' })
     },
+    sort: {
+      type: String,
+      default: 'ascending'
+    },
     title: {
       type: String,
       default: ''
@@ -114,6 +121,11 @@ export default {
     xaxisDictkey: {
       type: [String, Array],
       default: null
+    },
+    // 以最大的数为基数进行百分比计算
+    based: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -143,20 +155,34 @@ export default {
         top: 60,
         //x2: 80,
         bottom: 60,
-        width: '80%',
+        width: '75%',
         // height: {totalHeight} - y - y2,
-        min: 0,
-        max: 100,
+        ...(this.based
+          ? {
+              min: 0,
+              max: 100
+            }
+          : null),
         minSize: '0%',
         maxSize: '100%',
-        sort: 'ascending',
+        sort: this.sort,
         label: {
           show: true,
           position: 'inside',
-          formatter(context) {
+          formatter: (context) => {
             const { name, value } = context.data
             const { percent } = context
-            return `${name}: ${value}人 ${_.round(percent, 2)}%`
+            return `${name}: ${value}人 ${
+              this.based
+                ? _.round(
+                    (100 * value) /
+                      _(this.data)
+                        .map(({ [cfg.value]: value }) => value)
+                        .max(),
+                    2
+                  )
+                : _.round(percent, 2)
+            }%`
           }
         },
         labelLine: {
@@ -267,5 +293,5 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import "./styles/chartCommon"
+@import "~@/views/personnel/databoard/components/styles/chartCommon"
 </style>
