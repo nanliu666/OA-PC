@@ -105,15 +105,10 @@ export default {
     BasicSetting,
     AdvancedSetting
   },
-  props: {
-    title: {
-      type: String,
-      default: ''
-    }
-  },
   data() {
     return {
       base: [],
+      title: null,
       lineList: [],
       condition: [],
       endNode: [],
