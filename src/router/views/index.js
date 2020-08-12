@@ -12,7 +12,8 @@ export default [
     name: '流程设计器',
     component: ProcessDesign,
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      isTab: false
     }
   },
   {
