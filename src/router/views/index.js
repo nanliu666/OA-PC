@@ -1,6 +1,7 @@
 import Layout from '@/page/index/'
 import demoRoutes from './demo'
 import todo from './todo'
+import notice from './notice'
 export default [
   {
     path: '/wel',
@@ -104,6 +105,7 @@ export default [
       }
     ]
   },
+  ...notice,
   ...todo,
   ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
 ]
