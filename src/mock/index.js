@@ -30,7 +30,8 @@ import todo from './todo'
 import transction from './transction'
 import user from './user'
 import mailList from './mailList'
-
+import newCenter from './newsCenter'
+import noticeCenter from './noticeCenter'
 /**
  * 模拟数据mock
  *
@@ -42,7 +43,8 @@ const options = { mock: false }
 Mock.setup({
   timeout: 500
 })
-
+newCenter({ mock: true })
+noticeCenter({ mock: true })
 user(options)
 approval(options)
 menu(options)
