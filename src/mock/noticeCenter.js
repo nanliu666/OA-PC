@@ -7,6 +7,38 @@ export default ({ mock }) => {
     msg: '操作成功',
     response: ''
   }
+  // 公告管理列表删除
+  Mock.mock(new RegExp('/api/notice/v1/notice' + '(\\?.*)?$'), 'delete', () => {
+    return normalData
+  })
+  // 公告管理列表发布接口
+  Mock.mock(new RegExp('/notice/v1/notice/publish' + '(\\?.*)?$'), 'post', () => {
+    return normalData
+  })
+  // 公告管理列表查询接口
+  Mock.mock(new RegExp('/api/notice/v1/notice' + '(\\?.*)?$'), 'get', () => {
+    const response = _.times(10, () =>
+      Mock.mock({
+        id: '@integer(100000, 10000000000)',
+        title: '@cparagraph(1, 2)',
+        readNum: '@integer(1, 100)',
+        publishTime: '@date()',
+        publishUserId: '@integer(1, 100)',
+        publishUserName: '@cname',
+        'status|1': ['Published', 'Draft'],
+        createTime: '@date'
+      })
+    )
+    const res = {
+      ...normalData,
+      response: {
+        totalNum: 100,
+        totalPage: 10,
+        data: response
+      }
+    }
+    return res
+  })
   // 公告查询接口
   Mock.mock(new RegExp('/api/notice/v1/notice/center' + '(\\?.*)?$'), 'get', () => {
     const response = _.times(10, () =>
