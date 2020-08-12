@@ -55,6 +55,11 @@ ul {
 .flex-items {
   align-items: center;
 }
+.flexcenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .flex-justify {
   justify-content: center;
 }
@@ -77,7 +82,12 @@ ul {
   fill: currentColor;
   overflow: hidden;
 }
-
+// 超出隐藏
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .fill {
   height: 100%;
 }

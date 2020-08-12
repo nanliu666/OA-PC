@@ -1,7 +1,21 @@
 import Layout from '@/page/index/'
+import ProcessDesign from '@/views/processDesign/ProcessDesign'
 import demoRoutes from './demo'
 import todo from './todo'
 export default [
+  {
+    path: '/',
+    redirect: '/wel'
+  },
+  {
+    path: '/process/design',
+    name: '流程设计器',
+    component: ProcessDesign,
+    meta: {
+      keepAlive: true,
+      isTab: false
+    }
+  },
   {
     path: '/wel',
     component: Layout,

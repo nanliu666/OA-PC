@@ -114,7 +114,7 @@
               type="text"
               @click.stop="() => handleRemoveItems([row])"
             >
-              删除子项
+              删除
             </el-button>
             <el-button
               size="medium"

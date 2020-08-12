@@ -29,6 +29,10 @@ import taskcenter from './taskcenter'
 import todo from './todo'
 import transction from './transction'
 import user from './user'
+
+import apprProcess from './apprProcess'
+import process from './process'
+
 import mailList from './mailList'
 
 /**
@@ -44,9 +48,12 @@ Mock.setup({
 })
 
 user(options)
-approval(options)
+
+apprProcess(options)
 menu(options)
-interview({ mock: false })
+apprProcess(options)
+
+interview(options)
 
 candidate(options)
 selectPerson(options)
@@ -82,4 +89,8 @@ entry(options)
 taskcenter(options)
 schedule(options)
 remind(options)
+
+process(options)
+
 mailList(options)
+

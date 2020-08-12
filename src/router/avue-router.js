@@ -1,3 +1,4 @@
+import website from '@/config/website'
 let RouterPlugin = function() {
   this.$router = null
   this.$store = null
@@ -24,7 +25,7 @@ RouterPlugin.install = function(vue, router, store, i18n) {
 
   this.$router.$avueRouter = {
     //全局配置
-    $website: this.$store.getters.website,
+    $website: website,
     routerList: [],
     group: '',
     meta: {},
