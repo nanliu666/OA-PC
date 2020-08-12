@@ -64,33 +64,43 @@ export default [
     ]
   },
   {
-    path: '/work/process/leave',
+    path: '/taskCenter/taskCenter',
+    name: '任务中心',
+    meta: {
+      fullscreen: true
+    },
+    component: () => import('@/views/taskCenter/taskCenter')
+  },
+  {
+    path: '/quickAccess/mailList',
+    name: '通讯录',
+    meta: {
+      fullscreen: true
+    },
+    component: () => import('@/views/quickAccess/mailList')
+  },
+  {
+    path: '/taskCenter/scheduleCenter',
+    name: '日程中心',
+    meta: {
+      fullscreen: true
+    },
+    component: () => import('@/views/taskCenter/scheduleCenter')
+  },
+  {
     component: Layout,
-    redirect: '/work/process/leave/form',
+    path: '/noticeCenter',
+    name: '通知公告',
     children: [
       {
-        path: 'form/:processDefinitionId',
-        name: '请假流程',
-        meta: {
-          i18n: 'work'
-        },
-        component: () => import('@/views/work/process/leave/form')
+        path: '/noticeCenter/noticeList',
+        name: '通知公告',
+        component: () => import('@/views/noticeCenter/noticeList')
       },
       {
-        path: 'handle/:taskId/:processInstanceId',
-        name: '处理请假流程',
-        meta: {
-          i18n: 'work'
-        },
-        component: () => import('@/views/work/process/leave/handle')
-      },
-      {
-        path: 'detail/:processInstanceId',
-        name: '请假流程详情',
-        meta: {
-          i18n: 'work'
-        },
-        component: () => import('@/views/work/process/leave/detail')
+        path: '/noticeCenter/noticeDetail',
+        name: '通知详情',
+        component: () => import('@/views/noticeCenter/noticeDetail')
       }
     ]
   },
