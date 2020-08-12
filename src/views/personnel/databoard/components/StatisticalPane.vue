@@ -114,72 +114,6 @@ const CARD_GROUP_COLUMNS = [
   ]
 ]
 
-const CHART_CONFIGS = [
-  {
-    title: '各部门在职人数',
-    load: getOrgWorkNum,
-    config: { label: 'orgName', value: 'workNum' }
-  },
-  {
-    title: '各部门入职人数',
-    load: getOrgWorkNum,
-    config: { label: 'orgName', value: 'workNum' }
-  },
-  {
-    title: '各部门离职人数',
-    config: { label: 'orgName', value: 'leaveNum' },
-    load: getOrgLeaveNum
-  },
-  {
-    title: '各部门转正人数',
-    config: { label: 'orgName', value: 'formalNum' },
-    load: getOrgFormalNum
-  },
-  {
-    title: '各部门异动人数',
-    config: { label: 'orgName', value: 'changeNum' },
-    load: getOrgChangeNum
-  },
-  {
-    title: '各部门员工进出比率',
-    config: [
-      { name: '入职人数', label: 'orgName', value: 'entryNum' },
-      { name: '离职人数', label: 'orgName', value: 'leaveNum' }
-    ],
-    load: getOrgEntryAndLeave
-  },
-  {
-    title: '各部门员工新进率',
-    config: [
-      { name: '在职人数', label: 'orgName', value: 'workNum' },
-      { name: '入职人数', label: 'orgName', value: 'entryNum' },
-      {
-        name: '月员工新进率',
-        label: 'orgName',
-        value: 'entryRate',
-        type: 'line',
-        yAxisIndex: 1
-      }
-    ],
-    load: getOrgEntryRate
-  },
-  {
-    title: '各月员工离职率',
-    config: [
-      { name: '在职人数', label: 'orgName', value: 'workNum' },
-      { name: '离职人数', label: 'orgName', value: 'leaveNum' },
-      {
-        name: '月员工离职率',
-        label: 'orgName',
-        value: 'leaveRate',
-        type: 'line',
-        yAxisIndex: 1
-      }
-    ],
-    load: getOrgLeaveRate
-  }
-]
-
 export default {
   name: 'StatisticalPane',
   components: {
@@ -192,33 +126,125 @@ export default {
     return {
       cardGroupColumns: _.cloneDeep(CARD_GROUP_COLUMNS),
       cardGroupData: {},
-      searchParams: {},
       treeSelectConfig: _.cloneDeep(TREE_SELECT_CONFIG)
     }
   },
+  inject: ['searchParams'],
   computed: {
-    chartConfigs: () => CHART_CONFIGS,
-    getOrgChangeNum: () => getOrgChangeNum,
-    getOrgEntryAndLeave: () => getOrgEntryAndLeave,
-    getOrgEntryNum: () => getOrgEntryNum,
-    getOrgEntryRate: () => getOrgEntryRate,
-    getOrgFormalNum: () => getOrgFormalNum,
-    getOrgLeaveNum: () => getOrgLeaveNum,
-    getOrgLeaveRate: () => getOrgLeaveRate,
-    getOrgWorkNum: () => getOrgWorkNum,
-    getStatChangeNum: () => getStatChangeNum,
-    getStatEntryNum: () => getStatEntryNum,
-    getStatFormalNum: () => getStatFormalNum,
-    getStatLeaveNum: () => getStatLeaveNum,
-    getStatLeaveReason: () => getStatLeaveReason,
-    getStatWorkNum: () => getStatWorkNum
+    chartConfigs() {
+      return [
+        {
+          title: '各部门在职人数',
+          load: this.getOrgWorkNum,
+          config: { label: 'orgName', value: 'workNum' }
+        },
+        {
+          title: '各部门入职人数',
+          load: this.getOrgWorkNum,
+          config: { label: 'orgName', value: 'workNum' }
+        },
+        {
+          title: '各部门离职人数',
+          config: { label: 'orgName', value: 'leaveNum' },
+          load: this.getOrgLeaveNum
+        },
+        {
+          title: '各部门转正人数',
+          config: { label: 'orgName', value: 'formalNum' },
+          load: this.getOrgFormalNum
+        },
+        {
+          title: '各部门异动人数',
+          config: { label: 'orgName', value: 'changeNum' },
+          load: this.getOrgChangeNum
+        },
+        {
+          title: '各部门员工进出比率',
+          config: [
+            { name: '入职人数', label: 'orgName', value: 'entryNum' },
+            { name: '离职人数', label: 'orgName', value: 'leaveNum' }
+          ],
+          load: this.getOrgEntryAndLeave
+        },
+        {
+          title: '各部门员工新进率',
+          config: [
+            { name: '在职人数', label: 'orgName', value: 'workNum' },
+            { name: '入职人数', label: 'orgName', value: 'entryNum' },
+            {
+              name: '月员工新进率',
+              label: 'orgName',
+              value: 'entryRate',
+              type: 'line',
+              yAxisIndex: 1
+            }
+          ],
+          load: this.getOrgEntryRate
+        },
+        {
+          title: '各月员工离职率',
+          config: [
+            { name: '在职人数', label: 'orgName', value: 'workNum' },
+            { name: '离职人数', label: 'orgName', value: 'leaveNum' },
+            {
+              name: '月员工离职率',
+              label: 'orgName',
+              value: 'leaveRate',
+              type: 'line',
+              yAxisIndex: 1
+            }
+          ],
+          load: this.getOrgLeaveRate
+        }
+      ]
+    },
+    getOrgChangeNum() {
+      return async () => await getOrgChangeNum(this._searchParams)
+    },
+    getOrgEntryAndLeave() {
+      return async () => await getOrgEntryAndLeave(this._searchParams)
+    },
+    getOrgEntryNum() {
+      return async () => await getOrgEntryNum(this._searchParams)
+    },
+    getOrgEntryRate() {
+      return async () => await getOrgEntryRate(this._searchParams)
+    },
+    getOrgFormalNum() {
+      return async () => await getOrgFormalNum(this._searchParams)
+    },
+    getOrgLeaveNum() {
+      return async () => await getOrgLeaveNum(this._searchParams)
+    },
+    getOrgLeaveRate() {
+      return async () => await getOrgLeaveRate(this._searchParams)
+    },
+    getOrgWorkNum() {
+      return async () => await getOrgWorkNum(this._searchParams)
+    },
+    getStatChangeNum() {
+      return async () => await getStatChangeNum(this._searchParams)
+    },
+    getStatEntryNum() {
+      return async () => await getStatEntryNum(this._searchParams)
+    },
+    getStatFormalNum() {
+      return async () => await getStatFormalNum(this._searchParams)
+    },
+    getStatLeaveNum() {
+      return async () => await getStatLeaveNum(this._searchParams)
+    },
+    getStatLeaveReason() {
+      return async () => await getStatLeaveReason(this._searchParams)
+    },
+    getStatWorkNum() {
+      return async () => await getStatWorkNum(this._searchParams)
+    },
+    _searchParams() {
+      return this.searchParams
+    }
   },
   methods: {
-    handleSearch(searchParams) {
-      this.searchParams = _.pickBy(searchParams)
-      this.loadPaneData()
-    },
-
     refresh() {
       this.loadPaneData()
     },
@@ -231,11 +257,11 @@ export default {
     // 加载数据接口
     async loadCardGroupData() {
       const datas = await Promise.all([
-        getStatWorkNum(this.searchParams),
-        getStatEntryNum(this.searchParams),
-        getStatLeaveNum(this.searchParams),
-        getStatFormalNum(this.searchParams),
-        getStatChangeNum(this.searchParams)
+        getStatWorkNum(this._searchParams),
+        getStatEntryNum(this._searchParams),
+        getStatLeaveNum(this._searchParams),
+        getStatFormalNum(this._searchParams),
+        getStatChangeNum(this._searchParams)
       ])
       this.cardGroupData = _.assign(...datas)
     }

@@ -20,6 +20,13 @@ export default {
       type: String,
       default: ''
     },
+    config: {
+      type: Object,
+      default: () => ({
+        label: 'sex',
+        value: 'workNum'
+      })
+    },
     load: {
       type: Function,
       default: async () => []
@@ -37,22 +44,24 @@ export default {
      */
     opts() {
       const { data } = this
+      const cfg = this.config
       let maxData = 0
       let manNum = 0
       let womanNum = 0
       let unknownNum = 0
       data.map((item) => {
-        maxData += item.workNum
-        if (item.sex === -1) {
-          unknownNum = item.workNum
+        maxData += item[cfg.value]
+        if (item[cfg.label] === -1) {
+          unknownNum = item[cfg.value]
         }
-        if (item.sex === 0) {
-          womanNum = item.workNum
+        if (item[cfg.label] === 0) {
+          womanNum = item[cfg.value]
         }
-        if (item.sex === 1) {
-          manNum = item.workNum
+        if (item[cfg.label] === 1) {
+          manNum = item[cfg.value]
         }
       })
+
       const copData = [
         {
           value: manNum,

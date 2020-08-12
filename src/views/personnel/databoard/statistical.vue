@@ -71,7 +71,7 @@ const TAB_PANE_ENUMS = {
   recruitment: 'recruitment'
 }
 // DEBUG: 当前页面置于员工概况
-const TAB_ACTIVE_DEFAULT = TAB_PANE_ENUMS.staff
+const TAB_ACTIVE_DEFAULT = TAB_PANE_ENUMS.recruitment
 const TREE_SELECT_CONFIG = {
   selectParams: {
     placeholder: '请选择部门',
@@ -116,6 +116,11 @@ export default {
       tabPane: TAB_ACTIVE_DEFAULT,
       searchParams: {},
       treeSelectConfig: _.cloneDeep(TREE_SELECT_CONFIG)
+    }
+  },
+  provide() {
+    return {
+      searchParams: this.searchParams
     }
   },
   computed: {},
