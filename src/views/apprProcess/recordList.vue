@@ -119,7 +119,7 @@
 <script>
 import { getRecordList, getProcessType } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '../../api/org/org'
-
+import { FormKeysCN } from '@/const/approve'
 const TABLE_COLUMNS = [
   // {
   //   prop: 'expand',
@@ -140,7 +140,10 @@ const TABLE_COLUMNS = [
   {
     label: '申请类型',
     prop: 'formKey',
-    minWidth: 120
+    minWidth: 120,
+    formatter(record) {
+      return FormKeysCN[record.formKey] || ''
+    }
   },
   {
     label: '申请部门',
@@ -243,14 +246,11 @@ const SEARCH_CONFIG = {
       data: '',
       label: '申请日期',
       field: 'beginApplyTime,endApplyTime',
-      config: { type: 'daterange', 'range-separator': '至' }
-    },
-    {
-      type: 'dataPicker',
-      data: '',
-      label: '完成日期',
-      field: 'beginCompleteTime,endCompleteTime',
-      config: { type: 'daterange', 'range-separator': '至' }
+      config: {
+        type: 'datetimerange',
+        'range-separator': '至',
+        'value-format': 'yyyy-MM-dd HH:mm:ss'
+      }
     }
   ]
 }
@@ -371,7 +371,7 @@ export default {
       this.loadTableData()
     },
     handlePageSizeChange(pageSize) {
-      this.page.pageSize = pageSize
+      this.page.size = pageSize
       this.loadTableData()
     },
     handleSearch(searchParams) {
@@ -421,7 +421,7 @@ export default {
         this.tableLoading = true
         const page = {
           pageNo: this.page.currentPage,
-          pageSize: this.page.pageSize
+          pageSize: this.page.size
         }
         const { data, totalNum } = await getRecordList(_.assign(null, page, params))
         this.tableData = data
