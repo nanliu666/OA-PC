@@ -68,6 +68,72 @@ import ChartBar from './ChartBar'
 import ChartSkeleton from './ChartSkeleton'
 import LazySkeleton from '@/components/lazy-skeleton/LazySkeleton'
 
+const CHART_CONFIGS = [
+  {
+    title: '各部门在职人数',
+    load: getOrgWorkNum,
+    config: { label: 'orgName', value: 'workNum' }
+  },
+  {
+    title: '各部门入职人数',
+    load: getOrgEntryNum,
+    config: { label: 'orgName', value: 'entryNum' }
+  },
+  {
+    title: '各部门离职人数',
+    config: { label: 'orgName', value: 'leaveNum' },
+    load: getOrgLeaveNum
+  },
+  {
+    title: '各部门转正人数',
+    config: { label: 'orgName', value: 'formalNum' },
+    load: getOrgFormalNum
+  },
+  {
+    title: '各部门异动人数',
+    config: { label: 'orgName', value: 'changeNum' },
+    load: getOrgChangeNum
+  },
+  {
+    title: '各部门员工进出比率',
+    config: [
+      { name: '入职人数', label: 'orgName', value: 'entryNum' },
+      { name: '离职人数', label: 'orgName', value: 'leaveNum' }
+    ],
+    load: getOrgEntryAndLeave
+  },
+  {
+    title: '各部门员工新进率',
+    config: [
+      { name: '在职人数', label: 'orgName', value: 'workNum' },
+      { name: '入职人数', label: 'orgName', value: 'entryNum' },
+      {
+        name: '月员工新进率',
+        label: 'orgName',
+        value: 'entryRate',
+        type: 'line',
+        yAxisIndex: 1
+      }
+    ],
+    load: getOrgEntryRate
+  },
+  {
+    title: '各月员工离职率',
+    config: [
+      { name: '在职人数', label: 'orgName', value: 'workNum' },
+      { name: '离职人数', label: 'orgName', value: 'leaveNum' },
+      {
+        name: '月员工离职率',
+        label: 'orgName',
+        value: 'leaveRate',
+        type: 'line',
+        yAxisIndex: 1
+      }
+    ],
+    load: getOrgLeaveRate
+  }
+]
+
 const TREE_SELECT_CONFIG = {
   selectParams: {
     placeholder: '请选择部门',
@@ -132,113 +198,13 @@ export default {
   inject: ['searchParams'],
   computed: {
     chartConfigs() {
-      return [
-        {
-          title: '各部门在职人数',
-          load: this.getOrgWorkNum,
-          config: { label: 'orgName', value: 'workNum' }
-        },
-        {
-          title: '各部门入职人数',
-          load: this.getOrgWorkNum,
-          config: { label: 'orgName', value: 'workNum' }
-        },
-        {
-          title: '各部门离职人数',
-          config: { label: 'orgName', value: 'leaveNum' },
-          load: this.getOrgLeaveNum
-        },
-        {
-          title: '各部门转正人数',
-          config: { label: 'orgName', value: 'formalNum' },
-          load: this.getOrgFormalNum
-        },
-        {
-          title: '各部门异动人数',
-          config: { label: 'orgName', value: 'changeNum' },
-          load: this.getOrgChangeNum
-        },
-        {
-          title: '各部门员工进出比率',
-          config: [
-            { name: '入职人数', label: 'orgName', value: 'entryNum' },
-            { name: '离职人数', label: 'orgName', value: 'leaveNum' }
-          ],
-          load: this.getOrgEntryAndLeave
-        },
-        {
-          title: '各部门员工新进率',
-          config: [
-            { name: '在职人数', label: 'orgName', value: 'workNum' },
-            { name: '入职人数', label: 'orgName', value: 'entryNum' },
-            {
-              name: '月员工新进率',
-              label: 'orgName',
-              value: 'entryRate',
-              type: 'line',
-              yAxisIndex: 1
-            }
-          ],
-          load: this.getOrgEntryRate
-        },
-        {
-          title: '各月员工离职率',
-          config: [
-            { name: '在职人数', label: 'orgName', value: 'workNum' },
-            { name: '离职人数', label: 'orgName', value: 'leaveNum' },
-            {
-              name: '月员工离职率',
-              label: 'orgName',
-              value: 'leaveRate',
-              type: 'line',
-              yAxisIndex: 1
-            }
-          ],
-          load: this.getOrgLeaveRate
-        }
-      ]
-    },
-    getOrgChangeNum() {
-      return async () => await getOrgChangeNum(this._searchParams)
-    },
-    getOrgEntryAndLeave() {
-      return async () => await getOrgEntryAndLeave(this._searchParams)
-    },
-    getOrgEntryNum() {
-      return async () => await getOrgEntryNum(this._searchParams)
-    },
-    getOrgEntryRate() {
-      return async () => await getOrgEntryRate(this._searchParams)
-    },
-    getOrgFormalNum() {
-      return async () => await getOrgFormalNum(this._searchParams)
-    },
-    getOrgLeaveNum() {
-      return async () => await getOrgLeaveNum(this._searchParams)
-    },
-    getOrgLeaveRate() {
-      return async () => await getOrgLeaveRate(this._searchParams)
-    },
-    getOrgWorkNum() {
-      return async () => await getOrgWorkNum(this._searchParams)
-    },
-    getStatChangeNum() {
-      return async () => await getStatChangeNum(this._searchParams)
-    },
-    getStatEntryNum() {
-      return async () => await getStatEntryNum(this._searchParams)
-    },
-    getStatFormalNum() {
-      return async () => await getStatFormalNum(this._searchParams)
-    },
-    getStatLeaveNum() {
-      return async () => await getStatLeaveNum(this._searchParams)
+      return _.map(CHART_CONFIGS, (cfg) => ({
+        ...cfg,
+        load: async (params) => await cfg.load({ ...this._searchParams, ...params })
+      }))
     },
     getStatLeaveReason() {
-      return async () => await getStatLeaveReason(this._searchParams)
-    },
-    getStatWorkNum() {
-      return async () => await getStatWorkNum(this._searchParams)
+      return async (params) => await getStatLeaveReason({ ...this._searchParams, ...params })
     },
     _searchParams() {
       return this.searchParams
