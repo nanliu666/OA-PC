@@ -651,11 +651,11 @@ export default {
             return it
           }
         })
-        this.progressRecord = val.filter((it) => {
-          if (it.type !== 'copy') {
-            return it
-          }
-        })
+        // this.progressRecord = val.filter((it) => {
+        //   if (it.type !== 'copy') {
+        //     return it
+        //   }
+        // })
       },
       deep: true
     }
@@ -788,6 +788,12 @@ export default {
           }
         })
       // this./**/
+      nodeData.length > 0 &&
+        (nodeData = nodeData.filter((it) => {
+          if (it.type !== 'copy') {
+            return it
+          }
+        }))
       this.progressRecord = nodeData
     },
     goBack() {
