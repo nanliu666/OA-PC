@@ -851,7 +851,7 @@ const res = {
           },
           {
             menuId: '1590112075691322',
-            menuName: '发起审批',
+            menuName: '发起申请',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,
