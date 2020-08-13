@@ -54,7 +54,22 @@ export default {
   props: {
     colors: {
       type: Array,
-      default: () => ['#207EFA', '#4A9EFF', '#33CD66', '#83E69D']
+      default: () => [
+        '#19314d',
+        '#2d5686',
+        '#115FD4',
+        '#207EFA',
+        '#4A9EFF',
+        '#73B9FF',
+        '#9CD1FF',
+        '#C4E6FF',
+        '#194d26',
+        '#2d8644',
+        '#40bf61',
+        '#33CD66',
+        '#83E69D',
+        '#b3e6c0'
+      ]
     },
     config: {
       type: [Array, Object],

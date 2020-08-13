@@ -4,6 +4,12 @@
     v-loading="loading"
     class="ChartFunnel container"
   >
+    <span
+      v-show="_.isEmpty(_.get(opts.series, '[0].data'))"
+      class="msg__nodata"
+    >
+      没有数据
+    </span>
     <div
       ref="container"
       class="container__chart"
@@ -71,10 +77,11 @@ const CHART_CONFIG_DEFAULT = {
 export default {
   name: 'ChartFunnel',
   filters: {
-    dataFormatter(data) {
+    dataFilter(data, excludes) {
       // 过滤其中人数为0的项
       return _(data)
         .filter(({ value }) => value)
+        .reject(({ name }) => _.includes(excludes, name))
         .value()
     }
   },
@@ -104,6 +111,14 @@ export default {
     config: {
       type: [Array, Object],
       default: () => ({ label: 'label', value: 'value' })
+    },
+    excludes: {
+      type: Array,
+      default: null
+    },
+    subtext: {
+      type: [Function, String],
+      default: ''
     },
     sort: {
       type: String,
@@ -145,7 +160,8 @@ export default {
       let res = {}
       if (this.title) {
         res.title = {
-          text: this.title
+          text: this.title,
+          subtext: this.resolveSubtext()
         }
       }
       res.series = _.map(config, (cfg) => ({
@@ -201,13 +217,14 @@ export default {
             fontSize: 20
           }
         },
-        data: this.$options.filters.dataFormatter(
+        data: this.$options.filters.dataFilter(
           _.map(data, (item) => ({
             value: item[cfg.value],
             name: cfg.dictKey
               ? this.translator({ value: item[cfg.label], dictKey: cfg.dictKey })
               : item[cfg.label]
-          }))
+          })),
+          this.excludes
         )
       }))
       res.color = this.colors
@@ -241,6 +258,11 @@ export default {
           this.data = data
         })
         .finally(() => (this.loading = false))
+    },
+
+    // 处理subtext
+    resolveSubtext() {
+      return _.isFunction(this.subtext) ? this.subtext(this.data) : this.subtext
     },
 
     // 翻译字典
@@ -294,4 +316,13 @@ export default {
 
 <style lang="sass" scoped>
 @import "~@/views/personnel/databoard/components/styles/chartCommon"
+.ChartFunnel
+  position: relative
+  .msg__nodata
+    position: absolute
+    right: 50%
+    top: 50%
+    transform: translate(-50%, -50%)
+    font-size: 2rem
+    color: gray
 </style>
