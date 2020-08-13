@@ -287,23 +287,7 @@ export default {
       //     "flowKey": "UserFormalInfo", // 流程的标识
       //     "flowCategory": "leave"，    // 流程分类
       // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
-      let emptyList = []
-      this.base.map((it) => {
-        if (it.type === 'empty') {
-          emptyList.push(it)
-        }
-      })
-      // this.base = this.base.filter(it => it.type !=='empty')
-      emptyList.map((it) => {
-        if (param.processData.childNode) {
-          it.prevId =
-            param.processData.childNode.nodeId === it.id
-              ? param.processData.childNode.prevId
-              : this.prevId_(param.processData, it.id)
-        }
-      })
 
-      // console.log(emptyList)
       let params = {
         processId: this.$route.query.processId,
         processData: this.base,
@@ -325,23 +309,7 @@ export default {
       //   this.$message.success('提交成功')
       // })
     },
-    prevId_(data, id) {
-      let priv = []
-      this.prevId(data, id, priv)
-      return priv[0]
-    },
-    prevId(data, id, priv) {
-      if (data.nodeId === id) {
-        priv.push('gateway_' + data.prevId)
-      } else {
-        if (hasBranch(data)) {
-          data.conditionNodes.map((d) => {
-            this.prevId(d, id, priv)
-          })
-        }
-        data.childNode && this.prevId(data.childNode, id, priv)
-      }
-    },
+
     resfun(data) {
       let endChild = this.childNode(data)
       // let istrue = hasBranch(endChild)
@@ -463,7 +431,7 @@ export default {
           }
 
           this.condition.push(newIt)
-        } else {
+        } else if (data.type !== 'empty') {
           let newIt = {
             //进网关线
             type: 'flow',
