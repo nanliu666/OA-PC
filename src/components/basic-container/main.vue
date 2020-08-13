@@ -3,7 +3,7 @@
     class="basic-container"
     :class="{ 'basic-container--block': block }"
   >
-    <el-card>
+    <el-card shadow="never">
       <slot />
     </el-card>
   </div>

@@ -36,7 +36,7 @@
                   class="operations__btns--item"
                   size="mini"
                   type="text"
-                  @click="refreshTableData"
+                  @click="loadTableData"
                 >
                   <i class="iconfont iconicon_refresh" />
                 </el-button>
@@ -57,7 +57,6 @@
                     class="operations__btns--item"
                     size="mini"
                     type="text"
-                    @click="loadTableData"
                   >
                     <i class="iconfont iconicon_setting" />
                   </el-button>
