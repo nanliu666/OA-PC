@@ -266,6 +266,17 @@ const SEARCH_CONFIG = {
         'range-separator': '至',
         'value-format': 'yyyy-MM-dd HH:mm:ss'
       }
+    },
+    {
+      type: 'dataPicker',
+      data: '',
+      label: '完成日期',
+      field: 'beginCompleteTime,endCompleteTime',
+      config: {
+        type: 'datetimerange',
+        'range-separator': '至',
+        'value-format': 'yyyy-MM-dd HH:mm:ss'
+      }
     }
   ]
 }
@@ -394,6 +405,7 @@ export default {
     },
     handleSearch(searchParams) {
       this.searchParams = _.pickBy(searchParams)
+      this.page.currentPage = 1
       this.loadTableData()
     },
 
