@@ -589,11 +589,11 @@ export default {
   }
 }
 .basic-container--block {
+  margin-top: 24px;
   height: calc(100% - 48px);
   min-height: calc(100% - 48px);
 }
 .approval-index-style {
-  margin-top: 24px;
   .index-header-box {
     @include flexJustify;
     @include flexAlign;

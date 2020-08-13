@@ -146,11 +146,9 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
 .basic-container--block {
+  margin-top: 24px;
   height: calc(100% - 48px);
   min-height: calc(100% - 48px);
-}
-.launch-style {
-  margin-top: 24px;
 }
 .approval-ul {
   padding-bottom: 15px;
