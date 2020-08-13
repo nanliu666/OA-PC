@@ -195,12 +195,18 @@ const CHART_PIE_CONFIGS = [
   {
     title: '工作性质分布',
     load: getUserWorkProperty,
-    config: { label: 'workProperty', value: 'workNum', dictKey: 'WorkProperty' }
+    config: { label: 'workProperty', value: 'workNum', dictKey: 'WorkProperty' },
+    excludes: ['-1'],
+    subtext: (datas) =>
+      `未填写工作性质${_.get(_.find(datas, { workProperty: '-1' }), 'workNum', 0)}人`
   },
   {
     title: '岗位类型分布',
     load: getUserPosition,
-    config: { label: 'positionName', value: 'workNum' }
+    config: { label: 'positionName', value: 'workNum' },
+    excludes: [''],
+    subtext: (datas) =>
+      `未填写岗位类型${_.get(_.find(datas, { positionName: '' }), 'workNum', 0)}人`
   },
   // section-3
   {
