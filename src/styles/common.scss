@@ -91,6 +91,11 @@ ul {
 .fill {
   height: 100%;
 }
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .avue-icon-select__item {
   color: #757c85;
