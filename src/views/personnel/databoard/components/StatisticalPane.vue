@@ -210,6 +210,9 @@ export default {
       return this.searchParams
     }
   },
+  created() {
+    this.refresh()
+  },
   methods: {
     refresh() {
       this.loadPaneData()
