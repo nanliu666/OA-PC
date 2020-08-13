@@ -21,7 +21,7 @@
 
 <script>
 import echarts from 'echarts'
-import { getProvinceByName, getProvinceDataByName } from './provinceMappings'
+import { getProvinceDataByName } from './provinceMappings'
 
 // 超过多少人的时候显示 (省份/市) 的label
 const SHOW_WHEN_VALUE_OVER = 10
@@ -184,14 +184,17 @@ export default {
       })
     },
 
-    async loadData() {
+    async loadData({ provinceCode } = {}) {
       try {
-        const { provinceCode } = getProvinceByName(this.mapName)
+        // const { provinceCode } = getProvinceByName(this.mapName)
         this.loading = true
         const data = await this.load[this.isProvince ? 0 : 1](
           this.isProvince ? null : { provinceCode }
         )
-        this.data = data
+        this.data = _.map(data, (d) => ({
+          ...d,
+          provinceName: _.trimEnd(d.provinceName, '省')
+        }))
       } catch (error) {
         this.$message.error(error.message)
       } finally {

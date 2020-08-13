@@ -346,7 +346,7 @@ export default {
       const { name } = e
       if (map.isProvince) {
         map.loadMap(name)
-        map.loadData()
+        map.loadData(_.get(e, 'data.$_item', {}))
       }
     },
     // DEBUG:

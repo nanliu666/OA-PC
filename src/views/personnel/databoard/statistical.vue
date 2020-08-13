@@ -74,7 +74,7 @@ const TAB_PANE_ENUMS = {
   staff: 'staff',
   recruitment: 'recruitment'
 }
-const TAB_ACTIVE_DEFAULT = TAB_PANE_ENUMS.staff
+const TAB_ACTIVE_DEFAULT = TAB_PANE_ENUMS.statistical
 
 const TREE_SELECT_CONFIG = {
   selectParams: {

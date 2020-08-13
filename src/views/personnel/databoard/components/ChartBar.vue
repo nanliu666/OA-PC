@@ -35,7 +35,8 @@ const CHART_CONFIG_DEFAULT = {
     data: [],
     axisLabel: {
       color: '#202940'
-    }
+    },
+    axisLine: { show: true }
   },
   yAxis: [
     {
@@ -44,7 +45,7 @@ const CHART_CONFIG_DEFAULT = {
         color: '#757C85',
         fontSize: 16
       },
-      minInterval: '1',
+      // minInterval: '1',
       axisLine: { show: false },
       axisTick: { show: false }
     },
@@ -52,6 +53,7 @@ const CHART_CONFIG_DEFAULT = {
       type: 'value',
       min: 0,
       max: 100,
+      interval: 100,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
