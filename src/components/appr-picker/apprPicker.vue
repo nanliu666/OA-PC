@@ -294,7 +294,7 @@ export default {
         // 注意sort是为了将节点按上下顺序排序
         let children = $el.$children
           .filter((item) => item.$options.name === 'ApprPickerItem')
-          .sort((a, b) => a.path > b.path)
+          .sort((a, b) => (a.path > b.path ? 1 : -1))
         children.forEach((child) => loop(child))
       }
       loop(this.$refs.apprPickerItem)
