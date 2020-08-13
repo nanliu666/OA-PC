@@ -1,5 +1,8 @@
 <template>
-  <div class="page">
+  <div
+    v-loading="loading"
+    class="page"
+  >
     <header class="page__header">
       <div class="page-actions">
         <div
@@ -287,7 +290,44 @@ export default {
       //     "flowKey": "UserFormalInfo", // 流程的标识
       //     "flowCategory": "leave"，    // 流程分类
       // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
+      let emptyList = []
+      this.base.map((it) => {
+        if (it.type === 'empty') {
+          emptyList.push(it)
+        }
+      })
 
+      let emptyRelation = []
+      if (emptyList.length > 0) {
+        emptyList.map((it) => {
+          if (param.processData.childNode) {
+            it.prevId =
+              param.processData.childNode.nodeId === it.id
+                ? param.processData.childNode.prevId
+                : this.prevId_(param.processData, it.id)
+          }
+          this.base.map((item) => {
+            if (it.id === item.source || it.id === item.target) {
+              emptyRelation.push(item)
+            }
+          })
+        })
+        emptyRelation.map((it) => {
+          if (it.source)
+            emptyList.map((item) => {
+              if (it.source == item.id) {
+                it.source = item.prevId
+              }
+              if (it.target === item.id) {
+                it.target = 'gateway_' + item.id
+              }
+              this.base.map((i) => {
+                i
+              })
+            })
+        })
+        // this.base = this.base.filter(it => it.type !=='empty')
+      }
       let params = {
         processId: this.$route.query.processId,
         processData: this.base,
@@ -297,14 +337,19 @@ export default {
       }
       // eslint-disable-next-line
       let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
-      ApprProcess(params).then(() => {
-        this.$message.success('提交成功')
-        setTimeout(() => {
-          this.$router.push({
-            path: '/apprProcess/approvalList'
-          })
-        }, 1000)
-      })
+      this.loading = true
+      ApprProcess(params)
+        .then(() => {
+          this.$message.success('提交成功')
+          setTimeout(() => {
+            this.$router.push({
+              path: '/apprProcess/approvalList'
+            })
+          }, 1000)
+        })
+        .finally(() => {
+          this.loading = false
+        })
       // postDeploy(params).then(() => {
       //   this.$message.success('提交成功')
       // })
