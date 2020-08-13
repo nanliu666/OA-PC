@@ -105,10 +105,15 @@ export default {
     BasicSetting,
     AdvancedSetting
   },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       base: [],
-      title: null,
       lineList: [],
       condition: [],
       endNode: [],
@@ -251,8 +256,8 @@ export default {
           }
           processVisible.push({
             type: type,
-            bizId: '',
-            bizName: ''
+            bizId: it.userId || it.orgId,
+            bizName: it.name || it.orgName
           })
         })
       } else {
@@ -282,6 +287,23 @@ export default {
       //     "flowKey": "UserFormalInfo", // 流程的标识
       //     "flowCategory": "leave"，    // 流程分类
       // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
+      let emptyList = []
+      this.base.map((it) => {
+        if (it.type === 'empty') {
+          emptyList.push(it)
+        }
+      })
+      // this.base = this.base.filter(it => it.type !=='empty')
+      emptyList.map((it) => {
+        if (param.processData.childNode) {
+          it.prevId =
+            param.processData.childNode.nodeId === it.id
+              ? param.processData.childNode.prevId
+              : this.prevId_(param.processData, it.id)
+        }
+      })
+
+      // console.log(emptyList)
       let params = {
         processId: this.$route.query.processId,
         processData: this.base,
@@ -290,7 +312,6 @@ export default {
         ...config
       }
       // eslint-disable-next-line
-      console.log(JSON.stringify(param))
       let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
       ApprProcess(params).then(() => {
         this.$message.success('提交成功')
@@ -303,6 +324,23 @@ export default {
       // postDeploy(params).then(() => {
       //   this.$message.success('提交成功')
       // })
+    },
+    prevId_(data, id) {
+      let priv = []
+      this.prevId(data, id, priv)
+      return priv[0]
+    },
+    prevId(data, id, priv) {
+      if (data.nodeId === id) {
+        priv.push('gateway_' + data.prevId)
+      } else {
+        if (hasBranch(data)) {
+          data.conditionNodes.map((d) => {
+            this.prevId(d, id, priv)
+          })
+        }
+        data.childNode && this.prevId(data.childNode, id, priv)
+      }
     },
     resfun(data) {
       let endChild = this.childNode(data)
@@ -331,7 +369,8 @@ export default {
         start: 'start', //开始节点
         approver: 'task', //审批人节点
         copy: 'ccTask', // 发送人节点
-        condition: 'flow' //条件节点
+        condition: 'flow', //条件节点
+        empty: 'empty'
       }
       let item = {
         // 处理节点（重新定义节点）
@@ -478,8 +517,6 @@ export default {
           } else {
             let newIt = {
               //出网关线
-              type: 'flow',
-              id: 'gateway_' + data.nodeId + d.nodeId + targetId,
               name: d.properties.title,
               source: 'gateway_' + data.nodeId, //前节点
               target: targetId, // 当前节点

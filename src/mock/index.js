@@ -34,7 +34,8 @@ import apprProcess from './apprProcess'
 import process from './process'
 
 import mailList from './mailList'
-
+import newCenter from './newsCenter'
+import noticeCenter from './noticeCenter'
 /**
  * 模拟数据mock
  *
@@ -46,11 +47,12 @@ const options = { mock: false }
 Mock.setup({
   timeout: 500
 })
-
+newCenter({ mock: true })
+noticeCenter({ mock: true })
 user(options)
 
 apprProcess(options)
-menu(options)
+menu({ mock: true })
 apprProcess(options)
 
 interview(options)
@@ -93,4 +95,3 @@ remind(options)
 process(options)
 
 mailList(options)
-
