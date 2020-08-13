@@ -98,7 +98,7 @@ export default {
       userOrgList: [],
       fullOrgId: null,
       rules: {
-        approver: [{ required: true, validator: checkAppr }]
+        approver: [{ required: true, validator: checkAppr, trigger: 'change' }]
       }
     }
   },

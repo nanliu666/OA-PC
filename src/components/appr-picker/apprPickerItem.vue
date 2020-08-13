@@ -92,9 +92,11 @@
 
 <script>
 // import pickUser from '@/components/appr-progress/userPicker.js'
+import elFormEmitter from '@/mixins/elFormEmitter'
 
 export default {
   name: 'ApprPickerItem',
+  mixins: [elFormEmitter],
   props: {
     formData: {
       type: Object,
@@ -218,6 +220,7 @@ export default {
                 this.data = { noData: true }
               }
               !this.data.noData && !this.data.userList && this.initUserList(this.data)
+              this.dispatch('ElFormItem', 'el.form.change')
             }
             return flag
           })
@@ -246,6 +249,7 @@ export default {
     },
     handleSelect(data) {
       this.data.userList.push(data)
+      this.dispatch('ElFormItem', 'el.form.change')
     },
     // pickUser(userList) {
     //   pickUser(userList, {
@@ -256,6 +260,7 @@ export default {
     // },
     deleteUser(index) {
       this.data.userList.splice(index, 1)
+      this.dispatch('ElFormItem', 'el.form.change')
     },
     checkUserSelected(user) {
       return !!_.find(this.data.userList, (item) => item.id === user.id)

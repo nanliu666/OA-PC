@@ -181,17 +181,17 @@ export default {
         if (config.required) {
           const required = {
             required: config.required,
-            message: cur.placeholder + config.label
+            message: null,
+            trigger: null
           }
           if (Array.isArray(config.defaultValue) && config.type !== 'daterange') {
             required.type = 'array'
             required.message = `请至少选择一个${config.label}`
           }
-          // 日期区间config的placeholder为空，所以单独定义message
-          if (config.type === 'daterange') {
-            required.message = '请选择' + config.label
-          }
           required.trigger = ruleTrigger[cur.__pc__.tag] || 'input'
+          if (!required.message) {
+            required.message = (required.trigger === 'change' ? '请选择' : '请输入') + config.label
+          }
           rules[cur.__vModel__] = required
         }
       })

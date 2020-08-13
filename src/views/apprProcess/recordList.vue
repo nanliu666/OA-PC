@@ -89,16 +89,14 @@
         <template #apprNo="{row}">
           <span
             class="table__link"
-            @click="() => handleLinkApprNoClick(row)"
-          >{{
-            row.apprNo
-          }}</span>
+            @click="() => jumpToDetail(row)"
+          >{{ row.apprNo }}</span>
         </template>
 
         <template #handler="{row}">
           <el-button
             type="text"
-            @click="() => handleViewBtnClick(row)"
+            @click="() => jumpToDetail(row)"
           >
             查看
           </el-button>
@@ -379,7 +377,7 @@ export default {
       return STATUS_TO_TEXT[status]
     },
     // 处理跳转
-    handleLinkApprNoClick(row) {
+    jumpToDetail(row) {
       this.$router.push({
         path: '/apprProcess/apprDetail',
         query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
@@ -397,12 +395,6 @@ export default {
     handleSearch(searchParams) {
       this.searchParams = _.pickBy(searchParams)
       this.loadTableData()
-    },
-    handleViewBtnClick(row) {
-      this.$router.push({
-        path: '/approval/appr/apprDetail',
-        query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
-      })
     },
 
     refresh() {
