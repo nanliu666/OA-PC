@@ -78,14 +78,19 @@
       v-if="data && (data.childNode || data.conditionNodes)"
       :path="`${path}-0`"
       :child-node="data.childNode"
+      :type="data.type"
       :form-data="formData"
       :full-org-id="fullOrgId"
       :condition-nodes="data.conditionNodes"
     />
     <appr-picker-item
       v-if="nextNode"
+      :form-data="formData"
       :path="`${path}-1`"
-      :child-node="nextNode"
+      :full-org-id="fullOrgId"
+      :child-node="nextNode.childNode"
+      :condition-nodes="nextNode.conditionNodes"
+      :type="nextNode.type"
     />
   </div>
 </template>
@@ -116,6 +121,10 @@ export default {
     },
     // 当前用户所选组织全路径
     fullOrgId: {
+      type: String,
+      default: null
+    },
+    type: {
       type: String,
       default: null
     }
@@ -173,7 +182,11 @@ export default {
   },
   created() {
     if (!_.isEmpty(this.conditionNodes)) {
-      this.nextNode = this.childNode
+      if (this.childNode && this.childNode.type !== 'empty') {
+        this.nextNode = { childNode: this.childNode, type: this.childNode.type }
+      } else {
+        this.nextNode = this.childNode
+      }
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
         function() {
@@ -203,6 +216,7 @@ export default {
             })
             if (!_.isEmpty(node.properties.initiator)) {
               flag =
+                flag !== false &&
                 this.fullOrgId &&
                 node.properties.initiator.some((item) =>
                   _.includes(this.fullOrgId.split('.'), item.orgId)
@@ -210,17 +224,15 @@ export default {
               this.noMatchOrg = !flag
             }
             if (flag) {
-              this.data = node.childNode || { conditionNodes: node.conditionNodes }
               // 当这个节点只有条件没有内容时设置noData为true
               if (node.childNode) {
                 this.data = { ...node.childNode, noData: false }
               } else if (node.conditionNodes) {
-                this.data = { noData: true, conditionNodes: node.conditionNodes }
+                this.data = { noData: true, conditionNodes: node.conditionNodes, type: node.type }
               } else {
-                this.data = { noData: true }
+                this.data = { noData: true, type: node.type }
               }
               !this.data.noData && !this.data.userList && this.initUserList(this.data)
-              this.dispatch('ElFormItem', 'el.form.change')
             }
             return flag
           })

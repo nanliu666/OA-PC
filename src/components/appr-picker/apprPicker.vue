@@ -39,6 +39,7 @@
           ref="apprPickerItem"
           path="0"
           :form-data="formData"
+          :type="processData.type"
           :child-node="processData.childNode"
           :condition-nodes="processData.conditionNodes"
           :full-org-id="fullOrgId"
@@ -166,7 +167,7 @@ export default {
       return submitApprApply({
         ...data,
         formData: JSON.stringify(data.formData),
-        title: `${this.userInfo.nick_name}发起的${data.processName}审批`,
+        title: `${this.userInfo.nick_name}发起的${data.processName}`,
         userId: this.userId,
         processMap: Object.assign(
           {},
