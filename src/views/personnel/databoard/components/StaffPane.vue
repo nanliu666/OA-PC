@@ -343,7 +343,7 @@ export default {
     },
     // 招聘概况只对日期进行查询
     _searchParams() {
-      return _.pick(this.searchParams, 'orgId')
+      return _.pick(this.searchParams(), 'orgId')
     }
   },
   methods: {

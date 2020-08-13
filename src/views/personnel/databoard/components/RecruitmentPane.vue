@@ -290,7 +290,7 @@ export default {
       }
     },
     _searchParams() {
-      return _.pick(this.searchParams, 'qryMonth')
+      return _.pick(this.searchParams(), 'qryMonth')
     }
   },
   methods: {

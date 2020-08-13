@@ -117,7 +117,7 @@ export default {
   },
   provide() {
     return {
-      searchParams: this.searchParams
+      searchParams: () => this.searchParams
     }
   },
   computed: {
