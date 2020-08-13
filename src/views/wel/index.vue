@@ -8,11 +8,13 @@
       <workArea />
       <taskCenterCard />
       <scheduleCard />
+      <noticeAndNews />
     </div>
   </div>
 </template>
 
 <script>
+import noticeAndNews from './noticeAndNews'
 import infoViewArea from './InfoViewArea'
 import workArea from './workArea'
 import taskCenterCard from './taskCenterCard'
@@ -21,6 +23,7 @@ export default {
   name: 'Wel',
   components: {
     infoViewArea,
+    noticeAndNews,
     workArea,
     taskCenterCard,
     scheduleCard
