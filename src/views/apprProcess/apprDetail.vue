@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading">
     <page-header
-      :title="`${applyDetail.title}申请`"
+      :title="`${applyDetail.processName}`"
       show-back
       :back="goBack"
     />
@@ -648,6 +648,11 @@ export default {
         val && (this.recordlist = JSON.parse(JSON.stringify(val)).reverse())
         this.recordlist = this.recordlist.filter((it) => {
           if (it.type === 'start' || it.approveList) {
+            return it
+          }
+        })
+        this.progressRecord = val.filter((it) => {
+          if (it.type !== 'copy') {
             return it
           }
         })
