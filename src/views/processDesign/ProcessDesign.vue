@@ -526,7 +526,7 @@ export default {
           conditionExpression = conditionExpression.join('&&')
           conditionExpression = conditionExpression.replace(/}&&\${/g, ' and ')
           conditionExpression =
-            conditionExpression.slice(0, -1) + '(' + strs + ')' + conditionExpression.slice(-1)
+            conditionExpression.slice(0, -1) + ' and (' + strs + ')' + conditionExpression.slice(-1)
 
           // this.processMap[conditionExpression] = ''
           // if(d.properties.conditions)
