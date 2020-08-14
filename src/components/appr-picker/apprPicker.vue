@@ -31,11 +31,7 @@
         <!--如果第一级条件存在发起人时，需要校验是否选择了当前部门-->
         <appr-picker-item
           v-if="processData"
-          v-show="
-            conditonHasInitiator
-              ? !noMatchOrg() && conditionFieldsFullfilled
-              : conditionFieldsFullfilled
-          "
+          v-show="!processErrored && processFullfilled"
           ref="apprPickerItem"
           path="0"
           :form-data="formData"
@@ -44,17 +40,12 @@
           :condition-nodes="processData.conditionNodes"
           :full-org-id="fullOrgId"
           :is-first="true"
+          @hook:mounted="checkFullfilled"
         />
-        <div
-          v-if="
-            conditonHasInitiator
-              ? !fullOrgId || !conditionFieldsFullfilled
-              : !conditionFieldsFullfilled
-          "
-        >
+        <div v-if="!processFullfilled">
           必填信息填写后，流程将自动显示
         </div>
-        <div v-if="fullOrgId && noMatchOrg()">
+        <div v-if="processErrored">
           流程出错：当前条件没有设置审批人，请联系管理员
         </div>
       </el-form-item>
@@ -92,9 +83,9 @@ export default {
       callback()
     }
     return {
-      pickerVisible: false,
       conditonHasInitiator: false,
       conditionFieldsFullfilled: false,
+      conditionFullfiled: false,
       conditionFields: [],
       userOrgList: [],
       fullOrgId: null,
@@ -104,21 +95,37 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'userId'])
+    ...mapGetters(['userInfo', 'userId']),
+    // 流程出错
+    processErrored() {
+      return (this.fullOrgId && this.noMatchOrg) || this.conditonHasInitiator
+        ? this.fullOrgId && this.conditionFieldsFullfilled && !this.conditionFullfiled
+        : this.conditionFieldsFullfilled && !this.conditionFullfiled
+    },
+    // 流程条件是否完善
+    processFullfilled() {
+      return this.conditonHasInitiator
+        ? !!this.fullOrgId && this.conditionFieldsFullfilled
+        : this.conditionFieldsFullfilled
+    }
   },
 
   watch: {
+    fullOrgId() {
+      this.$nextTick(() => {
+        this.noMatchOrg = this.$refs.apprPickerItem && this.$refs.apprPickerItem.noMatchOrg
+      })
+    },
     formData: {
-      handler(val) {
-        // 动态检查条件对应的字段是否全部填写
-        this.conditionFieldsFullfilled = this.getConditionFields(this.processData).every(
-          (field) => !_.isNil(val[field])
-        )
+      handler() {
+        this.checkFullfilled()
       },
       deep: true
     },
     processData: {
       handler(val) {
+        // 动态检查条件对应的字段是否全部填写
+        this.getConditionFields(this.processData)
         // 监听流程数据判断有没有发起人条件，有的话并获取用户所在的组织
         this.conditonHasInitiator = _.get(val, 'conditionNodes', []).some(
           (node) => _.get(node, 'properties.initiator.length') > 0
@@ -146,8 +153,13 @@ export default {
     }
   },
   methods: {
-    noMatchOrg() {
-      return this.$refs.apprPickerItem && this.$refs.apprPickerItem.noMatchOrg
+    checkFullfilled() {
+      this.conditionFieldsFullfilled = this.conditionFields.every(
+        (field) => !_.isNil(this.formData[field])
+      )
+      this.$nextTick(() => {
+        this.conditionFullfiled = this.checkConditionFullfilled()
+      })
     },
     getUserOrgList() {
       getUserOrgList({ userId: this.userId }).then((res) => {
@@ -184,8 +196,8 @@ export default {
       if (this.conditonHasInitiator && !this.fullOrgId) {
         message = '请先选择所在部门'
         valid = false
-      } else if (this.conditonHasInitiator && this.noMatchOrg()) {
-        message = '当前条件没有设置审批人，请联系管理员'
+      } else if (this.processErrored) {
+        message = '流程出错，请联系管理员'
         valid = false
       } else if (!this.conditionFieldsFullfilled) {
         message = '请先填写表单必填项'
@@ -215,6 +227,25 @@ export default {
       }
       loop(this.$refs.apprPickerItem)
       return valid
+    },
+    // 条件是否都已满足
+    checkConditionFullfilled() {
+      let fullfilled = true
+      const loop = ($el) => {
+        if (_.isEmpty($el.data)) {
+          fullfilled = false
+        }
+        let children = $el.$children.filter((item) => item.$options.name === 'ApprPickerItem')
+        if (children.length > 0) {
+          children.forEach((child) => loop(child))
+        }
+      }
+      if (this.$refs.apprPickerItem) {
+        loop(this.$refs.apprPickerItem)
+      } else {
+        fullfilled = false
+      }
+      return fullfilled
     },
     // 递归生成变量数据对象
     createProcessMap() {
@@ -270,7 +301,8 @@ export default {
         node.childNode && loop(node.childNode)
         Array.isArray(node.conditionNodes) && node.conditionNodes.forEach(loop)
       }
-      loop(this.processData)
+
+      this.processData && loop(this.processData)
       // 动态生成所有节点需要的字段数组
       this.conditionFields = [...fields]
       return [...fields]
