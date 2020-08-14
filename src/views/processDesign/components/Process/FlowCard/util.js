@@ -38,9 +38,16 @@ export class NodeUtils {
       qutient = (qutient - mod) / radix
       res.push(charArr[mod])
     } while (qutient)
+    this.fit(res)
     return res.join('')
   }
-
+  static fit(data) {
+    if (typeof data[0] === 'number') {
+      let s = data.shift()
+      data.push(s)
+      this.fit(data)
+    }
+  }
   /**
    * 判断节点类型
    * @param {Node} node - 节点数据

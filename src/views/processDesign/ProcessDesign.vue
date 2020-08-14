@@ -518,7 +518,7 @@ export default {
           if (d.properties.initiator && d.properties.initiator.length > 0) {
             d.properties.initiator.map((it, i) => {
               strs +=
-                ' initiator eq ' +
+                ' initiator_org eq ' +
                 it.orgId +
                 (i === d.properties.initiator.length - 1 ? '' : ' or ')
             })
@@ -526,7 +526,7 @@ export default {
           conditionExpression = conditionExpression.join('&&')
           conditionExpression = conditionExpression.replace(/}&&\${/g, ' and ')
           conditionExpression =
-            conditionExpression.slice(0, -1) + '(' + strs + ')' + conditionExpression.slice(-1)
+            conditionExpression.slice(0, -1) + ' and (' + strs + ')' + conditionExpression.slice(-1)
 
           // this.processMap[conditionExpression] = ''
           // if(d.properties.conditions)
