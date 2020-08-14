@@ -135,6 +135,7 @@ export default {
       nextNode: null,
       watcher: null,
       isLast: false,
+      conditionOrgId: null,
       noMatchOrg: false
     }
   },
@@ -215,12 +216,14 @@ export default {
               flag = false
             })
             if (!_.isEmpty(node.properties.initiator)) {
-              flag =
-                flag !== false &&
+              this.conditionOrgId =
                 this.fullOrgId &&
-                node.properties.initiator.some((item) =>
-                  _.includes(this.fullOrgId.split('.'), item.orgId)
-                )
+                (
+                  node.properties.initiator.find((item) =>
+                    _.includes(this.fullOrgId.split('.'), item.orgId)
+                  ) || {}
+                ).orgId
+              flag = flag !== false && this.conditionOrgId
               this.noMatchOrg = !flag
             }
             if (flag) {

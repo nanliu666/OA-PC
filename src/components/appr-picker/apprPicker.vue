@@ -248,10 +248,14 @@ export default {
     },
     // 生成条件变量
     createConditionProcessMap() {
-      return this.conditionFields.reduce((acc, curr) => {
+      let processMap = this.conditionFields.reduce((acc, curr) => {
         acc[curr] = this.formData[curr] + ''
         return acc
       }, {})
+      if (this.conditonHasInitiator) {
+        processMap['initiator_org'] = this.$refs.apprPickerItem.conditionOrgId
+      }
+      return processMap
     },
     // 获取条件对应的表单字段
     getConditionFields() {
