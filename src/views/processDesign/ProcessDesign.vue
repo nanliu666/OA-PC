@@ -518,7 +518,7 @@ export default {
           if (d.properties.initiator && d.properties.initiator.length > 0) {
             d.properties.initiator.map((it, i) => {
               strs +=
-                ' initiator eq ' +
+                ' initiator_org eq ' +
                 it.orgId +
                 (i === d.properties.initiator.length - 1 ? '' : ' or ')
             })
