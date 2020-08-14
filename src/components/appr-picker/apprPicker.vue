@@ -40,6 +40,7 @@
           :condition-nodes="processData.conditionNodes"
           :full-org-id="fullOrgId"
           :is-first="true"
+          @hook:mounted="checkFullfilled"
         />
         <div v-if="!processFullfilled">
           必填信息填写后，流程将自动显示
@@ -97,37 +98,34 @@ export default {
     ...mapGetters(['userInfo', 'userId']),
     // 流程出错
     processErrored() {
-      return (
-        (this.fullOrgId && this.noMatchOrg) ||
-        (this.conditionFieldsFullfilled && !this.conditionFullfiled)
-      )
+      return (this.fullOrgId && this.noMatchOrg) || this.conditonHasInitiator
+        ? this.fullOrgId && this.conditionFieldsFullfilled && !this.conditionFullfiled
+        : this.conditionFieldsFullfilled && !this.conditionFullfiled
     },
     // 流程条件是否完善
     processFullfilled() {
       return this.conditonHasInitiator
-        ? this.fullOrgId && this.conditionFieldsFullfilled
+        ? !!this.fullOrgId && this.conditionFieldsFullfilled
         : this.conditionFieldsFullfilled
     }
   },
 
   watch: {
     fullOrgId() {
-      this.noMatchOrg = this.$refs.apprPickerItem && this.$refs.apprPickerItem.noMatchOrg
+      this.$nextTick(() => {
+        this.noMatchOrg = this.$refs.apprPickerItem && this.$refs.apprPickerItem.noMatchOrg
+      })
     },
     formData: {
-      handler(val) {
-        // 动态检查条件对应的字段是否全部填写
-        this.conditionFieldsFullfilled = this.getConditionFields(this.processData).every(
-          (field) => !_.isNil(val[field])
-        )
-        this.$nextTick(() => {
-          this.conditionFullfiled = this.checkConditionFullfilled()
-        })
+      handler() {
+        this.checkFullfilled()
       },
       deep: true
     },
     processData: {
       handler(val) {
+        // 动态检查条件对应的字段是否全部填写
+        this.getConditionFields(this.processData)
         // 监听流程数据判断有没有发起人条件，有的话并获取用户所在的组织
         this.conditonHasInitiator = _.get(val, 'conditionNodes', []).some(
           (node) => _.get(node, 'properties.initiator.length') > 0
@@ -155,6 +153,14 @@ export default {
     }
   },
   methods: {
+    checkFullfilled() {
+      this.conditionFieldsFullfilled = this.conditionFields.every(
+        (field) => !_.isNil(this.formData[field])
+      )
+      this.$nextTick(() => {
+        this.conditionFullfiled = this.checkConditionFullfilled()
+      })
+    },
     getUserOrgList() {
       getUserOrgList({ userId: this.userId }).then((res) => {
         this.userOrgList = res
@@ -295,7 +301,8 @@ export default {
         node.childNode && loop(node.childNode)
         Array.isArray(node.conditionNodes) && node.conditionNodes.forEach(loop)
       }
-      loop(this.processData)
+
+      this.processData && loop(this.processData)
       // 动态生成所有节点需要的字段数组
       this.conditionFields = [...fields]
       return [...fields]

@@ -188,6 +188,7 @@ export default {
       } else {
         this.nextNode = this.childNode
       }
+      let init = false
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
         function() {
@@ -215,15 +216,13 @@ export default {
               }
               flag = false
             })
-            if (!_.isEmpty(node.properties.initiator)) {
-              this.conditionOrgId =
-                this.fullOrgId &&
-                (
-                  node.properties.initiator.find((item) =>
-                    _.includes(this.fullOrgId.split('.'), item.orgId)
-                  ) || {}
-                ).orgId
-              flag = flag !== false && this.conditionOrgId
+            if (!_.isEmpty(node.properties.initiator) && this.fullOrgId) {
+              this.conditionOrgId = (
+                node.properties.initiator.find((item) =>
+                  _.includes(this.fullOrgId.split('.'), item.orgId)
+                ) || {}
+              ).orgId
+              flag = flag !== false && !!this.conditionOrgId
               this.noMatchOrg = !flag
             }
             if (flag) {
@@ -241,6 +240,11 @@ export default {
           })
           if (!flag) {
             this.data = {}
+          }
+          if (init === false) {
+            init = true
+          } else {
+            this.dispatch('ElFormItem', 'el.form.change')
           }
         },
         { deep: true, immediate: true }
