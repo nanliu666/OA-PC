@@ -519,19 +519,18 @@ export default {
             d.properties.initiator.map((it, i) => {
               strs +=
                 ' initiator_org eq ' +
+                "'" +
                 it.orgId +
+                "'" +
                 (i === d.properties.initiator.length - 1 ? '' : ' or ')
             })
           }
           conditionExpression = conditionExpression.join('&&')
           conditionExpression = conditionExpression.replace(/}&&\${/g, ' and ')
           if (strs) {
+            strs = conditionExpression ? ' and (' + strs + ')' : '${ ' + strs + ' }'
             conditionExpression =
-              conditionExpression.slice(0, -1) +
-              ' and (' +
-              strs +
-              ')' +
-              conditionExpression.slice(-1)
+              conditionExpression.slice(0, -1) + strs + conditionExpression.slice(-1)
           }
           //
 
