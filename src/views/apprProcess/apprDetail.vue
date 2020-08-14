@@ -245,7 +245,7 @@
                       class="counterSign_text"
                     >需所有人同意（会签）</span>
                     <span
-                      v-else
+                      v-else-if="item.properties.counterSign === false"
                       class="counterSign_text"
                     >1人审批（或签）</span>
                   </span>
