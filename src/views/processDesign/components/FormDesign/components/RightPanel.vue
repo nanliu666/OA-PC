@@ -306,12 +306,12 @@ export default {
         if (this.activeData.__config__.type === 'date') {
           this.activeData.__pc__.props.type = 'date'
         } else {
-          this.activeData.__pc__.props.type = 'datetime'
+          this.activeData.__pc__.props.type = 'daterange'
         }
         this.activeData.__mobile__.props.pickerType = 'date'
       } else {
         if (this.activeData.__config__.type === 'date') {
-          this.activeData.__pc__.props.type = 'daterange'
+          this.activeData.__pc__.props.type = 'datetime'
         } else {
           this.activeData.__pc__.props.type = 'datetimerange'
         }
