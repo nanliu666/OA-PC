@@ -24,7 +24,7 @@ export default {
     conf: {
       handler(val) {
         if (typeof val === 'object' && val !== null) {
-          this.data = Object.assign(this.data, val)
+          this.data = Object.assign({}, val)
         }
         this.forceUpdate()
       },

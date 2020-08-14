@@ -377,7 +377,7 @@
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
         <el-button
-          v-if="!isShowCancel && isApplyUser"
+          v-if="isApplyUser"
           type="primary"
           size="medium"
           @click="handelCancel"
@@ -634,11 +634,12 @@ export default {
       return result
     },
     // 提交人跟当前用户是否同一个人
-    isApplyUser() {
-      if (this.userId === this.applyUserId) {
+    isApplyUser: function() {
+      if (this.userId !== this.applyUserId) {
+        return false
+      } else {
         return true
       }
-      return false
     },
     ...mapGetters(['userId'])
   },
