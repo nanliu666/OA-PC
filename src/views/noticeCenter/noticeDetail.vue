@@ -29,8 +29,10 @@
 </template>
 
 <script>
-import { getNoticeDeatil } from '@/api/noticeCenter/noticeCenter'
+import { getCenterNoticeDeatil } from '@/api/noticeCenter/noticeCenter'
 import PageHeader from '@/components/page-header/pageHeader'
+import { mapGetters } from 'vuex'
+import { htmlDecode } from '@/util/util'
 export default {
   name: 'NoticeList',
   components: { PageHeader },
@@ -40,13 +42,30 @@ export default {
       noticeDetail: {}
     }
   },
+  beforeRouteLeave(to, from, next) {
+    // 预览进去再出去，关闭标签
+    if (!this.$route.query.id) {
+      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+    }
+    next()
+  },
+  computed: {
+    ...mapGetters(['noticeDetailVuex'])
+  },
   created() {
-    getNoticeDeatil({ id: this.$route.query.id }).then((res) => {
-      this.noticeDetail = res
-      res.attachment
-    })
+    this.initData()
   },
   methods: {
+    initData() {
+      if (this.$route.query.id) {
+        getCenterNoticeDeatil({ id: this.$route.query.id }).then((res) => {
+          this.noticeDetail = res
+          this.noticeDetail.content = res.content ? htmlDecode(res.content) : ''
+        })
+      } else {
+        this.noticeDetail = this.noticeDetailVuex
+      }
+    },
     getIframeSrc(data) {
       let fileName = data.url.lastIndexOf('.')
       let fileNameLength = data.url.length
@@ -67,7 +86,7 @@ export default {
   .notice-content {
     background: #ffffff;
     margin-bottom: 24px;
-    min-height: calc(100vh - 68px - 40px - 56px);
+    min-height: calc(100vh - 68px - 40px - 56px - 24px);
     box-sizing: border-box;
     .content-h1 {
       color: #202940;

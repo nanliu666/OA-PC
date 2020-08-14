@@ -119,6 +119,7 @@ const TABLE_COLUMNS = [
   {
     label: '公告标题',
     minWidth: 200,
+    slot: true,
     prop: 'title'
   },
   {
