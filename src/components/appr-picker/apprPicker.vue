@@ -285,7 +285,8 @@ export default {
         return acc
       }, {})
       if (this.conditonHasInitiator) {
-        processMap['initiator_org'] = this.$refs.apprPickerItem.conditionOrgId
+        processMap['initiator_org'] =
+          this.$refs.apprPickerItem.conditionOrgId || this.fullOrgId.split('.').slice(-1)[0]
       }
       return processMap
     },
