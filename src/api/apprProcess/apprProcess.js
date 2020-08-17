@@ -124,3 +124,11 @@ export const getProcessType = (params) => get('/appr/v2/appr/process/type', para
  * @param {string} params.userId
  */
 export const getUserOrgList = (params) => get('/appr/v2/appr/user/org/list', params)
+
+/**
+ *
+ * 根据formKey查询流程ID接口
+ * @param {object} params 查询参数
+ * @param {string} params.formKey
+ */
+export const getProcessIDByFormKey = (params) => get('/appr/v2/appr/process/id', params)

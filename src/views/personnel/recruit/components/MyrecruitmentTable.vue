@@ -440,7 +440,7 @@ export default {
       this.loadTableData()
     },
     handlePageSizeChange(pageSize) {
-      this.page.pageSize = pageSize
+      this.page.size = pageSize
       this.loadTableData()
     },
     handleSearch(searchParams) {
@@ -485,7 +485,7 @@ export default {
         this.tableLoading = true
         const page = {
           pageNo: this.page.currentPage,
-          pageSize: this.page.pageSize
+          pageSize: this.page.size
         }
         const { data, totalNum } = await this.load(_.assign(null, page, params))
         this.tableData = data

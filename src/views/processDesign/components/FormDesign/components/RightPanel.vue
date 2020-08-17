@@ -303,10 +303,18 @@ export default {
     handleDateFormatChange(format) {
       this.activeData.__pc__.props['value-format'] = format
       if (format === 'yyyy-MM-dd') {
-        this.activeData.__pc__.props.type = 'date'
-        this.activeData.__mobile__.props.pickerType = 'data'
+        if (this.activeData.__config__.type === 'date') {
+          this.activeData.__pc__.props.type = 'date'
+        } else {
+          this.activeData.__pc__.props.type = 'daterange'
+        }
+        this.activeData.__mobile__.props.pickerType = 'date'
       } else {
-        this.activeData.__pc__.props.type = 'datetime'
+        if (this.activeData.__config__.type === 'date') {
+          this.activeData.__pc__.props.type = 'datetime'
+        } else {
+          this.activeData.__pc__.props.type = 'datetimerange'
+        }
         this.activeData.__mobile__.props.pickerType = 'datatime'
       }
     },

@@ -6,8 +6,6 @@
 
 * 主要依赖：vue vuex vue-router element-ui 
 
-* 基于element-ui封装的UI框架 [avuejs](https://avuejs.com/)
-
 * css动画库 [animate css](https://daneden.github.io/animate.css/)
 
 * MockJS [参考](https://juejin.im/post/5cf726b5e51d454fbf5409bc),[官方示例](http://mockjs.com/examples.html)
@@ -93,7 +91,5 @@
 * 开发vue相关要按照vue[官方代码规范](https://cn.vuejs.org/v2/style-guide/index.html)开发，js命名规范按照[AlloyTeam规范文档](http://alloyteam.github.io/CodeGuide/#js-variable-naming)
 
 * 开发前看一下util文件夹下的函数，常用的校验正则，cookie,store等工具函数都有，不要自己造轮子
-
-* 多看看[avuejs](https://avuejs.com/) 的文档，这个组件库有不少好用的组件，还有一些全局函数，看一下[全局api](https://avuejs.com/doc/api) 
 
 * Mock使用MockJS，注意看一下[文档](https://juejin.im/post/5cf726b5e51d454fbf5409bc) ，mock代码放在src/mock下

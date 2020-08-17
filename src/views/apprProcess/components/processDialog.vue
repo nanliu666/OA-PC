@@ -7,6 +7,7 @@
     :before-close="close"
   >
     <el-form
+      ref="ruleForm"
       class="login-form"
       status-icon
       :rules="rules"
@@ -35,7 +36,7 @@
         prop="groupName"
       >
         <el-input
-          v-model="form.groupName"
+          v-model.trim="form.groupName"
           placeholder="请输入分组名称"
         />
       </el-form-item>
@@ -54,7 +55,6 @@
         v-loading="loading"
         size="medium"
         type="primary"
-        :disabled="submitDisable"
         @click="handleSubmit"
       >
         确 定
@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import { validatenull } from '@/util/validate'
 import {
   addProcessCategory,
   renameProcessCategory,
@@ -104,30 +103,6 @@ export default {
           { max: 20, message: '分组名称长度不能超过20', trigger: 'blur' }
         ]
       }
-    }
-  },
-  computed: {
-    submitDisable() {
-      let disable = true // 提交按钮是否可以点击
-      // 移动或者启用,未选择分组时候，不可以点击确认
-      if (this.dialogOptions.dialogType === 'move' || this.dialogOptions.dialogType === 'enable') {
-        if (!validatenull(this.form.moveValue)) {
-          disable = false
-        }
-      }
-      if (this.dialogOptions.dialogType === 'add') {
-        if (!validatenull(this.form.groupName)) {
-          disable = false
-        }
-        if (this.form.groupName.length > 20) {
-          disable = false
-        }
-      }
-      if (this.dialogOptions.dialogType === 'rename') {
-        disable = false
-      }
-      // debugger
-      return disable
     }
   },
   created() {
@@ -236,20 +211,23 @@ export default {
      * 处理确认按钮
      */
     handleSubmit() {
-      switch (this.dialogOptions.dialogType) {
-        case 'add':
-          this.addNewGroup()
-          break
-        case 'rename':
-          this.renameGroup()
-          break
-        case 'move':
-          this.moveGroup()
-          break
-        case 'enable':
-          this.enableGroup()
-          break
-      }
+      this.$refs.ruleForm.validate((valid) => {
+        if (!valid) return
+        switch (this.dialogOptions.dialogType) {
+          case 'add':
+            this.addNewGroup()
+            break
+          case 'rename':
+            this.renameGroup()
+            break
+          case 'move':
+            this.moveGroup()
+            break
+          case 'enable':
+            this.enableGroup()
+            break
+        }
+      })
     }
   }
 }

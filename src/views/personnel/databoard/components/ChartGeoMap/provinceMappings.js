@@ -142,7 +142,7 @@ export const getProvinceDataByName = async (name) => {
     return MAP_DATA_CHACHE[name]
   } else {
     const { provinceFileName } = getProvinceByName(name)
-    const data = (await get(`/maps@${MAP_VERSION}/${provinceFileName}`)).data
+    const data = (await get(`${process.env.BASE_URL}maps@${MAP_VERSION}/${provinceFileName}`)).data
     return (MAP_DATA_CHACHE[name] = data)
   }
 }

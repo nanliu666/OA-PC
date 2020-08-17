@@ -215,8 +215,8 @@ function mergeSexByGroupName(arr, groupProp, valueProp = 'num') {
       (result, value, key) =>
         (result[key] = {
           [groupProp]: key,
-          0: _.find(value, { sex: 0 })[valueProp],
-          1: _.find(value, { sex: 1 })[valueProp]
+          0: _.get(_.find(value, { sex: 0 }), valueProp, 0),
+          1: _.get(_.find(value, { sex: 1 }), valueProp, 0)
         })
     )
     .map()
@@ -235,6 +235,8 @@ export default {
     ChartSpirit,
     LazySkeleton
   },
+
+  inject: ['searchParams'],
   computed: {
     // 各部门招聘进度
     getRecruitmentOrgProgress() {
@@ -267,17 +269,19 @@ export default {
         mergeSexByGroupName(await getTalentAge({ ...this._searchParams, ...params }), 'ageName')
     },
     getRecruitmentChannel() {
-      return async () => await getRecruitmentChannel(this._searchParams)
+      return this.searchParamsDecorator(getRecruitmentChannel)
     },
     // 整体招聘进度
     getRecruitmentProgress() {
       return async () => {
-        const { approvedNum, finishedNum } = await getRecruitmentProgress(this._searchParams)
+        const { approvedNum, finishedNum } = await this.searchParamsDecorator(
+          getRecruitmentProgress
+        )
         return finishedNum / approvedNum || 0
       }
     },
     getTalentJob() {
-      return async () => await getTalentJob(this._searchParams)
+      return this.searchParamsDecorator(getTalentJob)
     },
     chartComplexPieConfigs() {
       return {
@@ -290,7 +294,12 @@ export default {
     }
   },
   methods: {
-    refresh() {}
+    refresh() {},
+
+    // 将请求接口添加上该页面的查询参数函数包装
+    searchParamsDecorator(loadFn) {
+      return async (params) => await loadFn({ ...this._searchParams, ...params })
+    }
   }
 }
 </script>

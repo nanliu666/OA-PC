@@ -249,6 +249,15 @@
                       :select-params="item.config.selectParams"
                       :tree-params="item.config.treeParams"
                     />
+                    <lazy-select
+                      v-if="item.type === 'lazySelect'"
+                      :ref="item.field"
+                      v-model="item.data"
+                      :load="item.load"
+                      :option-list.sync="item.optionList"
+                      :placeholder="item.placeholder"
+                      :option-props="item.optionProps"
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -293,7 +302,11 @@ import ElTreeSelect from '../elTreeSelect/elTreeSelect'
 
 export default {
   name: 'SearchPopOver',
-  components: { NumInterval, ElTreeSelect },
+  components: {
+    NumInterval,
+    ElTreeSelect,
+    LazySelect: () => import('@/components/lazy-select/lazySelect')
+  },
   props: {
     // 筛选弹窗外部
     requireOptions: {

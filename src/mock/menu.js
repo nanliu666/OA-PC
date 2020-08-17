@@ -133,6 +133,19 @@ const res = {
             ]
           },
           {
+            menuId: '1259072343020217986',
+            menuName: '公告管理',
+            menuType: 'Menu',
+            isOwn: 1,
+            isShow: 1,
+            code: 'system_dict',
+            alias: 'dict',
+            path: '/noticeCenter/noticeManage',
+            icon: 'iconfont iconicon_study',
+            dataPrivileges: [],
+            children: []
+          },
+          {
             menuId: '1260397131756474370',
             menuName: '权限管理',
             menuType: 'Dir',
@@ -838,7 +851,7 @@ const res = {
           },
           {
             menuId: '1590112075691322',
-            menuName: '发起审批',
+            menuName: '发起申请',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,

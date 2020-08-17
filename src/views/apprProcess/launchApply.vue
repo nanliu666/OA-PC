@@ -1,76 +1,94 @@
 <template>
   <div class="launch-style fill">
-    <basicContainer block>
-      <ul
-        v-for="(item, index) in processListData"
-        :key="index"
-        class="approval-ul"
-      >
-        <li
-          class="approval-li"
-          :class="{ 'empty-approval': item.processes.length === 0 }"
+    <basicContainer
+      v-if="!emptyOption.visibile"
+      block
+    >
+      <div>
+        <ul
+          v-for="(item, index) in processListData"
+          :key="index"
+          class="approval-ul"
         >
-          <div
-            class="title-box"
-            @click.stop="hideCurrent(index)"
+          <li
+            v-if="item.processes.length !== 0"
+            class="approval-li"
           >
-            <span>{{ item.name }}（{{ item.processes.length }}）</span>
-            <span
-              v-if="item.processes.length !== 0"
-              class="hide-span"
-            >{{
-              currentIndexList.indexOf(index) === -1 ? '收起' : '展开'
-            }}</span>
-          </div>
-          <ul
-            v-show="currentIndexList.indexOf(index) === -1"
-            class="detail-ul"
-          >
-            <li
-              v-for="(processesItem, processesIndex) in item.processes"
-              :key="processesIndex"
-              class="detail-li"
-              @click="jumpToSubmit(processesItem.processId)"
+            <div
+              class="title-box"
+              @click.stop="hideCurrent(index)"
             >
-              <div class="logo-box">
-                <svg
-                  class="icon"
-                  aria-hidden="true"
-                >
-                  <use :[symbolKey]="'#icon-' + processesItem.icon" />
-                </svg>
-              </div>
-              <div class="content-box">
-                <div class="content-title">
-                  {{ processesItem.processName }}
+              <span>{{ item.name }}（{{ item.processes.length }}）</span>
+              <span
+                v-if="item.processes.length !== 0"
+                class="hide-span"
+              >{{
+                currentIndexList.indexOf(index) === -1 ? '收起' : '展开'
+              }}</span>
+            </div>
+            <ul
+              v-show="currentIndexList.indexOf(index) === -1"
+              class="detail-ul"
+            >
+              <li
+                v-for="(processesItem, processesIndex) in item.processes"
+                :key="processesIndex"
+                class="detail-li"
+                @click="jumpToSubmit(processesItem)"
+              >
+                <div class="logo-box">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use :[symbolKey]="'#icon-' + processesItem.icon" />
+                  </svg>
                 </div>
-                <el-tooltip
-                  v-if="processesItem.remark"
-                  effect="dark"
-                  placement="top-start"
-                  :content="processesItem.remark"
-                >
-                  <div class="content-des">
-                    {{ processesItem.remark }}
+                <div class="content-box">
+                  <div class="content-title">
+                    {{ processesItem.processName }}
                   </div>
-                </el-tooltip>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
+                  <el-tooltip
+                    v-if="processesItem.remark"
+                    effect="dark"
+                    placement="top-start"
+                    :content="processesItem.remark"
+                  >
+                    <div class="content-des">
+                      {{ processesItem.remark }}
+                    </div>
+                  </el-tooltip>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </basicContainer>
+    <com-empty
+      v-if="emptyOption.visibile"
+      :empty-option="emptyOption"
+    />
   </div>
 </template>
 
 <script>
+import fix from '@/assets/images/fix.png'
 import { getUserProcessList } from '@/api/apprProcess/apprProcess'
+import ComEmpty from '@/components/common-empty/empty'
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Apply',
+  components: {
+    ComEmpty
+  },
   data() {
     return {
+      emptyOption: {
+        visibile: false,
+        src: fix,
+        text: '暂无数据，请前往设置审批流程 ~'
+      },
       symbolKey: 'xlink:href',
       processListData: [],
       currentIndexList: []
@@ -82,7 +100,6 @@ export default {
   mounted() {
     this.initData()
   },
-
   methods: {
     /**
      * 初始化数据
@@ -93,7 +110,11 @@ export default {
         processName: ''
       }
       getUserProcessList(parmas).then((res) => {
-        this.processListData = res
+        if (res.length === 0) {
+          this.emptyOption.visibile = true
+        } else {
+          this.processListData = res
+        }
       })
     },
     /**
@@ -110,11 +131,18 @@ export default {
     /**
      * 跳转到提交页面
      */
-    jumpToSubmit(processId) {
+    jumpToSubmit(process) {
+      const formkeyPathMap = {
+        UserFormalInfo: '/personnel/administration/apply'
+      }
+      let path = formkeyPathMap[process.formKey]
+      if (!path) {
+        path = '/apprProcess/apprSubmit'
+      }
       this.$router.push({
-        path: '/apprProcess/apprSubmit',
+        path,
         query: {
-          processId
+          processId: process.processId
         }
       })
     }
@@ -125,11 +153,9 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
 .basic-container--block {
+  margin-top: 24px;
   height: calc(100% - 48px);
   min-height: calc(100% - 48px);
-}
-.launch-style {
-  margin-top: 24px;
 }
 .approval-ul {
   padding-bottom: 15px;
@@ -150,9 +176,6 @@ export default {
         cursor: pointer;
       }
     }
-  }
-  .empty-approval {
-    padding-bottom: 0;
   }
   .detail-ul {
     display: flex;

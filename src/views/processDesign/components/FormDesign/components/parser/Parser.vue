@@ -85,7 +85,7 @@ const layouts = {
         <el-form-item
           prop={scheme.__vModel__}
           label={config.label}
-          style={typeof config.defaultValue === 'undefined' ? 'margin-bottom:0' : ''}
+          style={config.type === 'desc' ? 'margin-bottom:0' : ''}
         >
           <render
             conf={scheme}
@@ -181,17 +181,17 @@ export default {
         if (config.required) {
           const required = {
             required: config.required,
-            message: cur.placeholder + config.label
+            message: null,
+            trigger: null
           }
           if (Array.isArray(config.defaultValue) && config.type !== 'daterange') {
             required.type = 'array'
             required.message = `请至少选择一个${config.label}`
           }
-          // 日期区间config的placeholder为空，所以单独定义message
-          if (config.type === 'daterange') {
-            required.message = '请选择' + config.label
-          }
           required.trigger = ruleTrigger[cur.__pc__.tag] || 'input'
+          if (!required.message) {
+            required.message = (required.trigger === 'change' ? '请选择' : '请输入') + config.label
+          }
           rules[cur.__vModel__] = required
         }
       })
@@ -231,7 +231,8 @@ export default {
             label: item.__config__.label,
             prop: item.__vModel__,
             value: form[item.__vModel__],
-            content: this.getFieldContent(item)
+            content: this.getFieldContent(item),
+            span: item.__pc__.span || 12
           })
         }
       })

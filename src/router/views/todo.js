@@ -4,7 +4,6 @@ export default [
   {
     path: '',
     component: Layout,
-
     children: [
       {
         path: '/todo/todoList',
@@ -61,30 +60,6 @@ export default [
           fullscreen: true
         },
         component: () => import('@/views/todo/leaveList/leaveListUser')
-      },
-      {
-        path: '/taskCenter/taskCenter',
-        name: '任务中心',
-        meta: {
-          fullscreen: true
-        },
-        component: () => import('@/views/taskCenter/taskCenter')
-      },
-      {
-        path: '/quickAccess/mailList',
-        name: '通讯录',
-        meta: {
-          fullscreen: true
-        },
-        component: () => import('@/views/quickAccess/mailList')
-      },
-      {
-        path: '/taskCenter/scheduleCenter',
-        name: '日程中心',
-        meta: {
-          fullscreen: true
-        },
-        component: () => import('@/views/taskCenter/scheduleCenter')
       }
     ]
   }

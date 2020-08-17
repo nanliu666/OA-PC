@@ -33,6 +33,7 @@
             <el-button
               size="medium"
               type="primary"
+              :loading="submiting"
               @click="submit"
             >
               提交
@@ -70,7 +71,8 @@ export default {
       advancedSetting: {},
       json: '',
       loading: false,
-      processId: null
+      processId: null,
+      submiting: false
     }
   },
   created() {},
