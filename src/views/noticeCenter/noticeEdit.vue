@@ -33,7 +33,7 @@
           <el-upload
             class="upload-box"
             action=""
-            :before-remove="beforeRemove"
+            :on-remove="handleRemove"
             multiple
             :limit="uploadLimit"
             accept=".doc,.doxs,.jpg,.jpeg,.png,.pdf,.DOC,.DOCS,.JPG,.JPEG,.PBG,.PDF"
@@ -115,12 +115,18 @@ export default {
         title: [{ required: true, message: '请输入公告标题', trigger: 'blur' }]
       },
       title: '发布公告',
-      formData: {},
-      parmasData: {}
+      formData: {
+        userId: this.userId,
+        content: '',
+        title: '',
+        attachment: []
+      },
+      parmasData: {},
+      compareAttachment: []
     }
   },
   computed: {
-    ...mapGetters(['userId', 'noticeDetailVuex'])
+    ...mapGetters(['userId', 'noticeDetailVuex', 'userInfo'])
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
@@ -133,13 +139,10 @@ export default {
     this.validateSave(next)
   },
   created() {
-    this.resetInit()
-    if (this.noticeDetailVuex) {
-      this.formData = this.noticeDetailVuex
-    }
-    this.isSave = false
     if (this.$route.query.id) {
       this.initData()
+    } else {
+      this.setVuexData()
     }
   },
   methods: {
@@ -193,23 +196,20 @@ export default {
         this.$router.go(-1)
       }
     },
+    setVuexData() {
+      if (this.noticeDetailVuex) {
+        this.formData = this.noticeDetailVuex
+      }
+    },
     initData() {
       getNoticeDeatil({ id: this.$route.query.id }).then((res) => {
-        this.formData.id = res.id
-        this.formData.title = res.title
+        this.formData = res
         this.formData.attachment = res.attachment ? res.attachment : []
+        this.compareAttachment = _.cloneDeep(this.formData.attachment)
         this.formData.content = res.content ? htmlDecode(res.content) : ''
         this.formData.userId = this.userId
+        this.setVuexData()
       })
-    },
-    resetInit() {
-      this.isSave = true
-      this.formData = {
-        userId: this.userId,
-        content: '',
-        title: '',
-        attachment: []
-      }
     },
     httpRequest(file) {
       const that = this
@@ -235,10 +235,7 @@ export default {
             name: file.file.name,
             url: url
           }
-          //TODO: 删除后新增再删除有问题
-          // console.log('上传之前附件数量==', that.formData.attachment)
           that.formData.attachment.push(uploadObj)
-          // console.log('上传之后附件数量==', that.formData.attachment)
         }
       })
     },
@@ -249,15 +246,13 @@ export default {
         } 个文件，共选择了 ${files.length + attachment.length} 个文件`
       )
     },
-    beforeRemove(file) {
-      let that = this
-      let index = this.formData.attachment.indexOf(file)
-      return this.$confirm(`确定移除 ${file.name}？`).then(() => {
-        // console.log('删除之前附件数量==', that.formData.attachment)
-        that.formData.attachment.splice(index, 1)
-        // console.log('删除之后附件数量==', that.formData.attachment)
-        return that.formData.attachment
+    handleRemove(file) {
+      // 实现缩略图模板时删除文件
+      let fileList = this.formData.attachment
+      let index = fileList.findIndex((fileItem) => {
+        return fileItem.uid === file.uid
       })
+      this.formData.attachment.splice(index, 1)
     },
     validate() {
       this.isPreview = false
@@ -291,7 +286,7 @@ export default {
         let previewData = _.cloneDeep(this.formData)
         previewData = Object.assign(previewData, {
           publishTime: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-          publishUserName: '王华丽'
+          publishUserName: this.userInfo.nick_name
         })
         this.$store.commit('SET_NOTICE', previewData)
         this.$router.push({
@@ -311,34 +306,49 @@ export default {
       }
     },
     editNotice() {
+      // 取并集
+      let targetAttachment = _.unionBy(this.parmasData.attachment, this.compareAttachment, 'name')
+      // 取差集
+      let xorArray = _.xorBy(this.parmasData.attachment, this.compareAttachment, 'name')
+      // 取删除的数组 -- 用差集和之前的笔记得出删除的部分
+      let delArray = _.intersectionBy(this.compareAttachment, xorArray, 'name')
+      // 取新增的数组 -- 用差集和现在参数比较得出新增的部分
+      let addArray = _.intersectionBy(this.parmasData.attachment, xorArray, 'name')
+      targetAttachment.map((item) => {
+        delArray.map((addItem) => {
+          if (item.name === addItem.name) {
+            item.operatorType = 'Del'
+          }
+        })
+        addArray.map((addItem) => {
+          if (item.name === addItem.name) {
+            item.operatorType = 'Add'
+          }
+        })
+      })
+      this.parmasData.attachment = targetAttachment
       return fixNotice(this.parmasData).then((res) => {
-        if (this.isDraft) {
-          this.$message({
-            type: 'success',
-            message: '已保存至草稿！'
-          })
-          this.resetInit()
-          this.$router.push({
-            path: '/noticeCenter/noticeDrafts'
-          })
-        }
+        this.daraftSuccess()
         return res
       })
     },
     creatNoticeFun() {
       return creatNotice(this.parmasData).then((res) => {
-        if (this.isDraft) {
-          this.$message({
-            type: 'success',
-            message: '已保存至草稿！'
-          })
-          this.resetInit()
-          this.$router.push({
-            path: '/noticeCenter/noticeDrafts'
-          })
-        }
+        this.daraftSuccess()
         return res
       })
+    },
+    daraftSuccess() {
+      if (this.isDraft) {
+        this.$message({
+          type: 'success',
+          message: '已保存至草稿！'
+        })
+        this.isSave = true
+        this.$router.push({
+          path: '/noticeCenter/noticeDrafts'
+        })
+      }
     },
     publishNoticeFun(data) {
       publishNotice({ id: data, userId: this.userId }).then(() => {
@@ -346,7 +356,7 @@ export default {
           type: 'success',
           message: '已成功发布！'
         })
-        this.resetInit()
+        this.isSave = true
         this.$router.push({
           path: '/noticeCenter/noticeManage'
         })
@@ -390,6 +400,9 @@ export default {
         font-size: 12px;
         color: #757c85;
         margin: 4px;
+      }
+      /deep/.el-upload-list__item {
+        width: 80%;
       }
     }
   }

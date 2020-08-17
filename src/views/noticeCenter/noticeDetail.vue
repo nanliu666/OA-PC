@@ -19,9 +19,16 @@
         :key="index"
       >
         <iframe
+          v-if="iframeList.indexOf(index) > -1"
           class="word-class"
           :src="getIframeSrc(item)"
           frameborder="0"
+        />
+        <el-image
+          v-if="imagesList.indexOf(index) > -1"
+          class="word-class"
+          :src="item.url"
+          fit="cover"
         />
       </div>
     </el-card>
@@ -39,11 +46,13 @@ export default {
   data() {
     return {
       iframeSrc: '',
-      noticeDetail: {}
+      noticeDetail: {},
+      iframeList: [],
+      imagesList: []
     }
   },
   beforeRouteLeave(to, from, next) {
-    // 预览进去再出去，关闭标签
+    // 进入模式预览后再出去，关闭标签，预览模式下不存在id
     if (!this.$route.query.id) {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
     }
@@ -61,9 +70,11 @@ export default {
         getCenterNoticeDeatil({ id: this.$route.query.id }).then((res) => {
           this.noticeDetail = res
           this.noticeDetail.content = res.content ? htmlDecode(res.content) : ''
+          this.getShowIndex()
         })
       } else {
         this.noticeDetail = this.noticeDetailVuex
+        this.getShowIndex()
       }
     },
     getIframeSrc(data) {
@@ -75,6 +86,17 @@ export default {
         targetUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${targetUrl}`
       }
       return targetUrl
+    },
+    getShowIndex() {
+      this.noticeDetail.attachment.map((item, index) => {
+        const url = item.url.split('.')
+        let fileName = url[url.length - 1]
+        if (/\.(doc|doxs|pdf|DOC|DOCS|PDF)$/.test(`.${fileName}`)) {
+          this.iframeList.push(index)
+        } else if (/\.(jpg|jpeg|png|JPEG|JPG|PNG)$/.test(`.${fileName}`)) {
+          this.imagesList.push(index)
+        }
+      })
     }
   }
 }
