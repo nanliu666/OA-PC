@@ -506,7 +506,7 @@
         <el-checkbox-group v-model="showingPCons">
           <!-- 发起人默认就有 -->
           <el-checkbox
-            v-if="showingPCons.includes(-1)"
+            v-if="isShowInitiator"
             style="margin-bottom: 10px;"
             :label="-1"
           >
@@ -570,7 +570,8 @@ import Clickoutside from 'element-ui/src/utils/clickoutside'
 import { NodeUtils } from '../FlowCard/util.js'
 import RowWrapper from './RowWrapper'
 import NumInput from './NumInput'
-
+const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
+const hasBranch = (data) => notEmptyArray(data.conditionNodes)
 const rangeType = {
   lt: '<',
   lte: '≤',
@@ -598,6 +599,7 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
+      isShowInitiator: false,
       org: true,
       isDepartment: true,
       coms: [],
@@ -693,7 +695,11 @@ export default {
     // 未使用的条件个数
     notUseConNum() {
       // 发起人是默认就有得  所以需要加 1
-      return this.pconditions.length - this.showingPCons.length + 1
+      if (this.showingPCons.includes(-1)) {
+        return this.pconditions.length - this.showingPCons.length + 1
+      } else {
+        return this.pconditions.length - this.showingPCons.length
+      }
     },
     usedFormItems() {
       return this.$store.state.formItemList
@@ -1025,6 +1031,18 @@ export default {
       }
       this.approverForm.formOperates = this.initFormOperates(this.value)
     },
+    firstComdition(data, firstConditinoNode) {
+      if (hasBranch(data)) {
+        if (!firstConditinoNode.length > 0) {
+          data.conditionNodes.map((d) => {
+            firstConditinoNode.push(d.nodeId)
+          })
+        }
+      }
+      if (data.childNode) {
+        return this.firstComdition(data.childNode, firstConditinoNode)
+      }
+    },
     /**
      * 初始化条件节点数据
      */
@@ -1038,6 +1056,12 @@ export default {
       if (Array.isArray(this.pconditions)) {
         let temp = undefined
         this.value.prevId === this.processData.nodeId && (this.showingPCons = [-1]) // 默认显示发起人
+        let firstConditinoNode = []
+        this.firstComdition(this.processData, firstConditinoNode)
+        if (!this.showingPCons.includes(-1)) {
+          firstConditinoNode.includes(this.value.nodeId) && (this.showingPCons = [-1])
+        }
+        this.isShowInitiator = this.showingPCons.includes(-1) ? true : false
         this.pconditions.forEach((t) => {
           if (Array.isArray(nodeConditions)) {
             // if(nodeConditions.)
