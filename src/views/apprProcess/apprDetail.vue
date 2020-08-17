@@ -84,18 +84,19 @@
         class="apply-detail"
       >
         <!-- 审批详情 -->
-        <div class="detail-box">
-          <div
+        <el-row class="detail-box">
+          <el-col
             v-for="(item, index) in applyDetail.formData"
             :key="index"
             class="detail-item"
+            :span="item.span || 12"
           >
             <div>{{ `${item.label} :` }}</div>
             <div>{{ item.content || item.value }}</div>
-          </div>
+          </el-col>
 
           <div class="detail-item" />
-        </div>
+        </el-row>
       </basic-container>
     </transition>
     <basic-container>
@@ -1014,7 +1015,6 @@ export default {
     flex-wrap: wrap;
 
     .detail-item {
-      width: 50%;
       display: flex;
       margin-bottom: 30px;
       font-size: 14px;
