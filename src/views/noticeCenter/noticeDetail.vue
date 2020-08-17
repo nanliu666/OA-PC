@@ -14,7 +14,8 @@
         class="subText"
       >
         <span class="publishUserName">发布人：{{ noticeDetail.publishUserName }}</span>
-        <span>发布时间：{{ noticeDetail.publishTime }}</span>
+        <span style="padding:0 20px">发布时间：{{ noticeDetail.publishTime }}</span>
+        <span>阅读量：{{ noticeDetail.readNum }}</span>
       </div>
       <div v-html="noticeDetail.content" />
       <div
@@ -121,9 +122,6 @@ export default {
       font-size: 14px;
       color: #757c85;
       margin-bottom: 20px;
-      .publishUserName {
-        margin-right: 20px;
-      }
     }
     .word-class {
       width: 100%;
