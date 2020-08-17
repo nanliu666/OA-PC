@@ -263,7 +263,8 @@ export const componentGroups = [
             'start-placeholder': '开始日期',
             'end-placeholder': '结束日期',
             format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd'
+            'value-format': 'yyyy-MM-dd',
+            'unlink-panels': true
           },
           style: { width: '100%' }
         },

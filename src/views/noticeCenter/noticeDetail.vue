@@ -4,7 +4,7 @@
       title="公告详情"
       :show-back="true"
     />
-    <div class="notice-content">
+    <el-card class="notice-content">
       <h1
         class="content-h1"
         v-text="noticeDetail.title"
@@ -24,7 +24,7 @@
           frameborder="0"
         />
       </div>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -66,9 +66,8 @@ export default {
 .notice-detail {
   .notice-content {
     background: #ffffff;
-    border-radius: 0 4px 4px 4px;
+    margin-bottom: 24px;
     min-height: calc(100vh - 68px - 40px - 56px);
-    padding: 20px;
     box-sizing: border-box;
     .content-h1 {
       color: #202940;

@@ -36,7 +36,7 @@
         prop="groupName"
       >
         <el-input
-          v-model="form.groupName"
+          v-model.trim="form.groupName"
           placeholder="请输入分组名称"
         />
       </el-form-item>

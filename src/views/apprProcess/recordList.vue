@@ -89,16 +89,14 @@
         <template #apprNo="{row}">
           <span
             class="table__link"
-            @click="() => handleLinkApprNoClick(row)"
-          >{{
-            row.apprNo
-          }}</span>
+            @click="() => jumpToDetail(row)"
+          >{{ row.apprNo }}</span>
         </template>
 
         <template #handler="{row}">
           <el-button
             type="text"
-            @click="() => handleViewBtnClick(row)"
+            @click="() => jumpToDetail(row)"
           >
             查看
           </el-button>
@@ -268,6 +266,17 @@ const SEARCH_CONFIG = {
         'range-separator': '至',
         'value-format': 'yyyy-MM-dd HH:mm:ss'
       }
+    },
+    {
+      type: 'dataPicker',
+      data: '',
+      label: '完成日期',
+      field: 'beginCompleteTime,endCompleteTime',
+      config: {
+        type: 'datetimerange',
+        'range-separator': '至',
+        'value-format': 'yyyy-MM-dd HH:mm:ss'
+      }
     }
   ]
 }
@@ -379,10 +388,10 @@ export default {
       return STATUS_TO_TEXT[status]
     },
     // 处理跳转
-    handleLinkApprNoClick(row) {
+    jumpToDetail(row) {
       this.$router.push({
         path: '/apprProcess/apprDetail',
-        query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
+        query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo, preview: true }
       })
     },
 
@@ -396,13 +405,8 @@ export default {
     },
     handleSearch(searchParams) {
       this.searchParams = _.pickBy(searchParams)
+      this.page.currentPage = 1
       this.loadTableData()
-    },
-    handleViewBtnClick(row) {
-      this.$router.push({
-        path: '/approval/appr/apprDetail',
-        query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
-      })
     },
 
     refresh() {

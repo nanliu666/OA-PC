@@ -1,5 +1,8 @@
 <template>
-  <div class="page">
+  <div
+    v-loading="loading"
+    class="page"
+  >
     <header class="page__header">
       <div class="page-actions">
         <div
@@ -8,7 +11,7 @@
         >
           <i class="el-icon-arrow-left" /> 返回
         </div>
-        <div>{{ title }} <span style="color: transparent">11</span></div>
+        <div>{{ Title }} <span style="color: transparent">11</span></div>
       </div>
       <div class="step-tab">
         <div
@@ -113,6 +116,8 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      Title: this.title,
       base: [],
       lineList: [],
       condition: [],
@@ -177,7 +182,7 @@ export default {
         processId: this.$route.query.processId
       }
       getApprProcess(params).then((res) => {
-        this.title = res.processName
+        this.Title = res.processName
         this.mockData = JSON.parse(Base64.decode(res.baseJson))
       })
     },
@@ -220,11 +225,11 @@ export default {
         })
     },
     sendToServer(param) {
-      this.$notify({
-        title: '数据已整合完成',
-        message: '请在控制台中查看数据输出',
-        position: 'bottom-right'
-      })
+      // this.$notify({
+      //   title: '数据已整合完成',
+      //   message: '请在控制台中查看数据输出',
+      //   position: 'bottom-right'
+      // })
       this.base = []
       this.lineList = []
       this.condition = []
@@ -293,17 +298,38 @@ export default {
           emptyList.push(it)
         }
       })
-      // this.base = this.base.filter(it => it.type !=='empty')
-      emptyList.map((it) => {
-        if (param.processData.childNode) {
-          it.prevId =
-            param.processData.childNode.nodeId === it.id
-              ? param.processData.childNode.prevId
-              : this.prevId_(param.processData, it.id)
-        }
-      })
 
-      // console.log(emptyList)
+      let emptyRelation = []
+      if (emptyList.length > 0) {
+        emptyList.map((it) => {
+          if (param.processData.childNode) {
+            it.prevId =
+              param.processData.childNode.nodeId === it.id
+                ? param.processData.childNode.prevId
+                : this.prevId_(param.processData, it.id)
+          }
+          this.base.map((item) => {
+            if (it.id === item.source || it.id === item.target) {
+              emptyRelation.push(item)
+            }
+          })
+        })
+        emptyRelation.map((it) => {
+          if (it.source)
+            emptyList.map((item) => {
+              if (it.source == item.id) {
+                it.source = item.prevId
+              }
+              if (it.target === item.id) {
+                it.target = 'gateway_' + item.id
+              }
+              // this.base.map((i) => {
+              //   i
+              // })
+            })
+        })
+        // this.base = this.base.filter(it => it.type !=='empty')
+      }
       let params = {
         processId: this.$route.query.processId,
         processData: this.base,
@@ -313,35 +339,24 @@ export default {
       }
       // eslint-disable-next-line
       let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
-      ApprProcess(params).then(() => {
-        this.$message.success('提交成功')
-        setTimeout(() => {
-          this.$router.push({
-            path: '/apprProcess/approvalList'
-          })
-        }, 1000)
-      })
+      this.loading = true
+      ApprProcess(params)
+        .then(() => {
+          this.$message.success('提交成功')
+          setTimeout(() => {
+            this.$router.push({
+              path: '/apprProcess/approvalList'
+            })
+          }, 1000)
+        })
+        .finally(() => {
+          this.loading = false
+        })
       // postDeploy(params).then(() => {
       //   this.$message.success('提交成功')
       // })
     },
-    prevId_(data, id) {
-      let priv = []
-      this.prevId(data, id, priv)
-      return priv[0]
-    },
-    prevId(data, id, priv) {
-      if (data.nodeId === id) {
-        priv.push('gateway_' + data.prevId)
-      } else {
-        if (hasBranch(data)) {
-          data.conditionNodes.map((d) => {
-            this.prevId(d, id, priv)
-          })
-        }
-        data.childNode && this.prevId(data.childNode, id, priv)
-      }
-    },
+
     resfun(data) {
       let endChild = this.childNode(data)
       // let istrue = hasBranch(endChild)
@@ -463,7 +478,7 @@ export default {
           }
 
           this.condition.push(newIt)
-        } else {
+        } else if (data.type !== 'empty') {
           let newIt = {
             //进网关线
             type: 'flow',
@@ -498,7 +513,27 @@ export default {
             it.type === 'radio' &&
               conditionExpression.push('${' + it.vModel + " eq '" + it.val + "'}")
           })
+
+          let strs = ''
+          if (d.properties.initiator && d.properties.initiator.length > 0) {
+            d.properties.initiator.map((it, i) => {
+              strs +=
+                ' initiator_org eq ' +
+                "'" +
+                it.orgId +
+                "'" +
+                (i === d.properties.initiator.length - 1 ? '' : ' or ')
+            })
+          }
           conditionExpression = conditionExpression.join('&&')
+          conditionExpression = conditionExpression.replace(/}&&\${/g, ' and ')
+          if (strs) {
+            strs = conditionExpression ? ' and (' + strs + ')' : '${ ' + strs + ' }'
+            conditionExpression =
+              conditionExpression.slice(0, -1) + strs + conditionExpression.slice(-1)
+          }
+          //
+
           // this.processMap[conditionExpression] = ''
           // if(d.properties.conditions)
           // d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'

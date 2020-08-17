@@ -246,7 +246,6 @@
                 v-model="initiator"
                 :all="all"
                 :org="org"
-                :is-department="isDepartment"
               />
             </el-col>
           </el-row>
@@ -935,10 +934,15 @@ export default {
           attribute.push(it.id.split('_')[1])
         })
       attribute = attribute.join(',')
+
       this.properties.attribute = attribute
       this.approverForm.assigneeType === 'optional' &&
         !this.approverForm.optionalMultiUser &&
-        (this.approverForm.counterSign = false)
+        (this.approverForm.counterSign = null)
+
+      if (this.approverForm.approvers.length < 2 && this.approverForm.assigneeType !== 'optional') {
+        this.approverForm.counterSign = null
+      }
       Object.assign(this.properties, this.approverForm, { formOperates })
       this.$emit('confirm', this.properties, content || '请设置审批人')
       this.visible = false
@@ -1006,6 +1010,8 @@ export default {
           this.approverForm[key] = this.value.properties[key]
         }
       }
+      this.approverForm.counterSign =
+        this.approverForm.counterSign === null ? true : this.approverForm.counterSign
       const approvers = this.approverForm.approvers
       this.resetOrgColl()
       if (Array.isArray(this.approverForm.approvers)) {
