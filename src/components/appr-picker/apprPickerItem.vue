@@ -208,12 +208,15 @@ export default {
               this.noMatchOrg = !flag
             }
             if (flag) {
-              this.data = node.childNode || { conditionNodes: node.conditionNodes }
               // 当这个节点只有条件没有内容时设置noData为true
-              if (node.childNode) {
+              if (node.childNode && !node.conditionNodes) {
                 this.data = { ...node.childNode, noData: false }
               } else if (node.conditionNodes) {
-                this.data = { noData: true, conditionNodes: node.conditionNodes }
+                this.data = {
+                  noData: true,
+                  childNode: node.childNode,
+                  conditionNodes: node.conditionNodes
+                }
               } else {
                 this.data = { noData: true }
               }
