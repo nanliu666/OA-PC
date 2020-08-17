@@ -9,7 +9,10 @@
         class="content-h1"
         v-text="noticeDetail.title"
       />
-      <div class="subText">
+      <div
+        v-if="noticeDetail.publishUserName"
+        class="subText"
+      >
         <span class="publishUserName">发布人：{{ noticeDetail.publishUserName }}</span>
         <span>发布时间：{{ noticeDetail.publishTime }}</span>
       </div>
