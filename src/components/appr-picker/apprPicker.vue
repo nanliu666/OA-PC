@@ -89,6 +89,7 @@ export default {
       conditionFields: [],
       userOrgList: [],
       fullOrgId: null,
+      noMatchOrg: null,
       rules: {
         fullOrgId: [{ required: true, trigger: 'change', message: '请选择所在部门' }],
         approver: [{ required: true, validator: checkAppr, trigger: 'change' }]
@@ -113,7 +114,8 @@ export default {
 
   watch: {
     fullOrgId() {
-      this.$nextTick(() => {
+      setTimeout(() => {
+        this.checkFullfilled()
         this.noMatchOrg = this.$refs.apprPickerItem && this.$refs.apprPickerItem.noMatchOrg
       })
     },
