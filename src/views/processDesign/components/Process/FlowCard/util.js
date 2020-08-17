@@ -1,4 +1,5 @@
 import nodeConfig from './config.js'
+
 // const isEmpty = data => data === null || data === undefined || data === ''
 const isEmptyArray = (data) => (Array.isArray(data) ? data.length === 0 : true)
 
@@ -42,11 +43,17 @@ export class NodeUtils {
     console.log(res)
     this.fit(res)
     // eslint-disable-next-line
-    console.log('res___', res)
-    return res.join('')
+    let allNode = JSON.parse(localStorage.getItem('allNode'))
+    let node = res.join('')
+    if (allNode.length > 2 && allNode.includes(node)) {
+      return this.idGenerator()
+    } else {
+      return res.join('')
+    }
   }
+  static getAllNode() {}
   static fit(data) {
-    if (typeof data[0] === 'number') {
+    if (!isNaN(parseInt(data[0]))) {
       let s = data.shift()
       data.push(s)
       this.fit(data)
@@ -170,6 +177,7 @@ export class NodeUtils {
   static addApprovalNode(data, isBranchAction, newChildNode = undefined) {
     let oldChildNode = data.childNode
     newChildNode = newChildNode || this.createNode('approver', data.nodeId)
+
     data.childNode = newChildNode
     if (oldChildNode) {
       newChildNode.childNode = oldChildNode
@@ -353,6 +361,8 @@ export class NodeUtils {
     let valid = true
     const props = node.properties
     this.isStartNode(node) && !props.initiator && (valid = false)
+    this.isCopyNode(node) &&
+      node.properties.members && node.properties.members.length === 0 && (valid = false)
 
     this.isConditionNode(node) &&
       !props.isDefault &&
