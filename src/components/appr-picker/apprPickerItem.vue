@@ -78,23 +78,30 @@
       v-if="data && (data.childNode || data.conditionNodes)"
       :path="`${path}-0`"
       :child-node="data.childNode"
+      :type="data.type"
       :form-data="formData"
       :full-org-id="fullOrgId"
       :condition-nodes="data.conditionNodes"
     />
     <appr-picker-item
       v-if="nextNode"
+      :form-data="formData"
       :path="`${path}-1`"
-      :child-node="nextNode"
+      :full-org-id="fullOrgId"
+      :child-node="nextNode.childNode"
+      :condition-nodes="nextNode.conditionNodes"
+      :type="nextNode.type"
     />
   </div>
 </template>
 
 <script>
 // import pickUser from '@/components/appr-progress/userPicker.js'
+import elFormEmitter from '@/mixins/elFormEmitter'
 
 export default {
   name: 'ApprPickerItem',
+  mixins: [elFormEmitter],
   props: {
     formData: {
       type: Object,
@@ -116,6 +123,10 @@ export default {
     fullOrgId: {
       type: String,
       default: null
+    },
+    type: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -124,6 +135,7 @@ export default {
       nextNode: null,
       watcher: null,
       isLast: false,
+      conditionOrgId: null,
       noMatchOrg: false
     }
   },
@@ -171,11 +183,16 @@ export default {
   },
   created() {
     if (!_.isEmpty(this.conditionNodes)) {
-      this.nextNode = this.childNode
+      if (this.childNode && this.childNode.type !== 'empty') {
+        this.nextNode = { childNode: this.childNode, type: this.childNode.type }
+      } else {
+        this.nextNode = this.childNode
+      }
+      let init = false
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
         function() {
-          let flag = this.conditionNodes.some((node) => {
+          let mainflag = this.conditionNodes.some((node) => {
             let flag = true
             node.properties.conditions.forEach((condition) => {
               if (condition.type === 'number' && condition.defaultValue) {
@@ -199,30 +216,37 @@ export default {
               }
               flag = false
             })
-            if (!_.isEmpty(node.properties.initiator)) {
-              flag =
-                this.fullOrgId &&
-                node.properties.initiator.some((item) =>
+            if (!_.isEmpty(node.properties.initiator) && this.fullOrgId) {
+              this.conditionOrgId = (
+                node.properties.initiator.find((item) =>
                   _.includes(this.fullOrgId.split('.'), item.orgId)
-                )
+                ) || {}
+              ).orgId
+              flag = flag !== false && !!this.conditionOrgId
               this.noMatchOrg = !flag
             }
             if (flag) {
-              this.data = node.childNode || { conditionNodes: node.conditionNodes }
               // 当这个节点只有条件没有内容时设置noData为true
               if (node.childNode) {
                 this.data = { ...node.childNode, noData: false }
               } else if (node.conditionNodes) {
-                this.data = { noData: true, conditionNodes: node.conditionNodes }
+                this.data = { noData: true, conditionNodes: node.conditionNodes, type: node.type }
               } else {
-                this.data = { noData: true }
+                this.data = { noData: true, type: node.type }
               }
               !this.data.noData && !this.data.userList && this.initUserList(this.data)
             }
             return flag
           })
-          if (!flag) {
+          if (!mainflag) {
             this.data = {}
+          }
+          if (init === false) {
+            init = true
+          } else {
+            setTimeout(() => {
+              this.dispatch('ElFormItem', 'el.form.change')
+            }, 0)
           }
         },
         { deep: true, immediate: true }
@@ -246,6 +270,7 @@ export default {
     },
     handleSelect(data) {
       this.data.userList.push(data)
+      this.dispatch('ElFormItem', 'el.form.change')
     },
     // pickUser(userList) {
     //   pickUser(userList, {
@@ -256,6 +281,7 @@ export default {
     // },
     deleteUser(index) {
       this.data.userList.splice(index, 1)
+      this.dispatch('ElFormItem', 'el.form.change')
     },
     checkUserSelected(user) {
       return !!_.find(this.data.userList, (item) => item.id === user.id)

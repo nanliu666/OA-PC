@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading">
     <page-header
-      :title="`${applyDetail.title}申请`"
+      :title="`${applyDetail.processName}`"
       show-back
       :back="goBack"
     />
@@ -245,7 +245,7 @@
                       class="counterSign_text"
                     >需所有人同意（会签）</span>
                     <span
-                      v-else
+                      v-else-if="item.properties.counterSign === false"
                       class="counterSign_text"
                     >1人审批（或签）</span>
                   </span>
@@ -377,7 +377,7 @@
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
         <el-button
-          v-if="!isShowCancel && isApplyUser"
+          v-if="isApplyUser"
           type="primary"
           size="medium"
           @click="handelCancel"
@@ -634,11 +634,12 @@ export default {
       return result
     },
     // 提交人跟当前用户是否同一个人
-    isApplyUser() {
-      if (this.userId === this.applyUserId) {
+    isApplyUser: function() {
+      if (this.userId !== this.applyUserId) {
+        return false
+      } else {
         return true
       }
-      return false
     },
     ...mapGetters(['userId'])
   },
@@ -651,6 +652,11 @@ export default {
             return it
           }
         })
+        // this.progressRecord = val.filter((it) => {
+        //   if (it.type !== 'copy') {
+        //     return it
+        //   }
+        // })
       },
       deep: true
     }
@@ -783,6 +789,12 @@ export default {
           }
         })
       // this./**/
+      nodeData.length > 0 &&
+        (nodeData = nodeData.filter((it) => {
+          if (it.type !== 'copy') {
+            return it
+          }
+        }))
       this.progressRecord = nodeData
     },
     goBack() {

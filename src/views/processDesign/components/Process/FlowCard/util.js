@@ -1,4 +1,5 @@
 import nodeConfig from './config.js'
+
 // const isEmpty = data => data === null || data === undefined || data === ''
 const isEmptyArray = (data) => (Array.isArray(data) ? data.length === 0 : true)
 
@@ -17,7 +18,7 @@ export class NodeUtils {
       Array.isArray(node.conditionNodes) && node.conditionNodes.forEach((c) => loop(c))
     }
     loop(data)
-    const chars = '0123456789ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz'
+    const chars = 'ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789'
     const len = chars.length
     return max.split('').reduce((sum, c, i) => {
       return sum + chars.indexOf(c) * Math.pow(len, i)
@@ -29,7 +30,7 @@ export class NodeUtils {
    */
   static idGenerator() {
     let qutient = ++this.globalID
-    const chars = '0123456789ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz'
+    const chars = 'ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789'
     const charArr = chars.split('')
     const radix = chars.length
     const res = []
@@ -38,9 +39,26 @@ export class NodeUtils {
       qutient = (qutient - mod) / radix
       res.push(charArr[mod])
     } while (qutient)
-    return res.join('')
+    // eslint-disable-next-line
+    console.log(res)
+    this.fit(res)
+    // eslint-disable-next-line
+    let allNode = JSON.parse(localStorage.getItem('allNode'))
+    let node = res.join('')
+    if (allNode.length > 2 && allNode.includes(node)) {
+      return this.idGenerator()
+    } else {
+      return res.join('')
+    }
   }
-
+  static getAllNode() {}
+  static fit(data) {
+    if (!isNaN(parseInt(data[0]))) {
+      let s = data.shift()
+      data.push(s)
+      this.fit(data)
+    }
+  }
   /**
    * 判断节点类型
    * @param {Node} node - 节点数据
@@ -159,6 +177,7 @@ export class NodeUtils {
   static addApprovalNode(data, isBranchAction, newChildNode = undefined) {
     let oldChildNode = data.childNode
     newChildNode = newChildNode || this.createNode('approver', data.nodeId)
+
     data.childNode = newChildNode
     if (oldChildNode) {
       newChildNode.childNode = oldChildNode
@@ -342,6 +361,10 @@ export class NodeUtils {
     let valid = true
     const props = node.properties
     this.isStartNode(node) && !props.initiator && (valid = false)
+    this.isCopyNode(node) &&
+      node.properties.members &&
+      node.properties.members.length === 0 &&
+      (valid = false)
 
     this.isConditionNode(node) &&
       !props.isDefault &&
