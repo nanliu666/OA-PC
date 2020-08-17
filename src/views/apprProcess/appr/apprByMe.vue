@@ -116,8 +116,7 @@
 </template>
 
 <script>
-import { getCategoryList, getMyApproveList } from '@/api/apprProcess/apprProcess'
-// import moment from 'moment'
+import { getProcessTypeList, getMyApproveList } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
@@ -193,7 +192,7 @@ let SEARCH_POPOVER_POPOVER_OPTIONS = [
     label: '审批类型',
     type: 'select',
     options: [],
-    config: { optionLabel: 'name', optionValue: 'id' }
+    config: { optionLabel: 'processName', optionValue: 'processId' }
   },
   {
     type: 'treeSelect',
@@ -332,7 +331,7 @@ export default {
      * 获取审批类型
      */
     getApprType() {
-      getCategoryList().then((res) => {
+      getProcessTypeList().then((res) => {
         this.searchPopoverConfig.popoverOptions[0].options = res
       })
     },
@@ -372,9 +371,9 @@ export default {
      */
     handleSearch(searchParams) {
       for (let i in searchParams) {
-        // window.console.log(moment(searchParams[i]).unix())
         this.queryInfo[i] = searchParams[i]
       }
+
       this.loadTableData()
     },
     // 跳去审批详情

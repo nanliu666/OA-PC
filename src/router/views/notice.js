@@ -5,6 +5,11 @@ export default [
     component: Layout,
     children: [
       {
+        path: '/noticeCenter/noticeManage',
+        name: '公告管理',
+        component: () => import('@/views/noticeCenter/noticeManage')
+      },
+      {
         path: '/noticeCenter/noticePubulishList',
         name: '已发布的',
         component: () => import('@/views/noticeCenter/noticePubulishList')

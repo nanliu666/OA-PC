@@ -47,11 +47,12 @@ const options = { mock: false }
 Mock.setup({
   timeout: 500
 })
-newCenter({ mock: true })
-noticeCenter({ mock: true })
+newCenter(options)
+noticeCenter(options)
 user(options)
 
 apprProcess(options)
+// menu(options)
 menu({ mock: true })
 apprProcess(options)
 

@@ -1,4 +1,5 @@
 const getters = {
+  noticeDetailVuex: (state) => state.notice.noticeDetailVuex,
   tag: (state) => state.tags.tag,
   language: (state) => state.common.language,
   website: (state) => state.common.website,
