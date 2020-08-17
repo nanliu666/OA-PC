@@ -85,7 +85,7 @@ const layouts = {
         <el-form-item
           prop={scheme.__vModel__}
           label={config.label}
-          style={typeof config.defaultValue === 'undefined' ? 'margin-bottom:0' : ''}
+          style={config.type === 'desc' ? 'margin-bottom:0' : ''}
         >
           <render
             conf={scheme}

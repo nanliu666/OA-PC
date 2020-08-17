@@ -90,6 +90,7 @@ export default {
       userOrgList: [],
       fullOrgId: null,
       rules: {
+        fullOrgId: [{ required: true, trigger: 'change', message: '请选择所在部门' }],
         approver: [{ required: true, validator: checkAppr, trigger: 'change' }]
       }
     }

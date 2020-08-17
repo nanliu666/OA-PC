@@ -192,7 +192,7 @@ export default {
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
         function() {
-          let flag = this.conditionNodes.some((node) => {
+          let mainflag = this.conditionNodes.some((node) => {
             let flag = true
             node.properties.conditions.forEach((condition) => {
               if (condition.type === 'number' && condition.defaultValue) {
@@ -238,13 +238,15 @@ export default {
             }
             return flag
           })
-          if (!flag) {
+          if (!mainflag) {
             this.data = {}
           }
           if (init === false) {
             init = true
           } else {
-            this.dispatch('ElFormItem', 'el.form.change')
+            setTimeout(() => {
+              this.dispatch('ElFormItem', 'el.form.change')
+            }, 0)
           }
         },
         { deep: true, immediate: true }
