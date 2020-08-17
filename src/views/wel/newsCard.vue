@@ -43,6 +43,7 @@
         </div>
       </li>
     </ul>
+    <comEmpty v-if="newsList.length === 0" />
   </el-card>
 </template>
 
@@ -50,6 +51,9 @@
 import { getNewsCenterList } from '@/api/newsCenter/newCenter'
 export default {
   name: 'NewsCard',
+  components: {
+    comEmpty: () => import('@/components/common-empty/empty')
+  },
   data() {
     return {
       newsList: []

@@ -15,6 +15,16 @@ export default ({ mock }) => {
   Mock.mock(new RegExp('/notice/v1/notice/publish' + '(\\?.*)?$'), 'post', () => {
     return normalData
   })
+  // 公告创建接口
+  Mock.mock(new RegExp('/notice/v1/notice' + '(\\?.*)?$'), 'post', () => {
+    const res = {
+      ...normalData,
+      response: {
+        id: 1
+      }
+    }
+    return res
+  })
   // 公告管理列表查询接口
   Mock.mock(new RegExp('/api/notice/v1/notice' + '(\\?.*)?$'), 'get', () => {
     const response = _.times(10, () =>
