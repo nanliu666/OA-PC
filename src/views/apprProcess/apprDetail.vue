@@ -617,7 +617,10 @@ export default {
       this.progressList.map((it) => {
         result.push(it.result)
       })
-      !result.includes('Pass') && (res = true)
+      !result.includes('Pass') &&
+        !result.includes('Reject') &&
+        !result.includes('Cancel') &&
+        (res = true)
       return res
     },
     // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
