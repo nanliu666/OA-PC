@@ -283,7 +283,7 @@ export default {
     // 生成条件变量
     createConditionProcessMap() {
       let processMap = this.conditionFields.reduce((acc, curr) => {
-        acc[curr] = this.formData[curr] + ''
+        acc[curr] = this.formData[curr]
         return acc
       }, {})
       if (this.conditonHasInitiator) {
