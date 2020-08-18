@@ -283,7 +283,8 @@ export default {
         categoryId,
         isOpinion: isOpinion ? 1 : 0,
         processAdmin: processAdmin,
-        approverNull: approverNull
+        approverNull: approverNull,
+        formKey: this.formKey
       }
       // 基础设置
       // "flowName": "转正申请",      // 流程名称

@@ -89,6 +89,7 @@ export default {
       conditionFields: [],
       userOrgList: [],
       fullOrgId: null,
+      noMatchOrg: null,
       rules: {
         fullOrgId: [{ required: true, trigger: 'change', message: '请选择所在部门' }],
         approver: [{ required: true, validator: checkAppr, trigger: 'change' }]
@@ -113,7 +114,8 @@ export default {
 
   watch: {
     fullOrgId() {
-      this.$nextTick(() => {
+      setTimeout(() => {
+        this.checkFullfilled()
         this.noMatchOrg = this.$refs.apprPickerItem && this.$refs.apprPickerItem.noMatchOrg
       })
     },
@@ -281,11 +283,12 @@ export default {
     // 生成条件变量
     createConditionProcessMap() {
       let processMap = this.conditionFields.reduce((acc, curr) => {
-        acc[curr] = this.formData[curr] + ''
+        acc[curr] = this.formData[curr]
         return acc
       }, {})
       if (this.conditonHasInitiator) {
-        processMap['initiator_org'] = this.$refs.apprPickerItem.conditionOrgId
+        processMap['initiator_org'] =
+          this.$refs.apprPickerItem.conditionOrgId || this.fullOrgId.split('.').slice(-1)[0]
       }
       return processMap
     },

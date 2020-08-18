@@ -252,6 +252,7 @@ export default {
   },
   methods: {
     toPubulishNotice() {
+      this.$store.commit('SET_NOTICE', '')
       this.$router.push({
         path: '/noticeCenter/noticeEdit'
       })
@@ -308,7 +309,6 @@ export default {
       this.tableData = []
       this.loadTableData()
     },
-
     // 加载表格数据
     async loadTableData() {
       if (this.tableLoading) return

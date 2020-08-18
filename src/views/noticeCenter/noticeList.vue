@@ -31,8 +31,9 @@
     <div class="pagination-box">
       <el-pagination
         background
-        :page-sizes="[10, 20]"
-        :page-size="totalPage"
+        :page-sizes="pageSizes"
+        :page-size="5"
+        :current-page="currentPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalNum"
         @size-change="handleSizeChange"
@@ -50,6 +51,8 @@ export default {
   components: { PageHeader },
   data() {
     return {
+      pageSizes: [5, 10],
+      currentPage: 0,
       noticeList: [],
       totalNum: 0,
       totalPage: 0,

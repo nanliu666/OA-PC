@@ -82,6 +82,10 @@ export const getDraftList = (params) => get('/appr/v2/appr/process/draft/list', 
  */
 export const getCategoryList = (params) => get('/appr/v2/appr/category', params)
 /**
+ * 审批类型查询接口
+ */
+export const getProcessTypeList = (params) => get('/appr/v2/appr/process/type', params)
+/**
  * 审批流程移动接口
  */
 export const moveProcess = (params) => post('/appr/v2/appr/process/move', params)
@@ -124,3 +128,11 @@ export const getProcessType = (params) => get('/appr/v2/appr/process/type', para
  * @param {string} params.userId
  */
 export const getUserOrgList = (params) => get('/appr/v2/appr/user/org/list', params)
+
+/**
+ *
+ * 根据formKey查询流程ID接口
+ * @param {object} params 查询参数
+ * @param {string} params.formKey
+ */
+export const getProcessIDByFormKey = (params) => get('/appr/v2/appr/process/id', params)

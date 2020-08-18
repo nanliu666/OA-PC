@@ -3,7 +3,8 @@
 import FlowCard from './FlowCard/FlowCard.vue'
 import PropPanel from './PropPanel/PropPanel.vue'
 import { NodeUtils, getMockData } from './FlowCard/util.js'
-
+const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
+const hasBranch = (data) => notEmptyArray(data.conditionNodes)
 export default {
   name: 'Process',
   props: ['tabName', 'conf'],
@@ -25,14 +26,32 @@ export default {
       handler(val) {
         if (typeof val === 'object' && val !== null) {
           this.data = Object.assign({}, val)
+          // this.$store.commit('updateProcessData',val)
+          // console.log('this.$store.getters.processData____',this.$store.getters.processData)
         }
         this.forceUpdate()
       },
       immediate: true,
       deep: true
+    },
+    data: {
+      handler(val) {},
+      deep: true
     }
   },
   methods: {
+    getAllDode(data, allNode) {
+      allNode.push(data.nodeId)
+      if (hasBranch(data)) {
+        data.conditionNodes.map((d, index) => {
+          // allNode.push(d.nodeId)
+          this.getAllDode(d, allNode)
+        })
+      }
+      if (data.childNode) {
+        return this.getAllDode(data.childNode, allNode)
+      }
+    },
     // 给父级组件提供的获取流程数据得方法
     getData() {
       this.verifyMode = true
@@ -48,6 +67,7 @@ export default {
      */
     eventReciver({ event, args }) {
       if (event === 'edit') {
+        this.$store.commit('updateProcessData', this.data)
         this.activeData = args[0] // 打开属性面板
         return
       }
@@ -59,7 +79,11 @@ export default {
     },
 
     forceUpdate() {
+      let allNode = []
+      this.getAllDode(this.data, allNode)
+      localStorage.setItem('allNode', JSON.stringify(allNode))
       this.updateId = this.updateId + 1
+      this.$forceUpdate()
     },
     /**
      * 控制流程图缩放
@@ -120,6 +144,8 @@ export default {
   },
   render: function(h) {
     NodeUtils.globalID = NodeUtils.getMaxNodeId(this.data)
+    let allNode = []
+    NodeUtils.getAllNode(allNode)
     return (
       <div class="flow-container">
         <div class="scale-slider">
