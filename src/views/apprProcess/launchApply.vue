@@ -9,6 +9,7 @@
           v-for="(item, index) in processListData"
           :key="index"
           class="approval-ul"
+          :class="{ 'empty-ul': item.processes.length == 0 }"
         >
           <li
             v-if="item.processes.length !== 0"
@@ -223,5 +224,8 @@ export default {
       }
     }
   }
+}
+.empty-ul {
+  padding-bottom: 0;
 }
 </style>
