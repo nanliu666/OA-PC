@@ -189,6 +189,8 @@ export default {
       let domain =
         process.env.NODE_ENV === 'development' ? 'www.bestgrand.com.cn' : window.location.host
       // let domain =
+      //   process.env.NODE_ENV === 'development' ? 'apitest.epro.com.cn' : window.location.host
+      // let domain =
       //   process.env.NODE_ENV === 'development'
       //     ? 'http://122.112.190.144'
       //     : window.location.href.split('/#/')[0]
