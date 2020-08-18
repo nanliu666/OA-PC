@@ -231,7 +231,8 @@ export default {
             label: item.__config__.label,
             prop: item.__vModel__,
             value: form[item.__vModel__],
-            content: this.getFieldContent(item)
+            content: this.getFieldContent(item),
+            span: item.__pc__.span || 12
           })
         }
       })

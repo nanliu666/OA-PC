@@ -227,10 +227,15 @@ export default {
             }
             if (flag) {
               // 当这个节点只有条件没有内容时设置noData为true
-              if (node.childNode) {
+              if (node.childNode && !node.conditionNodes) {
                 this.data = { ...node.childNode, noData: false }
               } else if (node.conditionNodes) {
-                this.data = { noData: true, conditionNodes: node.conditionNodes, type: node.type }
+                this.data = {
+                  noData: true,
+                  childNode: node.childNode,
+                  conditionNodes: node.conditionNodes,
+                  type: node.type
+                }
               } else {
                 this.data = { noData: true, type: node.type }
               }

@@ -77,15 +77,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  label="审批流程"
-                  prop="apprProgress"
-                >
-                  <appr-progress
-                    ref="apprProgress"
-                    form-key="UserFormalInfo"
-                  />
-                </el-form-item>
+                <appr-picker
+                  ref="apprPicker"
+                  :process-data="processData"
+                />
               </el-col>
             </el-row>
 
@@ -115,22 +110,30 @@ import { mapGetters } from 'vuex'
 import { createApply } from '@/api/personnel/person'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { getApproveCount } from '../../../api/approval/approval'
+
+import { Base64 } from 'js-base64'
+import { getProcessDetail, getProcessIDByFormKey } from '@/api/apprProcess/apprProcess'
+import apprPicker from '@/components/appr-picker/apprPicker'
+import { FormKeysCN } from '@/const/approve'
+
+const formFields = [
+  { label: '入职时间', prop: 'entryDate', value: null, span: 12 },
+  { label: '预计转正时间', prop: 'formalDate', value: null, span: 12 },
+  { label: '试用期工作总结', prop: 'summary', value: null, span: 24 },
+  { label: '对公司的意见和建议', prop: 'advise', value: null, span: 24 }
+]
 export default {
-  name: 'Apply',
+  name: 'FormalApply',
   components: {
-    apprProgress: () => import('@/components/appr-progress/apprProgress')
+    apprPicker
   },
   data() {
-    var checkAppr = (rule, value, callback) => {
-      if (!this.$refs['apprProgress'].validate()) {
-        callback(new Error('请选择审批人'))
-      } else {
-        callback()
-      }
-    }
     return {
       loading: false,
       inputdisabled: true,
+      formKey: 'UserFormalInfo',
+      processData: null,
+      processId: null,
       apply: {
         entryDate: '暂无数据',
         formalDate: '暂无数据',
@@ -139,8 +142,7 @@ export default {
       },
       rules: {
         summary: [{ required: true, message: '请简单说说您的工作心得', trigger: 'blur' }],
-        advise: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }],
-        apprProgress: [{ required: true, validator: checkAppr, trigger: 'change' }]
+        advise: [{ required: true, message: '希望公司哪里可以改进？', trigger: 'blur' }]
       }
     }
   },
@@ -153,15 +155,32 @@ export default {
       this.apply.formalDate = res.formalDate
     })
   },
+  created() {
+    this.getProcessDetail()
+  },
   methods: {
+    // 通过formKey获取processId
+    getProcessId() {
+      return getProcessIDByFormKey({ formKey: this.formKey })
+    },
+    getProcessDetail() {
+      this.getProcessId().then((res) => {
+        this.processId = res.processId
+        getProcessDetail({ processId: res.processId }).then((res) => {
+          this.json = res.baseJson
+          const obj = JSON.parse(Base64.decode(res.baseJson))
+          if (typeof obj === 'object') {
+            this.processData = obj.processData
+          }
+        })
+      })
+    },
     // 提交之前hook
     async checkValid() {
       let valid = true
       if (
-        _.get(
-          await getApproveCount({ userId: this.userId, formKey: 'UserFormalInfo' }),
-          'approveNum'
-        ) > 0
+        _.get(await getApproveCount({ userId: this.userId, formKey: this.formKey }), 'approveNum') >
+        0
       ) {
         valid = false
       }
@@ -172,9 +191,8 @@ export default {
         // 已经提交过了
         return this.$message.warning('已存在正在审批中的申请')
       }
-
-      this.$refs['apply'].validate((valid) => {
-        if (valid) {
+      Promise.all([this.$refs['apply'].validate(), this.$refs['apprPicker'].validate()]).then(
+        () => {
           params.userId = this.userId
           params.summary = this.apply.summary
           params.advise = this.apply.advise
@@ -185,10 +203,21 @@ export default {
             createApply(params).then((res) => {
               this.loading = false
               if (res && res.id) {
-                this.$refs['apprProgress'].submit(res.id).then(() => {
-                  this.$message({ type: 'success', message: '提交成功' })
-                  this.goBack()
+                formFields.forEach((field) => {
+                  field.value = params[field.prop]
                 })
+                this.$refs['apprPicker']
+                  .submit({
+                    formData: formFields,
+                    formId: res.id,
+                    formKey: this.formKey,
+                    processName: FormKeysCN[this.formKey],
+                    processId: this.processId
+                  })
+                  .then(() => {
+                    this.$message({ type: 'success', message: '提交成功' })
+                    this.goBack()
+                  })
               }
             })
           } else {
@@ -199,10 +228,8 @@ export default {
             })
             this.goBack()
           }
-        } else {
-          return false
         }
-      })
+      )
     },
     goBack() {
       this.resetForm()

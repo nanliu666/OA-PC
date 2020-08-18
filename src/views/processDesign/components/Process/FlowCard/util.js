@@ -45,7 +45,7 @@ export class NodeUtils {
     // eslint-disable-next-line
     let allNode = JSON.parse(localStorage.getItem('allNode'))
     let node = res.join('')
-    if (allNode.length > 2 && allNode.includes(node)) {
+    if (allNode && allNode.length > 2 && allNode.includes(node)) {
       return this.idGenerator()
     } else {
       return res.join('')
