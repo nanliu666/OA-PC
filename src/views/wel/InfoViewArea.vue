@@ -200,8 +200,8 @@ export default {
 <style lang="scss" scoped>
 .info-wrap {
   // height: 90vh;
-  // height: calc(1222px);
-  height: calc(1222px + 400px + 19px);
+  height: calc(1222px);
+  // height: calc(1222px + 400px + 19px);
   width: 100%;
 
   background: #ffffff;
