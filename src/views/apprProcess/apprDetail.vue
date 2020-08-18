@@ -154,7 +154,7 @@
                   v-else
                   class="title"
                 >
-                  {{ `${item.jobName || ''}审批` }}
+                  {{ `${item.properties.title || ''} 审批` }}
                 </div>
               </template>
               <!-- 自定义内容 -->
@@ -197,7 +197,7 @@
                         !isCancel &&
                           index != 0 &&
                           index == activeStep &&
-                          !isShowBtns &&
+                          !(isShowBtns && item.userList.length === 1) &&
                           !isReject &&
                           !isFished &&
                           isApplyUser
@@ -378,7 +378,7 @@
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
         <el-button
-          v-if="isApplyUser"
+          v-if="isShowCancel && isApplyUser"
           type="primary"
           size="medium"
           @click="handelCancel"
@@ -614,11 +614,11 @@ export default {
     // 撤回按钮是否显示
     isShowCancel() {
       let res = false
-      if (this.isCancel) {
-        res = true
-      } else if (this.activeStep > 1) {
-        res = true
-      }
+      let result = []
+      this.progressList.map((it) => {
+        result.push(it.result)
+      })
+      !result.includes('Pass') && (res = true)
       return res
     },
     // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
@@ -629,6 +629,7 @@ export default {
           result = true
         }
       })
+
       // if (this.userId === this.apprUserId) {
       // 	return true
       // }
@@ -755,7 +756,7 @@ export default {
                 if (item.timeList.length === item.approveList.length) {
                   //判断是否审批节点是否结束。结束才能赋值（时间）
                   item.approveTime =
-                    maxTime > 0 ? moment(parseInt(maxTime)).format('YYYY-MM-DD hh:mm:ss') : ''
+                    maxTime > 0 ? moment(parseInt(maxTime)).format('YYYY-MM-DD HH:mm:ss') : ''
                 } else {
                   item.approveTime = ''
                 }

@@ -25,17 +25,28 @@
           {{ item.title }}
         </div>
         <div class="li-time">
-          {{ item.publishTime }}
+          {{ item.publishTime | dataFilter }}
         </div>
       </li>
     </ul>
+    <comEmpty v-if="newsList.length === 0" />
   </el-card>
 </template>
 
 <script>
+import moment from 'moment'
 import { getNoticeCenterList } from '@/api/noticeCenter/noticeCenter'
 export default {
   name: 'Notice',
+  components: {
+    comEmpty: () => import('@/components/common-empty/empty')
+  },
+  filters: {
+    // 时间格式化
+    dataFilter: (time) => {
+      return moment(time).format('YYYY-MM-DD')
+    }
+  },
   data() {
     return {
       newsList: []

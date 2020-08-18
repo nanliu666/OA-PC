@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="请选择审批人"
+    :title="isDepartment ? title1 : title"
     :visible="visible"
     width="800px"
     append-to-body
@@ -109,6 +109,8 @@ export default {
   },
   data() {
     return {
+      title: '请选择审批人',
+      title1: '请选择部门',
       node: {},
       loading: false,
       filterText: '',

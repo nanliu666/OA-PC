@@ -1,4 +1,5 @@
 const getters = {
+  noticeDetailVuex: (state) => state.notice.noticeDetailVuex,
   tag: (state) => state.tags.tag,
   language: (state) => state.common.language,
   website: (state) => state.common.website,
@@ -27,6 +28,7 @@ const getters = {
   logsList: (state) => state.logs.logsList,
   logsLen: (state) => state.logs.logsList.length || 0,
   logsFlag: (state, getters) => getters.logsLen === 0,
-  flowRoutes: (state) => state.dict.flowRoutes
+  flowRoutes: (state) => state.dict.flowRoutes,
+  processData: (state) => state.process.processData
 }
 export default getters

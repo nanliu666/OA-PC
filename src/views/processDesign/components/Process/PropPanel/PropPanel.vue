@@ -221,12 +221,12 @@
             @click="activeName = 'config'"
             v-html="'设置' + (value.type === 'approver' ? '审批人' : '发起人')"
           />
-          <div
-            :class="[activeName == 'formAuth' ? 'active' : '']"
-            @click="activeName = 'formAuth'"
-          >
-            表单权限
-          </div>
+          <!--          <div-->
+          <!--            :class="[activeName == 'formAuth' ? 'active' : '']"-->
+          <!--            @click="activeName = 'formAuth'"-->
+          <!--          >-->
+          <!--            表单权限-->
+          <!--          </div>-->
         </div>
         <div v-if="activeName == 'config'">
           <!-- 开始节点 -->
@@ -399,80 +399,80 @@
             </div>
           </div>
         </div>
-        <div
-          v-if="activeName == 'formAuth'"
-          class="formAuth"
-        >
-          <div class="form-auth-table">
-            <header class="auth-table-header">
-              <div class="row">
-                <div class="label">
-                  表单字段
-                </div>
-                <el-radio-group
-                  v-model="globalFormOperate"
-                  class="radio-group"
-                  @change="changeAllFormOperate"
-                >
-                  <el-radio
-                    :label="2"
-                    style="margin-left: 1rem;"
-                  >
-                    可编辑
-                  </el-radio>
-                  <el-radio :label="1">
-                    只读
-                  </el-radio>
-                  <el-radio :label="0">
-                    隐藏
-                  </el-radio>
-                </el-radio-group>
-              </div>
-            </header>
-            <div class="auth-table-body">
-              <div
-                v-for="item in getFormOperates()"
-                :key="item.formId"
-                class="row"
-              >
-                <div class="label flex flex-center flex-align-items">
-                  <span
-                    v-show="item.required"
-                    class="required"
-                  >*</span>
-                  <!--                                {{item.label}}-->
-                  <el-tooltip
-                    :content="item.label"
-                    placement="right-end"
-                    effect="dark"
-                  >
-                    <div
-                      class="label"
-                      v-html="item.label"
-                    />
-                  </el-tooltip>
-                </div>
-                <el-radio-group
-                  v-model="item.formOperate"
-                  class="radio-group"
-                >
-                  <el-radio
-                    :label="2"
-                    style="margin-left: 1rem;"
-                  >
-                    <span style="opacity: 0;">可编辑</span>
-                  </el-radio>
-                  <el-radio :label="1">
-                    <span style="opacity: 0;">只读</span>
-                  </el-radio>
-                  <el-radio :label="0">
-                    <span style="opacity: 0;">隐藏</span>
-                  </el-radio>
-                </el-radio-group>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!--        <div-->
+        <!--          v-if="activeName == 'formAuth'"-->
+        <!--          class="formAuth"-->
+        <!--        >-->
+        <!--          <div class="form-auth-table">-->
+        <!--            <header class="auth-table-header">-->
+        <!--              <div class="row">-->
+        <!--                <div class="label">-->
+        <!--                  表单字段-->
+        <!--                </div>-->
+        <!--                <el-radio-group-->
+        <!--                  v-model="globalFormOperate"-->
+        <!--                  class="radio-group"-->
+        <!--                  @change="changeAllFormOperate"-->
+        <!--                >-->
+        <!--                  <el-radio-->
+        <!--                    :label="2"-->
+        <!--                    style="margin-left: 1rem;"-->
+        <!--                  >-->
+        <!--                    可编辑-->
+        <!--                  </el-radio>-->
+        <!--                  <el-radio :label="1">-->
+        <!--                    只读-->
+        <!--                  </el-radio>-->
+        <!--                  <el-radio :label="0">-->
+        <!--                    隐藏-->
+        <!--                  </el-radio>-->
+        <!--                </el-radio-group>-->
+        <!--              </div>-->
+        <!--            </header>-->
+        <!--            <div class="auth-table-body">-->
+        <!--              <div-->
+        <!--                v-for="item in getFormOperates()"-->
+        <!--                :key="item.formId"-->
+        <!--                class="row"-->
+        <!--              >-->
+        <!--                <div class="label flex flex-center flex-align-items">-->
+        <!--                  <span-->
+        <!--                    v-show="item.required"-->
+        <!--                    class="required"-->
+        <!--                  >*</span>-->
+        <!--                  &lt;!&ndash;                                {{item.label}}&ndash;&gt;-->
+        <!--                  <el-tooltip-->
+        <!--                    :content="item.label"-->
+        <!--                    placement="right-end"-->
+        <!--                    effect="dark"-->
+        <!--                  >-->
+        <!--                    <div-->
+        <!--                      class="label"-->
+        <!--                      v-html="item.label"-->
+        <!--                    />-->
+        <!--                  </el-tooltip>-->
+        <!--                </div>-->
+        <!--                <el-radio-group-->
+        <!--                  v-model="item.formOperate"-->
+        <!--                  class="radio-group"-->
+        <!--                >-->
+        <!--                  <el-radio-->
+        <!--                    :label="2"-->
+        <!--                    style="margin-left: 1rem;"-->
+        <!--                  >-->
+        <!--                    <span style="opacity: 0;">可编辑</span>-->
+        <!--                  </el-radio>-->
+        <!--                  <el-radio :label="1">-->
+        <!--                    <span style="opacity: 0;">只读</span>-->
+        <!--                  </el-radio>-->
+        <!--                  <el-radio :label="0">-->
+        <!--                    <span style="opacity: 0;">隐藏</span>-->
+        <!--                  </el-radio>-->
+        <!--                </el-radio-group>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
       </section>
 
       <section
@@ -506,7 +506,7 @@
         <el-checkbox-group v-model="showingPCons">
           <!-- 发起人默认就有 -->
           <el-checkbox
-            v-if="showingPCons.includes(-1)"
+            v-if="isShowInitiator"
             style="margin-bottom: 10px;"
             :label="-1"
           >
@@ -570,7 +570,8 @@ import Clickoutside from 'element-ui/src/utils/clickoutside'
 import { NodeUtils } from '../FlowCard/util.js'
 import RowWrapper from './RowWrapper'
 import NumInput from './NumInput'
-
+const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
+const hasBranch = (data) => notEmptyArray(data.conditionNodes)
 const rangeType = {
   lt: '<',
   lte: '≤',
@@ -598,13 +599,15 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
+      isShowInitiator: false,
       org: true,
       isDepartment: true,
       coms: [],
       all: true, //显示所有人
       members: {
         //抄送节点
-        dep: []
+        dep: [],
+        copy: []
       },
       formConf: {
         fields: []
@@ -692,24 +695,33 @@ export default {
     // 未使用的条件个数
     notUseConNum() {
       // 发起人是默认就有得  所以需要加 1
-      return this.pconditions.length - this.showingPCons.length + 1
+      if (this.showingPCons.includes(-1)) {
+        return this.pconditions.length - this.showingPCons.length + 1
+      } else {
+        return this.pconditions.length - this.showingPCons.length
+      }
     },
     usedFormItems() {
       return this.$store.state.formItemList
     }
   },
   watch: {
+    processData: {
+      handler() {},
+      deep: true
+    },
     visible(val) {
       if (!val) {
         this.approverForm = JSON.parse(JSON.stringify(defaultApproverForm)) // 重置数据为默认状态
         return
       }
-      this.processData.properties.formOperates = this.initFormOperates(
-        this.processData
-      ).map((t) => ({ formId: t.formId, formOperate: t.formOperate }))
+      // this.processData.properties.formOperates = this.initFormOperates(
+      //   this.processData
+      // ).map((t) => ({ formId: t.formId, formOperate: t.formOperate }))
       this.isStartNode() && this.initStartNodeData()
       this.isApproverNode() && this.initApproverNodeData()
       this.isConditionNode() && this.initConditionNodeData()
+      this.isCopyNode && this.initCopyNodeData()
     },
 
     value(newVal) {
@@ -1019,6 +1031,18 @@ export default {
       }
       this.approverForm.formOperates = this.initFormOperates(this.value)
     },
+    firstComdition(data, firstConditinoNode) {
+      if (hasBranch(data)) {
+        if (!firstConditinoNode.length > 0) {
+          data.conditionNodes.map((d) => {
+            firstConditinoNode.push(d.nodeId)
+          })
+        }
+      }
+      if (data.childNode) {
+        return this.firstComdition(data.childNode, firstConditinoNode)
+      }
+    },
     /**
      * 初始化条件节点数据
      */
@@ -1032,6 +1056,12 @@ export default {
       if (Array.isArray(this.pconditions)) {
         let temp = undefined
         this.value.prevId === this.processData.nodeId && (this.showingPCons = [-1]) // 默认显示发起人
+        let firstConditinoNode = []
+        this.firstComdition(this.processData, firstConditinoNode)
+        if (!this.showingPCons.includes(-1)) {
+          firstConditinoNode.includes(this.value.nodeId) && (this.showingPCons = [-1])
+        }
+        this.isShowInitiator = this.showingPCons.includes(-1) ? true : false
         this.pconditions.forEach((t) => {
           if (Array.isArray(nodeConditions)) {
             // if(nodeConditions.)
@@ -1045,6 +1075,16 @@ export default {
           t.__config__.type === 'checkbox' && this.$set(t.__config__, 'defaultValue', [])
         })
       }
+    },
+    /**
+     * @author guanfenda
+     * @desc 初始发送人节点数据
+     * */
+    initCopyNodeData() {
+      this.members.copy = []
+      this.value.properties.members &&
+        this.value.properties.members.length > 0 &&
+        (this.members.copy = this.value.properties.members)
     }
   }
 }
@@ -1193,14 +1233,15 @@ export default {
 }
 
 .tabs_div {
-  margin: 0 auto;
+  /*margin: 0 auto;*/
   text-align center;
   border: 1px solid #C6CBCE;
   border-radius: 4px;
-  width: 312px;
-
+  /*width: 312px;*/
+    width :312px;
+  margin-left :24px;
   > div {
-    width: 156px;
+    width: 312px;
     height: 34px;
     font-size: 14px;
     color: #202940;

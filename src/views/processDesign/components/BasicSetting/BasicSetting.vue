@@ -162,6 +162,8 @@ export default {
       handler() {
         if (typeof this.conf === 'object' && this.conf !== null) {
           Object.assign(this.formData, this.conf)
+          !Array.isArray(this.formData.processAdmin) &&
+            (this.formData.processAdmin = [this.formData.processAdmin])
         }
       },
       deep: true

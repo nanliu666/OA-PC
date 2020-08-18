@@ -125,7 +125,7 @@
 </template>
 
 <script>
-import { getNoticeList, delNoticeList, publishNoticeList } from '@/api/noticeCenter/noticeCenter'
+import { getNoticeList, delNoticeList, publishNotice } from '@/api/noticeCenter/noticeCenter'
 // 表格属性
 const TABLE_COLUMNS = [
   {
@@ -193,13 +193,16 @@ export default {
     this.refreshTableData()
   },
   methods: {
-    handleEdit() {
+    handleEdit(data) {
       this.$router.push({
-        path: '/noticeCenter/noticeEdit'
+        path: '/noticeCenter/noticeEdit',
+        query: {
+          id: data.id
+        }
       })
     },
     handlePulish(data) {
-      publishNoticeList({ id: data.id, userId: this.userId }).then(() => {
+      publishNotice({ id: data.id, userId: this.userId }).then(() => {
         this.$message.success('发布成功')
         this.loadTableData()
       })

@@ -26,8 +26,9 @@ import website from '@/config/website'
 import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
-
 Vue.prototype._ = _
+
+import tinymce from '@/components/tinymce'
 
 const $message = (options) => {
   return Message({
@@ -63,6 +64,7 @@ Vue.use(Permission)
 Vue.component('FcOrgSelect', OrgSelect)
 Vue.component('basicContainer', basicContainer)
 Vue.component('commonTable', commonTable)
+Vue.component('tinymce', tinymce)
 Vue.component('pageHeader', pageHeader)
 Vue.component('commonForm', commonForm)
 Vue.component('formParser', FormParser)

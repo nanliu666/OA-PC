@@ -1,6 +1,7 @@
 <template>
   <div class="empty-class">
     <el-image
+      style="width: 80%"
       :src="emptyOption.src"
       fit="fill"
     />
