@@ -25,7 +25,7 @@ export default {
     conf: {
       handler(val) {
         if (typeof val === 'object' && val !== null) {
-          this.data = Object.assign({}, val)
+          this.data = Object.assign({}, JSON.parse(JSON.stringify(val)))
           // this.$store.commit('updateProcessData',val)
           // console.log('this.$store.getters.processData____',this.$store.getters.processData)
         }
