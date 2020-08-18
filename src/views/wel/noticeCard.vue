@@ -20,6 +20,7 @@
         v-for="(item, index) in newsList"
         :key="index"
         class="content-li"
+        @click="toDetail(item)"
       >
         <div class="li-title">
           {{ item.title }}
@@ -66,6 +67,14 @@ export default {
     toNoticeCenter() {
       this.$router.push({
         path: '/noticeCenter/noticeList'
+      })
+    },
+    toDetail(data) {
+      this.$router.push({
+        path: `/noticeCenter/noticeDetail`,
+        query: {
+          id: data.id
+        }
       })
     }
   }
