@@ -141,7 +141,6 @@ export default {
     users: {
       handler(val) {
         // if()
-
         val.map((it) => this.checked.push(it.id))
         this.selectList = val
       },
