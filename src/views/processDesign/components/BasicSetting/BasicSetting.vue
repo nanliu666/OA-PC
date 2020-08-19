@@ -180,14 +180,14 @@ export default {
       immediate: true
     },
     selectedIcon: {
-      handler(val) {
-        this.formData.icon = val
+      handler() {
+        // this.formData.icon = val
       },
       deep: true
     },
     activeIcon: {
       handler() {
-        this.formData.icon = this.activeIcon
+        // this.formData.icon = this.activeIcon
       },
       immediate: true,
       deep: true
@@ -202,6 +202,8 @@ export default {
           Object.assign(this.formData, this.conf)
           !Array.isArray(this.formData.processAdmin) &&
             (this.formData.processAdmin = [this.formData.processAdmin])
+          this.selectedIcon = this.formData.icon
+          this.activeIcon = this.formData.icon
         }
       },
       deep: true
