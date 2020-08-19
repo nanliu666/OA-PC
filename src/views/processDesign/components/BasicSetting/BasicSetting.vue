@@ -180,15 +180,11 @@ export default {
       immediate: true
     },
     selectedIcon: {
-      handler() {
-        // this.formData.icon = val
-      },
+      handler() {},
       deep: true
     },
     activeIcon: {
-      handler() {
-        // this.formData.icon = this.activeIcon
-      },
+      handler() {},
       immediate: true,
       deep: true
     },
@@ -253,6 +249,7 @@ export default {
     },
     // 给父级页面提供得获取本页数据得方法
     getData() {
+      this.formData.icon = this.activeIcon
       return new Promise((resolve, reject) => {
         this.$refs['elForm']
           .validate()
@@ -261,7 +258,7 @@ export default {
               reject({ target: this.tabName })
               return
             }
-            this.formData.icon = this.activeIcon
+
             resolve({ formData: this.formData, target: this.tabName }) // TODO 提交表单
           })
           .catch(() => {
