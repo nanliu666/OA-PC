@@ -255,6 +255,11 @@ export class NodeUtils {
     ].map((c, i) => {
       c.properties.title += i + 1
       c.properties.priority = i
+      if (i == 1) {
+        c.properties.isDefault = true
+        c.content = '其他情况进入此流程'
+      }
+
       return c
     })
     nodeData.conditionNodes = conditionNodes
@@ -345,8 +350,9 @@ export class NodeUtils {
       node.content = DEFAULT_TEXT
     }
     let count = 0
+
     conditions.slice(0, -1).forEach((node) => {
-      hasCondition(node) && count++
+      count++
       clearDefault(node)
     })
     const lastNode = conditions[conditions.length - 1]
