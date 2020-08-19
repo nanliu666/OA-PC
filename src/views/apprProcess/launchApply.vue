@@ -35,7 +35,7 @@
                 v-for="(processesItem, processesIndex) in item.processes"
                 :key="processesIndex"
                 class="detail-li"
-                @click="jumpToSubmit(processesItem.processId)"
+                @click="jumpToSubmit(processesItem)"
               >
                 <div class="logo-box">
                   <svg
@@ -132,11 +132,18 @@ export default {
     /**
      * 跳转到提交页面
      */
-    jumpToSubmit(processId) {
+    jumpToSubmit(process) {
+      const formkeyPathMap = {
+        UserFormalInfo: '/personnel/administration/apply'
+      }
+      let path = formkeyPathMap[process.formKey]
+      if (!path) {
+        path = '/apprProcess/apprSubmit'
+      }
       this.$router.push({
-        path: '/apprProcess/apprSubmit',
+        path,
         query: {
-          processId
+          processId: process.processId
         }
       })
     }
