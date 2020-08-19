@@ -377,7 +377,7 @@
       <!-- 按钮 -->
       <!-- v-if="!isCancel && !isFished && !isReject" -->
       <div
-        v-if="!isCancel && !isFished"
+        v-if="!isCancel && !isFished && !preview"
         class="cancel-btn-box"
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
@@ -517,6 +517,7 @@ export default {
   },
   data() {
     return {
+      preview: false,
       recordlist: [],
       progressRecord: [],
       loading: false,
@@ -672,6 +673,7 @@ export default {
   },
   created() {
     this.loadData()
+    this.preview = this.$route.query.preview
   },
   activated() {
     if (!this.isFirst) {
@@ -696,7 +698,9 @@ export default {
         getApprDetail({ apprNo: this.apprNo })
           .then((res) => {
             this.applyDetail = res
-            this.applyDetail.formData = JSON.parse(this.applyDetail.formData)
+            this.applyDetail.formData = this.applyDetail.formData
+              ? JSON.parse(this.applyDetail.formData)
+              : {}
             resolve(true)
           })
           .catch(() => {
