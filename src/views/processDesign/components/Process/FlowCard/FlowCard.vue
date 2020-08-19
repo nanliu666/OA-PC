@@ -109,18 +109,13 @@ function addNodeButton(ctx, data, h, isBranch = false) {
   if (isEmpty && !isBranch) {
     return ''
   }
-  if (data.conditionNodes && data.conditionNodes.length > 0 && data.type === 'start' && !data.two) {
-    data.two = 0
-  }
-
   if (
     data.conditionNodes &&
     data.conditionNodes.length > 0 &&
     data.type === 'start' &&
-    !isNaN(data.two) &&
-    data.two % 2 == 0
+    !data.isShow
   ) {
-    data.two += 1
+    data.isShow = 1
 
     return (
       <div class="add-node-btn-box flex  justify-center">
@@ -129,9 +124,7 @@ function addNodeButton(ctx, data, h, isBranch = false) {
     )
   } else {
     if (data.conditionNodes && data.conditionNodes.length > 0 && data.type === 'start') {
-      if (data.two % 2 == 1) {
-        data.two = 0
-      }
+      data.isShow = 0
     }
     return (
       <div class="add-node-btn-box flex  justify-center">
