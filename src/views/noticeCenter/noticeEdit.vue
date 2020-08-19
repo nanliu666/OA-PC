@@ -34,6 +34,7 @@
             class="upload-box"
             action=""
             :on-remove="handleRemove"
+            :before-upload="handlePreview"
             multiple
             :limit="uploadLimit"
             accept=".doc,.doxs,.jpg,.jpeg,.png,.pdf,.DOC,.DOCS,.JPG,.JPEG,.PBG,.PDF"
@@ -53,7 +54,7 @@
               slot="tip"
               class="el-upload__tip"
             >
-              只能上传jpg/doc/pdf文件，且不超过500kb
+              只能上传jpg/doc/pdf文件，且单个文件大小不超过10M
             </div>
           </el-upload>
         </div>
@@ -266,6 +267,14 @@ export default {
           that.formData.attachment.push(uploadObj)
         }
       })
+    },
+    handlePreview(file) {
+      const isLt10M = file.size / 1024 / 1024 < 10
+      if (!isLt10M) {
+        this.$message.error('上传文件超过10M')
+        return false
+      }
+      return isLt10M
     },
     /**
      * 超限提醒
