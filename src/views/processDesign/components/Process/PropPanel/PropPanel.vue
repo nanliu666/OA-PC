@@ -895,6 +895,16 @@ export default {
           it.children && delete it.children
           it.users && delete it.users
         })
+      ;(this.properties.conditions &&
+        this.properties.conditions.length > 0 &&
+        delete this.properties.isDefault) ||
+        (this.properties.initiator &&
+          this.properties.initiator.length > 0 &&
+          delete this.properties.isDefault)
+      !this.showingPCons.includes(-1) &&
+        this.properties.initiator &&
+        this.properties.initiator.length > 0 &&
+        ((this.properties.initiator = null), (nodeContent = null))
       this.$emit('confirm', this.properties, nodeContent || '请设置条件')
 
       this.visible = false
@@ -1034,9 +1044,10 @@ export default {
     firstComdition(data, firstConditinoNode) {
       if (hasBranch(data)) {
         if (!firstConditinoNode.length > 0) {
-          data.conditionNodes.map((d) => {
-            firstConditinoNode.push(d.nodeId)
-          })
+          firstConditinoNode.push(data)
+          // data.conditionNodes.map((d) => {
+          //   firstConditinoNode.push(d.nodeId)
+          // })
         }
       }
       if (data.childNode) {
@@ -1059,9 +1070,13 @@ export default {
         let firstConditinoNode = []
         this.firstComdition(this.processData, firstConditinoNode)
         if (!this.showingPCons.includes(-1)) {
-          firstConditinoNode.includes(this.value.nodeId) && (this.showingPCons = [-1])
+          firstConditinoNode[0].type === 'empty' && (this.showingPCons = [-1])
         }
-        this.isShowInitiator = this.showingPCons.includes(-1) ? true : false
+        if (this.showingPCons.includes(-1)) {
+          this.isShowInitiator = true
+        } else {
+          this.isShowInitiator = false
+        }
         this.pconditions.forEach((t) => {
           if (Array.isArray(nodeConditions)) {
             // if(nodeConditions.)
