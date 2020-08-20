@@ -382,7 +382,7 @@
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
         <el-button
-          v-if="isShowCancel && isApplyUser"
+          v-if="isShowCancel && isApplyUser && !loading"
           type="primary"
           size="medium"
           @click="handelCancel"
