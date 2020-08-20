@@ -24,7 +24,9 @@ const CHART_CONFIG_DEFAULT = {
     bottom: 50,
     width: 'auto'
   },
-  tooltip: {},
+  tooltip: {
+    trigger: 'axis'
+  },
   legend: {
     right: 0,
     itemWidth: 14, // 图例颜色大小
@@ -53,7 +55,8 @@ const CHART_CONFIG_DEFAULT = {
       type: 'value',
       min: 0,
       max: 100,
-      interval: 100,
+      splitLine: { show: false },
+      interval: 50,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {

@@ -75,6 +75,7 @@ export default {
 @import '@/styles/mixin.scss';
 .news-card {
   flex: 1;
+  margin-left: 19px;
   // 头部
   .header {
     .title {
