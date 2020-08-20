@@ -17,12 +17,12 @@
         @click="show = true"
       >
         <el-tag
-          v-for="item in selectedData"
+          v-for="(item, i) in selectedData"
           :key="item.key"
           v-bind="tagConfig"
           class="org-tag"
           size="medium"
-          @close="onClose(item)"
+          @close="onClose(item, i)"
         >
           {{ item.name }}
         </el-tag>
@@ -156,7 +156,9 @@ export default {
       immediate: true
     },
     selectedData: {
-      handler() {},
+      handler(val) {
+        val && (this.selectOldData = JSON.parse(JSON.stringify(val)))
+      },
       deep: true,
       immediate: true
     }

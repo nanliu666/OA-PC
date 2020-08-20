@@ -16,10 +16,13 @@
         />
       </div>
       <div slot="icon">
-        <img
-          :src="activeIconSrc"
-          style="width: 28px;height: 28px;vertical-align: middle;"
+        <svg
+          aria-hidden="true"
+          width="40px"
+          height="40px"
         >
+          <use :[symbolKey]="'#' + selectedIcon" />
+        </svg>
         <el-button
           plain
           size="mini"
@@ -35,14 +38,26 @@
       :visible.sync="dialogVisible"
       width="612px"
     >
-      <img
+      <svg
         v-for="(icon, index) in iconList"
         :key="index"
-        :src="icon.src"
+        aria-hidden="true"
+        width="40px"
+        height="40px"
         class="icon-item"
-        :class="{ active: selectedIcon === icon.id }"
-        @click="selectedIcon = icon.id"
+        :class="{ active: selectedIcon === icon }"
+        @click="selectedIcon = icon"
       >
+        <use :[symbolKey]="'#' + icon" />
+      </svg>
+      <!--      <img-->
+      <!--        v-for="(icon, index) in iconList"-->
+      <!--        :key="index"-->
+      <!--        :src="icon.src"-->
+      <!--        class="icon-item"-->
+      <!--        :class="{ active: selectedIcon === icon.id }"-->
+      <!--        @click="selectedIcon = icon.id"-->
+      <!--      >-->
       <span
         slot="footer"
         class="dialog-footer"
@@ -68,16 +83,33 @@ export default {
   components: {},
   props: ['tabName', 'initiator', 'conf'],
   data() {
-    const req = require.context('@/assets/approverIcon', false, /\.png$/)
-    const iconList = req.keys().map((t, idx) => ({ src: req(t), id: idx }))
+    // const req = require.context('@/assets/approverIcon', false, /\.png$/)
+    // const iconList = req.keys().map((t, idx) => ({ src: req(t), id: idx }))
+    let iconList = [
+      'icondirectories-bicolor',
+      'iconleaveoffice-bicolor',
+      'iconrecruit-bicolor',
+      'icontravel-outlined',
+      'iconremind-bicolor',
+      'iconinvitation-bicolor',
+      'iconleave-bicolor',
+      'iconcheckin-bicolor',
+      'iconbranch-bicolor',
+      'iconchange-bicolor',
+      'iconinterview-bicolor',
+      'iconCC-bicolor',
+      'iconleave-bicolor1'
+    ]
     return {
+      symbolKey: 'xlink:href',
       info,
       all: true, //显示所有人
       org: true, //可以选择部门
       infoForm: {},
       dialogVisible: false,
-      activeIcon: iconList[0].id,
-      selectedIcon: iconList[0].id,
+      iconList: iconList,
+      activeIcon: iconList[0],
+      selectedIcon: iconList[0],
       formData: {
         icon: '',
         processName: '',
@@ -102,7 +134,6 @@ export default {
           }
         ]
       },
-      iconList,
       flowGroupOptions: [
         {
           label: '假勤管理',
@@ -148,11 +179,14 @@ export default {
       },
       immediate: true
     },
+    selectedIcon: {
+      handler() {},
+      deep: true
+    },
     activeIcon: {
-      handler() {
-        this.formData.icon = this.activeIconSrc
-      },
-      immediate: true
+      handler() {},
+      immediate: true,
+      deep: true
     },
     formData: {
       handler() {},
@@ -164,6 +198,8 @@ export default {
           Object.assign(this.formData, this.conf)
           !Array.isArray(this.formData.processAdmin) &&
             (this.formData.processAdmin = [this.formData.processAdmin])
+          this.selectedIcon = this.formData.icon
+          this.activeIcon = this.formData.icon
         }
       },
       deep: true
@@ -213,6 +249,7 @@ export default {
     },
     // 给父级页面提供得获取本页数据得方法
     getData() {
+      this.formData.icon = this.activeIcon
       return new Promise((resolve, reject) => {
         this.$refs['elForm']
           .validate()
@@ -221,7 +258,7 @@ export default {
               reject({ target: this.tabName })
               return
             }
-            // this.formData.icon = this.activeIcon
+
             resolve({ formData: this.formData, target: this.tabName }) // TODO 提交表单
           })
           .catch(() => {

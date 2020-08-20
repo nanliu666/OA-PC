@@ -110,107 +110,111 @@
             :active="activeStep + 1"
             align-center
           >
-            <el-step
-              v-for="(item, index) in progressRecord"
-              :key="index"
-            >
-              <!-- 自定义图标 -->
-              <template slot="icon">
-                <!-- :class="[{ active: index <= activeStep }, { cancel: isCancel && index == 0 }]" -->
-                <div class="icon-box">
-                  <div
-                    v-if="index == 0 && isCancel"
-                    class="tip cancel-text"
-                  >
-                    已撤回
-                  </div>
-                  <div
-                    v-else-if="index == activeStep && isReject"
-                    class="tip reject-text"
-                  >
-                    已拒绝
-                  </div>
-                  <div
-                    v-else-if="index == activeStep && isFished"
-                    class="tip fished-text"
-                  >
-                    已通过
-                  </div>
-                  <div
-                    class="icon"
-                    :class="iconClass(index)"
-                  />
-                </div>
-              </template>
-              <!-- 自定义标题 -->
-              <template slot="title">
-                <div
-                  v-if="index === 0"
-                  class="title"
-                >
-                  {{ `${item.userName}提交的申请` }}
-                </div>
-                <div
-                  v-else
-                  class="title"
-                >
-                  {{ `${item.properties.title || ''} 审批` }}
-                </div>
-              </template>
-              <!-- 自定义内容 -->
-              <template slot="description">
-                <div class="description-box">
-                  <div v-if="item.approveList">
-                    <span
-                      v-for="(it, i) in item.approveList"
-                      :key="it.id"
-                    >
-                      <span :class="[it.result, !it.result ? 'result' : '']">
-                        {{ it.userName }}</span>
-                      <span v-if="item.properties.counterSign && i < item.approveList.length - 1">
-                        +
-                      </span>
-                      <span v-if="!item.properties.counterSign && i < item.approveList.length - 1">
-                        /
-                      </span>
-                    </span>
-                  </div>
-                  <div v-else-if="item.type !== 'start'">
-                    <span
-                      v-for="(it, i) in item.userList"
-                      :key="it.id"
-                    >
-                      <span>{{ it.name }}</span>
-                      <span v-if="item.properties.counterSign && i < item.userList.length - 1">
-                        +
-                      </span>
-                      <span v-if="!item.properties.counterSign && i < item.userList.length - 1">
-                        /
-                      </span>
-                    </span>
-                  </div>
-                  <div>{{ item.userName }}</div>
-                  <div>{{ item.approveTime }}</div>
-                  <div>
+            <template v-for="(item, index) in progressRecord">
+              <el-step
+                v-if="item.type !== 'empty' && item.type"
+                :key="index"
+              >
+                <!-- 自定义图标 -->
+                <template slot="icon">
+                  <!-- :class="[{ active: index <= activeStep }, { cancel: isCancel && index == 0 }]" -->
+                  <div class="icon-box">
                     <div
-                      v-if="
-                        !isCancel &&
-                          index != 0 &&
-                          index == activeStep &&
-                          !(isShowBtns && item.userList.length === 1) &&
-                          !isReject &&
-                          !isFished &&
-                          isApplyUser
-                      "
-                      class="isUrge"
-                      @click="handelUrge(item)"
+                      v-if="index == 0 && isCancel"
+                      class="tip cancel-text"
                     >
-                      催一下 <i class="el-icon-bell" />
+                      已撤回
+                    </div>
+                    <div
+                      v-else-if="index == activeStep && isReject"
+                      class="tip reject-text"
+                    >
+                      已拒绝
+                    </div>
+                    <div
+                      v-else-if="index == activeStep && isFished"
+                      class="tip fished-text"
+                    >
+                      已通过
+                    </div>
+                    <div
+                      class="icon"
+                      :class="iconClass(index)"
+                    />
+                  </div>
+                </template>
+                <!-- 自定义标题 -->
+                <template slot="title">
+                  <div
+                    v-if="index === 0"
+                    class="title"
+                  >
+                    {{ `${item.userName}提交的申请` }}
+                  </div>
+                  <div
+                    v-else
+                    class="title"
+                  >
+                    {{ `${(item.properties && item.properties.title) || ''} 审批` }}
+                  </div>
+                </template>
+                <!-- 自定义内容 -->
+                <template slot="description">
+                  <div class="description-box">
+                    <div v-if="item.approveList">
+                      <span
+                        v-for="(it, i) in item.approveList"
+                        :key="it.id"
+                      >
+                        <span :class="[it.result, !it.result ? 'result' : '']">
+                          {{ it.userName }}</span>
+                        <span v-if="item.properties.counterSign && i < item.approveList.length - 1">
+                          +
+                        </span>
+                        <span
+                          v-if="!item.properties.counterSign && i < item.approveList.length - 1"
+                        >
+                          /
+                        </span>
+                      </span>
+                    </div>
+                    <div v-else-if="item.type !== 'start'">
+                      <span
+                        v-for="(it, i) in item.userList"
+                        :key="it.id"
+                      >
+                        <span>{{ it.name }}</span>
+                        <span v-if="item.properties.counterSign && i < item.userList.length - 1">
+                          +
+                        </span>
+                        <span v-if="!item.properties.counterSign && i < item.userList.length - 1">
+                          /
+                        </span>
+                      </span>
+                    </div>
+                    <div>{{ item.userName }}</div>
+                    <div>{{ item.approveTime }}</div>
+                    <div>
+                      <div
+                        v-if="
+                          !isCancel &&
+                            index != 0 &&
+                            index == activeStep &&
+                            !(isShowBtns && item.userList.length === 1) &&
+                            !isReject &&
+                            !isFished &&
+                            isApplyUser
+                        "
+                        class="isUrge"
+                        @click="handelUrge(item)"
+                      >
+                        催一下 <i class="el-icon-bell" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </template>
-            </el-step>
+                </template>
+              </el-step>
+            </template>
           </el-steps>
         </div>
       </div>
@@ -373,7 +377,7 @@
       <!-- 按钮 -->
       <!-- v-if="!isCancel && !isFished && !isReject" -->
       <div
-        v-if="!isCancel && !isFished"
+        v-if="!isCancel && !isFished && !preview"
         class="cancel-btn-box"
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
@@ -513,6 +517,7 @@ export default {
   },
   data() {
     return {
+      preview: false,
       recordlist: [],
       progressRecord: [],
       loading: false,
@@ -618,7 +623,10 @@ export default {
       this.progressList.map((it) => {
         result.push(it.result)
       })
-      !result.includes('Pass') && (res = true)
+      !result.includes('Pass') &&
+        !result.includes('Reject') &&
+        !result.includes('Cancel') &&
+        (res = true)
       return res
     },
     // 拒绝同意是否显示 审批节点的审批人的用户id和当前用户相同显示
@@ -665,6 +673,7 @@ export default {
   },
   created() {
     this.loadData()
+    this.preview = this.$route.query.preview
   },
   activated() {
     if (!this.isFirst) {
@@ -689,7 +698,9 @@ export default {
         getApprDetail({ apprNo: this.apprNo })
           .then((res) => {
             this.applyDetail = res
-            this.applyDetail.formData = JSON.parse(this.applyDetail.formData)
+            this.applyDetail.formData = this.applyDetail.formData
+              ? JSON.parse(this.applyDetail.formData)
+              : {}
             resolve(true)
           })
           .catch(() => {
@@ -810,26 +821,32 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        this.loading = true
+
+        createApprCancel({ processInstanceId: this.processInstanceId })
+          .then(() => {
+            this.$message.success('撤回成功')
+            this.$router.go(-1)
+          })
+          .finally(() => {
+            this.loading = false
+          })
       })
-        .then(() => {
-          return createApprCancel({ processInstanceId: this.processInstanceId })
-        })
-        .then(() => {
-          this.$message.success('撤回成功')
-          this.$router.go(-1)
-        })
     },
     // 点击同意或拒绝按钮展示模态框
     handelClick(type) {
       this.apprType = type
       // 获取审批流程，获取审批意见是否必填，和审批提示语
-      getProcessDetail({ processId: this.processId }).then((res) => {
-        let { isOpinion, tip } = res
-        this.tip = tip
-        this.isOpinion = isOpinion
-        this.dialogVisible = true
-        this.apprForm.comment = ''
-      })
+      getProcessDetail({ processId: this.processId })
+        .then((res) => {
+          let { isOpinion, tip } = res
+          this.tip = tip
+          this.isOpinion = isOpinion
+          this.dialogVisible = true
+          this.apprForm.comment = ''
+        })
+        .finally(() => {})
     },
     // 点击确定审批
     handelConfirm() {

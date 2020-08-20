@@ -594,7 +594,8 @@ export default {
       flex: 1;
     }
     .btnBox {
-      min-width: 60px;
+      min-width: 200px;
+      text-align: right;
     }
   }
 }
