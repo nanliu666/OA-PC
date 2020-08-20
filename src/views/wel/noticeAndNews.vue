@@ -1,18 +1,18 @@
 <template>
   <div class="notifyAndNews">
     <noticeCard />
-    <newsCard />
+    <!-- <newsCard /> -->
   </div>
 </template>
 
 <script>
 import noticeCard from './noticeCard'
-import newsCard from './newsCard'
+// import newsCard from './newsCard'
 export default {
   name: 'NotifyAndNews',
   components: {
-    noticeCard,
-    newsCard
+    noticeCard
+    // newsCard
   }
 }
 </script>
