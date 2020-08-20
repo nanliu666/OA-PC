@@ -273,12 +273,10 @@ export default {
     },
     // 整体招聘进度
     getRecruitmentProgress() {
-      return async () => {
-        const { approvedNum, finishedNum } = await this.searchParamsDecorator(
-          getRecruitmentProgress
-        )
+      return this.searchParamsDecorator(async (params) => {
+        const { finishedNum, approvedNum } = await getRecruitmentProgress(params)
         return finishedNum / approvedNum || 0
-      }
+      })
     },
     getTalentJob() {
       return this.searchParamsDecorator(getTalentJob)
@@ -290,7 +288,7 @@ export default {
       }
     },
     _searchParams() {
-      return _.pick(this.searchParams, 'qryMonth')
+      return _.pick(this.searchParams(), 'qryMonth')
     }
   },
   methods: {

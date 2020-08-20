@@ -156,7 +156,9 @@ export default {
       immediate: true
     },
     selectedData: {
-      handler() {},
+      handler(val) {
+        val && (this.selectOldData = JSON.parse(JSON.stringify(val)))
+      },
       deep: true,
       immediate: true
     }

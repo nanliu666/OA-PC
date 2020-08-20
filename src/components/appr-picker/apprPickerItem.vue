@@ -216,12 +216,16 @@ export default {
               }
               flag = false
             })
-            if (!_.isEmpty(node.properties.initiator) && this.fullOrgId) {
-              this.conditionOrgId = (
-                node.properties.initiator.find((item) =>
-                  _.includes(this.fullOrgId.split('.'), item.orgId)
-                ) || {}
-              ).orgId
+            if (!_.isEmpty(node.properties.initiator)) {
+              if (this.fullOrgId) {
+                this.conditionOrgId = (
+                  node.properties.initiator.find((item) =>
+                    _.includes(this.fullOrgId.split('.'), item.orgId)
+                  ) || {}
+                ).orgId
+              } else {
+                this.conditionOrgId = null
+              }
               flag = flag !== false && !!this.conditionOrgId
               this.noMatchOrg = !flag
             }

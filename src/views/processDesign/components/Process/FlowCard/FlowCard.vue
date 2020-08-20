@@ -109,49 +109,72 @@ function addNodeButton(ctx, data, h, isBranch = false) {
   if (isEmpty && !isBranch) {
     return ''
   }
-  return (
-    <div class="add-node-btn-box flex  justify-center">
-      <div class="add-node-btn">
-        <el-popover placement="right" trigger="click" width="300">
-          <div class="condition-box">
-            <div>
-              <div
-                class="condition-icon"
-                onClick={ctx.eventLancher.bind(ctx, 'addApprovalNode', data, isBranch)}
-              >
-                <i class="iconfont icon-approval-Seal-bicolor"></i>
-              </div>
-              审批人
-            </div>
-
-            <div>
-              <div
-                class="condition-icon"
-                onClick={ctx.eventLancher.bind(ctx, 'addCopyNode', data, isBranch)}
-              >
-                <i class="icon-CC-bicolor iconfont" style="vertical-align: middle;"></i>
-              </div>
-              抄送人
-            </div>
-
-            <div>
-              <div
-                class="condition-icon"
-                onClick={this.eventLancher.bind(ctx, 'appendBranch', data, isBranch)}
-              >
-                <i class="iconfont icon-branch-bicolor"></i>
-              </div>
-              条件分支
-            </div>
-          </div>
-
-          <button class="btn" type="button" slot="reference">
-            <i class="el-icon-plus icons"></i>
-          </button>
-        </el-popover>
+  if (
+    data.conditionNodes &&
+    data.conditionNodes.length > 0 &&
+    data.type === 'start' &&
+    !data.isShow
+  ) {
+    data.isShow = 1
+    return (
+      <div class="add-node-btn-box flex  justify-center">
+        <div class="add-node-btn"></div>
       </div>
-    </div>
-  )
+    )
+  } else {
+    if (
+      data.conditionNodes &&
+      data.conditionNodes.length > 0 &&
+      data.type === 'start' &&
+      data.isShow
+    ) {
+      data.isShow = 0
+    }
+
+    return (
+      <div class="add-node-btn-box flex  justify-center">
+        <div class="add-node-btn">
+          <el-popover placement="right" trigger="click" width="300">
+            <div class="condition-box">
+              <div>
+                <div
+                  class="condition-icon"
+                  onClick={ctx.eventLancher.bind(ctx, 'addApprovalNode', data, isBranch)}
+                >
+                  <i class="iconfont icon-approval-Seal-bicolor"></i>
+                </div>
+                审批人
+              </div>
+
+              <div>
+                <div
+                  class="condition-icon"
+                  onClick={ctx.eventLancher.bind(ctx, 'addCopyNode', data, isBranch)}
+                >
+                  <i class="icon-CC-bicolor iconfont" style="vertical-align: middle;"></i>
+                </div>
+                抄送人
+              </div>
+
+              <div>
+                <div
+                  class="condition-icon"
+                  onClick={this.eventLancher.bind(ctx, 'appendBranch', data, isBranch)}
+                >
+                  <i class="iconfont icon-branch-bicolor"></i>
+                </div>
+                条件分支
+              </div>
+            </div>
+
+            <button class="btn" type="button" slot="reference">
+              <i class="el-icon-plus icons"></i>
+            </button>
+          </el-popover>
+        </div>
+      </div>
+    )
+  }
 }
 
 function NodeFactory(ctx, data, h) {

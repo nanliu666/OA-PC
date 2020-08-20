@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Mock from 'mockjs'
-import approval from './approval'
+import apprProcess from './apprProcess'
 import candidate from './candidate'
 import contact from './contact'
 import dict from './dict'
@@ -8,11 +8,13 @@ import entry from './entry'
 import grade from './grade'
 import interview from './interview'
 import leave from './leave'
+import mailList from './mailList'
 import menu from './menu'
 import menus from './menus'
 import msg from './msg'
+import newsCenter from './newsCenter'
+import noticeCenter from './noticeCenter'
 import oauth from './oauth'
-// import personnel from './personnel'
 import org from './org'
 import person from './person'
 import personalInfo from './personalInfo'
@@ -20,6 +22,7 @@ import personnel from './personnel/'
 import personnelDataboard from './personnel/databoard'
 import personnelSettings from './personnel/settings'
 import position from './position'
+import process from './process'
 import remind from './remind'
 import role from './role'
 import schedule from './schedule'
@@ -30,69 +33,70 @@ import todo from './todo'
 import transction from './transction'
 import user from './user'
 
-import apprProcess from './apprProcess'
-import process from './process'
-
-import mailList from './mailList'
-import newCenter from './newsCenter'
-import noticeCenter from './noticeCenter'
 /**
- * 模拟数据mock
- *
- * mock是否开启模拟数据拦截
+ * @param {boolean} enable 全局启用mock
+ * @returns {void}
  */
+export default (enable) => {
+  if (!enable) return
+  /**
+   * 模拟数据mock
+   *
+   * mock是否开启模拟数据拦截
+   */
 
-const options = { mock: false }
-// 设置500毫秒的时延长
-Mock.setup({
-  timeout: 500
-})
-newCenter(options)
-noticeCenter(options)
-user(options)
+  const options = { mock: true }
+  // 设置500毫秒的时延长
+  Mock.setup({
+    timeout: 500
+  })
+  newsCenter(options)
+  noticeCenter(options)
+  user(options)
 
-apprProcess(options)
-menu(options)
-// menu({ mock: true })
-apprProcess(options)
+  apprProcess(options)
+  menu(options)
+  // menu({ mock: true })
+  apprProcess(options)
 
-interview(options)
+  interview(options)
 
-candidate(options)
-selectPerson(options)
-position(options)
-grade(options)
-menus(options)
+  candidate(options)
+  selectPerson(options)
+  position(options)
+  grade(options)
+  menus(options)
 
-system(options)
+  system(options)
 
-oauth(options)
+  oauth({ mock: false })
 
-personnel(options)
+  personnel(options)
 
-dict(options)
+  dict(options)
 
-role(options)
+  role(options)
 
-personalInfo(options)
+  personalInfo(options)
 
-org(options)
-transction(options)
+  org(options)
+  transction(options)
 
-person(options.mock)
-contact(options)
-leave(options)
+  person(options.mock)
+  contact(options)
+  leave(options)
 
-personnelSettings(options.mock)
-personnelDataboard(options)
-todo(options)
-msg(options)
-todo(options)
-entry(options)
-taskcenter(options)
-schedule(options)
-remind(options)
+  personnelSettings(options.mock)
+  personnelDataboard(options)
+  todo(options)
+  msg(options)
+  todo(options)
+  entry(options)
+  taskcenter(options)
+  schedule(options)
+  remind(options)
 
-process(options)
+  process(options)
 
-mailList(options)
+  mailList(options)
+}

@@ -821,26 +821,32 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        this.loading = true
+
+        createApprCancel({ processInstanceId: this.processInstanceId })
+          .then(() => {
+            this.$message.success('撤回成功')
+            this.$router.go(-1)
+          })
+          .finally(() => {
+            this.loading = false
+          })
       })
-        .then(() => {
-          return createApprCancel({ processInstanceId: this.processInstanceId })
-        })
-        .then(() => {
-          this.$message.success('撤回成功')
-          this.$router.go(-1)
-        })
     },
     // 点击同意或拒绝按钮展示模态框
     handelClick(type) {
       this.apprType = type
       // 获取审批流程，获取审批意见是否必填，和审批提示语
-      getProcessDetail({ processId: this.processId }).then((res) => {
-        let { isOpinion, tip } = res
-        this.tip = tip
-        this.isOpinion = isOpinion
-        this.dialogVisible = true
-        this.apprForm.comment = ''
-      })
+      getProcessDetail({ processId: this.processId })
+        .then((res) => {
+          let { isOpinion, tip } = res
+          this.tip = tip
+          this.isOpinion = isOpinion
+          this.dialogVisible = true
+          this.apprForm.comment = ''
+        })
+        .finally(() => {})
     },
     // 点击确定审批
     handelConfirm() {
