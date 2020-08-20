@@ -26,8 +26,23 @@
         >
           {{ item.name }}
         </el-tag>
-        <div v-if="all && selectedData && selectedData.length < 1">
+        <div
+          v-if="
+            (!isDepartment && selectedData && selectedData.length < 1) ||
+              (!isDepartment && !selectedData && org)
+          "
+          style="color:#333"
+        >
           所有人
+        </div>
+        <div
+          v-if="
+            (isDepartment && selectedData && selectedData.length < 1) ||
+              (isDepartment && !selectedData)
+          "
+          style="color:#999"
+        >
+          请选择部门
         </div>
       </div>
     </div>
