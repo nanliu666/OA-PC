@@ -76,7 +76,6 @@ $color_active: #606266
 
 .IconSelectDialog
   .content
-    width: 500px
   ul
     display: block
     list-style-type: disc

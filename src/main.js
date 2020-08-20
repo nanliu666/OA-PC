@@ -29,6 +29,9 @@ import loadmore from './directive/loadmore'
 Vue.prototype._ = _
 
 import tinymce from '@/components/tinymce'
+import mock from '@/mock'
+
+mock(true)
 
 const $message = (options) => {
   return Message({

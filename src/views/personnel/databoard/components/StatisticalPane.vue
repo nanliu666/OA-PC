@@ -207,8 +207,11 @@ export default {
       return async (params) => await getStatLeaveReason({ ...this._searchParams, ...params })
     },
     _searchParams() {
-      return this.searchParams
+      return this.searchParams()
     }
+  },
+  created() {
+    this.refresh()
   },
   methods: {
     refresh() {

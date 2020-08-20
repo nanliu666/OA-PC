@@ -117,7 +117,7 @@ export default {
   },
   provide() {
     return {
-      searchParams: this.searchParams
+      searchParams: () => this.searchParams
     }
   },
   computed: {
@@ -163,7 +163,8 @@ export default {
     },
 
     refresh() {
-      this.refreshByPane(this.tabPane)
+      // TODO: 更好的处理刷新处理
+      // this.refreshByPane(this.tabPane)
     },
 
     refreshByPane(pane) {
