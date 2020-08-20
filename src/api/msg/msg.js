@@ -13,5 +13,5 @@ export const creatDelReadMsg = (params) => {
 }
 // 审批统计查询接口【GET /appr/v1/appr/approve/stat】
 export const fetchApproveStat = (params) => {
-  return get('/appr/v1/appr/approve/stat', params)
+  return get('/appr/v2/appr/approve/stat', params)
 }
