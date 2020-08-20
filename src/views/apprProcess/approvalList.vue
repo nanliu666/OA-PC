@@ -148,7 +148,7 @@
                             class="icon"
                             aria-hidden="true"
                           >
-                            <use :[symbolKey]="'#icon-' + processesItem.icon" />
+                            <use :[symbolKey]="'#' + processesItem.icon" />
                           </svg>
                         </div>
                         <div class="content-box">

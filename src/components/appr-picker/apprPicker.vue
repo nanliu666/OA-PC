@@ -181,7 +181,7 @@ export default {
 
       return submitApprApply({
         ...data,
-        formData: JSON.stringify(data.formData),
+        formData: data.formData ? JSON.stringify(data.formData) : null,
         title: `${this.userInfo.nick_name}发起的${data.processName}`,
         userId: this.userId,
         processMap: Object.assign(

@@ -11,7 +11,6 @@
         </span>
       </div>
       <div class="main-box">
-        <!-- <el-calendar v-model="value"> </el-calendar> -->
         <!-- 日历 -->
         <div class="calendar-box">
           <div class="calendar-header">
@@ -57,10 +56,17 @@
         >
           <div class="content">
             <div class="time-row">
-              <span><span>{{
-                      chooseDate.getDate() >= 10 ? chooseDate.getDate() : `0${chooseDate.getDate()}`
-                    }}日</span>
-                <span> 星期{{ num2Chinese }}</span></span>
+              <div class="time-box">
+                <!-- <span>{{ chooseDate.getDate() >= 10 ? chooseDate.getDate() : `0${chooseDate.getDate()}` }}日</span>
+                <span> 星期{{ num2Chinese }}</span>  -->
+                <div class="day">
+                  {{ moment(chooseDate).format('DD') }}
+                </div>
+                <div class="week">
+                  <div>星期{{ num2Chinese }}</div>
+                  <div>{{ moment(chooseDate).format('YYYY年MM月') }}</div>
+                </div>
+              </div>
               <el-button
                 size="medium"
                 icon="icon-tips-plus-outlined"
@@ -110,6 +116,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { scheduleTypeCN, dayMapCN } from '@/const/taskCenter'
 import { mapGetters } from 'vuex'
 import addSchDialog from './components/addSchDialog'
@@ -127,7 +134,7 @@ export default {
   },
   data() {
     return {
-      // 选择的日期
+      // 选择的日期，默认当天
       chooseDate: new Date(),
       query: {
         beginRemindDate: '',
@@ -150,11 +157,11 @@ export default {
       this.loadData()
     }
   },
-
   created() {
     this.loadData()
   },
   methods: {
+    moment,
     // loadingData
     loadData() {
       this.loading = true
@@ -186,7 +193,7 @@ export default {
 /deep/.el-calendar-table td.is-selected {
   background: #ffffff;
 }
-/deep/ .el-calendar-table td.is-today {
+/deep/ .el-calendar-table td.is-chooseDate {
   color: #000;
 }
 /deep/.el-calendar__header {
@@ -312,14 +319,29 @@ export default {
           align-items: center;
           margin-bottom: 18px;
           height: 34px;
-          span {
-            font-size: 18px;
-            color: #202940;
-            line-height: 28px;
+          .time-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            .day {
+              margin-right: 10px;
+              font-size: 40px;
+              font-weight: 550;
+              color: #6b6b6b;
+            }
+            .week {
+              color: #6b6b6b;
+              font-size: 14px;
+            }
           }
-          :first-child {
-            margin-right: 16px;
-          }
+          // span {
+          //   font-size: 18px;
+          //   color: #202940;
+          //   line-height: 28px;
+          // }
+          // :first-child {
+          //   margin-right: 16px;
+          // }
         }
         .matter-detail {
           height: 244px;
