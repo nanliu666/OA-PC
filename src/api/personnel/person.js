@@ -80,7 +80,7 @@ export const getRecruitmentList = (params) => {
  * @param {String} pageSize - 每页条数
  * */
 export const getStaffList = (params) => {
-  return post('/user/v1/user/formal/list', params)
+  return post('/user/v2/user/formal/list', params)
 }
 
 // 转正申请接口
