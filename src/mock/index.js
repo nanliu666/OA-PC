@@ -52,8 +52,8 @@ noticeCenter(options)
 user(options)
 
 apprProcess(options)
-// menu(options)
-menu({ mock: true })
+menu(options)
+// menu({ mock: true })
 apprProcess(options)
 
 interview(options)
