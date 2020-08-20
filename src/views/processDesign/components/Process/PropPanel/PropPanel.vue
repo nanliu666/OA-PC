@@ -59,7 +59,7 @@
       >
         <row-wrapper
           v-if="showingPCons.includes(-1)"
-          title="发起人"
+          title="发起部门"
         >
           <fc-org-select
             ref="condition-org"
@@ -244,6 +244,7 @@
               <fc-org-select
                 ref="start-org"
                 v-model="initiator"
+                :tab-list="['user']"
                 :all="all"
                 :org="org"
               />

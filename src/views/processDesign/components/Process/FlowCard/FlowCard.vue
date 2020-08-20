@@ -109,13 +109,23 @@ function addNodeButton(ctx, data, h, isBranch = false) {
   if (isEmpty && !isBranch) {
     return ''
   }
-  if (data.conditionNodes && data.type === 'start') {
+  if (
+    data.conditionNodes &&
+    data.conditionNodes.length > 0 &&
+    data.type === 'start' &&
+    !data.isShow
+  ) {
+    data.isShow = 1
+
     return (
       <div class="add-node-btn-box flex  justify-center">
         <div class="add-node-btn"></div>
       </div>
     )
   } else {
+    if (data.conditionNodes && data.conditionNodes.length > 0 && data.type === 'start') {
+      data.isShow = 0
+    }
     return (
       <div class="add-node-btn-box flex  justify-center">
         <div class="add-node-btn">
