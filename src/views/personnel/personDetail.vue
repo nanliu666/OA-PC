@@ -726,7 +726,7 @@ export default {
         formKey: 'PersonOfferApply'
       }
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: params
       })
     },

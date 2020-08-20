@@ -1190,7 +1190,7 @@ export default {
         recruitmentId: row.recruitmentId
       }
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: params
       })
     },

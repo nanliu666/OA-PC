@@ -590,7 +590,7 @@ export default {
     // 跳去审批详情
     goApprDetail(apprNo) {
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: {
           apprNo,
           formKey: 'UserLeaveInfo'
