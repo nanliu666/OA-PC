@@ -85,7 +85,6 @@ export default {
 @import '@/styles/mixin.scss';
 .notice-card {
   flex: 1;
-  margin-right: 19px;
   // 头部
   .header {
     .title {

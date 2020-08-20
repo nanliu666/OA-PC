@@ -2,7 +2,6 @@ import Layout from '@/page/index/'
 import ProcessDesign from '@/views/processDesign/ProcessDesign'
 import demoRoutes from './demo'
 import todo from './todo'
-import notice from './notice'
 export default [
   {
     path: '/',
@@ -119,7 +118,6 @@ export default [
       }
     ]
   },
-  ...notice,
   ...todo,
   ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
 ]
