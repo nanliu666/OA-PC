@@ -26,8 +26,7 @@ export default {
       handler(val) {
         if (typeof val === 'object' && val !== null) {
           this.data = Object.assign({}, JSON.parse(JSON.stringify(val)))
-          // this.$store.commit('updateProcessData',val)
-          // console.log('this.$store.getters.processData____',this.$store.getters.processData)
+          this.data.isShow === 0 && delete this.data.isShow
         }
         this.forceUpdate()
       },
