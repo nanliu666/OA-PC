@@ -244,6 +244,7 @@
               <fc-org-select
                 ref="start-org"
                 v-model="initiator"
+                :tab-list="['user']"
                 :all="all"
                 :org="org"
               />
