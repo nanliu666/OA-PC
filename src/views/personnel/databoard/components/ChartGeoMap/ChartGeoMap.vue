@@ -5,7 +5,7 @@
     class="ChartGeoMap container"
   >
     <el-button
-      v-show="!isProvince"
+      v-show="!isChinaMap"
       class="operation__back"
       type="text"
       @click="() => handleBackBtnClick()"
@@ -110,12 +110,12 @@ export default {
       const data = this.data
       const config = this.config
       // 当前使用的配置
-      const cfg = config[this.isProvince ? 0 : 1]
+      const cfg = config[this.isChinaMap ? 0 : 1]
       let opts = {}
       if (this.title) {
         opts.title = {
           text: this.title,
-          subtext: this.isProvince ? '' : `当前地图:${this.mapName}`
+          subtext: this.isChinaMap ? '' : `当前地图:${this.mapName}`
         }
       }
       opts.series = {
@@ -143,7 +143,7 @@ export default {
     },
 
     // 当前视图是省份还是市 true - 中国地图， false- 某个省的视图
-    isProvince() {
+    isChinaMap() {
       return _.eq(this.mapName, MAPNAME_DEFAULT)
     }
   },
@@ -188,12 +188,12 @@ export default {
       try {
         // const { provinceCode } = getProvinceByName(this.mapName)
         this.loading = true
-        const data = await this.load[this.isProvince ? 0 : 1](
-          this.isProvince ? null : { provinceCode }
+        const data = await this.load[this.isChinaMap ? 0 : 1](
+          this.isChinaMap ? null : { provinceCode }
         )
         this.data = _.map(data, (d) => ({
           ...d,
-          provinceName: _.trimEnd(d.provinceName, '省')
+          provinceName: _.trimEnd(d.provinceName, '省市 ')
         }))
       } catch (error) {
         this.$message.error(error.message)
@@ -207,7 +207,7 @@ export default {
      * @returns {void}
      */
     async loadMap(mapName = this.mapName) {
-      this.mapName = mapName
+      this.mapName = _.trim(mapName)
       echarts.registerMap(mapName, await getProvinceDataByName(mapName))
       this.init()
     },
