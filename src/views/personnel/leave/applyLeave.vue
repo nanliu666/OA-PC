@@ -83,18 +83,18 @@
 
             <el-form-item>
               <el-button
+                size="medium"
+                @click="handelCancel"
+              >
+                取消
+              </el-button>
+              <el-button
                 type="primary"
                 size="medium"
                 :loading="btnLoading"
                 @click="handelSubmit"
               >
                 提交
-              </el-button>
-              <el-button
-                size="medium"
-                @click="handelCancel"
-              >
-                取消
               </el-button>
             </el-form-item>
           </el-form>
