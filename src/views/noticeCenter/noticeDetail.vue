@@ -68,7 +68,28 @@ export default {
   created() {
     this.initData()
   },
+  mounted() {
+    if (!this.$route.query.id) {
+      if (_.isEmpty(this.noticeDetailVuex)) {
+        this.$router.go(-1)
+      } else {
+        this.creatLeaveDialog()
+      }
+    }
+  },
   methods: {
+    creatLeaveDialog() {
+      window.addEventListener('beforeunload', this.beforeunloadHandler, false)
+      this.$once('hook:beforeDestroy', () => {
+        this.removeLeaveDialog()
+      })
+    },
+    removeLeaveDialog() {
+      window.removeEventListener('beforeunload', this.beforeunloadHandler, false)
+    },
+    beforeunloadHandler(e) {
+      e.returnValue = '确定'
+    },
     initData() {
       if (this.$route.query.id) {
         getCenterNoticeDeatil({ id: this.$route.query.id }).then((res) => {
