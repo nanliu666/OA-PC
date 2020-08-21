@@ -399,7 +399,7 @@ export default {
     creatNoticeFun() {
       return creatNotice(this.parmasData).then((res) => {
         this.daraftSuccess()
-        return res
+        return res.id
       })
     },
     /**
