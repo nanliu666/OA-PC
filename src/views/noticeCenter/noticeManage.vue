@@ -35,6 +35,17 @@
         @current-page-change="handleCurrentPageChange"
         @page-size-change="handlePageSizeChange"
       >
+        <!-- <template
+          slot="multiSelectMenu"
+          slot-scope="{ selection }"
+        >
+          <el-button
+            type="text"
+            @click="handleSelectionClick(selection)"
+          >
+            删除
+          </el-button>
+        </template> -->
         <template #topMenu>
           <div class="operations">
             <SearchPopover
@@ -160,9 +171,9 @@ const TABLE_COLUMNS = [
 const TABLE_CONFIG = {
   enablePagination: true,
   showHandler: true,
-  enableMultiSelect: true,
-  showIndexColumn: true,
-  rowKey: 'menuId',
+  // enableMultiSelect: true,
+  // showIndexColumn: true,
+  rowKey: 'id',
   treeProps: { hasChildren: 'hasChildren', children: 'children' }
 }
 const TABLE_PAGE_CONFIG = {}
@@ -251,6 +262,9 @@ export default {
     this.refreshTableData()
   },
   methods: {
+    // handleSelectionClick(selection) {
+    //   console.log('selection:', selection)
+    // },
     toPubulishNotice() {
       this.$store.commit('SET_NOTICE', '')
       this.$router.push({
@@ -268,8 +282,27 @@ export default {
       })
     },
     handleDelete(data) {
+      let that = this
+      this.$confirm('是否删除公告', '删除提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '不删除',
+        type: 'warning'
+      })
+        .then(() => {
+          that.delFun(data)
+        })
+        .catch(() => {
+          that.$message({
+            type: 'info',
+            message: '已取消！'
+          })
+        })
+    },
+    delFun(data) {
       delNoticeList({ id: data.id }).then(() => {
         this.$message.success('删除成功')
+        // 删除完成后更新视图
+        // this.$refs.table.clearSelection()
         this.loadTableData()
       })
     },
