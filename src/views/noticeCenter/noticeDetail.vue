@@ -80,8 +80,8 @@ export default {
         const durationTime = 1000
         this.isShowEmpty = true
         this.$notify.info({
-          title: '预览失败',
-          message: '返回上一页',
+          title: 'oh~丢失数据',
+          message: '正在返回上一页...',
           duration: 2000
         })
         setTimeout(() => {
