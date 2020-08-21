@@ -16,7 +16,7 @@
     >
       <el-form-item
         v-if="dialogOptions.dialogType === 'move' || dialogOptions.dialogType === 'enable'"
-        prop="moveGroup"
+        prop="moveValue"
       >
         <el-select
           v-model="form.moveValue"
@@ -101,7 +101,8 @@ export default {
         groupName: [
           { required: true, message: '请输入分组名称', trigger: 'blur' },
           { max: 20, message: '分组名称长度不能超过20', trigger: 'blur' }
-        ]
+        ],
+        moveValue: [{ required: true, message: '请选择分组名称', trigger: 'change' }]
       }
     }
   },

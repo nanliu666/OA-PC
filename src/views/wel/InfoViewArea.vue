@@ -17,9 +17,9 @@
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>{{ info.positionName }}</span>
+        <span>{{ info.jobName }}</span>
         <span>|</span>
-        <span>{{ info.companyName }}</span>
+        <span>{{ info.orgName }}</span>
       </div>
     </div>
 
