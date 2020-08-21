@@ -85,7 +85,7 @@ export const getStaffList = (params) => {
 
 // 转正申请接口
 export const createApply = (params) => {
-  return post('/user/v1/user/formal/info', params)
+  return post('/user/v2/user/formal/info', params)
 }
 
 /**

@@ -2,7 +2,7 @@ import { get, post } from '@/router/axios'
 
 // 待入职人员筛选
 export const getCandidateAcceptList = (params) => {
-  return post('/api/user/v1/candidate/accept/list', params)
+  return post('/api/user/v2/candidate/accept/list', params)
 }
 // 待入职人员详情
 export const getCandidateAcceptDetail = (params) => {
