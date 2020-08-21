@@ -130,6 +130,7 @@ export default {
     ...mapGetters(['userId', 'noticeDetailVuex', 'userInfo'])
   },
   beforeRouteEnter(to, from, next) {
+    to.meta.$keepAlive = false
     next((vm) => {
       // 草稿箱进入，需要显示标题为编辑公告
       if (from.path === '/noticeCenter/noticeDrafts') {
@@ -398,7 +399,7 @@ export default {
     creatNoticeFun() {
       return creatNotice(this.parmasData).then((res) => {
         this.daraftSuccess()
-        return res
+        return res.id
       })
     },
     /**

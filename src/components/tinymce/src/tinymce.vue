@@ -2,9 +2,10 @@
   <div>
     <div class="tinymce-editor">
       <editor
-        v-model="myValue"
+        :value="value"
         :init="init"
         :disabled="disabled"
+        @input="$emit('input', $events)"
         @onClick="onClick"
       />
     </div>
@@ -122,16 +123,7 @@ export default {
             }
           })
         }
-      },
-      myValue: this.value
-    }
-  },
-  watch: {
-    value(newValue) {
-      this.myValue = newValue
-    },
-    myValue(newValue) {
-      this.$emit('input', newValue)
+      }
     }
   },
   methods: {
@@ -139,10 +131,6 @@ export default {
     // 需要什么事件可以自己增加
     onClick(e) {
       this.$emit('onClick', e, tinymce)
-    },
-    // 可以添加一些自己的自定义事件，如清空内容
-    clear() {
-      this.myValue = ''
     }
   }
 }

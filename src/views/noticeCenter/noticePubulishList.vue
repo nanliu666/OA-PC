@@ -141,9 +141,9 @@ const TABLE_COLUMNS = [
 const TABLE_CONFIG = {
   enablePagination: true,
   showHandler: true,
-  enableMultiSelect: true,
-  showIndexColumn: true,
-  rowKey: 'menuId',
+  // enableMultiSelect: true,
+  // showIndexColumn: true,
+  rowKey: 'id',
   treeProps: { hasChildren: 'hasChildren', children: 'children' }
 }
 const TABLE_PAGE_CONFIG = {}
@@ -230,10 +230,24 @@ export default {
   },
   methods: {
     handleDelete(data) {
-      delNoticeList({ id: data.id }).then(() => {
-        this.$message.success('删除成功')
-        this.loadTableData()
+      let that = this
+      this.$confirm('是否删除公告', '删除提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '不删除',
+        type: 'warning'
       })
+        .then(() => {
+          delNoticeList({ id: data.id }).then(() => {
+            that.$message.success('删除成功')
+            that.loadTableData()
+          })
+        })
+        .catch(() => {
+          that.$message({
+            type: 'info',
+            message: '已取消！'
+          })
+        })
     },
     /**
      * 处理页码改变

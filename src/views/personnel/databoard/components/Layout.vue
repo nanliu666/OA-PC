@@ -65,6 +65,8 @@ $font_color: #202940
     font-size: 18px
     color: $font_color
   .basic-container--block
+    /deep/.el-card__body
+      padding: 0
     min-height: calc( 100% - 92px )
     height: 0
     /deep/.el-tabs__content
@@ -73,4 +75,6 @@ $font_color: #202940
       background: transparent
   .tabs__link--active
     font-weight: bold
+  /deep/.el-form-item
+    margin-bottom: 0
 </style>
