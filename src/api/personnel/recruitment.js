@@ -134,7 +134,7 @@ export const getRelationDemand = (params) => {
  * */
 
 export const getApprove = (params) => {
-  return get('/appr/v1/recruitment/approve/list', { ...params })
+  return get('/appr/v2/recruitment/approve/list', { ...params })
 }
 
 export const requirementStop = (params) => {

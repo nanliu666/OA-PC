@@ -411,7 +411,7 @@ export default {
     },
     handleLinkWorkNoClick({ apprNo }) {
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: { formKey: 'UserFormalInfo', apprNo: apprNo }
       })
     },

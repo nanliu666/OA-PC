@@ -40,7 +40,6 @@ export class NodeUtils {
       res.push(charArr[mod])
     } while (qutient)
     // eslint-disable-next-line
-    console.log(res)
     this.fit(res)
     // eslint-disable-next-line
     let allNode = JSON.parse(localStorage.getItem('allNode'))

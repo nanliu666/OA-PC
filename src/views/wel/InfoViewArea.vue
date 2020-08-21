@@ -17,9 +17,9 @@
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
-        <span>{{ info.positionName }}</span>
+        <span>{{ info.jobName }}</span>
         <span>|</span>
-        <span>{{ info.companyName }}</span>
+        <span>{{ info.orgName }}</span>
       </div>
     </div>
 
@@ -47,7 +47,7 @@
           </div>
           <div
             class="content-item"
-            @click="handelClick"
+            @click="jumpToCommonAppr"
           >
             <div class="Smectite" />
             <div class="icon-box apply">
@@ -111,15 +111,24 @@
       </div>
       <div class="main-wrap">
         <div class="content">
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="jumpToWaitAppr"
+          >
             <span class="num-box">{{ numObj.waitNum }}</span>
             <span class="handel">待我处理</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="jumpToApprByMe"
+          >
             <span class="num-box">{{ numObj.myNum }}</span>
             <span class="handel">我发起的</span>
           </div>
-          <div class="content-item">
+          <div
+            class="content-item"
+            @click="jumpToCopyApprToMe"
+          >
             <span class="num-box">{{ numObj.ccNum }}</span>
             <span class="handel">抄送我的</span>
           </div>
@@ -192,6 +201,21 @@ export default {
       this.$router.push({
         path: '/quickAccess/mailList'
       })
+    }, // 跳去待我处理
+    jumpToWaitAppr() {
+      this.$router.push({ path: '/apprProcess/appr/waitAppr' })
+    },
+    // 跳去我发起的
+    jumpToApprByMe() {
+      this.$router.push({ path: '/apprProcess/appr/apprByMe' })
+    },
+    // 跳去抄送我的
+    jumpToCopyApprToMe() {
+      this.$router.push({ path: '/apprProcess/appr/copyApprToMe' })
+    },
+    // 跳去通用申请
+    jumpToCommonAppr() {
+      this.$router.push({ path: '/apprProcess/launchApply' })
     }
   }
 }
@@ -200,8 +224,8 @@ export default {
 <style lang="scss" scoped>
 .info-wrap {
   // height: 90vh;
-  height: calc(1222px);
-  // height: calc(1222px + 400px + 19px);
+  // height: calc(1222px);
+  height: calc(1222px + 400px + 19px);
   width: 100%;
 
   background: #ffffff;

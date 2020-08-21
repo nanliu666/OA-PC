@@ -547,13 +547,21 @@ export default {
         pageNo: 1,
         pageSize: 10
       },
+      page: {
+        currentPage: 1,
+        pageSize: 1,
+        pagerCount: 1,
+        total: 10
+      },
       pageT: {
-        pageSize: 2,
+        currentPage: 1,
+        pageSize: 1,
         pagerCount: 1,
         total: 10
       },
       pageR: {
-        pageSize: 2,
+        currentPage: 1,
+        pageSize: 1,
         pagerCount: 1,
         total: 10
       },
@@ -650,6 +658,7 @@ export default {
           item.data = [beginEndDate, this.endEndDate]
         }
       })
+      this.params.pageNo = 1
       this.getData(beginEndDate, this.endEndDate)
     },
     handleLookTodo() {
@@ -663,7 +672,7 @@ export default {
           item.data = ['Expired']
         }
       })
-
+      this.paramsTodo.pageNo = 1
       this.$refs.searchPopoverTodo.submitSearch()
       // this.getTodoData()
     },
@@ -706,6 +715,7 @@ export default {
           endEndDate
         }
       }
+      this.page.currentPage = this.params.pageNo
       this.loading = true
       postSigned(params).then((res) => {
         // console.log(res)
@@ -738,6 +748,7 @@ export default {
         ...this.paramsTodo,
         ...this.searchFormTodo
       }
+      this.pageT.currentPage = this.paramsTodo.pageNo
       if (endEndDate) {
         params = {
           ...this.params,

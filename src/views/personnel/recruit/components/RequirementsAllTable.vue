@@ -479,7 +479,7 @@ export default {
     // 处理跳转
     handleLinkApprNoClick(row) {
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: { formId: row.formId, formKey: row.formKey, apprNo: row.apprNo }
       })
     },

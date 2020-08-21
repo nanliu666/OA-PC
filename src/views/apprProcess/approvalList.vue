@@ -175,6 +175,7 @@
                       </div>
                       <div class="li-right">
                         <el-button
+                          v-if="item.code !== 'draftProcess'"
                           type="text"
                           :disabled="!checkEditable(processesItem)"
                           @click="createApproval(processesItem)"
