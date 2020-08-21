@@ -161,7 +161,7 @@ export default {
     conf: {
       handler(val) {
         if (typeof val === 'object' && val !== null) {
-          this.drawingList = val.fields
+          this.drawingList = val.fields || []
           Object.assign(this.formConf, val)
           this.$store.commit(
             'initPConditions',
@@ -181,7 +181,7 @@ export default {
   },
   mounted() {
     if (typeof this.conf === 'object' && this.conf !== null) {
-      this.drawingList = this.conf.fields
+      this.drawingList = this.conf.fields || []
       Object.assign(this.formConf, this.conf)
       // } else if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
       //   this.drawingList = drawingListInDB

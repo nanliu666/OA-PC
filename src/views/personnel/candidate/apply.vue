@@ -146,9 +146,9 @@
           </div>
           <div class="flow">
             <div class=" flex-flow flex flex-justify-start flex-items">
-              <apprProgress
-                ref="apprProgress"
-                form-key="PersonOfferApply"
+              <appr-picker
+                ref="apprPicker"
+                :process-data="processData"
               />
             </div>
 
@@ -266,11 +266,15 @@ import { CodeToText } from 'element-china-area-data'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 import { setStore, getStore, removeStore } from '@/util/store'
+import { Base64 } from 'js-base64'
+import { getProcessDetail, getProcessIDByFormKey } from '@/api/apprProcess/apprProcess'
+import apprPicker from '@/components/appr-picker/apprPicker'
+import { FormKeysCN } from '@/const/approve'
 moment.locale('zh-cn')
 export default {
   name: 'Apply',
   components: {
-    apprProgress: () => import('@/components/appr-progress/apprProgress')
+    apprPicker
   },
   data() {
     let validate = (rule, value, callback) => {
@@ -285,6 +289,9 @@ export default {
     }
     return {
       rule: { required: true, validator: validate, trigger: 'change' },
+      formKey: 'PersonOfferApply',
+      processData: null,
+      processId: null,
       showBack: true,
       apprNo: '',
       applyId: '',
@@ -417,9 +424,29 @@ export default {
       this.getOfferApply()
     }
     this.labour.find((it) => it.prop === 'contractEndDate').rules.push(this.rule)
+    this.getProcessDetail()
   },
 
   methods: {
+    // 通过formKey获取processId
+    getProcessId() {
+      return getProcessIDByFormKey({ formKey: this.formKey })
+    },
+    getProcessDetail() {
+      this.getProcessId().then((res) => {
+        this.processId = res.processId
+        getProcessDetail({ processId: res.processId }).then((res) => {
+          if (!res) {
+            return
+          }
+          this.json = res.baseJson
+          const obj = JSON.parse(Base64.decode(res.baseJson))
+          if (typeof obj === 'object') {
+            this.processData = obj.processData
+          }
+        })
+      })
+    },
     /***
      *
      * @author guanfenda
@@ -486,7 +513,7 @@ export default {
     jumpMyApproval() {
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
-        path: '/approval/appr/waitAppr'
+        path: '/apprProcess/appr/waitAppr'
       })
     },
     jump() {
@@ -619,11 +646,8 @@ export default {
      * @author guanfenda
      *
      * */
-    onsubmit() {
-      if (!this.$refs['apprProgress'].validate()) {
-        this.$message.warning('请选择审批人')
-        return
-      }
+    async onsubmit() {
+      await this.$refs.apprPicker.validate()
       let workProvinceCode = this.infoForm.city[0],
         workProvinceName = CodeToText[this.infoForm.city[0]],
         workCityCode = this.infoForm.city[1],
@@ -651,13 +675,26 @@ export default {
       }
       this.loading = true
       postOfferApply(params).then((res) => {
+        if (!res || !res.id) {
+          return
+        }
         this.applyId = res.id
-        this.$refs['apprProgress'].submit(res.id).then((res) => {
-          this.apprNo = res.apprNo
-          this.loading = false
-          this.$message({ type: 'success', message: '提交成功' })
-          this.active = 3
-        })
+        this.$refs['apprPicker']
+          .submit({
+            formId: res.id,
+            formKey: this.formKey,
+            processName: FormKeysCN[this.formKey],
+            processId: this.processId
+          })
+          .then((res) => {
+            this.apprNo = res.apprNo
+            this.loading = false
+            this.$message({ type: 'success', message: '提交成功' })
+            this.active = 3
+          })
+          .finally(() => {
+            this.loading = false
+          })
       })
     },
     jumpDetail() {
@@ -669,7 +706,7 @@ export default {
       }
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
       this.$router.push({
-        path: '/approval/appr/apprDetail',
+        path: '/apprProcess/apprDetail',
         query: params
       })
     },

@@ -28,14 +28,11 @@
               slot="minSalary"
               v-model="range"
             />
-            <template slot="progress">
-              <appr-progress
-                ref="apprProgress"
-                form-key="Recruitment"
-                @change="() => $refs.form.clearValidate('progress')"
-              />
-            </template>
           </common-form>
+          <appr-picker
+            ref="apprPicker"
+            :process-data="processData"
+          />
           <div class="page-bottom">
             <el-button
               size="medium"
@@ -68,25 +65,25 @@ import { submitEewly, getJobInfo, getPost } from '@/api/personnel/recruitment'
 import { getOrgTreeSimple } from '@/api/org/org'
 import { getRecruitmentDetail } from '@/api/personnel/recruitment'
 import { getStaffBasicInfo } from '@/api/personalInfo'
+import { Base64 } from 'js-base64'
+import { getProcessDetail, getProcessIDByFormKey } from '@/api/apprProcess/apprProcess'
+import apprPicker from '@/components/appr-picker/apprPicker'
+import { FormKeysCN } from '@/const/approve'
 export default {
   name: 'Newrequirement',
   components: {
-    ApprProgress: () => import('@/components/appr-progress/apprProgress'),
     CancelEdit: () => import('@/views/personnel/recruit/components/modals/CancelEdit'),
-    NumInterval: () => import('@/components/numInterval/numInterval')
+    NumInterval: () => import('@/components/numInterval/numInterval'),
+    apprPicker
   },
   data() {
-    var checkAppr = (rule, value, callback) => {
-      if (!this.$refs['apprProgress'].validate()) {
-        callback(new Error('请选择审批流程'))
-      } else {
-        callback()
-      }
-    }
     return {
       dialogVisible: false,
       loading: false,
       personId: null,
+      formKey: 'Recruitment',
+      processData: null,
+      processId: null,
       form: {
         companyId: null,
         companyName: null,
@@ -291,16 +288,6 @@ export default {
           type: 'textarea',
           maxlength: 200,
           showWordLimit: true
-        },
-        {
-          props: {
-            hideColon: true
-          },
-          span: 24,
-          label: '审批流程',
-          prop: 'progress',
-          itemType: 'slot',
-          rules: [{ validator: checkAppr, trigger: 'change', required: true }]
         }
       ]
     }
@@ -336,6 +323,7 @@ export default {
     this.dictionaryGroup()
     await this.getPost()
     // this.loadOrgData()
+    this.getProcessDetail()
   },
 
   activated() {
@@ -345,11 +333,27 @@ export default {
     this.getUseInformation()
   },
   methods: {
+    // 通过formKey获取processId
+    getProcessId() {
+      return getProcessIDByFormKey({ formKey: this.formKey })
+    },
+    getProcessDetail() {
+      this.getProcessId().then((res) => {
+        this.processId = res.processId
+        getProcessDetail({ processId: res.processId }).then((res) => {
+          this.json = res.baseJson
+          const obj = JSON.parse(Base64.decode(res.baseJson))
+          if (typeof obj === 'object') {
+            this.processData = obj.processData
+          }
+        })
+      })
+    },
     handleEditRole() {
       this.dialogVisible = true
     },
     handleSubmit() {
-      this.$refs['form'].validate().then(() => {
+      Promise.all([this.$refs['form'].validate(), this.$refs['apprPicker'].validate()]).then(() => {
         this.closeRules()
         this.form.userId = this.userId
         this.form.minSalary = this.range.min
@@ -357,12 +361,19 @@ export default {
         this.loading = true
         submitEewly(this.form).then((res) => {
           if (res && res.id) {
-            this.$refs['apprProgress'].submit(res.id).then(() => {
-              this.loading = false
-              this.$message({ type: 'success', message: '提交成功' })
-              this.isDoNotSave()
-              this.goBack()
-            })
+            this.$refs['apprPicker']
+              .submit({
+                formId: res.id,
+                formKey: this.formKey,
+                processName: FormKeysCN[this.formKey],
+                processId: this.processId
+              })
+              .then(() => {
+                this.loading = false
+                this.$message({ type: 'success', message: '提交成功' })
+                this.isDoNotSave()
+                this.goBack()
+              })
           }
         })
       })
