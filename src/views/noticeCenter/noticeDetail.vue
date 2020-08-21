@@ -5,36 +5,39 @@
       :show-back="true"
     />
     <el-card class="notice-content">
-      <h1
-        class="content-h1"
-        v-text="noticeDetail.title"
-      />
-      <div
-        v-if="noticeDetail.publishUserName"
-        class="subText"
-      >
-        <span class="publishUserName">发布人：{{ noticeDetail.publishUserName }}</span>
-        <span style="padding:0 20px">发布时间：{{ noticeDetail.publishTime }}</span>
-        <span>阅读量：{{ noticeDetail.readNum }}</span>
-      </div>
-      <div v-html="noticeDetail.content" />
-      <div
-        v-for="(item, index) in noticeDetail.attachment"
-        :key="index"
-      >
-        <iframe
-          v-if="iframeList.indexOf(index) > -1"
-          class="word-class"
-          :src="getIframeSrc(item)"
-          frameborder="0"
+      <div v-if="!isShowEmpty">
+        <h1
+          class="content-h1"
+          v-text="noticeDetail.title"
         />
-        <el-image
-          v-if="imagesList.indexOf(index) > -1"
-          class="word-class"
-          :src="item.url"
-          fit="cover"
-        />
+        <div
+          v-if="noticeDetail.publishUserName"
+          class="subText"
+        >
+          <span class="publishUserName">发布人：{{ noticeDetail.publishUserName }}</span>
+          <span style="padding:0 20px">发布时间：{{ noticeDetail.publishTime }}</span>
+          <span>阅读量：{{ noticeDetail.readNum }}</span>
+        </div>
+        <div v-html="noticeDetail.content" />
+        <div
+          v-for="(item, index) in noticeDetail.attachment"
+          :key="index"
+        >
+          <iframe
+            v-if="iframeList.indexOf(index) > -1"
+            class="word-class"
+            :src="getIframeSrc(item)"
+            frameborder="0"
+          />
+          <el-image
+            v-if="imagesList.indexOf(index) > -1"
+            class="word-class"
+            :src="item.url"
+            fit="cover"
+          />
+        </div>
       </div>
+      <com-empty v-if="isShowEmpty" />
     </el-card>
   </div>
 </template>
@@ -46,9 +49,10 @@ import { mapGetters } from 'vuex'
 import { htmlDecode } from '@/util/util'
 export default {
   name: 'NoticeList',
-  components: { PageHeader },
+  components: { PageHeader, ComEmpty: () => import('@/components/common-empty/empty') },
   data() {
     return {
+      isShowEmpty: false,
       iframeSrc: '',
       noticeDetail: {},
       iframeList: [],
@@ -69,9 +73,20 @@ export default {
     this.initData()
   },
   mounted() {
+    // 不存在id即为预览状态
     if (!this.$route.query.id) {
+      // vuex内存的值被清空即为重新刷新页面后进入
       if (_.isEmpty(this.noticeDetailVuex)) {
-        this.$router.go(-1)
+        const durationTime = 1000
+        this.isShowEmpty = true
+        this.$notify.info({
+          title: '预览失败',
+          message: '返回上一页',
+          duration: 2000
+        })
+        setTimeout(() => {
+          this.$router.go(-1)
+        }, durationTime)
       } else {
         this.creatLeaveDialog()
       }
@@ -91,6 +106,7 @@ export default {
       e.returnValue = '确定'
     },
     initData() {
+      // 存在id即为阅读状态，需要拉接口
       if (this.$route.query.id) {
         getCenterNoticeDeatil({ id: this.$route.query.id }).then((res) => {
           this.noticeDetail = res
@@ -113,6 +129,7 @@ export default {
       return targetUrl
     },
     getShowIndex() {
+      if (_.isEmpty(this.noticeDetailVuex)) return
       this.noticeDetail.attachment.map((item, index) => {
         const url = item.url.split('.')
         let fileName = url[url.length - 1]
