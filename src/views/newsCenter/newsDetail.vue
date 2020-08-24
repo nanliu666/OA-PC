@@ -120,6 +120,7 @@ export default {
 $color_info: #757c85
 
 .wrapper
+  height: 100%
   .basic-container--block
     min-height: calc( 100% - 92px )
     height: 0
