@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <pageHeader
-      :back="() => this.handleBack()"
+      :back="handleBack"
       show-back
       title="续签合同"
     />
@@ -33,27 +33,11 @@
           :info-form.sync="signedData"
           :form.sync="infoForm"
         />
-        <div>
-          <el-form
-            ref="formApply"
-            :model="apply"
-            :rules="rules"
-            label-width="130px"
-            label-position="top"
-            size="medium"
-          >
-            <el-form-item
-              label="审批流程"
-              prop="apprProgress"
-            >
-              <apprProgress
-                ref="apprProgress"
-                form-key="UserContractInfo"
-                @change="() => $refs.formApply.clearValidate('apprProgress')"
-              />
-            </el-form-item>
-          </el-form>
-        </div>
+
+        <appr-picker
+          ref="apprPicker"
+          :process-data="processData"
+        />
         <div class="footer flex flex-items flex-justify">
           <el-button
             size="medium"
@@ -84,20 +68,28 @@ import moment from 'moment'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
 
+import { Base64 } from 'js-base64'
+import { getProcessDetail, getProcessIDByFormKey } from '@/api/apprProcess/apprProcess'
+import apprPicker from '@/components/appr-picker/apprPicker'
+import { FormKeysCN } from '@/const/approve'
+const formFields = [
+  { label: '用户名称', prop: 'name', span: 12 },
+  { label: '合同编号', prop: 'code', span: 12 },
+  { label: '合同公司', prop: 'name', span: 12 },
+  { label: '合同类型', prop: 'type', span: 12 },
+  { label: '合同期限', prop: 'period', span: 12 },
+  { label: '合同起始日期', prop: 'beginDate', span: 12 },
+  { label: '合同结束日期', prop: 'endDate', span: 12 },
+  { label: '合同签订日期', prop: 'signDate', span: 12 },
+  { label: '备注', prop: 'remark', span: 24 }
+]
 export default {
   name: 'Renewal',
   components: {
     inputArray,
-    apprProgress: () => import('@/components/appr-progress/apprProgress')
+    apprPicker
   },
   data() {
-    var checkAppr = (rule, value, callback) => {
-      if (!this.$refs['apprProgress'].validate()) {
-        callback(new Error('请选择审批人'))
-      } else {
-        callback()
-      }
-    }
     let validate = (rule, value, callback) => {
       let beginDate = moment(this.infoForm.beginDate).valueOf()
       let endDate = moment(this.infoForm.endDate).valueOf()
@@ -122,11 +114,10 @@ export default {
       initData: {},
       rule: { required: true, validator: validate, trigger: 'change' },
       startTime: { required: true, validator: validateStartTime, trigger: 'blur' },
-      apply: {
-        apprProgress: '',
-        note: ''
-      },
       loading: false,
+      formKey: 'UserContractInfo',
+      processData: null,
+      processId: null,
       personInfo: {
         telephone: '150899544444',
         orgName: '行政部',
@@ -139,8 +130,7 @@ export default {
             message: '请填写帮助说明',
             trigger: 'change'
           }
-        ],
-        apprProgress: [{ required: true, validator: checkAppr, trigger: 'change' }]
+        ]
       },
       signedData: JSON.parse(JSON.stringify(signedData)),
       infoForm: {
@@ -203,8 +193,25 @@ export default {
     this.signedData.basicAttrs.find((it) => it.props === 'endDate').rules.push(this.rule)
     this.signedData.basicAttrs.find((it) => it.props === 'beginDate').rules.push(this.startTime)
     this.getContractLatest()
+    this.getProcessDetail()
   },
   methods: {
+    // 通过formKey获取processId
+    getProcessId() {
+      return getProcessIDByFormKey({ formKey: this.formKey })
+    },
+    getProcessDetail() {
+      this.getProcessId().then((res) => {
+        this.processId = res.processId
+        getProcessDetail({ processId: res.processId }).then((res) => {
+          this.json = res.baseJson
+          const obj = JSON.parse(Base64.decode(res.baseJson))
+          if (typeof obj === 'object') {
+            this.processData = obj.processData
+          }
+        })
+      })
+    },
     /**
      * @author guanfenda
      * @desc 用户已签订最新合同信息查询接口
@@ -236,7 +243,7 @@ export default {
           })
         })
       ).then((res) => {
-        this.$refs['formApply'].validate((valid) => {
+        this.$refs['apprPicker'].validate((valid) => {
           if (res.includes(false)) return
           if (!valid) return
           let params = {
@@ -248,18 +255,36 @@ export default {
             .then((res) => {
               // this.$message.success('提交成功')
               if (res && res.id) {
-                this.$refs['apprProgress'].submit(res.id).then(() => {
-                  this.$message({ type: 'success', message: '提交成功' })
-                  setTimeout(() => {
-                    this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
-                    this.$router.push({
-                      path: '/personnel/contract/contract'
-                    })
-                  }, 2000)
+                formFields.forEach((field) => {
+                  if (field.prop === 'name') {
+                    field.value = this.personInfo.name
+                    return
+                  }
+                  field.value = params[field.prop]
                 })
+                this.$refs['apprPicker']
+                  .submit({
+                    formId: res.id,
+                    formData: formFields,
+                    formKey: this.formKey,
+                    processName: FormKeysCN[this.formKey],
+                    processId: this.processId
+                  })
+                  .then(() => {
+                    this.$message({ type: 'success', message: '提交成功' })
+                    setTimeout(() => {
+                      this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+                      this.$router.push({
+                        path: '/personnel/contract/contract'
+                      })
+                    }, 1000)
+                  })
+                  .finally(() => {
+                    this.loading = false
+                  })
               }
             })
-            .finally(() => {
+            .catch(() => {
               this.loading = false
             })
         })
@@ -291,27 +316,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  display: -ms-flex;
-  display: -moz-box;
-  display: -webkit-flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  color: #202940;
-  line-height: 28px;
-  font-weight: bold;
-  padding-top: 14px;
-}
 .person {
   background: #ffffff;
   border-radius: 4px;
   height: 102px;
   padding: 24px 24px 24px 24px;
   box-sizing: border-box;
-  margin-top: 16px;
 
   .name {
     font-family: PingFangSC-Medium;
@@ -368,6 +378,7 @@ export default {
 .contain {
   background: #fff;
   margin-top: 20px;
+  margin-bottom: 24px;
   padding: 20px 100px;
   min-height: 100px;
   .title {

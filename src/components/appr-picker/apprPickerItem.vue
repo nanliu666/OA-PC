@@ -261,8 +261,14 @@ export default {
         { deep: true, immediate: true }
       )
     } else {
-      this.data = this.childNode
-      this.data && !this.data.userList && this.initUserList(this.data)
+      this.watcher = this.$watch(
+        'childNode',
+        () => {
+          this.data = this.childNode
+          this.data && !this.data.userList && this.initUserList(this.data)
+        },
+        { deep: true, immediate: true }
+      )
     }
   },
   methods: {

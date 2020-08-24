@@ -170,7 +170,7 @@ export default {
       })
     },
     validate() {
-      return this.$refs.form.validate()
+      return this.$refs.form.validate(...arguments)
     },
     submit(data) {
       if (!this.checkValidate().valid) {

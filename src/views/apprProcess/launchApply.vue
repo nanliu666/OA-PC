@@ -130,8 +130,14 @@ export default {
      * 跳转到提交页面
      */
     jumpToSubmit(process) {
+      const blackList = ['PersonOfferApply', 'UserContractInfo', 'Recruitment', 'UserChangeInfo']
+      if (blackList.includes(process.formKey)) {
+        this.$message.warning('该申请不支持直接发起，请在相关业务处（如：人事管理模块）发起申请')
+        return
+      }
       const formkeyPathMap = {
-        UserFormalInfo: '/personnel/administration/apply'
+        UserFormalInfo: '/personnel/administration/apply',
+        UserLeaveInfo: '/personnel/leave/applyLeave'
       }
       let path = formkeyPathMap[process.formKey]
       if (!path) {

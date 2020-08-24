@@ -7,17 +7,17 @@ export const getCandidateStatusStat = (params) => {
 
 // 候选人筛选
 export const getCandidateList = (params) => {
-  return post('/api/user/v1/candidate/list', params)
+  return post('/api/user/v2/candidate/list', params)
 }
 
 // 已淘汰候选人筛选
 export const getCandidateOutList = (params) => {
-  return post('/api/user/v1/candidate/out/list', params)
+  return post('/api/user/v2/candidate/out/list', params)
 }
 
 // 候选人淘汰
 export const weedOutCandidate = (params) => {
-  return post('/api/user/v1/candidate/out', params)
+  return post('/api/user/v2/candidate/out', params)
 }
 
 // 关联招聘需求查询
@@ -52,12 +52,12 @@ export const getPersonInfo = (params) => {
 
 // 候选人人员详情查询
 export const getCandidateInfo = (params) => {
-  return get('/api/user/v1/candidate/info', params)
+  return get('/api/user/v2/candidate/info', params)
 }
 
 // 已淘汰人员详情查询
 export const getCandidateOutInfo = (params) => {
-  return get('/api/user/v1/candidate/out/info', params)
+  return get('/api/user/v2/candidate/out/info', params)
 }
 
 // 人员动态查询

@@ -350,9 +350,12 @@ export default {
     handleMapItemClick(e, refName) {
       const map = _.head(this.$refs[refName])
       const { name } = e
-      if (map.isProvince) {
+      if (map.isChinaMap) {
         map.loadMap(name)
-        map.loadData(_.get(e, 'data.$_item', {}))
+        const params = _.get(e, 'data.$_item', null)
+        if (params) {
+          map.loadData(params)
+        }
       }
     },
     // DEBUG:

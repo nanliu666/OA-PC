@@ -1,145 +1,102 @@
 <template>
-  <div>
+  <div class="fill">
     <page-header
       title="离职申请"
       show-back
       :back="goBack"
     />
-    <basic-container>
+    <basic-container block>
       <el-row
         type="flex"
         justify="center"
         class="container"
       >
         <el-col
-          :xl="12"
-          :lg="12"
-          :md="14"
+          :xl="16"
+          :lg="16"
+          :md="18"
           :sm="20"
           :xs="22"
         >
           <el-form
             ref="form"
             :model="queryInfo"
-            label-width="80px"
             label-position="top"
             :rules="rules"
             class="form-wrap"
           >
             <!-- 标题 -->
-            <el-row
-              type="flex"
-              justify="center"
-            >
-              <el-col :span="14">
-                <h4 class="title">
-                  离职信息
-                </h4>
-              </el-col>
-            </el-row>
+
+            <h4 class="title">
+              离职信息
+            </h4>
+
             <!-- 最后工作日期 -->
-            <el-row
-              type="flex"
-              justify="center"
+
+            <el-form-item
+              label="最后工作日"
+              prop="lastDate"
             >
-              <el-col :span="14">
-                <el-form-item
-                  label="最后工作日"
-                  prop="lastDate"
-                >
-                  <el-date-picker
-                    v-model="queryInfo.lastDate"
-                    type="date"
-                    placeholder="选择日期"
-                    style="width:100%"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
+              <el-date-picker
+                v-model="queryInfo.lastDate"
+                type="date"
+                placeholder="选择日期"
+                style="width:100%"
+              />
+            </el-form-item>
+
             <!-- 离职原因 -->
-            <el-row
-              type="flex"
-              justify="center"
+
+            <el-form-item
+              label="离职原因"
+              prop="reason"
             >
-              <el-col :span="14">
-                <el-form-item
-                  label="离职原因"
-                  prop="reason"
-                >
-                  <el-select
-                    v-model="queryInfo.reason"
-                    placeholder="请选择离职原因"
-                    style="width:100%"
-                  >
-                    <el-option
-                      v-for="item in LeaveReason"
-                      :key="item.id"
-                      :label="item.dictValue"
-                      :value="item.dictKey"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <!-- 离职原因说明 -->
-            <el-row
-              type="flex"
-              justify="center"
-            >
-              <el-col :span="14">
-                <el-form-item label="离职原因说明">
-                  <el-input
-                    v-model="queryInfo.remark"
-                    :rows="3"
-                    type="textarea"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <!-- 审批 -->
-            <el-row
-              type="flex"
-              justify="center"
-            >
-              <el-col :span="14">
-                <el-form-item
-                  label="审批流程"
-                  prop="apprProgress"
-                >
-                  <appr-progress
-                    ref="apprProgress"
-                    form-key="UserLeaveInfo"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <!-- 按钮区 -->
-            <el-row
-              type="flex"
-              justify="center"
-            >
-              <el-col
-                :span="14"
-                class="btn-box"
+              <el-select
+                v-model="queryInfo.reason"
+                placeholder="请选择离职原因"
+                style="width:100%"
               >
-                <el-form-item>
-                  <el-button
-                    type="primary"
-                    size="medium"
-                    :loading="btnLoading"
-                    @click="handelSubmit"
-                  >
-                    提交
-                  </el-button>
-                  <el-button
-                    size="medium"
-                    @click="handelCancel"
-                  >
-                    取消
-                  </el-button>
-                </el-form-item>
-              </el-col>
-            </el-row>
+                <el-option
+                  v-for="item in LeaveReason"
+                  :key="item.id"
+                  :label="item.dictValue"
+                  :value="item.dictKey"
+                />
+              </el-select>
+            </el-form-item>
+
+            <!-- 离职原因说明 -->
+
+            <el-form-item label="离职原因说明">
+              <el-input
+                v-model="queryInfo.remark"
+                :rows="3"
+                type="textarea"
+              />
+            </el-form-item>
+
+            <appr-picker
+              ref="apprPicker"
+              :process-data="processData"
+            />
+            <!-- 按钮区 -->
+
+            <el-form-item>
+              <el-button
+                size="medium"
+                @click="handelCancel"
+              >
+                取消
+              </el-button>
+              <el-button
+                type="primary"
+                size="medium"
+                :loading="btnLoading"
+                @click="handelSubmit"
+              >
+                提交
+              </el-button>
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
@@ -151,18 +108,33 @@
 // checkApplyNum
 import { applyLeaveInfo } from '@/api/leave/leave'
 import { mapGetters } from 'vuex'
+import { Base64 } from 'js-base64'
+import { getProcessDetail, getProcessIDByFormKey } from '@/api/apprProcess/apprProcess'
+import apprPicker from '@/components/appr-picker/apprPicker'
+import { FormKeysCN } from '@/const/approve'
+
+const formFields = [
+  {
+    label: '最后工作日',
+    prop: 'lastDate',
+    span: 12
+  },
+  {
+    label: '离职原因',
+    prop: 'reason',
+    span: 12
+  },
+  {
+    label: '离职原因说明',
+    prop: 'remark',
+    span: 12
+  }
+]
 export default {
   components: {
-    apprProgress: () => import('@/components/appr-progress/apprProgress')
+    apprPicker
   },
   data() {
-    var checkAppr = (rule, value, callback) => {
-      if (!this.$refs['apprProgress'].validate()) {
-        callback(new Error('请选择审批人'))
-      } else {
-        callback()
-      }
-    }
     return {
       // 申请离职params
       queryInfo: {
@@ -172,6 +144,9 @@ export default {
         reason: '',
         remark: ''
       },
+      formKey: 'UserLeaveInfo',
+      processData: null,
+      processId: null,
       // rules 校验规则
       rules: {
         lastDate: [
@@ -187,8 +162,7 @@ export default {
             message: '请选择离职原因',
             trigger: 'change'
           }
-        ],
-        apprProgress: [{ validator: checkAppr, required: true, trigger: 'change' }]
+        ]
       },
       // 离职原因字典组
       LeaveReason: [],
@@ -200,9 +174,26 @@ export default {
   },
   created() {
     this.getCommonDict()
+    this.getProcessDetail()
   },
 
   methods: {
+    // 通过formKey获取processId
+    getProcessId() {
+      return getProcessIDByFormKey({ formKey: this.formKey })
+    },
+    getProcessDetail() {
+      this.getProcessId().then((res) => {
+        this.processId = res.processId
+        getProcessDetail({ processId: res.processId }).then((res) => {
+          this.json = res.baseJson
+          const obj = JSON.parse(Base64.decode(res.baseJson))
+          if (typeof obj === 'object') {
+            this.processData = obj.processData
+          }
+        })
+      })
+    },
     // 获取离职原因字典组
     getCommonDict() {
       this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
@@ -226,11 +217,18 @@ export default {
         applyLeaveInfo(this.queryInfo)
           .then((res) => {
             if (res && res.id) {
-              this.$refs['apprProgress'].submit(res.id).then(() => {
-                this.$message.success('提交成功', 2000, this.$router.go(-1))
-              })
+              this.$refs['apprPicker']
+                .submit({
+                  formId: res.id,
+                  formData: formFields,
+                  formKey: this.formKey,
+                  processName: FormKeysCN[this.formKey],
+                  processId: this.processId
+                })
+                .then(() => {
+                  this.$message.success('提交成功', 2000, this.$router.go(-1))
+                })
             }
-            // this.$message.success('提交成功', 2000, this.$router.go(-1))
           })
           .catch(() => {})
           .finally(() => {
@@ -248,32 +246,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form-wrap {
-  /deep/.el-form-item__label {
-    padding: 0;
-  }
-
-  /deep/ .el-form-item {
-    margin: 0 0 10px 0;
-  }
-}
-
-.container {
-  /deep/.el-col {
-    margin-bottom: 0;
-  }
-}
-
 .title {
   font-family: PingFangSC-Regular;
   font-size: 14px;
   color: #202940;
   line-height: 14px;
   margin: 40px 0 10px 0;
-}
-
-.btn-box {
-  display: flex;
-  justify-content: center;
 }
 </style>

@@ -126,7 +126,11 @@ export default {
       }
     },
     getFirstPath(children, index = 0) {
-      if (children[index].menuType !== 'Dir' && children[index].path) {
+      if (
+        children[index].menuType !== 'Dir' &&
+        children[index].path &&
+        children[index].isShow != 0
+      ) {
         return children[index].path
       }
       if (children[0].children.length > 0) {

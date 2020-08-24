@@ -306,6 +306,7 @@
                   <el-date-picker
                     v-model="applyParams.effectDate"
                     type="date"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期"
                     style="width:100%"
                   />
@@ -328,16 +329,10 @@
             <!-- 审批-->
             <el-row>
               <el-col :span="24">
-                <el-form-item
-                  label="审批流程"
-                  prop="apprProgress"
-                  style="width:100%"
-                >
-                  <appr-progress
-                    ref="apprProgress"
-                    form-key="UserChangeInfo"
-                  />
-                </el-form-item>
+                <appr-picker
+                  ref="apprPicker"
+                  :process-data="processData"
+                />
               </el-col>
             </el-row>
             <!-- 按钮 -->
@@ -371,26 +366,37 @@ import { changeApply } from '@/api/personnel/transction.js'
 import { getOrganizationCompany } from '@/api/personnel/roster'
 import { getJobInfo, getPositionInfo, getStaffBasicInfo } from '@/api/personalInfo.js'
 import { getOrganizationTree } from '@/api/organize/grade.js'
-// import ElTreeSelect from '@/components/elTreeSelect/elTreeSelect'
-import apprProgress from '@/components/appr-progress/apprProgress'
+import { Base64 } from 'js-base64'
+import { getProcessDetail, getProcessIDByFormKey } from '@/api/apprProcess/apprProcess'
+import apprPicker from '@/components/appr-picker/apprPicker'
+import { FormKeysCN } from '@/const/approve'
 import { flatTree } from '@/util/util'
 // import getAppProcess from "@/api/approval/approval"
+const formFields = [
+  { label: '用户名称', prop: 'name', span: 12 },
+  { label: '异动类型', prop: 'type', span: 12 },
+  { label: '异动原因', prop: 'reason', span: 12 },
+  { label: '生效日期', prop: 'effectDate', span: 12 },
+  { label: '原公司名称', prop: 'companyName', span: 12 },
+  { label: '新公司名称', prop: 'newCompanyName', span: 12 },
+  { label: '原部门名称', prop: 'orgName', span: 12 },
+  { label: '新部门名称', prop: 'newOrgName', span: 12 },
+  { label: '原职位名称', prop: 'jobName', span: 12 },
+  { label: '新职位名称', prop: 'newJobName', span: 12 },
+  { label: '原岗位名称', prop: 'positionName', span: 12 },
+  { label: '新岗位名称', prop: 'newPositionName', span: 12 },
+  { label: '备注', prop: 'remark', span: 12 }
+]
 export default {
   name: 'ChangeApply',
   components: {
-    // ElTreeSelect,
-    apprProgress
+    apprPicker
   },
   data() {
-    // 审批校验
-    var checkAppr = (rule, value, callback) => {
-      if (!this.$refs['apprProgress'].validate()) {
-        callback(new Error('请选择审批人'))
-      } else {
-        callback()
-      }
-    }
     return {
+      formKey: 'UserChangeInfo',
+      processData: null,
+      processId: null,
       // 请求数据params and 员工信息
       applyParams: {
         userId: '',
@@ -422,7 +428,6 @@ export default {
         type: [{ required: true, message: '请选择异动类型', trigger: 'blur' }],
         reason: [{ required: true, message: '请选择异动原因', trigger: 'change' }],
         effectDate: [{ required: true, message: '请选择生效日期', trigger: 'blur' }],
-        apprProgress: [{ validator: checkAppr, required: true, trigger: 'change' }],
         newCompanyId: [
           {
             required: true,
@@ -498,9 +503,26 @@ export default {
     await this.getJob(this.applyParams.orgId)
     await this.getPosition()
     this.loading = false
+    this.getProcessDetail()
   },
 
   methods: {
+    // 通过formKey获取processId
+    getProcessId() {
+      return getProcessIDByFormKey({ formKey: this.formKey })
+    },
+    getProcessDetail() {
+      this.getProcessId().then((res) => {
+        this.processId = res.processId
+        getProcessDetail({ processId: res.processId }).then((res) => {
+          this.json = res.baseJson
+          const obj = JSON.parse(Base64.decode(res.baseJson))
+          if (typeof obj === 'object') {
+            this.processData = obj.processData
+          }
+        })
+      })
+    },
     // 获取员工信息
     async getPersonalInfo() {
       let params = {
@@ -628,75 +650,92 @@ export default {
     },
     // 点击提交
     handelSubmit() {
-      this.$refs.applyForm.validate((valid) => {
-        if (!valid) {
-          return
-        }
-        let {
-          companyId,
-          orgId,
-          jobId,
-          positionId,
-          //   companyName,
-          //   orgName,
-          //   jobName,
-          //   positionName,
-          // 新公司信息
-          newCompanyId,
-          newOrgId,
-          newJobId,
-          newPositionId
-          //   newCompanyName,
-          //   newOrgName,
-          //   newJobName,
-          //   newPositionName
-        } = this.applyParams
-        // 公司/部门/职位/岗位”至少有存在一个变更
-        if (
-          companyId !== newCompanyId ||
-          orgId !== newOrgId ||
-          jobId !== newJobId ||
-          positionId !== newPositionId
-        ) {
-          this.btnLoading = true
-          this.newCompanyList.forEach((item) => {
-            if (item.orgId == newCompanyId) {
-              this.applyParams.newCompanyName = item.orgName
-            }
-          })
-          flatTree(this.newOrgList).forEach((item) => {
-            if (item.orgId == newOrgId) {
-              this.applyParams.newOrgName = item.orgName
-            }
-          })
-          this.newJobList.forEach((item) => {
-            if (item.jobId == newJobId) {
-              this.applyParams.newJobName = item.jobName
-            }
-          })
-          this.newPositionList.forEach((item) => {
-            if (item.id == newPositionId) {
-              this.applyParams.newPositionName = item.name
-            }
-          })
-
-          changeApply(this.applyParams)
-            .then((res) => {
-              if (res && res.id) {
-                this.$refs['apprProgress'].submit(res.id).then(() => {
-                  this.$message.success('提交成功', 3000)
-                  this.goBack()
-                })
+      Promise.all([this.$refs['applyForm'].validate(), this.$refs['apprPicker'].validate()]).then(
+        () => {
+          let {
+            companyId,
+            orgId,
+            jobId,
+            positionId,
+            //   companyName,
+            //   orgName,
+            //   jobName,
+            //   positionName,
+            // 新公司信息
+            newCompanyId,
+            newOrgId,
+            newJobId,
+            newPositionId
+            //   newCompanyName,
+            //   newOrgName,
+            //   newJobName,
+            //   newPositionName
+          } = this.applyParams
+          // 公司/部门/职位/岗位”至少有存在一个变更
+          if (
+            companyId !== newCompanyId ||
+            orgId !== newOrgId ||
+            jobId !== newJobId ||
+            positionId !== newPositionId
+          ) {
+            this.btnLoading = true
+            this.newCompanyList.forEach((item) => {
+              if (item.orgId == newCompanyId) {
+                this.applyParams.newCompanyName = item.orgName
               }
             })
-            .catch()
-            .finally(() => {
-              this.btnLoading = false
+            flatTree(this.newOrgList).forEach((item) => {
+              if (item.orgId == newOrgId) {
+                this.applyParams.newOrgName = item.orgName
+              }
             })
-        } else {
-          return this.$message.info('请输入人事异动的变更内容', 3000)
+            this.newJobList.forEach((item) => {
+              if (item.jobId == newJobId) {
+                this.applyParams.newJobName = item.jobName
+              }
+            })
+            this.newPositionList.forEach((item) => {
+              if (item.id == newPositionId) {
+                this.applyParams.newPositionName = item.name
+              }
+            })
+
+            changeApply(this.applyParams)
+              .then((res) => {
+                if (res && res.id) {
+                  formFields.forEach((item) => {
+                    if (item.prop === 'type') {
+                      item.content = {
+                        Position: '调岗',
+                        Up: '晋升',
+                        Down: '降级'
+                      }[this.applyParams.type]
+                    }
+                    item.value = this.applyParams[item.prop]
+                  })
+                  this.$refs['apprPicker']
+                    .submit({
+                      formId: res.id,
+                      formKey: this.formKey,
+                      formData: formFields,
+                      processName: FormKeysCN[this.formKey],
+                      processId: this.processId
+                    })
+                    .then(() => {
+                      this.$message.success('提交成功', 3000)
+                      this.goBack()
+                    })
+                    .finally(() => {
+                      this.btnLoading = false
+                    })
+                }
+              })
+              .catch()
+          } else {
+            return this.$message.info('请输入人事异动的变更内容', 3000)
+          }
         }
-      })
+      )
     },
     // 根据新部门ID找新部门
 
