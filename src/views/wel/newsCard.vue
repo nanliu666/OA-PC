@@ -174,7 +174,7 @@ $color_placeholder: #757C85
       font-weight: normal
   .wrapper__content
     height: 300px
-    overflow: scroll
+    overflow: auto
     .news
       &__item
         border-bottom: 1px solid #ccc
