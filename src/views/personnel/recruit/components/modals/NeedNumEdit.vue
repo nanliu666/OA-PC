@@ -9,14 +9,14 @@
   >
     <div class="dialog__content">
       <Overview
-        :data="form"
+        :data="formData"
         :props="overviewProps"
         style="margin:0"
       />
       <common-form
         ref="form"
         :columns="formColumns"
-        :model="form"
+        :model="formData"
         class="form"
       />
     </div>
@@ -108,7 +108,7 @@ export default {
   data() {
     return {
       dictionary: {},
-      form: {},
+      formData: {},
       formColumns: FORM_COLUMNS,
       submitting: false
     }
@@ -134,13 +134,13 @@ export default {
     },
 
     handleSubmit() {
-      this.$refs.form.validate().then((res) => {
+      this.$refs.form.validate().then(() => {
         this.submitting = true
         // 只收集表单数据
         this.$emit(
           'submit',
           _.pick(
-            res,
+            this.formData,
             _.concat(
               _.map(FORM_COLUMNS, ({ prop }) => prop),
               ['id', 'userId']
@@ -151,7 +151,7 @@ export default {
     },
 
     init(data) {
-      this.form = _.cloneDeep(data)
+      this.formData = _.cloneDeep(data)
       this.$emit('update:visible', true)
       this.clearValidate()
     },
