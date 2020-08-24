@@ -195,8 +195,21 @@ export default {
             let flag = true
             node.properties.conditions.forEach((condition) => {
               if (condition.type === 'number' && condition.defaultValue) {
-                // defaultValue.type { lt: '<', lte: '≤', gt: '>', gte: '≥', eq: '=' }
-                if (
+                if (condition.defaultValue.type === 'bet') {
+                  if (
+                    _[condition.defaultValue.value[1]](
+                      condition.defaultValue.value[0],
+                      this.formData[condition.vModel]
+                    ) &&
+                    _[condition.defaultValue.value[2]](
+                      this.formData[condition.vModel],
+                      condition.defaultValue.value[3]
+                    )
+                  ) {
+                    return
+                  }
+                  // defaultValue.type { lt: '<', lte: '≤', gt: '>', gte: '≥', eq: '=' }
+                } else if (
                   _[condition.defaultValue.type](
                     this.formData[condition.vModel],
                     condition.defaultValue.value
