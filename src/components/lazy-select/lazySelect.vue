@@ -10,7 +10,7 @@
     @visible-change="visibleChange"
   >
     <el-option
-      v-for="item in optionList"
+      v-for="item in _.compact([firstOption, ...optionList])"
       :key="optionProps.key ? item[optionProps.key] : item[optionProps.value]"
       :label="optionProps.formatter ? optionProps.formatter(item) : item[optionProps.label]"
       :value="item[optionProps.value]"
@@ -85,7 +85,7 @@ export default {
   },
   data() {
     return {
-      optionList: this.firstOption ? [this.firstOption] : [],
+      optionList: [],
       loading: false,
       noMore: false,
       pageNo: 1,
