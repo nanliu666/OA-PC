@@ -129,7 +129,7 @@ export default {
       return targetUrl
     },
     getShowIndex() {
-      if (_.isEmpty(this.noticeDetailVuex)) return
+      if (_.isEmpty(this.noticeDetail)) return
       this.noticeDetail.attachment.map((item, index) => {
         const url = item.url.split('.')
         let fileName = url[url.length - 1]
