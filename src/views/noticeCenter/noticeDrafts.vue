@@ -186,9 +186,6 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  created() {
-    this.refreshTableData()
-  },
   activated() {
     this.refreshTableData()
   },
