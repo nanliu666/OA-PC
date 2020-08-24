@@ -136,6 +136,7 @@ export default {
 <style lang="sass" scoped>
 
 .wrapper
+  height: 100%
   position: relative
   .basic-container--block
     min-height: calc( 100% - 92px )
