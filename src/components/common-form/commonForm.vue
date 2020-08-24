@@ -220,17 +220,8 @@ export default {
         return column.rules
       }
     },
-    validate() {
-      return new Promise((resolve, reject) => {
-        this.$refs['form'].validate((pass, error) => {
-          if (pass) {
-            resolve(this.model)
-            return
-          } else {
-            reject(error)
-          }
-        })
-      })
+    validate(...args) {
+      return this.$refs['form'].validate(...args)
     },
     clearValidate() {
       return this.$refs['form'].clearValidate(...arguments)
