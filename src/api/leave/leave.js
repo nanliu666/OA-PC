@@ -2,7 +2,7 @@ import request from '@/router/axios'
 // 1.员工离职申请提交接口【POST /user/v1/user/leave/info】
 export const applyLeaveInfo = (params) => {
   return request({
-    url: '/api/user/v1/user/leave/info',
+    url: '/api/user/v2/user/leave/info',
     method: 'post',
     data: params
   })

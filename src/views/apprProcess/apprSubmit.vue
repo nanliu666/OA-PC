@@ -32,17 +32,17 @@
           <div class="footer">
             <el-button
               size="medium"
+              @click="goBack"
+            >
+              取消
+            </el-button>
+            <el-button
+              size="medium"
               type="primary"
               :loading="submiting"
               @click="submit"
             >
               提交
-            </el-button>
-            <el-button
-              size="medium"
-              @click="goBack()"
-            >
-              取消
             </el-button>
           </div>
         </el-col>

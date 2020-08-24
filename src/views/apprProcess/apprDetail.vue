@@ -84,7 +84,20 @@
         class="apply-detail"
       >
         <!-- 审批详情 -->
-        <el-row class="detail-box">
+        <ApplyRecruitment
+          v-if="applyDetail.formKey === 'Recruitment'"
+          :form-key="applyDetail.formKey"
+          :form-id="applyDetail.formId"
+        />
+        <ApplyPersonOffer
+          v-else-if="applyDetail.formKey === 'PersonOfferApply'"
+          :form-key="applyDetail.formKey"
+          :form-id="applyDetail.formId"
+        />
+        <el-row
+          v-else
+          class="detail-box"
+        >
           <el-col
             v-for="(item, index) in applyDetail.formData"
             :key="index"
@@ -501,10 +514,16 @@ import {
 } from '@/api/apprProcess/apprProcess'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
-
 moment.locale('zh-cn')
+
+import ApplyRecruitment from './components/applyRecruitment'
+import ApplyPersonOffer from './components/applyPersonOffer'
 export default {
   name: 'Apprv2Detail',
+  components: {
+    ApplyRecruitment,
+    ApplyPersonOffer
+  },
   filters: {
     result(data) {
       let result = {
@@ -695,12 +714,13 @@ export default {
       let countAjax = 2
       this.apprNo = this.$route.query.apprNo
       await new Promise((resolve, reject) => {
-        getApprDetail({ apprNo: this.apprNo })
+        getApprDetail(this.$route.query)
           .then((res) => {
             this.applyDetail = res
             this.applyDetail.formData = this.applyDetail.formData
               ? JSON.parse(this.applyDetail.formData)
               : {}
+            this.apprNo = res.apprNo
             resolve(true)
           })
           .catch(() => {
@@ -1027,7 +1047,7 @@ export default {
 .apply-detail {
   border-bottom: 2px transparent solid;
 
-  .detail-box {
+  /deep/.detail-box {
     display: flex;
     justify-content: start;
     flex-wrap: wrap;

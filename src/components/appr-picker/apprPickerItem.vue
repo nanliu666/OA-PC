@@ -160,11 +160,13 @@ export default {
     },
     tips() {
       if (_.get(this.data, 'type') === 'approver') {
-        return this.isMulti
-          ? this.isCounterSign
-            ? '需所有审批人同意'
-            : '一人同意即可'
-          : '一人审批'
+        if (
+          (this.selectable && !this.isMulti) ||
+          (!this.selectable && this.optionList.length == 1)
+        ) {
+          return '一人审批'
+        }
+        return this.isCounterSign ? '需所有审批人同意' : '一人同意即可'
       } else if (_.get(this.data, 'type') === 'copy') {
         return `抄送${
           _.get(this.data, 'userList.length', 0) > 0
@@ -177,9 +179,6 @@ export default {
   },
   beforeDestroy() {
     this.watcher && this.watcher()
-  },
-  mounted() {
-    this.isLast = this.isLastNode(this.path)
   },
   created() {
     if (!_.isEmpty(this.conditionNodes)) {
@@ -257,6 +256,7 @@ export default {
               this.dispatch('ElFormItem', 'el.form.change')
             }, 0)
           }
+          this.updateLast()
         },
         { deep: true, immediate: true }
       )
@@ -266,12 +266,19 @@ export default {
         () => {
           this.data = this.childNode
           this.data && !this.data.userList && this.initUserList(this.data)
+          this.updateLast()
         },
         { deep: true, immediate: true }
       )
     }
   },
   methods: {
+    updateLast() {
+      let that = this
+      setTimeout(() => {
+        that.isLast = that.isLastNode(that.path)
+      }, 0)
+    },
     initUserList(data) {
       let userList
       if (this.selectable) {
