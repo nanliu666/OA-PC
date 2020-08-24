@@ -150,6 +150,8 @@ export default {
     onTypeChange(newVal) {
       if (newVal === 'bet') {
         this.cloneData.value = [1, 'lt', 'lt', 2]
+      } else {
+        Array.isArray(this.cloneData.value) && (this.cloneData.value = 0)
       }
       this.update()
     },

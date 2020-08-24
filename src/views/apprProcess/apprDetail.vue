@@ -395,7 +395,7 @@
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
         <el-button
-          v-if="isShowCancel && isApplyUser"
+          v-if="isShowCancel && isApplyUser && !loading"
           type="primary"
           size="medium"
           @click="handelCancel"
@@ -764,6 +764,11 @@ export default {
       })
 
       let nodeData = JSON.parse(this.applyDetail.nodeData || '{}')
+      nodeData = nodeData.filter((it) => {
+        if (it.type !== 'copy') {
+          return it
+        }
+      })
       // 判断是否已撤回，已拒绝,已完成
       this.progressList &&
         this.progressList.length > 0 &&
@@ -794,6 +799,7 @@ export default {
               }
             })
         })
+
       nodeData &&
         nodeData.length > 0 &&
         nodeData.map((it, index) => {
