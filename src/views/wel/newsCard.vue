@@ -1,54 +1,77 @@
 <template>
   <el-card
-    class="news-card"
+    v-loading="loading"
+    class="NewsCard wrapper"
     shadow="never"
   >
-    <div class="header">
-      <span class="title">
-        <span>新闻中心</span>
+    <div class="wrapper__top">
+      <span class="wrapper__top--title">
+        {{ `新闻中心(${page.total})` }}
+      </span>
+      <span class="wrapper__top--operation">
         <i
           class="icon-arrow-right-outlined"
-          style="margin-right:12px;cursor: pointer; "
+          @click="() => navigateToNewsCenter()"
         />
       </span>
     </div>
-    <ul
-      v-if="newsList.length !== 0"
-      class="content-ul"
-    >
-      <li
-        v-for="(item, index) in newsList"
-        :key="index"
-        class="content-li"
+
+    <div class="wrapper__content">
+      <comEmpty v-if="_.isEmpty(paneData)" />
+      <ul
+        v-else
+        class="news"
       >
-        <el-image
-          fit="cover"
-          class="li-img"
-          :src="item.picUrl"
-        />
-        <div class="li-content">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="item.title"
-            placement="top"
-          >
-            <div class="li-title">
-              {{ item.title }}
+        <li
+          v-for="(row, index) in paneData"
+          :key="index"
+          class="news__item"
+        >
+          <el-image
+            fit="cover"
+            class="news__item--image"
+            :src="row.picUrl"
+            @click="() => handleItemImageClick(row)"
+          />
+          <div class="news__item--link">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="row.title"
+              placement="top"
+            >
+              <div
+                class="news__item--title"
+                @click="() => handleItemTitleClick(row)"
+              >
+                {{ row.title }}
+              </div>
+            </el-tooltip>
+            <div class="news__item--info">
+              {{ row.publishTime }}
             </div>
-          </el-tooltip>
-          <div class="li-time">
-            {{ item.publishTime }}
           </div>
-        </div>
-      </li>
-    </ul>
-    <comEmpty v-if="newsList.length === 0" />
+        </li>
+      </ul>
+    </div>
+
+    <div class="wrapper__bottom">
+      <span
+        class="wrapper__bottom--operation"
+        @click="() => navigateToNewsCenter()"
+      >
+        查看全部
+      </span>
+    </div>
   </el-card>
 </template>
 
 <script>
-import { getNewsCenterList } from '@/api/newsCenter/newCenter'
+import { getNewsCenter } from '@/api/newsCenter/newCenter'
+
+// 默认一次加载5条数据
+const PAGE_SIZE_DEFAULT = 5
+
 export default {
   name: 'NewsCard',
   components: {
@@ -56,80 +79,125 @@ export default {
   },
   data() {
     return {
-      newsList: []
+      loading: false,
+      paneData: [],
+      page: {
+        currentPage: 1,
+        size: PAGE_SIZE_DEFAULT,
+        total: 0
+      }
     }
   },
   created() {
-    let parmas = {
-      pageNo: 1,
-      pageSize: 5
+    this.refresh()
+  },
+
+  methods: {
+    handleItemTitleClick({ id }) {
+      this.navigateToDetail(id)
+    },
+    handleItemImageClick({ id }) {
+      this.navigateToDetail(id)
+    },
+
+    refresh() {
+      return Promise.all([this.loadPaneData()])
+    },
+    // 加载数据
+    async loadPaneData(params) {
+      if (this.loading) {
+        return
+      }
+      try {
+        this.loading = true
+        const page = {
+          pageNo: this.page.currentPage,
+          pageSize: this.page.size
+        }
+        const { data, totalNum } = await getNewsCenter(_.assign(null, page, params))
+        this.paneData = data
+        this.page.total = totalNum
+      } catch (error) {
+        this.$message.error(error.message)
+      } finally {
+        this.loading = false
+      }
+    },
+
+    // 跳转到新闻详情
+    navigateToDetail(id) {
+      this.$router.push(
+        {
+          path: '/newsCenter/newsDetail',
+          query: {
+            id
+          }
+        }
+        // TODO: 从工作台进入的时候， 不显示菜单（因为菜单为空）
+        // ({ meta }) => (meta.fullscreen = true)
+      )
+    },
+
+    navigateToNewsCenter() {
+      this.$router.push('/newsCenter/newsCenter', ({ meta }) => (meta.fullscreen = true))
     }
-    getNewsCenterList(parmas).then((res) => {
-      this.newsList = res
-    })
   }
 }
 </script>
 
-<style lang="scss" scoped>
-@import '@/styles/mixin.scss';
-.news-card {
-  flex: 1;
-  margin-left: 19px;
-  // 头部
-  .header {
-    .title {
-      cursor: pointer;
-      span {
-        font-size: 18px;
-        color: #202940;
-        line-height: 28px;
-        font-weight: bold;
-      }
-      .icon-arrow-right-outlined {
-        color: #a0a8ae;
-      }
-    }
-  }
-  .content-ul {
-    .content-li {
-      cursor: pointer;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      border-bottom: 1px solid #e3e7e9;
-      height: calc(332px / 3);
-      &:last-child {
-        border-bottom: 0;
-      }
-      /deep/ .el-image__inner {
-        width: 70px;
-        height: 60px;
-        margin-right: 10px;
-        border-radius: 4px;
-      }
-      .li-content {
-        width: calc(100% - 80px);
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        flex-wrap: wrap;
-        height: 60px;
-        .li-title {
-          font-size: 14px;
-          color: #202940;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        .li-time {
-          color: #757c85;
-          font-size: 14px;
-          align-self: flex-end;
-          width: 100%;
-        }
-      }
-    }
-  }
-}
+<style lang="sass" scoped>
+$color_active: #368AFA
+$color_danger: #ff6464
+$color_hover: #207EFA
+$color_icon: #A0A8AE
+$color_placeholder: #757C85
+
+.wrapper
+  height: 100%
+  width: 50%
+  position: relative
+  background: white
+  /deep/.el-card__body
+    display: flex
+    justify-content: space-between
+    flex-direction: column
+  &__top
+    display: flex
+    justify-content: space-between
+    margin-bottom: 1rem
+    &--title,&--operation
+      font-weight: bold
+      font-size: medium
+    &--operation
+      color: $color_active
+      cursor: pointer
+      font-weight: normal
+  .wrapper__content
+    height: 300px
+    overflow: scroll
+    .news
+      &__item
+        border-bottom: 1px solid #ccc
+        display: flex
+        justify-content: space-start
+        margin-bottom: .5rem
+        padding: .5rem
+        position: relative
+        &--image
+          cursor: pointer
+          height: 50px
+          margin-right: .5rem
+          width: 100px
+        &--title
+          cursor: pointer
+          font-size: 14px
+        &--info
+          bottom: .5rem
+          position: absolute
+          font-size: smaller
+          color: $color_placeholder
+  .wrapper__bottom
+    &--operation
+      color: $color_active
+      cursor: pointer
 </style>
