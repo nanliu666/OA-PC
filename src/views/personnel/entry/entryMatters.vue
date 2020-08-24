@@ -33,14 +33,15 @@
         </div>
       </div>
     </div>
-    <basic-container>
+    <basic-container v-loading="containerLoading">
       <div class="tags">
         <i class="el-icon-warning-outline" />
-        该员工还有 {{ getTodoNum() }} 项入职事项未完成。
+        <span v-if="todoNum !== 0">该员工还有 {{ todoNum }} 项入职事项未完成。</span>
+        <span v-if="todoNum === 0">该员工已完成所有入职事项。</span>
       </div>
       <div class="matterList">
         <div class="matterItem">
-          <i :class="getRegisterStatus() === '未发送' ? 'el-icon-warning' : 'el-icon-success'" />
+          <i :class="getRegisterStatus() !== '已确认' ? 'el-icon-warning' : 'el-icon-success'" />
           <div class="title">
             入职登记表
           </div>
@@ -210,6 +211,8 @@ export default {
       }
     }
     return {
+      todoNum: 0,
+      containerLoading: false,
       loading: false,
       personInfo: {
         name: '',
@@ -357,6 +360,10 @@ export default {
       deep: true
     }
   },
+  beforeRouteLeave(to, from, next) {
+    this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
+    next()
+  },
   created() {
     this.getPersonInfo()
   },
@@ -372,10 +379,9 @@ export default {
   },
   methods: {
     getTodoNum() {
-      let num = 0
-      if (this.getRegisterStatus() !== '已确认') num++
-      if (!this.contractStatus) num++
-      return num
+      this.todoNum = 0
+      if (this.getRegisterStatus() !== '已确认') this.todoNum += 1
+      if (!this.contractStatus) this.todoNum += 1
     },
     sendRegister() {
       let params = {
@@ -450,22 +456,20 @@ export default {
       this.contractDialog = true
     },
     getPersonInfo() {
+      this.containerLoading = true
       getStaffBasicInfo({ userId: this.$route.params.userId }).then((res) => {
         this.personInfo = res
       })
       getConpactInfo({ userId: this.$route.params.userId }).then((res) => {
-        if (
-          res.findIndex((item) => {
-            if (!item.signDate) {
-              this.form = Object.assign(this.form, item)
-            }
-            return !item.signDate
-          }) > -1
-        ) {
-          this.contractStatus = false
-        } else {
+        this.form = Object.assign(this.form, res[0])
+        // 合同是否签订判断条件是：存在合同并且最新一天合同的签订日期不为空
+        if (res.length !== 0 && !_.isEmpty(res[0].signDate)) {
           this.contractStatus = true
+        } else {
+          this.contractStatus = false
         }
+        this.containerLoading = false
+        this.getTodoNum()
       })
       if (this.$route.query.personId) {
         getpersonInfo({ personId: this.$route.query.personId }).then((res) => {

@@ -5,7 +5,7 @@
         :value="value"
         :init="init"
         :disabled="disabled"
-        @input="$emit('input', $events)"
+        @input="$emit('input', $event)"
         @onClick="onClick"
       />
     </div>

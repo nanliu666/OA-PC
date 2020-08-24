@@ -22,7 +22,7 @@
           >
             <el-form-item label="现合同公司:">
               <span class="info-item-value">{{
-                signCompact.lenght > 0 ? compactInfo[0].name : ''
+                signCompact.length > 0 ? compactInfo[0].name : ''
               }}</span>
             </el-form-item>
           </el-col>
@@ -42,7 +42,7 @@
           >
             <el-form-item label="首次合同开始日期:">
               <span class="info-item-value">{{
-                signCompact.lenght > 0 ? compactInfo[compactInfo.length - 1].beginDate : ''
+                signCompact.length > 0 ? compactInfo[compactInfo.length - 1].beginDate : ''
               }}</span>
             </el-form-item>
           </el-col>
@@ -62,7 +62,7 @@
           >
             <el-form-item label="现合同开始日期:">
               <span class="info-item-value">{{
-                signCompact.lenght > 0 ? compactInfo[0].beginDate : ''
+                signCompact.length > 0 ? compactInfo[0].beginDate : ''
               }}</span>
             </el-form-item>
           </el-col>
@@ -90,7 +90,7 @@
           >
             <el-form-item label="合同签订次数:">
               <span class="info-item-value">{{
-                signCompact.lenght > 0 ? (compactInfo | signCompactNum) + '次' : ''
+                signCompact.length > 0 ? signCompactNum(compactInfo) + '次' : ''
               }}</span>
             </el-form-item>
           </el-col>
@@ -101,7 +101,7 @@
       v-show="compactInfo.length > 0 && !showOtherCompact"
       class="display-compact"
     >
-      <span>共签订{{ compactInfo | signCompactNum }}份合同，</span>
+      <span>共签订{{ signCompactNum(compactInfo) }}份合同，</span>
       <span
         class="disply-button"
         @click="displayCompact()"
@@ -114,7 +114,7 @@
       v-show="showOtherCompact"
       class="display-compact"
     >
-      <span>共签订{{ compactInfo | signCompactNum }}份合同，</span>
+      <span>共签订{{ signCompactNum(compactInfo) }}份合同，</span>
       <span
         class="disply-button"
         @click="hiddenOtherCompact()"
@@ -308,17 +308,6 @@
 <script>
 import { getConpactInfo } from '../../../../api/personalInfo'
 export default {
-  filters: {
-    signCompactNum(val) {
-      let num = 0
-      val.forEach((item) => {
-        if (item.signDate) {
-          num += 1
-        }
-      })
-      return num
-    }
-  },
   data() {
     return {
       showOtherCompact: false,
@@ -338,6 +327,15 @@ export default {
     this.getCompactInfo()
   },
   methods: {
+    signCompactNum(val) {
+      let num = 0
+      val.forEach((item) => {
+        if (item.signDate) {
+          num += 1
+        }
+      })
+      return num
+    },
     getPeriod(period) {
       return period && period > 0 ? period + '年' : ''
     },
