@@ -392,7 +392,11 @@ export default {
     },
 
     scrollTop() {
-      this.$refs.wrapper.scrollTop = 0
+      this.$refs.wrapper.parentElement.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+      // this.$refs.wrapper.scrollTop = 0
     },
 
     refresh() {
@@ -439,7 +443,6 @@ $color_placeholder: #757C85
 $color_font_uploader: #A0A8AE
 
 .wrapper
-  scroll-behavior: smooth
   .basic-container--block
     height: 0
     min-height: calc(100% - 92px)
