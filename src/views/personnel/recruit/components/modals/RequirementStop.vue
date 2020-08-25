@@ -82,7 +82,8 @@ export default {
     },
     handleSubmit() {
       this.validate()
-        .then((data) => {
+        .then(() => {
+          const data = this.form
           this.submitting = true
           this.$emit('submit', data)
         })
