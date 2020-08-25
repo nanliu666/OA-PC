@@ -35,12 +35,14 @@
       </el-select>
     </el-col>
     <el-col :span="isRange ? 24 : 12">
-      <el-input-number
+      <el-input
         v-if="!isRange"
         v-model="cloneData.value"
         size="small"
         style="width:100%;"
         controls-position="right"
+        @blur="blur"
+        @input="(value) => inputPhonenum(value)"
         @change="update"
       />
       <div
@@ -51,11 +53,13 @@
           :span="7"
           style="padding-left:0;padding-right: 0"
         >
-          <el-input-number
+          <el-input
             v-model="cloneData.value[0]"
             size="small"
             controls-position="right"
             style="width:100%;"
+            @input="(value) => inputPhonenum(value, 0)"
+            @blur="blur(0)"
             @change="update"
           />
         </el-col>
@@ -107,12 +111,14 @@
           :span="7"
           style="padding-left:0;padding-right: 0"
         >
-          <el-input-number
+          <el-input
             v-model="cloneData.value[3]"
             size="small"
             controls-position="right"
             style="width:100%;"
+            @input="(value) => inputPhonenum(value, 3)"
             @change="update"
+            @blur="blur(3)"
           />
         </el-col>
       </div>
@@ -133,7 +139,7 @@ export default {
   props: ['value', 'title'],
   data() {
     let cloneData = JSON.parse(JSON.stringify(this.value || {}))
-    cloneData = Object.assign({ type: 'gt', value: null }, cloneData)
+    cloneData = Object.assign({ type: 'gt', value: 0 }, cloneData)
     return {
       cloneData
     }
@@ -143,6 +149,7 @@ export default {
       return this.cloneData.type === 'bet'
     }
   },
+  watch: {},
   mounted() {
     this.update()
   },
@@ -154,6 +161,22 @@ export default {
         Array.isArray(this.cloneData.value) && (this.cloneData.value = 0)
       }
       this.update()
+    },
+    inputPhonenum(value, i) {
+      value = value.replace(/[^\d]/g, '')
+      if (Array.isArray(this.cloneData.value)) {
+        this.cloneData.value[i] = value
+      } else {
+        this.cloneData.value = value
+      }
+    },
+    blur(i) {
+      if (Array.isArray(this.cloneData.value) && !this.cloneData.value[i]) {
+        this.cloneData.value[i] = 0
+        this.$forceUpdate()
+      } else if (!this.cloneData.value && !Array.isArray(this.cloneData.value)) {
+        this.cloneData.value = 0
+      }
     },
     update() {
       this.$emit('update', this.cloneData)
