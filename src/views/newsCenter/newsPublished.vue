@@ -253,6 +253,7 @@ export default {
   computed: {
     tableColumns: () => TABLE_COLUMNS,
     tableConfig: () => TABLE_CONFIG,
+
     ...mapGetters(['userId', 'tag'])
   },
 
@@ -356,7 +357,8 @@ export default {
       this.$router.push({
         path: '/newsCenter/newsDetail',
         query: {
-          id
+          id,
+          userId: this.userId
         }
       })
     },
