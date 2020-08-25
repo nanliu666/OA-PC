@@ -84,6 +84,7 @@ export default {
     }
     return {
       formData: {
+        id: this.$route.query.id,
         workBackground: '',
         workExperience: '',
         knowledge: '',
@@ -182,12 +183,14 @@ export default {
     handleSubmit() {
       this.$refs.form
         .validate()
-        .then(async (res) => {
-          res.id = this.$route.query.id
-          await postInterviewInfo(res)
+        .then(() => {
+          this.formData.id = this.$route.query.id
+          return postInterviewInfo(this.formData)
+        })
+        .then(() => {
           this.$message.success('提交成功', 2000, this.$router.go(-1))
         })
-        .catch(() => {})
+        .catch()
     },
     // goback
     goBack() {
