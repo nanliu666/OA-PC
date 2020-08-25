@@ -837,6 +837,7 @@ export default {
     conditionNodeComfirm() {
       let nodeContent = ''
       const conditions = []
+      let isTip = false
       this.showingPCons
         .map((fid) => this.pconditions.find((t) => t.__config__.formId === fid))
         .forEach((t) => {
@@ -867,6 +868,11 @@ export default {
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
+              if (!(cValue.value[0] <= cValue.value[3])) {
+                this.$message.error(`${t.__config__.label} 第一个值应该小于等于第二个值`)
+                isTip = true
+                return
+              }
               const numVal = cValue.value
               nodeContent +=
                 `[${numVal[0]} ${rangeType[numVal[1]]} ${t.__config__.label} ${
@@ -885,7 +891,10 @@ export default {
           }
           conditions.push(res)
         }, [])
-
+      if (isTip) {
+        //如果条件是数字条件是两者之间，要前者小于等于后者
+        return
+      }
       this.properties.conditions = conditions
       // 发起人虽然是条件 但是这里把发起人放到外部单独判断
       this.properties.initiator = this.initiator['user']

@@ -83,6 +83,7 @@ export default {
       }, 500)
     }
     return {
+      loading: false,
       formData: {
         id: this.$route.query.id,
         workBackground: '',
@@ -183,14 +184,20 @@ export default {
     handleSubmit() {
       this.$refs.form
         .validate()
-        .then(() => {
+        .then((res) => {
+          if (!res) return
+          this.loading = true
           this.formData.id = this.$route.query.id
-          return postInterviewInfo(this.formData)
+          postInterviewInfo(this.formData)
+            .then(() => {
+              this.$message.success('提交成功', 2000, this.$router.go(-1))
+            })
+            .catch(() => {})
+            .finally(() => {
+              this.loading = true
+            })
         })
-        .then(() => {
-          this.$message.success('提交成功', 2000, this.$router.go(-1))
-        })
-        .catch()
+        .catch(() => {})
     },
     // goback
     goBack() {
