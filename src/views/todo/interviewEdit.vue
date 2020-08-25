@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-loading="loading"
-    class="fill"
-  >
+  <div class="fill">
     <page-header
       title="面试评价"
       show-back
@@ -88,6 +85,7 @@ export default {
     return {
       loading: false,
       formData: {
+        id: this.$route.query.id,
         workBackground: '',
         workExperience: '',
         knowledge: '',

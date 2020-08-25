@@ -168,7 +168,7 @@ export default {
     }
   },
 
-  mounted() {
+  activated() {
     this.refresh()
   },
 
