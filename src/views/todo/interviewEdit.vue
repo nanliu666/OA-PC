@@ -184,6 +184,7 @@ export default {
       this.$refs.form
         .validate()
         .then(() => {
+          this.formData.id = this.$route.query.id
           return postInterviewInfo(this.formData)
         })
         .then(() => {
