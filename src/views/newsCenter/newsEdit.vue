@@ -261,7 +261,9 @@ export default {
             try {
               this.submitting = true
               // 需要先存为草稿再发布新闻
-              const { id } = await this.postNews(_.pickBy(this._formData))
+              const { id } = _.isNull(this.id)
+                ? await this.postNews(_.pickBy(this._formData))
+                : await this.updateNews(_.pickBy(this._formData))
               await this.publishNews(id)
               this.$message.success('发布成功')
               this.hasEdit = false
@@ -426,9 +428,9 @@ export default {
     // 更新数据
     async updateNews(params) {
       this.loading = true
-      const data = await putV1News(_.assign({ id: this.id }, params))
+      await putV1News(_.assign({ id: this.id }, params))
       this.loading = false
-      return data
+      return { id: this.id }
     },
 
     // 发布接口
