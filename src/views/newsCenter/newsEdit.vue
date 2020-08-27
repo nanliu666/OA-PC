@@ -109,6 +109,7 @@ import {
   putV1News
 } from '@/api/newsCenter/newCenter'
 import CommonUpload from '@/components/common-upload/commonUpload'
+import { mapGetters } from 'vuex'
 
 // 接口需要的参数
 const API_PARAMS = ['id', 'title', 'categoryId', 'picUrl', 'content', 'brief', 'userId']
@@ -207,9 +208,11 @@ export default {
     id() {
       return this.$route.query.id || null
     },
-    userId() {
-      return this.$route.query.userId || null
-    }
+    // userId() {
+    //   return this.$route.query.userId || null
+    // }
+
+    ...mapGetters(['userId'])
   },
 
   watch: {
