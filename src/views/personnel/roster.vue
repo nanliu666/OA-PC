@@ -415,7 +415,7 @@ export default {
           this.option.column.splice(1, 0, ...leaved)
         }
       } else {
-        this.option.column = this.column
+        this.column.length > 0 && (this.option.column = this.column)
       }
       this.$refs.searchComponent.resetForm()
       this.searchParams = {}
