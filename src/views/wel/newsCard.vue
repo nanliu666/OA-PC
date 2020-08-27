@@ -57,6 +57,7 @@
 
     <div class="wrapper__bottom">
       <span
+        v-if="!_.isEmpty(paneData)"
         class="wrapper__bottom--operation"
         @click="() => navigateToNewsCenter()"
       >
@@ -89,7 +90,7 @@ export default {
     }
   },
   created() {
-    this.refresh()
+    // this.refresh()
   },
 
   methods: {
