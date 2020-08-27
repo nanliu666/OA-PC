@@ -30,7 +30,7 @@
           >
             <template #default>
               <div
-                v-if="_.size(uploader.fileList) < uploader.limit"
+                v-if="_.size(uploader.fileList) < uploader.limit && _.isNil(formData.picUrl)"
                 class="uploader__btn"
               >
                 <i class="icon-tips-plus-outlined" />
@@ -52,7 +52,7 @@
 
             <template slot="tip">
               <span
-                v-if="_.size(uploader.fileList) < uploader.limit"
+                v-if="_.size(uploader.fileList) < uploader.limit && _.isNil(formData.picUrl)"
                 class="uploader__description"
               >
                 图片大小不超过5M
