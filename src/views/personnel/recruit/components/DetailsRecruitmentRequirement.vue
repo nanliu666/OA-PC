@@ -190,10 +190,10 @@ export default {
     formConfig: () => FORM_CONFIG,
     sarayRange() {
       const { minSalary, maxSalary } = this.data
-      if (_.isNil(minSalary) || _.isNil(maxSalary)) {
-        return '-'
-      } else {
+      if (_.isNumber(minSalary) || !_.isEmpty(minSalary)) {
         return `￥${minSalary} ~ ￥${maxSalary}`
+      } else {
+        return '-'
       }
     }
   },
