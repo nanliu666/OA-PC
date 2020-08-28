@@ -212,7 +212,7 @@ export default {
     //   return this.$route.query.userId || null
     // }
 
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId', 'tag'])
   },
 
   watch: {
