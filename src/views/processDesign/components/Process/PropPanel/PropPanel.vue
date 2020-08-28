@@ -221,12 +221,6 @@
             @click="activeName = 'config'"
             v-html="'设置' + (value.type === 'approver' ? '审批人' : '发起人')"
           />
-          <!--          <div-->
-          <!--            :class="[activeName == 'formAuth' ? 'active' : '']"-->
-          <!--            @click="activeName = 'formAuth'"-->
-          <!--          >-->
-          <!--            表单权限-->
-          <!--          </div>-->
         </div>
         <div v-if="activeName == 'config'">
           <!-- 开始节点 -->
@@ -323,7 +317,7 @@
                   />
                 </div>
               </div>
-              <div v-else-if="approverForm.assigneeType === 'director'">
+              <div v-else-if="approverForm.assigneeType === 'directorLevel'">
                 <div style="font-size: 14px;padding-left: 24px;">
                   <el-row>
                     <el-col style="line-height: 30px">
@@ -333,15 +327,15 @@
                   <el-row>
                     <el-col :span="24">
                       <el-select
-                        v-model="directorLevel"
+                        v-model="infoForm.directorLevelId"
                         style="width: 312px"
                         size="small"
                       >
                         <el-option
-                          v-for="item in 5"
-                          :key="item"
-                          :label="item === 1 ? '直接主管' : `第${item}级主管`"
-                          :value="item"
+                          v-for="item in ManageLevel"
+                          :key="item.id"
+                          :label="item.dictValue"
+                          :value="item.dictKey"
                         />
                       </el-select>
                     </el-col>
@@ -352,6 +346,29 @@
                   <!--                  找不到主管时，由上级主管代审批-->
                   <!--                </el-checkbox>-->
                 </div>
+              </div>
+              <div v-else-if="approverForm.assigneeType === 'job'">
+                <div style="padding-bottom: 24px;">
+                  <commonForm
+                    ref="jobData"
+                    :model="infoForm"
+                    :columns="jobData"
+                  />
+                </div>
+              </div>
+              <div v-else-if="approverForm.assigneeType === 'position'">
+                <commonForm
+                  ref="positionData"
+                  :model="infoForm"
+                  :columns="positionData"
+                />
+              </div>
+              <div v-else-if="approverForm.assigneeType === 'tag'">
+                <commonForm
+                  ref="tagData"
+                  :model="infoForm"
+                  :columns="tagData"
+                />
               </div>
               <div
                 v-else
@@ -400,87 +417,12 @@
             </div>
           </div>
         </div>
-        <!--        <div-->
-        <!--          v-if="activeName == 'formAuth'"-->
-        <!--          class="formAuth"-->
-        <!--        >-->
-        <!--          <div class="form-auth-table">-->
-        <!--            <header class="auth-table-header">-->
-        <!--              <div class="row">-->
-        <!--                <div class="label">-->
-        <!--                  表单字段-->
-        <!--                </div>-->
-        <!--                <el-radio-group-->
-        <!--                  v-model="globalFormOperate"-->
-        <!--                  class="radio-group"-->
-        <!--                  @change="changeAllFormOperate"-->
-        <!--                >-->
-        <!--                  <el-radio-->
-        <!--                    :label="2"-->
-        <!--                    style="margin-left: 1rem;"-->
-        <!--                  >-->
-        <!--                    可编辑-->
-        <!--                  </el-radio>-->
-        <!--                  <el-radio :label="1">-->
-        <!--                    只读-->
-        <!--                  </el-radio>-->
-        <!--                  <el-radio :label="0">-->
-        <!--                    隐藏-->
-        <!--                  </el-radio>-->
-        <!--                </el-radio-group>-->
-        <!--              </div>-->
-        <!--            </header>-->
-        <!--            <div class="auth-table-body">-->
-        <!--              <div-->
-        <!--                v-for="item in getFormOperates()"-->
-        <!--                :key="item.formId"-->
-        <!--                class="row"-->
-        <!--              >-->
-        <!--                <div class="label flex flex-center flex-align-items">-->
-        <!--                  <span-->
-        <!--                    v-show="item.required"-->
-        <!--                    class="required"-->
-        <!--                  >*</span>-->
-        <!--                  &lt;!&ndash;                                {{item.label}}&ndash;&gt;-->
-        <!--                  <el-tooltip-->
-        <!--                    :content="item.label"-->
-        <!--                    placement="right-end"-->
-        <!--                    effect="dark"-->
-        <!--                  >-->
-        <!--                    <div-->
-        <!--                      class="label"-->
-        <!--                      v-html="item.label"-->
-        <!--                    />-->
-        <!--                  </el-tooltip>-->
-        <!--                </div>-->
-        <!--                <el-radio-group-->
-        <!--                  v-model="item.formOperate"-->
-        <!--                  class="radio-group"-->
-        <!--                >-->
-        <!--                  <el-radio-->
-        <!--                    :label="2"-->
-        <!--                    style="margin-left: 1rem;"-->
-        <!--                  >-->
-        <!--                    <span style="opacity: 0;">可编辑</span>-->
-        <!--                  </el-radio>-->
-        <!--                  <el-radio :label="1">-->
-        <!--                    <span style="opacity: 0;">只读</span>-->
-        <!--                  </el-radio>-->
-        <!--                  <el-radio :label="0">-->
-        <!--                    <span style="opacity: 0;">隐藏</span>-->
-        <!--                  </el-radio>-->
-        <!--                </el-radio-group>-->
-        <!--              </div>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
       </section>
 
       <section
         v-if="value && isCopyNode()"
         style="padding-left: 24px;"
       >
-        <!--            <p style="margin-top:0;padding-top: 0;">抄送人</p>-->
         <fc-org-select
           ref="copy-org"
           v-model="members"
@@ -489,9 +431,6 @@
           title="抄送人"
         />
         <br>
-        <!--      <el-checkbox v-model="properties.userOptional">-->
-        <!--        允许发起人自选抄送人-->
-        <!--      </el-checkbox>-->
       </section>
 
       <el-dialog
@@ -571,6 +510,7 @@ import Clickoutside from 'element-ui/src/utils/clickoutside'
 import { NodeUtils } from '../FlowCard/util.js'
 import RowWrapper from './RowWrapper'
 import NumInput from './NumInput'
+import { getOrgTreeSimple, getJob, getPosition, getTagList } from '@/api/org/org'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
 const rangeType = {
@@ -587,6 +527,13 @@ const defaultApproverForm = {
   counterSign: true, //是否为会签
   // 审批类型为自选 出现 optionalMultiUser optionalRange
   optionalMultiUser: false,
+  infoForm: {
+    orgId: '', //部门
+    jobId: '', //职位
+    positionId: '', //岗位
+    tagId: '', //标签
+    directorLevelId: '1' //上级领导
+  },
   optionalRange: 'USER' // USER<最多十个> / ALL / ROLE
 }
 export default {
@@ -600,6 +547,91 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
+      isValid: false,
+      infoForm: {
+        orgId: '',
+        jobId: '',
+        positionId: '',
+        tagId: '',
+        directorLevelId: '1'
+      },
+      tagData: [
+        {
+          span: 20,
+          offset: 2,
+          prop: 'tagId',
+          options: [],
+          itemType: 'select',
+          clearable: true,
+          label: '请选择标签',
+          props: {
+            label: 'name',
+            value: 'id'
+          },
+          required: true
+        }
+      ],
+      positionData: [
+        {
+          span: 20,
+          offset: 2,
+          prop: 'positionId',
+          options: [],
+          itemType: 'select',
+          label: '请选择岗位',
+          clearable: true,
+          props: {
+            label: 'name',
+            value: 'id'
+          },
+          required: true
+        }
+      ],
+      jobData: [
+        {
+          span: 20,
+          prop: 'orgId',
+          itemType: 'treeSelect',
+          label: '请选择部门',
+          required: true,
+          offset: 2,
+          props: {
+            selectParams: {
+              placeholder: '请选择部门',
+              multiple: false
+            },
+            treeParams: {
+              data: [],
+              'check-strictly': true,
+              'default-expand-all': false,
+              'expand-on-click-node': false,
+              clickParent: true,
+              filterable: false,
+              props: {
+                children: 'children',
+                label: 'orgName',
+                disabled: 'disabled',
+                value: 'orgId'
+              }
+            }
+          }
+        },
+        {
+          span: 20,
+          offset: 2,
+          prop: 'jobId',
+          options: [],
+          clearable: true,
+          itemType: 'select',
+          label: '请选择职位',
+          props: {
+            label: 'name',
+            value: 'id'
+          },
+          required: true
+        }
+      ],
+      ManageLevel: [],
       isShowInitiator: false,
       org: true,
       isDepartment: true,
@@ -613,7 +645,7 @@ export default {
       formConf: {
         fields: []
       },
-      fcOrgTabList: ['dep', 'role', 'user', 'position', 'optional'],
+      fcOrgTabList: ['dep', 'user', 'optional'],
       visible: false, // 控制面板显隐
       globalFormOperate: null, // 统一设置节点表单权限
       titleInputVisible: false, // 是否显示标题输入框  startNode 不显示
@@ -634,7 +666,7 @@ export default {
         optional: []
       },
       useDirectorProxy: true, // 找不到主管时 上级主管代理审批
-      directorLevel: 1, // 审批主管级别
+      // directorLevel: '1', // 审批主管级别
       startForm: {
         formOperates: []
       },
@@ -665,8 +697,8 @@ export default {
         },
         {
           label: '上级领导',
-          value: 'director',
-          disabled: true
+          value: 'directorLevel',
+          disabled: false
         },
         {
           label: '指定成员',
@@ -676,18 +708,18 @@ export default {
 
         {
           label: '指定职位',
-          value: 'role',
-          disabled: true
+          value: 'job',
+          disabled: false
         },
         {
           label: '指定岗位',
           value: 'position',
-          disabled: true
+          disabled: false
         },
         {
           label: '指定标签',
-          value: 'myself',
-          disabled: true
+          value: 'tag',
+          disabled: false
         }
       ]
     }
@@ -701,12 +733,24 @@ export default {
       } else {
         return this.pconditions.length - this.showingPCons.length
       }
-    },
-    usedFormItems() {
-      return this.$store.state.formItemList
     }
   },
   watch: {
+    'infoForm.orgId': {
+      async handler(val) {
+        if (val) {
+          await this.getJobData()
+          // 处理如果部门改变了。职位跟部门一起改变
+          let job = this.jobData
+            .find((it) => it.prop === 'jobId')
+            .options.find((it) => it.id === this.infoForm.jobId)
+          if (!job) {
+            this.infoForm.jobId = ''
+          }
+        }
+      },
+      deep: true
+    },
     processData: {
       handler() {},
       deep: true
@@ -716,9 +760,6 @@ export default {
         this.approverForm = JSON.parse(JSON.stringify(defaultApproverForm)) // 重置数据为默认状态
         return
       }
-      // this.processData.properties.formOperates = this.initFormOperates(
-      //   this.processData
-      // ).map((t) => ({ formId: t.formId, formOperate: t.formOperate }))
       this.isStartNode() && this.initStartNodeData()
       this.isApproverNode() && this.initApproverNodeData()
       this.isConditionNode() && this.initConditionNodeData()
@@ -735,7 +776,91 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$store.dispatch('CommonDict', 'ManageLevel').then((res) => {
+      this.ManageLevel = res
+    })
+    this.getOrgTree()
+    this.getPositionData()
+    this.getTagData()
+  },
   methods: {
+    valid() {
+      const assigneeType = this.approverForm.assigneeType
+      let refsForm = {
+        tag: ['tagData'],
+        position: ['positionData'],
+        job: ['jobData']
+      }
+      if (!refsForm[assigneeType]) return
+      return Promise.all(
+        refsForm[assigneeType].map((it) => {
+          return new Promise((resolve, reject) => {
+            this.$refs[it]
+              .validate()
+              .then(() => {
+                this.isValid = true
+                resolve(true)
+              })
+              .catch(() => {
+                this.isValid = true
+                reject(false)
+              })
+          })
+        })
+      ).then(() => {})
+    },
+    validate() {},
+    /**
+     *
+     * @author guanfenda
+     * @desc 获取标签
+     *
+     * */
+    getTagData() {
+      getTagList().then((res) => {
+        this.tagData.find((it) => it.prop === 'tagId').options = res
+      })
+    },
+    /**
+     *  @author guanfenda
+     *
+     * */
+    getPositionData() {
+      getPosition().then((res) => {
+        this.positionData.find((it) => it.prop === 'positionId').options = res
+      })
+    },
+    /**
+     * @author guanfenda
+     * @desc 根据部门id获取职位
+     *
+     * */
+    getJobData() {
+      let params = {
+        orgId: this.infoForm.orgId
+      }
+      return new Promise((resolve, reject) => {
+        getJob(params)
+          .then((res) => {
+            this.jobData.find((it) => it.prop === 'jobId').options = res
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
+    /**
+     * @author guanfenda
+     * @desc 获取部门
+     *
+     * */
+    getOrgTree() {
+      getOrgTreeSimple({ parentOrgId: '0' }).then((res) => {
+        this.jobData.find((item) => item.prop === 'orgId').props.treeParams.data = res
+      })
+    },
     showCons() {
       this.formConf.fields = []
       this.pconditions &&
@@ -747,15 +872,7 @@ export default {
         })
       this.dialogVisible = false
     },
-    sumbitForm() {
-      // console.log(data)
-    },
-    getFormOperates() {
-      let res = []
-      this.isApproverNode() && (res = this.approverForm.formOperates)
-      this.isStartNode() && (res = this.startForm.formOperates)
-      return res
-    },
+    sumbitForm() {},
     resetOrgColl() {
       for (let key in this.orgCollection) {
         this.$set(this.orgCollection, key, [])
@@ -916,7 +1033,6 @@ export default {
         this.properties.initiator.length > 0 &&
         ((this.properties.initiator = null), (nodeContent = null))
       this.$emit('confirm', this.properties, nodeContent || '请设置条件')
-
       this.visible = false
     },
 
@@ -945,20 +1061,75 @@ export default {
     /**
      * 审批节点确认保存
      */
-    approverNodeComfirm() {
+    async approverNodeComfirm() {
+      await this.valid()
+      // if(!this.isValid) return
       const assigneeType = this.approverForm.assigneeType
       let content = ''
       if (['myself'].includes(assigneeType)) {
         content = this.assigneeTypeOptions.find((t) => t.value === assigneeType).name
-      } else if ('director' === assigneeType) {
-        content = this.directorLevel === 1 ? '直接主管' : `第${this.directorLevel}级主管`
+      } else if ('position' === assigneeType) {
+        let positionName = ''
+        let options = this.positionData.find((it) => it.prop === 'positionId').options
+        options.map((it) => {
+          it.id === this.infoForm.positionId && (positionName = it.name)
+        })
+        content = '岗位 = ' + positionName
+        // this.approverForm.infoForm = this.infoForm
+      } else if ('tag' === assigneeType) {
+        let tagName = ''
+        let options = this.tagData.find((it) => it.prop === 'tagId').options
+        options.map((it) => {
+          it.id === this.infoForm.tagId && (tagName = it.name)
+        })
+        content = '标签 = ' + tagName
+        // this.approverForm.infoForm = this.infoForm
+      } else if ('job' === assigneeType) {
+        let jobName = ''
+        let options = this.jobData.find((it) => it.prop === 'jobId').options
+        options.map((it) => {
+          it.id === this.infoForm.jobId && (jobName = it.name)
+        })
+        content = '职位 = ' + jobName
+        // this.approverForm.infoForm = this.infoForm
+      } else if ('directorLevel' === assigneeType) {
+        let Level = {
+          '1': '直接主管',
+          '2': '第二级主管',
+          '3': '第三级主管',
+          '4': '第四级主管',
+          '5': '第五级主管',
+          '6': '第六级主管',
+          '7': '第七级主管',
+          '8': '第八级主管',
+          '9': '第九级主管',
+          '10': '第十级主管',
+          '11': '第十一级主管',
+          '12': '第十二级主管',
+          '13': '第十三级主管',
+          '14': '第十四级主管',
+          '15': '第十五级主管',
+          '16': '第十六级主管',
+          '17': '第十七级主管',
+          '18': '第十八级主管',
+          '19': '第十九级主管',
+          '20': '第二十级主管'
+        }
+        content = Level[this.infoForm.directorLevelId]
+        // this.approverForm.infoForm = this.infoForm
       } else {
         content = this.getOrgSelectLabel('approver')
       }
-      const formOperates = this.approverForm.formOperates.map((t) => ({
-        formId: t.formId,
-        formOperate: t.formOperate
-      }))
+      let infoFormKeys = Object.keys(this.infoForm)
+      infoFormKeys.map((it) => {
+        if (it !== 'orgId' && `${assigneeType}Id` !== it) {
+          this.infoForm[it] = null
+        }
+      })
+
+      !this.infoForm.jobId && (this.infoForm.orgId = null)
+      this.approverForm.infoForm = this.infoForm
+
       this.approverForm.approvers = this.orgCollection[assigneeType]
       let attribute = []
       this.orgCollection[assigneeType] &&
@@ -972,10 +1143,14 @@ export default {
         !this.approverForm.optionalMultiUser &&
         (this.approverForm.counterSign = null)
 
-      if (this.approverForm.approvers.length < 2 && this.approverForm.assigneeType !== 'optional') {
+      if (
+        this.approverForm.approvers &&
+        this.approverForm.approvers.length.length < 2 &&
+        this.approverForm.assigneeType !== 'optional'
+      ) {
         this.approverForm.counterSign = null
       }
-      Object.assign(this.properties, this.approverForm, { formOperates })
+      Object.assign(this.properties, this.approverForm)
       this.$emit('confirm', this.properties, content || '请设置审批人')
       this.visible = false
     },
@@ -1041,6 +1216,9 @@ export default {
         if (this.value.properties.hasOwnProperty(key)) {
           this.approverForm[key] = this.value.properties[key]
         }
+        if (key === 'infoForm') {
+          this.infoForm = Object.assign(this.infoForm, this.value.properties[key])
+        }
       }
       this.approverForm.counterSign =
         this.approverForm.counterSign === null ? true : this.approverForm.counterSign
@@ -1055,9 +1233,6 @@ export default {
       if (hasBranch(data)) {
         if (!firstConditinoNode.length > 0) {
           firstConditinoNode.push(data)
-          // data.conditionNodes.map((d) => {
-          //   firstConditinoNode.push(d.nodeId)
-          // })
         }
       }
       if (data.childNode) {
