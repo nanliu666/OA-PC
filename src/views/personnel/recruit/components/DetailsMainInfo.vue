@@ -32,7 +32,7 @@
           :sm="12"
           :xs="12"
         >
-          <span class="content__info--label">提交人:</span>
+          <span class="content__info--label">分配人:</span>
           <span class="content__info--value">{{ data.userName }}</span>
         </el-col>
         <el-col
@@ -42,7 +42,7 @@
           :sm="12"
           :xs="12"
         >
-          <span class="content__info--label">提交时间:</span>
+          <span class="content__info--label">分配时间:</span>
           <span class="content__info--value">{{ data.createTime }}</span>
         </el-col>
         <el-col
