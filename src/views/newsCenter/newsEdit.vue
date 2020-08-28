@@ -274,7 +274,8 @@ export default {
               this.submitting = false
             }
           } catch (error) {
-            this.$message.info('取消操作')
+            //  不对取消操作进行提示，原因是不需要，此外还会出现catch网络问题与后台返回错误等 sideeffect
+            // this.$message.info('取消操作')
           }
         })
         .catch((error) => {
