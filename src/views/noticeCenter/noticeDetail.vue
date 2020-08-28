@@ -133,7 +133,7 @@ export default {
       this.noticeDetail.attachment.map((item, index) => {
         const url = item.url.split('.')
         let fileName = url[url.length - 1]
-        if (/\.(doc|doxs|pdf|DOC|DOCS|PDF)$/.test(`.${fileName}`)) {
+        if (/\.(doc|doxs|docx|dot|dotx|docm|pdf|DOC|DOCS|PDF)$/.test(`.${fileName}`)) {
           this.iframeList.push(index)
         } else if (/\.(jpg|jpeg|png|JPEG|JPG|PNG)$/.test(`.${fileName}`)) {
           this.imagesList.push(index)
