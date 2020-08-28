@@ -377,14 +377,16 @@ export class NodeUtils {
       isEmptyArray(props.conditions) &&
       (valid = false)
 
-    const customSettings = ['myself', 'optional', 'director']
-    this.isApproverNode(node) &&
-      !customSettings.includes(props.assigneeType) &&
-      isEmptyArray(props.approvers) &&
-      (valid = false)
+    const customSettings = ['user', 'optional']
     this.isApproverNode(node) &&
       customSettings.includes(props.assigneeType) &&
       isEmptyArray(props.approvers) &&
+      (valid = false)
+
+    const typeList = ['tag', 'position', 'job', 'directorLevel']
+    this.isApproverNode(node) &&
+      typeList.includes(props.assigneeType) &&
+      !props.infoForm[`${props.assigneeType}Id`] &&
       (valid = false)
     return valid
   }
