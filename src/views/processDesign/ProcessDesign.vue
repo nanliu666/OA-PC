@@ -247,7 +247,12 @@ export default {
         param.basicSetting.initiator.map((it) => {
           let type = ''
           if (it.type) {
-            type = 'User'
+            let typeObect = {
+              tag: 'Tag',
+              user: 'User',
+              position: 'Position'
+            }
+            type = typeObect[it.type]
           } else {
             type = 'Org'
           }

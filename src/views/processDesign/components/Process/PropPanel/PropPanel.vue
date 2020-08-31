@@ -241,6 +241,7 @@
                 :tab-list="['user']"
                 :all="all"
                 :org="org"
+                :type="type"
               />
             </el-col>
           </el-row>
@@ -547,6 +548,10 @@ export default {
   props: [/*当前节点数据*/ 'value', /*整个节点数据*/ 'processData'],
   data() {
     return {
+      type: {
+        istag: true,
+        isposition: true
+      },
       isValid: false,
       infoForm: {
         orgId: '',
