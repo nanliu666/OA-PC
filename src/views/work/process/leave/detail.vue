@@ -153,7 +153,7 @@ export default {
     },
     handleCancel() {
       this.$router.$avueRouter.closeTag()
-      this.$router.push({ path: `/work/start` })
+      this.$router.push({ path: '/work/start' })
     }
   }
 }

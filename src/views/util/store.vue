@@ -132,12 +132,12 @@ export default {
     },
     clearAll(params = {}) {
       clearStore(params)
-      this.$message(`清除全部数据完成`)
+      this.$message('清除全部数据完成')
     },
     getAll(params = {}) {
       const list = getAllStore(params)
       window.console.log(list)
-      this.$message(`结果已经打印到控制台`)
+      this.$message('结果已经打印到控制台')
     }
   }
 }

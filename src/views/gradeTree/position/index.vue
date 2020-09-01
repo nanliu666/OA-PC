@@ -255,7 +255,7 @@ export default {
   },
   methods: {
     jump() {
-      this.$router.push({ path: `/gradeTree/position/category` })
+      this.$router.push({ path: '/gradeTree/position/category' })
     },
     handlerDeleteAll(list) {
       let name = ''

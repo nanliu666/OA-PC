@@ -512,7 +512,7 @@ export default {
                 '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
               )
             it.type === 'radio' &&
-              conditionExpression.push('${' + it.vModel + " eq '" + it.val + "'}")
+              conditionExpression.push('${' + it.vModel + ' eq \'' + it.val + '\'}')
           })
 
           let strs = ''
@@ -520,9 +520,9 @@ export default {
             d.properties.initiator.map((it, i) => {
               strs +=
                 ' initiator_org eq ' +
-                "'" +
+                '\'' +
                 it.orgId +
-                "'" +
+                '\'' +
                 (i === d.properties.initiator.length - 1 ? '' : ' or ')
             })
           }

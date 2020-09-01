@@ -28,7 +28,7 @@ export default {
                 label: '审批人员',
                 prop: 'taskUser',
                 type: 'select',
-                dicUrl: `/api/blade-user/user-list`,
+                dicUrl: '/api/blade-user/user-list',
                 props: {
                   label: 'account',
                   value: 'id'
@@ -108,7 +108,7 @@ export default {
           if (data) {
             this.$message.success('提交成功')
             this.$router.$avueRouter.closeTag()
-            this.$router.push({ path: `/work/start` })
+            this.$router.push({ path: '/work/start' })
           } else {
             this.$message.error(data.msg || '提交失败')
           }
@@ -129,7 +129,7 @@ export default {
           if (data) {
             this.$message.success('提交成功')
             this.$router.$avueRouter.closeTag()
-            this.$router.push({ path: `/work/start` })
+            this.$router.push({ path: '/work/start' })
           } else {
             this.$message.error(data.msg || '提交失败')
           }

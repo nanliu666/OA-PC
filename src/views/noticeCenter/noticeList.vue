@@ -84,7 +84,7 @@ export default {
     },
     toNoticeDeatil(data) {
       this.$router.push({
-        path: `/noticeCenter/noticeDetail`,
+        path: '/noticeCenter/noticeDetail',
         query: {
           id: data.id
         }

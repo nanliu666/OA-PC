@@ -198,7 +198,7 @@ export default {
         if (data.success) {
           this.$message.success(data.msg)
           this.$router.$avueRouter.closeTag()
-          this.$router.push({ path: `/work/start` })
+          this.$router.push({ path: '/work/start' })
         } else {
           this.$message.error(data.msg || '提交失败')
         }
@@ -219,7 +219,7 @@ export default {
         if (data.success) {
           this.$message.success(data.msg)
           this.$router.$avueRouter.closeTag()
-          this.$router.push({ path: `/work/start` })
+          this.$router.push({ path: '/work/start' })
         } else {
           this.$message.error(data.msg || '提交失败')
         }
@@ -227,7 +227,7 @@ export default {
     },
     handleCancel() {
       this.$router.$avueRouter.closeTag()
-      this.$router.push({ path: `/work/start` })
+      this.$router.push({ path: '/work/start' })
     }
   }
 }

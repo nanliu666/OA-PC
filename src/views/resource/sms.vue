@@ -259,7 +259,7 @@ export default {
             label: '发送参数',
             prop: 'params',
             span: 24,
-            placeholder: "例: {'code':2333,'title':'通知标题'}"
+            placeholder: '例: {\'code\':2333,\'title\':\'通知标题\'}'
           }
         ]
       }
