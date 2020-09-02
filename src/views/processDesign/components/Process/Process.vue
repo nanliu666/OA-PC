@@ -12,7 +12,6 @@ export default {
     let data = getMockData()
     return {
       data, // 流程图数据
-
       scaleVal: 100, // 流程图缩放比例 100%
       step: 5, // 缩放步长
       updateId: 0, // key值 用于模拟$forceUpdate
