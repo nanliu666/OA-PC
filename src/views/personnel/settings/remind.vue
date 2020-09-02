@@ -196,9 +196,10 @@ export default {
     editSubmit() {
       this.$refs.form
         .validate()
-        .then((form) => {
+        .then(() => {
+          const data = this.form
           this.editSubmitting = true
-          createRemindExecutor(form)
+          createRemindExecutor(data)
             .then(() => {
               this.$message.success('提交成功')
               this.editClose()

@@ -30,7 +30,7 @@
           >
             <template #default>
               <div
-                v-if="_.size(uploader.fileList) < uploader.limit"
+                v-if="_.size(uploader.fileList) < uploader.limit && _.isNil(formData.picUrl)"
                 class="uploader__btn"
               >
                 <i class="icon-tips-plus-outlined" />
@@ -52,7 +52,7 @@
 
             <template slot="tip">
               <span
-                v-if="_.size(uploader.fileList) < uploader.limit"
+                v-if="_.size(uploader.fileList) < uploader.limit && _.isNil(formData.picUrl)"
                 class="uploader__description"
               >
                 图片大小不超过5M
@@ -109,6 +109,7 @@ import {
   putV1News
 } from '@/api/newsCenter/newCenter'
 import CommonUpload from '@/components/common-upload/commonUpload'
+import { mapGetters } from 'vuex'
 
 // 接口需要的参数
 const API_PARAMS = ['id', 'title', 'categoryId', 'picUrl', 'content', 'brief', 'userId']
@@ -207,9 +208,11 @@ export default {
     id() {
       return this.$route.query.id || null
     },
-    userId() {
-      return this.$route.query.userId || null
-    }
+    // userId() {
+    //   return this.$route.query.userId || null
+    // }
+
+    ...mapGetters(['userId', 'tag'])
   },
 
   watch: {
@@ -258,7 +261,9 @@ export default {
             try {
               this.submitting = true
               // 需要先存为草稿再发布新闻
-              const { id } = await this.postNews(_.pickBy(this._formData))
+              const { id } = _.isNull(this.id)
+                ? await this.postNews(_.pickBy(this._formData))
+                : await this.updateNews(_.pickBy(this._formData))
               await this.publishNews(id)
               this.$message.success('发布成功')
               this.hasEdit = false
@@ -269,7 +274,8 @@ export default {
               this.submitting = false
             }
           } catch (error) {
-            this.$message.info('取消操作')
+            //  不对取消操作进行提示，原因是不需要，此外还会出现catch网络问题与后台返回错误等 sideeffect
+            // this.$message.info('取消操作')
           }
         })
         .catch((error) => {
@@ -392,7 +398,11 @@ export default {
     },
 
     scrollTop() {
-      this.$refs.wrapper.scrollTop = 0
+      this.$refs.wrapper.parentElement.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+      // this.$refs.wrapper.scrollTop = 0
     },
 
     refresh() {
@@ -419,9 +429,9 @@ export default {
     // 更新数据
     async updateNews(params) {
       this.loading = true
-      const data = await putV1News(_.assign({ id: this.id }, params))
+      await putV1News(_.assign({ id: this.id }, params))
       this.loading = false
-      return data
+      return { id: this.id }
     },
 
     // 发布接口
@@ -439,7 +449,6 @@ $color_placeholder: #757C85
 $color_font_uploader: #A0A8AE
 
 .wrapper
-  scroll-behavior: smooth
   .basic-container--block
     height: 0
     min-height: calc(100% - 92px)
