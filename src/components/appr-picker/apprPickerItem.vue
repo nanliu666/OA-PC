@@ -2,6 +2,7 @@
   <div class="appr-user-item__box">
     <div
       v-show="!(data && data.noData)"
+      v-loading="loading"
       class="appr-user-item"
     >
       <div
@@ -59,7 +60,10 @@
               <div class="el-dropdown-link appr-user-item__plus">
                 <i class="icon-tips-plus-outlined" />
               </div>
-              <el-dropdown-menu slot="dropdown">
+              <el-dropdown-menu
+                slot="dropdown"
+                style="max-height:300px;overflow:auto"
+              >
                 <el-dropdown-item
                   v-for="option in optionList"
                   :key="option.id"
@@ -98,6 +102,13 @@
 <script>
 // import pickUser from '@/components/appr-progress/userPicker.js'
 import elFormEmitter from '@/mixins/elFormEmitter'
+import {
+  getUserByJob,
+  getUserByPosition,
+  getUserByTag,
+  getUserLeader
+} from '@/api/apprProcess/apprProcess'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ApprPickerItem',
@@ -136,11 +147,13 @@ export default {
       watcher: null,
       isLast: false,
       conditionOrgId: null,
-      noMatchOrg: false
+      noMatchOrg: false,
+      loading: false
     }
   },
   inject: ['isLastNode'],
   computed: {
+    ...mapGetters(['userId']),
     // 是否会签
     isCounterSign() {
       return _.get(this.data, 'properties.counterSign', false)
@@ -156,7 +169,10 @@ export default {
       return _.get(this.data, 'properties.optionalMultiUser', false)
     },
     selectable() {
-      return _.get(this.data, 'properties.assigneeType', null) === 'optional'
+      return (
+        _.get(this.data, 'properties.assigneeType', null) &&
+        _.get(this.data, 'properties.assigneeType', null) !== 'user'
+      )
     },
     tips() {
       if (_.get(this.data, 'type') === 'approver') {
@@ -255,7 +271,7 @@ export default {
               } else {
                 this.data = { noData: true, type: node.type }
               }
-              !this.data.noData && !this.data.userList && this.initUserList(this.data)
+              !this.data.noData && this.initUserList(this.data)
             }
             return flag
           })
@@ -277,8 +293,8 @@ export default {
       this.watcher = this.$watch(
         'childNode',
         () => {
-          this.data = this.childNode
-          this.data && !this.data.userList && this.initUserList(this.data)
+          this.data = JSON.parse(JSON.stringify(this.childNode))
+          this.data && this.initUserList(this.data)
           this.updateLast()
         },
         { deep: true, immediate: true }
@@ -294,14 +310,46 @@ export default {
     },
     initUserList(data) {
       let userList
-      if (this.selectable) {
-        userList = []
-      } else if (data.type === 'approver') {
-        userList = _.get(data, 'properties.approvers', [])
-      } else if (data.type === 'copy') {
+      if (data.type === 'copy') {
         userList = _.get(data, 'properties.members', [])
+      } else if (data.type === 'approver') {
+        if (this.selectable) {
+          userList = []
+        } else {
+          userList = _.get(data, 'properties.approvers', [])
+        }
+        this.loadApprovers(data.properties)
       }
       this.$set(data, 'userList', userList)
+    },
+    // 加载审批人
+    loadApprovers(properties = { infoForm: {} }) {
+      let loadFunc = null,
+        params = {}
+      if (properties.assigneeType == 'tag') {
+        loadFunc = getUserByTag
+        params = { id: properties.infoForm.tagId }
+      } else if (properties.assigneeType == 'job') {
+        loadFunc = getUserByJob
+        params = { id: properties.infoForm.jobId }
+      } else if (properties.assigneeType == 'position') {
+        loadFunc = getUserByPosition
+        params = { id: properties.infoForm.positionId }
+      } else if (properties.assigneeType === 'directorLevel') {
+        loadFunc = getUserLeader
+        params = { userId: this.userId, level: properties.infoForm.directorLevelId }
+      }
+      if (!loadFunc) {
+        return
+      }
+      this.loading = true
+      loadFunc(params)
+        .then((res) => {
+          this.$set(this.data.properties, 'approvers', res)
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     handleSelect(data) {
       this.data.userList.push(data)
