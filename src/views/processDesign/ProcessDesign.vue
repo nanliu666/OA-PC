@@ -224,6 +224,11 @@ export default {
           err.msg && this.$message.warning(err.msg)
         })
     },
+    /**
+     * author guanfenda
+     * @decs 处理数据，提交给后台
+     *
+     * */
     sendToServer(param) {
       this.base = []
       this.lineList = []
@@ -231,7 +236,7 @@ export default {
       this.processMap = {}
       this.endNode = []
       let processData = JSON.parse(JSON.stringify(param.processData))
-      this.resfun(processData)
+      this.lineEnd(processData)
       this.recursion(processData, param.processData)
       let item = {
         id: 'end',
@@ -282,13 +287,6 @@ export default {
         approverNull: approverNull,
         formKey: this.formKey
       }
-      // 基础设置
-      // "flowName": "转正申请",      // 流程名称
-      //     // 流程ID，创建流程不用传；修改时传待修改的流程ID
-      //     "flowId": "c3158e3f-bf2b-11ea-bf93-d0278889fb56",
-      //     "flowKey": "UserFormalInfo", // 流程的标识
-      //     "flowCategory": "leave"，    // 流程分类
-      // "baseJson": "base64Json",    // 前端的json字符串，后端保存，必要时再回传给前端
       let emptyList = []
       this.base.map((it) => {
         if (it.type === 'empty') {
@@ -349,13 +347,14 @@ export default {
       //   this.$message.success('提交成功')
       // })
     },
-
-    resfun(data) {
+    /**
+     * @author guanfenda
+     * @desc 处理结束节点问题
+     * */
+    lineEnd(data) {
       let endChild = this.childNode(data)
-      // let istrue = hasBranch(endChild)
       if (data.nodeId !== endChild.nodeId && !hasBranch(endChild)) {
         // 结束ID=当前ID && 结束节点无条件 && 当前节点无条件
-        // return
 
         let line = {
           type: 'flow',
@@ -367,11 +366,14 @@ export default {
         this.endNode.push(line)
       } else if (hasBranch(endChild)) {
         endChild.conditionNodes.map((it) => {
-          this.resfun(it)
+          this.lineEnd(it)
         })
       }
     },
-    // 前端转后端格式函数
+    /**
+     * @author guanfenda
+     * 前端转后端格式函数
+     * */
     recursion(data, origin, conditionNextNodeId_) {
       let type = {
         //类型
@@ -397,43 +399,7 @@ export default {
         item.assignee = 'copyUser_' + data.properties.attribute
       }
       //审批人
-      if (data.type === 'approver') {
-        //审批人节点
-        let list = Object.keys(data.properties.infoForm)
-        if (list.includes(`${data.properties.assigneeType}Id`)) {
-          item.assignee = '${' + `${data.properties.assigneeType}_` + data.nodeId + '_id}'
-          this.processMap[`${data.properties.assigneeType}_` + data.nodeId + '_id'] = ''
-          origin.variable = `${data.properties.assigneeType}_` + data.nodeId + '_id'
-        } else if (data.properties.assigneeType === 'user') {
-          //指定成员人，
-          item.assignee = 'taskUser_' + data.properties.attribute
-          let length = data.content.split(',').length
-          if (length > 1) {
-            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
-            item.assignee = '${taskUser_' + data.nodeId + '}'
-            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
-            item.element = 'taskUser_' + data.nodeId
-            item.collection = 'optional_' + data.nodeId
-          }
-        } else if (data.properties.assigneeType === 'optional') {
-          // 发起人自选
-          item.assignee = '${optional_' + data.nodeId + '_id}'
-          if (!data.properties.optionalMultiUser) {
-            //
-            origin.variable = 'optional_' + data.nodeId + '_id' //这个前端发起用的变量
-            this.processMap['optional_' + data.nodeId + '_id'] = '' // 后端对应前端变量
-          } else if (data.properties.optionalMultiUser) {
-            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
-            item.collection = 'optional_' + data.nodeId //后台接收前端变量
-            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
-            // item.assignee = '${optional_' + data.nodeId + '_id}' // assignee 和 element 后端 处理循环用得到、
-            item.element = 'optional_' + data.nodeId + '_id' //会签或签 assignee 和 element 后端 处理循环用得到
-            this.processMap['optional_' + data.nodeId] = ''
-          }
-        } else {
-          item.assignee = 'taskUser_' + data.properties.attribute //
-        }
-      }
+      this.Approval(data, item, origin)
       //条件
       if (hasBranch(data)) {
         //判断是否存在条件，如果有。。。
@@ -584,6 +550,50 @@ export default {
         this.base.push(item)
       }
       data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
+    },
+    /**
+     *  @author guanfenda
+     *  @desc 处理审批人节点转换成后台需要节点
+     *  @params data,item,origin 引用类型
+     * */
+    Approval(data, item, origin) {
+      if (data.type === 'approver') {
+        //审批人节点
+        let list = Object.keys(data.properties.infoForm || [])
+        if (list.includes(`${data.properties.assigneeType}Id`)) {
+          item.assignee = '${' + `${data.properties.assigneeType}_` + data.nodeId + '_id}'
+          this.processMap[`${data.properties.assigneeType}_` + data.nodeId + '_id'] = ''
+          origin.variable = `${data.properties.assigneeType}_` + data.nodeId + '_id'
+        } else if (data.properties.assigneeType === 'user') {
+          //指定成员人，
+          item.assignee = 'taskUser_' + data.properties.attribute
+          let length = data.content.split(',').length
+          if (length > 1) {
+            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
+            item.assignee = '${taskUser_' + data.nodeId + '}'
+            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
+            item.element = 'taskUser_' + data.nodeId
+            item.collection = 'optional_' + data.nodeId
+          }
+        } else if (data.properties.assigneeType === 'optional') {
+          // 发起人自选
+          item.assignee = '${optional_' + data.nodeId + '_id}'
+          if (!data.properties.optionalMultiUser) {
+            //
+            origin.variable = 'optional_' + data.nodeId + '_id' //这个前端发起用的变量
+            this.processMap['optional_' + data.nodeId + '_id'] = '' // 后端对应前端变量
+          } else if (data.properties.optionalMultiUser) {
+            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
+            item.collection = 'optional_' + data.nodeId //后台接收前端变量
+            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
+            // item.assignee = '${optional_' + data.nodeId + '_id}' // assignee 和 element 后端 处理循环用得到、
+            item.element = 'optional_' + data.nodeId + '_id' //会签或签 assignee 和 element 后端 处理循环用得到
+            this.processMap['optional_' + data.nodeId] = ''
+          }
+        } else {
+          item.assignee = 'taskUser_' + data.properties.attribute //
+        }
+      }
     },
     //获取最后一个节点
     childNode(data) {
