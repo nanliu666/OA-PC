@@ -191,14 +191,13 @@ export default {
           rules: [{ required: true, message: '请选择工作性质', trigger: 'blur' }]
         },
         {
-          offset: 4,
-          prop: 'needNum',
-          itemType: 'input',
+          itemType: 'inputNumber',
           label: '需求人数',
+          min: 0,
+          offset: 4,
           options: [],
-          props: {
-            onlyNumber: true
-          },
+          prop: 'needNum',
+          props: { onlyNumber: true },
           required: true,
           rules: [{ required: true, message: '请输入需求人数', trigger: 'blur' }]
         },

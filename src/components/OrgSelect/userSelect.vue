@@ -11,24 +11,75 @@
       class="content-wr"
     >
       <div class="left">
-        <el-input
-          v-model="filterText"
-          placeholder="搜索部门或成员姓名"
-        />
-        <div class="tree">
-          <el-tree
-            ref="tree"
-            :data="orgTree"
-            show-checkbox
-            default-expand-all
-            node-key="id"
-            :props="props"
-            :default-checked-keys="checked"
-            check-strictly
-            :filter-node-method="filterNode"
-            :check-on-click-node="true"
-            @check="handleCheckChange"
+        <el-tabs
+          v-model="activeName"
+          @tab-click="handleClick"
+        >
+          <el-tab-pane
+            label="组织架构"
+            name="first"
           />
+          <el-tab-pane
+            v-if="istag"
+            label="标签"
+            name="second"
+          />
+          <el-tab-pane
+            v-if="isposition"
+            label="岗位"
+            name="third"
+          />
+        </el-tabs>
+        <div v-show="activeName == 'first'">
+          <el-input
+            v-model="filterText"
+            placeholder="搜索部门或成员姓名"
+          />
+          <div class="tree">
+            <el-tree
+              ref="tree"
+              :data="orgTree"
+              show-checkbox
+              default-expand-all
+              node-key="id"
+              :props="props"
+              :default-checked-keys="checked"
+              check-strictly
+              :filter-node-method="filterNode"
+              :check-on-click-node="true"
+              @check="handleCheckChange"
+            />
+          </div>
+        </div>
+        <div v-show="activeName === 'second'">
+          <el-select
+            v-model="tag"
+            multiple
+            style="width:100%"
+            placeholder="请选择标签"
+          >
+            <el-option
+              v-for="item in tagList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </div>
+        <div v-show="activeName === 'third'">
+          <el-select
+            v-model="position"
+            style="width:100%"
+            multiple
+            placeholder="请选择岗位"
+          >
+            <el-option
+              v-for="item in positionList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
         </div>
       </div>
       <div class="right">
@@ -45,12 +96,20 @@
           <div class="flex flex-justify-between flex-items">
             <!--            <el-image class="imgs" />-->
             <i
-              v-if="item.children"
+              v-if="!item.type"
               class="iconfont icon-usercircle2 imgss"
             />
             <i
-              v-else
+              v-else-if="item.type === type.user"
               class="iconfont  icon-approval-checkin-bicolor imgs"
+            />
+            <i
+              v-else-if="item.type === type.tag"
+              class="iconfont icon-menu-post-filled imgs"
+            />
+            <i
+              v-else-if="item.type === type.position"
+              class="iconfont icon-menu-position-filled imgs"
             />
             {{ item.name }}
           </div>
@@ -84,11 +143,19 @@
 </template>
 <script>
 import { getOrgUserTree } from '@/api/system/user'
-
+import { getPosition, getTagList } from '@/api/org/org'
 export default {
   name: 'UserTagedEdit',
   props: {
     org: {
+      type: Boolean,
+      default: false
+    },
+    istag: {
+      type: Boolean,
+      default: false
+    },
+    isposition: {
       type: Boolean,
       default: false
     },
@@ -109,6 +176,17 @@ export default {
   },
   data() {
     return {
+      type: {
+        user: 'user',
+        tag: 'tag',
+        position: 'position'
+      },
+      tag: [],
+      tagList: [],
+      position: [],
+      positionList: [],
+      treeOrg: [],
+      activeName: 'first',
       title: '请选择审批人',
       title1: '请选择部门',
       node: {},
@@ -127,6 +205,45 @@ export default {
     }
   },
   watch: {
+    tag: {
+      handler() {
+        let list = []
+        this.tagList.map((it) => {
+          this.tag.map((item) => {
+            if (item === it.id) {
+              !it.type && (it.type = this.type.tag)
+              list.push(it)
+            }
+          })
+        })
+        this.selectList = this.selectList.filter((it) => {
+          if (!(it.type && it.type === this.type.tag)) {
+            return it
+          }
+        })
+        this.selectList.push(...list)
+      },
+      immediate: true,
+      deep: true
+    },
+    position: {
+      handler(val) {
+        let list = []
+        this.positionList.map((it) => {
+          val.map((item) => {
+            item === it.id && (it.type = this.type.position) && list.push(it)
+          })
+        })
+        this.selectList = this.selectList.filter((it) => {
+          if (!(it.type && it.type === this.type.position)) {
+            return it
+          }
+        })
+        this.selectList.push(...list)
+      },
+      immediate: true,
+      deep: true
+    },
     org: {
       handler(val) {
         this.$nextTick(() => {
@@ -139,9 +256,30 @@ export default {
       deep: true
     },
     users: {
-      handler(val) {
+      async handler(val) {
+        this.getOrgUserTree()
+        await this.getPositionData()
+        await this.getTagData()
         val && val.map((it) => this.checked.push(it.id))
         this.selectList = val
+        let tagItem = this.selectList.filter((it) => {
+          if (it.type && it.type === this.type.tag) {
+            return it
+          }
+        })
+        this.tag = []
+        tagItem.map((it) => {
+          this.tag.push(it.id)
+        })
+        let positionItem = this.selectList.filter((it) => {
+          if (it.type && it.type === this.type.position) {
+            return it
+          }
+        })
+        this.position = []
+        positionItem.map((it) => {
+          this.position.push(it.id)
+        })
       },
       immediate: true
     },
@@ -149,22 +287,85 @@ export default {
       this.$refs.tree.filter(val)
     }
   },
-  created() {
-    this.getOrgUserTree()
-  },
   methods: {
+    /**
+     *
+     * @author guanfenda
+     * @desc 获取标签
+     *
+     * */
+    getTagData() {
+      return new Promise((resolve, reject) => {
+        getTagList()
+          .then((res) => {
+            this.tagList = res
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
+    /**
+     *  @author guanfenda
+     *
+     * */
+    getPositionData() {
+      return new Promise((resolve, reject) => {
+        getPosition()
+          .then((res) => {
+            this.positionList = res
+            resolve()
+          })
+          .catch(() => {
+            reject()
+          })
+      })
+    },
+    handleClick() {},
     filterNode(value, data) {
       if (!value) return true
       return data.name && data.name.indexOf(value) !== -1
     },
     handleCheckChange(data, checked) {
-      // this.selectList = checked.checkedNodes.filter((i) => !i.children)
-      this.selectList = checked.checkedNodes
+      this.treeOrg = checked.checkedNodes
+      this.selectList = this.selectList.filter((it) => {
+        if (it.type && (it.type === this.type.tag || it.type === this.type.position)) {
+          return it
+        }
+      })
+      this.selectList.push(...this.treeOrg)
     },
     handleUnselect(item) {
       this.selectList = this.selectList.filter((i) => i.id != item.id)
-      this.$refs.tree.setCheckedKeys(this.selectList.map((i) => i.id))
-      // this.selectList
+      if (!item.type || item.type === this.type.user) {
+        this.treeOrg = this.selectList.filter((it) => {
+          if (!it.type || (it.type && it.type === this.type.user)) {
+            return it
+          }
+        })
+        this.$refs.tree.setCheckedKeys(this.treeOrg.map((i) => i.id))
+      } else if (item.type === this.type.tag) {
+        let tagItem = this.selectList.filter((it) => {
+          if (it.type && it.type === this.type.tag) {
+            return it
+          }
+        })
+        this.tag = []
+        tagItem.map((it) => {
+          this.tag.push(it.id)
+        })
+      } else {
+        let positionItem = this.selectList.filter((it) => {
+          if (it.type && it.type === this.type.position) {
+            return it
+          }
+        })
+        this.position = []
+        positionItem.map((it) => {
+          this.position.push(it.id)
+        })
+      }
     },
     handleUnselectAll() {
       this.selectList = []
@@ -232,7 +433,6 @@ export default {
       this.close()
     },
     resolveTree(tree, priv) {
-      // console.log(' :org="org"',tree)conso.log()
       if (tree.length > 0) {
         tree.forEach((node) => {
           if (node.orgName) {

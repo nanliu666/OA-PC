@@ -426,7 +426,14 @@ export default {
     this.labour.find((it) => it.prop === 'contractEndDate').rules.push(this.rule)
     this.getProcessDetail()
   },
-
+  activated() {
+    if (this.$route.query.approveStatus) {
+      removeStore({ name: 'apply_active', type: 'session' })
+      removeStore({ name: 'apply_personId', type: 'session' })
+      removeStore({ name: 'apply_apprNo', type: 'session' })
+      removeStore({ name: 'apply_applyId', type: 'session' })
+    }
+  },
   methods: {
     // 通过formKey获取processId
     getProcessId() {

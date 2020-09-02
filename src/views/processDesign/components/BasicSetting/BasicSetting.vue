@@ -12,6 +12,7 @@
           title="发起人"
           :all="all"
           :org="org"
+          :type="type"
           @change="emitInitiator"
         />
       </div>
@@ -101,6 +102,10 @@ export default {
       'iconleave-bicolor1'
     ]
     return {
+      type: {
+        istag: true,
+        isposition: true
+      },
       symbolKey: 'xlink:href',
       info,
       all: true, //显示所有人

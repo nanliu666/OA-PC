@@ -390,7 +390,7 @@
       <!-- 按钮 -->
       <!-- v-if="!isCancel && !isFished && !isReject" -->
       <div
-        v-if="!isCancel && !isFished && !preview"
+        v-if="!isFished && !preview"
         class="cancel-btn-box"
       >
         <!-- v-if="!isShowCancel && isApplyUser" -->
@@ -443,7 +443,7 @@
           placement="top"
         >
           <el-button
-            v-if="isReject && isApplyUser"
+            v-if="(isReject && isApplyUser && !old) || (isCancel && isApplyUser && !old)"
             type="primary"
             size="medium"
             @click="jump"
@@ -536,6 +536,7 @@ export default {
   },
   data() {
     return {
+      processName: ['录用申请', '转正申请', '离职申请', '招聘需求', '人事异动', '合同续签'],
       preview: false,
       recordlist: [],
       progressRecord: [],
@@ -597,6 +598,9 @@ export default {
 
   computed: {
     // iconClass
+    old() {
+      return this.processName.includes(this.applyDetail.processName)
+    },
     iconClass() {
       // 已撤回
       if (this.isCancel) {

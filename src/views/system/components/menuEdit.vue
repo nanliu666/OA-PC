@@ -11,12 +11,12 @@
     <common-form
       ref="form"
       class="form"
-      :model="form"
-      :columns="form | formColumnsFilter"
+      :model="formData"
+      :columns="formData | formColumnsFilter"
     >
       <template #icon="{iconList}">
         <icon-select
-          v-model="form.icon"
+          v-model="formData.icon"
           :icon-list="iconList"
         />
       </template>
@@ -219,9 +219,9 @@ export default {
     IconSelect: () => import('@/components/icon-select')
   },
   filters: {
-    formColumnsFilter: function(form) {
+    formColumnsFilter: function(formData) {
       let res = _(FORM_COLUMNS)
-      if (_.eq(form.menuType, 'Button') || _.isNil(form.menuType)) {
+      if (_.eq(formData.menuType, 'Button') || _.isNil(formData.menuType)) {
         res = res.difference([_.find(FORM_COLUMNS, { prop: 'sort' })])
       }
       return res.value()
@@ -237,7 +237,7 @@ export default {
     return {
       dialog: null,
       formColumns: FORM_COLUMNS,
-      form: {},
+      formData: {},
       loading: false,
       submitting: false
     }
@@ -256,16 +256,16 @@ export default {
 
     // 提交
     handleSubmit() {
-      this.$refs.form.validate().then((res) => {
+      this.$refs.form.validate().then(() => {
         this.submitting = true
-        this.$emit(this.dialog.eventName, res)
+        this.$emit(this.dialog.eventName, this.formData)
       })
       // .catch((rules) => {
       // })
     },
     init(row = {}) {
       // 设置title
-      this.form = _.cloneDeep(row)
+      this.formData = _.cloneDeep(row)
       this.dialog = _.isEmpty(row.menuId)
         ? _.isEmpty(row.parentId)
           ? DIALOG_TYPE.add

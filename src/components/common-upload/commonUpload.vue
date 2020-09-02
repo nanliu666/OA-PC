@@ -9,11 +9,12 @@
     :show-file-list="false"
     :http-request="httpRequest"
     :before-upload="beforeUpload"
+    :file-list="value"
   >
     <slot />
     <slot
-      slot="tips"
-      name="tips"
+      slot="tip"
+      name="tip"
     />
   </el-upload>
 </template>
@@ -27,7 +28,7 @@ export default {
     // 上传前校验
     beforeUpload: {
       type: Function,
-      default: () => {}
+      default: () => true
     },
     multiple: {
       type: Boolean,

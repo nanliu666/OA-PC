@@ -181,6 +181,18 @@
           {{ statusWord[row.status] }}
         </template>
         <template
+          slot="leaveDate"
+          slot-scope="{ row }"
+        >
+          {{ row.leaveDate }}
+        </template>
+        <template
+          slot="leaveReason"
+          slot-scope="{ row }"
+        >
+          {{ reason(row.leaveReason) }}
+        </template>
+        <template
           slot="menu"
           slot-scope="{ row }"
         >
@@ -272,6 +284,7 @@ export default {
     return {
       // 在职 onJob 正式 Formal 试用期 Try 离职 WaitLeave 已离职 Leaved
       tabStatus: 'onJob',
+      LeaveReason: [],
       statusWord: {
         onJob: '在职',
         Formal: '正式',
@@ -300,6 +313,7 @@ export default {
       loading: false,
       searchParams: {},
       data: [],
+      column: [],
       option: {
         ...tableOptions,
         align: 'center',
@@ -314,10 +328,13 @@ export default {
             prop: 'name',
             slot: true
           },
+
           {
             label: '工号',
-            prop: 'workNo'
+            prop: 'workNo',
+            slot: true
           },
+
           {
             label: '部门',
             prop: 'orgName'
@@ -352,11 +369,21 @@ export default {
   },
   created() {
     this.getUserStatusStat()
+    this.$store.dispatch('CommonDict', 'LeaveReason').then((res) => {
+      this.LeaveReason = res
+    })
   },
   activated() {
     this.getTableData(1)
   },
   methods: {
+    reason(val) {
+      let value = ''
+      this.LeaveReason.map((it) => {
+        it.dictKey === val && (value = it.dictValue)
+      })
+      return value
+    },
     toUserDetail(row) {
       this.$router.push('/personnel/detail/' + row.userId)
     },
@@ -370,6 +397,26 @@ export default {
     tabClick(status) {
       if (this.loading) return
       this.tabStatus = status
+      if (this.tabStatus === 'WaitLeave' || this.tabStatus === 'Leaved') {
+        if (!this.option.column.find((it) => it.prop === 'leaveDate')) {
+          let leaved = [
+            {
+              label: '离职日期',
+              prop: 'leaveDate',
+              slot: true
+            },
+            {
+              label: '离职原因',
+              prop: 'leaveReason',
+              slot: true
+            }
+          ]
+          this.column = JSON.parse(JSON.stringify(this.option.column))
+          this.option.column.splice(1, 0, ...leaved)
+        }
+      } else {
+        this.column.length > 0 && (this.option.column = this.column)
+      }
       this.$refs.searchComponent.resetForm()
       this.searchParams = {}
       this.getTableData(1)

@@ -74,7 +74,7 @@
 
       <el-tabs v-model="tab">
         <el-tab-pane
-          label="分配信息"
+          label="招聘进度"
           name="tabDistributionInformation"
         >
           <DetailsDistributionInformation :data="data" />
@@ -168,7 +168,7 @@ export default {
     }
   },
 
-  mounted() {
+  activated() {
     this.refresh()
   },
 

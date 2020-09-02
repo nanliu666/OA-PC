@@ -1,4 +1,5 @@
 import request from '@/router/axios'
+import { get } from '@/router/axios'
 // 组织机构查询
 export const getOrgTree = (params) => {
   return request({
@@ -61,3 +62,6 @@ export const getUserWorkList = (params) => {
     params: params
   })
 }
+export const getJob = (params) => get('/api/org/v1/organization/job', params)
+export const getPosition = (params) => get('/api/org/v1/position', params)
+export const getTagList = (params) => get('/api/user/v1/user/tag/list', params)

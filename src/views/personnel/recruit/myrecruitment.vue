@@ -107,6 +107,13 @@ const PADDING_TABLE_COLUMNS = [
     width: '100'
   },
   {
+    formatter: ({ taskNum, entryNum }) =>
+      +taskNum ? ((100 * entryNum) / taskNum).toFixed(1) + '%' : '-',
+    label: '招聘进度',
+    prop: 'percentage',
+    width: 100
+  },
+  {
     label: '需求进度',
     prop: 'progress',
     slot: true,
