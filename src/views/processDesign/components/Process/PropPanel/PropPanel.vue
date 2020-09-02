@@ -272,7 +272,7 @@
                 发起人自己将作为审批人处理审批单
               </div>
               <div
-                v-else-if="approverForm.assigneeType === 'optional'"
+                v-else-if="approverForm.assigneeType === assigneeTypeObect.optional"
                 class="option-box"
               >
                 <p>设置选择条件</p>
@@ -318,7 +318,7 @@
                   />
                 </div>
               </div>
-              <div v-else-if="approverForm.assigneeType === 'directorLevel'">
+              <div v-else-if="approverForm.assigneeType === assigneeTypeObect.directorLevel">
                 <div style="font-size: 14px;padding-left: 24px;">
                   <el-row>
                     <el-col style="line-height: 30px">
@@ -348,7 +348,7 @@
                   <!--                </el-checkbox>-->
                 </div>
               </div>
-              <div v-else-if="approverForm.assigneeType === 'job'">
+              <div v-else-if="approverForm.assigneeType === assigneeTypeObect.job">
                 <div style="padding-bottom: 24px;">
                   <commonForm
                     ref="jobData"
@@ -357,14 +357,14 @@
                   />
                 </div>
               </div>
-              <div v-else-if="approverForm.assigneeType === 'position'">
+              <div v-else-if="approverForm.assigneeType === assigneeTypeObect.position">
                 <commonForm
                   ref="positionData"
                   :model="infoForm"
                   :columns="positionData"
                 />
               </div>
-              <div v-else-if="approverForm.assigneeType === 'tag'">
+              <div v-else-if="approverForm.assigneeType === assigneeTypeObect.tag">
                 <commonForm
                   ref="tagData"
                   :model="infoForm"
@@ -726,7 +726,15 @@ export default {
           value: 'tag',
           disabled: false
         }
-      ]
+      ],
+      assigneeTypeObect: {
+        optional: 'optional',
+        directorLevel: 'directorLevel',
+        user: 'user',
+        job: 'job',
+        position: 'position',
+        tag: 'tag'
+      }
     }
   },
   computed: {
@@ -896,10 +904,6 @@ export default {
       const res = this.assigneeTypeOptions.find((t) => t.value === this.approverForm.assigneeType)
       return res ? res.label : ''
     },
-    changeAllFormOperate(val) {
-      const target = this.isStartNode() ? this.startForm : this.approverForm
-      target.formOperates.forEach((t) => (t.formOperate = val))
-    },
     // 是否可以显示当前条件组件
     couldShowIt(item, ...tag) {
       return (
@@ -907,38 +911,8 @@ export default {
       )
     },
 
-    initFormOperates(target) {
-      const formOperates = (target.properties && target.properties.formOperates) || []
-      // 自定义组件不加入权限控制
-      const res = []
-      const defaultType = this.isApproverNode() ? 1 : 2 // 操作权限 0 隐藏 1 只读 2 可编辑
-      const getPermissionById = (id) => {
-        const permission = formOperates.find((t) => t.formId === id)
-        return permission !== undefined ? permission.formOperate : defaultType
-      }
-      const format = (list, parentName = '') =>
-        list.map((t) => {
-          const data = {
-            formId: t.formId,
-            required: t.required,
-            label: parentName ? [parentName, t.label].join('.') : t.label,
-            formOperate: getPermissionById(t.formId)
-          }
-          res.push(data)
-          Array.isArray(t.children) && format(t.children, t.label)
-        })
-      const formItems = this.$store.state.process.formItemList.filter((t) => t.cmpType !== 'custom')
-      format(formItems)
-      return res
-    },
-
-    initCopyNode() {
-      this.properties = this.value.properties
-    },
-
     initStartNodeData() {
       this.initInitiator()
-      this.startForm.formOperates = this.initFormOperates(this.value)
     },
 
     copyNodeConfirm() {
@@ -1071,57 +1045,34 @@ export default {
       // if(!this.isValid) return
       const assigneeType = this.approverForm.assigneeType
       let content = ''
-      if (['myself'].includes(assigneeType)) {
-        content = this.assigneeTypeOptions.find((t) => t.value === assigneeType).name
-      } else if ('position' === assigneeType) {
+      if (this.assigneeTypeObect.position === assigneeType) {
         let positionName = ''
         let options = this.positionData.find((it) => it.prop === 'positionId').options
         options.map((it) => {
           it.id === this.infoForm.positionId && (positionName = it.name)
         })
         content = '岗位 = ' + positionName
-        // this.approverForm.infoForm = this.infoForm
-      } else if ('tag' === assigneeType) {
+      } else if (this.assigneeTypeObect.tag === assigneeType) {
         let tagName = ''
         let options = this.tagData.find((it) => it.prop === 'tagId').options
         options.map((it) => {
           it.id === this.infoForm.tagId && (tagName = it.name)
         })
         content = '标签 = ' + tagName
-        // this.approverForm.infoForm = this.infoForm
-      } else if ('job' === assigneeType) {
+      } else if (this.assigneeTypeObect.job === assigneeType) {
         let jobName = ''
         let options = this.jobData.find((it) => it.prop === 'jobId').options
         options.map((it) => {
           it.id === this.infoForm.jobId && (jobName = it.name)
         })
         content = '职位 = ' + jobName
-        // this.approverForm.infoForm = this.infoForm
-      } else if ('directorLevel' === assigneeType) {
-        let Level = {
-          '1': '直接主管',
-          '2': '第二级主管',
-          '3': '第三级主管',
-          '4': '第四级主管',
-          '5': '第五级主管',
-          '6': '第六级主管',
-          '7': '第七级主管',
-          '8': '第八级主管',
-          '9': '第九级主管',
-          '10': '第十级主管',
-          '11': '第十一级主管',
-          '12': '第十二级主管',
-          '13': '第十三级主管',
-          '14': '第十四级主管',
-          '15': '第十五级主管',
-          '16': '第十六级主管',
-          '17': '第十七级主管',
-          '18': '第十八级主管',
-          '19': '第十九级主管',
-          '20': '第二十级主管'
-        }
-        content = Level[this.infoForm.directorLevelId]
-        // this.approverForm.infoForm = this.infoForm
+      } else if (this.assigneeTypeObect.directorLevel === assigneeType) {
+        this.ManageLevel.map((item) => {
+          if (item.dictKey === this.infoForm.directorLevelId) {
+            content = item.dictValue
+          }
+        })
+        this.approverForm.infoForm = this.infoForm
       } else {
         content = this.getOrgSelectLabel('approver')
       }
@@ -1135,7 +1086,7 @@ export default {
       !this.infoForm.jobId && (this.infoForm.orgId = null)
       this.approverForm.infoForm = this.infoForm
 
-      this.approverForm.approvers = this.orgCollection[assigneeType]
+      this.approverForm.approvers = this.orgCollection[assigneeType] //这里处理发起人自选和发起人及抄送人姓名等
       let attribute = []
       this.orgCollection[assigneeType] &&
         this.orgCollection[assigneeType].map((it) => {
@@ -1143,15 +1094,15 @@ export default {
         })
       attribute = attribute.join(',')
 
-      this.properties.attribute = attribute
-      this.approverForm.assigneeType === 'optional' &&
+      this.properties.attribute = attribute // 获取值（抄送人姓名等）
+      this.approverForm.assigneeType === this.assigneeTypeObect.optional &&
         !this.approverForm.optionalMultiUser &&
         (this.approverForm.counterSign = null)
 
       if (
         this.approverForm.approvers &&
         this.approverForm.approvers.length.length < 2 &&
-        this.approverForm.assigneeType !== 'optional'
+        this.approverForm.assigneeType !== this.assigneeTypeObect.optional
       ) {
         this.approverForm.counterSign = null
       }
@@ -1232,7 +1183,7 @@ export default {
       if (Array.isArray(this.approverForm.approvers)) {
         this.orgCollection[this.approverForm.assigneeType] = approvers
       }
-      this.approverForm.formOperates = this.initFormOperates(this.value)
+      // this.approverForm.formOperates = this.initFormOperates(this.value)
     },
     firstComdition(data, firstConditinoNode) {
       if (hasBranch(data)) {
@@ -1256,10 +1207,11 @@ export default {
       this.initiator['user'] = this.value.properties.initiator
       if (Array.isArray(this.pconditions)) {
         let temp = undefined
-        this.value.prevId === this.processData.nodeId && (this.showingPCons = [-1]) // 默认显示发起人
+        this.value.prevId === this.processData.nodeId && (this.showingPCons = [-1]) //处理发起人子节点是条件。给他选择部门
         let firstConditinoNode = []
         this.firstComdition(this.processData, firstConditinoNode)
         if (!this.showingPCons.includes(-1)) {
+          //处理发起人子节点是条件。给他选择部门
           firstConditinoNode[0].type === 'empty' && (this.showingPCons = [-1])
         }
         if (this.showingPCons.includes(-1)) {
