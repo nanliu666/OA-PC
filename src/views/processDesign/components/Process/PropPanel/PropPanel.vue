@@ -1072,7 +1072,6 @@ export default {
             content = item.dictValue
           }
         })
-        this.approverForm.infoForm = this.infoForm
       } else {
         content = this.getOrgSelectLabel('approver')
       }
@@ -1084,7 +1083,7 @@ export default {
       })
 
       !this.infoForm.jobId && (this.infoForm.orgId = null)
-      this.approverForm.infoForm = this.infoForm
+      this.approverForm.infoForm = JSON.parse(JSON.stringify(this.infoForm))
 
       this.approverForm.approvers = this.orgCollection[assigneeType] //这里处理发起人自选和发起人及抄送人姓名等
       let attribute = []

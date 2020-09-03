@@ -387,7 +387,7 @@ export class NodeUtils {
       typeList.includes(props.assigneeType) &&
       !props.infoForm[`${props.assigneeType}Id`] &&
       (valid = false)
-    // this.isApproverNode(node) && (!props.assigneeType)&& (valid = false)
+    this.isApproverNode(node) && props.assigneeType === undefined && (valid = false)
     return valid
   }
   /**
