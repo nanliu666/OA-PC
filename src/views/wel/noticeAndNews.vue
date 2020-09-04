@@ -20,12 +20,9 @@ export default {
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
 .notifyAndNews {
-  margin-top: 19px;
+  margin-top: 16px;
   display: flex;
   justify-content: space-between;
-  height: 400px;
-  /deep/ .el-card__body {
-    padding-top: 16px;
-  }
+  height: 342px;
 }
 </style>
