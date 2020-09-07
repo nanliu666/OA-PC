@@ -334,7 +334,18 @@ export default {
           return it
         }
       })
-      this.selectList.push(...this.treeOrg)
+      let newSelectList = []
+      this.treeOrg.map((it) => {
+        let { id, name, type, userId } = { ...it }
+        let newSelect = {
+          id,
+          name,
+          type,
+          userId
+        }
+        newSelectList.push(newSelect)
+      })
+      this.selectList.push(...newSelectList)
     },
     handleUnselect(item) {
       this.selectList = this.selectList.filter((i) => i.id != item.id)
