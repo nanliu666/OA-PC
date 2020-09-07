@@ -155,7 +155,7 @@ $color_placeholder: #757C85
 
 .wrapper
   height: 100%
-  width: 50%
+  flex: 1
   position: relative
   background: white
   /deep/.el-card__body

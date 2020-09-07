@@ -191,7 +191,7 @@ import CommonForm from '@/components/common-form/commonForm'
 // import inputArray from '@/views/personnel/candidate/components/inputArray'
 import { getStaffBasicInfo, getConpactInfo } from '@/api/personalInfo'
 import { getCompany } from '@/api/personnel/selectedPerson'
-import { createContract } from '@/api/personnel/entry'
+import { editContract } from '@/api/personnel/entry'
 import { getpersonInfo } from '@/api/personnel/selectedPerson'
 import { postRegisterSend } from '@/api/personnel/candidate'
 import moment from 'moment'
@@ -432,7 +432,7 @@ export default {
             ...this.form
           }
           this.loading = true
-          createContract(params)
+          editContract(params)
             .then(() => {
               this.$message.success('签订成功')
               this.loading = false
