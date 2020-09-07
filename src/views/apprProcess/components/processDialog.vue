@@ -161,7 +161,7 @@ export default {
       }
       // window.console.log('重命名parmas==', parmas)
       renameProcessCategory(parmas).then(() => {
-        this.messageText = `重命名成功`
+        this.messageText = '重命名成功'
         this.handleDataBack()
       })
     },
@@ -179,7 +179,7 @@ export default {
       // window.console.log('启用parmas==', parmas)
       startProcess(parmas).then(() => {
         // window.console.log('启用到==', res)
-        this.messageText = `启用成功`
+        this.messageText = '启用成功'
         this.handleDataBack()
       })
     },
@@ -196,7 +196,7 @@ export default {
       }
       moveProcess(parmas).then(() => {
         // window.console.log('移动到==', res)
-        this.messageText = `移动分组成功`
+        this.messageText = '移动分组成功'
         this.handleDataBack()
       })
     },

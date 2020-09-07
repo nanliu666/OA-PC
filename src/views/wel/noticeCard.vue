@@ -56,7 +56,7 @@ export default {
   created() {
     let parmas = {
       pageNo: 1,
-      pageSize: 5
+      pageSize: 6
     }
     getNoticeCenterList(parmas).then((res) => {
       let { data } = res
@@ -71,7 +71,7 @@ export default {
     },
     toDetail(data) {
       this.$router.push({
-        path: `/noticeCenter/noticeDetail`,
+        path: '/noticeCenter/noticeDetail',
         query: {
           id: data.id
         }
@@ -83,7 +83,11 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mixin.scss';
+* {
+  box-sizing: border-box;
+}
 .notice-card {
+  margin-right: 16px;
   flex: 1;
   // 头部
   .header {
@@ -101,16 +105,15 @@ export default {
     }
   }
   .content-ul {
+    padding-top: 6px;
     .content-li {
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #e4e4e4;
-      height: calc(332px / 6);
-      &:last-child {
-        border-bottom: 0;
-      }
+      height: calc((342px - 34px - 28px - 6px) / 6);
+      padding: 10px 0;
       .li-title {
         font-size: 14px;
         color: #202940;
@@ -120,9 +123,14 @@ export default {
         width: calc(100% - 80px);
       }
       .li-time {
-        color: #757c85;
         font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #757c85;
       }
+    }
+    .content-li:last-child {
+      border-bottom: 0;
     }
   }
 }
