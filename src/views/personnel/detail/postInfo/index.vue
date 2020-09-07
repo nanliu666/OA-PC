@@ -117,9 +117,9 @@ export default {
   },
   methods: {
     goAnchor(selector, index, event) {
+      let selecterId = `#${selector}`
       //设置跟随线的位置
       document.querySelector('.flow-line').style.top = event.target.offsetTop - 12 + 'px'
-      let selecterId = `#${selector}`
       //设置点击的样式
       this.filterNavItemActive = index
       //页面滚动到具体位置

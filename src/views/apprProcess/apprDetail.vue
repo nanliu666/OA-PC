@@ -660,10 +660,6 @@ export default {
           result = true
         }
       })
-
-      // if (this.userId === this.apprUserId) {
-      // 	return true
-      // }
       return result
     },
     // 提交人跟当前用户是否同一个人
