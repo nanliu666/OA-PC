@@ -231,10 +231,10 @@ export default {
      * */
     sendToServer(param) {
       this.base = []
-      this.lineList = []
-      this.condition = []
+      this.lineList = [] //节点线
+      this.condition = [] //条件节点
       this.processMap = {}
-      this.endNode = []
+      this.endNode = [] //最后节点线
       let processData = JSON.parse(JSON.stringify(param.processData))
       this.lineEnd(processData)
       this.recursion(processData, param.processData)
@@ -248,6 +248,53 @@ export default {
       let { icon, processName, processAdmin, remark, categoryId } = { ...param.basicSetting }
       let { tip, isOpinion, approverDistinct, approverNull } = { ...param.advancedSetting }
       let processVisible = []
+      //处理发起人节点转成后台processVisible属性
+      this.handleProcessVisible(param, processVisible)
+
+      let config = {
+        icon,
+        processName,
+        remark,
+        processVisible,
+        tip,
+        approverDistinct,
+        categoryId,
+        isOpinion: isOpinion ? 1 : 0,
+        processAdmin: processAdmin,
+        approverNull: approverNull,
+        formKey: this.formKey
+      }
+
+      //处理空节点导致的连线。
+      this.filterEemty(param)
+      let params = {
+        processId: this.$route.query.processId,
+        processData: this.base,
+        processMap: this.processMap,
+        baseJson: Base64.encode(JSON.stringify(param)),
+        ...config
+      }
+      // eslint-disable-next-line
+      let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
+      this.loading = true
+      ApprProcess(params)
+        .then(() => {
+          this.$message.success('提交成功')
+          setTimeout(() => {
+            this.$router.push({
+              path: '/apprProcess/approvalList'
+            })
+          }, 1000)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理发起人范围 转成，ProcessVisible属性
+     * */
+    handleProcessVisible(param, processVisible) {
       if (param.basicSetting.initiator && param.basicSetting.initiator.length > 0) {
         param.basicSetting.initiator.map((it) => {
           let type = ''
@@ -274,19 +321,13 @@ export default {
           }
         ]
       }
-      let config = {
-        icon,
-        processName,
-        remark,
-        processVisible,
-        tip,
-        approverDistinct,
-        categoryId,
-        isOpinion: isOpinion ? 1 : 0,
-        processAdmin: processAdmin,
-        approverNull: approverNull,
-        formKey: this.formKey
-      }
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理前端数据的空节点导致的连线问题处理掉
+     * @params param 引用类型
+     * */
+    filterEemty(param) {
       let emptyList = []
       this.base.map((it) => {
         if (it.type === 'empty') {
@@ -321,31 +362,6 @@ export default {
             })
         })
       }
-      let params = {
-        processId: this.$route.query.processId,
-        processData: this.base,
-        processMap: this.processMap,
-        baseJson: Base64.encode(JSON.stringify(param)),
-        ...config
-      }
-      // eslint-disable-next-line
-      let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
-      this.loading = true
-      ApprProcess(params)
-        .then(() => {
-          this.$message.success('提交成功')
-          setTimeout(() => {
-            this.$router.push({
-              path: '/apprProcess/approvalList'
-            })
-          }, 1000)
-        })
-        .finally(() => {
-          this.loading = false
-        })
-      // postDeploy(params).then(() => {
-      //   this.$message.success('提交成功')
-      // })
     },
     /**
      * @author guanfenda
@@ -389,18 +405,114 @@ export default {
         id: data.nodeId,
         name: data.properties.title // 非必填
       }
+      // 开始节点
+      this.startNode(data, item)
+      //抄送人
+      this.copyNode(data, item)
+      //审批人
+      this.ApprovalNode(data, item, origin)
+      //条件
+      this.conditionNode(data, origin, conditionNextNodeId_)
+      //处理节点线，
+      //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
+      // 过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
+      if (
+        data.prevId &&
+        data.prevId !== 'no_flow' &&
+        data.type !== 'condition' &&
+        data.type !== 'start'
+      ) {
+        //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
+        let items = {
+          //节点线
+          type: 'flow', // flow, start, end, task, ccTask, gateway
+          id: data.prevId + data.nodeId,
+          name: data.properties.title, // 非必填
+          source: data.prevId,
+          target: data.nodeId
+        }
+        this.lineList.push(items)
+      }
+      if (data.type !== 'condition') {
+        //过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
+        this.base.push(item)
+      }
+      data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理开始节点转换成后台需要节点
+     * @params data，item 引用类型
+     *
+     * */
+    startNode(data, item) {
       if (data.type === 'start') {
         //开始节点
         item.initiator = 'initiator'
         // item.id = 'start'
       }
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理抄送人节点转换成后台格式
+     * @params data item 引用类型
+     * */
+    copyNode(data, item) {
       if (data.type === 'copy') {
         //抄送人节点
         item.assignee = 'copyUser_' + data.properties.attribute
       }
-      //审批人
-      this.Approval(data, item, origin)
-      //条件
+    },
+    /**
+     *  @author guanfenda
+     *  @desc 处理审批人节点转换成后台需要节点
+     *  @params data,item,origin 引用类型
+     * */
+    ApprovalNode(data, item, origin) {
+      if (data.type === 'approver') {
+        //审批人节点
+        let list = Object.keys(data.properties.infoForm || [])
+        if (list.includes(`${data.properties.assigneeType}Id`)) {
+          item.assignee = '${' + `${data.properties.assigneeType}_` + data.nodeId + '_id}'
+          this.processMap[`${data.properties.assigneeType}_` + data.nodeId + '_id'] = ''
+          origin.variable = `${data.properties.assigneeType}_` + data.nodeId + '_id'
+        } else if (data.properties.assigneeType === 'user') {
+          //指定成员人，
+          item.assignee = 'taskUser_' + data.properties.attribute
+          let length = data.content.split(',').length
+          if (length > 1) {
+            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
+            item.assignee = '${taskUser_' + data.nodeId + '}'
+            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
+            item.element = 'taskUser_' + data.nodeId
+            item.collection = 'optional_' + data.nodeId
+          }
+        } else if (data.properties.assigneeType === 'optional') {
+          // 发起人自选
+          item.assignee = '${optional_' + data.nodeId + '_id}'
+          if (!data.properties.optionalMultiUser) {
+            //
+            origin.variable = 'optional_' + data.nodeId + '_id' //这个前端发起用的变量
+            this.processMap['optional_' + data.nodeId + '_id'] = '' // 后端对应前端变量
+          } else if (data.properties.optionalMultiUser) {
+            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
+            item.collection = 'optional_' + data.nodeId //后台接收前端变量
+            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
+            // item.assignee = '${optional_' + data.nodeId + '_id}' // assignee 和 element 后端 处理循环用得到、
+            item.element = 'optional_' + data.nodeId + '_id' //会签或签 assignee 和 element 后端 处理循环用得到
+            this.processMap['optional_' + data.nodeId] = ''
+          }
+        } else {
+          item.assignee = 'taskUser_' + data.properties.attribute //
+        }
+      }
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理条件节点转换成后台需要节点 （格式化）
+     * @params  data origin  conditionNextNodeId_引用类型
+     * */
+    conditionNode(data, origin, conditionNextNodeId_) {
       if (hasBranch(data)) {
         //判断是否存在条件，如果有。。。
         let conditionNextNodeId = conditionNextNodeId_
@@ -420,6 +532,7 @@ export default {
         }
         this.condition.push(newItem)
         if (data.condition) {
+          //
           let newIt = {
             //进网关线
             type: 'flow',
@@ -469,6 +582,7 @@ export default {
 
           let strs = ''
           if (d.properties.initiator && d.properties.initiator.length > 0) {
+            //如果有部门，字符串拼接
             d.properties.initiator.map((it, i) => {
               strs +=
                 ' initiator_org eq ' +
@@ -478,19 +592,16 @@ export default {
                 (i === d.properties.initiator.length - 1 ? '' : ' or ')
             })
           }
-          conditionExpression = conditionExpression.join('&&')
-          conditionExpression = conditionExpression.replace(/}&&\${/g, ' and ')
+          conditionExpression = conditionExpression.join('&&') //除部门外的其他条件拼接
+          conditionExpression = conditionExpression.replace(/}&&\${/g, ' and ') //格式化字符
           if (strs) {
+            //处理部门条件
             strs = conditionExpression ? ' and (' + strs + ')' : '${ ' + strs + ' }'
             conditionExpression =
               conditionExpression.slice(0, -1) + strs + conditionExpression.slice(-1)
           }
-          //
-
-          // this.processMap[conditionExpression] = ''
-          // if(d.properties.conditions)
-          // d.content === '其他情况进入此流程' ? '${days gt 3}' : '${days ge 3}'
           if (!d.conditionNodes) {
+            //不处理有条件的节点
             let newIt = {
               //出网关线
               type: 'flow',
@@ -503,19 +614,20 @@ export default {
 
             this.condition.push(newIt)
           } else {
+            //处理有条件的节点
             let newIt = {
-              //出网关线
+              //网关线
               name: d.properties.title,
               source: 'gateway_' + data.nodeId, //前节点
               target: targetId, // 当前节点
               conditionExpression: conditionExpression
             }
-            d.condition = newIt
-            // this.condition.push(newIt)
+            d.condition = newIt //给递归使用（前面代码有用到）
           }
 
           if (conditionNextNodeId && d.childNode) {
-            let endNode = this.childNode(d.childNode) //
+            //处理有条件存在，有子节点的，最后节点 ，条件节点父节点的子节点连起来
+            let endNode = this.childNode(d.childNode)
             let endIt = {
               type: 'flow',
               id: endNode.nodeId + conditionNextNodeId,
@@ -528,85 +640,17 @@ export default {
           this.recursion(d, origin.conditionNodes[index], conditionNextNodeId)
         })
       }
-      if (
-        data.prevId &&
-        data.prevId !== 'no_flow' &&
-        data.type !== 'condition' &&
-        data.type !== 'start'
-      ) {
-        //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
-        let items = {
-          //节点线
-          type: 'flow', // flow, start, end, task, ccTask, gateway
-          id: data.prevId + data.nodeId,
-          name: data.properties.title, // 非必填
-          source: data.prevId,
-          target: data.nodeId
-        }
-        this.lineList.push(items)
-      }
-      if (data.type !== 'condition') {
-        //过滤节点不能为条件节点,因为在处理条件节点是会处理。这里就过滤条件
-        this.base.push(item)
-      }
-      data.childNode && this.recursion(data.childNode, origin.childNode) //有子节点，递归节点
     },
     /**
-     *  @author guanfenda
-     *  @desc 处理审批人节点转换成后台需要节点
-     *  @params data,item,origin 引用类型
+     * @author guanfenda
+     * 获取最后一个节点
      * */
-    Approval(data, item, origin) {
-      if (data.type === 'approver') {
-        //审批人节点
-        let list = Object.keys(data.properties.infoForm || [])
-        if (list.includes(`${data.properties.assigneeType}Id`)) {
-          item.assignee = '${' + `${data.properties.assigneeType}_` + data.nodeId + '_id}'
-          this.processMap[`${data.properties.assigneeType}_` + data.nodeId + '_id'] = ''
-          origin.variable = `${data.properties.assigneeType}_` + data.nodeId + '_id'
-        } else if (data.properties.assigneeType === 'user') {
-          //指定成员人，
-          item.assignee = 'taskUser_' + data.properties.attribute
-          let length = data.content.split(',').length
-          if (length > 1) {
-            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
-            item.assignee = '${taskUser_' + data.nodeId + '}'
-            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
-            item.element = 'taskUser_' + data.nodeId
-            item.collection = 'optional_' + data.nodeId
-          }
-        } else if (data.properties.assigneeType === 'optional') {
-          // 发起人自选
-          item.assignee = '${optional_' + data.nodeId + '_id}'
-          if (!data.properties.optionalMultiUser) {
-            //
-            origin.variable = 'optional_' + data.nodeId + '_id' //这个前端发起用的变量
-            this.processMap['optional_' + data.nodeId + '_id'] = '' // 后端对应前端变量
-          } else if (data.properties.optionalMultiUser) {
-            origin.variable = 'optional_' + data.nodeId //这个前端发起用的变量
-            item.collection = 'optional_' + data.nodeId //后台接收前端变量
-            item.completion = data.properties.counterSign ? '1' : '0' //0 或签，1会签
-            // item.assignee = '${optional_' + data.nodeId + '_id}' // assignee 和 element 后端 处理循环用得到、
-            item.element = 'optional_' + data.nodeId + '_id' //会签或签 assignee 和 element 后端 处理循环用得到
-            this.processMap['optional_' + data.nodeId] = ''
-          }
-        } else {
-          item.assignee = 'taskUser_' + data.properties.attribute //
-        }
-      }
-    },
-    //获取最后一个节点
     childNode(data) {
       if (data.childNode) {
         return this.childNode(data.childNode)
       } else {
         return data
       }
-    },
-    flat(data) {
-      data.conditionNodes.map(() => {
-        // flatList.push(it)
-      })
     },
     exit() {
       this.$confirm('离开此页面您得修改将会丢失, 是否继续?', '提示', {

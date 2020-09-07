@@ -373,10 +373,9 @@ export class NodeUtils {
 
     this.isConditionNode(node) &&
       !props.isDefault &&
-      !props.initiator &&
+      (!props.initiator || props.initiator.length === 0) &&
       isEmptyArray(props.conditions) &&
       (valid = false)
-
     const customSettings = ['user', 'optional']
     this.isApproverNode(node) &&
       customSettings.includes(props.assigneeType) &&
@@ -388,6 +387,7 @@ export class NodeUtils {
       typeList.includes(props.assigneeType) &&
       !props.infoForm[`${props.assigneeType}Id`] &&
       (valid = false)
+    this.isApproverNode(node) && props.assigneeType === undefined && (valid = false)
     return valid
   }
   /**
