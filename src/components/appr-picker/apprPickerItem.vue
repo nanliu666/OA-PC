@@ -64,14 +64,21 @@
                 slot="dropdown"
                 style="max-height:300px;overflow:auto"
               >
-                <el-dropdown-item
-                  v-for="option in optionList"
-                  :key="option.id"
-                  :command="option"
-                  :disabled="checkUserSelected(option)"
-                >
-                  {{ option.name }}({{ option.workNo }})
-                </el-dropdown-item>
+                <template v-if="optionList.length > 0">
+                  <el-dropdown-item
+                    v-for="option in optionList"
+                    :key="option.id"
+                    :command="option"
+                    :disabled="checkUserSelected(option)"
+                  >
+                    {{ option.name }}({{ option.workNo }})
+                  </el-dropdown-item>
+                </template>
+                <template v-else>
+                  <li class="appr-user-item__empty">
+                    暂无数据
+                  </li>
+                </template>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -376,6 +383,9 @@ export default {
 <style lang="scss" scoped>
 .appr-user-item {
   position: relative;
+  &__empty {
+    padding: 0 20px;
+  }
   &__tail {
     position: absolute;
     left: 4px;
