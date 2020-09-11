@@ -1022,12 +1022,7 @@ export default {
      * 开始节点确认保存
      */
     startNodeComfirm() {
-      this.initiator.map((it) => {
-        it.users && delete it.users
-        it.children && delete it.children
-      })
-
-      this.properties.initiator = this.initiator
+      this.properties.initiator = this.initiator['user']
 
       const formOperates = this.startForm.formOperates.map((t) => ({
         formId: t.formId,
@@ -1160,8 +1155,7 @@ export default {
 
     initInitiator() {
       const initiator = this.value.properties && this.value.properties.initiator
-
-      this.initiator = Array.isArray(initiator) ? initiator : []
+      this.initiator = Array.isArray(initiator) ? { user: initiator } : []
     },
     /**
      * 初始化审批节点所需数据
