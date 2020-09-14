@@ -206,7 +206,7 @@ export default {
       // })
     },
     forgetPW() {
-      this.$router.push({ path: '/getBackPW' })
+      this.$router.push({ path: '/selectMode' })
     }
   }
 }
