@@ -17,7 +17,7 @@
           </div>
           <div class="content">
             <div class="content-item">
-              <span class="item-label">手机号码：</span>
+              <span class="item-label">密保手机：</span>
               <span class="item-value">{{ perosonnalInfo.phonenum }}</span>
               <span
                 class="edit-item"
@@ -25,7 +25,7 @@
               >修改</span>
             </div>
             <div class="content-item">
-              <span class="item-label">邮箱地址：</span>
+              <span class="item-label">密保邮箱：</span>
               <span class="item-value">{{ perosonnalInfo.phonenum }}</span>
               <span
                 class="edit-item"
