@@ -6,7 +6,7 @@
       </span>
       <span> {{ `修改${$parent.isEmail ? '新邮箱' : '新手机号码'}` }} </span>
     </div>
-    <div class="getback-pw">
+    <el-card class="getback-pw">
       <keep-alive>
         <div class="contens-wrapper">
           <div class="progress-bar">
@@ -185,7 +185,7 @@
           </div>
         </div>
       </keep-alive>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -400,7 +400,7 @@ export default {
 .out-container {
   height: calc(100vh);
   background: #f2f5f7;
-  padding: 68px 32px 0 32px !important;
+  padding: 68px 0 0 0 !important;
   position: relative;
 }
 .login-code-img {
@@ -422,7 +422,6 @@ export default {
   position: absolute;
   height: 68px;
   top: 0;
-  left: 32px;
   font-family: 'PingFangSC-Semibold';
   font-size: 18px;
   color: #545b66;
@@ -434,7 +433,7 @@ export default {
 }
 
 .getback-pw {
-  height: calc(100vh - 68px);
+  height: calc(100vh - 40px - 56px - 68px - 32px);
   background: #fff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;

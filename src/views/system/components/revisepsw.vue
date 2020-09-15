@@ -176,7 +176,7 @@ export default {
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
   border-radius: 4px;
-  height: calc(100vh - 136px);
+  height: calc(100vh - 60px - 32px - 40px - 56px);
   .form_ {
     padding-top: 40px;
     width: 400px;
