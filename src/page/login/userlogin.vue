@@ -20,18 +20,27 @@
         <i slot="prefix" class="icon-quanxian" />
       </el-input>
     </el-form-item>-->
-    <el-form-item prop="username">
+    <el-form-item
+      v-if="logoMode !== 'workNo'"
+      prop="username"
+    >
       <el-input
         v-model="loginForm.username"
         auto-complete="off"
         :placeholder="$t('login.username')"
         @keyup.enter.native="handleLogin"
-      >
-        <!-- <i
-          slot="prefix"
-          class="icon-yonghu"
-        />-->
-      </el-input>
+      />
+    </el-form-item>
+    <el-form-item
+      v-if="logoMode === 'workNo'"
+      prop="workNo"
+    >
+      <el-input
+        v-model="loginForm.workNo"
+        auto-complete="off"
+        :placeholder="$t('login.workNo')"
+        @keyup.enter.native="handleLogin"
+      />
     </el-form-item>
     <el-form-item prop="password">
       <el-input
@@ -92,11 +101,19 @@
       </el-button>
     </el-form-item>
     <el-form-item>
-      <div
-        class="forget-password"
-        @click="forgetPW"
-      >
-        忘记密码？
+      <div class="form-bottom">
+        <div
+          class="change-mode"
+          @click="changeMode"
+        >
+          {{ logoMode === 'username' ? '用户名登录' : '工号登录' }}
+        </div>
+        <div
+          class="forget-password"
+          @click="forgetPW"
+        >
+          忘记密码？
+        </div>
       </div>
     </el-form-item>
   </el-form>
@@ -112,8 +129,10 @@ export default {
   props: [],
   data() {
     return {
+      logoMode: 'username',
       tenantMode: this.website.tenantMode,
       loginForm: {
+        workNo: '',
         //租户ID
         tenantId: '',
         //用户名
@@ -152,6 +171,9 @@ export default {
   },
   mounted() {},
   methods: {
+    changeMode() {
+      this.logoMode = this.logoMode === 'username' ? 'workNo' : 'username'
+    },
     refreshCode() {
       getCaptcha().then((res) => {
         this.loginForm.key = res.key
@@ -218,5 +240,15 @@ export default {
 }
 .eye-icon {
   color: #757c85;
+}
+.form-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .change-mode {
+    font-size: 12px;
+    color: #409eff;
+    cursor: pointer;
+  }
 }
 </style>
