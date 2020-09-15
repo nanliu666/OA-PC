@@ -328,7 +328,7 @@ export default {
         {
           name: this.userInfo.nick_name,
           userId: this.userId,
-          workNo: this.userInfo.account,
+          workNo: this.userInfo.work_no,
           type: 'user'
         }
       ]
