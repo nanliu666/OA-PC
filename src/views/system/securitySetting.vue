@@ -25,6 +25,14 @@
               >修改</span>
             </div>
             <div class="content-item">
+              <span class="item-label">邮箱地址：</span>
+              <span class="item-value">{{ perosonnalInfo.phonenum }}</span>
+              <span
+                class="edit-item"
+                @click="editEmail()"
+              >修改</span>
+            </div>
+            <div class="content-item">
               <span class="item-label">登录密码：</span>
               <span class="item-value">******</span>
               <span
@@ -53,6 +61,7 @@ export default {
   },
   data() {
     return {
+      isEmail: false,
       editType: 'entry',
       perosonnalInfo: {}
     }
@@ -73,6 +82,11 @@ export default {
       })
     },
     editPhone() {
+      this.isEmail = false
+      this.editType = 'phone'
+    },
+    editEmail() {
+      this.isEmail = true
       this.editType = 'phone'
     },
     editPsw() {

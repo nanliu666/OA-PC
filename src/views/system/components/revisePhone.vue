@@ -4,7 +4,7 @@
       <span @click="goback()">
         <i class="el-icon-arrow-left" />
       </span>
-      <span> 修改手机号码 </span>
+      <span> {{ `修改${$parent.isEmail ? '新邮箱' : '新手机号码'}` }} </span>
     </div>
     <div class="getback-pw">
       <keep-alive>
@@ -16,7 +16,7 @@
                 :status="steps.firstStatus"
               />
               <el-step
-                title="绑定新手机号"
+                :title="`绑定${$parent.isEmail ? '新邮箱' : '新手机号码'}`"
                 :status="steps.secondStatus"
               />
               <el-step
@@ -41,7 +41,7 @@
               status-icon
               :rules="password.rules"
               :model="password.form"
-              :label-width="150"
+              :label-width="labelWidth"
             >
               <el-form-item
                 label="登录密码"
@@ -62,7 +62,7 @@
             class="identity-test"
           >
             <div class="identity-title">
-              请完成身新手机号码绑定
+              {{ `请完成${$parent.isEmail ? '新邮箱' : '新手机号码'}绑定` }}
             </div>
 
             <el-form
@@ -72,9 +72,10 @@
               status-icon
               :rules="identity.rules"
               :model="identity.form"
-              :label-width="150"
+              :label-width="labelWidth"
             >
               <el-form-item
+                v-if="!$parent.isEmail"
                 label="新手机号码"
                 prop="phone"
               >
@@ -87,31 +88,66 @@
                   :placeholder="$t('login.phone')"
                 />
               </el-form-item>
+              <el-form-item
+                v-if="$parent.isEmail"
+                label="新邮箱号码"
+                prop="email"
+              >
+                <el-input
+                  v-model="identity.form.email"
+                  class="phone-input"
+                  autofocus="true"
+                  size="small"
+                  auto-complete="off"
+                  :placeholder="$t('login.email')"
+                />
+              </el-form-item>
+              <el-form-item
+                label="辩证码"
+                prop="captchaCode"
+              >
+                <div style="display: flex;align-items: center">
+                  <el-input
+                    v-model="identity.form.captchaCode"
+                    class="test-code-input"
+                    size="small"
+                    auto-complete="off"
+                    :placeholder="$t('login.captchaCode')"
+                  />
+                  <img
+                    :src="identity.image"
+                    class="login-code-img"
+                    @click="refreshCode"
+                  >
+                </div>
+              </el-form-item>
 
               <el-form-item
                 label="验证码"
                 prop="code"
               >
-                <el-input
-                  v-model="identity.form.code"
-                  class="test-code-input"
-                  size="small"
-                  auto-complete="off"
-                  :placeholder="$t('login.code')"
-                />
-                <el-button
-                  v-show="!identity.msgKey"
-                  class="get-test-code"
-                  @click="handleSend"
-                >
-                  <span>获取验证码</span>
-                </el-button>
-                <el-button
-                  v-show="identity.msgKey"
-                  class="count-down-time"
-                >
-                  {{ identity.msgText }}
-                </el-button>
+                <div style="display: flex;align-items: center">
+                  <el-input
+                    v-model="identity.form.code"
+                    class="test-code-input"
+                    size="small"
+                    auto-complete="off"
+                    :placeholder="$t('login.code')"
+                  />
+                  <el-button
+                    v-show="!identity.msgKey"
+                    class="get-test-code"
+                    @click="handleSend"
+                  >
+                    <span>获取验证码</span>
+                  </el-button>
+                  <el-button
+                    v-show="identity.msgKey"
+                    class="count-down-time"
+                  >
+                    {{ identity.msgText }}
+                  </el-button>
+                </div>
               </el-form-item>
             </el-form>
           </div>
@@ -154,10 +190,11 @@
 </template>
 
 <script>
-import { isMobile } from '@/util/validate'
+import { isMobile, isEmail } from '@/util/validate'
 import { getCode, checkPswOrPhone } from '../../../api/personalInfo'
 import { mapGetters } from 'vuex'
 import md5 from 'js-md5'
+import { getCaptcha } from '@/api/user'
 let code = null
 export default {
   components: {},
@@ -172,7 +209,22 @@ export default {
         callback()
       }
     }
-
+    const validateEmail = (rule, value, callback) => {
+      if (!_this.identity.form.email) {
+        callback(new Error('请输入邮箱'))
+      } else if (_this.identity.form.email && !isEmail(value)) {
+        callback(new Error('邮箱格式不正确'))
+      } else {
+        callback()
+      }
+    }
+    const validateCaptchaCode = (rule, value, callback) => {
+      if (!_this.identity.form.captchaCode) {
+        callback(new Error('请输入辩证码'))
+      } else {
+        callback()
+      }
+    }
     const validateCode = (rule, value, callback) => {
       if (!_this.identity.form.code) {
         callback(new Error('请输入六位验证码'))
@@ -184,6 +236,7 @@ export default {
     }
 
     return {
+      labelWidth: '150',
       step: 1,
       steps: {
         firstStatus: 'finish',
@@ -193,9 +246,13 @@ export default {
       identity: {
         msgText: '',
         msgTime: '',
+        image: '',
         msgKey: false,
         form: {
+          captchaCode: '',
+          captchaKey: '',
           phone: '',
+          email: '',
           code: ''
         },
         rules: {
@@ -211,6 +268,20 @@ export default {
               required: true,
               trigger: 'blur',
               validator: validateCode
+            }
+          ],
+          captchaCode: [
+            {
+              required: true,
+              trigger: 'blur',
+              validator: validateCaptchaCode
+            }
+          ],
+          email: [
+            {
+              required: true,
+              trigger: 'blur',
+              validator: validateEmail
             }
           ]
         }
@@ -243,10 +314,17 @@ export default {
     ...mapGetters(['userInfo'])
   },
   created() {
+    this.refreshCode()
     this.identity.msgText = this.config.MSGINIT
     this.identity.msgTime = this.config.MSGTIME
   },
   methods: {
+    refreshCode() {
+      getCaptcha().then((res) => {
+        this.identity.form.captchaKey = res.key
+        this.identity.image = res.image
+      })
+    },
     goback() {
       this.$parent.editType = 'entry'
       this.$parent.getUserAllInfo()
@@ -324,6 +402,21 @@ export default {
   background: #f2f5f7;
   padding: 68px 32px 0 32px !important;
   position: relative;
+}
+.login-code-img {
+  width: 100px;
+  height: 34px;
+  margin-right: 4px;
+  background-color: #fdfdfd;
+  border: 1px solid #f0f0f0;
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  line-height: 38px;
+  text-indent: 5px;
+  text-align: center;
+  cursor: pointer !important;
 }
 .brad-part {
   position: absolute;
