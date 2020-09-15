@@ -447,9 +447,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/*.avue-view {*/
-/*  height: auto;*/
-/*}*/
 .position {
   margin-top: 16px;
   background: #ffffff;

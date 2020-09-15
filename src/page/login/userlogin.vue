@@ -8,20 +8,9 @@
     label-width="0"
     size="medium"
   >
-    <!-- <el-form-item v-if="tenantMode" prop="tenantId">
-      <el-input
-        size="small"
-        @keyup.enter.native="handleLogin"
-        v-model="loginForm.tenantId"
-        auto-complete="off"
-        :placeholder="$t('login.tenantId')"
-        :disabled="true"
-      >
-        <i slot="prefix" class="icon-quanxian" />
-      </el-input>
-    </el-form-item>-->
+    <!-- username是工号--历史遗留问题，极度不语义化。 -->
     <el-form-item
-      v-if="logoMode !== 'workNo'"
+      v-if="loginMode !== 'account'"
       prop="username"
     >
       <el-input
@@ -31,14 +20,15 @@
         @keyup.enter.native="handleLogin"
       />
     </el-form-item>
+    <!-- account是用户名 -->
     <el-form-item
-      v-if="logoMode === 'workNo'"
-      prop="workNo"
+      v-if="loginMode === 'account'"
+      prop="account"
     >
       <el-input
-        v-model="loginForm.workNo"
+        v-model="loginForm.account"
         auto-complete="off"
-        :placeholder="$t('login.workNo')"
+        :placeholder="$t('login.account')"
         @keyup.enter.native="handleLogin"
       />
     </el-form-item>
@@ -51,7 +41,7 @@
         @keyup.enter.native="handleLogin"
       >
         <i
-          v-if="passwordType === 'password'"
+          v-if="passwordType !== 'password'"
           slot="suffix"
           class="icon-basics-eyeopen-outlined eye-icon"
           @click="showPassword"
@@ -75,9 +65,7 @@
             auto-complete="off"
             :placeholder="$t('login.code')"
             @keyup.enter.native="handleLogin"
-          >
-            <!-- <i slot="prefix" class="icon-yanzhengma" /> -->
-          </el-input>
+          />
         </el-col>
         <el-col :span="8">
           <div class="login-code">
@@ -106,7 +94,7 @@
           class="change-mode"
           @click="changeMode"
         >
-          {{ logoMode === 'username' ? '用户名登录' : '工号登录' }}
+          {{ loginMode === 'username' ? '用户名登录' : '工号登录' }}
         </div>
         <div
           class="forget-password"
@@ -121,21 +109,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import { info } from '@/api/system/tenant'
 import { getCaptcha, getTenantInfo } from '@/api/user'
 
 export default {
   name: 'Userlogin',
-  props: [],
   data() {
     return {
-      logoMode: 'username',
+      // 默认使用工号登录
+      loginMode: 'username',
       tenantMode: this.website.tenantMode,
       loginForm: {
-        workNo: '',
+        // 工号登录
+        account: '',
         //租户ID
         tenantId: '',
-        //用户名
+        //用户名登录
         username: '',
         //密码
         password: '',
@@ -149,9 +137,7 @@ export default {
         image: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
       },
       loginRules: {
-        // tenantId: [
-        //   { required: false, message: '请输入租户ID', trigger: 'blur' }
-        // ],
+        account: [{ required: false, message: '请输入用户名', trigger: 'blur' }],
         username: [{ required: true, message: '请输入工号', trigger: 'blur' }],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -162,6 +148,7 @@ export default {
       passwordType: 'password'
     }
   },
+
   computed: {
     ...mapGetters(['tagWel'])
   },
@@ -172,7 +159,7 @@ export default {
   mounted() {},
   methods: {
     changeMode() {
-      this.logoMode = this.logoMode === 'username' ? 'workNo' : 'username'
+      this.loginMode = this.loginMode === 'username' ? 'account' : 'username'
     },
     refreshCode() {
       getCaptcha().then((res) => {
@@ -191,6 +178,11 @@ export default {
             text: '登录中,请稍后...',
             spinner: 'el-icon-loading'
           })
+          if (this.loginMode === 'username') {
+            this.loginForm.account = ''
+          } else {
+            this.loginForm.username = ''
+          }
           this.$store
             .dispatch('LoginByUsername', this.loginForm)
             .then((res) => {

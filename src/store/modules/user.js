@@ -32,7 +32,8 @@ const user = {
           md5(userInfo.password),
           userInfo.type,
           userInfo.key,
-          userInfo.code
+          userInfo.code,
+          userInfo.account
         )
           .then((res) => {
             if (res.error_description) {
