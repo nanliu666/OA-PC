@@ -124,7 +124,7 @@ export default {
       selectionList: [],
       loading: false,
       isEdit: false,
-      title: '新建岗位类别',
+      title: '新建岗位',
       stationDialog: false,
       dialogVisible: false,
       isBatch: false,
@@ -264,7 +264,7 @@ export default {
     handlerAdd() {
       this.stationDialog = true
       this.isEdit = false
-      this.title = '新建岗位类别'
+      this.title = '新建岗位'
       this.row = {}
     },
     close() {
@@ -284,7 +284,7 @@ export default {
     handleEdit(row) {
       this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = true
-      this.title = '编辑岗位类别'
+      this.title = '编辑岗位'
       this.stationDialog = true
     },
     handleExport() {
