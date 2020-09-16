@@ -82,33 +82,14 @@
                         placeholder="职位名称"
                         suffix-icon="el-icon-search"
                         style="width:200px;margin-right:12px;"
-                        @change="search"
+                        @input="search"
                       />
-                      <!--                      <el-input-->
-                      <!--                        v-model="form.name"-->
-                      <!--                        placeholder="职位名称"-->
-                      <!--                        size="medium"-->
-                      <!--                        class="input-with-select"-->
-                      <!--                      >-->
-                      <!--                        <el-button-->
-                      <!--                          slot="append"-->
-                      <!--                          icon="el-icon-search"-->
-                      <!--                          @click="search"-->
-                      <!--                        />-->
-                      <!--                      </el-input>-->
                     </div>
                     <div>
                       <i
                         class="icon  el-icon-refresh-right"
                         @click="getJobData({ pageNo: params.pageNo })"
                       />
-                      <!--                      <el-button-->
-                      <!--                        type="primary"-->
-                      <!--                        size="medium"-->
-                      <!--                        @click="getJobData({ pageNo: params.pageNo })"-->
-                      <!--                      >-->
-                      <!--                        <i class="el-icon-refresh" />-->
-                      <!--                      </el-button>-->
                     </div>
                   </div>
                 </template>
@@ -358,10 +339,10 @@ export default {
         this.asideList.unshift(all)
       })
     },
-    search() {
+    search: _.debounce(function() {
       this.params.jobName = this.form.name
       this.getJobData()
-    },
+    }, 500),
     sizeChange(val) {
       this.page.pageNo = 1
       this.page.pageSize = val

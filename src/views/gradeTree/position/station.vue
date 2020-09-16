@@ -49,7 +49,7 @@
                     placeholder="岗位名称"
                     suffix-icon="el-icon-search"
                     style="width:200px;margin-right:12px;"
-                    @change="search"
+                    @input="search"
                   />
                 </div>
                 <div>
@@ -254,9 +254,9 @@ export default {
         })
       })
     },
-    search() {
+    search: _.debounce(function() {
       this.getData()
-    },
+    }, 500),
     getJobData() {},
     closeBatch() {
       this.isBatch = false
