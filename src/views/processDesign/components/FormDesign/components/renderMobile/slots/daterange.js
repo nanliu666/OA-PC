@@ -21,7 +21,7 @@ export default function(h, config) {
       </div>
       {config.__mobile__.props.autoCalc ? (
         <div class="drawing-item-wrap__mobile">
-          <div class={`drawing-item-label`}>自动计算时长（天）</div>
+          <div class={'drawing-item-label'}>自动计算时长（天）</div>
         </div>
       ) : null}
     </div>

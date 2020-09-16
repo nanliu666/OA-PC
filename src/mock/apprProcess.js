@@ -186,14 +186,14 @@ const myApproveData = Mock.mock({
         formKey: '离职审批',
         formId: '申请单ID（对应businessId）',
         orgId: '申请人部门ID',
-        'orgName|+1': [`销售部`, `技术部`, `运营部`],
+        'orgName|+1': ['销售部', '技术部', '运营部'],
         userId: '申请人ID',
         userName: '申请人名称',
         jobId: '职位ID',
         jobName: '职位名称',
         processId: '流程ID',
         processName: '流程名称',
-        'status|+1': [`Approve`, `Pass`, `Reject`, `Cancel`],
+        'status|+1': ['Approve', 'Pass', 'Reject', 'Cancel'],
         'applyTime|+1': [
           `${Mock.Random.date('yyyy-MM-dd hh:mm')}`,
           `${Mock.Random.date('yyyy-MM-dd hh:mm')}`

@@ -413,7 +413,7 @@ export default {
         <p>仅发布则在作为未启用的正式审批放在未启用分组中</p>
       </div>
       `,
-        `"用印申请"发布`,
+        '"用印申请"发布',
         {
           distinguishCancelAndClose: true,
           dangerouslyUseHTMLString: true,
@@ -455,7 +455,7 @@ export default {
       })
         .then(() => {
           deleteProcess({ processId: data.processId }).then(() => {
-            this.$message.success(`删除成功`)
+            this.$message.success('删除成功')
             this.refreshData()
           })
         })
@@ -516,7 +516,7 @@ export default {
      */
     disableApproval(data) {
       stopProcessCategory({ processId: data.processId }).then(() => {
-        this.$message.success(`停用成功`)
+        this.$message.success('停用成功')
         this.refreshData()
       })
     },
@@ -533,7 +533,7 @@ export default {
         .then(() => {
           deleteCategory({ id: data.id }).then(() => {
             // window.console.log('delete res==', res)
-            this.$message.success(`删除成功`)
+            this.$message.success('删除成功')
             this.refreshData()
           })
         })
@@ -547,7 +547,7 @@ export default {
     renameApproval(data) {
       this.subGroup = data
       this.dialogOptions = {
-        dialogTitle: `重命名分组`,
+        dialogTitle: '重命名分组',
         dialogVisible: true,
         dialogType: 'rename'
       }
@@ -558,7 +558,7 @@ export default {
     addNewGroup() {
       this.subGroup = {}
       this.dialogOptions = {
-        dialogTitle: `新建分组`,
+        dialogTitle: '新建分组',
         dialogVisible: true,
         dialogType: 'add'
       }

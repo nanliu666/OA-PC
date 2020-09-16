@@ -56,10 +56,6 @@ let nodes = {
   copy: createFunc,
   empty: (_) => '',
   condition: function(ctx, conf, h) {
-    // <i
-    //    class="el-icon-document-copy icon"
-    //    onClick={this.eventLancher.bind(ctx, "copyNode", conf, ctx.data)}
-    //  ></i>
     return (
       <section class="flow-path-card condition" onClick={this.eventLancher.bind(ctx, 'edit', conf)}>
         <header class="header">

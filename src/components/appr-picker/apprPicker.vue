@@ -266,10 +266,10 @@ export default {
           ) {
             // 会签或者或签审批人变量需要传数组类型
             map[data.variable] = [
-              ...new Set(data.userList.map((item) => 'taskUser_' + item.id.split('_')[1]))
+              ...new Set(data.userList.map((item) => 'taskUser_' + this.getUserId(item)))
             ]
           } else {
-            map[data.variable] = 'taskUser_' + data.userList[0].id.split('_')[1]
+            map[data.variable] = 'taskUser_' + this.getUserId(data.userList[0])
           }
         }
         let children = $el.$children.filter((item) => item.$options.name === 'ApprPickerItem')
@@ -279,6 +279,14 @@ export default {
       }
       loop(this.$refs.apprPickerItem)
       return map
+    },
+    getUserId(user) {
+      let id = user.id || user.userId
+      if (id.split('_').length > 1) {
+        return id.split('_')[1]
+      } else {
+        return id
+      }
     },
     // 生成条件变量
     createConditionProcessMap() {
@@ -330,6 +338,7 @@ export default {
         if (!data.noData) {
           delete data.conditionNodes
           delete data.childNode
+          data.properties.approvers = []
           line.push(data)
         }
         // 注意sort是为了将节点按上下顺序排序

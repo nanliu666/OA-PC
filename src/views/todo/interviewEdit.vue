@@ -83,7 +83,9 @@ export default {
       }, 500)
     }
     return {
+      loading: false,
       formData: {
+        id: this.$route.query.id,
         workBackground: '',
         workExperience: '',
         knowledge: '',
@@ -182,10 +184,18 @@ export default {
     handleSubmit() {
       this.$refs.form
         .validate()
-        .then(async (res) => {
-          res.id = this.$route.query.id
-          await postInterviewInfo(res)
-          this.$message.success('提交成功', 2000, this.$router.go(-1))
+        .then((res) => {
+          if (!res) return
+          this.loading = true
+          this.formData.id = this.$route.query.id
+          postInterviewInfo(this.formData)
+            .then(() => {
+              this.$message.success('提交成功', 2000, this.$router.go(-1))
+            })
+            .catch(() => {})
+            .finally(() => {
+              this.loading = true
+            })
         })
         .catch(() => {})
     },

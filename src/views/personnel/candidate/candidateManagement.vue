@@ -665,12 +665,12 @@
                     <el-dropdown-item command="edit">
                       编辑
                     </el-dropdown-item>
-                    <!-- <el-dropdown-item
+                    <el-dropdown-item
                       v-if="row.approveStatus === 'Reject' || row.approveStatus === 'Cancel'"
                       command="reApply"
                     >
                       重新申请
-                    </el-dropdown-item> -->
+                    </el-dropdown-item>
                     <el-dropdown-item command="InterviewEvaluation">
                       查看面试评价
                     </el-dropdown-item>
@@ -1200,7 +1200,8 @@ export default {
         query: {
           personId: row.personId,
           applyId: reApply ? '' : row.applyId,
-          recruitmentId: row.recruitmentId
+          recruitmentId: row.recruitmentId,
+          approveStatus: row.approveStatus
         }
       })
     },

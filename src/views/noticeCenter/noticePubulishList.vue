@@ -225,7 +225,7 @@ export default {
       tablePageConfig: TABLE_PAGE_CONFIG
     }
   },
-  created() {
+  activated() {
     this.refreshTableData()
   },
   methods: {

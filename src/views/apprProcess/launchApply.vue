@@ -1,10 +1,7 @@
 <template>
   <div class="launch-style fill">
-    <basicContainer
-      v-if="!emptyOption.visibile"
-      block
-    >
-      <div>
+    <basicContainer block>
+      <div v-if="!emptyOption.visibile">
         <ul
           v-for="(item, index) in processListData"
           :key="index"
@@ -65,11 +62,11 @@
           </li>
         </ul>
       </div>
+      <com-empty
+        v-if="emptyOption.visibile"
+        :empty-option="emptyOption"
+      />
     </basicContainer>
-    <com-empty
-      v-if="emptyOption.visibile"
-      :empty-option="emptyOption"
-    />
   </div>
 </template>
 

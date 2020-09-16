@@ -26,8 +26,23 @@
         >
           {{ item.name }}
         </el-tag>
-        <div v-if="all && selectedData && selectedData.length < 1">
+        <div
+          v-if="
+            (!isDepartment && selectedData && selectedData.length < 1) ||
+              (!isDepartment && !selectedData && org)
+          "
+          style="color:#333"
+        >
           所有人
+        </div>
+        <div
+          v-if="
+            (isDepartment && selectedData && selectedData.length < 1) ||
+              (isDepartment && !selectedData)
+          "
+          style="color:#999"
+        >
+          请选择部门
         </div>
       </div>
     </div>
@@ -35,6 +50,7 @@
       v-if="show"
       :is-department="isDepartment"
       :org="org"
+      v-bind="type"
       :visible.sync="show"
       :users="selectOldData"
       @addUser="adduser"
@@ -54,6 +70,12 @@ export default {
     event: 'change'
   },
   props: {
+    type: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
     all: {
       type: Boolean,
       default: false
@@ -140,19 +162,12 @@ export default {
             this.selectOldData = []
           }
         }
-
-        // console.log(val)
-        // this.reloadCmpData()
       },
       immediate: true,
       deep: true
     },
     tabList: {
-      handler: function() {
-        // this.tabKeys = []
-        // val.forEach(t => this.tabKeys.push(typeof t === 'string' ? t : t.key) )
-        // this.reloadCmpData()
-      },
+      handler: function() {},
       immediate: true
     },
     selectedData: {

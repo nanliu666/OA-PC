@@ -1,4 +1,4 @@
-import { get, post } from '@/router/axios'
+import { get, post, put } from '@/router/axios'
 
 // 待入职人员筛选
 export const getCandidateAcceptList = (params) => {
@@ -26,6 +26,11 @@ export const getOfferApply = (params) => {
 // 员工合同签订接口
 export const createContract = (params) => {
   return post('/api/user/v1/user/contract/info', params)
+}
+
+// 员工合同编辑接口
+export const editContract = (params) => {
+  return put('/api/user/v1/user/contract/info', params)
 }
 
 // 入职登记表通知修改接口

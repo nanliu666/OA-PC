@@ -373,19 +373,21 @@ export class NodeUtils {
 
     this.isConditionNode(node) &&
       !props.isDefault &&
-      !props.initiator &&
+      (!props.initiator || props.initiator.length === 0) &&
       isEmptyArray(props.conditions) &&
       (valid = false)
-
-    const customSettings = ['myself', 'optional', 'director']
-    this.isApproverNode(node) &&
-      !customSettings.includes(props.assigneeType) &&
-      isEmptyArray(props.approvers) &&
-      (valid = false)
+    const customSettings = ['user', 'optional']
     this.isApproverNode(node) &&
       customSettings.includes(props.assigneeType) &&
       isEmptyArray(props.approvers) &&
       (valid = false)
+
+    const typeList = ['tag', 'position', 'job', 'directorLevel']
+    this.isApproverNode(node) &&
+      typeList.includes(props.assigneeType) &&
+      !props.infoForm[`${props.assigneeType}Id`] &&
+      (valid = false)
+    this.isApproverNode(node) && props.assigneeType === undefined && (valid = false)
     return valid
   }
   /**

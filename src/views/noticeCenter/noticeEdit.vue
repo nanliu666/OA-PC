@@ -150,7 +150,22 @@ export default {
       this.setVuexData()
     }
   },
+  mounted() {
+    this.creatLeaveDialog()
+  },
   methods: {
+    creatLeaveDialog() {
+      window.addEventListener('beforeunload', this.beforeunloadHandler, false)
+      this.$once('hook:beforeDestroy', () => {
+        this.removeLeaveDialog()
+      })
+    },
+    removeLeaveDialog() {
+      window.removeEventListener('beforeunload', this.beforeunloadHandler, false)
+    },
+    beforeunloadHandler(e) {
+      e.returnValue = '确定'
+    },
     /**
      * 手动返回
      */

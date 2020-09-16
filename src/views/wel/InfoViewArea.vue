@@ -225,7 +225,7 @@ export default {
 .info-wrap {
   // height: 90vh;
   // height: calc(1222px);
-  height: calc(1222px + 400px + 19px);
+  height: calc(1222px + 342px + 16px);
   width: 100%;
 
   background: #ffffff;
