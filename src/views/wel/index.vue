@@ -9,6 +9,7 @@
       <taskCenterCard />
       <scheduleCard />
       <noticeAndNews />
+      <mg-footer class="footer-style" />
     </div>
   </div>
 </template>
@@ -26,7 +27,8 @@ export default {
     noticeAndNews,
     workArea,
     taskCenterCard,
-    scheduleCard
+    scheduleCard,
+    MgFooter: () => import('@/components/footer/footer')
   },
   data() {
     return {}
@@ -35,13 +37,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.footer-style {
+  width: 100vw;
+  margin-left: -364px;
+  color: #a0a8ae;
+}
 .el-font-size {
   font-size: 14px;
 }
 .page {
   margin-top: 24px;
   width: 100%;
-  padding-bottom: 50px !important;
+  padding-bottom: 25px !important;
   .aside {
     float: left;
     width: 332px;

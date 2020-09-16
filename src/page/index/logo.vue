@@ -1,5 +1,8 @@
 <template>
-  <div class="avue-logo">
+  <div
+    class="avue-logo"
+    @click="goWork"
+  >
     <img src="../../../public/img/logo.png">
   </div>
 </template>
@@ -15,7 +18,11 @@ export default {
     ...mapGetters(['website', 'keyCollapse'])
   },
   created() {},
-  methods: {}
+  methods: {
+    goWork() {
+      this.$router.replace({ path: '/wel/index' })
+    }
+  }
 }
 </script>
 
@@ -31,6 +38,7 @@ export default {
   opacity: 0;
 }
 .avue-logo {
+  cursor: pointer;
   position: fixed;
   top: 0;
   left: 0;
