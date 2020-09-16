@@ -191,7 +191,7 @@
 
 <script>
 import { isMobile, isEmail } from '@/util/validate'
-import { getCode, checkPswOrPhone } from '../../../api/personalInfo'
+import { getCode, checkPswOrPhone, checkPswOrEmail } from '../../../api/personalInfo'
 import { mapGetters } from 'vuex'
 import md5 from 'js-md5'
 import { getCaptcha } from '@/api/user'
@@ -337,7 +337,8 @@ export default {
               userId: this.userInfo.user_id,
               password: md5(this.password.form.psw)
             }
-            checkPswOrPhone(params).then(() => {
+            let checkFun = this.$parent.isEmail ? checkPswOrEmail : checkPswOrPhone
+            checkFun(params).then(() => {
               this.step++
               this.steps.firstStatus = 'success'
               this.steps.secondStatus = 'finish'
@@ -351,10 +352,16 @@ export default {
             let params = {
               userId: this.userInfo.user_id,
               password: md5(this.password.form.psw),
-              phonenum: this.identity.form.phone,
-              smsCode: this.identity.form.code
+              smsCode: this.identity.form.code,
+              captchaCode: this.identity.form.captchaCode,
+              captchaKey: this.identity.form.captchaKey
             }
-            checkPswOrPhone(params).then(() => {
+            let paramsKey = this.$parent.isEmail
+              ? { email: this.identity.form.email }
+              : { phonenum: this.identity.form.phone }
+            _.assign(params, paramsKey)
+            let checkFun = this.$parent.isEmail ? checkPswOrEmail : checkPswOrPhone
+            checkFun(params).then(() => {
               this.step++
               this.steps.secondStatus = 'success'
               this.steps.finalStatus = 'success'
@@ -366,15 +373,17 @@ export default {
 
     handleSend() {
       if (this.identity.msgKey) return
-      this.$refs['identity'].validateField('phone', (errorMsg) => {
+      let checkProp = this.$parent.isEmail ? 'email' : 'phone'
+      this.$refs['identity'].validateField(checkProp, (errorMsg) => {
         if (!errorMsg) {
           //1.发送获取验证码的网络请求
 
           let params = {
-            phone: this.identity.form.phone
+            phonenum: this.identity.form.phone,
+            email: this.identity.form.email
           }
           getCode(params).then((res) => {
-            code = res.value
+            code = this.$parent.isEmail ? res.content : res.value
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
             this.identity.msgKey = true

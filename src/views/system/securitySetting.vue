@@ -29,7 +29,7 @@
             </div>
             <div class="content-item">
               <span class="item-label">密保邮箱：</span>
-              <span class="item-value">{{ perosonnalInfo.email }}</span>
+              <span class="item-value">{{ perosonnalInfo.userEmail }}</span>
               <span
                 class="edit-item"
                 @click="editEmail()"
