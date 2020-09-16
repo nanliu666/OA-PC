@@ -3,13 +3,14 @@
     <el-dialog
       :title="title"
       :visible.sync="dialog"
-      width="550px"
+      width="700px"
       append-to-body
       :before-close="handleClose"
     >
       <div
         v-for="(item, i) in data"
         :key="i"
+        class="flex flex-flow flex-items"
       >
         <span class="label">{{ item.label }}</span>: <span class="prop">{{ row[item.prop] }}</span>
       </div>
@@ -121,5 +122,9 @@ export default {
   font-size: 14px;
   color: #666;
   margin-left: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
 }
 </style>

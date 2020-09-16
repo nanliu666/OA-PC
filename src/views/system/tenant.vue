@@ -44,30 +44,46 @@
           </div>
         </template>
         <template
+          slot="status"
+          slot-scope="{ row }"
+        >
+          {{ statusWord[row.status] }}
+        </template>
+        <template
           slot="handler"
           slot-scope="scope"
         >
-          <el-button
-            type="text"
-            size="medium"
-            @click="handleWatch(scope.row)"
-          >
-            查看
-          </el-button>
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleEdit(scope.row, scope.index)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            type="text"
-            size="medium"
-            @click.stop="handleWorkNo(scope.row, scope.index)"
-          >
-            工号
-          </el-button>
+          <div style="width:220px">
+            <el-button
+              type="text"
+              size="medium"
+              @click="handleWatch(scope.row)"
+            >
+              查看
+            </el-button>
+            <el-button
+              type="text"
+              size="medium"
+              @click.stop="handleEdit(scope.row, scope.index)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              type="text"
+              size="medium"
+              @click.stop="handleStatus(scope.row, scope.index)"
+            >
+              <span v-if="scope.row.status === 'Normal'">停用</span>
+              <span v-else>启用</span>
+            </el-button>
+            <el-button
+              type="text"
+              size="medium"
+              @click.stop="handleWorkNo(scope.row, scope.index)"
+            >
+              工号
+            </el-button>
+          </div>
         </template>
       </common-table>
     </basic-container>
@@ -92,7 +108,7 @@
 </template>
 
 <script>
-import { getTenant } from '@/api/system/tenant'
+import { getTenant, putTenant } from '@/api/system/tenant'
 import tenantDialog from './components/tenantDialog'
 import watchDialog from './components/watchTenantDialog'
 import worknoDialog from './components/worknoDialog'
@@ -105,6 +121,10 @@ export default {
   },
   data() {
     return {
+      statusWord: {
+        Normal: '正常',
+        Forbid: '禁用'
+      },
       title: '',
       watchDialog: false,
       worknoDialog: false,
@@ -152,7 +172,8 @@ export default {
         },
         {
           label: '租户状态',
-          prop: 'status'
+          prop: 'status',
+          slot: true
         },
         {
           label: '创建时间',
@@ -203,6 +224,17 @@ export default {
     handleWorkNo(row) {
       this.rowData = JSON.parse(JSON.stringify(row))
       this.worknoDialog = true
+    },
+    handleStatus(row) {
+      let params = {
+        tenantId: row.tenantId,
+        status: row.status === 'Normal' ? 'Forbid' : 'Normal'
+      }
+      putTenant(params).then(() => {
+        let text = row.status === 'Normal' ? '停用成功' : '启用成功'
+        this.$message.success(text)
+        this.getData()
+      })
     },
     /**
      *  @author guanfenda

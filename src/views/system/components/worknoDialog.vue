@@ -162,10 +162,13 @@ export default {
         }
 
         let Rule = this.editData.id ? putRule : postRule
+        this.editData.id && (params.id = this.editData.id)
         this.loading = true
         Rule(params)
           .then(() => {
-            this.editData.id && ((this.editData = {}), (this.form = {}))
+            this.editData.id && (this.editData = {})
+            this.form = {}
+            this.getData()
           })
           .finally(() => {
             // setTimeout(()=>{
@@ -197,6 +200,7 @@ export default {
           .then(() => {})
           .finally(() => {
             // setTimeout(()=>{
+            this.getData()
             this.loading = false
             // },1000)
           })
