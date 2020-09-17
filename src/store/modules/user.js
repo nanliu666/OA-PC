@@ -8,6 +8,7 @@ import md5 from 'js-md5'
 const user = {
   state: {
     tenantId: getStore({ name: 'tenantId' }) || '',
+    tenantContent: getStore({ name: 'tenantContent' }) || '',
     userInfo: getStore({ name: 'userInfo' }) || [],
     privileges: getStore({ name: 'privileges' }) || [],
     orgs: getStore({ name: 'orgs' }) || [],
@@ -190,6 +191,10 @@ const user = {
     SET_TENANT_ID: (state, tenantId) => {
       state.tenantId = tenantId
       setStore({ name: 'tenantId', content: state.tenantId, type: 'session' })
+    },
+    SET_TENANT_CONTENT: (state, tenantContent) => {
+      state.tenantContent = tenantContent
+      setStore({ name: 'tenantContent', content: state.tenantContent, type: 'session' })
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo

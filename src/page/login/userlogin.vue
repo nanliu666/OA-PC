@@ -150,7 +150,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['tagWel'])
+    ...mapGetters(['tagWel', 'tenantContent'])
   },
   created() {
     this.getTenant()
@@ -207,6 +207,9 @@ export default {
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
         this.$store.commit('SET_TENANT_ID', res.tenantId)
+        this.$store.commit('SET_TENANT_CONTENT', JSON.stringify(res))
+        if (!res.favicon) return
+        document.querySelector('link').href = res.favicon
       })
       // 临时指定域名，方便测试
       //domain = "https://bladex.vip";
