@@ -68,16 +68,14 @@
             :content="item.title"
             placement="top"
           >
-            <div>
-              <div class="text-box">
-                <p @click="jumpToDetail(item)">
-                  【{{ item.type | filterType }}】{{ item.title }}
-                </p>
-                <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
-              </div>
-              <div class="time-box">
-                {{ item.createTime | filterDate }}
-              </div>
+            <div class="text-box">
+              <p @click="jumpToDetail(item)">
+                【{{ item.type | filterType }}】{{ item.title }}
+              </p>
+              <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+            </div>
+            <div class="time-box">
+              {{ item.createTime | filterDate }}
             </div>
           </el-tooltip>
         </div>
@@ -122,21 +120,20 @@
             :content="item.content"
             placement="top"
           >
-            <div @click="handelRead(item)">
-              <div
-                class="item-row new-item-tips"
-                :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
-              >
-                <div class="detail">
-                  <div
-                    class="icon"
-                    :class="item.isRead === 0 ? '' : 'no-read'"
-                  />
-                  {{ item.content }}
-                </div>
-                <div class="time">
-                  {{ item.createTime | filterDate }}
-                </div>
+            <div
+              class="item-row new-item-tips"
+              :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
+              @click="handelRead(item)"
+            >
+              <div class="detail">
+                <div
+                  class="icon"
+                  :class="item.isRead === 0 ? '' : 'no-read'"
+                />
+                {{ item.content }}
+              </div>
+              <div class="time">
+                {{ item.createTime | filterDate }}
               </div>
             </div>
           </el-tooltip>
@@ -588,6 +585,11 @@ export default {
   background: #ffffff;
   overflow-y: auto;
   position: relative;
+  .item-row {
+    &:last-child {
+      border-bottom: 0px;
+    }
+  }
   .view-all {
     position: absolute;
     bottom: 12px;
@@ -650,9 +652,6 @@ export default {
     justify-content: space-between;
     border-bottom: solid 1px #eeeeee;
     height: 42px;
-    &:last-child {
-      border-bottom: 0px;
-    }
   }
   .no-msg-box {
     text-align: center;
