@@ -383,6 +383,25 @@ export default {
         this.data = res
         this.multipleSelection = []
         this.tableLoading = false
+
+        if (this.searchParams.orgName) {
+          // this.data =[]
+          let newData = []
+          this.recursion(this.data, newData)
+          this.data = newData
+        }
+      })
+    },
+    /**
+     *  @author guanfenda
+     *  @desc 处理扁平化数组
+     * */
+    recursion(data, newData) {
+      data.filter((item) => {
+        let it = JSON.parse(JSON.stringify(item))
+        it.children && delete it.children
+        newData.push(it)
+        item.children && item.children.length > 0 && this.recursion(item.children, newData)
       })
     },
     toOrgDetail(row) {
