@@ -108,9 +108,7 @@ export default {
 <style lang="scss">
 @import '@/styles/login.scss';
 .footer-style {
-  position: absolute;
-  bottom: 12px;
-  width: 100%;
   color: rgba(237, 248, 255, 0.6);
+  bottom: 0;
 }
 </style>

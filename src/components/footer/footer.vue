@@ -23,6 +23,9 @@ export default {
 
 <style scoped lang="scss">
 .footer-container {
+  position: absolute;
+  left: 0;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
