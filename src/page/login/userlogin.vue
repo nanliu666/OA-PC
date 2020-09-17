@@ -200,7 +200,6 @@ export default {
       })
     },
     setFavicon(res) {
-      this.$store.commit('SET_TENANT_CONTENT', JSON.stringify(res))
       let favicon = document.createElement('link')
       favicon.setAttribute('rel', 'icon')
       favicon.href = res.favicon
@@ -214,6 +213,7 @@ export default {
       //   process.env.NODE_ENV === 'development' ? 'apitest.epro.com.cn' : window.location.host
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
+        this.$store.commit('SET_TENANT_CONTENT', JSON.stringify(res))
         this.$store.commit('SET_TENANT_ID', res.tenantId)
         this.setFavicon(res)
       })
