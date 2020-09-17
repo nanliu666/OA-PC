@@ -330,8 +330,25 @@ import {
   createCandidate,
   modifyPerson
 } from '@/api/personnel/person'
-import { getCandidateInfo, getCandidateOutInfo } from '@/api/personnel/candidate'
-
+import { getCandidateInfo, getCandidateOutInfo, checkEmailOrPhone } from '@/api/personnel/candidate'
+const checkEmail = (rule, value, callback) => {
+  checkEmailOrPhone({ email: value })
+    .then(() => {
+      callback()
+    })
+    .catch(() => {
+      callback(new Error('该邮箱已存在'))
+    })
+}
+const checkPhone = (rule, value, callback) => {
+  checkEmailOrPhone({ phonenum: value })
+    .then(() => {
+      callback()
+    })
+    .catch(() => {
+      callback(new Error('该手机已存在'))
+    })
+}
 export default {
   name: 'EditPerson',
   components: {
@@ -368,11 +385,13 @@ export default {
         age: [{ required: true, message: '请输入年龄', trigger: 'blur' }],
         phonenum: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
-          { pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }
+          { pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' },
+          { validator: checkPhone, trigger: 'blur' }
         ],
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur'] }
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur'] },
+          { validator: checkEmail, trigger: 'blur' }
         ],
         addressArr: [{ required: true, message: '请选择所在地址', trigger: 'change' }],
         educationalLevel: [{ required: true, message: '请选择学历', trigger: 'change' }],
