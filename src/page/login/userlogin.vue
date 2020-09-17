@@ -199,13 +199,6 @@ export default {
         }
       })
     },
-    setFavicon(res) {
-      let favicon = document.createElement('link')
-      favicon.setAttribute('rel', 'icon')
-      favicon.href = res.favicon
-      const header = document.querySelector('head')
-      header.appendChild(favicon)
-    },
     getTenant() {
       let domain =
         process.env.NODE_ENV === 'development' ? 'www.bestgrand.com.cn' : window.location.host
@@ -215,7 +208,6 @@ export default {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
         this.$store.commit('SET_TENANT_CONTENT', JSON.stringify(res))
         this.$store.commit('SET_TENANT_ID', res.tenantId)
-        this.setFavicon(res)
       })
       // 临时指定域名，方便测试
       //domain = "https://bladex.vip";

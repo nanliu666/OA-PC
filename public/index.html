@@ -9,6 +9,18 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="format-detection" content="telephone=no" />
   <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <script>
+    // favicon是需要在此处声明
+    const tenantContent = sessionStorage.getItem('saber-tenantContent')
+    if(tenantContent){
+      let faviconContent = JSON.parse(JSON.parse(sessionStorage.getItem('saber-tenantContent')).content).favicon
+      let favicon = document.createElement('link')
+      favicon.setAttribute('rel', 'icon')
+      favicon.href = faviconContent
+      const header = document.querySelector('head')
+      header.appendChild(favicon)
+    }
+  </script>
   <link rel="stylesheet" href="<%= BASE_URL %>cdn/iconfont/1.0.0/index.css" />
   <link rel="stylesheet" href="https://oa-file.bestgrand.com.cn/avue.css" />
   <title></title>
