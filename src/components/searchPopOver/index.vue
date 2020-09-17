@@ -17,7 +17,7 @@
           :type="item.config && item.config.type ? item.config.type : 'text'"
           :placeholder="item.config.placeholder || '请输入' + item.label"
           class="elInput"
-          @keyup.enter.native="change"
+          @input="search"
         >
           <i
             v-if="item.config && item.config['suffix-icon']"
@@ -412,6 +412,9 @@ export default {
       this.$emit('submit', this.produceSearchParams())
       this.popoverShow = false
     },
+    search: _.debounce(function() {
+      this.submitSearch()
+    }, 500),
     change() {
       this.submitSearch()
     },

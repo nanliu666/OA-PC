@@ -9,7 +9,10 @@
           <p>安全设置</p>
         </div>
 
-        <div class="main-content">
+        <el-card
+          shadow="never"
+          class="main-content"
+        >
           <div class="setting-tip">
             <p>
               安全性高的密码可以使帐号更安全。建议您定期更换密码，设置一个包含字母，符号或数字中至少两项且长度超过6位的密码。
@@ -17,11 +20,19 @@
           </div>
           <div class="content">
             <div class="content-item">
-              <span class="item-label">手机号码：</span>
+              <span class="item-label">密保手机：</span>
               <span class="item-value">{{ perosonnalInfo.phonenum }}</span>
               <span
                 class="edit-item"
                 @click="editPhone()"
+              >修改</span>
+            </div>
+            <div class="content-item">
+              <span class="item-label">密保邮箱：</span>
+              <span class="item-value">{{ perosonnalInfo.userEmail }}</span>
+              <span
+                class="edit-item"
+                @click="editEmail()"
               >修改</span>
             </div>
             <div class="content-item">
@@ -33,7 +44,7 @@
               >修改</span>
             </div>
           </div>
-        </div>
+        </el-card>
       </div>
       <revisepsw v-if="editType == 'psw'" />
       <revisePhone v-if="editType == 'phone'" />
@@ -53,6 +64,7 @@ export default {
   },
   data() {
     return {
+      isEmail: false,
       editType: 'entry',
       perosonnalInfo: {}
     }
@@ -73,6 +85,11 @@ export default {
       })
     },
     editPhone() {
+      this.isEmail = false
+      this.editType = 'phone'
+    },
+    editEmail() {
+      this.isEmail = true
       this.editType = 'phone'
     },
     editPsw() {
@@ -94,7 +111,7 @@ export default {
 }
 .main-content {
   padding: 10px 30px;
-  height: calc(100vh - 152px);
+  height: calc(100vh - 60px - 40px - 56px - 32px);
   background: #fff;
   .setting-tip {
     background: #f7f8fa;
@@ -112,6 +129,8 @@ export default {
   .item-value {
     color: #202940;
     margin-right: 15px;
+    min-width: 150px;
+    display: inline-block;
   }
   .edit-item {
     cursor: pointer;

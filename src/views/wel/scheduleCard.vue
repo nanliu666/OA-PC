@@ -1,6 +1,6 @@
 <template>
   <div class="scheduleWrap">
-    <div class="content">
+    <el-card class="content">
       <div class="header">
         <span class="title">
           <span>日程中心</span>
@@ -95,18 +95,9 @@
               <div>有计划工作才会有效率</div>
             </div>
           </div>
-
-          <div class="view-all">
-            <el-button
-              type="text"
-              @click="jumpScheduleCenter"
-            >
-              查看全部
-            </el-button>
-          </div>
         </div>
       </div>
-    </div>
+    </el-card>
     <addSchDialog
       ref="schDialog"
       :refresh="loadData"
@@ -227,11 +218,9 @@ export default {
 .scheduleWrap {
   margin-top: 19px;
   background-color: #ffffff;
-  height: 418px;
   .content {
     // 头部
     .header {
-      margin-left: 24px;
       padding: 16px 0;
       .title {
         span {
@@ -249,7 +238,7 @@ export default {
   .main-box {
     display: flex;
     justify-content: space-between;
-
+    padding-bottom: 20px;
     .calendar-box {
       flex: 1;
       height: 302px;

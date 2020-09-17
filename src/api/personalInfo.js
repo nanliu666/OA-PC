@@ -10,6 +10,17 @@ export const checkPswOrPhone = (params) => {
     }
   })
 }
+
+// 修改新邮箱
+export const checkPswOrEmail = (params) => {
+  return request({
+    url: '/api/user/v1/user/email',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
 export const getPositionInfo = (params) => {
   return request({
     url: '/api/org/v1/position/define',

@@ -223,11 +223,8 @@ export default {
 
 <style lang="scss" scoped>
 .info-wrap {
-  // height: 90vh;
-  // height: calc(1222px);
-  height: calc(1222px + 342px + 16px);
   width: 100%;
-
+  height: 100%;
   background: #ffffff;
   overflow: auto;
 }

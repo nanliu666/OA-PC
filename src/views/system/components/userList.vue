@@ -32,7 +32,7 @@
             placeholder="姓名/工号"
             suffix-icon="el-icon-search"
             style="width:200px;margin-right:12px;"
-            @change="loadData"
+            @input="searchLoadData"
           />
           <div>
             <span
@@ -202,6 +202,9 @@ export default {
     this.loadData()
   },
   methods: {
+    searchLoadData: _.debounce(function() {
+      this.loadData()
+    }, 500),
     handleAfterSubmit() {
       this.loadData()
     },
