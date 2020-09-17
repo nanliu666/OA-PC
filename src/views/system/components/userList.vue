@@ -34,15 +34,6 @@
             style="width:200px;margin-right:12px;"
             @input="searchLoadData"
           />
-          <!--        <el-button-->
-          <!--          type="primary"-->
-          <!--          size="medium"-->
-          <!--          style="float:right;"-->
-          <!--          plain-->
-          <!--          @click="jumpAddUser"-->
-          <!--        >-->
-          <!--          添加员工-->
-          <!--        </el-button>-->
           <div>
             <span
               class="addUser"

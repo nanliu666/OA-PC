@@ -106,31 +106,17 @@ const res = {
             children: []
           },
           {
-            menuId: '1259072343010217985',
-            menuName: '系统字典',
+            menuId: '1259072341233010217985',
+            menuName: '商户管理',
             menuType: 'Menu',
             isOwn: 1,
             isShow: 1,
-            code: 'system_dict',
-            alias: 'dict',
-            path: '/system/dict',
-            icon: 'iconfont iconicon_study',
+            code: 'system_tenant',
+            alias: 'tenant',
+            path: '/system/tenant',
+            icon: 'iconfont el-icon-key',
             dataPrivileges: [],
-            children: [
-              {
-                menuId: '1260047763813732353',
-                menuName: '新建',
-                menuType: 'Button',
-                isOwn: 0,
-                isShow: 1,
-                code: 'system_dict_add',
-                alias: 'systemDictAdd',
-                path: '/system/dict',
-                icon: '',
-                dataPrivileges: [],
-                children: []
-              }
-            ]
+            children: []
           },
           {
             menuId: '1259072343020217986',

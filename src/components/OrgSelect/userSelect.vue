@@ -336,12 +336,13 @@ export default {
       })
       let newSelectList = []
       this.treeOrg.map((it) => {
-        let { id, name, type, userId } = { ...it }
+        let { id, name, type, userId, workNo } = { ...it }
         let newSelect = {
           id,
           name,
           type,
-          userId
+          userId,
+          workNo
         }
         newSelectList.push(newSelect)
       })

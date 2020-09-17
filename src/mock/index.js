@@ -32,7 +32,7 @@ import taskcenter from './taskcenter'
 import todo from './todo'
 import transction from './transction'
 import user from './user'
-
+import tenant from './tenant'
 /**
  * @param {boolean} enable 全局启用mock
  * @returns {void}
@@ -55,7 +55,7 @@ export default (enable) => {
   user(options)
 
   apprProcess(options)
-  menu(options)
+  menu({ mock: false })
   apprProcess(options)
 
   interview(options)
@@ -98,4 +98,5 @@ export default (enable) => {
   process(options)
 
   mailList(options)
+  tenant({ mock: false })
 }

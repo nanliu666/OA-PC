@@ -40,7 +40,7 @@
           ref="parentOrgId"
           v-model="form.parentOrgId"
           placeholder="请选择上级组织"
-          disabled
+          :disabled="type !== 'create'"
         >
           <!-- 注意：产品提出不可在编辑状态修改上级部门，只能在拖拽时修改上级部门 -->
           <!-- :disabled="type === 'createChild'" -->
