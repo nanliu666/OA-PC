@@ -195,7 +195,6 @@ import { getCode, checkPswOrPhone, checkPswOrEmail } from '../../../api/personal
 import { mapGetters } from 'vuex'
 import md5 from 'js-md5'
 import { getCaptcha } from '@/api/user'
-let code = null
 export default {
   components: {},
   data() {
@@ -228,8 +227,6 @@ export default {
     const validateCode = (rule, value, callback) => {
       if (!_this.identity.form.code) {
         callback(new Error('请输入六位验证码'))
-      } else if (_this.identity.form.code != code) {
-        callback(new Error('验证码不正确'))
       } else {
         callback()
       }
@@ -347,7 +344,7 @@ export default {
         })
       } else if (this.step == 2) {
         this.$refs['identity'].validate((isPass) => {
-          if (isPass && this.identity.form.code == code) {
+          if (isPass) {
             //验证手机
             let params = {
               userId: this.userInfo.user_id,
@@ -382,8 +379,7 @@ export default {
             phonenum: this.identity.form.phone,
             email: this.identity.form.email
           }
-          getCode(params).then((res) => {
-            code = this.$parent.isEmail ? res.content : res.value
+          getCode(params).then(() => {
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
             this.identity.msgKey = true
