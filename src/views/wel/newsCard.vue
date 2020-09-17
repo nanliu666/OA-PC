@@ -2,7 +2,6 @@
   <el-card
     v-loading="loading"
     class="NewsCard wrapper"
-    shadow="never"
   >
     <div class="wrapper__top">
       <span class="wrapper__top--title">

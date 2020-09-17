@@ -60,7 +60,9 @@ export default {
   .main {
     flex: 1;
     margin-left: 16px;
-    height: 100%;
+    height: calc(100% + 24px);
+    margin-top: -24px;
+    padding-top: 24px;
     overflow-y: auto;
     overflow-x: hidden;
   }

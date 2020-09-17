@@ -1,5 +1,5 @@
 <template>
-  <div
+  <el-card
     v-loading="taskLoading"
     class="taskCenter-wrap"
   >
@@ -8,6 +8,7 @@
       title="我的任务"
       :label-array="labelArray"
       class="tasklist"
+      @click="goTOTaskCenter"
     >
       <!-- 进行中 -->
       <div
@@ -77,20 +78,8 @@
           任务中心
         </el-button>
       </div>
-      <div
-        slot="foot"
-        class="view-all"
-      >
-        <el-button
-          type="text"
-          size="medium"
-          @click="goTOTaskCenter"
-        >
-          查看全部
-        </el-button>
-      </div>
     </tagCom>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -160,7 +149,7 @@ export default {
       // 请求参数
       taskQuery: {
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 3,
         title: '',
         type: '',
         beginEndDate: '',
@@ -244,7 +233,7 @@ export default {
 <style lang="scss" scoped>
 .taskCenter-wrap {
   .tasklist {
-    height: 393px;
+    height: 300px;
     position: relative;
   }
   background: #ffffff;
@@ -269,15 +258,8 @@ export default {
     color: #202940;
     font-weight: bold;
   }
-  /deep/.header {
-    padding-left: 24px;
-    margin-top: 0;
-  }
-  /deep/.el-tabs__nav-scroll {
-    padding-left: 24px;
-  }
   /deep/.el-tabs__content {
-    height: 243px;
+    min-height: 243px;
     overflow-y: auto;
   }
 
@@ -298,11 +280,13 @@ export default {
   }
   .task-item {
     height: 80px;
-    margin-left: 24px;
     border-bottom: 1px solid #e3e7e9;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    &:last-child {
+      border-bottom: 0;
+    }
     // 任务内容
     .task-introduce {
       flex: 2;
