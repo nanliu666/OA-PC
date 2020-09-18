@@ -1,7 +1,10 @@
 <template>
   <div class="scheduleWrap">
     <el-card class="content">
-      <div class="header">
+      <div
+        class="header"
+        @click="jumpScheduleCenter"
+      >
         <span class="title">
           <span>日程中心</span>
           <i
@@ -181,6 +184,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.icon-arrow-left-outlined,
+.icon-arrow-right-outlined {
+  font-size: 10px;
+}
 /deep/.el-calendar-table td.is-selected {
   background: #ffffff;
 }
@@ -221,8 +228,11 @@ export default {
   .content {
     // 头部
     .header {
+      cursor: pointer;
       padding-bottom: 16px;
       .title {
+        display: flex;
+        align-items: center;
         span {
           font-size: 18px;
           color: #202940;
@@ -265,6 +275,7 @@ export default {
           }
           .prev-month,
           .next-month {
+            width: 20px;
             opacity: 0.4;
             background: #a0a8ae;
             border-radius: 4px;

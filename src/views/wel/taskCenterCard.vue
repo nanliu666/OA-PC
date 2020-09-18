@@ -51,6 +51,7 @@
             </div>
             <div class="detail-box">
               <el-progress
+                stroke-width="4"
                 :percentage="parseInt((item.completeNum / item.totalNum) * 100)"
                 :format="() => ''"
               />
@@ -296,10 +297,12 @@ export default {
           font-size: 14px;
           color: #202940;
           line-height: 22px;
-          font-weight: bold;
+          font-weight: 550;
           margin-bottom: 4px;
+          font-family: PingFangSC-Medium, PingFang SC;
         }
         .emerType {
+          color: #ff6464;
           margin-left: 16px;
         }
       }

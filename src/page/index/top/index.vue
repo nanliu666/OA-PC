@@ -1,14 +1,5 @@
 <template>
   <div class="avue-top">
-    <!-- <div class="top-bar__left">
-      <div
-        v-if="showCollapse"
-        class="avue-breadcrumb"
-        :class="[{ 'avue-breadcrumb--active': isCollapse }]"
-      >
-        <i class="icon-navicon" @click="setCollapse" />
-      </div>
-    </div>-->
     <div class="top-bar__title">
       <div
         v-if="showMenu"
@@ -16,34 +7,8 @@
       >
         <top-menu ref="topMenu" />
       </div>
-      <!-- <span
-        v-if="showSearch"
-        class="top-bar__item"
-      >
-        <top-search />
-      </span> -->
     </div>
     <div class="top-bar__right">
-      <!-- <el-tooltip
-        v-if="showColor"
-        effect="dark"
-        :content="$t('navbar.color')"
-        placement="bottom"
-      >
-        <div class="top-bar__item">
-          <top-color />
-        </div>
-      </el-tooltip> -->
-      <!-- <el-tooltip
-        v-if="showDebug"
-        effect="dark"
-        :content="logsFlag ? $t('navbar.bug') : logsLen + $t('navbar.bugs')"
-        placement="bottom"
-      >
-        <div class="top-bar__item">
-          <top-logs />
-        </div>
-      </el-tooltip> -->
       <el-tooltip
         v-if="showLock"
         effect="dark"
@@ -54,34 +19,6 @@
           <top-lock />
         </div>
       </el-tooltip>
-      <!-- <el-tooltip
-        v-if="showTheme"
-        effect="dark"
-        :content="$t('navbar.theme')"
-        placement="bottom"
-      >
-        <div class="top-bar__item top-bar__item--show">
-          <top-theme />
-        </div>
-      </el-tooltip> -->
-      <!-- <el-tooltip
-        effect="dark"
-        :content="$t('navbar.notice')"
-        placement="bottom"
-      >
-        <div class="top-bar__item top-bar__item--show">
-          <top-notice />
-        </div>
-      </el-tooltip> -->
-      <!-- <el-tooltip
-        effect="dark"
-        :content="$t('navbar.language')"
-        placement="bottom"
-      >
-        <div class="top-bar__item top-bar__item--show">
-          <top-lang />
-        </div>
-      </el-tooltip> -->
       <el-tooltip
         v-if="showFullScren"
         effect="dark"
@@ -109,11 +46,6 @@
           />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <!-- <el-dropdown-item>
-            <router-link to="/">
-              {{ $t('navbar.dashboard') }}
-            </router-link>
-          </el-dropdown-item> -->
           <el-dropdown-item>
             <div @click="showUserCenter">
               个人中心
@@ -136,13 +68,6 @@ import { mapGetters, mapState } from 'vuex'
 import { fullscreenToggel, listenfullscreen } from '@/util/util'
 import topLock from './top-lock'
 import topMenu from './top-menu'
-// import topSearch from './top-search'
-// import topTheme from './top-theme'
-// import topLogs from './top-logs'
-// import topColor from './top-color'
-// import topNotice from './top-notice'
-// import topLang from './top-lang'
-// import logo from '../logo'
 const userCenterMenu = {
   menuName: '个人中心',
   menuType: 'Dir',
@@ -175,12 +100,6 @@ export default {
   components: {
     topLock,
     topMenu
-    // topSearch
-    // topTheme,
-    // topLogs,
-    // topColor,
-    // topNotice,
-    // topLang
   },
   filters: {},
   data() {

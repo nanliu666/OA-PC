@@ -298,7 +298,7 @@ export default {
     background-color: #ececf3;
     overflow: hidden;
     .avatar-img {
-      border: 4px solid #ffffff;
+      border: 5px solid #ffffff;
       width: 104px;
       height: 104px;
       border-radius: 100%;
@@ -416,11 +416,12 @@ export default {
   line-height: 48px;
   text-align: center;
   border-radius: 100%;
-}
-.icon {
-  margin-top: 8px;
-  width: 32px;
-  height: 32px;
+  margin-bottom: 4px;
+  .icon {
+    margin-top: 8px;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .add {

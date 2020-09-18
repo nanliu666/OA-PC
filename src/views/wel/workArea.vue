@@ -500,7 +500,7 @@ export default {
   /deep/.is-active {
     font-size: 16px;
     color: #202940;
-    font-weight: bold;
+    font-weight: 600;
   }
   /deep/.el-tabs__content {
     min-height: 215px;
@@ -612,8 +612,6 @@ export default {
     display: inline-block;
     text-align: start;
     width: 70%;
-    // padding-left: 24px;
-    // 。。。
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -640,7 +638,7 @@ export default {
   .new-item {
     border-bottom: solid 1px #eeeeee;
     .detail {
-      color: #718199;
+      color: #a0a8ae;
       .no-read {
         background: #ffffff 100%;
       }
