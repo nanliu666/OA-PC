@@ -225,11 +225,6 @@ export default {
     // 标记所有已读信息
     async signAllReadMsg() {
       try {
-        await this.$confirm('确定标记所有已读信息?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
         await creatSignReadMsg({ userId: this.userId })
         this.loadingData()
         this.$message.success('标记所有为已读信息成功')
@@ -247,8 +242,8 @@ export default {
         userId: this.userId,
         id: row.id
       })
-      this.msgInfo = row.content
-      this.dialogVisible = true
+      this.loadingData()
+      this.$message.success('已读此信息成功')
     },
     handleClose() {
       this.loadingData()
