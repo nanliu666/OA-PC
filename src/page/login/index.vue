@@ -20,7 +20,7 @@
             <!-- <top-lang /> -->
           </h4>
           <p class="login-welcome">
-            欢迎您登录百利宏OA
+            欢迎您登录OA系统
           </p>
           <userLogin v-if="activeName === 'user'" />
           <codeLogin v-else-if="activeName === 'code'" />
