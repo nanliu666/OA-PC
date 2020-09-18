@@ -164,8 +164,9 @@
 </template>
 
 <script>
-import { getV1News, delV1News, postNewsTop } from '@/api/newsCenter/newCenter'
-import { getWorklist } from '@/api/personnel/selectedPerson'
+import { getV1News, delV1News, postNewsTop, getPublishUser } from '@/api/newsCenter/newCenter'
+// 2020-09-18: 使用新闻发布人查询接口代替在职员工接口
+// import { getWorklist } from '@/api/personnel/selectedPerson'
 import NewsManageSidebar from './components/NewsManageSidebar'
 import SearchPopover from '@/components/searchPopOver/index'
 import { mapGetters } from 'vuex'
@@ -240,7 +241,7 @@ const SEARCH_POPOVER_POPOVER_OPTIONS = [
       value: 'userId'
     },
     load: (params) => {
-      return getWorklist(params)
+      return getPublishUser(params)
     },
     config: { optionLabel: 'name', optionValue: 'id' }
   },
