@@ -110,5 +110,8 @@ export default {
 .footer-style {
   color: rgba(237, 248, 255, 0.6);
   bottom: 0;
+  left: 0;
+  position: absolute;
+  height: 48px;
 }
 </style>

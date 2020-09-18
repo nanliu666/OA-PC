@@ -14,7 +14,7 @@
       >
         <!-- 待处理 -->
         <div
-          v-if="toDoListData.length"
+          v-if="toDoActiveName === 'Pending'"
           slot="Pending"
         >
           <el-tooltip
@@ -56,7 +56,7 @@
         </div>
         <!-- 预警 -->
         <div
-          v-if="warningList.length"
+          v-if="toDoActiveName === 'Warning'"
           slot="Warning"
         >
           <el-tooltip
@@ -68,14 +68,16 @@
             :content="item.title"
             placement="top"
           >
-            <div class="text-box">
-              <p @click="jumpToDetail(item)">
-                【{{ item.type | filterType }}】{{ item.title }}
-              </p>
-              <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
-            </div>
-            <div class="time-box">
-              {{ item.createTime | filterDate }}
+            <div>
+              <div class="text-box">
+                <p @click="jumpToDetail(item)">
+                  【{{ item.type | filterType }}】{{ item.title }}
+                </p>
+                <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+              </div>
+              <div class="time-box">
+                {{ item.createTime | filterDate }}
+              </div>
             </div>
           </el-tooltip>
         </div>
@@ -288,24 +290,30 @@ export default {
     this.loadingMsgData()
   },
   methods: {
-    async getTodoListFun() {
-      let { data, totalNum } = await getTodoList(this.todoQuery)
-      this.toDoListData = data
-      this.toDoList[0].label = `待处理(${totalNum})`
+    getTodoListFun() {
+      getTodoList(this.todoQuery).then((res) => {
+        let { data, totalNum } = res
+        this.toDoListData = data
+        this.toDoList[0].label = `待处理(${totalNum})`
+      })
     },
-    async getWarnList() {
-      this.todoQuery.isWarn = 1
-      let { data, totalNum } = await getTodoList(this.todoQuery)
-      this.warningList = data
-      this.toDoList[1].label = `预警(${totalNum})`
+    getWarnList() {
+      let params = _.assign(this.todoQuery, { isWarn: 1 })
+      getTodoList(params).then((res) => {
+        let { data, totalNum } = res
+        this.warningList = data
+        this.toDoList[1].label = `预警(${totalNum})`
+        this.todoLoading = false
+      })
     },
     // 获取todoData
-    async loadingToDoData() {
+    loadingToDoData() {
       this.todoQuery.userId = this.userId
       this.todoLoading = true
       this.getTodoListFun()
-      this.getWarnList()
-      this.todoLoading = false
+      setTimeout(() => {
+        this.getWarnList()
+      }, 1)
     },
     // 处理滞留按钮
     ifShowWarn(row) {

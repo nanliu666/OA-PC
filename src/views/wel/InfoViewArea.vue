@@ -4,12 +4,22 @@
     class="info-wrap"
   >
     <!-- 个人信息 -->
-    <div class="info-box">
+    <div
+      class="info-box"
+      @click="showUserCenter"
+    >
       <!-- 头像 -->
-      <div class="avatar-row ">
-        <div class="avatar-img">
-          <i class="icon-usercircle" />
-        </div>
+      <div class="avatar-img-box">
+        <el-image
+          v-if="info.avatarUrl"
+          class="avatar-img"
+          :src="info.avatarUrl"
+          fit="fill"
+        />
+        <i
+          v-if="!info.avatarUrl"
+          class="icon-usercircle"
+        />
       </div>
       <!-- 姓名 -->
       <div class="name-row ">
@@ -27,6 +37,14 @@
     <div class="quick-access">
       <div class="title-wrap">
         <span class="title">快捷入口</span>
+        <el-dropdown @command="handleCommand">
+          <i class="el-icon-more" />
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="addMoreQuick">
+              快捷入口设置
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
       <div class="main-wrap">
         <div class="content">
@@ -142,6 +160,33 @@
 import { fetchApproveStat } from '@/api/msg/msg'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { mapGetters } from 'vuex'
+const userCenterMenu = {
+  menuName: '个人中心',
+  menuType: 'Dir',
+  children: [
+    {
+      menuId: '312122',
+      menuName: '个人信息',
+      menuType: 'Menu',
+      isOwn: 1,
+      isShow: 1,
+      code: 'userinfo',
+      alias: 'userInfo',
+      path: '/info/index',
+      children: []
+    },
+    {
+      menuId: '312123',
+      menuName: '安全设置',
+      isOwn: 1,
+      isShow: 1,
+      code: 'user_securitySetting',
+      alias: 'securitySetting',
+      path: '/info/securitySetting',
+      children: []
+    }
+  ]
+}
 export default {
   name: 'InfoViewArea',
 
@@ -165,6 +210,11 @@ export default {
     this.loadingUserInfo()
   },
   methods: {
+    showUserCenter() {
+      this.$store.dispatch('SetMenu', userCenterMenu)
+      this.$router.push('/info/index')
+    },
+    handleCommand() {},
     // 点击添加员工
     jumpToAddUser() {
       this.$router.push({
@@ -227,26 +277,36 @@ export default {
   height: 100%;
   background: #ffffff;
   overflow: auto;
+  box-shadow: 0px 8px 16px 4px rgba(0, 0, 0, 0.04), 0px 4px 4px 0px rgba(0, 0, 0, 0.04),
+    0px 0px 4px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
 }
 // 个人信息开始
 .info-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  // 头像
-  .avatar-row {
-    margin-top: 32px;
+  cursor: pointer;
+  padding-top: 32px;
+  .avatar-img-box {
+    height: 116px;
+    width: 116px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    background-color: #ececf3;
+    overflow: hidden;
     .avatar-img {
-      height: 116px;
-      width: 116px;
+      border: 4px solid #ffffff;
+      width: 104px;
+      height: 104px;
       border-radius: 100%;
-      .icon-usercircle {
-        font-size: 116px;
-        line-height: 116px;
-        // vertical-align: middle;
-        color: #cfd3d6;
-      }
+    }
+    .icon-usercircle {
+      font-size: 116px;
+      line-height: 116px;
+      color: #cfd3d6;
     }
   }
   // 姓名
@@ -256,6 +316,8 @@ export default {
       font-size: 16px;
       color: #202940;
       line-height: 24px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
     }
   }
   // 部门信息
@@ -270,10 +332,11 @@ export default {
     font-size: 12px;
     color: #a0a8ae;
     line-height: 18px;
+    font-weight: 400;
+    font-family: PingFangSC-Regular, PingFang SC;
   }
 }
 
-// 快捷入口开始
 .quick-access {
   // 标题
   .title-wrap {
@@ -281,6 +344,7 @@ export default {
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 0 24px;
 
     .title {
@@ -288,8 +352,9 @@ export default {
       font-size: 16px;
       color: #212a3f;
       line-height: 24px;
+      font-weight: 500;
     }
-    span {
+    i {
       cursor: pointer;
     }
   }
@@ -328,7 +393,7 @@ export default {
       }
       .content-item:hover {
         span {
-          color: #73b9ff;
+          color: #207efa;
         }
         position: relative;
         .Smectite {
@@ -340,12 +405,6 @@ export default {
           height: 100%;
           z-index: 10;
           background: rgba(255, 255, 255, 0.3);
-        }
-      }
-
-      .content-item:active {
-        span {
-          color: #115fd4;
         }
       }
     }
@@ -383,6 +442,7 @@ export default {
     color: #212a3f;
     line-height: 24px;
     padding-left: 24px;
+    font-weight: 500;
   }
   .main-wrap {
     display: flex;
@@ -404,7 +464,7 @@ export default {
           text-align: center;
           line-height: 32px;
           width: 100%;
-
+          font-weight: bold;
           margin: 24px 0 8px 0;
         }
         .handel {
@@ -419,10 +479,7 @@ export default {
         }
       }
       .content-item:hover span {
-        color: #73b9ff;
-      }
-      .content-item:active span {
-        color: #115fd4;
+        color: #207efa;
       }
     }
   }

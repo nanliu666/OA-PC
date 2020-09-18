@@ -221,7 +221,7 @@ export default {
   .content {
     // 头部
     .header {
-      padding: 16px 0;
+      padding-bottom: 16px;
       .title {
         span {
           font-size: 18px;

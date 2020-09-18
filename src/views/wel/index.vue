@@ -9,8 +9,8 @@
       <taskCenterCard />
       <scheduleCard />
       <noticeAndNews />
+      <mg-footer class="footer-style" />
     </div>
-    <mg-footer class="footer-style" />
   </div>
 </template>
 
@@ -39,7 +39,10 @@ export default {
 <style lang="scss" scoped>
 .footer-style {
   color: #a0a8ae;
-  bottom: -8px;
+  position: relative;
+  height: 32px;
+  width: 100vw;
+  margin-left: -332px;
 }
 .el-font-size {
   font-size: 14px;
@@ -47,19 +50,17 @@ export default {
 .page {
   padding-top: 24px;
   width: 100%;
-  padding-bottom: 32px;
   display: flex;
   justify-content: space-between;
   .aside {
     height: 100%;
     width: 332px;
-    box-shadow: 0px 8px 16px 4px rgba(0, 0, 0, 0.04), 0px 4px 4px 0px rgba(0, 0, 0, 0.04),
-      0px 0px 4px 0px rgba(0, 0, 0, 0.08);
-    border-radius: 4px;
+    padding-bottom: 32px;
   }
   .main {
     flex: 1;
     margin-left: 16px;
+    margin-right: -16px;
     height: calc(100% + 24px);
     margin-top: -24px;
     padding-top: 24px;

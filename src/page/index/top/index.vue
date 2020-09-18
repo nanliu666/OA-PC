@@ -99,9 +99,9 @@
       <el-dropdown>
         <span class="el-dropdown-link">
           <img
-            v-if="userInfo.avatar"
+            v-if="userInfo.avatar_url"
             class="top-bar__img"
-            :src="userInfo.avatar"
+            :src="userInfo.avatar_url"
           >
           <i
             v-else
