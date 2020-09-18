@@ -42,7 +42,7 @@ export default {
   position: relative;
   height: 32px;
   width: 100vw;
-  margin-left: -332px;
+  margin-left: -348px;
 }
 .el-font-size {
   font-size: 14px;
