@@ -1,21 +1,31 @@
 <template>
-  <div class="avue-logo">
-    <img src="../../../public/img/logo.png">
+  <div
+    class="avue-logo"
+    @click="goWork"
+  >
+    <img :src="JSON.parse(tenantContent).logo || logo">
   </div>
 </template>
 
 <script>
+import defaultLogoImg from '../../../public/img/logo.png'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Logo',
   data() {
-    return {}
+    return {
+      logo: defaultLogoImg
+    }
   },
   computed: {
-    ...mapGetters(['website', 'keyCollapse'])
+    ...mapGetters(['website', 'keyCollapse', 'tenantContent'])
   },
   created() {},
-  methods: {}
+  methods: {
+    goWork() {
+      this.$router.replace({ path: '/wel/index' })
+    }
+  }
 }
 </script>
 
@@ -31,6 +41,7 @@ export default {
   opacity: 0;
 }
 .avue-logo {
+  cursor: pointer;
   position: fixed;
   top: 0;
   left: 0;
@@ -50,6 +61,8 @@ export default {
   justify-content: center;
   img {
     display: block;
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

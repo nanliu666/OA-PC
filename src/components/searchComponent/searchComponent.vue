@@ -9,7 +9,7 @@
         <el-input
           v-model="fuzzySearch"
           placeholder="姓名/手机号码/工号"
-          @keyup.enter.native="handleSearch"
+          @input="search"
         >
           <i
             slot="suffix"
@@ -317,6 +317,9 @@ export default {
     handleRefresh() {
       this.$emit('seacrh', this.searchParams())
     },
+    search: _.debounce(function() {
+      this.handleSearch()
+    }, 500),
     handleSearch() {
       this.$emit('seacrh', this.searchParams())
       this.showCollapse = false

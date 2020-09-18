@@ -49,7 +49,7 @@
                     placeholder="岗位名称"
                     suffix-icon="el-icon-search"
                     style="width:200px;margin-right:12px;"
-                    @change="search"
+                    @input="search"
                   />
                 </div>
                 <div>
@@ -124,7 +124,7 @@ export default {
       selectionList: [],
       loading: false,
       isEdit: false,
-      title: '新建岗位类别',
+      title: '新建岗位',
       stationDialog: false,
       dialogVisible: false,
       isBatch: false,
@@ -254,9 +254,9 @@ export default {
         })
       })
     },
-    search() {
+    search: _.debounce(function() {
       this.getData()
-    },
+    }, 500),
     getJobData() {},
     closeBatch() {
       this.isBatch = false
@@ -264,7 +264,7 @@ export default {
     handlerAdd() {
       this.stationDialog = true
       this.isEdit = false
-      this.title = '新建岗位类别'
+      this.title = '新建岗位'
       this.row = {}
     },
     close() {
@@ -284,7 +284,7 @@ export default {
     handleEdit(row) {
       this.row = JSON.parse(JSON.stringify(row))
       this.isEdit = true
-      this.title = '编辑岗位类别'
+      this.title = '编辑岗位'
       this.stationDialog = true
     },
     handleExport() {

@@ -3,7 +3,10 @@
     class="avue-contail"
     :class="{ 'avue--collapse': isCollapse }"
   >
-    <div class="avue-header">
+    <div
+      class="avue-header"
+      :class="{ 'header-shadow': isFullscreen }"
+    >
       <logo />
       <!-- 顶部导航栏 -->
       <top ref="top" />

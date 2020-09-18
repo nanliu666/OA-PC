@@ -22,6 +22,16 @@ export default [
     name: '找回密码',
     component: () => import('@/page/login/getBackPW')
   },
+  {
+    meta: {
+      keepAlive: true,
+      isTab: false,
+      isAuth: false
+    },
+    path: '/selectMode',
+    name: '找回方式',
+    component: () => import('@/page/login/selectMode')
+  },
 
   {
     path: '/lock',

@@ -1,8 +1,5 @@
 <template>
-  <el-card
-    class="notice-card"
-    shadow="never"
-  >
+  <el-card class="notice-card">
     <div class="header">
       <span
         class="title"

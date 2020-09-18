@@ -32,17 +32,8 @@
             placeholder="姓名/工号"
             suffix-icon="el-icon-search"
             style="width:200px;margin-right:12px;"
-            @change="loadData"
+            @input="searchLoadData"
           />
-          <!--        <el-button-->
-          <!--          type="primary"-->
-          <!--          size="medium"-->
-          <!--          style="float:right;"-->
-          <!--          plain-->
-          <!--          @click="jumpAddUser"-->
-          <!--        >-->
-          <!--          添加员工-->
-          <!--        </el-button>-->
           <div>
             <span
               class="addUser"
@@ -211,6 +202,9 @@ export default {
     this.loadData()
   },
   methods: {
+    searchLoadData: _.debounce(function() {
+      this.loadData()
+    }, 500),
     handleAfterSubmit() {
       this.loadData()
     },

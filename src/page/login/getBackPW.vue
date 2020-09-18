@@ -5,7 +5,7 @@
     </div>
     <div class="out-container">
       <pageHeader
-        :title="'手机找回密码'"
+        :title="`${$route.query.mode === 'phone' ? '手机' : '邮箱'}修改密码`"
         :show-back="true"
       />
       <div class="getback-pw">
@@ -47,6 +47,7 @@
                 size="medium"
               >
                 <el-form-item
+                  v-if="$route.query.mode === 'phone'"
                   label="手机号码"
                   prop="phone"
                 >
@@ -60,7 +61,42 @@
                     @focus="resetIdentityFields('phone')"
                   />
                 </el-form-item>
+                <el-form-item
+                  v-if="$route.query.mode === 'email'"
+                  label="邮箱"
+                  prop="email"
+                >
+                  <el-input
+                    v-model="identity.form.email"
+                    class="phone-input"
+                    autofocus="true"
+                    size="small"
+                    auto-complete="off"
+                    :placeholder="$t('login.email')"
+                    @focus="resetIdentityFields('email')"
+                  />
+                </el-form-item>
+                <el-form-item
+                  label="辩证码"
+                  prop="captchaCode"
+                >
+                  <div style="display: flex">
+                    <el-input
+                      v-model="identity.form.captchaCode"
+                      class="test-code-input"
+                      size="small"
+                      auto-complete="off"
+                      :placeholder="$t('login.captchaCode')"
+                      @focus="resetIdentityFields('captchaCode')"
+                    />
 
+                    <img
+                      :src="identity.image"
+                      class="login-code-img"
+                      @click="refreshCode"
+                    >
+                  </div>
+                </el-form-item>
                 <el-form-item
                   label="验证码"
                   prop="code"
@@ -183,12 +219,12 @@
 </template>
 
 <script>
-import { isMobile, validatePW } from '@/util/validate'
+import { isMobile, validatePW, isEmail } from '@/util/validate'
 import { getCode, checkPhoneCode, checkPassword } from '../../api/personalInfo.js'
 import md5 from 'js-md5'
 import pageHeader from '@/components/page-header/pageHeader'
 import logo from '@/page/index/logo'
-let code = null
+import { getCaptcha } from '@/api/user'
 
 export default {
   components: {
@@ -206,12 +242,18 @@ export default {
         callback()
       }
     }
-
+    const validateEmail = (rule, value, callback) => {
+      if (!_this.identity.form.email) {
+        callback(new Error('请输入邮箱'))
+      } else if (_this.identity.form.email && !isEmail(value)) {
+        callback(new Error('邮箱格式不正确'))
+      } else {
+        callback()
+      }
+    }
     const validateCode = (rule, value, callback) => {
       if (!_this.identity.form.code) {
         callback(new Error('请输入六位验证码'))
-      } else if (_this.identity.form.code != code) {
-        callback(new Error('验证码不正确'))
       } else {
         callback()
       }
@@ -247,8 +289,12 @@ export default {
         msgText: '',
         msgTime: '',
         msgKey: false,
+        image: '',
         form: {
+          captchaCode: '',
+          captchaKey: '',
           phone: '',
+          email: '',
           code: ''
         },
         rules: {
@@ -265,7 +311,9 @@ export default {
               trigger: 'blur',
               validator: validateCode
             }
-          ]
+          ],
+          captchaCode: [{ required: true, message: '请输入辩证码', trigger: 'blur' }],
+          email: [{ required: true, validator: validateEmail, trigger: 'blur' }]
         }
       },
 
@@ -313,10 +361,17 @@ export default {
     }
   },
   created() {
+    this.refreshCode()
     this.identity.msgText = this.config.MSGINIT
     this.identity.msgTime = this.config.MSGTIME
   },
   methods: {
+    refreshCode() {
+      getCaptcha().then((res) => {
+        this.identity.form.captchaKey = res.key
+        this.identity.image = res.image
+      })
+    },
     resetIdentityFields(name) {
       this.$refs['identity'].clearValidate([name])
     },
@@ -329,11 +384,14 @@ export default {
     next() {
       if (this.step == 1) {
         this.$refs['identity'].validate((isPass) => {
-          if (isPass && this.identity.form.code == code) {
+          if (isPass) {
             //验证手机验证码
             let params = {
-              phone: this.identity.form.phone,
-              value: this.identity.form.code
+              phonenum: this.identity.form.phone,
+              smsCode: this.identity.form.code,
+              email: this.identity.form.email,
+              captchaCode: this.identity.form.captchaCode,
+              captchaKey: this.identity.form.captchaKey
             }
             checkPhoneCode(params).then((res) => {
               this.userId = res.userId
@@ -350,8 +408,10 @@ export default {
             let params = {
               userId: this.userId,
               newPassword: md5(newpsw),
+              oldPassword: '',
               phonenum: this.identity.form.phone,
-              smsCode: this.identity.form.code
+              smsCode: this.identity.form.code,
+              email: this.identity.form.email
             }
             checkPassword(params).then(() => {
               this.step++
@@ -365,15 +425,15 @@ export default {
 
     handleSend() {
       if (this.identity.msgKey) return
-      this.$refs['identity'].validateField('phone', (errorMsg) => {
+      let checkCode = this.$route.query.mode === 'email' ? 'email' : 'phone'
+      this.$refs['identity'].validateField(checkCode, (errorMsg) => {
         if (!errorMsg) {
           //1.发送获取验证码的网络请求
-
           let params = {
-            phone: this.identity.form.phone
+            phonenum: this.identity.form.phone,
+            email: this.identity.form.email
           }
-          getCode(params).then((res) => {
-            code = res.value
+          getCode(params).then(() => {
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
             this.identity.msgKey = true
@@ -416,9 +476,23 @@ export default {
   color: #545b66;
   line-height: 68px;
 }
-
+.login-code-img {
+  width: 100px;
+  height: 34px;
+  margin-right: 4px;
+  background-color: #fdfdfd;
+  border: 1px solid #f0f0f0;
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  line-height: 38px;
+  text-indent: 5px;
+  text-align: center;
+  cursor: pointer !important;
+}
 .getback-pw {
-  height: calc(100vh - 68px);
+  height: calc(100vh - 68px - 56px - 32px);
   background: #fff;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.05);
   border-radius: 4px;
@@ -511,6 +585,9 @@ export default {
   border-radius: 4px;
   border-radius: 4px;
   color: #fff;
+}
+.el-button + .el-button {
+  margin-left: 0;
 }
 .success-icon {
   height: 72px;

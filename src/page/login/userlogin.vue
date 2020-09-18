@@ -8,30 +8,29 @@
     label-width="0"
     size="medium"
   >
-    <!-- <el-form-item v-if="tenantMode" prop="tenantId">
-      <el-input
-        size="small"
-        @keyup.enter.native="handleLogin"
-        v-model="loginForm.tenantId"
-        auto-complete="off"
-        :placeholder="$t('login.tenantId')"
-        :disabled="true"
-      >
-        <i slot="prefix" class="icon-quanxian" />
-      </el-input>
-    </el-form-item>-->
-    <el-form-item prop="username">
+    <!-- username是工号--历史遗留问题，极度不语义化。 -->
+    <el-form-item
+      v-if="loginMode !== 'account'"
+      prop="username"
+    >
       <el-input
         v-model="loginForm.username"
         auto-complete="off"
         :placeholder="$t('login.username')"
         @keyup.enter.native="handleLogin"
-      >
-        <!-- <i
-          slot="prefix"
-          class="icon-yonghu"
-        />-->
-      </el-input>
+      />
+    </el-form-item>
+    <!-- account是用户名 -->
+    <el-form-item
+      v-if="loginMode === 'account'"
+      prop="account"
+    >
+      <el-input
+        v-model="loginForm.account"
+        auto-complete="off"
+        :placeholder="$t('login.account')"
+        @keyup.enter.native="handleLogin"
+      />
     </el-form-item>
     <el-form-item prop="password">
       <el-input
@@ -42,7 +41,7 @@
         @keyup.enter.native="handleLogin"
       >
         <i
-          v-if="passwordType === 'password'"
+          v-if="passwordType !== 'password'"
           slot="suffix"
           class="icon-basics-eyeopen-outlined eye-icon"
           @click="showPassword"
@@ -66,9 +65,7 @@
             auto-complete="off"
             :placeholder="$t('login.code')"
             @keyup.enter.native="handleLogin"
-          >
-            <!-- <i slot="prefix" class="icon-yanzhengma" /> -->
-          </el-input>
+          />
         </el-col>
         <el-col :span="8">
           <div class="login-code">
@@ -92,11 +89,19 @@
       </el-button>
     </el-form-item>
     <el-form-item>
-      <div
-        class="forget-password"
-        @click="forgetPW"
-      >
-        忘记密码？
+      <div class="form-bottom">
+        <div
+          class="change-mode"
+          @click="changeMode"
+        >
+          {{ loginMode === 'username' ? '用户名登录' : '工号登录' }}
+        </div>
+        <div
+          class="forget-password"
+          @click="forgetPW"
+        >
+          忘记密码？
+        </div>
       </div>
     </el-form-item>
   </el-form>
@@ -104,19 +109,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import { info } from '@/api/system/tenant'
 import { getCaptcha, getTenantInfo } from '@/api/user'
 
 export default {
   name: 'Userlogin',
-  props: [],
   data() {
     return {
+      // 默认使用工号登录
+      loginMode: 'username',
       tenantMode: this.website.tenantMode,
       loginForm: {
+        // 工号登录
+        account: '',
         //租户ID
         tenantId: '',
-        //用户名
+        //用户名登录
         username: '',
         //密码
         password: '',
@@ -130,9 +137,7 @@ export default {
         image: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
       },
       loginRules: {
-        // tenantId: [
-        //   { required: false, message: '请输入租户ID', trigger: 'blur' }
-        // ],
+        account: [{ required: false, message: '请输入用户名', trigger: 'blur' }],
         username: [{ required: true, message: '请输入工号', trigger: 'blur' }],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -143,8 +148,9 @@ export default {
       passwordType: 'password'
     }
   },
+
   computed: {
-    ...mapGetters(['tagWel'])
+    ...mapGetters(['tagWel', 'tenantContent'])
   },
   created() {
     this.getTenant()
@@ -152,6 +158,9 @@ export default {
   },
   mounted() {},
   methods: {
+    changeMode() {
+      this.loginMode = this.loginMode === 'username' ? 'account' : 'username'
+    },
     refreshCode() {
       getCaptcha().then((res) => {
         this.loginForm.key = res.key
@@ -169,6 +178,11 @@ export default {
             text: '登录中,请稍后...',
             spinner: 'el-icon-loading'
           })
+          if (this.loginMode === 'username') {
+            this.loginForm.account = ''
+          } else {
+            this.loginForm.username = ''
+          }
           this.$store
             .dispatch('LoginByUsername', this.loginForm)
             .then((res) => {
@@ -192,6 +206,7 @@ export default {
       //   process.env.NODE_ENV === 'development' ? 'apitest.epro.com.cn' : window.location.host
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
+        this.$store.commit('SET_TENANT_CONTENT', JSON.stringify(res))
         this.$store.commit('SET_TENANT_ID', res.tenantId)
       })
       // 临时指定域名，方便测试
@@ -206,7 +221,7 @@ export default {
       // })
     },
     forgetPW() {
-      this.$router.push({ path: '/getBackPW' })
+      this.$router.push({ path: '/selectMode' })
     }
   }
 }
@@ -218,5 +233,15 @@ export default {
 }
 .eye-icon {
   color: #757c85;
+}
+.form-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .change-mode {
+    font-size: 12px;
+    color: #409eff;
+    cursor: pointer;
+  }
 }
 </style>

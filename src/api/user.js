@@ -1,7 +1,7 @@
 import request from '@/router/axios'
 import website from '@/config/website'
 
-export const loginByUsername = (tenantId, username, password, type, key, code) =>
+export const loginByUsername = (tenantId, username, password, type, key, code, account) =>
   request({
     url: '/api/blade-auth/oauth/token',
     method: 'post',
@@ -12,6 +12,7 @@ export const loginByUsername = (tenantId, username, password, type, key, code) =
     },
     params: {
       tenantId,
+      account,
       username,
       password,
       grant_type: website.captchaMode ? 'captcha' : 'password',

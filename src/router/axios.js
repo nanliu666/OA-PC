@@ -83,11 +83,29 @@ instance.interceptors.response.use(
     // 如果请求为非200否者默认统一处理
 
     if (status !== 200) {
-      Message({
-        message: message,
-        type: 'error',
-        showClose: true
-      })
+      if (status === 8000) {
+        this.$confirm(
+          '你的账号当前在另一台设备登录，你被迫下线；若账号存在安全风险，建议重新登录后更改密码？',
+          '提示',
+          {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '关闭窗口',
+            type: 'warning'
+          }
+        )
+          .then(() => {
+            router.push({ path: '/login' })
+          })
+          .catch(() => {
+            router.push({ path: '/login' })
+          })
+      } else {
+        Message({
+          message: message,
+          type: 'error',
+          showClose: true
+        })
+      }
       return Promise.reject(new Error(message))
     }
     if (String.prototype.endsWith.call(res.config.url, '/oauth/token')) {

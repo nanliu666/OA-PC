@@ -149,12 +149,16 @@ export default {
         ...this.form
       }
       this.loading = true
-      putCategoryDefine(data).then(() => {
-        this.$message.success('修改成功')
-        this.loading = false
-        this.$emit('onSubmit', data)
-        this.dialog = false
-      })
+      putCategoryDefine(data)
+        .then(() => {
+          this.$message.success('修改成功')
+          this.loading = false
+          this.$emit('onSubmit', data)
+          this.dialog = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     onClickSave({ again = false }, reset) {
       this.$refs.form.validate((vaild) => {
@@ -179,7 +183,7 @@ export default {
             })
             .catch(() => {
               this.loading = false
-              this.dialog = false
+              // this.dialog = false
             })
         }
       })
