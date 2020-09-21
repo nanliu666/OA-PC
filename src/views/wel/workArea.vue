@@ -453,11 +453,11 @@ export default {
         return
       }
       try {
-        await this.$confirm('确定已读该信息?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
+        // await this.$confirm('确定已读该信息?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // })
         let params = {
           id,
           userId: this.userId
