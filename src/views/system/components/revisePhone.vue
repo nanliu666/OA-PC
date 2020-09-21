@@ -190,7 +190,7 @@
 </template>
 
 <script>
-import { isMobile, isEmail } from '@/util/validate'
+import { isMobile, isEmailReg } from '@/util/validate'
 import { getCode, checkPswOrPhone, checkPswOrEmail } from '../../../api/personalInfo'
 import { mapGetters } from 'vuex'
 import md5 from 'js-md5'
@@ -211,7 +211,7 @@ export default {
     const validateEmail = (rule, value, callback) => {
       if (!_this.identity.form.email) {
         callback(new Error('请输入邮箱'))
-      } else if (_this.identity.form.email && !isEmail(value)) {
+      } else if (_this.identity.form.email && !isEmailReg(value)) {
         callback(new Error('邮箱格式不正确'))
       } else {
         callback()

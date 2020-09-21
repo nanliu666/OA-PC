@@ -14,7 +14,7 @@
       >
         <!-- 待处理 -->
         <div
-          v-if="toDoListData.length"
+          v-if="toDoActiveName === 'Pending'"
           slot="Pending"
         >
           <el-tooltip
@@ -56,7 +56,7 @@
         </div>
         <!-- 预警 -->
         <div
-          v-if="warningList.length"
+          v-if="toDoActiveName === 'Warning'"
           slot="Warning"
         >
           <el-tooltip
@@ -122,21 +122,20 @@
             :content="item.content"
             placement="top"
           >
-            <div @click="handelRead(item)">
-              <div
-                class="item-row new-item-tips"
-                :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
-              >
-                <div class="detail">
-                  <div
-                    class="icon"
-                    :class="item.isRead === 0 ? '' : 'no-read'"
-                  />
-                  {{ item.content }}
-                </div>
-                <div class="time">
-                  {{ item.createTime | filterDate }}
-                </div>
+            <div
+              class="item-row new-item-tips"
+              :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
+              @click="handelRead(item)"
+            >
+              <div class="detail">
+                <div
+                  class="icon"
+                  :class="item.isRead === 0 ? '' : 'no-read'"
+                />
+                {{ item.content }}
+              </div>
+              <div class="time">
+                {{ item.createTime | filterDate }}
               </div>
             </div>
           </el-tooltip>
@@ -291,24 +290,30 @@ export default {
     this.loadingMsgData()
   },
   methods: {
-    async getTodoListFun() {
-      let { data, totalNum } = await getTodoList(this.todoQuery)
-      this.toDoListData = data
-      this.toDoList[0].label = `待处理(${totalNum})`
+    getTodoListFun() {
+      getTodoList(this.todoQuery).then((res) => {
+        let { data, totalNum } = res
+        this.toDoListData = data
+        this.toDoList[0].label = `待处理(${totalNum})`
+      })
     },
-    async getWarnList() {
-      this.todoQuery.isWarn = 1
-      let { data, totalNum } = await getTodoList(this.todoQuery)
-      this.warningList = data
-      this.toDoList[1].label = `预警(${totalNum})`
+    getWarnList() {
+      let params = _.assign(this.todoQuery, { isWarn: 1 })
+      getTodoList(params).then((res) => {
+        let { data, totalNum } = res
+        this.warningList = data
+        this.toDoList[1].label = `预警(${totalNum})`
+        this.todoLoading = false
+      })
     },
     // 获取todoData
-    async loadingToDoData() {
+    loadingToDoData() {
       this.todoQuery.userId = this.userId
       this.todoLoading = true
       this.getTodoListFun()
-      this.getWarnList()
-      this.todoLoading = false
+      setTimeout(() => {
+        this.getWarnList()
+      }, 1)
     },
     // 处理滞留按钮
     ifShowWarn(row) {
@@ -453,11 +458,6 @@ export default {
         return
       }
       try {
-        // await this.$confirm('确定已读该信息?', '提示', {
-        //   confirmButtonText: '确定',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // })
         let params = {
           id,
           userId: this.userId
@@ -500,7 +500,7 @@ export default {
   /deep/.is-active {
     font-size: 16px;
     color: #202940;
-    font-weight: bold;
+    font-weight: 600;
   }
   /deep/.el-tabs__content {
     min-height: 215px;
@@ -588,6 +588,11 @@ export default {
   background: #ffffff;
   overflow-y: auto;
   position: relative;
+  .item-row {
+    &:last-child {
+      border-bottom: 0px;
+    }
+  }
   .view-all {
     position: absolute;
     bottom: 12px;
@@ -607,8 +612,6 @@ export default {
     display: inline-block;
     text-align: start;
     width: 70%;
-    // padding-left: 24px;
-    // 。。。
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -635,7 +638,7 @@ export default {
   .new-item {
     border-bottom: solid 1px #eeeeee;
     .detail {
-      color: #718199;
+      color: #a0a8ae;
       .no-read {
         background: #ffffff 100%;
       }
@@ -650,9 +653,6 @@ export default {
     justify-content: space-between;
     border-bottom: solid 1px #eeeeee;
     height: 42px;
-    &:last-child {
-      border-bottom: 0px;
-    }
   }
   .no-msg-box {
     text-align: center;

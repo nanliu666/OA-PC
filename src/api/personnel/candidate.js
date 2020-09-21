@@ -64,6 +64,10 @@ export const getCandidateOutInfo = (params) => {
 export const getPersonRecord = (params) => {
   return get('/api/log/v1/person/record', params)
 }
+// 校验手机邮箱是否存在
+export const checkEmailOrPhone = (params) => {
+  return post('/api/user/v1/person/info/check', params)
+}
 
 /**
  * offer查询接口
