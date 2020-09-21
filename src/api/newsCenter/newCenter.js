@@ -162,3 +162,11 @@ export const getNewsCenter = (params) => get('/news/v1/news/center', params)
  *       }>>} 返回
  */
 export const getCenterDetail = (params) => get('/news/v1/news/center/detail', params)
+
+/**
+ * 新闻发布人查询接口
+ * @param {object} params 参数
+ * @param {number} params.pageNo 页码
+ * @param {number} params.pageSize 页码大小
+ */
+export const getPublishUser = (params) => get('/news/v1/news/publish/user', params)
