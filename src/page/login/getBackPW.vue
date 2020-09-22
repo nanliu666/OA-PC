@@ -436,8 +436,8 @@ export default {
           getCode(params).then(() => {
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
-            this.identity.msgKey = true
             const time = setInterval(() => {
+              this.identity.msgKey = true
               this.identity.msgTime--
               this.identity.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
               if (this.identity.msgTime === 0) {

@@ -53,7 +53,7 @@
             </div>
             <div class="detail-box">
               <el-progress
-                stroke-width="4"
+                :stroke-width="4"
                 :percentage="parseInt((item.completeNum / item.totalNum) * 100)"
                 :format="() => ''"
               />

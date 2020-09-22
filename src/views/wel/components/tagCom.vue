@@ -12,7 +12,6 @@
       <i
         v-if="icon"
         class="icon-arrow-right-outlined"
-        style="margin-right:12px;cursor: pointer; "
       />
     </div>
     <!-- 内容 -->
@@ -96,12 +95,13 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
+  width: 150px;
+  cursor: pointer;
   .icon-arrow-right-outlined {
     color: #a0a8ae;
     font-size: 12px;
   }
   .title {
-    cursor: pointer;
     font-size: 18px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 600;

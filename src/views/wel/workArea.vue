@@ -129,6 +129,7 @@
             >
               <div class="detail">
                 <div
+                  v-if="item.isRead === 0"
                   class="icon"
                   :class="item.isRead === 0 ? '' : 'no-read'"
                 />
@@ -168,6 +169,7 @@
               >
                 <div class="detail">
                   <div
+                    v-if="item.isRead === 0"
                     class="icon"
                     :class="item.isRead === 0 ? '' : 'no-read'"
                   />
@@ -432,12 +434,14 @@ export default {
         this.workMsgQuery.userId = this.userId
         this.systemMsgQuery.userId = this.userId
         let workRes = await getMsgList(this.workMsgQuery)
+        this.newList[0].label += `(${workRes.totalNum})`
         this.msgWorkList = workRes.data
         this.msgWorkList.sort((a, b) => {
           return a.isRead - b.isRead
         })
         let systemRes = await getMsgList(this.systemMsgQuery)
         this.msgSystemList = systemRes.data
+        this.newList[1].label += `(${systemRes.totalNum})`
         this.msgSystemList.sort((a, b) => {
           return a.isRead - b.isRead
         })

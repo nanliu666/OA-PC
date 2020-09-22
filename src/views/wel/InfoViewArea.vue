@@ -22,8 +22,8 @@
         />
       </div>
       <!-- 姓名 -->
-      <div class="name-row ">
-        <span>{{ info.name }}</span>
+      <div class="name-row">
+        <span>{{ info.name || '暂无数据' }}</span>
       </div>
       <!-- 部门信息 -->
       <div class="org-row ">
@@ -46,77 +46,42 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <div class="main-wrap">
+      <div
+        v-loading="quickLoading"
+        class="main-wrap"
+      >
         <div class="content">
           <div
+            v-for="(item, index) in showEntryList"
+            :key="index"
             class="content-item"
-            @click="handelClick"
+            @click="quickEnterlClick(item.id)"
           >
             <div class="Smectite" />
-            <div class="icon-box tips">
+            <div
+              class="icon-box tips"
+              :class="{ add: item.id === 'add' }"
+            >
               <svg
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-remind-bicolor" />
+                <use :[symbolKey]="`#${item.icon ? item.icon : 'icon-infor-small'}`" />
               </svg>
             </div>
-            <span>新建提醒</span>
+            <span>{{ item.name }}</span>
           </div>
           <div
-            class="content-item"
-            @click="jumpToCommonAppr"
+            v-if="showEntryList.length >= 9"
+            class="load-more"
+            @click="triggerMore"
           >
-            <div class="Smectite" />
-            <div class="icon-box apply">
-              <svg
-                class="icon"
-                aria-hidden="true"
-              >
-                <use xlink:href="#icon-approval-Seal-bicolor" />
-              </svg>
+            <div class="icon-container">
+              <i
+                :class="[isShowUp ? 'el-icon-arrow-down' : 'el-icon-arrow-up']"
+                class="reset-icon"
+              />
             </div>
-            <span>通用申请</span>
-          </div>
-          <div
-            class="content-item"
-            @click="handelClick"
-          >
-            <div class="Smectite" />
-            <div class="icon-box  arrange">
-              <svg
-                class="icon"
-                aria-hidden="true"
-              >
-                <use xlink:href="#icon-interview-bicolor" />
-              </svg>
-            </div>
-            <span>安排面试</span>
-          </div>
-          <div
-            class="content-item"
-            @click="goToMailList"
-          >
-            <div class="Smectite" />
-            <div class="icon-box book">
-              <svg
-                class="icon"
-                aria-hidden="true"
-              >
-                <use xlink:href="#icon-directories-bicolor" />
-              </svg>
-            </div>
-            <span>通讯录</span>
-          </div>
-          <div
-            class="content-item"
-            @click="jumpToAddUser"
-          >
-            <div class="Smectite" />
-            <div class="icon-box add">
-              <i class="icon-tips-plus-outlined" />
-            </div>
-            <span>添加员工</span>
           </div>
         </div>
       </div>
@@ -153,11 +118,16 @@
         </div>
       </div>
     </div>
+    <entry-dialog
+      ref="refEntry"
+      :init-data="_.cloneDeep(initQuickEnter)"
+      @refresh="refreshEntry"
+    />
   </div>
 </template>
 
 <script>
-import { fetchApproveStat } from '@/api/msg/msg'
+import { fetchApproveStat, getShortcutInfo } from '@/api/msg/msg'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { mapGetters } from 'vuex'
 const userCenterMenu = {
@@ -189,9 +159,17 @@ const userCenterMenu = {
 }
 export default {
   name: 'InfoViewArea',
-
+  components: {
+    EntryDialog: () => import('./components/addEntryQuick')
+  },
   data() {
     return {
+      quickLoading: false,
+      isShowLoadMore: true,
+      isShowUp: true,
+      symbolKey: 'xlink:href',
+      showEntryList: [],
+      initQuickEnter: [],
       info: {},
       // 待我处理
       waitForMeNum: 0,
@@ -204,17 +182,50 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo', 'userId'])
   },
+
   created() {
     this.loadingUserInfo()
+    this.getQuickEntryList()
   },
   methods: {
+    triggerMore() {
+      this.isShowUp = !this.isShowUp
+      this.getShowEntryList(this.isShowUp)
+    },
+    getShowEntryList(conditions) {
+      this.showEntryList = conditions ? this.initQuickEnter.slice(0, 9) : this.initQuickEnter
+    },
+    /**
+     * 获取用户快捷入口
+     */
+    getQuickEntryList() {
+      let params = {
+        userId: this.userId
+      }
+      this.quickLoading = true
+      getShortcutInfo(params).then((res) => {
+        let initQuickEnterList = res.filter((item) => !!item.path)
+        this.initQuickEnter = initQuickEnterList
+        this.getShowEntryList(this.initQuickEnter.length > 9)
+        this.quickLoading = false
+      })
+    },
+    quickEnterlClick(id) {
+      let pathData = this.initQuickEnter.filter((item) => item.id === id)
+      this.$router.push(pathData[0].path)
+    },
     showUserCenter() {
       this.$store.dispatch('SetMenu', userCenterMenu)
       this.$router.push('/info/index')
     },
-    handleCommand() {},
+    refreshEntry() {
+      this.getQuickEntryList()
+    },
+    handleCommand() {
+      this.$refs.refEntry.entryShow = true
+    },
     // 点击添加员工
     jumpToAddUser() {
       this.$router.push({
@@ -238,13 +249,6 @@ export default {
       } catch {
         this.loading = false
       }
-      // let { ccNum, myNum, waitNum } = await fetchApproveStat({ userId: this.userInfo.user_id })
-      // this.numObj = { ccNum, myNum, waitNum }
-      // let res = await getStaffBasicInfo({ userId: this.userInfo.user_id }).finally(() => {
-      // 	this.loading = false
-      // })
-      // this.$store.dispatch('set_info', res)
-      // this.info = res
     },
     // 跳去通讯录
     goToMailList() {
@@ -272,6 +276,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.load-more {
+  cursor: pointer;
+  margin-top: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(50% - 28px - 24px);
+    height: 1px;
+    background-color: #e3e7e9;
+  }
+  &::before {
+    left: 24px;
+  }
+  &::after {
+    right: 24px;
+  }
+  .icon-container {
+    background-color: #a0a8ae;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .reset-icon {
+      font-size: 12px;
+      color: #ffffff;
+    }
+    .el-icon-arrow-down {
+      margin-left: 1px;
+      margin-top: 2px;
+    }
+  }
+}
 .info-wrap {
   width: 100%;
   height: 100%;
@@ -363,15 +407,20 @@ export default {
     display: flex;
     justify-content: center;
     .content {
-      width: 248px;
       display: flex;
       flex-wrap: wrap;
-      > :nth-child(3n + 2) {
-        margin: 0 40px;
+      justify-content: space-between;
+      width: 100%;
+      &::after {
+        flex: auto;
+        content: ' ';
+        width: calc(100% / 3); //这个宽度和子元素宽度一致
+        height: 0;
+        display: block;
       }
       .content-item {
+        width: calc(100% / 3);
         margin-top: 14px;
-        width: 56px;
         height: 76px;
         display: flex;
         flex-direction: column;
@@ -388,7 +437,6 @@ export default {
           letter-spacing: -0.05px;
           display: inline-block;
           text-align: center;
-          width: 56px;
         }
       }
       .content-item:hover {
@@ -428,8 +476,9 @@ export default {
   border: 1px dashed #e3e7e9;
   border-radius: 24px;
   color: #a0a8ae;
-  .icon-tips-plus-outlined::before {
-    font-size: 16px;
+  .icon {
+    width: 16px;
+    height: 16px;
   }
 }
 
