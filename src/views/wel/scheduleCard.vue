@@ -6,7 +6,7 @@
         @click="jumpScheduleCenter"
       >
         <span class="title">
-          <span>日程中心</span>
+          <span style="margin-right:8px">日程中心</span>
           <i
             class="icon-arrow-right-outlined"
             style="margin-right:12px;cursor: pointer; "
