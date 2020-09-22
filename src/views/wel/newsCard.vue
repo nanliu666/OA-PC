@@ -3,15 +3,15 @@
     v-loading="loading"
     class="NewsCard wrapper"
   >
-    <div class="wrapper__top">
+    <div
+      class="wrapper__top"
+      @click="() => navigateToNewsCenter()"
+    >
       <span class="wrapper__top--title">
         {{ `新闻中心(${page.total})` }}
       </span>
       <span class="wrapper__top--operation">
-        <i
-          class="icon-arrow-right-outlined"
-          @click="() => navigateToNewsCenter()"
-        />
+        <i class="icon-arrow-right-outlined" />
       </span>
     </div>
 
@@ -54,7 +54,7 @@
       </ul>
     </div>
 
-    <div class="wrapper__bottom">
+    <!-- <div class="wrapper__bottom">
       <span
         v-if="!_.isEmpty(paneData)"
         class="wrapper__bottom--operation"
@@ -62,7 +62,7 @@
       >
         查看全部
       </span>
-    </div>
+    </div> -->
   </el-card>
 </template>
 
@@ -89,7 +89,7 @@ export default {
     }
   },
   created() {
-    // this.refresh()
+    this.refresh()
   },
 
   methods: {
@@ -163,17 +163,19 @@ $color_placeholder: #757C85
     flex-direction: column
   &__top
     display: flex
-    justify-content: space-between
+    align-items: center
+    // justify-content: space-between
     margin-bottom: 1rem
-    &--title,&--operation
+    cursor: pointer
+    &--title
       font-weight: bold
-      font-size: medium
-    &--operation
-      color: $color_active
-      cursor: pointer
-      font-weight: normal
+      font-size: 18px
+    &--operation i
+      color: $color_icon
+      margin-left: 8px
+      font-size: 12px
   .wrapper__content
-    height: 300px
+    height: 256px
     overflow: auto
     .news
       &__item

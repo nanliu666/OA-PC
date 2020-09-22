@@ -37,7 +37,8 @@ export default {
   data() {
     return {
       itemHome: {
-        menuName: '工作台'
+        menuName: '工作台',
+        menuId: null
       }
     }
   },
