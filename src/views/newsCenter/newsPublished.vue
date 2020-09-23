@@ -188,8 +188,8 @@ const TABLE_COLUMNS = [
     maxWidth: 100
   },
   {
-    label: '发布时间',
-    prop: 'publishTime',
+    label: '创建时间',
+    prop: 'createTime',
     minWidth: 100
   },
   {
@@ -234,6 +234,7 @@ const SEARCH_CONFIG = {
       data: '',
       label: '发布日期',
       type: 'dataPicker',
+      // TODO: 列表现在使用的是创建时间,但是查询使用的还是发布时间(api文档没有对此更新)
       field: 'beginPublishTime,endPublishTime',
       config: { type: 'daterange', 'range-separator': '至' }
     }
