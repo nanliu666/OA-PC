@@ -66,7 +66,7 @@
                 v-model="checked.group"
                 class="item"
               >
-                显示组负责人织
+                显示组负责人
               </el-checkbox>
               <el-checkbox
                 v-model="checked.number"
@@ -851,9 +851,11 @@ export default {
         mouseDragLeave: (e, node) => that.mouseDragLeave(e, node),
         mouseDrop: (e, node) => that.mouseDrop(e, node),
         mouseLeave: () => that.hideContextMenu(),
-        mouseHover: (e, node) => {
+        mouseEnter: (e, node) => {
           let diagram = node.diagram
-          that.showContextMenu(node, diagram)
+          setTimeout(() => {
+            that.showContextMenu(node, diagram)
+          }, 300)
         }
       }
     },
