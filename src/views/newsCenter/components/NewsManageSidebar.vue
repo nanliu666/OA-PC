@@ -104,7 +104,7 @@
         type="text"
         @click="() => handleCreateBtnClick()"
       >
-        新建标签
+        新建栏目
       </el-button>
     </div>
   </el-card>

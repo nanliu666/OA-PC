@@ -4,15 +4,15 @@
     :style="{ width }"
   >
     <!-- 标题 -->
-    <div class="header">
-      <span class="title">
-        <span>{{ title }}</span>
-        <i
-          v-if="icon"
-          class="icon-arrow-right-outlined"
-          style="margin-right:12px;cursor: pointer; "
-        />
-      </span>
+    <div
+      class="header"
+      @click="clickHeader"
+    >
+      <span class="title">{{ title }}</span>
+      <i
+        v-if="icon"
+        class="icon-arrow-right-outlined"
+      />
     </div>
     <!-- 内容 -->
     <el-tabs
@@ -68,6 +68,9 @@ export default {
   },
   created() {},
   methods: {
+    clickHeader() {
+      this.$emit('click')
+    },
     Click(tab, event) {
       this.$emit('input', this.chooseName)
       this.$emit('tab-click', tab, event)
@@ -90,17 +93,21 @@ export default {
 
 .header {
   display: flex;
-  justify-content: space-between;
-}
-.title {
+  align-items: center;
+  margin-bottom: 16px;
+  width: 150px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 18px;
-  padding: 14px 0 16px;
-  line-height: 28px;
-  color: #202940;
-  .icon-arrow-right-outlined:before {
+  .icon-arrow-right-outlined {
     color: #a0a8ae;
+    font-size: 12px;
+  }
+  .title {
+    font-size: 18px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 600;
+    color: #202940;
+    line-height: 28px;
+    margin-right: 8px;
   }
 }
 .button--wr {

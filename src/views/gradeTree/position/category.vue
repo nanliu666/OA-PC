@@ -49,29 +49,10 @@
                     placeholder="职位类别名称"
                     suffix-icon="el-icon-search"
                     style="width:200px;margin-right:12px;"
-                    @change="search"
+                    @input="search"
                   />
-                  <!--                  <el-input-->
-                  <!--                    v-model="form.name"-->
-                  <!--                    placeholder="职位类别名称"-->
-                  <!--                    size="medium"-->
-                  <!--                    class="input-with-select"-->
-                  <!--                  >-->
-                  <!--                    <el-button-->
-                  <!--                      slot="append"-->
-                  <!--                      icon="el-icon-search"-->
-                  <!--                      @click="search"-->
-                  <!--                    />-->
-                  <!--                  </el-input>-->
                 </div>
                 <div>
-                  <!--                  <el-button-->
-                  <!--                    type="primary"-->
-                  <!--                    size="medium"-->
-                  <!--                    @click="getData"-->
-                  <!--                  >-->
-                  <!--                    <i class="el-icon-refresh" />-->
-                  <!--                  </el-button>-->
                   <i
                     class="icon  el-icon-refresh-right"
                     @click="getData"
@@ -278,9 +259,9 @@ export default {
         })
       })
     },
-    search() {
+    search: _.debounce(function() {
       this.getData()
-    },
+    }, 500),
     getJobData() {},
     closeBatch() {
       this.isBatch = false

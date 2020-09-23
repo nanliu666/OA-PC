@@ -1,9 +1,9 @@
 <template>
   <div class="setting-info">
-    <div class="personal-info">
-      <span><i class="el-icon-arrow-left" /></span>
-      <span>个人信息</span>
-    </div>
+    <page-header
+      title="个人信息"
+      show-back
+    />
     <!-- 个人大概信息 -->
     <div class="info-survey">
       <el-container>
@@ -558,7 +558,6 @@ li {
 .setting-info {
   min-height: 100%;
   font-family: 'PingFangSC-Semibold';
-  padding: 10px 32px 32px 32px !important;
 }
 .personal-info {
   font-size: 18px;
@@ -568,7 +567,6 @@ li {
 .info-survey {
   position: relative;
   height: 112px;
-  margin-top: 20px;
   background: #ffffff;
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.04),
     0 4px 8px 4px rgba(0, 0, 0, 0.04);

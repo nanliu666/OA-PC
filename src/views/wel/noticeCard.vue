@@ -1,18 +1,12 @@
 <template>
-  <el-card
-    class="notice-card"
-    shadow="never"
-  >
+  <el-card class="notice-card">
     <div class="header">
       <span
         class="title"
         @click="toNoticeCenter"
       >
         <span>通知公告</span>
-        <i
-          class="icon-arrow-right-outlined"
-          style="margin-right:12px;cursor: pointer; "
-        />
+        <i class="icon-arrow-right-outlined" />
       </span>
     </div>
     <ul class="content-ul">
@@ -93,6 +87,8 @@ export default {
   .header {
     .title {
       cursor: pointer;
+      display: flex;
+      align-items: center;
       span {
         font-size: 18px;
         color: #202940;
@@ -101,6 +97,10 @@ export default {
       }
       .icon-arrow-right-outlined {
         color: #a0a8ae;
+        margin-left: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        cursor: pointer;
       }
     }
   }

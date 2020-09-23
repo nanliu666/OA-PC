@@ -74,46 +74,53 @@ export default [
         path: '/personnel/leave/applyLeave',
         name: '离职申请',
         component: () => import('@/views/personnel/leave/applyLeave')
-      }
-    ]
-  },
-  {
-    path: '/taskCenter/taskCenter',
-    name: '任务中心',
-    meta: {
-      fullscreen: true
-    },
-    component: () => import('@/views/taskCenter/taskCenter')
-  },
-  {
-    path: '/quickAccess/mailList',
-    name: '通讯录',
-    meta: {
-      fullscreen: true
-    },
-    component: () => import('@/views/quickAccess/mailList')
-  },
-  {
-    path: '/taskCenter/scheduleCenter',
-    name: '日程中心',
-    meta: {
-      fullscreen: true
-    },
-    component: () => import('@/views/taskCenter/scheduleCenter')
-  },
-  {
-    component: Layout,
-    path: '/noticeCenter',
-    name: '通知公告',
-    children: [
+      },
+      {
+        path: '/taskCenter/taskCenter',
+        name: '任务中心',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import('@/views/taskCenter/taskCenter')
+      },
+      {
+        path: '/quickAccess/mailList',
+        name: '通讯录',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import('@/views/quickAccess/mailList')
+      },
+      {
+        path: '/newsCenter/newsCenter',
+        name: '新闻中心',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import('@/views/newsCenter/newsCenter')
+      },
+      {
+        path: '/taskCenter/scheduleCenter',
+        name: '日程中心',
+        meta: {
+          fullscreen: true
+        },
+        component: () => import('@/views/taskCenter/scheduleCenter')
+      },
       {
         path: '/noticeCenter/noticeList',
         name: '通知公告',
+        meta: {
+          fullscreen: true
+        },
         component: () => import('@/views/noticeCenter/noticeList')
       },
       {
         path: '/noticeCenter/noticeDetail',
         name: '通知详情',
+        meta: {
+          fullscreen: true
+        },
         component: () => import('@/views/noticeCenter/noticeDetail')
       }
     ]

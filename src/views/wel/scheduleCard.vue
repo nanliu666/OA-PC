@@ -1,9 +1,12 @@
 <template>
   <div class="scheduleWrap">
-    <div class="content">
-      <div class="header">
+    <el-card class="content">
+      <div
+        class="header"
+        @click="jumpScheduleCenter"
+      >
         <span class="title">
-          <span>日程中心</span>
+          <span style="margin-right:8px">日程中心</span>
           <i
             class="icon-arrow-right-outlined"
             style="margin-right:12px;cursor: pointer; "
@@ -95,18 +98,9 @@
               <div>有计划工作才会有效率</div>
             </div>
           </div>
-
-          <div class="view-all">
-            <el-button
-              type="text"
-              @click="jumpScheduleCenter"
-            >
-              查看全部
-            </el-button>
-          </div>
         </div>
       </div>
-    </div>
+    </el-card>
     <addSchDialog
       ref="schDialog"
       :refresh="loadData"
@@ -190,6 +184,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.icon-arrow-left-outlined,
+.icon-arrow-right-outlined {
+  font-size: 10px;
+}
 /deep/.el-calendar-table td.is-selected {
   background: #ffffff;
 }
@@ -227,13 +225,14 @@ export default {
 .scheduleWrap {
   margin-top: 19px;
   background-color: #ffffff;
-  height: 418px;
   .content {
     // 头部
     .header {
-      margin-left: 24px;
-      padding: 16px 0;
+      cursor: pointer;
+      padding-bottom: 16px;
       .title {
+        display: flex;
+        align-items: center;
         span {
           font-size: 18px;
           color: #202940;
@@ -249,7 +248,7 @@ export default {
   .main-box {
     display: flex;
     justify-content: space-between;
-
+    padding-bottom: 20px;
     .calendar-box {
       flex: 1;
       height: 302px;
@@ -276,6 +275,7 @@ export default {
           }
           .prev-month,
           .next-month {
+            width: 20px;
             opacity: 0.4;
             background: #a0a8ae;
             border-radius: 4px;

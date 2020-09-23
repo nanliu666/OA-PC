@@ -1,5 +1,5 @@
 <template>
-  <div
+  <el-card
     v-loading="taskLoading"
     class="taskCenter-wrap"
   >
@@ -8,6 +8,7 @@
       title="我的任务"
       :label-array="labelArray"
       class="tasklist"
+      @click="goTOTaskCenter"
     >
       <!-- 进行中 -->
       <div
@@ -33,10 +34,12 @@
           <!-- 任务类型 -->
           <div class="task-type">
             <div class="type-row">
-              任务类型：<span>{{ item.type | filterType }}任务</span>
+              任务类型：
+              <span>{{ item.type | filterType }}任务</span>
             </div>
             <div class="endTime-row">
-              截止日期：<span>{{ item.endDate }}</span>
+              截止日期：
+              <span>{{ item.endDate }}</span>
               <span
                 v-if="isOverdue(item)"
                 class="isOverdue"
@@ -50,6 +53,7 @@
             </div>
             <div class="detail-box">
               <el-progress
+                :stroke-width="4"
                 :percentage="parseInt((item.completeNum / item.totalNum) * 100)"
                 :format="() => ''"
               />
@@ -77,20 +81,8 @@
           任务中心
         </el-button>
       </div>
-      <div
-        slot="foot"
-        class="view-all"
-      >
-        <el-button
-          type="text"
-          size="medium"
-          @click="goTOTaskCenter"
-        >
-          查看全部
-        </el-button>
-      </div>
     </tagCom>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -160,7 +152,7 @@ export default {
       // 请求参数
       taskQuery: {
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 3,
         title: '',
         type: '',
         beginEndDate: '',
@@ -205,17 +197,31 @@ export default {
   },
 
   created() {
-    this.loadData()
+    this.getList()
     this.getCommonDict()
   },
   methods: {
+    async getList() {
+      this.taskQuery.isOverdue = 1
+      await this.loadData()
+      this.taskQuery.isOverdue = 0
+      await this.loadData()
+    },
     // 获取数据
     async loadData() {
       this.taskQuery.userId = this.userId
       this.taskLoading = true
+
       let { data } = await fetchTaskList(this.taskQuery).finally(() => {
         this.taskLoading = false
       })
+      let totalNum = data.length
+      // console.log(this.taskQuery.isOverdue)
+      if (this.taskQuery.isOverdue == 0) {
+        this.labelArray[0].label = `进行中(${totalNum})`
+      } else {
+        this.labelArray[1].label = `已逾期(${totalNum})`
+      }
       this.taskDataList = data
     },
     // 获取相关字典组
@@ -244,7 +250,7 @@ export default {
 <style lang="scss" scoped>
 .taskCenter-wrap {
   .tasklist {
-    height: 393px;
+    height: 300px;
     position: relative;
   }
   background: #ffffff;
@@ -269,15 +275,8 @@ export default {
     color: #202940;
     font-weight: bold;
   }
-  /deep/.header {
-    padding-left: 24px;
-    margin-top: 0;
-  }
-  /deep/.el-tabs__nav-scroll {
-    padding-left: 24px;
-  }
   /deep/.el-tabs__content {
-    height: 243px;
+    min-height: 243px;
     overflow-y: auto;
   }
 
@@ -298,11 +297,13 @@ export default {
   }
   .task-item {
     height: 80px;
-    margin-left: 24px;
     border-bottom: 1px solid #e3e7e9;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    &:last-child {
+      border-bottom: 0;
+    }
     // 任务内容
     .task-introduce {
       flex: 2;
@@ -312,10 +313,12 @@ export default {
           font-size: 14px;
           color: #202940;
           line-height: 22px;
-          font-weight: bold;
+          font-weight: 550;
           margin-bottom: 4px;
+          font-family: PingFangSC-Medium, PingFang SC;
         }
         .emerType {
+          color: #ff6464;
           margin-left: 16px;
         }
       }

@@ -1,239 +1,198 @@
 <template>
-  <el-row>
-    <el-col :span="24">
-      <div class="workArea-wrap">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <!-- 代办事项 -->
-            <div
-              v-loading="todoLoading"
-              class="todolist-wrap"
-            >
-              <tagCom
-                v-model="toDoActiveName"
-                title="待办事项"
-                :label-array="toDoList"
-                class="todolist"
-              >
-                <!-- 待处理 -->
-                <div
-                  v-if="toDoListData.length"
-                  slot="Pending"
-                >
-                  <el-tooltip
-                    v-for="(item, index) in toDoListData"
-                    :key="index"
-                    class="item-row"
-                    :open-delay="500"
-                    :enterable="false"
-                    :content="item.title"
-                    placement="top"
-                  >
-                    <div>
-                      <div class="text-box">
-                        <p @click="jumpToDetail(item)">
-                          【{{ item.type | filterType }}】{{ item.title }}
-                        </p>
-                        <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
-                      </div>
-                      <div class="time-box">
-                        {{ item.createTime | filterDate }}
-                      </div>
-                    </div>
-                  </el-tooltip>
-                </div>
-                <div
-                  v-else
-                  slot="Pending"
-                >
-                  <div class="placeholder-box">
-                    您当前没有待办事项，前往
-                    <el-button
-                      type="text"
-                      size="medium"
-                      @click="goTodoCenter"
-                    >
-                      代办中心
-                    </el-button>
-                  </div>
-                </div>
-                <!-- 预警 -->
-                <div
-                  v-if="warningList.length"
-                  slot="Warning"
-                >
-                  <el-tooltip
-                    v-for="(item, index) in warningList"
-                    :key="index"
-                    class="item-row"
-                    :open-delay="500"
-                    :enterable="false"
-                    :content="item.title"
-                    placement="top"
-                  >
-                    <div>
-                      <div class="text-box">
-                        <p @click="jumpToDetail(item)">
-                          【{{ item.type | filterType }}】{{ item.title }}
-                        </p>
-                        <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
-                      </div>
-                      <div class="time-box">
-                        {{ item.createTime | filterDate }}
-                      </div>
-                    </div>
-                  </el-tooltip>
-                </div>
-                <div
-                  v-else
-                  slot="Warning"
-                >
-                  <div class="placeholder-box">
-                    您当前没有待办事项，前往
-                    <el-button
-                      type="text"
-                      size="medium"
-                      @click="goTodoCenter"
-                    >
-                      代办中心
-                    </el-button>
-                  </div>
-                </div>
-                <div
-                  v-if="toDoActiveName === 'Pending' ? toDoListData.length : warningList.length"
-                  slot="foot"
-                  class="view-all"
-                >
-                  <el-button
-                    type="text"
-                    size="medium"
-                    @click="goTodoCenter"
-                  >
-                    查看全部
-                  </el-button>
-                </div>
-              </tagCom>
+  <div class="workArea-wrap">
+    <!-- 代办事项 -->
+    <el-card
+      v-loading="todoLoading"
+      class="todolist-wrap"
+    >
+      <tagCom
+        v-model="toDoActiveName"
+        title="待办事项"
+        :label-array="toDoList"
+        class="todolist"
+        @click="goTodoCenter"
+      >
+        <!-- 待处理 -->
+        <div
+          v-if="toDoActiveName === 'Pending'"
+          slot="Pending"
+        >
+          <el-tooltip
+            v-for="(item, index) in toDoListData"
+            :key="index"
+            class="item-row"
+            :open-delay="500"
+            :enterable="false"
+            :content="item.title"
+            placement="top"
+          >
+            <div>
+              <div class="text-box">
+                <p @click="jumpToDetail(item)">
+                  【{{ item.type | filterType }}】{{ item.title }}
+                </p>
+                <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+              </div>
+              <div class="time-box">
+                {{ item.createTime | filterDate }}
+              </div>
             </div>
-          </el-col>
-          <el-col :span="12">
-            <!-- 消息通知 -->
-            <div
-              v-loading="warnLoading"
-              class="news-wrap"
+          </el-tooltip>
+        </div>
+        <div
+          v-else
+          slot="Pending"
+        >
+          <div class="placeholder-box">
+            您当前没有待办事项，前往
+            <el-button
+              type="text"
+              size="medium"
+              @click="goTodoCenter"
             >
-              <tagCom
-                v-model="newActiveName"
-                title="消息通知"
-                :label-array="newList"
-                class="new"
-              >
-                <div
-                  v-if="msgWorkList.length"
-                  slot="workNews"
-                >
-                  <el-tooltip
-                    v-for="(item, index) in msgWorkList"
-                    :key="index"
-                    :open-delay="500"
-                    :enterable="false"
-                    :content="item.content"
-                    placement="top"
-                  >
-                    <div @click="handelRead(item)">
-                      <div
-                        class="item-row new-item-tips"
-                        :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
-                      >
-                        <!-- <div class="title"> -->
-                        <!-- <div v-if="item.isRead === 0" class="icon" /> -->
-                        <!-- <span>{{ item.title }}</span> -->
-                        <!-- </div> -->
-                        <div class="detail">
-                          <div
-                            class="icon"
-                            :class="item.isRead === 0 ? '' : 'no-read'"
-                          />
-                          {{ item.content }}
-                        </div>
-                        <div class="time">
-                          {{ item.createTime | filterDate }}
-                        </div>
-                      </div>
-                    </div>
-                  </el-tooltip>
-                </div>
-                <div
-                  v-else
-                  slot="workNews"
-                >
-                  <div class="no-msg-box">
-                    暂时没有工作消息通知
-                  </div>
-                </div>
-                <div
-                  v-if="msgSystemList.length"
-                  slot="systemNews"
-                >
-                  <el-tooltip
-                    v-for="(item, index) in msgSystemList"
-                    :key="index"
-                    :open-delay="500"
-                    :enterable="false"
-                    effect="dark"
-                    :content="item.content"
-                    placement="top"
-                  >
-                    <div @click="handelRead(item)">
-                      <div
-                        class="item-row new-item-tips"
-                        :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
-                      >
-                        <!-- <div class="title">
-													<div v-if="item.isRead === 0" class="icon"  />
-													<span>{{ item.title }}</span>
-												</div> -->
-                        <div class="detail">
-                          <div
-                            class="icon"
-                            :class="item.isRead === 0 ? '' : 'no-read'"
-                          />
-                          {{ item.content }}
-                        </div>
-                        <div class="time">
-                          {{ item.createTime | filterDate }}
-                        </div>
-                      </div>
-                    </div>
-                  </el-tooltip>
-                </div>
-                <div
-                  v-else
-                  slot="systemNews"
-                >
-                  <div class="no-msg-box">
-                    暂时没有工作消息通知
-                  </div>
-                </div>
-                <div
-                  v-if="newActiveName === 'workNews' ? msgWorkList.length : msgSystemList.length"
-                  slot="foot"
-                  class="view-all"
-                >
-                  <el-button
-                    type="text"
-                    size="medium"
-                    @click="goMsgCenter"
-                  >
-                    查看全部
-                  </el-button>
-                </div>
-              </tagCom>
+              代办中心
+            </el-button>
+          </div>
+        </div>
+        <!-- 预警 -->
+        <div
+          v-if="toDoActiveName === 'Warning'"
+          slot="Warning"
+        >
+          <el-tooltip
+            v-for="(item, index) in warningList"
+            :key="index"
+            class="item-row"
+            :open-delay="500"
+            :enterable="false"
+            :content="item.title"
+            placement="top"
+          >
+            <div>
+              <div class="text-box">
+                <p @click="jumpToDetail(item)">
+                  【{{ item.type | filterType }}】{{ item.title }}
+                </p>
+                <span v-if="ifShowWarn(item)">滞留{{ getWarnText(item) }}天</span>
+              </div>
+              <div class="time-box">
+                {{ item.createTime | filterDate }}
+              </div>
             </div>
-          </el-col>
-        </el-row>
-      </div>
-    </el-col>
-  </el-row>
+          </el-tooltip>
+        </div>
+        <div
+          v-else
+          slot="Warning"
+        >
+          <div class="placeholder-box">
+            您当前没有待办事项，前往
+            <el-button
+              type="text"
+              size="medium"
+              @click="goTodoCenter"
+            >
+              代办中心
+            </el-button>
+          </div>
+        </div>
+      </tagCom>
+    </el-card>
+    <!-- 消息通知 -->
+    <el-card
+      v-loading="warnLoading"
+      class="news-wrap"
+    >
+      <tagCom
+        v-model="newActiveName"
+        title="消息通知"
+        :label-array="newList"
+        class="new"
+        @click="goMsgCenter"
+      >
+        <div
+          v-if="msgWorkList.length"
+          slot="workNews"
+        >
+          <el-tooltip
+            v-for="(item, index) in msgWorkList"
+            :key="index"
+            :open-delay="500"
+            :enterable="false"
+            :content="item.content"
+            placement="top"
+          >
+            <div
+              class="item-row new-item-tips"
+              :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
+              @click="handelRead(item)"
+            >
+              <div class="detail">
+                <div
+                  v-if="item.isRead === 0"
+                  class="icon"
+                  :class="item.isRead === 0 ? '' : 'no-read'"
+                />
+                {{ item.content }}
+              </div>
+              <div class="time">
+                {{ item.createTime | filterDate }}
+              </div>
+            </div>
+          </el-tooltip>
+        </div>
+        <div
+          v-else
+          slot="workNews"
+        >
+          <div class="no-msg-box">
+            暂时没有工作消息通知
+          </div>
+        </div>
+        <div
+          v-if="msgSystemList.length"
+          slot="systemNews"
+        >
+          <el-tooltip
+            v-for="(item, index) in msgSystemList"
+            :key="index"
+            :open-delay="500"
+            :enterable="false"
+            effect="dark"
+            :content="item.content"
+            placement="top"
+          >
+            <div @click="handelRead(item)">
+              <div
+                class="item-row new-item-tips"
+                :class="item.isRead === 0 ? 'new-item-tips' : 'new-item'"
+              >
+                <div class="detail">
+                  <div
+                    v-if="item.isRead === 0"
+                    class="icon"
+                    :class="item.isRead === 0 ? '' : 'no-read'"
+                  />
+                  {{ item.content }}
+                </div>
+                <div class="time">
+                  {{ item.createTime | filterDate }}
+                </div>
+              </div>
+            </div>
+          </el-tooltip>
+        </div>
+        <div
+          v-else
+          slot="systemNews"
+        >
+          <div class="no-msg-box">
+            暂时没有工作消息通知
+          </div>
+        </div>
+      </tagCom>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -284,9 +243,9 @@ export default {
       toDoActiveName: 'Pending',
       // 请求参数
       todoQuery: {
-        userId: '',
-        pageNo: '',
-        pageSize: '',
+        userId: this.userId,
+        pageNo: 1,
+        pageSize: 6,
         isWarn: '',
         status: 'UnFinished'
       },
@@ -308,7 +267,7 @@ export default {
       newActiveName: 'workNews',
       workMsgQuery: {
         pageNo: '1',
-        pageSize: '10',
+        pageSize: 6,
         userId: '',
         type: 'Work',
         isRead: null
@@ -333,23 +292,30 @@ export default {
     this.loadingMsgData()
   },
   methods: {
+    getTodoListFun() {
+      getTodoList(this.todoQuery).then((res) => {
+        let { data, totalNum } = res
+        this.toDoListData = data
+        this.toDoList[0].label = `待处理(${totalNum})`
+      })
+    },
+    getWarnList() {
+      let params = _.assign(this.todoQuery, { isWarn: 1 })
+      getTodoList(params).then((res) => {
+        let { data, totalNum } = res
+        this.warningList = data
+        this.toDoList[1].label = `预警(${totalNum})`
+        this.todoLoading = false
+      })
+    },
     // 获取todoData
-    async loadingToDoData() {
-      try {
-        this.todoQuery.userId = this.userId
-        this.todoLoading = true
-        this.todoQuery.isWarn = null
-        let toDoRes = await getTodoList(this.todoQuery)
-        this.toDoListData = toDoRes.data
-        this.toDoList[0].label = `待处理(${toDoRes.totalNum})`
-        this.todoQuery.isWarn = 1
-        let warningRes = await getTodoList(this.todoQuery)
-        this.warningList = warningRes.data
-        this.toDoList[1].label = `预警(${warningRes.totalNum})`
-        this.todoLoading = false
-      } catch (error) {
-        this.todoLoading = false
-      }
+    loadingToDoData() {
+      this.todoQuery.userId = this.userId
+      this.todoLoading = true
+      this.getTodoListFun()
+      setTimeout(() => {
+        this.getWarnList()
+      }, 1)
     },
     // 处理滞留按钮
     ifShowWarn(row) {
@@ -468,12 +434,14 @@ export default {
         this.workMsgQuery.userId = this.userId
         this.systemMsgQuery.userId = this.userId
         let workRes = await getMsgList(this.workMsgQuery)
+        this.newList[0].label += `(${workRes.totalNum})`
         this.msgWorkList = workRes.data
         this.msgWorkList.sort((a, b) => {
           return a.isRead - b.isRead
         })
         let systemRes = await getMsgList(this.systemMsgQuery)
         this.msgSystemList = systemRes.data
+        this.newList[1].label += `(${systemRes.totalNum})`
         this.msgSystemList.sort((a, b) => {
           return a.isRead - b.isRead
         })
@@ -494,11 +462,6 @@ export default {
         return
       }
       try {
-        await this.$confirm('确定已读该信息?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
         let params = {
           id,
           userId: this.userId
@@ -519,6 +482,9 @@ export default {
 <style lang="scss" scoped>
 // 代办事项
 .workArea-wrap {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
   /deep/.el-tabs__item {
     font-size: 16px;
     color: #757c85;
@@ -538,27 +504,21 @@ export default {
   /deep/.is-active {
     font-size: 16px;
     color: #202940;
-    font-weight: bold;
-  }
-  /deep/.header {
-    padding-left: 24px;
-    margin-top: 0;
-  }
-  /deep/.el-tabs__nav-scroll {
-    padding-left: 24px;
+    font-weight: 600;
   }
   /deep/.el-tabs__content {
-    height: 215px;
-    overflow-y: auto;
+    min-height: 215px;
   }
 }
 
 .todolist-wrap {
-  min-width: 340px;
+  width: calc(50% - 8px);
+  box-shadow: 0px 8px 24px 4px rgba(0, 0, 0, 0.05), 0px 4px 16px 0px rgba(0, 0, 0, 0.03),
+    0px 2px 5px -4px rgba(0, 0, 0, 0.08);
   height: 375px;
   background: #ffffff;
   position: relative;
-  overflow-y: auto;
+  overflow-y: hidden;
   .view-all {
     position: absolute;
     bottom: 12px;
@@ -577,8 +537,10 @@ export default {
     display: flex;
     justify-content: space-between;
     border-bottom: solid 1px #eeeeee;
-    padding: 0 24px;
-    height: 43px;
+    height: 42px;
+    &:last-child {
+      border-bottom: 0px;
+    }
     .text-box {
       display: flex;
       justify-self: start;
@@ -623,25 +585,23 @@ export default {
 
 // 消息中心
 .news-wrap {
-  min-width: 340px;
+  width: calc(50% - 8px);
+  box-shadow: 0px 8px 24px 4px rgba(0, 0, 0, 0.05), 0px 4px 16px 0px rgba(0, 0, 0, 0.03),
+    0px 2px 5px -4px rgba(0, 0, 0, 0.08);
   height: 375px;
   background: #ffffff;
   overflow-y: auto;
   position: relative;
+  .item-row {
+    &:last-child {
+      border-bottom: 0px;
+    }
+  }
   .view-all {
     position: absolute;
     bottom: 12px;
     left: 24px;
   }
-  // 公共样式
-  // .title {
-  // 	min-width: 100px;
-  // 	font-family: PingFangSC-Medium;
-  // 	font-size: 14px;
-  // 	line-height: 43px;
-  // 	color: #718199;
-  // 	display: inline-block;
-  // }
   .time {
     margin-left: 24px;
     font-size: 14px;
@@ -656,8 +616,6 @@ export default {
     display: inline-block;
     text-align: start;
     width: 70%;
-    // padding-left: 24px;
-    // 。。。
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -665,17 +623,6 @@ export default {
 
   .new-item-tips {
     border-bottom: solid 1px #eeeeee;
-    // .title {
-    // 	.icon {
-    // 		margin-right: 8px;
-    // 		width: 6px;
-    // 		height: 6px;
-    // 		border-radius: 100%;
-    // 		background: #ff6464 100%;
-    // 		display: inline-block;
-    // 		vertical-align: middle;
-    // 	}
-    // }
     .detail {
       color: #202940;
       .icon {
@@ -694,12 +641,8 @@ export default {
   }
   .new-item {
     border-bottom: solid 1px #eeeeee;
-    // .title {
-    // 	padding-left: 14px;
-    // 	box-sizing: border-box;
-    // }
     .detail {
-      color: #718199;
+      color: #a0a8ae;
       .no-read {
         background: #ffffff 100%;
       }
@@ -713,8 +656,7 @@ export default {
     display: flex;
     justify-content: space-between;
     border-bottom: solid 1px #eeeeee;
-    padding: 0 24px;
-    height: 43px;
+    height: 42px;
   }
   .no-msg-box {
     text-align: center;

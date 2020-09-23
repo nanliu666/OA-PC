@@ -11,7 +11,6 @@
         @click.native="openHome(itemHome)"
       >
         <template slot="title">
-          <!-- <i :class="itemHome.source" /> -->
           <span>{{ generateTitle(itemHome) }}</span>
         </template>
       </el-menu-item>
@@ -22,11 +21,6 @@
           @click.native="openMenu(item)"
         >
           <template slot="title">
-            <!-- <i
-              v-if="item.icon"
-              :class="item.icon"
-              style="padding-right: 5px;"
-            /> -->
             <span>{{ generateTitle(item) }}</span>
           </template>
         </el-menu-item>
@@ -43,7 +37,8 @@ export default {
   data() {
     return {
       itemHome: {
-        menuName: '工作台'
+        menuName: '工作台',
+        menuId: null
       }
     }
   },
@@ -70,3 +65,10 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.avue-top .el-menu--horizontal > .el-menu-item {
+  :hover {
+    color: rgba(32, 126, 250, 0.8);
+  }
+}
+</style>
