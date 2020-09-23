@@ -315,7 +315,7 @@ export default {
         } else {
           this.activeData.__pc__.props.type = 'datetimerange'
         }
-        this.activeData.__mobile__.props.pickerType = 'datatime'
+        this.activeData.__mobile__.props.pickerType = 'datetime'
       }
     },
     getRules(path, label) {
