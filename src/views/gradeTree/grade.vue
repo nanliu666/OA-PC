@@ -402,6 +402,10 @@ export default {
       })
     },
     submit() {},
+    /**
+     * @author guanfenda
+     * @desc 获取结构树参数
+     * */
     getOrgData() {
       let params = {
         orgId: this.orgForm.orgId || '0'
@@ -429,22 +433,33 @@ export default {
           })
       })
     },
+    /***
+     * @author guanfenda
+     * @desc 处理组织修改回调方法，
+     *
+     * */
     orgOnsubmit() {
       (async () => {
         await this.getOrgData()
         this.load()
       })()
     },
+    /***
+     * @author guanfenda
+     * @desc 处理职位修改回调方法，
+     *
+     * */
     positionOnsubmit() {
       (async () => {
         await this.getOrgData()
         this.load()
       })()
     },
-    init() {
-      this.init2()
-      // this.init3()
-    },
+    /***
+     * @author guanfenda
+     *
+     * @desc 处理架构图初始化视图
+     * */
     diagram() {
       this.myDiagram = $(
         go.Diagram,
@@ -469,6 +484,10 @@ export default {
         }
       )
     },
+    /**
+     * @author guanfenda
+     * @desc 处理修改监听
+     * */
     modified() {
       this.myDiagram.addDiagramListener('Modified', () => {
         let button = document.getElementById('SaveButton')
@@ -482,6 +501,10 @@ export default {
         this.save()
       })
     },
+    /**
+     * @author guandenda
+     * @desc 处理删除监听
+     * */
     SelectionDeleting() {
       this.myDiagram.addDiagramListener('SelectionDeleting', (e) => {
         let part = e.subject.first() // e.subject is the this.myDiagram.selection collection,
@@ -505,6 +528,11 @@ export default {
         this.myDiagram.commitTransaction('clear boss')
       })
     },
+    /**
+     * @author guanfenda
+     * @desc 处理菜单默认事件
+     *
+     * */
     prevent(cxElement) {
       cxElement.addEventListener(
         'contextmenu',
@@ -515,6 +543,11 @@ export default {
         false
       )
     },
+    /**
+     * @author guanfenda
+     * @desc 处理设置不同等级显示不同颜色
+     *
+     * */
     setColor() {
       // type Enterprise-企业，Company-公司，Department-部门，Group-小组，Job-职位
       let typeBgColor = {
@@ -570,17 +603,30 @@ export default {
         })
       }
     },
+    /**
+     * @author guanfenda
+     * @desc  处理 拖拽的节点 和 选择的放置的节点 的关系
+     * @param 一种结果（node1 子节点 node2 父节点）另一种结果是 （node1 拖拽的节点 node2 选择的放置的节点）
+     * */
     mayWorkFor(node1, node2) {
       if (!(node1 instanceof go.Node)) return false // must be a Node
       if (node1 == node2) return false // cannot work for yourself
       if (node2.isInTreeOf(node1)) return false // cannot work for someone who works for you
       return true
     },
+    /**
+     * @author guanfenda
+     * @desc 隐藏菜单
+     * */
     hideContextMenu() {
       let cxElement = document.getElementById('contextMenu')
       cxElement.classList.remove('show-menu')
       window.removeEventListener('click', this.hideCX, true)
     },
+    /**
+     * @author guanfenda
+     * @desc 显示菜单
+     * */
     showContextMenu(obj, diagram) {
       let cxElement = document.getElementById('contextMenu')
       if (this.editStatus) return
@@ -595,6 +641,10 @@ export default {
       cxElement.style.top = mousePt.y + 'px'
       window.addEventListener('click', this.hideCX, true)
     },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示菜单
+     * */
     maybeShowItem(elt, pred, id) {
       switch (id) {
         case 'newOrg':
@@ -611,6 +661,10 @@ export default {
           break
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示组织
+     * */
     newOrg(pred, elt) {
       if (pred.type !== this.type[4]) {
         elt.style.display = 'block'
@@ -618,13 +672,24 @@ export default {
         elt.style.display = 'none'
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示职位
+     * */
     newPosition(elt) {
       elt.style.display = 'block'
     },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示编辑
+     * */
     edit(elt) {
       elt.style.display = 'block'
     },
-
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示删除
+     * */
     deletes(data, elt) {
       if (data.parentId !== '0') {
         elt.style.display = 'block'
@@ -632,11 +697,19 @@ export default {
         elt.style.display = 'none'
       }
     },
+    /**
+     * @author guanfenda
+     * @desc  取消菜单
+     * */
     hideCX() {
       if (this.myDiagram.currentTool instanceof go.ContextMenuTool) {
         this.myDiagram.currentTool.doCancel()
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 名片上两个倒角
+     * */
     RoundedTopRectangle() {
       go.Shape.defineFigureGenerator('RoundedTopRectangle', function(shape, w, h) {
         // 这个图像获取了一个参数，角的尺寸
@@ -663,6 +736,10 @@ export default {
         return geo
       })
     },
+    /**
+     * @author guanfenda
+     * @desc 名片下两个倒角
+     * */
     RoundedBottomRectangle() {
       go.Shape.defineFigureGenerator('RoundedBottomRectangle', function(shape, w, h) {
         // 这个图像获取了一个参数，角的尺寸
@@ -690,11 +767,11 @@ export default {
         return geo
       })
     },
+    /**
+     * @author guanfenda
+     * @desc 鼠标拖拽移动进来事件
+     * */
     mouseDragEnter(e, node) {
-      // let diagram = node.diagram
-      // let selnode = diagram.selection.first()
-
-      // if (that.mayWorkFor(selnode, node)) return
       let shape = node.findObject('SHAPE')
       let shape1 = node.findObject('SHAPE1')
       let shape2 = node.findObject('SHAPE2')
@@ -707,6 +784,10 @@ export default {
         shape2 && (shape2.fill = '#757c85')
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 鼠标拖拽移动离开事件
+     * */
     mouseDragLeave(e, node) {
       // let diagram = node.diagram
       // let selnode = diagram.selection.first()
@@ -720,6 +801,10 @@ export default {
         shape2 && (shape2.fill = shape2._prevFill) // restore the original brush
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 鼠标拖拽移动放下事件
+     * */
     mouseDrop(e, node) {
       let that = this
       let diagram = node.diagram
@@ -754,6 +839,10 @@ export default {
         }
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 模板事件
+     * */
     event() {
       let that = this
       return {
@@ -768,6 +857,11 @@ export default {
         }
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 底图
+     *
+     * */
     SHAPE() {
       return $(go.Shape, 'Rectangle', {
         name: 'SHAPE',
@@ -780,6 +874,10 @@ export default {
         cursor: 'pointer'
       })
     },
+    /**
+     * @author guanfenda
+     * @desc 显示 名称（职位或者组织）
+     * */
     SHAPE1(isgroud) {
       if (isgroud) {
         return $(
@@ -841,6 +939,10 @@ export default {
         )
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 显示 负责人或者员工（职位或者组织）
+     * */
     SHAPE2(isgroud = false) {
       if (isgroud) return ''
       return $(
@@ -873,6 +975,10 @@ export default {
         )
       )
     },
+    /**
+     * @author guanfenda
+     * @desc 图形组合显示
+     * */
     PanelTable(isgroud = false) {
       return $(
         go.Panel,
@@ -895,6 +1001,10 @@ export default {
         ) // end Table Pane
       ) // end Horizontal Panel
     },
+    /**
+     * @author guanfenda
+     * @desc 默认模板
+     * */
     nodeTemplate() {
       let that = this
       this.myDiagram.nodeTemplate = $(
@@ -915,6 +1025,10 @@ export default {
         that.PanelTable()
       ) // end Node
     },
+    /**
+     * @author guanfenda
+     * @desc 不显示负责人模板
+     * */
     groupTemplate() {
       let that = this
       return $(
@@ -935,6 +1049,10 @@ export default {
         that.PanelTable(true)
       )
     },
+    /**
+     * @author guanfenda
+     * @desc 线
+     * */
     linkTemplate() {
       this.myDiagram.linkTemplate = $(
         go.Link,
@@ -943,7 +1061,12 @@ export default {
         $(go.Shape, { strokeWidth: 2, stroke: '#DDE3E8' })
       ) // the link shape
     },
-    init2() {
+    /**
+     * @author guanfenda
+     * @desc 初始化事件
+     *
+     * */
+    init() {
       let that = this
       this.diagram()
       // when the document is modified, add a "*" to the title and enable the "Save" button
@@ -993,10 +1116,18 @@ export default {
       })
     }, // end init
     // Show the diagram's model in JSON format
+    /**
+     * @author guanfenda
+     * @desc 处理保存（这里没有用到）
+     * */
     save() {
       this.TreeModel = this.myDiagram.model.toJson()
       this.myDiagram.isModified = false
     },
+    /**
+     * @author guanfenda
+     * @desc 重新加载事件
+     * */
     load() {
       // this.myDiagram.nodeTemplateMap = templmap;
       if (typeof this.TreeModel === 'string') {
@@ -1045,6 +1176,10 @@ export default {
       this.myDiagram.scale = 1
       this.myDiagram.commandHandler.zoomToFit()
     },
+    /**
+     * @author guanfenda
+     * @desc 编辑和新建（菜单）事件
+     * */
     create(event) {
       this.isEdit = false
       let val = event.currentTarget.id
@@ -1074,6 +1209,10 @@ export default {
         }
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 删除（菜单）事件
+     * */
     cxcommand(event, val) {
       if (val === undefined) val = event.currentTarget.id
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
@@ -1134,6 +1273,10 @@ export default {
         })
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 编辑和新建（菜单）事件
+     * */
     handleModity() {
       if (this.status === 'newOrg') {
         this.myDiagram.startTransaction('add employee')
@@ -1162,16 +1305,25 @@ export default {
         this.dialogVisible = false
       }
     },
+    /**
+     * @desc 返回
+     * */
     back() {
       this.editStatus = true
       this.zIndex = 999
       this.myDiagram.isReadOnly = true
     },
+    /**
+     * @desc 是否编辑架构图
+     * */
     isEdit_() {
       this.editStatus = false
       this.zIndex = -1
       this.myDiagram.isReadOnly = false
     },
+    /**
+     * @desc 处理排序
+     * */
     sort() {
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
       let nodeObj = {}
@@ -1205,6 +1357,10 @@ export default {
           this.loading = false
         })
     },
+    /**
+     * @author guanfenda
+     * @desc 处理下载
+     * */
     downloadImage() {
       var d = this.myDiagram.documentBounds
       let myDiaramDiv = document.getElementById('myDiagramDiv')
