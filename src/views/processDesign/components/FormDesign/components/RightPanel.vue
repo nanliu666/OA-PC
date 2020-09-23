@@ -365,6 +365,7 @@ export default {
     setOptionValue(item, val) {
       item.label = val
       item.value = val
+      this.$refs.form.validateField('__slot__.options')
     },
     append(data) {
       if (!data.children) {
