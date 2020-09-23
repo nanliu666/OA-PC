@@ -56,6 +56,43 @@
           >
             <i class="el-icon-edit-outline el-icon--right" /> 编辑架构图
           </el-button>
+          <el-popover
+            placement="bottom"
+            width="60"
+            trigger="hover"
+          >
+            <div class="group">
+              <el-checkbox
+                v-model="checked.group"
+                class="item"
+              >
+                显示组负责人织
+              </el-checkbox>
+              <el-checkbox
+                v-model="checked.number"
+                class="item"
+              >
+                显示在职人数
+              </el-checkbox>
+              <el-checkbox
+                v-model="checked.position"
+                class="item"
+              >
+                显示职位及员工
+              </el-checkbox>
+            </div>
+            <el-button
+              slot="reference"
+              size="medium"
+              type="primary"
+              style="margin: 0 10px"
+            >
+              <i class="el-icon-edit-outline el-icon-view">显示视图</i>
+            </el-button>
+          </el-popover>
+          <!--          <el-button size="medium" type="primary">-->
+          <!--            <i class="el-icon-edit-outline el-icon-view">显示视图</i>-->
+          <!--          </el-button>-->
           <el-button
             size="medium"
             @click="downloadImage"
@@ -219,6 +256,18 @@ export default {
   },
   data() {
     return {
+      myContextMenu: '',
+      changeNum: 0,
+      Num: 0,
+      checked: {
+        group: true,
+        number: true,
+        position: true
+      },
+      stateData: {
+        class: 'go.TreeModel',
+        nodeDataArray: []
+      },
       frist: true,
       sortLoading: false,
       firstLoad: false,
@@ -278,6 +327,26 @@ export default {
     }
   },
   watch: {
+    'checked.position': {
+      handler: function() {
+        this.load()
+      },
+      deep: true
+    },
+    'checked.group': {
+      handler() {
+        this.changeNum += 1
+        this.load()
+      },
+      deep: true
+    },
+    'checked.number': {
+      handler() {
+        this.changeNum += 1
+        this.load()
+      },
+      deep: true
+    },
     'orgForm.orgId': {
       handler: function(newVal, oldVal) {
         if (newVal && oldVal) {
@@ -333,6 +402,10 @@ export default {
       })
     },
     submit() {},
+    /**
+     * @author guanfenda
+     * @desc 获取结构树参数
+     * */
     getOrgData() {
       let params = {
         orgId: this.orgForm.orgId || '0'
@@ -348,7 +421,7 @@ export default {
             res.map((it) => {
               it.key = it.id
               if (it.parentId) it.parent = it.parentId
-              it.orgName = it.name + `(${it.workNum})`
+              it.orgName = it.name + `(${it.workNum || 0})`
             })
 
             this.TreeModel.nodeDataArray = res
@@ -360,21 +433,35 @@ export default {
           })
       })
     },
+    /***
+     * @author guanfenda
+     * @desc 处理组织修改回调方法，
+     *
+     * */
     orgOnsubmit() {
       (async () => {
         await this.getOrgData()
         this.load()
       })()
     },
+    /***
+     * @author guanfenda
+     * @desc 处理职位修改回调方法，
+     *
+     * */
     positionOnsubmit() {
       (async () => {
         await this.getOrgData()
         this.load()
       })()
     },
-    init() {
-      let that = this
-      that.myDiagram = $(
+    /***
+     * @author guanfenda
+     *
+     * @desc 处理架构图初始化视图
+     * */
+    diagram() {
+      this.myDiagram = $(
         go.Diagram,
         'myDiagramDiv', // must be the ID or reference to div
         {
@@ -396,24 +483,33 @@ export default {
           'undoManager.isEnabled': false // enable undo & redo
         }
       )
-      // when the document is modified, add a "*" to the title and enable the "Save" button
-      that.myDiagram.addDiagramListener('Modified', () => {
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理修改监听
+     * */
+    modified() {
+      this.myDiagram.addDiagramListener('Modified', () => {
         let button = document.getElementById('SaveButton')
-        if (button) button.disabled = !that.myDiagram.isModified
+        if (button) button.disabled = !this.myDiagram.isModified
         let idx = document.title.indexOf('*')
-        if (that.myDiagram.isModified) {
+        if (this.myDiagram.isModified) {
           if (idx < 0) document.title += '*'
         } else {
           if (idx >= 0) document.title = document.title.substr(0, idx)
         }
         this.save()
       })
-
-      // manage boss info manually when a node or link is deleted from the diagram
-      that.myDiagram.addDiagramListener('SelectionDeleting', (e) => {
+    },
+    /**
+     * @author guandenda
+     * @desc 处理删除监听
+     * */
+    SelectionDeleting() {
+      this.myDiagram.addDiagramListener('SelectionDeleting', (e) => {
         let part = e.subject.first() // e.subject is the this.myDiagram.selection collection,
         // so we'll get the first since we know we only have one selection
-        that.myDiagram.startTransaction('clear boss')
+        this.myDiagram.startTransaction('clear boss')
         if (part instanceof go.Node) {
           let it = part.findTreeChildrenNodes() // find all child nodes
           while (it.next()) {
@@ -429,9 +525,15 @@ export default {
           if (bossText === null) return
           bossText.text = ''
         }
-        that.myDiagram.commitTransaction('clear boss')
+        this.myDiagram.commitTransaction('clear boss')
       })
-      var cxElement = document.getElementById('contextMenu')
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理菜单默认事件
+     *
+     * */
+    prevent(cxElement) {
       cxElement.addEventListener(
         'contextmenu',
         function(e) {
@@ -440,6 +542,13 @@ export default {
         },
         false
       )
+    },
+    /**
+     * @author guanfenda
+     * @desc 处理设置不同等级显示不同颜色
+     *
+     * */
+    setColor() {
       // type Enterprise-企业，Company-公司，Department-部门，Group-小组，Job-职位
       let typeBgColor = {
         Enterprise: '#4A9EFF',
@@ -470,10 +579,10 @@ export default {
         Job: '#718199'
       }
       // override TreeLayout.commitNodes to also modify the background brush based on the tree depth level
-      that.myDiagram.layout.commitNodes = () => {
+      this.myDiagram.layout.commitNodes = () => {
         this.levelList = []
-        go.TreeLayout.prototype.commitNodes.call(that.myDiagram.layout) // do the standard behavior
-        that.myDiagram.layout.network.vertexes.each((v) => {
+        go.TreeLayout.prototype.commitNodes.call(this.myDiagram.layout) // do the standard behavior
+        this.myDiagram.layout.network.vertexes.each((v) => {
           if (v.node) {
             this.level = v.level
             let data = {
@@ -485,99 +594,123 @@ export default {
             let SHAPE1 = v.node.findObject('SHAPE1')
             SHAPE1.fill = typeBgColor[type]
             let SHAPE2 = v.node.findObject('SHAPE2')
-            SHAPE2.fill = typeBgColor2[type]
+            SHAPE2 && (SHAPE2.fill = typeBgColor2[type])
             let NAME = v.node.findObject('Name')
             NAME.stroke = textColor1[type]
             let USERNAME = v.node.findObject('userName')
-            USERNAME.stroke = textColor2[type]
+            USERNAME && (USERNAME.stroke = textColor2[type])
           }
         })
       }
-
-      function mayWorkFor(node1, node2) {
-        if (!(node1 instanceof go.Node)) return false // must be a Node
-        if (node1 === node2) return false // cannot work for yourself
-        if (node2.isInTreeOf(node1)) return false // cannot work for someone who works for you
-        return true
+    },
+    /**
+     * @author guanfenda
+     * @desc  处理 拖拽的节点 和 选择的放置的节点 的关系
+     * @param 一种结果（node1 子节点 node2 父节点）另一种结果是 （node1 拖拽的节点 node2 选择的放置的节点）
+     * */
+    mayWorkFor(node1, node2) {
+      if (!(node1 instanceof go.Node)) return false // must be a Node
+      if (node1 == node2) return false // cannot work for yourself
+      if (node2.isInTreeOf(node1)) return false // cannot work for someone who works for you
+      return true
+    },
+    /**
+     * @author guanfenda
+     * @desc 隐藏菜单
+     * */
+    hideContextMenu() {
+      let cxElement = document.getElementById('contextMenu')
+      cxElement.classList.remove('show-menu')
+      window.removeEventListener('click', this.hideCX, true)
+    },
+    /**
+     * @author guanfenda
+     * @desc 显示菜单
+     * */
+    showContextMenu(obj, diagram) {
+      let cxElement = document.getElementById('contextMenu')
+      if (this.editStatus) return
+      this.selData = obj.data
+      this.maybeShowItem(document.getElementById('newOrg'), obj.data, 'newOrg')
+      this.maybeShowItem(document.getElementById('newPosition'), obj.data, 'newPosition')
+      this.maybeShowItem(document.getElementById('edit'), obj.data, 'edit')
+      this.maybeShowItem(document.getElementById('delete'), obj.data, 'delete')
+      cxElement.classList.add('show-menu')
+      let mousePt = diagram.lastInput.viewPoint
+      cxElement.style.left = mousePt.x + 5 + 'px'
+      cxElement.style.top = mousePt.y + 'px'
+      window.addEventListener('click', this.hideCX, true)
+    },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示菜单
+     * */
+    maybeShowItem(elt, pred, id) {
+      switch (id) {
+        case 'newOrg':
+          this.newOrg(pred, elt)
+          break
+        case 'newPosition':
+          this.newPosition(elt)
+          break
+        case 'edit':
+          this.edit(elt)
+          break
+        case 'delete':
+          this.deletes(pred, elt)
+          break
       }
-
-      // define the Node template
-      var myContextMenu = $(go.HTMLInfo, {
-        show: showContextMenu.bind(this),
-        hide: hideContextMenu
-      })
-
-      function hideContextMenu() {
-        cxElement.classList.remove('show-menu')
-        window.removeEventListener('click', hideCX, true)
+    },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示组织
+     * */
+    newOrg(pred, elt) {
+      if (pred.type !== this.type[4]) {
+        elt.style.display = 'block'
+      } else {
+        elt.style.display = 'none'
       }
-
-      function showContextMenu(obj, diagram) {
-        if (this.editStatus) return
-        var hasMenuItem = true
-        this.selData = obj.data
-
-        function maybeShowItem(elt, pred, id) {
-          switch (id) {
-            case 'newOrg':
-              newOrg()
-              break
-            case 'newPosition':
-              newPosition()
-              break
-            case 'edit':
-              edit(pred)
-              break
-            case 'delete':
-              deletes(pred)
-              break
-          }
-
-          function newOrg() {
-            if (pred.type !== that.type[4]) {
-              elt.style.display = 'block'
-              hasMenuItem = true
-            } else {
-              elt.style.display = 'none'
-            }
-          }
-
-          function newPosition() {
-            elt.style.display = 'block'
-          }
-
-          function edit() {
-            elt.style.display = 'block'
-          }
-
-          function deletes(data) {
-            if (data.parentId !== '0') {
-              elt.style.display = 'block'
-            } else {
-              elt.style.display = 'none'
-            }
-          }
-        }
-
-        maybeShowItem(document.getElementById('newOrg'), obj.data, 'newOrg')
-        maybeShowItem(document.getElementById('newPosition'), obj.data, 'newPosition')
-        maybeShowItem(document.getElementById('edit'), obj.data, 'edit')
-        maybeShowItem(document.getElementById('delete'), obj.data, 'delete')
-        if (hasMenuItem) {
-          cxElement.classList.add('show-menu')
-          var mousePt = diagram.lastInput.viewPoint
-          cxElement.style.left = mousePt.x + 5 + 'px'
-          cxElement.style.top = mousePt.y + 'px'
-        }
-        window.addEventListener('click', hideCX, true)
+    },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示职位
+     * */
+    newPosition(elt) {
+      elt.style.display = 'block'
+    },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示编辑
+     * */
+    edit(elt) {
+      elt.style.display = 'block'
+    },
+    /**
+     * @author guanfenda
+     * @desc 根据类型显示删除
+     * */
+    deletes(data, elt) {
+      if (data.parentId !== '0') {
+        elt.style.display = 'block'
+      } else {
+        elt.style.display = 'none'
       }
-
-      function hideCX() {
-        if (that.myDiagram.currentTool instanceof go.ContextMenuTool) {
-          that.myDiagram.currentTool.doCancel()
-        }
+    },
+    /**
+     * @author guanfenda
+     * @desc  取消菜单
+     * */
+    hideCX() {
+      if (this.myDiagram.currentTool instanceof go.ContextMenuTool) {
+        this.myDiagram.currentTool.doCancel()
       }
-
+    },
+    /**
+     * @author guanfenda
+     * @desc 名片上两个倒角
+     * */
+    RoundedTopRectangle() {
       go.Shape.defineFigureGenerator('RoundedTopRectangle', function(shape, w, h) {
         // 这个图像获取了一个参数，角的尺寸
         var p1 = 5 // 默认的角尺寸
@@ -602,7 +735,12 @@ export default {
         geo.spot2 = new go.Spot(1, 1, -0.3 * p1, 0)
         return geo
       })
-
+    },
+    /**
+     * @author guanfenda
+     * @desc 名片下两个倒角
+     * */
+    RoundedBottomRectangle() {
       go.Shape.defineFigureGenerator('RoundedBottomRectangle', function(shape, w, h) {
         // 这个图像获取了一个参数，角的尺寸
         var p1 = 5 // 默认的角尺寸
@@ -628,193 +766,343 @@ export default {
         geo.spot2 = new go.Spot(1, 1, -0.3 * p1, -0.3 * p1)
         return geo
       })
+    },
+    /**
+     * @author guanfenda
+     * @desc 鼠标拖拽移动进来事件
+     * */
+    mouseDragEnter(e, node) {
+      let shape = node.findObject('SHAPE')
+      let shape1 = node.findObject('SHAPE1')
+      let shape2 = node.findObject('SHAPE2')
 
-      that.myDiagram.nodeTemplate = $(
+      if (shape) {
+        shape._prevFill = shape.fill // remember the original brush
+        shape1._prevFill = shape1.fill // remember the original brush
+        shape2 && (shape2._prevFill = shape2.fill) // remember the original brush
+        shape1.fill = '#757c85'
+        shape2 && (shape2.fill = '#757c85')
+      }
+    },
+    /**
+     * @author guanfenda
+     * @desc 鼠标拖拽移动离开事件
+     * */
+    mouseDragLeave(e, node) {
+      // let diagram = node.diagram
+      // let selnode = diagram.selection.first()
+      // if (!that.mayWorkFor(selnode, node)) return
+      let shape = node.findObject('SHAPE')
+      let shape1 = node.findObject('SHAPE1')
+      let shape2 = node.findObject('SHAPE2')
+      if (shape) {
+        shape.fill = shape._prevFill // restore the original brush
+        shape1.fill = shape1._prevFill // restore the original brush
+        shape2 && (shape2.fill = shape2._prevFill) // restore the original brush
+      }
+    },
+    /**
+     * @author guanfenda
+     * @desc 鼠标拖拽移动放下事件
+     * */
+    mouseDrop(e, node) {
+      let that = this
+      let diagram = node.diagram
+      let selnode = diagram.selection.first() // assume just one Node in selection
+      if (that.mayWorkFor(selnode, node)) {
+        let me = that.type.indexOf(node.data.type)
+        let sel = that.type.indexOf(selnode.data.type)
+        if (sel < me) {
+          let me = that.msgText[node.data.type]
+          let sel = that.msgText[selnode.data.type]
+          that
+            .$confirm(`${me}下不能创建${sel}`, {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            })
+            .then(() => {
+              // that.load()
+            })
+
+          return
+        }
+        // find any existing link into the selected node
+        let link = selnode.findTreeParentLink()
+
+        if (link !== null) {
+          // reconnect any existing link
+          link.fromNode = node
+        } else {
+          // else create a new link
+          diagram.toolManager.linkingTool.insertLink(node, node.port, selnode, selnode.port)
+        }
+      }
+    },
+    /**
+     * @author guanfenda
+     * @desc 模板事件
+     * */
+    event() {
+      let that = this
+      return {
+        // handle dragging a Node onto a Node to (maybe) change the reporting relationship
+        mouseDragEnter: (e, node) => that.mouseDragEnter(e, node),
+        mouseDragLeave: (e, node) => that.mouseDragLeave(e, node),
+        mouseDrop: (e, node) => that.mouseDrop(e, node),
+        mouseLeave: () => that.hideContextMenu(),
+        mouseHover: (e, node) => {
+          let diagram = node.diagram
+          that.showContextMenu(node, diagram)
+        }
+      }
+    },
+    /**
+     * @author guanfenda
+     * @desc 底图
+     *
+     * */
+    SHAPE() {
+      return $(go.Shape, 'Rectangle', {
+        name: 'SHAPE',
+        fill: '#fff',
+        stroke: 'white',
+        strokeWidth: 0,
+        portId: '',
+        fromLinkable: true,
+        toLinkable: true,
+        cursor: 'pointer'
+      })
+    },
+    /**
+     * @author guanfenda
+     * @desc 显示 名称（职位或者组织）
+     * */
+    SHAPE1(isgroud) {
+      if (isgroud) {
+        return $(
+          go.Panel,
+          'Auto',
+          {
+            row: 0,
+            column: 0,
+            alignment: go.Spot.Center,
+            margin: 0,
+            width: 200
+          },
+          $(go.Shape, 'RoundedRectangle', {
+            name: 'SHAPE1',
+            stroke: null
+          }),
+          $(
+            go.TextBlock,
+            {
+              name: 'Name',
+              font: 'bold 13pt sans-serif',
+              overflow: go.TextBlock.OverflowClip /* 默认值是OverflowClip溢出剪裁 */,
+              wrap: go.TextBlock.WrapFit,
+              textAlign: 'center',
+              margin: 8
+            },
+            new go.Binding('text', 'orgName').makeTwoWay()
+          )
+        )
+      } else {
+        return $(
+          go.Panel,
+          'Auto',
+          {
+            row: 0,
+            column: 0,
+            alignment: go.Spot.Center,
+            margin: 0,
+            width: 200
+          },
+          $(go.Shape, 'RoundedRectangle', {
+            figure: 'RoundedTopRectangle',
+            parameter1: '10',
+            name: 'SHAPE1',
+            stroke: null
+          }),
+          $(
+            go.TextBlock,
+            {
+              name: 'Name',
+              font: 'bold 13pt sans-serif',
+              overflow: go.TextBlock.OverflowClip /* 默认值是OverflowClip溢出剪裁 */,
+              wrap: go.TextBlock.WrapFit,
+              textAlign: 'center',
+              margin: 8
+            },
+            new go.Binding('text', 'orgName').makeTwoWay()
+          )
+        )
+      }
+    },
+    /**
+     * @author guanfenda
+     * @desc 显示 负责人或者员工（职位或者组织）
+     * */
+    SHAPE2(isgroud = false) {
+      if (isgroud) return ''
+      return $(
+        go.Panel,
+        'Auto',
+        {
+          row: 1,
+          column: 0,
+          alignment: go.Spot.Center,
+          width: 200
+        },
+        $(go.Shape, 'RoundedRectangle', {
+          figure: 'RoundedBottomRectangle',
+          parameter1: '10',
+          name: 'SHAPE2',
+          stroke: null
+        }),
+        $(
+          go.TextBlock,
+          {
+            name: 'userName',
+            font: '11pt sans-serif',
+            overflow: go.TextBlock.OverflowClip,
+            wrap: go.TextBlock.WrapFit,
+            maxLines: 4,
+            margin: 10,
+            isMultiline: true
+          },
+          new go.Binding('text', 'userName').makeTwoWay()
+        )
+      )
+    },
+    /**
+     * @author guanfenda
+     * @desc 图形组合显示
+     * */
+    PanelTable(isgroud = false) {
+      return $(
+        go.Panel,
+        'RoundedRectangle',
+        {
+          margin: 1,
+          minSize: new go.Size(130, NaN),
+          maxSize: new go.Size(200, NaN)
+        },
+        $(
+          go.Panel,
+          'Table',
+          {
+            minSize: new go.Size(130, NaN),
+            maxSize: new go.Size(200, NaN),
+            defaultAlignment: go.Spot.Center
+          },
+          this.SHAPE1(isgroud),
+          this.SHAPE2(isgroud)
+        ) // end Table Pane
+      ) // end Horizontal Panel
+    },
+    /**
+     * @author guanfenda
+     * @desc 默认模板
+     * */
+    nodeTemplate() {
+      let that = this
+      this.myDiagram.nodeTemplate = $(
         go.Node,
         'Auto',
         {
-          contextMenu: myContextMenu
+          contextMenu: this.myContextMenu
         },
         // {doubleClick: that.nodeDoubleClick},
-        {
-          // handle dragging a Node onto a Node to (maybe) change the reporting relationship
-          mouseDragEnter: function(e, node) {
-            let diagram = node.diagram
-            let selnode = diagram.selection.first()
-            if (!mayWorkFor(selnode, node)) return
-            let shape = node.findObject('SHAPE')
-            let shape1 = node.findObject('SHAPE1')
-            let shape2 = node.findObject('SHAPE2')
-            if (shape) {
-              shape._prevFill = shape.fill // remember the original brush
-              shape1._prevFill = shape1.fill // remember the original brush
-              shape2._prevFill = shape2.fill // remember the original brush
-              shape1.fill = '#757c85'
-              shape2.fill = '#757c85'
-            }
-          },
-          mouseDragLeave: function(e, node) {
-            let diagram = node.diagram
-            let selnode = diagram.selection.first()
-            if (!mayWorkFor(selnode, node)) return
-            let shape = node.findObject('SHAPE')
-            let shape1 = node.findObject('SHAPE1')
-            let shape2 = node.findObject('SHAPE2')
-            if (shape) {
-              shape.fill = shape._prevFill // restore the original brush
-              shape1.fill = shape1._prevFill // restore the original brush
-              shape2.fill = shape2._prevFill // restore the original brush
-            }
-          },
-          mouseDrop: function(e, node) {
-            let diagram = node.diagram
-            let selnode = diagram.selection.first() // assume just one Node in selection
-
-            // if()
-
-            if (mayWorkFor(selnode, node)) {
-              let me = that.type.indexOf(node.data.type)
-              let sel = that.type.indexOf(selnode.data.type)
-              if (sel < me) {
-                let me = that.msgText[node.data.type]
-                let sel = that.msgText[selnode.data.type]
-                that
-                  .$confirm(`${me}下不能创建${sel}`, {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                  })
-                  .then(() => {
-                    // that.load()
-                  })
-
-                return
-              }
-              // find any existing link into the selected node
-              let link = selnode.findTreeParentLink()
-
-              if (link !== null) {
-                // reconnect any existing link
-                link.fromNode = node
-              } else {
-                // else create a new link
-                diagram.toolManager.linkingTool.insertLink(node, node.port, selnode, selnode.port)
-              }
-            }
-          },
-          mouseLeave() {
-            hideContextMenu()
-          },
-          mouseHover: (e, node) => {
-            let diagram = node.diagram
-            showContextMenu.bind(that)(node, diagram)
-          }
-        },
+        that.event(),
         // for sorting, have the Node.text be the data.name
         new go.Binding('text', 'name'),
         // bind the Part.layerName to control the Node's layer depending on whether it isSelected
         new go.Binding('layerName', 'isSelected', function(sel) {
           return sel ? 'Foreground' : ''
         }).ofObject(),
-        $(go.Shape, 'Rectangle', {
-          name: 'SHAPE',
-          fill: '#fff',
-          stroke: 'white',
-          strokeWidth: 0,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          cursor: 'pointer'
-        }),
-        $(
-          go.Panel,
-          'RoundedRectangle',
-          {
-            margin: 1,
-            minSize: new go.Size(130, NaN),
-            maxSize: new go.Size(200, NaN)
-          },
-          $(
-            go.Panel,
-            'Table',
-            {
-              minSize: new go.Size(130, NaN),
-              maxSize: new go.Size(200, NaN),
-              defaultAlignment: go.Spot.Center
-            },
-            $(
-              go.Panel,
-              'Auto',
-              {
-                row: 0,
-                column: 0,
-                alignment: go.Spot.Center,
-                margin: 0,
-                width: 200
-              },
-              $(go.Shape, 'RoundedRectangle', {
-                figure: 'RoundedTopRectangle',
-                parameter1: '10',
-                name: 'SHAPE1',
-                stroke: null
-              }),
-              // $(go.TextBlock, { text: "a Text Block that takes 4 lines",
-              //   font: '14pt sans-serif',
-              //   overflow: go.TextBlock.OverflowClip, /* 默认值是OverflowClip溢出剪裁 */
-              //   // 没有限制最大行数
-              //   margin: 2,
-              //   width: 90 }),
-              $(
-                go.TextBlock,
-                {
-                  name: 'Name',
-                  font: 'bold 13pt sans-serif',
-                  overflow: go.TextBlock.OverflowClip /* 默认值是OverflowClip溢出剪裁 */,
-                  wrap: go.TextBlock.WrapFit,
-                  textAlign: 'center',
-                  margin: 8
-                },
-                new go.Binding('text', 'orgName').makeTwoWay()
-              )
-            ),
-            $(
-              go.Panel,
-              'Auto',
-              {
-                row: 1,
-                column: 0,
-                alignment: go.Spot.Center,
-                width: 200
-              },
-              $(go.Shape, 'RoundedRectangle', {
-                figure: 'RoundedBottomRectangle',
-                parameter1: '10',
-                name: 'SHAPE2',
-                stroke: null
-              }),
-              $(
-                go.TextBlock,
-                {
-                  name: 'userName',
-                  font: '11pt sans-serif',
-                  overflow: go.TextBlock.OverflowClip,
-                  wrap: go.TextBlock.WrapFit,
-                  maxLines: 4,
-                  margin: 10,
-                  isMultiline: true
-                },
-                new go.Binding('text', 'userName').makeTwoWay()
-              )
-            )
-          ) // end Table Pane
-        ) // end Horizontal Panel
+        that.SHAPE(),
+        that.PanelTable()
       ) // end Node
-      that.myDiagram.linkTemplate = $(
+    },
+    /**
+     * @author guanfenda
+     * @desc 不显示负责人模板
+     * */
+    groupTemplate() {
+      let that = this
+      return $(
+        go.Node,
+        'Auto',
+        {
+          contextMenu: this.myContextMenu
+        },
+        // {doubleClick: that.nodeDoubleClick},
+        that.event(),
+        // for sorting, have the Node.text be the data.name
+        new go.Binding('text', 'name'),
+        // bind the Part.layerName to control the Node's layer depending on whether it isSelected
+        new go.Binding('layerName', 'isSelected', function(sel) {
+          return sel ? 'Foreground' : ''
+        }).ofObject(),
+        that.SHAPE(),
+        that.PanelTable(true)
+      )
+    },
+    /**
+     * @author guanfenda
+     * @desc 线
+     * */
+    linkTemplate() {
+      this.myDiagram.linkTemplate = $(
         go.Link,
         go.Link.Orthogonal,
         { corner: 5, relinkableFrom: true, relinkableTo: true },
         $(go.Shape, { strokeWidth: 2, stroke: '#DDE3E8' })
       ) // the link shape
+    },
+    /**
+     * @author guanfenda
+     * @desc 初始化事件
+     *
+     * */
+    init() {
+      let that = this
+      this.diagram()
+      // when the document is modified, add a "*" to the title and enable the "Save" button
+      this.modified()
+
+      // manage boss info manually when a node or link is deleted from the diagram
+      this.SelectionDeleting()
+
+      var cxElement = document.getElementById('contextMenu')
+      this.prevent(cxElement)
+
+      this.setColor()
+
+      // define the Node template
+      this.myContextMenu = $(go.HTMLInfo, {
+        show: that.showContextMenu.bind(this),
+        hide: () => {}
+      })
+
+      this.RoundedTopRectangle()
+      this.RoundedBottomRectangle()
+      this.nodeTemplate()
+      this.linkTemplate()
+
+      let grounpTemplete = that.groupTemplate()
+      var templmap = new go.Map()
+      templmap.add('group', grounpTemplete)
+      templmap.add('', this.myDiagram.nodeTemplate)
+      templmap.linkTemplate = $(
+        go.Link,
+        go.Link.Orthogonal,
+        { corner: 5, relinkableFrom: true, relinkableTo: true },
+        $(go.Shape, { strokeWidth: 2, stroke: '#DDE3E8' })
+      )
+      this.myDiagram.nodeTemplateMap = templmap
+
       that.load()
       document.getElementById('zoom-in').addEventListener('click', function() {
         that.myDiagram.scale += 0.05
@@ -827,17 +1115,35 @@ export default {
         that.myDiagram.commandHandler.zoomToFit()
       })
     }, // end init
-
     // Show the diagram's model in JSON format
+    /**
+     * @author guanfenda
+     * @desc 处理保存（这里没有用到）
+     * */
     save() {
       this.TreeModel = this.myDiagram.model.toJson()
       this.myDiagram.isModified = false
     },
+    /**
+     * @author guanfenda
+     * @desc 重新加载事件
+     * */
     load() {
+      // this.myDiagram.nodeTemplateMap = templmap;
       if (typeof this.TreeModel === 'string') {
         this.TreeModel = JSON.parse(this.TreeModel)
       }
       this.TreeModel.nodeDataArray.map((it) => {
+        if (this.checked.number) {
+          it.orgName = it.name + `(${it.workNum || 0})`
+        } else {
+          it.orgName = it.name
+        }
+        if (this.checked.group) {
+          it.category && delete it.category
+        } else if (!this.checked.group && it.type !== 'Job') {
+          it.category = 'group'
+        }
         var reg = new RegExp(',', 'g') //"g"表示全局替换
         it.userName = it.userName.replace(reg, '\n')
         it.userNames = it.userName.split('\n')
@@ -846,6 +1152,18 @@ export default {
             it.userNames[0] + '\n' + it.userNames[1] + '\n' + it.userNames[2] + '\n' + '...'
         }
       })
+      if (this.checked.position) {
+        this.stateData.nodeDataArray.length === 0 &&
+          (this.stateData.nodeDataArray = JSON.parse(JSON.stringify(this.TreeModel.nodeDataArray)))
+        this.Num === this.changeNum &&
+          this.stateData.nodeDataArray.length > 0 &&
+          (this.TreeModel = this.stateData)
+      } else {
+        this.TreeModel.nodeDataArray = this.TreeModel.nodeDataArray.filter((it) => {
+          return it.type !== 'Job'
+        })
+      }
+      this.Num = this.changeNum
       this.myDiagram.model = go.Model.fromJson(this.TreeModel)
       // make sure new data keys are unique positive integers
       let lastkey = 1
@@ -858,6 +1176,10 @@ export default {
       this.myDiagram.scale = 1
       this.myDiagram.commandHandler.zoomToFit()
     },
+    /**
+     * @author guanfenda
+     * @desc 编辑和新建（菜单）事件
+     * */
     create(event) {
       this.isEdit = false
       let val = event.currentTarget.id
@@ -887,6 +1209,10 @@ export default {
         }
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 删除（菜单）事件
+     * */
     cxcommand(event, val) {
       if (val === undefined) val = event.currentTarget.id
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
@@ -947,6 +1273,10 @@ export default {
         })
       }
     },
+    /**
+     * @author guanfenda
+     * @desc 编辑和新建（菜单）事件
+     * */
     handleModity() {
       if (this.status === 'newOrg') {
         this.myDiagram.startTransaction('add employee')
@@ -975,16 +1305,25 @@ export default {
         this.dialogVisible = false
       }
     },
+    /**
+     * @desc 返回
+     * */
     back() {
       this.editStatus = true
       this.zIndex = 999
       this.myDiagram.isReadOnly = true
     },
+    /**
+     * @desc 是否编辑架构图
+     * */
     isEdit_() {
       this.editStatus = false
       this.zIndex = -1
       this.myDiagram.isReadOnly = false
     },
+    /**
+     * @desc 处理排序
+     * */
     sort() {
       let nodeDataArray = JSON.parse(this.TreeModel).nodeDataArray
       let nodeObj = {}
@@ -1018,6 +1357,10 @@ export default {
           this.loading = false
         })
     },
+    /**
+     * @author guanfenda
+     * @desc 处理下载
+     * */
     downloadImage() {
       var d = this.myDiagram.documentBounds
       let myDiaramDiv = document.getElementById('myDiagramDiv')
@@ -1123,8 +1466,8 @@ export default {
 .scale {
   z-index: 999999999999999;
   position: absolute;
-  top: 70px;
-  right: 70px;
+  top: 65px;
+  right: 21px;
   display: flex;
   display: -webkit-flex;
   flex-flow: column nowrap;
@@ -1203,5 +1546,10 @@ export default {
   display: flex;
   display: -webkit-flex;
   flex-flow: row nowrap;
+}
+.group {
+  .item {
+    line-height: 30px;
+  }
 }
 </style>
