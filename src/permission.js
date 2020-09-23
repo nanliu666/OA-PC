@@ -11,7 +11,6 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 NProgress.configure({ showSpinner: false })
 const lockPage = store.getters.website.lockPage //锁屏页
-const menuAll = store.getters.menuAll
 router.beforeEach((to, from, next) => {
   const meta = to.meta || {}
   const isMenu = meta.menu === undefined ? to.query.menu : meta.menu
@@ -34,6 +33,7 @@ router.beforeEach((to, from, next) => {
         const label = to.query.tagName || to.name
         // 每次路由跳转时找到目标路径对应的根菜单数据
         let currentMenu = null
+        const menuAll = store.getters.menuAll
         menuAll.some((menu) => {
           if (
             filterTree([menu], (menu) => menu.path === value && menu.menuType === 'Menu', true)
