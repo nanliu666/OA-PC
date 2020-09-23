@@ -34,10 +34,12 @@
           <!-- 任务类型 -->
           <div class="task-type">
             <div class="type-row">
-              任务类型：<span>{{ item.type | filterType }}任务</span>
+              任务类型：
+              <span>{{ item.type | filterType }}任务</span>
             </div>
             <div class="endTime-row">
-              截止日期：<span>{{ item.endDate }}</span>
+              截止日期：
+              <span>{{ item.endDate }}</span>
               <span
                 v-if="isOverdue(item)"
                 class="isOverdue"
@@ -51,6 +53,7 @@
             </div>
             <div class="detail-box">
               <el-progress
+                :stroke-width="4"
                 :percentage="parseInt((item.completeNum / item.totalNum) * 100)"
                 :format="() => ''"
               />
@@ -194,17 +197,31 @@ export default {
   },
 
   created() {
-    this.loadData()
+    this.getList()
     this.getCommonDict()
   },
   methods: {
+    async getList() {
+      this.taskQuery.isOverdue = 1
+      await this.loadData()
+      this.taskQuery.isOverdue = 0
+      await this.loadData()
+    },
     // 获取数据
     async loadData() {
       this.taskQuery.userId = this.userId
       this.taskLoading = true
+
       let { data } = await fetchTaskList(this.taskQuery).finally(() => {
         this.taskLoading = false
       })
+      let totalNum = data.length
+      // console.log(this.taskQuery.isOverdue)
+      if (this.taskQuery.isOverdue == 0) {
+        this.labelArray[0].label = `进行中(${totalNum})`
+      } else {
+        this.labelArray[1].label = `已逾期(${totalNum})`
+      }
       this.taskDataList = data
     },
     // 获取相关字典组
@@ -296,10 +313,12 @@ export default {
           font-size: 14px;
           color: #202940;
           line-height: 22px;
-          font-weight: bold;
+          font-weight: 550;
           margin-bottom: 4px;
+          font-family: PingFangSC-Medium, PingFang SC;
         }
         .emerType {
+          color: #ff6464;
           margin-left: 16px;
         }
       }

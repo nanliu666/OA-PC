@@ -47,22 +47,20 @@ export default {
   left: 0;
   width: 224px;
   height: 56px;
-  // line-height: 56px;
-  // background-color: #20222a;
   font-size: 20px;
   overflow: hidden;
   box-sizing: border-box;
-  // box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
-  // color: rgba(255, 255, 255, 0.8);
   color: #20222a;
   z-index: 1024;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 15px 0 15px 32px;
   img {
     display: block;
     width: 100%;
-    height: 100%;
+    height: 28px;
+    width: 155px;
   }
 }
 </style>

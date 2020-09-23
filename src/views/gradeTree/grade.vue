@@ -515,7 +515,7 @@ export default {
       function showContextMenu(obj, diagram) {
         if (this.editStatus) return
         var hasMenuItem = true
-        that.selData = obj.data
+        this.selData = obj.data
 
         function maybeShowItem(elt, pred, id) {
           switch (id) {
@@ -701,6 +701,13 @@ export default {
                 diagram.toolManager.linkingTool.insertLink(node, node.port, selnode, selnode.port)
               }
             }
+          },
+          mouseLeave() {
+            hideContextMenu()
+          },
+          mouseHover: (e, node) => {
+            let diagram = node.diagram
+            showContextMenu.bind(that)(node, diagram)
           }
         },
         // for sorting, have the Node.text be the data.name

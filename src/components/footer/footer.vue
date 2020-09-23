@@ -23,13 +23,10 @@ export default {
 
 <style scoped lang="scss">
 .footer-container {
-  position: absolute;
-  left: 0;
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 48px;
   font-size: 12px;
 }
 </style>

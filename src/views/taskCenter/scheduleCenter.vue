@@ -304,6 +304,7 @@ export default {
     }
     .prev-month,
     .next-month {
+      width: 20px;
       // background: #a0a8ae;
       border-radius: 4px;
       border-radius: 4px;

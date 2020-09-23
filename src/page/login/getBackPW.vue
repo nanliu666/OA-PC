@@ -219,7 +219,7 @@
 </template>
 
 <script>
-import { isMobile, validatePW, isEmail } from '@/util/validate'
+import { isMobile, validatePW, isEmailReg } from '@/util/validate'
 import { getCode, checkPhoneCode, checkPassword } from '../../api/personalInfo.js'
 import md5 from 'js-md5'
 import pageHeader from '@/components/page-header/pageHeader'
@@ -245,7 +245,7 @@ export default {
     const validateEmail = (rule, value, callback) => {
       if (!_this.identity.form.email) {
         callback(new Error('请输入邮箱'))
-      } else if (_this.identity.form.email && !isEmail(value)) {
+      } else if (_this.identity.form.email && !isEmailReg(value)) {
         callback(new Error('邮箱格式不正确'))
       } else {
         callback()
@@ -436,8 +436,8 @@ export default {
           getCode(params).then(() => {
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
-            this.identity.msgKey = true
             const time = setInterval(() => {
+              this.identity.msgKey = true
               this.identity.msgTime--
               this.identity.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
               if (this.identity.msgTime === 0) {

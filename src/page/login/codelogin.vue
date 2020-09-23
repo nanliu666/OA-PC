@@ -39,7 +39,9 @@
             class="msg-text"
             :class="[{ display: msgKey }]"
             @click="handleSend"
-          >{{ msgText }}</span>
+          >{{
+            msgText
+          }}</span>
         </template>
       </el-input>
     </el-form-item>
@@ -111,8 +113,8 @@ export default {
     handleSend() {
       if (this.msgKey) return
       this.msgText = this.msgTime + this.config.MSGSCUCCESS
-      this.msgKey = true
       const time = setInterval(() => {
+        this.msgKey = true
         this.msgTime--
         this.msgText = this.msgTime + this.config.MSGSCUCCESS
         if (this.msgTime === 0) {

@@ -12,9 +12,9 @@
         <slot name="search" />
       </template>
     </page-header>
-    <basic-container block>
+    <div style="margin-bottom:24px;">
       <slot name="main" />
-    </basic-container>
+    </div>
   </div>
 </template>
 

@@ -6,10 +6,12 @@ import router from './router/router'
 import store from './store'
 import { validatenull } from '@/util/validate'
 import { getToken } from '@/util/auth'
+import { filterTree } from '@/util/util'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 NProgress.configure({ showSpinner: false })
 const lockPage = store.getters.website.lockPage //锁屏页
+const menuAll = store.getters.menuAll
 router.beforeEach((to, from, next) => {
   const meta = to.meta || {}
   const isMenu = meta.menu === undefined ? to.query.menu : meta.menu
@@ -30,6 +32,25 @@ router.beforeEach((to, from, next) => {
       } else {
         const value = to.path
         const label = to.query.tagName || to.name
+        // 每次路由跳转时找到目标路径对应的根菜单数据
+        let currentMenu = null
+        menuAll.some((menu) => {
+          if (
+            filterTree([menu], (menu) => menu.path === value && menu.menuType === 'Menu', true)
+              .length > 0
+          ) {
+            currentMenu = menu
+            return true
+          }
+          return false
+        })
+        // 用找到的根菜单数据更新左侧菜单和顶部菜单状态
+        if (currentMenu) {
+          store.commit('SET_MENU', currentMenu)
+        } else {
+          // 找不到对应根菜单，将顶部菜单置为工作台
+          store.commit('SET_MENU', { menuId: null })
+        }
         const meta = to.meta || router.$avueRouter.meta || {}
         const i18n = to.query.i18n
         if (meta.isTab !== false && !validatenull(value) && !validatenull(label)) {

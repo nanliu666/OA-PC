@@ -74,20 +74,7 @@
               :model="identity.form"
               :label-width="labelWidth"
             >
-              <el-form-item
-                v-if="!$parent.isEmail"
-                label="新手机号码"
-                prop="phone"
-              >
-                <el-input
-                  v-model="identity.form.phone"
-                  class="phone-input"
-                  autofocus="true"
-                  size="small"
-                  auto-complete="off"
-                  :placeholder="$t('login.phone')"
-                />
-              </el-form-item>
+              <el-form-item />
               <el-form-item
                 v-if="$parent.isEmail"
                 label="新邮箱号码"
@@ -98,8 +85,19 @@
                   class="phone-input"
                   autofocus="true"
                   size="small"
-                  auto-complete="off"
                   :placeholder="$t('login.email')"
+                />
+              </el-form-item>
+              <el-form-item
+                v-if="!$parent.isEmail"
+                label="新手机号码"
+                prop="phone"
+              >
+                <el-input
+                  v-model="identity.form.phone"
+                  class="phone-input"
+                  size="small"
+                  :placeholder="$t('login.phone')"
                 />
               </el-form-item>
               <el-form-item
@@ -111,7 +109,6 @@
                     v-model="identity.form.captchaCode"
                     class="test-code-input"
                     size="small"
-                    auto-complete="off"
                     :placeholder="$t('login.captchaCode')"
                   />
                   <img
@@ -190,8 +187,9 @@
 </template>
 
 <script>
-import { isMobile, isEmail } from '@/util/validate'
+import { isMobile, isEmailReg } from '@/util/validate'
 import { getCode, checkPswOrPhone, checkPswOrEmail } from '../../../api/personalInfo'
+import { checkUserInfo } from '@/api/personnel/roster'
 import { mapGetters } from 'vuex'
 import md5 from 'js-md5'
 import { getCaptcha } from '@/api/user'
@@ -199,6 +197,24 @@ export default {
   components: {},
   data() {
     let _this = this
+    var checkPhonenum = (rule, value, callback) => {
+      checkUserInfo({ phonenum: value })
+        .then(() => {
+          callback()
+        })
+        .catch(() => {
+          callback(new Error('该手机号已存在'))
+        })
+    }
+    var checkEmail = (rule, value, callback) => {
+      checkUserInfo({ email: value })
+        .then(() => {
+          callback()
+        })
+        .catch(() => {
+          callback(new Error('该邮箱已存在'))
+        })
+    }
     const validatePhone = (rule, value, callback) => {
       if (!_this.identity.form.phone) {
         callback(new Error('请输入手机号码'))
@@ -211,7 +227,7 @@ export default {
     const validateEmail = (rule, value, callback) => {
       if (!_this.identity.form.email) {
         callback(new Error('请输入邮箱'))
-      } else if (_this.identity.form.email && !isEmail(value)) {
+      } else if (_this.identity.form.email && !isEmailReg(value)) {
         callback(new Error('邮箱格式不正确'))
       } else {
         callback()
@@ -258,7 +274,8 @@ export default {
               required: true,
               trigger: 'blur',
               validator: validatePhone
-            }
+            },
+            { validator: checkPhonenum, trigger: 'blur' }
           ],
           code: [
             {
@@ -279,7 +296,8 @@ export default {
               required: true,
               trigger: 'blur',
               validator: validateEmail
-            }
+            },
+            { validator: checkEmail, trigger: 'blur' }
           ]
         }
       },
@@ -382,8 +400,8 @@ export default {
           getCode(params).then(() => {
             //2.倒计时
             this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
-            this.identity.msgKey = true
             const time = setInterval(() => {
+              this.identity.msgKey = true
               this.identity.msgTime--
               this.identity.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
               if (this.identity.msgTime === 0) {
