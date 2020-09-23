@@ -101,7 +101,8 @@
         </template>
         <template #handler="{row}">
           <div class="table__handler">
-            <el-tooltip
+            <!-- 已发布的新闻页面,不支持置顶,置顶功能在新闻管理页面(参考低保真) -->
+            <!-- <el-tooltip
               :content="`${row.isTop ? '已' : ''}置顶`"
               effect="dark"
               placement="top"
@@ -116,14 +117,33 @@
                   :class="{ 'font__color--active': row.isTop }"
                 />
               </el-button>
-            </el-tooltip>
-            <el-button
-              type="text"
-              size="medium"
-              @click="() => handleRemoveItemBtnClick(row)"
+            </el-tooltip> -->
+            <el-tooltip
+              content="编辑"
+              effect="dark"
+              placement="top"
             >
-              <i class="icon-basics-delete-outlined" />
-            </el-button>
+              <el-button
+                type="text"
+                size="medium"
+                @click="() => handleEditItemBtnClick(row)"
+              >
+                <i class="icon-basics-edit-outlined" />
+              </el-button>
+            </el-tooltip>
+            <el-tooltip
+              content="删除"
+              effect="dark"
+              placement="top"
+            >
+              <el-button
+                type="text"
+                size="medium"
+                @click="() => handleRemoveItemBtnClick(row)"
+              >
+                <i class="icon-basics-delete-outlined" />
+              </el-button>
+            </el-tooltip>
           </div>
         </template>
       </common-table>
@@ -306,7 +326,14 @@ export default {
         path: '/newsCenter/newsDrafts'
       })
     },
-    // handleEditItemBtnClick(row) {},
+
+    handleEditItemBtnClick({ id }) {
+      this.$router.push({
+        path: '/newsCenter/newsEdit',
+        query: { id }
+      })
+    },
+
     handlePublishItemBtnClick({ id, title }) {
       const userId = this.userId
       this.$confirm(`确认发布标题为《${title}》的新闻草稿吗？`, {
