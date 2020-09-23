@@ -157,10 +157,12 @@ export default {
   },
   methods: {
     checkFullfilled() {
+      // 校验条件对应的表单项是否全部填写
       this.conditionFieldsFullfilled = this.conditionFields.every(
         (field) => !_.isNil(this.formData[field])
       )
       this.$nextTick(() => {
+        // 校验条件分支节点是否全部满足
         this.conditionFullfiled = this.checkConditionFullfilled()
       })
     },
@@ -172,6 +174,16 @@ export default {
     validate() {
       return this.$refs.form.validate(...arguments)
     },
+    /**
+     * 审批提交
+     * @param {Object} data
+     * @param {Object} data.processMap - 变量
+     * @param {Object} data.processName - 流程名称
+     * @param {Object} data.processId - 流程ID
+     * @param {Object} data.formId - 表单ID (旧业务需要)
+     * @param {Object} data.formKey -  表单Key（旧业务需要）
+     * @param {Object} data.formData - 表单数据
+     */
     submit(data) {
       if (!this.checkValidate().valid) {
         return false
@@ -231,7 +243,7 @@ export default {
       loop(this.$refs.apprPickerItem)
       return valid
     },
-    // 条件是否都已满足
+    // 校验条件分支节点是否全部满足
     checkConditionFullfilled() {
       let fullfilled = true
       const loop = ($el) => {
@@ -319,7 +331,7 @@ export default {
       this.conditionFields = [...fields]
       return [...fields]
     },
-    // 生成线性节点数组
+    // 根据表单输入和审批人选择，生成线性节点数组
     createNodeLine() {
       let start = JSON.parse(JSON.stringify(this.processData))
       delete start.childNode
