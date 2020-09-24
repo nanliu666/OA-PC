@@ -300,6 +300,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-tree {
+  overflow-y: auto;
+  height: calc(100vh - 34px - 20px - 24px - 68px);
+}
 .basic-container--block {
   height: calc(100% - 92px);
   min-height: calc(100% - 92px);
