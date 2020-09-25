@@ -315,7 +315,7 @@ export default {
         } else {
           this.activeData.__pc__.props.type = 'datetimerange'
         }
-        this.activeData.__mobile__.props.pickerType = 'datatime'
+        this.activeData.__mobile__.props.pickerType = 'datetime'
       }
     },
     getRules(path, label) {
@@ -365,6 +365,7 @@ export default {
     setOptionValue(item, val) {
       item.label = val
       item.value = val
+      this.$refs.form.validateField('__slot__.options')
     },
     append(data) {
       if (!data.children) {

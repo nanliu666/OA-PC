@@ -154,20 +154,18 @@ const TABLE_COLUMNS = [
     prop: 'title'
   },
   {
-    label: '发表人',
-    prop: 'publishUserName',
-    maxWidth: 100
+    label: '新闻栏目',
+    prop: 'categoryName'
   },
   {
     label: '创建时间',
-    prop: 'createTime',
-    minWidth: 100
-  },
-  {
-    label: '阅读量',
-    prop: 'readNum',
-    minWidth: 100
+    prop: 'createTime'
   }
+  // {
+  //   label: '阅读量',
+  //   prop: 'readNum',
+  //   minWidth: 100
+  // }
 ]
 const TABLE_CONFIG = {
   enablePagination: true,

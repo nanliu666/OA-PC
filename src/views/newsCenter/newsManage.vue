@@ -147,13 +147,35 @@
                     />
                   </el-button>
                 </el-tooltip>
-                <el-button
-                  type="text"
-                  size="medium"
-                  @click="() => handleRemoveItemBtnClick(row)"
+
+                <!-- 在新闻管理页面不支持编辑,在已发布的新闻页面编辑(参考低保真) -->
+                <!-- <el-tooltip
+                  content="编辑"
+                  effect="dark"
+                  placement="top"
                 >
-                  <i class="icon-basics-delete-outlined" />
-                </el-button>
+                  <el-button
+                    type="text"
+                    size="medium"
+                    @click="() => handleEditItemBtnClick(row)"
+                  >
+                    <i class="icon-basics-edit-outlined" />
+                  </el-button>
+                </el-tooltip> -->
+
+                <el-tooltip
+                  content="删除"
+                  effect="dark"
+                  placement="top"
+                >
+                  <el-button
+                    type="text"
+                    size="medium"
+                    @click="() => handleRemoveItemBtnClick(row)"
+                  >
+                    <i class="icon-basics-delete-outlined" />
+                  </el-button>
+                </el-tooltip>
               </div>
             </template>
           </common-table>
@@ -209,7 +231,7 @@ const TABLE_CONFIG = {
   enablePagination: true,
   showHandler: true,
   handlerColumn: {
-    width: 100
+    width: 150
   },
   enableMultiSelect: false,
   rowKey: 'id',
@@ -337,6 +359,14 @@ export default {
         }
       })
     },
+
+    handleEditItemBtnClick({ id }) {
+      this.$router.push({
+        path: '/newsCenter/newsEdit',
+        query: { id }
+      })
+    },
+
     handleRemoveItemBtnClick({ id, title }) {
       this.$confirm(`确认删除标题为《${title}》的新闻吗？`, {
         title: '是否删除新闻',

@@ -165,6 +165,7 @@ export default {
     isCounterSign() {
       return _.get(this.data, 'properties.counterSign', false)
     },
+    // 选项数组
     optionList() {
       return this.data.type === 'approver'
         ? _.get(this.data, 'properties.approvers', [])
@@ -172,9 +173,11 @@ export default {
         ? _.get(this.data, 'properties.members', [])
         : []
     },
+    // 是否多选
     isMulti() {
       return _.get(this.data, 'properties.optionalMultiUser', false)
     },
+    // 是否支持用户选择审批人
     selectable() {
       return (
         _.get(this.data, 'properties.assigneeType', null) &&
@@ -204,6 +207,7 @@ export default {
     this.watcher && this.watcher()
   },
   created() {
+    // 当前节点是条件分支节点
     if (!_.isEmpty(this.conditionNodes)) {
       if (this.childNode && this.childNode.type !== 'empty') {
         this.nextNode = { childNode: this.childNode, type: this.childNode.type }
@@ -214,10 +218,14 @@ export default {
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
         function() {
+          // 遍历当前节点的所有条件分支
           let mainflag = this.conditionNodes.some((node) => {
             let flag = true
+            // 遍历当前条件分支的所有条件
             node.properties.conditions.forEach((condition) => {
+              // 数字类型
               if (condition.type === 'number' && condition.defaultValue) {
+                // 介于两数之间
                 if (condition.defaultValue.type === 'bet') {
                   if (
                     _[condition.defaultValue.value[1]](
@@ -232,6 +240,7 @@ export default {
                     return
                   }
                   // defaultValue.type { lt: '<', lte: '≤', gt: '>', gte: '≥', eq: '=' }
+                  // 使用lodash的比较函数
                 } else if (
                   _[condition.defaultValue.type](
                     this.formData[condition.vModel],
@@ -240,10 +249,12 @@ export default {
                 ) {
                   return
                 }
+                // 单选框
               } else if (condition.type === 'radio' && typeof condition.val !== 'undefined') {
                 if (this.formData[condition.vModel] === condition.val) {
                   return
                 }
+                // 多选框
               } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
                 if (this.formData[condition.vModel] === condition.val) {
                   return
@@ -251,8 +262,10 @@ export default {
               }
               flag = false
             })
+            // 处理发起人条件
             if (!_.isEmpty(node.properties.initiator)) {
               if (this.fullOrgId) {
+                // 标识满足发起人条件的组织ID
                 this.conditionOrgId = (
                   node.properties.initiator.find((item) =>
                     _.includes(this.fullOrgId.split('.'), item.orgId)
@@ -262,6 +275,7 @@ export default {
                 this.conditionOrgId = null
               }
               flag = flag !== false && !!this.conditionOrgId
+              // 标识没有符合当前节点的组织
               this.noMatchOrg = !flag
             }
             if (flag) {
@@ -297,6 +311,7 @@ export default {
         { deep: true, immediate: true }
       )
     } else {
+      // 不是条件节点时也要监听childNode，随时更新this.data
       this.watcher = this.$watch(
         'childNode',
         () => {
@@ -309,12 +324,14 @@ export default {
     }
   },
   methods: {
+    // 判断当前节点是否最后一个节点
     updateLast() {
       let that = this
       setTimeout(() => {
         that.isLast = that.isLastNode(that.path)
       }, 0)
     },
+    // 初始化当前节点的userList
     initUserList(data) {
       let userList
       if (data.type === 'copy') {
