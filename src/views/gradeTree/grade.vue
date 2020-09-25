@@ -479,9 +479,9 @@ export default {
             alternateAngle: 90,
             alternateLayerSpacing: 35,
             alternateAlignment: go.TreeLayout.AlignmentBus,
-            alternateNodeSpacing: 20,
-            mouseOver: that.hideContextMenu()
+            alternateNodeSpacing: 20
           }),
+          mouseOver: that.hideContextMenu,
           'undoManager.isEnabled': false // enable undo & redo
         }
       )
