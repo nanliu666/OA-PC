@@ -10,7 +10,7 @@ import store from '@/store/'
 import router from '@/router/router'
 import { serialize } from '@/util/util'
 import { getToken } from '@/util/auth'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import website from '@/config/website'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -67,6 +67,20 @@ instance.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+let loadingCount = 0
+/**
+ * 每请求一次loading，增加一次次数
+ */
+function addLoading(res) {
+  if (loadingCount > 0) return
+  loadingCount++
+  MessageBox({
+    title: '提示',
+    message: res.data.resMsg,
+    type: 'warning',
+    confirmButtonText: '重新登录'
+  }).then(() => store.dispatch('FedLogOut').then(() => router.push({ path: '/login' })))
+}
 //http response 拦截
 instance.interceptors.response.use(
   (res) => {
@@ -84,21 +98,7 @@ instance.interceptors.response.use(
 
     if (status !== 200) {
       if (status === 8000) {
-        this.$confirm(
-          '你的账号当前在另一台设备登录，你被迫下线；若账号存在安全风险，建议重新登录后更改密码？',
-          '提示',
-          {
-            confirmButtonText: '重新登录',
-            cancelButtonText: '关闭窗口',
-            type: 'warning'
-          }
-        )
-          .then(() => {
-            router.push({ path: '/login' })
-          })
-          .catch(() => {
-            router.push({ path: '/login' })
-          })
+        addLoading(res)
       } else {
         Message({
           message: message,
