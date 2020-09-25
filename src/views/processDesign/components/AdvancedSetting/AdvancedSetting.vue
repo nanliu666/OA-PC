@@ -143,5 +143,5 @@ export default {
   >>> .el-form--label-top .el-form-item__label {
     padding-bottom: 0;
   }
-}</style
->>
+}
+</style>
