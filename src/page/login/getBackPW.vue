@@ -12,7 +12,10 @@
         <keep-alive>
           <div class="contens-wrapper">
             <div class="progress-bar">
-              <el-steps :active="step">
+              <el-steps
+                align-center
+                :active="step"
+              >
                 <el-step
                   title="验证身份"
                   :status="steps.firstStatus"
@@ -118,6 +121,7 @@
                   </el-button>
                   <el-button
                     v-show="identity.msgKey"
+                    type="primary"
                     class="count-down-time"
                   >
                     {{ identity.msgText }}
@@ -196,8 +200,12 @@
               v-if="step != 3"
               class="next-button"
             >
-              <el-button @click="next">
-                下一步
+              <el-button
+                type="primary"
+                :disabled="btnDisabled"
+                @click="next"
+              >
+                {{ step === 2 ? '确认修改' : '下一步' }}
               </el-button>
             </div>
             <div
@@ -205,6 +213,7 @@
               class="goback-containner"
             >
               <el-button
+                type="primary"
                 class="goback-login"
                 @click="gobackLogin"
               >
@@ -262,6 +271,8 @@ export default {
     const validateNewPW = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('密码不能少于6个字符'))
+      } else if (_this.password.form.newPW && value.indexOf(' ') !== -1) {
+        callback(new Error('密码不能包含空格'))
       } else if (_this.password.form.newPW && !validatePW(value)) {
         callback(new Error('密码必须包含字母，符号或数字中至少两项'))
       } else {
@@ -352,6 +363,18 @@ export default {
     }
   },
   computed: {
+    btnDisabled() {
+      let disabled = false
+      if (this.step === 2) {
+        const form = this.password.form
+        for (const field in form) {
+          if (_.isEmpty(form[field])) {
+            return true
+          }
+        }
+      }
+      return disabled
+    },
     config() {
       return {
         MSGINIT: this.$t('login.msgText'),
@@ -577,14 +600,6 @@ export default {
   left: 50%;
   transform: translate(-50%, 0);
   top: 24px;
-}
-.next-button .el-button {
-  width: 94px;
-  height: 42px;
-  background: #207efa;
-  border-radius: 4px;
-  border-radius: 4px;
-  color: #fff;
 }
 .el-button + .el-button {
   margin-left: 0;
