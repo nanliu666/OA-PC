@@ -501,20 +501,23 @@ export default {
             phonenum: this.identity.form.phone,
             email: this.identity.form.email
           }
-          getCode(params).then(() => {
-            //2.倒计时
-            this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
-            const time = setInterval(() => {
-              this.identity.msgKey = true
-              this.identity.msgTime--
-              this.identity.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
-              if (this.identity.msgTime === 0) {
-                this.identity.msgTime = this.config.MSGTIME
-                this.identity.msgText = this.config.MSGINIT
-                this.identity.msgKey = false
-                clearInterval(time)
-              }
-            }, 1000)
+
+          this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
+          this.identity.msgKey = true
+          const time = setInterval(() => {
+            this.identity.msgTime--
+            this.identity.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
+            if (this.identity.msgTime === 0) {
+              this.identity.msgTime = this.config.MSGTIME
+              this.identity.msgText = this.config.MSGINIT
+              this.identity.msgKey = false
+              clearInterval(time)
+            }
+          }, 1000)
+
+          getCode(params).catch(() => {
+            clearInterval(time)
+            this.identity.msgKey = false
           })
         }
       })
