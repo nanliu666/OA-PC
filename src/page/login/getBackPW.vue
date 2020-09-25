@@ -515,10 +515,14 @@ export default {
             }
           }, 1000)
 
-          getCode(params).catch(() => {
-            clearInterval(time)
-            this.identity.msgKey = false
-          })
+          getCode(params)
+            .then(() => {
+              this.$message.success('验证码发送成功，请注意查收')
+            })
+            .catch(() => {
+              clearInterval(time)
+              this.identity.msgKey = false
+            })
         }
       })
     }
