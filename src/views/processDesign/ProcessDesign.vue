@@ -184,6 +184,7 @@ export default {
       getApprProcess(params).then((res) => {
         this.Title = res.processName
         this.mockData = JSON.parse(Base64.decode(res.baseJson))
+        this.mockData.basicSetting.categoryId = res.categoryId
       })
     },
     jumpStep(data) {
@@ -666,10 +667,31 @@ export default {
       let conditionExpression = []
       d.properties.conditions.map((it) => {
         this.processMap[it.vModel] = ''
-        it.type === 'number' &&
+        let val = ''
+        if (it.type === 'number' && it.defaultValue.type === 'bet') {
+          val = it.defaultValue.value[1] == 'lt' ? 'gt' : 'gte'
+        }
+        (it.type === 'number' &&
+          it.defaultValue.type === 'bet' &&
+          conditionExpression.push(
+            '${' +
+              it.vModel +
+              ' ' +
+              val +
+              ' ' +
+              it.defaultValue.value[0] +
+              ' and ' +
+              it.vModel +
+              ' ' +
+              it.defaultValue.value[2] +
+              ' ' +
+              it.defaultValue.value[3] +
+              '}'
+          )) ||
           conditionExpression.push(
             '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
           )
+
         it.type === 'radio' && conditionExpression.push('${' + it.vModel + ' eq \'' + it.val + '\'}')
       })
 
