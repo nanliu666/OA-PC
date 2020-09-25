@@ -11,6 +11,63 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 NProgress.configure({ showSpinner: false })
 const lockPage = store.getters.website.lockPage //锁屏页
+const userPaths = ['/info/index', '/info/securitySetting']
+const userCenterMenu = {
+  menuName: '个人中心',
+  menuType: 'Dir',
+  menuId: null,
+  children: [
+    {
+      menuId: '312122',
+      menuName: '个人信息',
+      menuType: 'Menu',
+      isOwn: 1,
+      isShow: 1,
+      code: 'userinfo',
+      alias: 'userInfo',
+      path: '/info/index',
+      children: []
+    },
+    {
+      menuId: '312123',
+      menuName: '安全设置',
+      isOwn: 1,
+      isShow: 1,
+      code: 'user_securitySetting',
+      alias: 'securitySetting',
+      path: '/info/securitySetting',
+      children: []
+    }
+  ]
+}
+/**
+ * 更新左侧菜单和顶部菜单
+ **/
+function updateMenu(currentPath) {
+  let currentMenu = null
+  if (userPaths.includes(currentPath)) {
+    currentMenu = userCenterMenu
+  } else {
+    const menuAll = store.getters.menuAll
+    menuAll.some((menu) => {
+      if (
+        filterTree([menu], (menu) => menu.path === currentPath && menu.menuType === 'Menu', true)
+          .length > 0
+      ) {
+        currentMenu = menu
+        return true
+      }
+      return false
+    })
+  }
+  // 用找到的根菜单数据更新左侧菜单和顶部菜单状态
+  if (currentMenu) {
+    store.commit('SET_MENU', currentMenu)
+  } else {
+    // 找不到对应根菜单，将顶部菜单置为工作台
+    store.commit('SET_MENU', { menuId: null })
+  }
+}
 router.beforeEach((to, from, next) => {
   const meta = to.meta || {}
   const isMenu = meta.menu === undefined ? to.query.menu : meta.menu
@@ -30,27 +87,9 @@ router.beforeEach((to, from, next) => {
         })
       } else {
         const value = to.path
+        updateMenu(value)
         const label = to.query.tagName || to.name
         // 每次路由跳转时找到目标路径对应的根菜单数据
-        let currentMenu = null
-        const menuAll = store.getters.menuAll
-        menuAll.some((menu) => {
-          if (
-            filterTree([menu], (menu) => menu.path === value && menu.menuType === 'Menu', true)
-              .length > 0
-          ) {
-            currentMenu = menu
-            return true
-          }
-          return false
-        })
-        // 用找到的根菜单数据更新左侧菜单和顶部菜单状态
-        if (currentMenu) {
-          store.commit('SET_MENU', currentMenu)
-        } else {
-          // 找不到对应根菜单，将顶部菜单置为工作台
-          store.commit('SET_MENU', { menuId: null })
-        }
         const meta = to.meta || router.$avueRouter.meta || {}
         const i18n = to.query.i18n
         if (meta.isTab !== false && !validatenull(value) && !validatenull(label)) {

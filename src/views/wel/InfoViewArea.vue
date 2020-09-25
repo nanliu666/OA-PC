@@ -130,33 +130,6 @@
 import { fetchApproveStat, getShortcutInfo } from '@/api/msg/msg'
 import { getStaffBasicInfo } from '@/api/personalInfo'
 import { mapGetters } from 'vuex'
-const userCenterMenu = {
-  menuName: '个人中心',
-  menuType: 'Dir',
-  children: [
-    {
-      menuId: '312122',
-      menuName: '个人信息',
-      menuType: 'Menu',
-      isOwn: 1,
-      isShow: 1,
-      code: 'userinfo',
-      alias: 'userInfo',
-      path: '/info/index',
-      children: []
-    },
-    {
-      menuId: '312123',
-      menuName: '安全设置',
-      isOwn: 1,
-      isShow: 1,
-      code: 'user_securitySetting',
-      alias: 'securitySetting',
-      path: '/info/securitySetting',
-      children: []
-    }
-  ]
-}
 export default {
   name: 'InfoViewArea',
   components: {
@@ -217,7 +190,6 @@ export default {
       this.$router.push(pathData[0].path)
     },
     showUserCenter() {
-      this.$store.dispatch('SetMenu', userCenterMenu)
       this.$router.push('/info/index')
     },
     refreshEntry() {
