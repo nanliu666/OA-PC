@@ -461,6 +461,7 @@ export default {
      * @desc 处理架构图初始化视图
      * */
     diagram() {
+      let that = this
       this.myDiagram = $(
         go.Diagram,
         'myDiagramDiv', // must be the ID or reference to div
@@ -478,7 +479,8 @@ export default {
             alternateAngle: 90,
             alternateLayerSpacing: 35,
             alternateAlignment: go.TreeLayout.AlignmentBus,
-            alternateNodeSpacing: 20
+            alternateNodeSpacing: 20,
+            mouseOver: that.hideContextMenu()
           }),
           'undoManager.isEnabled': false // enable undo & redo
         }
@@ -1159,6 +1161,7 @@ export default {
           (this.stateData.nodeDataArray = JSON.parse(JSON.stringify(this.TreeModel.nodeDataArray)))
         this.Num === this.changeNum &&
           this.stateData.nodeDataArray.length > 0 &&
+          this.editStatus &&
           (this.TreeModel = this.stateData)
       } else {
         this.TreeModel.nodeDataArray = this.TreeModel.nodeDataArray.filter((it) => {

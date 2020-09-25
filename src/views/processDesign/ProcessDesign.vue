@@ -184,6 +184,7 @@ export default {
       getApprProcess(params).then((res) => {
         this.Title = res.processName
         this.mockData = JSON.parse(Base64.decode(res.baseJson))
+        this.mockData.basicSetting.categoryId = res.categoryId
       })
     },
     jumpStep(data) {
