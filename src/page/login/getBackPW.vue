@@ -158,12 +158,33 @@
                   <el-input
                     v-model="password.form.newPW"
                     class="newPW-input"
+                    autofocus="true"
+                    auto-complete="off"
+                    :type="password.passwordType1"
+                    @focus="resetPSWFields('newPW')"
+                  >
+                    <i
+                      v-if="password.passwordType1 !== 'password'"
+                      slot="suffix"
+                      class="icon-basics-eyeopen-outlined eye-icon"
+                      @click="() => (password.passwordType1 = 'password')"
+                    />
+                    <i
+                      v-else
+                      slot="suffix"
+                      class="icon-basics-eyeblind-outlined eye-icon"
+                      @click="() => (password.passwordType1 = 'text')"
+                    />
+                  </el-input>
+                  <!-- <el-input
+                    v-model="password.form.newPW"
+                    class="newPW-input"
                     type="password"
                     autofocus="true"
                     show-password
                     auto-complete="off"
                     @focus="resetPSWFields('newPW')"
-                  />
+                  /> -->
                 </el-form-item>
 
                 <el-form-item
@@ -173,12 +194,34 @@
                   <el-input
                     v-model="password.form.surePW"
                     class="surePW-input"
+                    autofocus="true"
+                    auto-complete="off"
+                    :type="password.passwordType2"
+                    @focus="resetPSWFields('surePW')"
+                  >
+                    <i
+                      v-if="password.passwordType1 !== 'password'"
+                      slot="suffix"
+                      class="icon-basics-eyeopen-outlined eye-icon"
+                      @click="() => (password.passwordType2 = 'password')"
+                    />
+                    <i
+                      v-else
+                      slot="suffix"
+                      class="icon-basics-eyeblind-outlined eye-icon"
+                      @click="() => (password.passwordType2 = 'text')"
+                    />
+                  </el-input>
+
+                  <!-- <el-input
+                    v-model="password.form.surePW"
+                    class="surePW-input"
                     type="password"
                     autofocus="true"
                     show-password
                     auto-complete="off"
                     @focus="resetPSWFields('surePW')"
-                  />
+                  /> -->
                 </el-form-item>
               </el-form>
             </div>
@@ -329,6 +372,8 @@ export default {
       },
 
       password: {
+        passwordType1: 'password',
+        passwordType2: 'password',
         form: {
           newPW: '',
           surePW: ''
