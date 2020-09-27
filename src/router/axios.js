@@ -69,7 +69,7 @@ instance.interceptors.request.use(
 )
 let loadingCount = 0
 /**
- * 每请求一次loading，增加一次次数
+ * 只取头一个8000状态，第一个确定后就跳转
  */
 function addLoading(res) {
   if (loadingCount > 0) return
@@ -77,9 +77,17 @@ function addLoading(res) {
   MessageBox({
     title: '提示',
     message: res.data.resMsg,
+    showClose: false,
+    closeOnPressEscape: false,
+    closeOnClickModal: false,
     type: 'warning',
     confirmButtonText: '重新登录'
-  }).then(() => store.dispatch('FedLogOut').then(() => router.push({ path: '/login' })))
+  }).then(() =>
+    store.dispatch('FedLogOut').then(() => {
+      router.push({ path: '/login' })
+      loadingCount = 0
+    })
+  )
 }
 //http response 拦截
 instance.interceptors.response.use(

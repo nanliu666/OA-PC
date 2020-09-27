@@ -5,7 +5,7 @@
     </div>
     <div class="out-container">
       <pageHeader
-        :title="'选择密码修改方式'"
+        :title="'选择密码找回方式'"
         :show-back="true"
       />
       <div class="select-mode-style">
@@ -18,13 +18,13 @@
             class="select-radio"
             label="phone"
           >
-            通过手机修改
+            通过手机找回
           </el-radio>
           <el-radio
             v-model="mode"
             label="email"
           >
-            通过邮箱修改
+            通过邮箱找回
           </el-radio>
           <div>
             <el-button

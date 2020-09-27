@@ -1,6 +1,6 @@
 import request from '@/router/axios'
 
-// 校验登陆密码
+// 校验登录密码
 export const checkPswOrPhone = (params) => {
   return request({
     url: '/api/user/v1/user/phone',

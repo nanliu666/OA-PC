@@ -3,55 +3,45 @@
     v-loading="loading"
     class="NewsCard wrapper"
   >
-    <div
-      class="wrapper__top"
-      @click="() => navigateToNewsCenter()"
-    >
-      <span class="wrapper__top--title">
-        {{ `新闻中心(${page.total})` }}
-      </span>
-      <span class="wrapper__top--operation">
+    <div class="wrapper__header">
+      <a
+        class="link"
+        @click="() => navigateToNewsCenter()"
+      >
+        <span class="title">
+          {{ `新闻中心(${page.total})` }}
+        </span>
         <i class="icon-arrow-right-outlined" />
-      </span>
+      </a>
     </div>
 
-    <div class="wrapper__content">
-      <comEmpty v-if="_.isEmpty(paneData)" />
+    <div class="wrapper__body">
       <ul
-        v-else
-        class="news"
+        v-if="!_.isEmpty(paneData)"
+        class="news__list"
       >
         <li
           v-for="(row, index) in paneData"
           :key="index"
-          class="news__item"
+          class="news"
         >
-          <el-image
-            fit="cover"
-            class="news__item--image"
+          <img
+            class="poster link"
             :src="row.picUrl"
             @click="() => handleItemImageClick(row)"
-          />
-          <div class="news__item--link">
-            <el-tooltip
-              class="item"
-              effect="dark"
-              :content="row.title"
-              placement="top"
-            >
-              <div
-                class="news__item--title"
-                @click="() => handleItemTitleClick(row)"
-              >
-                {{ row.title }}
-              </div>
-            </el-tooltip>
-            <div class="news__item--info">
+          >
+          <div class="info">
+            <a
+              class="title link"
+              @click="() => handleItemTitleClick(row)"
+            > {{ row.title }}</a>
+            <div class="date">
               {{ row.publishTime }}
             </div>
           </div>
         </li>
       </ul>
+      <comEmpty v-else />
     </div>
 
     <!-- <div class="wrapper__bottom">
@@ -69,8 +59,8 @@
 <script>
 import { getNewsCenter } from '@/api/newsCenter/newCenter'
 
-// 默认一次加载5条数据
-const PAGE_SIZE_DEFAULT = 5
+// 默认一次加载5条数据(修改为3行，不出现滚动行为)
+const PAGE_SIZE_DEFAULT = 3
 
 export default {
   name: 'NewsCard',
@@ -146,60 +136,46 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-$color_active: #368AFA
-$color_danger: #ff6464
-$color_hover: #207EFA
-$color_icon: #A0A8AE
-$color_placeholder: #757C85
+@import "~@/styles/mixin"
+@import "~@/styles/variables"
+$color_title: #202940
 
 .wrapper
-  height: 100%
-  flex: 1
-  position: relative
-  background: white
-  /deep/.el-card__body
-    display: flex
-    justify-content: space-between
-    flex-direction: column
-  &__top
-    display: flex
-    align-items: center
-    // justify-content: space-between
-    margin-bottom: 1rem
-    cursor: pointer
-    &--title
-      font-weight: bold
+  &__header
+    .title
       font-size: 18px
-    &--operation i
-      color: $color_icon
-      margin-left: 8px
-      font-size: 12px
-  .wrapper__content
-    height: 256px
-    overflow: auto
-    .news
-      &__item
-        border-bottom: 1px solid #ccc
+      font-weight: bold
+      color: $color_title
+      line-height: 28px
+  &__body
+    .news__list
+      .news
+        padding: 16px 0
         display: flex
-        justify-content: space-start
-        margin-bottom: .5rem
-        padding: .5rem
-        position: relative
-        &--image
-          cursor: pointer
-          height: 50px
-          margin-right: .5rem
-          width: 100px
-        &--title
-          cursor: pointer
-          font-size: 14px
-        &--info
-          bottom: .5rem
-          position: absolute
-          font-size: smaller
-          color: $color_placeholder
-  .wrapper__bottom
-    &--operation
-      color: $color_active
-      cursor: pointer
+        & + .news
+          border-top: 1px solid #E3E7E9
+        .poster
+          width: 72px
+          height: 60px
+          object-fit: cover
+          margin-right: -60px
+          flex-shrink: 0
+        .info
+          margin-left: 16px + 60px
+          width: 100%
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          .title
+            @include ellipsisMultiline
+            font-size: 14px
+            color: $color_title
+            letter-spacing: 0
+            &:hover
+              color: $primaryColor
+          .date
+            font-size: 14px
+            color: #757C85
+  .link
+    cursor: pointer
 </style>

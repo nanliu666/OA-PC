@@ -12,7 +12,10 @@
         <keep-alive>
           <div class="contens-wrapper">
             <div class="progress-bar">
-              <el-steps :active="step">
+              <el-steps
+                align-center
+                :active="step"
+              >
                 <el-step
                   title="验证身份"
                   :status="steps.firstStatus"
@@ -118,6 +121,7 @@
                   </el-button>
                   <el-button
                     v-show="identity.msgKey"
+                    type="primary"
                     class="count-down-time"
                   >
                     {{ identity.msgText }}
@@ -154,12 +158,33 @@
                   <el-input
                     v-model="password.form.newPW"
                     class="newPW-input"
+                    autofocus="true"
+                    auto-complete="off"
+                    :type="password.passwordType1"
+                    @focus="resetPSWFields('newPW')"
+                  >
+                    <i
+                      v-if="password.passwordType1 !== 'password'"
+                      slot="suffix"
+                      class="icon-basics-eyeopen-outlined eye-icon"
+                      @click="() => (password.passwordType1 = 'password')"
+                    />
+                    <i
+                      v-else
+                      slot="suffix"
+                      class="icon-basics-eyeblind-outlined eye-icon"
+                      @click="() => (password.passwordType1 = 'text')"
+                    />
+                  </el-input>
+                  <!-- <el-input
+                    v-model="password.form.newPW"
+                    class="newPW-input"
                     type="password"
                     autofocus="true"
                     show-password
                     auto-complete="off"
                     @focus="resetPSWFields('newPW')"
-                  />
+                  /> -->
                 </el-form-item>
 
                 <el-form-item
@@ -169,12 +194,34 @@
                   <el-input
                     v-model="password.form.surePW"
                     class="surePW-input"
+                    autofocus="true"
+                    auto-complete="off"
+                    :type="password.passwordType2"
+                    @focus="resetPSWFields('surePW')"
+                  >
+                    <i
+                      v-if="password.passwordType1 !== 'password'"
+                      slot="suffix"
+                      class="icon-basics-eyeopen-outlined eye-icon"
+                      @click="() => (password.passwordType2 = 'password')"
+                    />
+                    <i
+                      v-else
+                      slot="suffix"
+                      class="icon-basics-eyeblind-outlined eye-icon"
+                      @click="() => (password.passwordType2 = 'text')"
+                    />
+                  </el-input>
+
+                  <!-- <el-input
+                    v-model="password.form.surePW"
+                    class="surePW-input"
                     type="password"
                     autofocus="true"
                     show-password
                     auto-complete="off"
                     @focus="resetPSWFields('surePW')"
-                  />
+                  /> -->
                 </el-form-item>
               </el-form>
             </div>
@@ -196,8 +243,12 @@
               v-if="step != 3"
               class="next-button"
             >
-              <el-button @click="next">
-                下一步
+              <el-button
+                type="primary"
+                :disabled="btnDisabled"
+                @click="next"
+              >
+                {{ step === 2 ? '确认修改' : '下一步' }}
               </el-button>
             </div>
             <div
@@ -205,6 +256,7 @@
               class="goback-containner"
             >
               <el-button
+                type="primary"
                 class="goback-login"
                 @click="gobackLogin"
               >
@@ -262,6 +314,8 @@ export default {
     const validateNewPW = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('密码不能少于6个字符'))
+      } else if (_this.password.form.newPW && value.indexOf(' ') !== -1) {
+        callback(new Error('密码不能包含空格'))
       } else if (_this.password.form.newPW && !validatePW(value)) {
         callback(new Error('密码必须包含字母，符号或数字中至少两项'))
       } else {
@@ -318,6 +372,8 @@ export default {
       },
 
       password: {
+        passwordType1: 'password',
+        passwordType2: 'password',
         form: {
           newPW: '',
           surePW: ''
@@ -352,6 +408,18 @@ export default {
     }
   },
   computed: {
+    btnDisabled() {
+      let disabled = false
+      if (this.step === 2) {
+        const form = this.password.form
+        for (const field in form) {
+          if (_.isEmpty(form[field])) {
+            return true
+          }
+        }
+      }
+      return disabled
+    },
     config() {
       return {
         MSGINIT: this.$t('login.msgText'),
@@ -433,21 +501,28 @@ export default {
             phonenum: this.identity.form.phone,
             email: this.identity.form.email
           }
-          getCode(params).then(() => {
-            //2.倒计时
-            this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
-            const time = setInterval(() => {
-              this.identity.msgKey = true
-              this.identity.msgTime--
-              this.identity.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
-              if (this.identity.msgTime === 0) {
-                this.identity.msgTime = this.config.MSGTIME
-                this.identity.msgText = this.config.MSGINIT
-                this.identity.msgKey = false
-                clearInterval(time)
-              }
-            }, 1000)
-          })
+
+          this.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
+          this.identity.msgKey = true
+          const time = setInterval(() => {
+            this.identity.msgTime--
+            this.identity.msgText = this.identity.msgTime + this.config.MSGSCUCCESS
+            if (this.identity.msgTime === 0) {
+              this.identity.msgTime = this.config.MSGTIME
+              this.identity.msgText = this.config.MSGINIT
+              this.identity.msgKey = false
+              clearInterval(time)
+            }
+          }, 1000)
+
+          getCode(params)
+            .then(() => {
+              this.$message.success('验证码发送成功，请注意查收')
+            })
+            .catch(() => {
+              clearInterval(time)
+              this.identity.msgKey = false
+            })
         }
       })
     }
@@ -577,14 +652,6 @@ export default {
   left: 50%;
   transform: translate(-50%, 0);
   top: 24px;
-}
-.next-button .el-button {
-  width: 94px;
-  height: 42px;
-  background: #207efa;
-  border-radius: 4px;
-  border-radius: 4px;
-  color: #fff;
 }
 .el-button + .el-button {
   margin-left: 0;

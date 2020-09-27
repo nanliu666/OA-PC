@@ -137,7 +137,7 @@ export default {
         image: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
       },
       loginRules: {
-        account: [{ required: false, message: '请输入用户名', trigger: 'blur' }],
+        account: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         username: [{ required: true, message: '请输入工号', trigger: 'blur' }],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -160,6 +160,7 @@ export default {
   methods: {
     changeMode() {
       this.loginMode = this.loginMode === 'username' ? 'account' : 'username'
+      this.$refs['loginForm'].clearValidate(...arguments)
     },
     refreshCode() {
       getCaptcha().then((res) => {

@@ -37,6 +37,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// ::-webkit-scrollbar {
+//   width: 0px;
+// }
 .footer-style {
   color: #a0a8ae;
   position: relative;
