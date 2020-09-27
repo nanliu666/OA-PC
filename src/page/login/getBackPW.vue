@@ -200,7 +200,7 @@
                     @focus="resetPSWFields('surePW')"
                   >
                     <i
-                      v-if="password.passwordType1 !== 'password'"
+                      v-if="password.passwordType2 !== 'password'"
                       slot="suffix"
                       class="icon-basics-eyeopen-outlined eye-icon"
                       @click="() => (password.passwordType2 = 'password')"
