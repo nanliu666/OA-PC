@@ -221,7 +221,14 @@
             @click="activeName = 'config'"
             v-html="'设置' + (value.type === 'approver' ? '审批人' : '发起人')"
           />
+          <div
+            :class="[activeName == 'formAuth' ? 'active' : '']"
+            @click="activeName = 'formAuth'"
+          >
+            表单权限
+          </div>
         </div>
+
         <div v-if="activeName == 'config'">
           <!-- 开始节点 -->
           <el-row
@@ -415,6 +422,80 @@
               >
                 或签（一名审批人同意或拒绝即可）
               </el-radio>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="activeName == 'formAuth'"
+          class="formAuth"
+        >
+          <div class="form-auth-table">
+            <header class="auth-table-header">
+              <div class="row">
+                <div class="label">
+                  表单字段
+                </div>
+                <el-radio-group
+                  v-model="globalFormOperate"
+                  class="radio-group"
+                  @change="changeAllFormOperate"
+                >
+                  <el-radio
+                    :label="2"
+                    style="margin-left: 1rem;"
+                  >
+                    可编辑
+                  </el-radio>
+                  <el-radio :label="1">
+                    只读
+                  </el-radio>
+                  <el-radio :label="0">
+                    隐藏
+                  </el-radio>
+                </el-radio-group>
+              </div>
+            </header>
+            <div class="auth-table-body">
+              <div
+                v-for="item in getFormOperates()"
+                :key="item.formId"
+                class="row"
+              >
+                <div class="label flex flex-center flex-align-items">
+                  <span
+                    v-show="item.required"
+                    class="required"
+                  >*</span>
+                  <!--                                {{item.label}}-->
+                  <el-tooltip
+                    :content="item.label"
+                    placement="right-end"
+                    effect="dark"
+                  >
+                    <div
+                      class="label"
+                      v-html="item.label"
+                    />
+                  </el-tooltip>
+                </div>
+                <el-radio-group
+                  v-model="item.formOperate"
+                  class="radio-group"
+                >
+                  <el-radio
+                    :label="2"
+                    style="margin-left: 1rem;"
+                  >
+                    <span style="opacity: 0;">可编辑</span>
+                  </el-radio>
+                  <el-radio :label="1">
+                    <span style="opacity: 0;">只读</span>
+                  </el-radio>
+                  <el-radio :label="0">
+                    <span style="opacity: 0;">隐藏</span>
+                  </el-radio>
+                </el-radio-group>
+              </div>
             </div>
           </div>
         </div>
@@ -798,6 +879,16 @@ export default {
     this.getTagData()
   },
   methods: {
+    changeAllFormOperate(val) {
+      const target = this.isStartNode() ? this.startForm : this.approverForm
+      target.formOperates.forEach((t) => (t.formOperate = val))
+    },
+    getFormOperates() {
+      let res = []
+      this.isApproverNode() && (res = this.approverForm.formOperates)
+      this.isStartNode() && (res = this.startForm.formOperates)
+      return res
+    },
     valid() {
       const assigneeType = this.approverForm.assigneeType
       let refsForm = {
