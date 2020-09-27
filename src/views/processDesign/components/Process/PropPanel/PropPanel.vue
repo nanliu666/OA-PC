@@ -886,7 +886,11 @@ export default {
       this.dialogVisible = false
     },
     sumbitForm() {},
-    resetOrgColl() {
+    resetOrgColl(data) {
+      let list = ['directorLevel', 'job', 'position', 'tag']
+      if (list.includes(data)) {
+        this.approverForm.counterSign = null
+      }
       for (let key in this.orgCollection) {
         this.$set(this.orgCollection, key, [])
       }
