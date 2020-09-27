@@ -5,7 +5,7 @@
     </div>
     <div class="out-container">
       <pageHeader
-        :title="`${$route.query.mode === 'phone' ? '手机' : '邮箱'}修改密码`"
+        :title="`${$route.query.mode === 'phone' ? '手机' : '邮箱'}找回密码`"
         :show-back="true"
       />
       <div class="getback-pw">
