@@ -1,8 +1,21 @@
 <template>
-  <div class="notifyAndNews">
-    <noticeCard />
-    <newsCard />
-  </div>
+  <el-row
+    type="flex"
+    class="notifyAndNews"
+  >
+    <el-col
+      class="fill"
+      :span="12"
+    >
+      <noticeCard class="fill" />
+    </el-col>
+    <el-col
+      class="fill"
+      :span="12"
+    >
+      <newsCard class="fill" />
+    </el-col>
+  </el-row>
 </template>
 
 <script>

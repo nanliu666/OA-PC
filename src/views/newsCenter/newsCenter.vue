@@ -4,7 +4,10 @@
       title="新闻中心"
       show-back
     />
-    <basic-container block>
+    <basic-container
+      v-loading="loading"
+      block
+    >
       <el-row
         class="container"
         :gutter="8"
