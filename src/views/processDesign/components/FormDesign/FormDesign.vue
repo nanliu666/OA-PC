@@ -120,7 +120,7 @@ import Draggable from 'vuedraggable'
 import DraggableItem from './components/DragableItem'
 import RightPanel from './components/RightPanel'
 import { componentGroups } from './components/generator/config.js'
-import { deepClone } from './utils/index'
+import { deepClone, debounce } from './utils/index'
 // import { saveDrawingList, getDrawingList } from './utils/db'
 
 const emptyActiveData = {
@@ -131,7 +131,6 @@ const emptyActiveData = {
 }
 
 let tempActiveData
-// const drawingListInDB = getDrawingList()
 
 export default {
   name: 'FormDesign',
@@ -149,7 +148,7 @@ export default {
       activeData: emptyActiveData,
       activeId: null,
       isPC: false,
-      // saveDrawingListDebounce: debounce(saveDrawingList, 340),
+      saveDrawingListDebounce: debounce(this.storeDrawingList, 340),
       formConf: {
         showBtn: false,
         fields: []
@@ -171,13 +170,13 @@ export default {
           )
         }
       }
+    },
+    drawingList: {
+      handler(val) {
+        this.saveDrawingListDebounce(val)
+      },
+      deep: true
     }
-    //   drawingList: {
-    //     handler(val) {
-    //       this.saveDrawingListDebounce(val)
-    //     },
-    //     deep: true
-    //   }
   },
   mounted() {
     if (typeof this.conf === 'object' && this.conf !== null) {
@@ -195,6 +194,9 @@ export default {
     this.activeFormItem(this.drawingList[0])
   },
   methods: {
+    storeDrawingList(list) {
+      this.$store.commit('setFieldList', list)
+    },
     getData() {
       return new Promise((resolve, reject) => {
         // 有formKey时即为旧业务，不允许修改表单

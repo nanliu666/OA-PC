@@ -6,7 +6,7 @@ let hasCondition = (state, formId, needIndex = false) => {
 const process = {
   state: {
     processConditions: [], // processConditions 用于传递流程图需要的条件
-    formItemList: [], // 流程节点表单权限控制——组件列表
+    fieldList: [], // 流程节点表单权限控制——组件列表
     processData: {}
   },
   actions: {},
@@ -35,8 +35,8 @@ const process = {
     clearPCondition(state) {
       state.processConditions = []
     },
-    updateFormItemList(state, list) {
-      state.formItemList = list
+    setFieldList(state, list) {
+      state.fieldList = list
     }
   }
 }

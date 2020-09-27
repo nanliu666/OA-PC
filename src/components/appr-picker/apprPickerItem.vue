@@ -179,10 +179,7 @@ export default {
     },
     // 是否支持用户选择审批人
     selectable() {
-      return (
-        _.get(this.data, 'properties.assigneeType', null) &&
-        _.get(this.data, 'properties.assigneeType', null) !== 'user'
-      )
+      return _.get(this.data, 'properties.assigneeType', null) !== 'user'
     },
     tips() {
       if (_.get(this.data, 'type') === 'approver') {
