@@ -639,9 +639,13 @@ export default {
       this.maybeShowItem(document.getElementById('delete'), obj.data, 'delete')
       cxElement.classList.add('show-menu')
       let mousePt = diagram.lastInput.viewPoint
-      cxElement.style.left = mousePt.x + 5 + 'px'
-      cxElement.style.top = mousePt.y + 'px'
-      window.addEventListener('click', this.hideCX, true)
+      if (mousePt.y > 0 && mousePt.x > 0) {
+        cxElement.style.left = mousePt.x + 5 + 'px'
+        cxElement.style.top = mousePt.y + 'px'
+        window.addEventListener('click', this.hideCX, true)
+      } else {
+        this.hideContextMenu()
+      }
     },
     /**
      * @author guanfenda
