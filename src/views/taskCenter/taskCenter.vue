@@ -196,7 +196,7 @@ export default {
           label: '',
           data: '',
           options: [],
-          config: { placeholder: '查找岗位', 'suffix-icon': 'el-icon-search' }
+          config: { placeholder: '标题', 'suffix-icon': 'el-icon-search' }
         }
       ],
       popoverOptions: [

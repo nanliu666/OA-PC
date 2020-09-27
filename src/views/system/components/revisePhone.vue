@@ -31,7 +31,7 @@
             class="reset-password"
           >
             <div class="identity-title">
-              请完成以下登陆密码的填写
+              请完成以下登录密码的填写
             </div>
 
             <el-form
@@ -165,7 +165,11 @@
             v-if="step != 3"
             class="next-button"
           >
-            <el-button @click="next">
+            <el-button
+              type="primary"
+              :disabled="buttonDisabled"
+              @click="next"
+            >
               下一步
             </el-button>
           </div>
@@ -237,17 +241,30 @@ export default {
       if (!_this.identity.form.captchaCode) {
         callback(new Error('请输入辩证码'))
       } else {
+        validateButton()
         callback()
       }
     }
+    const validateButton = () => {
+      let emailOrPhone = _this.$parent.isEmail ? _this.isValidateEmail : _this.isValidatePhone
+      let condition = [emailOrPhone, _this.isValidateCode, _this.isValidateCaptchaCode]
+      _this.stepTwoDisabled = !_.every(condition, Boolean)
+    }
     const validateCode = (rule, value, callback) => {
-      if (!_this.identity.form.code) {
+      if (!_this.identity.form.code || _this.identity.form.code.length !== 6) {
         callback(new Error('请输入六位验证码'))
+      } else {
+        validateButton()
+        callback()
+      }
+    }
+    const checkPsw = (rule, value, callback) => {
+      if (!_this.password.form.psw) {
+        callback(new Error('请输入密码'))
       } else {
         callback()
       }
     }
-
     return {
       labelWidth: '150',
       step: 1,
@@ -287,7 +304,7 @@ export default {
           captchaCode: [
             {
               required: true,
-              trigger: 'blur',
+              trigger: ['blur', 'change'],
               validator: validateCaptchaCode
             }
           ],
@@ -310,14 +327,15 @@ export default {
           psw: [
             {
               required: true,
-              trigger: 'blur',
-              message: '请输入密码'
+              trigger: ['blur', 'change'],
+              validator: checkPsw
             }
           ]
         }
       }
     }
   },
+
   computed: {
     config() {
       return {
@@ -326,7 +344,24 @@ export default {
         MSGTIME: 60
       }
     },
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo']),
+    stepOneDisabled() {
+      const form = this.password.form
+      return this.isEmptyForm(form)
+    },
+    stepTwoDisabled: {
+      get: function() {
+        const form = this.handleDisabled()
+        return this.isEmptyForm(form)
+      },
+      set: function() {
+        const form = this.handleDisabled()
+        return this.isEmptyForm(form)
+      }
+    },
+    buttonDisabled() {
+      return this.step === 1 ? this.stepOneDisabled : this.stepTwoDisabled
+    }
   },
   created() {
     this.refreshCode()
@@ -334,6 +369,18 @@ export default {
     this.identity.msgTime = this.config.MSGTIME
   },
   methods: {
+    handleDisabled() {
+      let omitKey = this.$parent.isEmail ? 'phone' : 'email'
+      return _.omit(this.identity.form, [omitKey])
+    },
+    isEmptyForm(form) {
+      for (const field in form) {
+        if (_.isEmpty(form[field])) {
+          return true
+        }
+      }
+      return false
+    },
     refreshCode() {
       getCaptcha().then((res) => {
         this.identity.form.captchaKey = res.key
@@ -540,14 +587,14 @@ export default {
   transform: translate(-50%, 0);
   top: 24px;
 }
-.next-button .el-button {
-  width: 94px;
-  height: 42px;
-  background: #207efa;
-  border-radius: 4px;
-  border-radius: 4px;
-  color: #fff;
-}
+// .next-button .el-button {
+//   width: 94px;
+//   height: 42px;
+//   background: #207efa;
+//   border-radius: 4px;
+//   border-radius: 4px;
+//   color: #fff;
+// }
 .success-icon {
   height: 72px;
   text-align: center;

@@ -119,6 +119,7 @@
       </div>
     </div>
     <entry-dialog
+      v-if="hasEntryDialog"
       ref="refEntry"
       :init-data="_.cloneDeep(initQuickEnter)"
       @refresh="refreshEntry"
@@ -137,6 +138,7 @@ export default {
   },
   data() {
     return {
+      hasEntryDialog: false,
       quickLoading: false,
       isShowLoadMore: true,
       isShowUp: true,
@@ -196,7 +198,7 @@ export default {
       this.getQuickEntryList()
     },
     handleCommand() {
-      this.$refs.refEntry.entryShow = true
+      this.hasEntryDialog = true
     },
     // 点击添加员工
     jumpToAddUser() {

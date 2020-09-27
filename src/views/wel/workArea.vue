@@ -434,14 +434,14 @@ export default {
         this.workMsgQuery.userId = this.userId
         this.systemMsgQuery.userId = this.userId
         let workRes = await getMsgList(this.workMsgQuery)
-        this.newList[0].label += `(${workRes.totalNum})`
+        this.newList[0].label = `工作消息(${workRes.totalNum})`
         this.msgWorkList = workRes.data
         this.msgWorkList.sort((a, b) => {
           return a.isRead - b.isRead
         })
         let systemRes = await getMsgList(this.systemMsgQuery)
         this.msgSystemList = systemRes.data
-        this.newList[1].label += `(${systemRes.totalNum})`
+        this.newList[1].label = `系统消息(${systemRes.totalNum})`
         this.msgSystemList.sort((a, b) => {
           return a.isRead - b.isRead
         })
