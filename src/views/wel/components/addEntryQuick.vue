@@ -205,7 +205,7 @@ export default {
       justify-content: space-between;
       border-radius: 4px;
       border: 1px solid #e3e7e9;
-      padding: 40px 100px 20px 100px;
+      padding: 48px 100px 20px 100px;
       &::after {
         flex: auto;
         content: ' ';
@@ -219,35 +219,39 @@ export default {
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
       }
     }
   }
   .li-title-box {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 80px;
     &:hover {
       cursor: move;
     }
     .icon-box {
       position: absolute;
       cursor: pointer;
-      right: -10px;
-      top: -4px;
+      right: -3px;
+      top: -7px;
     }
     .icon-title {
       position: relative;
-      display: flex;
-      justify-content: center;
+      width: 32px;
     }
     .icon {
-      width: 48px;
-      height: 48px;
+      width: 32px;
+      height: 32px;
     }
     .li-title {
       font-size: 14px;
       font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #718199;
-      margin-top: 10px;
+      margin-top: 8px;
     }
   }
   .add-entry {
