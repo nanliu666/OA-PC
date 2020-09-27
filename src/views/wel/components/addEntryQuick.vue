@@ -2,10 +2,10 @@
   <el-dialog
     class="entry-dialog"
     title="快捷入口设置"
-    :visible.sync="entryShow"
+    :visible.sync="$parent.hasEntryDialog"
     width="600px"
     :modal-append-to-body="false"
-    @close="entryShow = false"
+    @close="closeDialog"
   >
     <div class="entry-body">
       <div class="entry-title">
@@ -20,6 +20,7 @@
         group="dragList"
         class="entry-ul"
         :list="selectList"
+        @end="dragEnd"
       >
         <li
           v-for="(item, index) in selectList"
@@ -87,7 +88,7 @@
       slot="footer"
       class="dialog-footer"
     >
-      <el-button @click="entryShow = false">
+      <el-button @click="closeDialog">
         取 消
       </el-button>
       <el-button
@@ -120,7 +121,6 @@ export default {
   data() {
     return {
       symbolKey: 'xlink:href',
-      entryShow: false,
       allEntryList: [],
       diffEntryList: []
     }
@@ -135,6 +135,12 @@ export default {
     this.initAllData()
   },
   methods: {
+    closeDialog() {
+      this.$parent.hasEntryDialog = false
+    },
+    dragEnd() {
+      this.$forceUpdate()
+    },
     deleteIcon(data) {
       let index = _.findIndex(this.selectList, (item) => item.id == data)
       if (index === -1) return
@@ -166,7 +172,7 @@ export default {
         })
       } else {
         putShortcutInfo(params).then(() => {
-          this.entryShow = false
+          this.closeDialog()
           this.$emit('refresh')
         })
       }
