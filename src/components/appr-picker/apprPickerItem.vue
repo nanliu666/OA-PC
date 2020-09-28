@@ -253,7 +253,7 @@ export default {
                 }
                 // 多选框
               } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
-                if (this.formData[condition.vModel] === condition.val) {
+                if (_.isEqual(_.sortBy(this.formData[condition.vModel]), _.sortBy(condition.val))) {
                   return
                 }
               }

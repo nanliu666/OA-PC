@@ -159,7 +159,7 @@ export default {
     checkFullfilled() {
       // 校验条件对应的表单项是否全部填写
       this.conditionFieldsFullfilled = this.conditionFields.every(
-        (field) => !_.isNil(this.formData[field])
+        (field) => !_.isEmpty(this.formData[field])
       )
       this.$nextTick(() => {
         // 校验条件分支节点是否全部满足

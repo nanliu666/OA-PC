@@ -1061,8 +1061,10 @@ export default {
             })
           }
           if (t.__config__.type === 'checkbox') {
-            res.val = t.__config__.defaultValue
-            // TODO: 添加
+            res.val = []
+            t.__slot__.options.map((it) => {
+              cValue.includes(it.label) && res.val.push(it.value)
+            })
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
@@ -1325,7 +1327,10 @@ export default {
           }
 
           this.$set(t.__config__, 'defaultValue', temp)
-          // t.__config__.type === 'checkbox' && this.$set(t.__config__, 'defaultValue', [])
+          // fix undefined
+          if (t.__config__.type === 'checkbox' && !temp) {
+            this.$set(t.__config__, 'defaultValue', [])
+          }
         })
       }
     },
