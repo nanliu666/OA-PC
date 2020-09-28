@@ -156,7 +156,7 @@
               <i class="el-icon-success" />
             </div>
             <div class="success-text">
-              <span>你的新手机号码已绑定完成</span>
+              <span>{{ `你的${$parent.isEmail ? '新邮箱' : '新手机号码'}已绑定完成` }}</span>
             </div>
             <div class="back-login" />
           </div>

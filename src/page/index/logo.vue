@@ -59,8 +59,8 @@ export default {
   img {
     display: block;
     width: 100%;
-    height: 28px;
-    width: 155px;
+    height: 40px;
+    width: 124px;
   }
 }
 </style>
