@@ -47,7 +47,7 @@
                   <el-input
                     v-model="form.name"
                     placeholder="职位类别名称"
-                    suffix-icon="el-icon-search"
+                    clearable
                     style="width:200px;margin-right:12px;"
                     @input="search"
                   />

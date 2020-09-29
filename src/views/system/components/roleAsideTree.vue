@@ -8,7 +8,7 @@
         v-model="searchInput"
         size="medium"
         placeholder="请输入内容"
-        suffix-icon="el-icon-search"
+        clearable
       />
     </div>
     <el-scrollbar class="scroll-item">

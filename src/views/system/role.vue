@@ -34,7 +34,7 @@
                     v-model="form.roleName"
                     size="medium"
                     placeholder="角色名称"
-                    suffix-icon="el-icon-search"
+                    clearable
                     style="width:200px;margin-right:12px;"
                   />
                   <div>

@@ -17,9 +17,8 @@
         <div class="search-input">
           <el-input
             v-model="searchInput"
-            suffix-icon="el-icon-search"
-            size="medium"
             clearable
+            size="medium"
             placeholder="请输入内容"
           />
         </div>

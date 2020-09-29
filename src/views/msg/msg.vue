@@ -243,7 +243,6 @@ export default {
         id: row.id
       })
       this.loadingData()
-      this.$message.success('已读此信息成功')
     },
     handleClose() {
       this.loadingData()

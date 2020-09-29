@@ -20,7 +20,7 @@
             >
               <el-input
                 v-model="treeSearch"
-                suffix-icon="el-icon-search"
+                clearable
                 placeholder="组织名称"
                 style="margin-bottom:10px;"
               />
