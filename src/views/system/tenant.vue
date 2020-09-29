@@ -27,7 +27,7 @@
             <el-input
               v-model="form.tenantName"
               placeholder="商户名称"
-              suffix-icon="el-icon-search"
+              clearable
               style="width:200px;margin-right:12px;"
               @input="loadData"
             />

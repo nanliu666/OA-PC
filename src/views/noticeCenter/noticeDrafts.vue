@@ -21,7 +21,7 @@
             <el-input
               v-model="queryInfo.title"
               placeholder="公告标题"
-              suffix-icon="el-icon-search"
+              clearable
               style="width:200px;margin-right:12px;"
               @change="loadTableData"
             />
