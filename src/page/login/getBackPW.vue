@@ -80,7 +80,7 @@
                   />
                 </el-form-item>
                 <el-form-item
-                  label="辩证码"
+                  label="图片验证码"
                   prop="captchaCode"
                 >
                   <div style="display: flex">
@@ -101,7 +101,7 @@
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="验证码"
+                  :label="`${$route.query.mode === 'email' ? '邮箱' : '手机'}验证码`"
                   prop="code"
                 >
                   <el-input
@@ -109,7 +109,7 @@
                     class="test-code-input"
                     size="small"
                     auto-complete="off"
-                    :placeholder="$t('login.code')"
+                    :placeholder="`请输入${$route.query.mode === 'email' ? '邮箱' : '手机'}验证码`"
                     @focus="resetIdentityFields('code')"
                   />
                   <el-button
@@ -366,7 +366,7 @@ export default {
               validator: validateCode
             }
           ],
-          captchaCode: [{ required: true, message: '请输入辩证码', trigger: 'blur' }],
+          captchaCode: [{ required: true, message: '请输入图片验证码', trigger: 'blur' }],
           email: [{ required: true, validator: validateEmail, trigger: 'blur' }]
         }
       },
