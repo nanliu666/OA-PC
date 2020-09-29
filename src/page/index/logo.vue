@@ -45,7 +45,6 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  width: 224px;
   height: 56px;
   font-size: 20px;
   overflow: hidden;
