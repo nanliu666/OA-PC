@@ -270,7 +270,7 @@ const TABLE_PAGE_CONFIG = {}
 // 搜索配置
 const SEARCH_POPOVER_REQUIRE_OPTIONS = [
   {
-    config: { placeholder: '请输入菜单名称', 'suffix-icon': 'el-icon-search' },
+    config: { placeholder: '请输入菜单名称' },
     data: '',
     field: 'name',
     label: '',
