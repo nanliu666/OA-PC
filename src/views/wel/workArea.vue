@@ -468,7 +468,7 @@ export default {
         }
         await creatSignReadMsg(params)
         this.loadingMsgData()
-        this.$message.success('标记已读成功')
+        // this.$message.success('标记已读成功')
       } catch (error) {
         if (error !== 'cancel') {
           throw error
