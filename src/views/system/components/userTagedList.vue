@@ -30,7 +30,7 @@
           <el-input
             v-model="query.name"
             placeholder="姓名/工号"
-            suffix-icon="el-icon-search"
+            clearable
             style="width:200px;margin-right:12px;"
             @change="currentChange(1)"
           />

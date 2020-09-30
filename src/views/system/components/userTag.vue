@@ -6,7 +6,7 @@
     <el-input
       v-model="searchValue"
       placeholder="标签内容"
-      suffix-icon="el-icon-search"
+      clearable
       size="small"
       class="search-input"
       @change="loadData"

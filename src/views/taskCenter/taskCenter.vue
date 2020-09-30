@@ -86,11 +86,11 @@
             <!-- 任务进度 -->
             <div class="task-progress">
               <div class="num-box">
-                {{ parseInt((row.completeNum / row.totalNum) * 100) }}%
+                {{ calcPercent(row) }}%
               </div>
               <div class="detail-box">
                 <el-progress
-                  :percentage="parseInt((row.completeNum / row.totalNum) * 100)"
+                  :percentage="calcPercent(row)"
                   :format="() => ''"
                 />
                 <span class="totalNum-row">计划招聘{{ row.totalNum }}人</span>
@@ -253,6 +253,14 @@ export default {
     this.getCommonDict()
   },
   methods: {
+    calcPercent(item) {
+      let percent = parseInt((item.completeNum / item.totalNum) * 100)
+      if (isNaN(percent)) {
+        return 0
+      } else {
+        return percent
+      }
+    },
     // 获取数据
     async loadData() {
       this.query.userId = this.userId

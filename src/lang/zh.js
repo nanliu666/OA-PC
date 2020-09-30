@@ -77,7 +77,7 @@ export default {
     phone: '请输入手机号',
     email: '请输入邮箱',
     code: '请输入验证码',
-    captchaCode: '请输入辩证码',
+    captchaCode: '请输入图片验证码',
     submit: '登录',
     userLogin: '账号密码',
     phoneLogin: '手机号登录',
