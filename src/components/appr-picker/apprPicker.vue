@@ -190,16 +190,17 @@ export default {
       }
       const processMap = this.createProcessMap()
       const nodeData = this.createNodeLine()
+      const { formData } = data
 
       return submitApprApply({
         ...data,
-        formData: data.formData ? JSON.stringify(data.formData) : null,
+        formData: formData ? JSON.stringify(formData) : null,
         title: `${this.userInfo.nick_name}发起的${data.processName}`,
         userId: this.userId,
         processMap: Object.assign(
           {},
           processMap,
-          this.createConditionProcessMap(),
+          this.createConditionProcessMap(formData),
           data.processMap
         ),
         nodeData: JSON.stringify(nodeData)
@@ -301,9 +302,18 @@ export default {
       }
     },
     // 生成条件变量
-    createConditionProcessMap() {
+    createConditionProcessMap(formData) {
+      if (_.isNil(formData)) {
+        formData = this.formData
+      } else {
+        // 将数组类型的参数转换成对象类型
+        formData = _(formData)
+          .keyBy('prop')
+          .mapValues('value')
+          .value()
+      }
       let processMap = this.conditionFields.reduce((acc, curr) => {
-        acc[curr] = this.formData[curr]
+        acc[curr] = formData[curr]
         return acc
       }, {})
       if (this.conditonHasInitiator) {
