@@ -37,8 +37,10 @@ function renderFrom(h) {
       >
         {renderFormItem.call(this, h, formConfCopy.fields)}
 
-        {// 控制按钮是否渲染
-        formConfCopy.showBtn ? formBtns.call(this, h) : null}
+        {
+          // 控制按钮是否渲染
+          formConfCopy.showBtn ? formBtns.call(this, h) : null
+        }
       </el-form>
     </el-row>
   )
@@ -151,7 +153,7 @@ export default {
   },
   methods: {
     init(conf) {
-      if (this._.isEmpty(conf)) {
+      if (_.isEmpty(conf)) {
         return
       }
       const form = {},

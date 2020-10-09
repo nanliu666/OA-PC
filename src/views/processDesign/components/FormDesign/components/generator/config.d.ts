@@ -29,7 +29,7 @@ interface Config {
 interface PCConfig {
   // 渲染组件时使用的tag
   tag: string
-  // 改选项占用的行数
+  // 该选项占用的行数
   span: number
   // 渲染组件时传递的props
   props?: object
@@ -39,7 +39,7 @@ interface PCConfig {
 interface MobileConfig {
   // 渲染组件时使用的tag
   tag: string
-  // 表单设计器里移动端控件渲染的方式,对应 src\views\processDesign\components\FormDesign\components\renderMobile\slots 下的文件名
+  // 表单设计器里移动端控件渲染类型,各自对应 src\views\processDesign\components\FormDesign\components\renderMobile\slots 下的渲染函数的文件名
   renderType: 'input' | 'textarea' | 'desc' | 'select' | 'daterange'
   // 没有标签
   noLabel?: boolean

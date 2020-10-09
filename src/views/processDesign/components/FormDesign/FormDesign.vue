@@ -318,6 +318,7 @@ export default {
         }
       })
     },
+    // formId最大值
     getMaxId() {
       if (this.drawingList.length) {
         return this.drawingList.reduce((maxId, cmp) => {
@@ -333,6 +334,7 @@ export default {
       }
       return 0
     },
+    // 下一个formId
     getNextId() {
       return this.getMaxId() + 1
     },
