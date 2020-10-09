@@ -130,7 +130,7 @@ function addNodeButton(ctx, data, h, isBranch = false) {
     return (
       <div class="add-node-btn-box flex  justify-center">
         <div class="add-node-btn">
-          <el-popover placement="right" trigger="click" width="300">
+          <el-popover placement="right" trigger="click" width="350">
             <div class="condition-box">
               <div>
                 <div
@@ -140,6 +140,16 @@ function addNodeButton(ctx, data, h, isBranch = false) {
                   <i class="iconfont icon-approval-Seal-bicolor"></i>
                 </div>
                 审批人
+              </div>
+
+              <div>
+                <div
+                  class="condition-icon"
+                  onClick={ctx.eventLancher.bind(ctx, 'appendBranch', data, isBranch)}
+                >
+                  <i class="iconfont icon-approval-Seal-bicolor"></i>
+                </div>
+                并行审批
               </div>
 
               <div>
