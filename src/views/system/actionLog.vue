@@ -12,6 +12,36 @@
         @refresh-change="refreshChange"
         @on-load="onLoad"
       >
+        <template slot="menuRight">
+          <!-- <el-button icon="el-icon-upload2" size="medium">导出</el-button> -->
+          <el-popover
+            placement="bottom"
+            width="40"
+            trigger="click"
+            style="margin-left:10px"
+          >
+            <el-checkbox-group
+              v-model="checkColumn"
+              style="display: flex;flex-direction: column;"
+              @change="columnChange"
+            >
+              <el-checkbox
+                v-for="item in originColumn"
+                :key="item.prop"
+                :label="item.prop"
+                :disabled="item.prop === 'orgName'"
+                class="originColumn"
+              >
+                {{ item.label }}
+              </el-checkbox>
+            </el-checkbox-group>
+            <el-button
+              slot="reference"
+              icon="el-icon-setting"
+              size="medium"
+            />
+          </el-popover>
+        </template>
         <template slot="menuLeft">
           <search-pop-over
             :require-options="requireOptions"
@@ -34,12 +64,47 @@
 import { getActionLog } from '@/api/system/user'
 import searchPopOver from '@/components/searchPopOver'
 import { tableOptions } from '../../util/constant'
+const column = [
+  {
+    label: '操作时间',
+    prop: 'createTime',
+    width: 180
+  },
+  {
+    label: '操作人',
+    prop: 'name',
+    display: false
+  },
+  {
+    label: '模块',
+    prop: 'model',
+    display: false
+  },
+  {
+    label: '状态',
+    prop: 'status',
+    display: false,
+    slot: true
+  },
+  {
+    label: '操作内容',
+    prop: 'content',
+    display: false
+  },
+  {
+    label: 'IP',
+    prop: 'ip',
+    display: false
+  }
+]
 export default {
   components: {
     searchPopOver
   },
   data() {
     return {
+      checkColumn: ['createTime', 'name', 'model', 'status', 'content', 'ip'],
+      originColumn: column,
       data: [],
       ajaxData: {
         pageNo: 1, //请求页码
@@ -89,6 +154,7 @@ export default {
           config: {}
         }
       ],
+
       option: {
         ...tableOptions,
         refreshBtn: true,
@@ -98,42 +164,10 @@ export default {
         searchMenuSpan: 6,
         border: true,
         index: true,
-        selection: false,
+        selection: true,
         menu: false,
         size: 'medium',
-        column: [
-          {
-            label: '操作时间',
-            prop: 'createTime',
-            width: 180
-          },
-          {
-            label: '操作人',
-            prop: 'name',
-            display: false
-          },
-          {
-            label: '模块',
-            prop: 'model',
-            display: false
-          },
-          {
-            label: '状态',
-            prop: 'status',
-            display: false,
-            slot: true
-          },
-          {
-            label: '操作内容',
-            prop: 'content',
-            display: false
-          },
-          {
-            label: 'IP',
-            prop: 'ip',
-            display: false
-          }
-        ]
+        column: column
       }
     }
   },
@@ -141,6 +175,11 @@ export default {
     this.initData()
   },
   methods: {
+    columnChange() {
+      this.option.column = column.filter((item) => {
+        return this.checkColumn.indexOf(item.prop) > -1
+      })
+    },
     initData() {
       getActionLog(this.ajaxData).then((res) => {
         this.data = res.data
