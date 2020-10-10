@@ -81,34 +81,51 @@ const layouts = {
   // 单个元素渲染
   colFormItem(h, scheme) {
     const config = scheme.__config__
-    // formPrivilege表单权限验证，0可编辑，1只读，2隐藏
     const formPrivilege = config.formPrivilege
-    const defaultItem = (
-      <el-col span={scheme.__pc__.span} class="parser-item">
-        <el-form-item
-          prop={scheme.__vModel__}
-          label={`${config.label}：`}
-          style={config.type === 'desc' ? 'margin-bottom:0' : ''}
-        >
-          {formPrivilege === 0 ? (
-            <render
-              conf={scheme}
-              onInput={(event) => {
-                this.$set(config, 'defaultValue', event)
-                this.$set(this.form, scheme.__vModel__, event)
-              }}
-            />
-          ) : (
-            <span>{scheme.__config__.defaultValue}</span>
-          )}
-        </el-form-item>
-      </el-col>
+    const defaultRender = (
+      <render
+        conf={scheme}
+        onInput={(event) => {
+          this.$set(config, 'defaultValue', event)
+          this.$set(this.form, scheme.__vModel__, event)
+        }}
+      />
     )
-    // 表单权限为2的或者只读（权限为1）并且默认值为空值是隐藏
-    let renderItem =
-      formPrivilege === 0 || (formPrivilege === 1 && !_.isEmpty(scheme.__config__.defaultValue))
-        ? defaultItem
-        : ''
+    const valueRender = <span>{scheme.__config__.defaultValue}</span>
+    const wrapItem = function(isDefault) {
+      return (
+        <el-col span={scheme.__pc__.span} class="parser-item">
+          <el-form-item
+            prop={scheme.__vModel__}
+            label={`${config.label}：`}
+            style={config.type === 'desc' ? 'margin-bottom:0' : ''}
+          >
+            {isDefault ? defaultRender : valueRender}
+          </el-form-item>
+        </el-col>
+      )
+    }
+    let renderItem = ''
+    // formPrivilege表单权限验证，0可编辑，1只读，2隐藏
+    switch (formPrivilege) {
+      case 0:
+        renderItem = wrapItem(true)
+        break
+      case 1:
+        // 是否在详情页，详情页与发起审批页展示不一
+        if (this.formConfCopy.isDetail) {
+          // 详情页，有默认值显示默认值，无默认值不显示这个标签
+          renderItem = !_.isEmpty(scheme.__config__.defaultValue) ? wrapItem(false) : ''
+        } else {
+          // 审批发起页面，只读权限表现为置灰处理
+          scheme.__pc__.props.disabled = true
+          renderItem = wrapItem(true)
+        }
+        break
+      case 2:
+        renderItem = ''
+        break
+    }
     return renderItem
   },
   // 父元素渲染，暂时不做
