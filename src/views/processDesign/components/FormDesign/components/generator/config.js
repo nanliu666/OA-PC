@@ -280,6 +280,27 @@ export const componentGroups = [
             autoCalc: true
           }
         }
+      },
+      {
+        __config__: {
+          name: '明细',
+          label: '明细',
+          type: 'detail',
+          icon: 'icon-basics-daterange-outlined',
+          layout: 'rowFormItem',
+          defaultValue: [],
+          actionText: '添加',
+          shouldPrint: true
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          props: {}
+        },
+        __mobile__: {
+          props: {}
+        },
+        children: []
       }
     ]
   }

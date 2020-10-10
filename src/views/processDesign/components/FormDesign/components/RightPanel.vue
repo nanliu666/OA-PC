@@ -156,6 +156,15 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item
+          v-if="activeData.__config__.actionText !== undefined"
+          label="动作文字"
+        >
+          <el-input
+            v-model="activeData.__config__.actionText"
+            placeholder="请输入动作文字"
+          />
+        </el-form-item>
         <el-form-item label="其他">
           <el-checkbox
             v-if="activeData.__mobile__.props.autoCalc !== undefined"
