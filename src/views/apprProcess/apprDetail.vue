@@ -858,6 +858,8 @@ export default {
       this.formParserData = JSON.parse(Base64.decode(this.applyDetail.formData))
       this.formParserData.formData.labelPosition = 'right'
       this.formParserData.formData.labelWidth = '120px'
+      // 新增isDetail字段区分是否为详情页
+      this.formParserData.formData.isDetail = true
       if (typeof this.formParserData === 'object') {
         const currentNode = this.findCurrentNode(this.formParserData.processData)
         const formOperates = currentNode.properties.formOperates
