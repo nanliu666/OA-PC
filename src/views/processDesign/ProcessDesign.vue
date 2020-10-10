@@ -215,7 +215,6 @@ export default {
       const p2 = getCmpData('formDesign')
       const p3 = getCmpData('processDesign')
       const p4 = getCmpData('advancedSetting')
-
       Promise.all([p1, p2, p3, p4])
         .then((res) => {
           const param = {

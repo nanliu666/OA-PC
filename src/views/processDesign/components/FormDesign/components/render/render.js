@@ -68,7 +68,6 @@ export default {
           dataObject[key] = { ...dataObject[key], ...confClone.__pc__[key] }
         }
       })
-
     return h(this.conf.__pc__.tag, dataObject, children)
   },
   props: ['conf']

@@ -94,6 +94,18 @@ export default {
             this.basicSetting = obj.basicSetting
             this.formData = obj.formData
             this.processData = obj.processData
+            // 此处为提交审批内的权限，故只取第一层数据的权限
+            const formOperates = this.processData.properties.formOperates
+            if (formOperates && formOperates.length > 0) {
+              formOperates.map((item) => {
+                this.formData.fields.map((formItem) => {
+                  if (item.formId === formItem.__config__.formId) {
+                    formItem.__config__.formPrivilege = item.formPrivilege
+                  }
+                })
+              })
+            }
+            // console.log('this.formData.fields==', this.formData.fields)
             this.advancedSetting = obj.advancedSetting
             this.$refs.form.init(obj.formData)
           }
@@ -103,11 +115,16 @@ export default {
         })
     },
     submit() {
-      Promise.all([this.$refs.form.validate(), this.$refs.apprPicker.validate()]).then(([data]) => {
+      Promise.all([this.$refs.form.validate(), this.$refs.apprPicker.validate()]).then(() => {
         this.submiting = true
         this.$refs.apprPicker
           .submit({
-            formData: data.formFields,
+            formData: Base64.encode(
+              JSON.stringify({
+                formData: this.$refs.form.formConfCopy,
+                processData: this.processData
+              })
+            ),
             processId: this.processId,
             processName: this.basicSetting.processName
           })
