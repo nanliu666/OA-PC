@@ -181,6 +181,7 @@ export default {
   mounted() {
     if (typeof this.conf === 'object' && this.conf !== null) {
       this.drawingList = this.conf.fields || []
+      // debugger
       Object.assign(this.formConf, this.conf)
       // } else if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
       //   this.drawingList = drawingListInDB

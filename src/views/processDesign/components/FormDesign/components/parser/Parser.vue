@@ -28,7 +28,8 @@ function renderFrom(h) {
     <el-row gutter={16} class="parser-form">
       <el-form
         size="medium"
-        label-position="top"
+        label-position={formConfCopy.labelPosition ? formConfCopy.labelPosition : 'top'}
+        label-width={formConfCopy.labelWidth ? formConfCopy.labelWidth : '100%'}
         disabled={formConfCopy.disabled}
         ref="form"
         // model不能直接赋值 https://github.com/vuejs/jsx/issues/49#issuecomment-472013664
@@ -80,23 +81,35 @@ const layouts = {
   // 单个元素渲染
   colFormItem(h, scheme) {
     const config = scheme.__config__
-    return (
+    // formPrivilege表单权限验证，0可编辑，1只读，2隐藏
+    const formPrivilege = config.formPrivilege
+    const defaultItem = (
       <el-col span={scheme.__pc__.span} class="parser-item">
         <el-form-item
           prop={scheme.__vModel__}
-          label={config.label}
+          label={`${config.label}：`}
           style={config.type === 'desc' ? 'margin-bottom:0' : ''}
         >
-          <render
-            conf={scheme}
-            onInput={(event) => {
-              this.$set(config, 'defaultValue', event)
-              this.$set(this.form, scheme.__vModel__, event)
-            }}
-          />
+          {formPrivilege === 0 ? (
+            <render
+              conf={scheme}
+              onInput={(event) => {
+                this.$set(config, 'defaultValue', event)
+                this.$set(this.form, scheme.__vModel__, event)
+              }}
+            />
+          ) : (
+            <span>{scheme.__config__.defaultValue}</span>
+          )}
         </el-form-item>
       </el-col>
     )
+    // 表单权限为2的或者只读（权限为1）并且默认值为空值是隐藏
+    let renderItem =
+      formPrivilege === 0 || (formPrivilege === 1 && !_.isEmpty(scheme.__config__.defaultValue))
+        ? defaultItem
+        : ''
+    return renderItem
   },
   // 父元素渲染，暂时不做
   rowFormItem(h, scheme) {

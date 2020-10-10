@@ -532,7 +532,6 @@ export default {
       })
         .then(() => {
           deleteCategory({ id: data.id }).then(() => {
-            // window.console.log('delete res==', res)
             this.$message.success('删除成功')
             this.refreshData()
           })

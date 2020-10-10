@@ -229,7 +229,7 @@
           </div>
         </div>
 
-        <div v-if="activeName == 'config'">
+        <div v-show="activeName == 'config'">
           <!-- 开始节点 -->
           <el-row
             v-if="value.type === 'start'"
@@ -426,39 +426,27 @@
           </div>
         </div>
         <div
-          v-if="activeName == 'formAuth'"
+          v-show="activeName == 'formAuth'"
           class="formAuth"
         >
           <div class="form-auth-table">
             <header class="auth-table-header">
-              <div class="row">
-                <div class="label">
-                  表单字段
-                </div>
-                <el-radio-group
-                  v-model="globalFormOperate"
-                  class="radio-group"
-                  @change="changeAllFormOperate"
-                >
-                  <el-radio
-                    :label="2"
-                    style="margin-left: 1rem;"
-                  >
-                    可编辑
-                  </el-radio>
-                  <el-radio :label="1">
-                    只读
-                  </el-radio>
-                  <el-radio :label="0">
-                    隐藏
-                  </el-radio>
-                </el-radio-group>
+              <div class="header-title">
+                表单字段
               </div>
+              <ul class="header-ul">
+                <li
+                  v-for="(item, index) in ['可编辑', '只读', '隐藏']"
+                  :key="index"
+                >
+                  {{ item }}
+                </li>
+              </ul>
             </header>
             <div class="auth-table-body">
               <div
-                v-for="item in getFormOperates()"
-                :key="item.formId"
+                v-for="(item, index) in properties.formOperates"
+                :key="index"
                 class="row"
               >
                 <div class="label flex flex-center flex-align-items">
@@ -466,7 +454,6 @@
                     v-show="item.required"
                     class="required"
                   >*</span>
-                  <!--                                {{item.label}}-->
                   <el-tooltip
                     :content="item.label"
                     placement="right-end"
@@ -478,21 +465,54 @@
                     />
                   </el-tooltip>
                 </div>
-                <el-radio-group
-                  v-model="item.formOperate"
-                  class="radio-group"
+                <el-tooltip
+                  v-if="item.proCondition && isApproverNode()"
+                  content="设置为条件后审批人将不能对这个字段进行编辑"
+                  placement="right-end"
+                  effect="dark"
                 >
-                  <el-radio
-                    :label="2"
-                    style="margin-left: 1rem;"
+                  <div
+                    class="label"
+                    v-html="item.label"
+                  />
+                  <el-radio-group
+                    v-model="item.formPrivilege"
+                    class="radio-group"
                   >
-                    <span style="opacity: 0;">可编辑</span>
+                    <el-radio
+                      :label="0"
+                      disabled
+                    >
+                      <span style="display: none">可编辑</span>
+                    </el-radio>
+                    <el-radio
+                      :label="1"
+                      disabled
+                    >
+                      <span style="display: none">只读</span>
+                    </el-radio>
+                    <el-radio
+                      :label="2"
+                      disabled
+                    >
+                      <span style="display: none">隐藏</span>
+                    </el-radio>
+                  </el-radio-group>
+                </el-tooltip>
+                <el-radio-group
+                  v-else
+                  v-model="item.formPrivilege"
+                  class="radio-group"
+                  @change="$forceUpdate()"
+                >
+                  <el-radio :label="0">
+                    <span style="display: none">可编辑</span>
                   </el-radio>
                   <el-radio :label="1">
-                    <span style="opacity: 0;">只读</span>
+                    <span style="display: none">只读</span>
                   </el-radio>
-                  <el-radio :label="0">
-                    <span style="opacity: 0;">隐藏</span>
+                  <el-radio :label="2">
+                    <span style="display: none">隐藏</span>
                   </el-radio>
                 </el-radio-group>
               </div>
@@ -618,6 +638,7 @@ const defaultApproverForm = {
   },
   optionalRange: 'USER' // USER<最多十个> / ALL / ROLE
 }
+import { mapGetters } from 'vuex'
 export default {
   directives: {
     Clickoutside
@@ -733,9 +754,8 @@ export default {
       },
       fcOrgTabList: ['dep', 'user', 'optional'],
       visible: false, // 控制面板显隐
-      globalFormOperate: null, // 统一设置节点表单权限
       titleInputVisible: false, // 是否显示标题输入框  startNode 不显示
-      activeName: 'config', // or formAuth  Tab面板key
+      activeName: 'config', // or formAuth/config Tab面板key
       showingPCons: [], // 用户选择了得条件  被选中的才会被展示在面板上编辑
       pconditions: [], // 从vuex中获取的可以作为流程图条件的集合
       dialogVisible: false, // 控制流程条件选项Dialog显隐
@@ -752,10 +772,6 @@ export default {
         optional: []
       },
       useDirectorProxy: true, // 找不到主管时 上级主管代理审批
-      // directorLevel: '1', // 审批主管级别
-      startForm: {
-        formOperates: []
-      },
       approverForm: JSON.parse(JSON.stringify(defaultApproverForm)),
 
       optionalOptions: [
@@ -819,6 +835,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['fieldList']),
     // 未使用的条件个数
     notUseConNum() {
       // 发起人是默认就有得  所以需要加 1
@@ -863,9 +880,23 @@ export default {
     value(newVal) {
       if (newVal && newVal.properties) {
         this.visible = true
-        this.properties = JSON.parse(JSON.stringify(newVal.properties))
+        this.properties = _.cloneDeep(newVal.properties)
         if (this.properties) {
           NodeUtils.isConditionNode(newVal) && this.getPriorityLength()
+        }
+        let formOperatesTemp = newVal.properties.formOperates
+        // 每次点击节点人员，会重置当前表单权限
+        this.properties.formOperates = []
+        // 表单设计内容不为空，才会去赋值（vuex存）
+        if (this.fieldList.length !== 0) {
+          // 已存在表单权限
+          if (this.isSameCondition(formOperatesTemp)) {
+            // 未对其进行修改(通过比较formId实现)
+            this.properties.formOperates = formOperatesTemp
+          } else {
+            // this.handlerFieldList(newVal, formOperatesTemp)
+            this.properties.formOperates = NodeUtils.initAllOperate(newVal, this.fieldList)
+          }
         }
       }
     }
@@ -879,15 +910,16 @@ export default {
     this.getTagData()
   },
   methods: {
-    changeAllFormOperate(val) {
-      const target = this.isStartNode() ? this.startForm : this.approverForm
-      target.formOperates.forEach((t) => (t.formOperate = val))
-    },
-    getFormOperates() {
-      let res = []
-      this.isApproverNode() && (res = this.approverForm.formOperates)
-      this.isStartNode() && (res = this.startForm.formOperates)
-      return res
+    isSameCondition(formOperatesTemp) {
+      let fieldTempArr = []
+      let operateArr = []
+      this.fieldList.map((item) => {
+        fieldTempArr.push(item.__config__.formId)
+      })
+      formOperatesTemp.map((item) => {
+        operateArr.push(item.formId)
+      })
+      return _.isEqual(operateArr, fieldTempArr)
     },
     valid() {
       const assigneeType = this.approverForm.assigneeType
@@ -914,7 +946,6 @@ export default {
         })
       ).then(() => {})
     },
-    validate() {},
     /**
      *
      * @author guanfenda
@@ -1118,12 +1149,6 @@ export default {
      */
     startNodeComfirm() {
       this.properties.initiator = this.initiator['user']
-
-      const formOperates = this.startForm.formOperates.map((t) => ({
-        formId: t.formId,
-        formOperate: t.formOperate
-      }))
-      Object.assign(this.properties, { formOperates })
       this.$emit('confirm', this.properties, this.getOrgSelectLabel('start') || '所有人')
       this.visible = false
     },
@@ -1195,6 +1220,7 @@ export default {
       ) {
         this.approverForm.counterSign = null
       }
+      this.approverForm.formOperates = this.properties.formOperates
       Object.assign(this.properties, this.approverForm)
       this.$emit('confirm', this.properties, content || '请设置审批人')
       this.visible = false
@@ -1271,7 +1297,6 @@ export default {
       if (Array.isArray(this.approverForm.approvers)) {
         this.orgCollection[this.approverForm.assigneeType] = approvers
       }
-      // this.approverForm.formOperates = this.initFormOperates(this.value)
     },
     firstComdition(data, firstConditinoNode) {
       if (hasBranch(data)) {
@@ -1408,18 +1433,31 @@ export default {
 
 .form-auth-table {
   font-size: 14px;
-  margin-top: 24px;
-
+  padding: 10px 24px;
   .auth-table-header {
-    background: #fafafa;
+    border-bottom: 1px solid #E3E7E9;
     line-height: 40px;
+    font-size: 14px;
+    font-weight: 550;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .header-title {
+      flex: 1;
+    }
+    .header-ul {
+      display: flex;
+      width: 70%;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   .row {
     display: flex;
     align-items: center;
     line-height: 32px;
-    padding: 8px 12px;
+    padding: 8px 0px;
     border-bottom: 1px solid #efefef;
 
     &:hover {
@@ -1439,6 +1477,7 @@ export default {
 
     .radio-group {
       flex: 2;
+      width: 70%;
       display: flex;
       justify-content: space-between;
     }

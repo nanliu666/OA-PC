@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import FlowCard from './FlowCard/FlowCard.vue'
 import PropPanel from './PropPanel/PropPanel.vue'
+import { mapGetters } from 'vuex'
 import { NodeUtils, getMockData } from './FlowCard/util.js'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
@@ -20,6 +21,9 @@ export default {
       verifyMode: false
     }
   },
+  computed: {
+    ...mapGetters(['fieldList'])
+  },
   watch: {
     conf: {
       handler(val) {
@@ -34,6 +38,14 @@ export default {
     },
     data: {
       handler(val) {},
+      deep: true
+    },
+    fieldList: {
+      handler(val) {
+        if (val.length !== 0) {
+          this.data = NodeUtils.initAllOperate(this.data, this.fieldList)
+        }
+      },
       deep: true
     }
   },
