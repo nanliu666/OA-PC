@@ -75,6 +75,7 @@
             v-if="
               couldShowIt(
                 item,
+                'daterange',
                 'el-input-number',
                 'fc-date-duration',
                 'fc-time-duration',
@@ -84,7 +85,9 @@
               )
             "
             :key="index"
-            :title="item.__config__.label"
+            :title="
+              `${item.__config__.label}${item.__config__.type === 'daterange' ? '(时长/天)' : ''}`
+            "
           >
             <num-input
               :key="index"
@@ -150,6 +153,23 @@
               />
             </template>
           </row-wrapper>
+
+          <!-- 日期选择器 -->
+          <!-- <row-wrapper
+            v-if="couldShowIt(item, 'daterange')"
+            :key="index"
+            :title="item.label"
+          >
+            {{ item.__config__.label }}
+            <template v-slot:action>
+              <i
+                class="el-icon-delete"
+                style="cursor: pointer;"
+                @click="onDelCondition(item)"
+              />
+            </template>
+          </row-wrapper> -->
+
           <!-- 下拉 -->
           <row-wrapper
             v-if="couldShowIt(item, 'el-select', 'select')"
@@ -1041,6 +1061,7 @@ export default {
             return
           }
           const numberTypeCmp = [
+            'daterange', // 日期类型作为数字处理
             'el-input-number',
             'fc-date-duration',
             'fc-time-duration',
@@ -1059,8 +1080,7 @@ export default {
             t.__slot__.options.map((it) => {
               it.label === cValue && (res.val = it.value)
             })
-          }
-          if (t.__config__.type === 'checkbox') {
+          } else if (t.__config__.type === 'checkbox') {
             res.val = []
             t.__slot__.options.map((it) => {
               cValue.includes(it.label) && res.val.push(it.value)

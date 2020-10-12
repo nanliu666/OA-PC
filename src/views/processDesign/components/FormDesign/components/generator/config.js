@@ -252,7 +252,8 @@ export const componentGroups = [
           layout: 'colFormItem',
           defaultValue: [],
           shouldPrint: true,
-          required: false
+          required: false,
+          proCondition: true
         },
         __slot__: {},
         __pc__: {

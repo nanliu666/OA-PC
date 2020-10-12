@@ -227,18 +227,13 @@ export default {
       const formFields = []
       this.formConfCopy.fields.forEach((item) => {
         if (typeof item.__vModel__ !== 'undefined') {
-          const field = {
+          formFields.push({
             label: item.__config__.label,
             prop: item.__vModel__,
             value: form[item.__vModel__],
             content: this.getFieldContent(item),
             span: item.__pc__.span || 12
-          }
-          if (item.__config__.type === 'checkbox') {
-            // 与流程设计统一，多选提交设为字符串
-            field.value = _.sortBy(field.value).join(',')
-          }
-          formFields.push(field)
+          })
         }
       })
       return formFields

@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import apprPickerItem from './apprPickerItem'
 import { submitApprApply, getUserOrgList } from '@/api/apprProcess/apprProcess'
 
@@ -159,7 +160,7 @@ export default {
     checkFullfilled() {
       // 校验条件对应的表单项是否全部填写
       this.conditionFieldsFullfilled = this.conditionFields.every(
-        (field) => !_.isEmpty(this.formData[field])
+        ({ prop: field }) => !_.isEmpty(this.formData[field])
       )
       this.$nextTick(() => {
         // 校验条件分支节点是否全部满足
@@ -200,7 +201,7 @@ export default {
         processMap: Object.assign(
           {},
           processMap,
-          this.createConditionProcessMap(formData),
+          this.createConditionProcessMap(),
           data.processMap
         ),
         nodeData: JSON.stringify(nodeData)
@@ -302,18 +303,18 @@ export default {
       }
     },
     // 生成条件变量
-    createConditionProcessMap(formData) {
-      if (_.isNil(formData)) {
-        formData = this.formData
-      } else {
-        // 将数组类型的参数转换成对象类型
-        formData = _(formData)
-          .keyBy('prop')
-          .mapValues('value')
-          .value()
-      }
-      let processMap = this.conditionFields.reduce((acc, curr) => {
-        acc[curr] = formData[curr]
+    createConditionProcessMap() {
+      const { formData } = this
+      let processMap = this.conditionFields.reduce((acc, { prop, type }) => {
+        if (type === 'checkbox') {
+          acc[prop] = _.sortBy(formData[prop]).join()
+        } else if (type === 'daterange') {
+          const [date1, date2] = formData[prop]
+          // diff date1以免出现负数，区间计算当天（+1天）
+          acc[prop] = moment.duration(moment(date2).diff(date1)).days() + 1
+        } else {
+          acc[prop] = formData[prop]
+        }
         return acc
       }, {})
       if (this.conditonHasInitiator) {
@@ -324,12 +325,15 @@ export default {
     },
     // 获取条件对应的表单字段
     getConditionFields() {
-      const fields = new Set()
+      let fields = []
       const loop = (node) => {
         let conditions = _.get(node, 'properties.conditions', null)
         if (Array.isArray(conditions)) {
           conditions.forEach((condition) => {
-            fields.add(condition.vModel)
+            fields.push({
+              prop: condition.vModel,
+              type: condition.type
+            })
           })
         }
         node.childNode && loop(node.childNode)
@@ -338,8 +342,7 @@ export default {
 
       this.processData && loop(this.processData)
       // 动态生成所有节点需要的字段数组
-      this.conditionFields = [...fields]
-      return [...fields]
+      return (this.conditionFields = _.uniqWith(fields, _.isEqual))
     },
     // 根据表单输入和审批人选择，生成线性节点数组
     createNodeLine() {
