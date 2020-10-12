@@ -101,12 +101,16 @@ const layouts = {
           <div class="drawing-item__body">
             <span class="drawing-item-label">{element.__config__.label}</span>
             <draggable
-              list={element.children}
+              list={element.__config__.children}
               animation={340}
               group="componentsGroup"
               class="drag-wrapper"
+              draggable=".drawing-item"
             >
               {child}
+              {element.__config__.children.length === 0 ? (
+                <div class="drawing-item-tips">可拖入多个控件（不包含明细控件）</div>
+              ) : null}
             </draggable>
             {element.__config__.type === 'detail' && (
               <div style="text-align: center;background: white;color: #4e79ff;padding: .4rem 1rem;">
@@ -159,6 +163,9 @@ const mobileLayouts = {
         ? 'drawing-item container drawing-item__active'
         : 'drawing-item container'
     let child = mobileRenderChildren.apply(this, arguments)
+    const { put } = this.$attrs
+    const group = { name: 'componentsGroup', put: (...arg) => put(...arg, element) }
+    // let dragDisabled = element.__config__.type === 'detail'
     return (
       <div
         class={className}
@@ -170,12 +177,16 @@ const mobileLayouts = {
         <div class="drawing-item__body">
           <span class="drawing-item-label">{element.__config__.label}</span>
           <draggable
-            list={element.children}
+            list={element.__config__.children}
             animation={340}
-            group="componentsGroup"
+            group={group}
             class="drag-wrapper"
+            draggable=".drawing-item"
           >
             {child}
+            {element.__config__.children.length === 0 ? (
+              <div class="drawing-item-tips">可拖入多个控件（不包含明细控件）</div>
+            ) : null}
           </draggable>
           {element.__config__.type === 'detail' && (
             <div style="text-align: center;background: white;color: #4e79ff;padding: .4rem 1rem;">
@@ -190,22 +201,22 @@ const mobileLayouts = {
 }
 
 function renderChildren(h, element) {
-  if (!Array.isArray(element.children)) return null
-  return element.children.map((el, i) => {
+  if (!Array.isArray(element.__config__.children)) return null
+  return element.__config__.children.map((el, i) => {
     const layout = layouts[el.__config__.layout]
     if (layout) {
-      return layout.call(this, h, el, i, element.children, element)
+      return layout.call(this, h, el, i, element.__config__.children, element)
     }
     return layoutIsNotFound.call(this)
   })
 }
 
 function mobileRenderChildren(h, element) {
-  if (!Array.isArray(element.children)) return null
-  return element.children.map((el, i) => {
+  if (!Array.isArray(element.__config__.children)) return null
+  return element.__config__.children.map((el, i) => {
     const layout = mobileLayouts[el.__config__.layout]
     if (layout) {
-      return layout.call(this, h, el, i, element.children, element)
+      return layout.call(this, h, el, i, element.__config__.children, element)
     }
     return layoutIsNotFound.call(this)
   })

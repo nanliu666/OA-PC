@@ -241,19 +241,19 @@
 		.el-radio__label {
 			line-height: 19px;
 		}
-.drawing-item-label {
-				color: #000;
-				line-height: 28px;
-				padding-left: 12px;
-			}
+
+		.drawing-item-label {
+			color: #000;
+			line-height: 28px;
+			padding-left: 12px;
+		}
+
 		&.container {
 			.drag-wrapper {
 				min-height: 80px;
 				padding: 14px 8px;
 				overflow: hidden;
 			}
-
-			
 
 			&.drawing-item__active {
 				>.drawing-item__body {
@@ -324,6 +324,13 @@
 			}
 		}
 
+		.drawing-item-tips {
+			line-height: 52px;
+			text-align: center;
+			background-color: #f2f3f5;
+			color: #999;
+		}
+
 		.drawing-item-wrap__mobile {
 			display: flex;
 			justify-content: space-between;
@@ -335,7 +342,7 @@
 			.drawing-item-label {
 				color: #000;
 				line-height: 18px;
-				padding:0;
+				padding: 0;
 			}
 
 			.right-wrap {
@@ -384,10 +391,18 @@
 				.drag-wrapper {
 					padding: 14px 0;
 				}
+
 				>.drawing-item__body {
-				border: 1px dashed #ccc;
+					border: 1px dashed #ccc;
+				}
+
+				&.drawing-item__active {
+					>.drawing-item__body {
+						border: 1px solid $primaryColor;
+					}
+				}
 			}
-			}
+
 			.drawing-item__delete {
 				right: 8px;
 			}
