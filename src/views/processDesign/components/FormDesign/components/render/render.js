@@ -50,7 +50,7 @@ export default {
     }
 
     // 将json表单配置转化为vue render可以识别的 “数据对象（dataObject）”
-    const privateProps = ['__config__', '__slot__', '__mobile__', '__pc__', 'renderKey']
+    const privateProps = ['__config__', '__slot__', '__mobile__', '__pc__', 'renderKey', 'children']
     Object.keys(confClone).forEach((key) => {
       const val = confClone[key]
       if (privateProps.includes(key)) {

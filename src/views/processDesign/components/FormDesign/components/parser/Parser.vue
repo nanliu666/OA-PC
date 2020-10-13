@@ -72,12 +72,74 @@ function renderFormItem(h, elementList = []) {
   })
 }
 
-function renderChildren(h, scheme) {
-  const config = scheme.__config__
-  if (!Array.isArray(config.children)) return null
-  return renderFormItem.call(this, h, config.children)
+function renderItemList(h, list) {
+  if (!Array.isArray(list)) return null
+  return renderFormItem.call(this, h, list)
 }
 
+const templates = {
+  detail(h, element) {
+    return (
+      <el-col span={element.__pc__.span} class="parser-item parser-item__detail">
+        {element.children.map((child, index) => (
+          <div class="parser-item__detail--item">
+            <div class="parser-item__detail--header">
+              <span class="parser-item__detail--title">
+                {element.__config__.label}
+                {element.children.length > 1 ? index + 1 : ''}
+              </span>
+              {index > 0 ? (
+                <i
+                  class="icon-basics-delete-outlined iconfont"
+                  onClick={() => {
+                    element.children.splice(index, 1)
+                  }}
+                ></i>
+              ) : null}
+            </div>
+            <el-row class="parser-item__detail--content">
+              {renderItemList.call(this, h, child)}
+            </el-row>
+          </div>
+        ))}
+        <div
+          class="parser-item__detail--footer"
+          onClick={() => {
+            // element.children.push(JSON.parse(JSON.stringify(element.__config__.children)))
+            addElementChild.call(this, element)
+          }}
+        >
+          ＋ 添加{element.__config__.label}
+        </div>
+      </el-col>
+    )
+  }
+}
+// formId最大值
+function getMaxId(fieldList) {
+  if (fieldList.length) {
+    return fieldList.reduce((maxId, cmp) => {
+      cmp.__config__.formId > maxId && (maxId = cmp.__config__.formId)
+      if (Array.isArray(cmp.children)) {
+        let children = cmp.children.flat()
+        maxId = children.reduce((max, child) => Math.max(max, child.__config__.formId), maxId)
+      }
+      return maxId
+    }, 0)
+  }
+  return 0
+}
+function addElementChild(element) {
+  const childCopy = JSON.parse(JSON.stringify(element.__config__.children))
+  const nextId = getMaxId(this.formConfCopy.fields) + 1
+  childCopy.forEach((item, index) => {
+    let formId = nextId + index
+    item.__vModel__ = 'field' + formId
+    item.__config__.formId = formId
+  })
+  element.children.push(childCopy)
+  this.rules = this.buildRules(this.formConfCopy.fields, this.rules)
+}
 const layouts = {
   // 单个元素渲染
   colFormItem(h, scheme) {
@@ -88,6 +150,7 @@ const layouts = {
           prop={scheme.__vModel__}
           label={config.label}
           style={config.type === 'desc' ? 'margin-bottom:0' : ''}
+          rules={scheme.rules}
         >
           <render
             conf={scheme}
@@ -102,13 +165,9 @@ const layouts = {
   },
   // 父元素渲染，暂时不做
   rowFormItem(h, scheme) {
-    let child = renderChildren.apply(this, arguments)
-    if (scheme.type === 'flex') {
-      child = (
-        <el-row type={scheme.type} justify={scheme.justify} align={scheme.align}>
-          {child}
-        </el-row>
-      )
+    let child = renderItemList.apply(this, h, scheme.__config__.children)
+    if (templates[scheme.__config__.type]) {
+      return templates[scheme.__config__.type].call(this, h, scheme)
     }
     return (
       <el-col span={scheme.__pc__.span}>
@@ -163,6 +222,7 @@ export default {
       this.buildRules(conf.fields, rules)
       this.form = form
       this.rules = rules
+      this.resolveField(this.formConfCopy.fields)
       this.$nextTick(() => {
         this.$refs.form.clearValidate()
       })
@@ -172,31 +232,47 @@ export default {
       componentList.forEach((cur) => {
         const config = cur.__config__
         if (cur.__vModel__) formData[cur.__vModel__] = config.defaultValue
-        if (config.children) this.initFormData(config.children, formData)
+        if (cur.children) this.initFormData(cur.children, formData)
       })
+    },
+    resolveField(fields) {
+      fields.forEach((field) => {
+        if (field.__config__.type === 'detail') {
+          addElementChild.call(this, field)
+        }
+      })
+    },
+    buildRule(field, rules) {
+      const config = field.__config__
+
+      if (config.required) {
+        const required = {
+          required: config.required,
+          message: null,
+          trigger: null
+        }
+        if (Array.isArray(config.defaultValue) && config.type !== 'daterange') {
+          required.type = 'array'
+          required.message = `请至少选择一个${config.label}`
+        }
+        required.trigger = ruleTrigger[field.__pc__.tag] || 'input'
+        if (!required.message) {
+          required.message = (required.trigger === 'change' ? '请选择' : '请输入') + config.label
+        }
+        rules[field.__vModel__] = required
+      }
     },
     // 构建校验规则
     buildRules(componentList = [], rules = {}) {
       componentList.forEach((cur) => {
-        const config = cur.__config__
-
-        if (config.required) {
-          const required = {
-            required: config.required,
-            message: null,
-            trigger: null
-          }
-          if (Array.isArray(config.defaultValue) && config.type !== 'daterange') {
-            required.type = 'array'
-            required.message = `请至少选择一个${config.label}`
-          }
-          required.trigger = ruleTrigger[cur.__pc__.tag] || 'input'
-          if (!required.message) {
-            required.message = (required.trigger === 'change' ? '请选择' : '请输入') + config.label
-          }
-          rules[cur.__vModel__] = required
+        if (cur.__config__.type !== 'detail') {
+          this.buildRule(cur, rules)
+        }
+        if (cur.children) {
+          cur.children.flat().forEach((item) => this.buildRule(item, rules))
         }
       })
+      return rules
     },
     // 重置方法
     resetForm() {
@@ -267,7 +343,8 @@ export default {
   }
 }
 </script>
-<style lang="stylus">
+<style lang="scss" scoped>
+@import '~@/styles/variables';
 .parser-form {
   background: #fff;
   .el-checkbox-group {
@@ -276,5 +353,41 @@ export default {
 }
 .parser-item .placeholder {
   color: #757c85;
+}
+.parser-item {
+  &__detail {
+    margin-bottom: 20px;
+    &--item {
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+    &--header {
+      display: flex;
+      line-height: 32px;
+      padding: 0 10px;
+      border-bottom: 1px solid #ccc;
+      align-items: center;
+      justify-content: space-between;
+      i {
+        cursor: pointer;
+      }
+    }
+    &--content {
+      padding: 6px 10px;
+    }
+    &--footer {
+      margin-top: 10px;
+      text-align: center;
+      border: 1px dashed #ccc;
+      line-height: 32px;
+      cursor: pointer;
+      &:hover {
+        color: $primaryColor;
+      }
+    }
+  }
 }
 </style>

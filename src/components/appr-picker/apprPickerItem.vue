@@ -62,7 +62,7 @@
               </div>
               <el-dropdown-menu
                 slot="dropdown"
-                style="max-height:300px;overflow:auto"
+                style="max-height: 300px; overflow: auto"
               >
                 <template v-if="optionList.length > 0">
                   <el-dropdown-item
@@ -179,7 +179,10 @@ export default {
     },
     // 是否支持用户选择审批人
     selectable() {
-      return _.get(this.data, 'properties.assigneeType', null) !== 'user'
+      return (
+        _.get(this.data, 'type') === 'approver' &&
+        _.get(this.data, 'properties.assigneeType', null) !== 'user'
+      )
     },
     tips() {
       if (_.get(this.data, 'type') === 'approver') {
@@ -214,7 +217,7 @@ export default {
       let init = false
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
-        function() {
+        function () {
           // 遍历当前节点的所有条件分支
           let mainflag = this.conditionNodes.some((node) => {
             let flag = true
