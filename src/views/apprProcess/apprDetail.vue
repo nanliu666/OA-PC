@@ -50,69 +50,58 @@
     </basic-container>
     <!-- 审批详情标题 -->
     <basic-container class="apply-detail-title">
-      <div
-        class="title-box"
-        @click="show = !show"
-      >
+      <div class="title-box">
         <div class="title">
           审批详情
         </div>
-        <div
-          v-if="show"
-          class="btn-box"
-        >
-          <i
-            class="el-icon-arrow-up icon"
-            style="margin-right:12px"
-          /> 收起
-        </div>
-        <div
-          v-else
-          class="btn-box"
-        >
-          <i
-            class="el-icon-arrow-down icon"
-            style="margin-right:12px"
-          /> 打开
+        <div @click="show = !show">
+          <div
+            v-if="show"
+            class="btn-box"
+          >
+            <i
+              class="el-icon-arrow-up icon"
+              style="margin-right:12px"
+            /> 收起
+          </div>
+          <div
+            v-else
+            class="btn-box"
+          >
+            <i
+              class="el-icon-arrow-down icon"
+              style="margin-right:12px"
+            /> 打开
+          </div>
         </div>
       </div>
-    </basic-container>
-    <!-- 审批详情 -->
-    <transition name="show">
-      <basic-container
-        v-show="show"
-        class="apply-detail"
-      >
-        <!-- 审批详情 -->
-        <ApplyRecruitment
-          v-if="applyDetail.formKey === 'Recruitment'"
-          :form-key="applyDetail.formKey"
-          :form-id="applyDetail.formId"
-        />
-        <ApplyPersonOffer
-          v-else-if="applyDetail.formKey === 'PersonOfferApply'"
-          :form-key="applyDetail.formKey"
-          :form-id="applyDetail.formId"
-        />
-        <el-row
-          v-else
-          class="detail-box"
+      <!-- 审批详情 -->
+      <transition name="show">
+        <div
+          v-show="show"
+          class="apply-detail"
         >
-          <el-col
-            v-for="(item, index) in applyDetail.formData"
-            :key="index"
-            class="detail-item"
-            :span="item.span || 12"
-          >
-            <div>{{ `${item.label} :` }}</div>
-            <div>{{ item.content || item.value }}</div>
-          </el-col>
-
-          <div class="detail-item" />
-        </el-row>
-      </basic-container>
-    </transition>
-    <basic-container>
+          <!-- 审批详情 -->
+          <ApplyRecruitment
+            v-if="applyDetail.formKey === 'Recruitment'"
+            :form-key="applyDetail.formKey"
+            :form-id="applyDetail.formId"
+          />
+          <ApplyPersonOffer
+            v-else-if="applyDetail.formKey === 'PersonOfferApply'"
+            :form-key="applyDetail.formKey"
+            :form-id="applyDetail.formId"
+          />
+          <div v-else>
+            <form-parser
+              ref="formParser"
+              :form-data.sync="formParserData"
+            />
+          </div>
+        </div>
+      </transition>
+    </basic-container>
+    <basic-container style="margin-bottom: 24px">
       <!-- 流程进度 -->
       <div class="progress-wrap">
         <div class="progress-wrap-title">
@@ -515,6 +504,7 @@ import {
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
+import { Base64 } from 'js-base64'
 
 import ApplyRecruitment from './components/applyRecruitment'
 import ApplyPersonOffer from './components/applyPersonOffer'
@@ -536,6 +526,9 @@ export default {
   },
   data() {
     return {
+      isIncludeCurrentApprove: false,
+      currentApproveNode: '',
+      formParserData: {},
       processName: ['录用申请', '转正申请', '离职申请', '招聘需求', '人事异动', '合同续签'],
       preview: false,
       recordlist: [],
@@ -559,7 +552,7 @@ export default {
         Reject: '已拒绝',
         Cancel: '已撤回'
       },
-      show: false,
+      show: true,
       // 审批进度
       progressList: [],
       activeStep: 0,
@@ -681,6 +674,15 @@ export default {
             return it
           }
         })
+        // 当前审批节点ID，用来选择当前节点的审批权限
+        this.currentApproveNode = this.recordlist[0].nodeId
+        // 当前审批节点是否存在此审批人
+        this.isIncludeCurrentApprove =
+          _.findIndex(this.recordlist[0].approveList, (item) => {
+            return item.userId === this.userId
+          }) === -1
+            ? false
+            : true
         // this.progressRecord = val.filter((it) => {
         //   if (it.type !== 'copy') {
         //     return it
@@ -707,7 +709,18 @@ export default {
         query: { processId: this.processId }
       })
     },
-    // loadData
+    findCurrentNode(processData) {
+      let currentNode = Object.create(null)
+      const loop = (node) => {
+        if (node.nodeId === this.currentApproveNode) {
+          currentNode = node
+        } else {
+          loop(node.childNode)
+        }
+      }
+      loop(processData)
+      return currentNode
+    },
     async loadData() {
       this.loading = true
       // 计算发送请求的次数，countAjax=0则loading=false
@@ -717,14 +730,11 @@ export default {
         getApprDetail(this.$route.query)
           .then((res) => {
             this.applyDetail = res
-            this.applyDetail.formData = this.applyDetail.formData
-              ? JSON.parse(this.applyDetail.formData)
-              : {}
             this.apprNo = res.apprNo
             resolve(true)
           })
-          .catch(() => {
-            reject(false)
+          .catch((error) => {
+            reject(error)
           })
           .finally(() => {
             countAjax--
@@ -762,7 +772,13 @@ export default {
             this.isFirst = false
           })
       })
-
+      this.handleNodeData()
+      // 因为watch progressRecord值后触发，所以异步一下
+      setTimeout(() => {
+        this.initForm()
+      })
+    },
+    handleNodeData() {
       let nodeData = JSON.parse(this.applyDetail.nodeData || '{}')
       nodeData = nodeData.filter((it) => {
         if (it.type !== 'copy') {
@@ -827,7 +843,6 @@ export default {
             it.result === 'Cancel' && (this.isCancel = true)
           }
         })
-      // this./**/
       nodeData.length > 0 &&
         (nodeData = nodeData.filter((it) => {
           if (it.type !== 'copy') {
@@ -836,6 +851,34 @@ export default {
         }))
       this.progressRecord = nodeData
     },
+    /**
+     * 初始化表单生成器的数据，拼接成当前节点的表单权限的数据
+     */
+    initForm() {
+      this.formParserData = JSON.parse(Base64.decode(this.applyDetail.formData))
+      this.formParserData.formData.labelPosition = 'right'
+      this.formParserData.formData.labelWidth = '120px'
+      // 新增isDetail字段区分是否为详情页
+      this.formParserData.formData.isDetail = true
+      if (typeof this.formParserData === 'object') {
+        const currentNode = this.findCurrentNode(this.formParserData.processData)
+        const formOperates = currentNode.properties.formOperates
+        if (formOperates && formOperates.length > 0) {
+          formOperates.map((item) => {
+            this.formParserData.formData.fields.map((formItem) => {
+              if (item.formId === formItem.__config__.formId) {
+                formItem.__config__.formPrivilege = item.formPrivilege
+                if (item.formPrivilege === 1) {
+                  formItem.__config__.required = false
+                }
+              }
+            })
+          })
+        }
+        this.$refs.formParser.init(this.formParserData.formData)
+      }
+      // console.log('this.formParserData==', this.formParserData.formData)
+    },
     goBack() {
       // 返回
       this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
@@ -843,86 +886,92 @@ export default {
     },
     // 撤回申请
     handelCancel() {
-      this.$confirm('确定撤销申请吗?', '撤销申请', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.loading = true
+      this.$refs.formParser.validate().then(() => {
+        this.$confirm('确定撤销申请吗?', '撤销申请', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.loading = true
 
-        createApprCancel({ processInstanceId: this.processInstanceId })
-          .then(() => {
-            this.$message.success('撤回成功')
-            this.$router.go(-1)
-          })
-          .finally(() => {
-            this.loading = false
-          })
+          createApprCancel({ processInstanceId: this.processInstanceId })
+            .then(() => {
+              this.$message.success('撤回成功')
+              this.$router.go(-1)
+            })
+            .finally(() => {
+              this.loading = false
+            })
+        })
       })
     },
     // 点击同意或拒绝按钮展示模态框
     handelClick(type) {
-      this.apprType = type
-      // 获取审批流程，获取审批意见是否必填，和审批提示语
-      getProcessDetail({ processId: this.processId })
-        .then((res) => {
-          let { isOpinion, tip } = res
-          this.tip = tip
-          this.isOpinion = isOpinion
-          this.dialogVisible = true
-          this.apprForm.comment = ''
-        })
-        .finally(() => {})
+      this.$refs.formParser.validate().then(() => {
+        this.apprType = type
+        // 获取审批流程，获取审批意见是否必填，和审批提示语
+        getProcessDetail({ processId: this.processId })
+          .then((res) => {
+            let { isOpinion, tip } = res
+            this.tip = tip
+            this.isOpinion = isOpinion
+            this.dialogVisible = true
+            this.apprForm.comment = ''
+          })
+          .finally(() => {})
+      })
     },
     // 点击确定审批
     handelConfirm() {
-      this.$refs.apprForm.validate((result) => {
-        if (!result) return
-        this.btnloading = true
-        // let { userId, taskId } = this.progressList[this.activeStep]
-        let userId = this.userId
-        let taskId = ''
-        this.progressList.map((it) => {
-          userId === it.userId && (taskId = it.taskId)
-        })
-        if (this.apprType === 'Reject') {
-          createApprReject({
-            userId,
-            taskId,
-            processInstanceId: this.processInstanceId,
-            comment: this.comment
+      Promise.all([this.$refs.apprForm.validate(), this.$refs.formParser.validate()]).then(
+        (result) => {
+          if (!result) return
+          this.btnloading = true
+          // let { userId, taskId } = this.progressList[this.activeStep]
+          let userId = this.userId
+          let taskId = ''
+          this.progressList.map((it) => {
+            userId === it.userId && (taskId = it.taskId)
           })
-            .then(() => {
-              this.$message({
-                type: 'success',
-                message: '你已拒绝这个申请'
+          if (this.apprType === 'Reject') {
+            createApprReject({
+              userId,
+              taskId,
+              processInstanceId: this.processInstanceId,
+              comment: this.comment
+            })
+              .then(() => {
+                this.$message({
+                  type: 'success',
+                  message: '你已拒绝这个申请'
+                })
               })
-            })
-            .finally(() => {
-              this.dialogVisible = false
-              this.btnloading = false
-              this.goBack()
-            })
-        } else if (this.apprType === 'Pass') {
-          createApprPass({
-            userId,
-            taskId,
-            processInstanceId: this.processInstanceId,
-            comment: this.apprForm.comment
-          })
-            .then(() => {
-              this.$message({
-                type: 'success',
-                message: '你已同意这个申请'
+              .finally(() => {
+                this.dialogVisible = false
+                this.btnloading = false
+                this.goBack()
               })
+          } else if (this.apprType === 'Pass') {
+            createApprPass({
+              userId,
+              taskId,
+              processInstanceId: this.processInstanceId,
+              comment: this.apprForm.comment
             })
-            .finally(() => {
-              this.dialogVisible = false
-              this.btnloading = false
-              this.goBack()
-            })
+              .then(() => {
+                this.$message({
+                  type: 'success',
+                  message: '你已同意这个申请'
+                })
+              })
+              .finally(() => {
+                this.dialogVisible = false
+                this.btnloading = false
+                this.goBack()
+              })
+          }
         }
-      })
+      )
     },
     // 点击催一下
     handelUrge() {
@@ -946,6 +995,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-form-item {
+  margin-bottom: 0px;
+}
+/deep/ .el-col {
+  margin-bottom: 0;
+}
+/deep/ .el-form-item__content {
+  line-height: 36px;
+}
 // 用户提交的申请
 .apply-info-wrap {
   .title {
@@ -1051,6 +1109,7 @@ export default {
 
 // 审批详情
 .apply-detail {
+  margin-top: 10px;
   border-bottom: 2px transparent solid;
 
   /deep/.detail-box {
@@ -1060,7 +1119,6 @@ export default {
 
     .detail-item {
       display: flex;
-      margin-bottom: 30px;
       font-size: 14px;
 
       :first-child {
