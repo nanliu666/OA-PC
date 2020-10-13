@@ -23,6 +23,12 @@ export default {
     content: '请设置条件',
     properties: { title: '条件', conditions: [], initiator: null }
   },
+  parallel: {
+    type: 'parallel',
+    type2: 'parallel',
+    content: '请设置审批人',
+    properties: { title: '审批人' }
+  },
   branch: { type: 'branch', content: '', properties: {} },
   empty: { type: 'empty', content: '', properties: {} }
 }

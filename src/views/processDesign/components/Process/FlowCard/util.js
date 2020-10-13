@@ -66,6 +66,9 @@ export class NodeUtils {
   static isConditionNode(node) {
     return node && node.type === 'condition'
   }
+  static isParallelNode(node) {
+    return node && node.type === 'parallel'
+  }
   static isCopyNode(node) {
     return node && node.type === 'copy'
   }
@@ -109,8 +112,59 @@ export class NodeUtils {
         }
       }
     }
+    if (processData.parallelNodes) {
+      for (let c of processData.parallelNodes) {
+        let r2 = this.getPreviousNode(prevId, c)
+        if (r2) {
+          return r2
+        }
+      }
+    }
   }
 
+  static deleteParallelNode(nodeData, processData, checkEmpty = true) {
+    let prevNode = this.getPreviousNode(nodeData.prevId, processData)
+    if (checkEmpty && prevNode.type === 'empty') {
+      if (this.isParallelNode(nodeData)) {
+        this.deleteParallelNode(prevNode, processData)
+      } else {
+        if (isEmptyArray(prevNode.conditionNodes)) {
+          this.deleteParallelNode(prevNode, processData)
+        }
+        this.deleteParallelNode(nodeData, processData, false)
+      }
+      return
+    }
+    let concatChild = (prev, delNode) => {
+      prev.childNode = delNode.childNode
+      isEmptyArray(prev.parallelNodes) && (prev.parallelNodes = delNode.parallelNodes)
+      prev.childNode && (prev.childNode.prevId = prev.nodeId)
+      prev.parallelNodes && prev.parallelNodes.forEach((c) => (c.prevId = prev.nodeId))
+    }
+    if (this.isParallelNode(nodeData)) {
+      let cons = prevNode.parallelNodes
+      let index = cons.findIndex((c) => c.nodeId === nodeData.nodeId)
+      if (cons.length > 2) {
+        cons.splice(index, 1)
+      } else {
+        let anotherCon = cons[+!index]
+        delete prevNode.parallelNodes
+        if (prevNode.childNode) {
+          let endNode = anotherCon
+          while (endNode.childNode) {
+            endNode = endNode.childNode
+          }
+          endNode.childNode = prevNode.childNode
+          endNode.childNode.prevId = endNode.nodeId
+        }
+        concatChild(prevNode, anotherCon)
+      }
+      // 重新编排优先级
+      cons.forEach((c, i) => (c.properties.priority = i))
+      return
+    }
+    concatChild(prevNode, nodeData)
+  }
   /**
    * 删除节点
    * @param { Object  } nodeData - 被删除节点的数据
@@ -190,6 +244,15 @@ export class NodeUtils {
       })
       delete data.conditionNodes
     }
+
+    let parallelNodes = data.parallelNodes
+    if (Array.isArray(parallelNodes) && !isBranchAction && parallelNodes.length) {
+      newChildNode.parallelNodes = parallelNodes.map((c) => {
+        c.prevId = newChildNode.nodeId
+        return c
+      })
+      delete data.parallelNodes
+    }
     if (oldChildNode && oldChildNode.type === 'empty') {
       this.deleteNode(oldChildNode, data)
     }
@@ -229,6 +292,71 @@ export class NodeUtils {
     this.setDefaultCondition(node, data)
   }
   /**
+   * 添加条件节点 condition 通过点击添加条件进入该操作
+   * @param { Object } data - 目标节点所在分支数据，在该分支最后添加条件节点
+   */
+  static appendParallelNode(data) {
+    const parallel = data.parallelNodes
+    let node = this.createNode('parallel', data.nodeId)
+    let defaultNodeIndex = parallel.findIndex((node) => node.properties.isDefault)
+    node.properties.priority = parallel.length
+    if (defaultNodeIndex > -1) {
+      parallel.splice(-1, 0, node) // 插在倒数第二个
+      //更新优先级
+      node.properties.priority = parallel.length - 2
+      parallel[parallel.length - 1].properties.priority = parallel.length - 1
+    } else {
+      parallel.push(node)
+    }
+    // this.setDefaultCondition(node, data)
+  }
+  /**
+   * 添加并行分支 branch
+   * @param { Object } data - 目标节点所在节点数据，在该节点最后添加分支节点
+   */
+  static parallelBranch(data, isBottomBtnOfBranch) {
+    // isBottomBtnOfBranch 用户点击的是分支树下面的按钮
+    let nodeData = data
+    // 由于parallelNodes是数组 不能添加下级分支 故在两个分支树之间添加一个不会显示的正常节点 兼容此种情况
+    if (
+      (Array.isArray(data.conditionNodes) && data.conditionNodes.length) ||
+      (Array.isArray(data.parallelNodes) && data.parallelNodes.length)
+    ) {
+      if (isBottomBtnOfBranch) {
+        // 添加一个模拟用的空白节点并返回这个节点，作为新分支的父节点
+        nodeData = this.addEmptyNode(nodeData, true)
+      } else {
+        let emptyNode = this.addEmptyNode(nodeData, true)
+        if (nodeData.parallelNodes) {
+          emptyNode.parallelNodes = nodeData.parallelNodes
+          emptyNode.parallelNodes.forEach((n) => {
+            n.prevId = emptyNode.nodeId
+          })
+        } else {
+          emptyNode.conditionNodes = nodeData.conditionNodes
+          delete nodeData.conditionNodes
+          emptyNode.conditionNodes.forEach((n) => {
+            n.prevId = emptyNode.nodeId
+          })
+        }
+      }
+    }
+    let parallelNodes = [
+      this.createNode('parallel', nodeData.nodeId),
+      this.createNode('parallel', nodeData.nodeId)
+    ].map((c, i) => {
+      c.properties.title += i + 1
+      c.properties.priority = i
+      if (i == 1) {
+        c.properties.isDefault = true
+      }
+
+      return c
+    })
+
+    nodeData.parallelNodes = parallelNodes
+  }
+  /**
    * 添加条件分支 branch
    * @param { Object } data - 目标节点所在节点数据，在该节点最后添加分支节点
    */
@@ -236,7 +364,10 @@ export class NodeUtils {
     // isBottomBtnOfBranch 用户点击的是分支树下面的按钮
     let nodeData = data
     // 由于conditionNodes是数组 不能添加下级分支 故在两个分支树之间添加一个不会显示的正常节点 兼容此种情况
-    if (Array.isArray(data.conditionNodes) && data.conditionNodes.length) {
+    if (
+      (Array.isArray(data.conditionNodes) && data.conditionNodes.length) ||
+      (Array.isArray(data.parallelNodes) && data.parallelNodes.length)
+    ) {
       if (isBottomBtnOfBranch) {
         // 添加一个模拟用的空白节点并返回这个节点，作为新分支的父节点
         nodeData = this.addEmptyNode(nodeData, true)

@@ -435,6 +435,7 @@ export default {
       this.ApprovalNode(data, item, origin)
       //条件
       this.conditionNode(data, origin, conditionNextNodeId_)
+
       //处理节点线，
       //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
       this.evenLine(data, item)
@@ -508,7 +509,7 @@ export default {
      * */
     ApprovalNode(data, item, origin) {
       if (data.type === 'approver') {
-        //审批人节点
+        //审批指定职位·指定岗位，上级领导，标签
         let list = Object.keys(data.properties.infoForm || [])
         if (list.includes(`${data.properties.assigneeType}Id`)) {
           item.assignee = '${' + `${data.properties.assigneeType}_` + data.nodeId + '_id}'

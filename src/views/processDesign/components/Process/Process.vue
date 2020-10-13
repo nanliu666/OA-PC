@@ -81,7 +81,6 @@ export default {
       this.getAllDode(this.data, allNode)
       localStorage.setItem('allNode', JSON.stringify(allNode))
       this.updateId = this.updateId + 1
-      this.$forceUpdate()
     },
     /**
      * 控制流程图缩放
