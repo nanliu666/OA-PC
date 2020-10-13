@@ -868,6 +868,9 @@ export default {
             this.formParserData.formData.fields.map((formItem) => {
               if (item.formId === formItem.__config__.formId) {
                 formItem.__config__.formPrivilege = item.formPrivilege
+                if (item.formPrivilege === 1) {
+                  formItem.__config__.required = false
+                }
               }
             })
           })
