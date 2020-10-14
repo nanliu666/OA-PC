@@ -121,7 +121,7 @@ function getMaxId(fieldList) {
     return fieldList.reduce((maxId, cmp) => {
       cmp.__config__.formId > maxId && (maxId = cmp.__config__.formId)
       if (Array.isArray(cmp.children)) {
-        let children = cmp.children.flat()
+        let children = _.flatten(cmp.children)
         maxId = children.reduce((max, child) => Math.max(max, child.__config__.formId), maxId)
       }
       return maxId
@@ -269,7 +269,7 @@ export default {
           this.buildRule(cur, rules)
         }
         if (cur.children) {
-          cur.children.flat().forEach((item) => this.buildRule(item, rules))
+          _.flatten(cur.children).forEach((item) => this.buildRule(item, rules))
         }
       })
       return rules
@@ -373,6 +373,7 @@ export default {
       justify-content: space-between;
       i {
         cursor: pointer;
+        color: #999;
       }
     }
     &--content {

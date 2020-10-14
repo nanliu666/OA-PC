@@ -280,8 +280,7 @@ export default {
       }
     },
     /**
-     * 阻止表格中嵌套行容器
-     * 定制组件不能添加子组件
+     * 阻止明细中嵌套行容器
      */
     shouldClone(to, from, target, event, conf) {
       const targetConf = target._underlying_vm_
