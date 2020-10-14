@@ -182,6 +182,7 @@ export default {
   mounted() {
     if (typeof this.conf === 'object' && this.conf !== null) {
       this.drawingList = this.conf.fields || []
+      // debugger
       Object.assign(this.formConf, this.conf)
       // } else if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
       //   this.drawingList = drawingListInDB
@@ -321,6 +322,7 @@ export default {
         this.$message.error('该控件已被使用作为条件，不能删除')
         return
       }
+      this.$store.commit('delPCondition', parent[index].__config__.formId)
       parent.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length

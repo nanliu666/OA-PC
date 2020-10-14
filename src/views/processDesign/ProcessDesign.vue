@@ -7,7 +7,7 @@
     <header class="page__header">
       <div class="page-actions">
         <div
-          style="border-right:1px solid #c5c5c5;cursor: pointer;"
+          style="border-right: 1px solid #c5c5c5; cursor: pointer"
           @click="exit"
         >
           <i class="el-icon-arrow-left" /> 返回
@@ -94,7 +94,7 @@ import { Base64 } from 'js-base64'
 import { getApprProcess, postApprProcess, putApprProcess } from '@/api/processDesign/basicSetting'
 // import mockData from "@/views/processDesign/mockData";
 
-const beforeUnload = function(e) {
+const beforeUnload = function (e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容'
   ;(e || window.event).returnValue = confirmationMessage // Gecko and Trident
   return confirmationMessage // Gecko and WebKit
@@ -215,7 +215,6 @@ export default {
       const p2 = getCmpData('formDesign')
       const p3 = getCmpData('processDesign')
       const p4 = getCmpData('advancedSetting')
-
       Promise.all([p1, p2, p3, p4])
         .then((res) => {
           const param = {
@@ -669,11 +668,9 @@ export default {
       d.properties.conditions.map((it) => {
         this.processMap[it.vModel] = ''
         let val = ''
-        if (it.type === 'number' && it.defaultValue.type === 'bet') {
+        if (['number', 'daterange'].includes(it.type) && it.defaultValue.type === 'bet') {
           val = it.defaultValue.value[1] == 'lt' ? 'gt' : 'gte'
-        }
-        (it.type === 'number' &&
-          it.defaultValue.type === 'bet' &&
+          // 介于两值之间
           conditionExpression.push(
             '${' +
               it.vModel +
@@ -688,12 +685,18 @@ export default {
               ' ' +
               it.defaultValue.value[3] +
               '}'
-          )) ||
+          )
+        } else if (!['checkbox', 'radio'].includes(it.type)) {
+          // 为了处理数字类型，其他的类型都不经过此处
           conditionExpression.push(
             '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
           )
+        }
 
         it.type === 'radio' && conditionExpression.push('${' + it.vModel + ' eq \'' + it.val + '\'}')
+        // 添加对多选的类型处，当作string类型，发起的时候要注意顺序。
+        it.type === 'checkbox' &&
+          conditionExpression.push('${' + it.vModel + ' eq \'' + _.sortBy(it.val) + '\'}')
       })
 
       let strs = ''

@@ -28,7 +28,8 @@ function renderFrom(h) {
     <el-row gutter={16} class="parser-form">
       <el-form
         size="medium"
-        label-position="top"
+        label-position={formConfCopy.labelPosition ? formConfCopy.labelPosition : 'top'}
+        label-width={formConfCopy.labelWidth ? formConfCopy.labelWidth : '100%'}
         disabled={formConfCopy.disabled}
         ref="form"
         // model不能直接赋值 https://github.com/vuejs/jsx/issues/49#issuecomment-472013664
@@ -144,24 +145,52 @@ const layouts = {
   // 单个元素渲染
   colFormItem(h, scheme) {
     const config = scheme.__config__
-    return (
-      <el-col span={scheme.__pc__.span} class="parser-item">
-        <el-form-item
-          prop={scheme.__vModel__}
-          label={config.label}
-          style={config.type === 'desc' ? 'margin-bottom:0' : ''}
-          rules={scheme.rules}
-        >
-          <render
-            conf={scheme}
-            onInput={(event) => {
-              this.$set(config, 'defaultValue', event)
-              this.$set(this.form, scheme.__vModel__, event)
-            }}
-          />
-        </el-form-item>
-      </el-col>
+    const formPrivilege = config.formPrivilege
+    const defaultRender = (
+      <render
+        conf={scheme}
+        onInput={(event) => {
+          this.$set(config, 'defaultValue', event)
+          this.$set(this.form, scheme.__vModel__, event)
+        }}
+      />
     )
+    const valueRender = <span>{scheme.__config__.defaultValue}</span>
+    const wrapItem = function (isDefault) {
+      return (
+        <el-col span={scheme.__pc__.span} class="parser-item">
+          <el-form-item
+            prop={scheme.__vModel__}
+            label={`${config.label}：`}
+            style={config.type === 'desc' ? 'margin-bottom:0' : ''}
+          >
+            {isDefault ? defaultRender : valueRender}
+          </el-form-item>
+        </el-col>
+      )
+    }
+    let renderItem = ''
+    // formPrivilege表单权限验证，0可编辑，1只读，2隐藏
+    switch (formPrivilege) {
+      case 0:
+        renderItem = wrapItem(true)
+        break
+      case 1:
+        // 是否在详情页，详情页与发起审批页展示不一
+        if (this.formConfCopy.isDetail) {
+          // 详情页，有默认值显示默认值，无默认值不显示这个标签
+          renderItem = !_.isEmpty(scheme.__config__.defaultValue) ? wrapItem(false) : ''
+        } else {
+          // 审批发起页面，只读权限表现为置灰处理
+          scheme.__pc__.props.disabled = true
+          renderItem = wrapItem(true)
+        }
+        break
+      case 2:
+        renderItem = ''
+        break
+    }
+    return renderItem
   },
   // 父元素渲染，暂时不做
   rowFormItem(h, scheme) {

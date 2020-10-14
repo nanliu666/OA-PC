@@ -43,11 +43,11 @@ const layouts = {
       },
       on: {}
     }
-    // if (config.tag !== 'div') {
-    // props.on.input = (event) => {
-    //   this.$set(config, 'defaultValue', event)
-    // }
-    // }
+    if (config.tag !== 'div') {
+      props.on.input = (event) => {
+        this.$set(config, 'defaultValue', event)
+      }
+    }
     return (
       <el-col
         span={element.__pc__.span}
