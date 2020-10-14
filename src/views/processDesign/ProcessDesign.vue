@@ -94,7 +94,7 @@ import { Base64 } from 'js-base64'
 import { getApprProcess, postApprProcess, putApprProcess } from '@/api/processDesign/basicSetting'
 // import mockData from "@/views/processDesign/mockData";
 
-const beforeUnload = function (e) {
+const beforeUnload = function(e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容'
   ;(e || window.event).returnValue = confirmationMessage // Gecko and Trident
   return confirmationMessage // Gecko and WebKit
@@ -301,7 +301,7 @@ export default {
      * @desc 处理发起人范围 转成，ProcessVisible属性
      * */
     handleProcessVisible(param, processVisible) {
-      if (param.basicSetting.initiator && param.basicSetting.initiator.length > 0) {
+      if (_.isArray(param.basicSetting.initiator) && param.basicSetting.initiator.length > 0) {
         param.basicSetting.initiator.map((it) => {
           let type = ''
           if (it.type) {
