@@ -189,7 +189,12 @@ const layouts = {
       case 2:
         renderItem = ''
         break
+      default:
+        // 兼容旧版本
+        renderItem = wrapItem(true)
+        break
     }
+
     return renderItem
   },
   // 父元素渲染，暂时不做
