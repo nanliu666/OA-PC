@@ -42,7 +42,7 @@
               <span>新密码</span><span class="tip">(密码包含字母，符号或数字中至少两项且长度超过6位的密码)</span>
             </span>
             <el-input
-              v-model="form.newPassword"
+              v-model.trim="form.newPassword"
               placeholder="请输入新密码"
               type="password"
               show-password
@@ -56,7 +56,7 @@
               <span>确认密码</span>
             </span>
             <el-input
-              v-model="form.confirmPassword"
+              v-model.trim="form.confirmPassword"
               placeholder="请输入确认密码"
               type="password"
               show-password
@@ -64,7 +64,7 @@
           </el-form-item>
           <el-form-item>
             <el-button
-              class="bt"
+              :disabled="buttonDisabled"
               type="primary"
               @click="onsubmit"
             >
@@ -121,7 +121,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo']),
+    buttonDisabled: function() {
+      let isDisabled = false
+      _.mapKeys(this.form, (value) => {
+        if (!value) {
+          isDisabled = true
+        }
+      })
+      return isDisabled
+    }
   },
   methods: {
     onsubmit() {
