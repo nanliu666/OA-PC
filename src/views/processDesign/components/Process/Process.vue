@@ -152,7 +152,7 @@ export default {
       return res
     }
   },
-  render: function(h) {
+  render: function (h) {
     NodeUtils.globalID = NodeUtils.getMaxNodeId(this.data)
     let allNode = []
     NodeUtils.getAllNode(allNode)

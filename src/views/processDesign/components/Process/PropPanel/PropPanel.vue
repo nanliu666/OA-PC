@@ -6,7 +6,7 @@
       class="drawer"
       :visible.sync="visible"
       :show-close="false"
-      style="text-align:left;"
+      style="text-align: left"
       @close="cancel"
     >
       <!-- 标题 -->
@@ -24,7 +24,7 @@
       >
         <span
           v-show="!titleInputVisible"
-          style="cursor:pointer;color: #202940;font-size: 16px;"
+          style="cursor: pointer; color: #202940; font-size: 16px"
           @click="titleInputVisible = true"
         >
           {{ properties.title }}
@@ -35,7 +35,7 @@
           v-model="properties.title"
           v-clickoutside="(_) => (titleInputVisible = false)"
           size="mini"
-          style="z-index:9;max-width: 200px;"
+          style="z-index: 9; max-width: 200px"
         />
         <el-select
           v-if="isConditionNode()"
@@ -75,6 +75,7 @@
             v-if="
               couldShowIt(
                 item,
+                'daterange',
                 'el-input-number',
                 'fc-date-duration',
                 'fc-time-duration',
@@ -84,18 +85,20 @@
               )
             "
             :key="index"
-            :title="item.__config__.label"
+            :title="`${item.__config__.label}${
+              item.__config__.type === 'daterange' ? '(时长/天)' : ''
+            }`"
           >
             <num-input
               :key="index"
               v-model="item.__config__.defaultValue"
               :title="timeTangeLabel(item)"
-              style="padding-right: 6px;"
+              style="padding-right: 6px"
             />
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
@@ -121,7 +124,7 @@
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
@@ -132,6 +135,7 @@
             :key="index"
             :title="item.__config__.label"
           >
+            <!-- 在这里设置多选的默认值 -->
             <el-checkbox-group v-model="item.__config__.defaultValue">
               <el-checkbox
                 v-for="city in item.__slot__.options"
@@ -144,17 +148,35 @@
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
           </row-wrapper>
+
+          <!-- 日期选择器 -->
+          <!-- <row-wrapper
+            v-if="couldShowIt(item, 'daterange')"
+            :key="index"
+            :title="item.label"
+          >
+            {{ item.__config__.label }}
+            <template v-slot:action>
+              <i
+                class="el-icon-delete"
+                style="cursor: pointer;"
+                @click="onDelCondition(item)"
+              />
+            </template>
+          </row-wrapper> -->
+
           <!-- 下拉 -->
           <row-wrapper
             v-if="couldShowIt(item, 'el-select', 'select')"
             :key="index"
             :title="item.label"
           >
+            <!-- 这里设置单选的默认值  -->
             <el-select
               v-model="item.__config__.defaultValue"
               style="width: 280px"
@@ -171,7 +193,7 @@
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
@@ -190,13 +212,13 @@
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
           </row-wrapper>
         </template>
-        <div style="padding-left:24px;margin-top:2em;">
+        <div style="padding-left: 24px; margin-top: 2em">
           <el-button
             type="primary"
             size="small"
@@ -205,7 +227,7 @@
           >
             添加条件
           </el-button>
-          <span style="color:#aaa;margin-left:16px;">还有{{ notUseConNum }}个可用条件</span>
+          <span style="color: #aaa; margin-left: 16px">还有{{ notUseConNum }}个可用条件</span>
         </div>
       </section>
 
@@ -213,7 +235,7 @@
       <section
         v-if="value && (isApproverNode() || isStartNode())"
         class="approver-pane"
-        style="height:100%;"
+        style="height: 100%"
       >
         <div class="tabs_div flex flex-center flex-align-items">
           <div
@@ -233,10 +255,10 @@
           <!-- 开始节点 -->
           <el-row
             v-if="value.type === 'start'"
-            style="padding: 24px;"
+            style="padding: 24px"
           >
             <el-row>
-              <el-col style="font-size: 14px;line-height: 30px">
+              <el-col style="font-size: 14px; line-height: 30px">
                 发起人
               </el-col>
             </el-row>
@@ -253,10 +275,10 @@
             </el-col>
           </el-row>
           <div v-else-if="value.type === 'approver'">
-            <div style="padding: 24px;">
+            <div style="padding: 24px">
               <el-radio-group
                 v-model="approverForm.assigneeType"
-                style="line-height: 32px;"
+                style="line-height: 32px"
                 @change="resetOrgColl"
               >
                 <el-radio
@@ -270,11 +292,11 @@
                 </el-radio>
               </el-radio-group>
             </div>
-            <div style="padding-bottom: 24px;">
+            <div style="padding-bottom: 24px">
               <div
                 v-if="approverForm.assigneeType === 'myself'"
                 class="option-box"
-                style="color: #a5a5a5;"
+                style="color: #a5a5a5"
               >
                 发起人自己将作为审批人处理审批单
               </div>
@@ -326,7 +348,7 @@
                 </div>
               </div>
               <div v-else-if="approverForm.assigneeType === assigneeTypeObect.directorLevel">
-                <div style="font-size: 14px;padding-left: 24px;">
+                <div style="font-size: 14px; padding-left: 24px">
                   <el-row>
                     <el-col style="line-height: 30px">
                       发起人的
@@ -356,7 +378,7 @@
                 </div>
               </div>
               <div v-else-if="approverForm.assigneeType === assigneeTypeObect.job">
-                <div style="padding-bottom: 24px;">
+                <div style="padding-bottom: 24px">
                   <commonForm
                     ref="jobData"
                     :model="infoForm"
@@ -401,8 +423,7 @@
                 (orgCollection[approverForm.assigneeType] &&
                   orgCollection[approverForm.assigneeType].length > 1 &&
                   !['optional'].includes(approverForm.assigneeType)) ||
-                  (['optional'].includes(approverForm.assigneeType) &&
-                    approverForm.optionalMultiUser)
+                  (['optional'].includes(approverForm.assigneeType) && approverForm.optionalMultiUser)
               "
               class="option-box"
             >
@@ -523,7 +544,7 @@
 
       <section
         v-if="value && isCopyNode()"
-        style="padding-left: 24px;"
+        style="padding-left: 24px"
       >
         <fc-org-select
           ref="copy-org"
@@ -549,7 +570,7 @@
           <!-- 发起人默认就有 -->
           <el-checkbox
             v-if="isShowInitiator"
-            style="margin-bottom: 10px;"
+            style="margin-bottom: 10px"
             :label="-1"
           >
             发起人
@@ -557,7 +578,7 @@
           <el-checkbox
             v-for="(item, index) in pconditions"
             :key="index"
-            style="margin-bottom: 10px;"
+            style="margin-bottom: 10px"
             class="flex justify-space-around"
             :label="item.__config__.formId"
           >
@@ -622,6 +643,7 @@ const rangeType = {
   gte: '≥',
   eq: '='
 }
+// 默认表单模版
 const defaultApproverForm = {
   approvers: [], // 审批人集合
   assigneeType: 'user', // 指定审批人
@@ -1069,6 +1091,7 @@ export default {
             return
           }
           const numberTypeCmp = [
+            'daterange', // 日期类型作为数字处理
             'el-input-number',
             'fc-date-duration',
             'fc-time-duration',
@@ -1087,6 +1110,15 @@ export default {
             t.__slot__.options.map((it) => {
               it.label === cValue && (res.val = it.value)
             })
+          } else if (t.__config__.type === 'checkbox') {
+            res.val = []
+            t.__slot__.options.map((it) => {
+              cValue.includes(it.label) && res.val.push(it.value)
+            })
+          }
+          if (t.__config__.type === 'checkbox') {
+            res.val = t.__config__.defaultValue
+            // TODO: 添加
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
@@ -1299,6 +1331,7 @@ export default {
       }
     },
     firstComdition(data, firstConditinoNode) {
+      // 这里会查询第一个条件分支
       if (hasBranch(data)) {
         if (!firstConditinoNode.length > 0) {
           firstConditinoNode.push(data)
@@ -1342,7 +1375,10 @@ export default {
           }
 
           this.$set(t.__config__, 'defaultValue', temp)
-          t.__config__.type === 'checkbox' && this.$set(t.__config__, 'defaultValue', [])
+          // fix undefined
+          if (t.__config__.type === 'checkbox' && !temp) {
+            this.$set(t.__config__, 'defaultValue', [])
+          }
         })
       }
     },

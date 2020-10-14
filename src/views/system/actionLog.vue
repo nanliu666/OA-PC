@@ -18,11 +18,11 @@
             placement="bottom"
             width="40"
             trigger="click"
-            style="margin-left:10px"
+            style="margin-left: 10px"
           >
             <el-checkbox-group
               v-model="checkColumn"
-              style="display: flex;flex-direction: column;"
+              style="display: flex; flex-direction: column"
               @change="columnChange"
             >
               <el-checkbox

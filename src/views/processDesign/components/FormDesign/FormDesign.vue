@@ -88,6 +88,7 @@
                     :drawing-list="drawingList"
                     :active-id="activeId"
                     :is-p-c="isPC"
+                    :put="shouldClone"
                     @activeItem="activeFormItem"
                     @deleteItem="drawingItemDelete"
                   />
@@ -241,7 +242,7 @@ export default {
     },
     // 判断是否已被流程图作为条件必填项了
     usedAsCondition(cmp) {
-      if (Array.isArray(cmp.children) && cmp.children.length) {
+      if (Array.isArray(cmp.__config__.children) && cmp.__config__.children.length) {
         // 容器组件需要检查子元素
         if (cmp.rowType === 'table') return false // 表格的子元素不可能为流程条件
         let flag = false
@@ -249,12 +250,12 @@ export default {
           if (flag) return // flag === true 代表找到了一个了 不需要再找下一个
           if (Array.isArray(el)) {
             el.some((e) => {
-              if (e.children) loop(e.children)
+              if (e.__config__.children) loop(e.__config__.children)
               return this.checkColItem(e)
             }) && (flag = true)
           }
         }
-        loop(cmp.children)
+        loop(cmp.__config__.children)
         return flag
       } else {
         return this.checkColItem(cmp)
@@ -278,6 +279,18 @@ export default {
         this.activeId = tempActiveData.__config__.formId
         this.activeData = tempActiveData
       }
+    },
+    /**
+     * 阻止明细中嵌套行容器
+     */
+    shouldClone(to, from, target, event, conf) {
+      const targetConf = target._underlying_vm_
+
+      if (conf.__config__.type === 'detail') {
+        if (targetConf.__config__.layout === 'rowFormItem') return false
+        if (this.isFilledPCon([targetConf.formId])) return false
+      }
+      return true
     },
     addComponent(item) {
       const clone = this.cloneComponent(item)
@@ -309,6 +322,7 @@ export default {
         this.$message.error('该控件已被使用作为条件，不能删除')
         return
       }
+      this.$store.commit('delPCondition', parent[index].__config__.formId)
       parent.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length
@@ -319,12 +333,13 @@ export default {
         }
       })
     },
+    // formId最大值
     getMaxId() {
       if (this.drawingList.length) {
         return this.drawingList.reduce((maxId, cmp) => {
           cmp.__config__.formId > maxId && (maxId = cmp.__config__.formId)
-          if (Array.isArray(cmp.children)) {
-            maxId = cmp.children.reduce(
+          if (Array.isArray(cmp.__config__.children)) {
+            maxId = cmp.__config__.children.reduce(
               (max, child) => Math.max(max, child.__config__.formId),
               maxId
             )
@@ -334,11 +349,20 @@ export default {
       }
       return 0
     },
+    // 下一个formId
     getNextId() {
       return this.getMaxId() + 1
     },
     getSameTagCmpNum(type) {
       return this.drawingList.reduce((count, item) => {
+        if (item.__config__.children) {
+          return (
+            count +
+            item.__config__.children.reduce((c, t) => {
+              return t.__config__.type === type ? c + 1 : c
+            }, 0)
+          )
+        }
         return item.__config__.type === type ? count + 1 : count
       }, 0)
     },

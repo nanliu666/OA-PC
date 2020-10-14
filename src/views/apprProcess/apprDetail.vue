@@ -61,7 +61,7 @@
           >
             <i
               class="el-icon-arrow-up icon"
-              style="margin-right:12px"
+              style="margin-right: 12px"
             /> 收起
           </div>
           <div
@@ -70,7 +70,7 @@
           >
             <i
               class="el-icon-arrow-down icon"
-              style="margin-right:12px"
+              style="margin-right: 12px"
             /> 打开
           </div>
         </div>
@@ -272,7 +272,7 @@
                       {{ item.userName }} <span class="text">{{ item.jobName }}</span>
                       <span class="time">{{ item.approveTime }}</span>
                     </div>
-                    <div style="color:#7ad683">
+                    <div style="color: #7ad683">
                       发起审批
                     </div>
                   </div>
@@ -306,7 +306,7 @@
                 </div>
                 <div v-else>
                   <div>
-                    <div class="description-box ">
+                    <div class="description-box">
                       <div
                         v-for="(it, i) in item.approveList"
                         :key="i"
@@ -321,12 +321,12 @@
                               i < item.userList.length - 1 &&
                               item.approveList.length === item.userList.length
                           "
-                          style="margin:5px;font-weight: 800"
+                          style="margin: 5px; font-weight: 800"
                         >
                           /
                         </span>
                       </div>
-                      <div class="textName ">
+                      <div class="textName">
                         <span
                           v-for="(it, i) in item.approveList"
                           :key="it.id"
@@ -338,13 +338,13 @@
                                 i < item.userList.length - 1 &&
                                 item.approveList.length === item.userList.length
                             "
-                            style="margin:5px;font-weight: 800"
+                            style="margin: 5px; font-weight: 800"
                           >
                             /
                           </span>
                           <span
                             v-if="it.approveTime && it.approveTime"
-                            style="margin:0 15px"
+                            style="margin: 0 15px"
                           >
                             {{ it.jobName }}
                           </span>
@@ -597,7 +597,7 @@ export default {
     iconClass() {
       // 已撤回
       if (this.isCancel) {
-        return function(index) {
+        return function (index) {
           // 第一个显示红色
           if (index === 0) {
             return 'cancel'
@@ -607,7 +607,7 @@ export default {
       }
       // 已拒绝
       else if (this.isReject) {
-        return function(index) {
+        return function (index) {
           if (index < this.activeStep) {
             return 'active'
           } else if (index == this.activeStep) {
@@ -617,7 +617,7 @@ export default {
           }
         }
       } else {
-        return function(index) {
+        return function (index) {
           if (index <= this.activeStep) {
             return 'active'
           }
@@ -656,7 +656,7 @@ export default {
       return result
     },
     // 提交人跟当前用户是否同一个人
-    isApplyUser: function() {
+    isApplyUser: function () {
       if (this.userId !== this.applyUserId) {
         return false
       } else {
