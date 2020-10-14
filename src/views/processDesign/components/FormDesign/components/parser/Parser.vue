@@ -78,7 +78,7 @@ function renderItemList(h, list) {
   return renderFormItem.call(this, h, list)
 }
 
-const templates = {
+const rowTemplates = {
   detail(h, element) {
     return (
       <el-col span={element.__pc__.span} class="parser-item parser-item__detail">
@@ -106,7 +106,6 @@ const templates = {
         <div
           class="parser-item__detail--footer"
           onClick={() => {
-            // element.children.push(JSON.parse(JSON.stringify(element.__config__.children)))
             addElementChild.call(this, element)
           }}
         >
@@ -197,11 +196,10 @@ const layouts = {
 
     return renderItem
   },
-  // 父元素渲染，暂时不做
   rowFormItem(h, scheme) {
     let child = renderItemList.apply(this, h, scheme.__config__.children)
-    if (templates[scheme.__config__.type]) {
-      return templates[scheme.__config__.type].call(this, h, scheme)
+    if (rowTemplates[scheme.__config__.type]) {
+      return rowTemplates[scheme.__config__.type].call(this, h, scheme)
     }
     return (
       <el-col span={scheme.__pc__.span}>
