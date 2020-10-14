@@ -309,6 +309,7 @@ export default {
         this.$message.error('该控件已被使用作为条件，不能删除')
         return
       }
+      this.$store.commit('delPCondition', parent[index].__config__.formId)
       parent.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length

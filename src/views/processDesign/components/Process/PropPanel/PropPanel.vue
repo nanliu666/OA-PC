@@ -75,6 +75,7 @@
             v-if="
               couldShowIt(
                 item,
+                'daterange',
                 'el-input-number',
                 'fc-date-duration',
                 'fc-time-duration',
@@ -84,7 +85,9 @@
               )
             "
             :key="index"
-            :title="item.__config__.label"
+            :title="
+              `${item.__config__.label}${item.__config__.type === 'daterange' ? '(时长/天)' : ''}`
+            "
           >
             <num-input
               :key="index"
@@ -132,6 +135,7 @@
             :key="index"
             :title="item.__config__.label"
           >
+            <!-- 在这里设置多选的默认值 -->
             <el-checkbox-group v-model="item.__config__.defaultValue">
               <el-checkbox
                 v-for="city in item.__slot__.options"
@@ -149,12 +153,30 @@
               />
             </template>
           </row-wrapper>
+
+          <!-- 日期选择器 -->
+          <!-- <row-wrapper
+            v-if="couldShowIt(item, 'daterange')"
+            :key="index"
+            :title="item.label"
+          >
+            {{ item.__config__.label }}
+            <template v-slot:action>
+              <i
+                class="el-icon-delete"
+                style="cursor: pointer;"
+                @click="onDelCondition(item)"
+              />
+            </template>
+          </row-wrapper> -->
+
           <!-- 下拉 -->
           <row-wrapper
             v-if="couldShowIt(item, 'el-select', 'select')"
             :key="index"
             :title="item.label"
           >
+            <!-- 这里设置单选的默认值  -->
             <el-select
               v-model="item.__config__.defaultValue"
               style="width: 280px"
@@ -622,6 +644,7 @@ const rangeType = {
   gte: '≥',
   eq: '='
 }
+// 默认表单模版
 const defaultApproverForm = {
   approvers: [], // 审批人集合
   assigneeType: 'user', // 指定审批人
@@ -1069,6 +1092,7 @@ export default {
             return
           }
           const numberTypeCmp = [
+            'daterange', // 日期类型作为数字处理
             'el-input-number',
             'fc-date-duration',
             'fc-time-duration',
@@ -1087,6 +1111,15 @@ export default {
             t.__slot__.options.map((it) => {
               it.label === cValue && (res.val = it.value)
             })
+          } else if (t.__config__.type === 'checkbox') {
+            res.val = []
+            t.__slot__.options.map((it) => {
+              cValue.includes(it.label) && res.val.push(it.value)
+            })
+          }
+          if (t.__config__.type === 'checkbox') {
+            res.val = t.__config__.defaultValue
+            // TODO: 添加
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
@@ -1299,6 +1332,7 @@ export default {
       }
     },
     firstComdition(data, firstConditinoNode) {
+      // 这里会查询第一个条件分支
       if (hasBranch(data)) {
         if (!firstConditinoNode.length > 0) {
           firstConditinoNode.push(data)
@@ -1342,7 +1376,10 @@ export default {
           }
 
           this.$set(t.__config__, 'defaultValue', temp)
-          t.__config__.type === 'checkbox' && this.$set(t.__config__, 'defaultValue', [])
+          // fix undefined
+          if (t.__config__.type === 'checkbox' && !temp) {
+            this.$set(t.__config__, 'defaultValue', [])
+          }
         })
       }
     },

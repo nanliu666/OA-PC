@@ -668,11 +668,9 @@ export default {
       d.properties.conditions.map((it) => {
         this.processMap[it.vModel] = ''
         let val = ''
-        if (it.type === 'number' && it.defaultValue.type === 'bet') {
+        if (['number', 'daterange'].includes(it.type) && it.defaultValue.type === 'bet') {
           val = it.defaultValue.value[1] == 'lt' ? 'gt' : 'gte'
-        }
-        (it.type === 'number' &&
-          it.defaultValue.type === 'bet' &&
+          // 介于两值之间
           conditionExpression.push(
             '${' +
               it.vModel +
@@ -687,12 +685,18 @@ export default {
               ' ' +
               it.defaultValue.value[3] +
               '}'
-          )) ||
+          )
+        } else if (!['checkbox', 'radio'].includes(it.type)) {
+          // 为了处理数字类型，其他的类型都不经过此处
           conditionExpression.push(
             '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
           )
+        }
 
         it.type === 'radio' && conditionExpression.push('${' + it.vModel + ' eq \'' + it.val + '\'}')
+        // 添加对多选的类型处，当作string类型，发起的时候要注意顺序。
+        it.type === 'checkbox' &&
+          conditionExpression.push('${' + it.vModel + ' eq \'' + _.sortBy(it.val) + '\'}')
       })
 
       let strs = ''
