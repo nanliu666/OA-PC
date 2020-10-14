@@ -97,7 +97,7 @@ const layouts = {
         <el-col span={scheme.__pc__.span} class="parser-item">
           <el-form-item
             prop={scheme.__vModel__}
-            label={`${config.label}：`}
+            label={`${config.label ? `${config.label}:` : ''}`}
             style={config.type === 'desc' ? 'margin-bottom:0' : ''}
           >
             {isDefault ? defaultRender : valueRender}
