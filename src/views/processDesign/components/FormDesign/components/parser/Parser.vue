@@ -89,7 +89,12 @@ const rowTemplates = {
     )
     const wrapItem = () => {
       return (
-        <el-col span={element.__pc__.span} class="parser-item parser-item__detail">
+        <el-col
+          span={element.__pc__.span}
+          class={`parser-item parser-item__detail ${
+            this.formConfCopy.isDetail ? 'parser-item-detail' : ''
+          }`}
+        >
           {element.children.map((child, index) => (
             <div class="parser-item__detail--item">
               <div class="parser-item__detail--header">
@@ -445,6 +450,27 @@ export default {
       &:hover {
         color: $primaryColor;
       }
+    }
+  }
+}
+.parser-item-detail {
+  .parser-item__detail {
+    &--item {
+      border: 0px solid #ccc;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 10px;
+      &:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+    }
+    &--header {
+      border-bottom: 0px solid #ccc;
+      font-size: 16px;
+      font-weight: 550;
+    }
+    &--content {
+      padding: 0;
     }
   }
 }
