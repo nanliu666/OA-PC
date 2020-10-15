@@ -37,11 +37,8 @@ function renderFrom(h) {
         rules={this.rules}
       >
         {renderFormItem.call(this, h, formConfCopy.fields)}
-
-        {
-          // 控制按钮是否渲染
-          formConfCopy.showBtn ? formBtns.call(this, h) : null
-        }
+        {// 控制按钮是否渲染
+        formConfCopy.showBtn ? formBtns.call(this, h) : null}
       </el-form>
     </el-row>
   )
@@ -65,7 +62,6 @@ function renderFormItem(h, elementList = []) {
   return elementList.map((scheme) => {
     const config = scheme.__config__
     const layout = layouts[config.layout]
-
     if (layout) {
       return layout.call(this, h, scheme)
     }
@@ -80,39 +76,73 @@ function renderItemList(h, list) {
 
 const rowTemplates = {
   detail(h, element) {
-    return (
-      <el-col span={element.__pc__.span} class="parser-item parser-item__detail">
-        {element.children.map((child, index) => (
-          <div class="parser-item__detail--item">
-            <div class="parser-item__detail--header">
-              <span class="parser-item__detail--title">
-                {element.__config__.label}
-                {element.children.length > 1 ? index + 1 : ''}
-              </span>
-              {index > 0 ? (
-                <i
-                  class="icon-basics-delete-outlined iconfont"
-                  onClick={() => {
-                    element.children.splice(index, 1)
-                  }}
-                ></i>
-              ) : null}
-            </div>
-            <el-row class="parser-item__detail--content">
-              {renderItemList.call(this, h, child)}
-            </el-row>
-          </div>
-        ))}
-        <div
-          class="parser-item__detail--footer"
-          onClick={() => {
-            addElementChild.call(this, element)
-          }}
-        >
-          ＋ 添加{element.__config__.label}
-        </div>
-      </el-col>
+    const formPrivilege = element.__config__.formPrivilege
+    const addPart = (
+      <div
+        class="parser-item__detail--footer"
+        onClick={() => {
+          addElementChild.call(this, element)
+        }}
+      >
+        ＋ 添加{element.__config__.label}
+      </div>
     )
+    const wrapItem = () => {
+      return (
+        <el-col span={element.__pc__.span} class="parser-item parser-item__detail">
+          {element.children.map((child, index) => (
+            <div class="parser-item__detail--item">
+              <div class="parser-item__detail--header">
+                <span class="parser-item__detail--title">
+                  {element.__config__.label}
+                  {element.children.length > 1 ? index + 1 : ''}
+                </span>
+                {index > 0 && formPrivilege === 0 ? (
+                  <i
+                    class="icon-basics-delete-outlined iconfont"
+                    onClick={() => {
+                      element.children.splice(index, 1)
+                    }}
+                  ></i>
+                ) : null}
+              </div>
+              <el-row class="parser-item__detail--content">
+                {renderItemList.call(this, h, child)}
+              </el-row>
+            </div>
+          ))}
+          {formPrivilege === 0 ? addPart : ''}
+        </el-col>
+      )
+    }
+    let renderItem = ''
+    // formPrivilege表单权限验证，0可编辑，1只读，2隐藏
+    switch (formPrivilege) {
+      case 1:
+        // 是否在详情页，详情页与发起审批页展示不一
+        if (this.formConfCopy.isDetail) {
+          // 详情页，有默认值显示默认值，无默认值不显示这个标签
+          let defaultValueList = []
+          element.children.forEach((item) => {
+            item.map((deepItem) => {
+              defaultValueList.push(deepItem.__config__.defaultValue)
+            })
+          })
+          renderItem = _.some(defaultValueList, Boolean) ? wrapItem() : ''
+        } else {
+          // 审批发起页面，只读权限表现为置灰处理
+          renderItem = wrapItem()
+        }
+        break
+      case 2:
+        renderItem = ''
+        break
+      default:
+        // 兼容旧版本
+        renderItem = wrapItem()
+        break
+    }
+    return renderItem
   }
 }
 // formId最大值
@@ -130,7 +160,7 @@ function getMaxId(fieldList) {
   return 0
 }
 function addElementChild(element) {
-  const childCopy = JSON.parse(JSON.stringify(element.__config__.children))
+  const childCopy = _.cloneDeep(element.__config__.children)
   const nextId = getMaxId(this.formConfCopy.fields) + 1
   childCopy.forEach((item, index) => {
     let formId = nextId + index
@@ -154,8 +184,8 @@ const layouts = {
         }}
       />
     )
-    const valueRender = <span>{scheme.__config__.defaultValue}</span>
-    const wrapItem = function (isDefault) {
+    const valueRender = <span>{this.getFieldContent(scheme)}</span>
+    const wrapItem = function(isDefault) {
       return (
         <el-col span={scheme.__pc__.span} class="parser-item">
           <el-form-item
@@ -169,16 +199,13 @@ const layouts = {
       )
     }
     let renderItem = ''
-    // formPrivilege表单权限验证，0可编辑，1只读，2隐藏
+    // formPrivilege表单权限验证，0可编辑(默认)，1只读，2隐藏
     switch (formPrivilege) {
-      case 0:
-        renderItem = wrapItem(true)
-        break
       case 1:
         // 是否在详情页，详情页与发起审批页展示不一
         if (this.formConfCopy.isDetail) {
           // 详情页，有默认值显示默认值，无默认值不显示这个标签
-          renderItem = !_.isEmpty(scheme.__config__.defaultValue) ? wrapItem(false) : ''
+          renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
         } else {
           // 审批发起页面，只读权限表现为置灰处理
           scheme.__pc__.props.disabled = true
@@ -189,11 +216,10 @@ const layouts = {
         renderItem = ''
         break
       default:
-        // 兼容旧版本
+        // 兼容旧版本与权限为0--可编辑
         renderItem = wrapItem(true)
         break
     }
-
     return renderItem
   },
   rowFormItem(h, scheme) {
@@ -269,7 +295,7 @@ export default {
     },
     resolveField(fields) {
       fields.forEach((field) => {
-        if (field.__config__.type === 'detail') {
+        if (field.__config__.type === 'detail' && !this.formConfCopy.isDetail) {
           addElementChild.call(this, field)
         }
       })
@@ -314,21 +340,20 @@ export default {
     getFieldContent(field) {
       let options = field.__slot__.options
       let content
-      const form = this.form
-      if (options && Array.isArray(form[field.__vModel__])) {
+      if (options && Array.isArray(field.__config__.defaultValue)) {
         content = options
-          .filter((option) => form[field.__vModel__].includes(option.value))
+          .filter((option) => field.__config__.defaultValue.includes(option.value))
           .map((option) => option.label)
           .join(',')
       } else if (options) {
         content = options
-          .filter((option) => form[field.__vModel__] === option.value)
+          .filter((option) => field.__config__.defaultValue === option.value)
           .map((option) => option.label)
           .join(',')
       } else if (field.__config__.type === 'daterange') {
-        content = form[field.__vModel__].join(' 至 ')
+        content = field.__config__.defaultValue.join(' 至 ')
       } else {
-        content = form[field.__vModel__]
+        content = field.__config__.defaultValue
       }
       return content
     },

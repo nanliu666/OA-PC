@@ -75,7 +75,6 @@ export default {
       submiting: false
     }
   },
-  created() {},
   activated() {
     this.processId = this.$route.query.processId
     this.getProcess()
@@ -96,28 +95,49 @@ export default {
             this.processData = obj.processData
             // 此处为提交审批内的权限，故只取第一层数据的权限
             const formOperates = this.processData.properties.formOperates
-            if (formOperates && formOperates.length > 0) {
-              formOperates.map((item) => {
-                this.formData.fields.map((formItem) => {
-                  if (item.formId === formItem.__config__.formId) {
-                    formItem.__config__.formPrivilege = item.formPrivilege
-                    if (item.formPrivilege === 1) {
-                      formItem.__config__.required = false
-                    }
-                  }
-                })
-              })
-            }
-            // console.log('this.formData.fields==', this.formData.fields)
+            this.handlerPrivilege(formOperates)
             this.advancedSetting = obj.advancedSetting
-            this.$refs.form.init(obj.formData)
+            this.$refs.form.init(this.formData)
           }
         })
         .finally(() => {
           this.loading = false
         })
     },
+    /**
+     * TODO：不优雅的处理，如果有思路并且有空可以进行优化
+     * 处理发起审批相关权限
+     * formPrivilege 0为可编辑， 1为只读（在此展示位置灰处理），2隐藏
+     * 注意明细控件是存在children，在此处取模板值__config__.children
+     */
+    handlerPrivilege(formOperates) {
+      // 流程数据内的第一层权限遍历，内部再遍历表格设计器的每一个权限
+      if (formOperates && formOperates.length > 0) {
+        formOperates.forEach((item) => {
+          this.formData.fields.forEach((formItem) => {
+            // 选中当前的控件
+            if (item.formId === formItem.__config__.formId) {
+              formItem.__config__.formPrivilege = item.formPrivilege
+              if (formItem.__config__.children) {
+                formItem.__config__.children.forEach((childrenItem) => {
+                  childrenItem.__config__.formPrivilege = item.formPrivilege
+                })
+              }
+              if (formItem.__config__.formPrivilege === 1) {
+                formItem.__config__.required = false
+                if (formItem.__config__.children) {
+                  formItem.__config__.children.forEach((childrenItem) => {
+                    childrenItem.__config__.required = false
+                  })
+                }
+              }
+            }
+          })
+        })
+      }
+    },
     submit() {
+      // console.log('this.$refs.form.formConfCopy==', this.$refs.form.formConfCopy)
       Promise.all([this.$refs.form.validate(), this.$refs.apprPicker.validate()]).then(() => {
         this.submiting = true
         this.$refs.apprPicker
