@@ -908,6 +908,7 @@ export default {
           NodeUtils.isConditionNode(newVal) && this.getPriorityLength()
         }
         let formOperatesTemp = newVal.properties.formOperates
+        if (!formOperatesTemp) return
         // 每次点击节点人员，会重置当前表单权限
         this.properties.formOperates = []
         // 表单设计内容不为空，才会去赋值（vuex存）
