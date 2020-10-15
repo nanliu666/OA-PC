@@ -933,6 +933,7 @@ export default {
           NodeUtils.isConditionNode(newVal) && this.getPriorityLength()
         }
         let formOperatesTemp = newVal.properties.formOperates
+        if (!formOperatesTemp) return
         // 每次点击节点人员，会重置当前表单权限
         this.properties.formOperates = []
         // 表单设计内容不为空，才会去赋值（vuex存）
@@ -1209,7 +1210,8 @@ export default {
      * 开始节点确认保存
      */
     startNodeComfirm() {
-      this.properties.initiator = this.initiator['user']
+      // 兼容修复，不知道怎么丢失的所有人的initiator
+      this.properties.initiator = this.initiator['user'] ? this.initiator['user'] : 'ALL'
       this.$emit('confirm', this.properties, this.getOrgSelectLabel('start') || '所有人')
       this.visible = false
     },

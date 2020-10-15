@@ -597,7 +597,7 @@ export default {
     iconClass() {
       // 已撤回
       if (this.isCancel) {
-        return function (index) {
+        return function(index) {
           // 第一个显示红色
           if (index === 0) {
             return 'cancel'
@@ -607,7 +607,7 @@ export default {
       }
       // 已拒绝
       else if (this.isReject) {
-        return function (index) {
+        return function(index) {
           if (index < this.activeStep) {
             return 'active'
           } else if (index == this.activeStep) {
@@ -617,7 +617,7 @@ export default {
           }
         }
       } else {
-        return function (index) {
+        return function(index) {
           if (index <= this.activeStep) {
             return 'active'
           }
@@ -656,7 +656,7 @@ export default {
       return result
     },
     // 提交人跟当前用户是否同一个人
-    isApplyUser: function () {
+    isApplyUser: function() {
       if (this.userId !== this.applyUserId) {
         return false
       } else {
@@ -856,23 +856,51 @@ export default {
      */
     initForm() {
       this.formParserData = JSON.parse(Base64.decode(this.applyDetail.formData))
-      this.formParserData.formData.labelPosition = 'right'
-      this.formParserData.formData.labelWidth = '120px'
-      // 新增isDetail字段区分是否为详情页
-      this.formParserData.formData.isDetail = true
+      const assignObj = {
+        labelPosition: 'right',
+        labelWidth: '120px',
+        isDetail: true // 新增isDetail字段区分是否为详情页
+      }
+      this.formParserData.formData = _.assign(this.formParserData.formData, assignObj)
+      // 以下的都是手动赋值权限
       if (typeof this.formParserData === 'object') {
-        const currentNode = this.findCurrentNode(this.formParserData.processData)
-        const formOperates = currentNode.properties.formOperates
-        if (formOperates && formOperates.length > 0) {
-          formOperates.map((item) => {
-            this.formParserData.formData.fields.map((formItem) => {
-              if (item.formId === formItem.__config__.formId) {
-                formItem.__config__.formPrivilege = item.formPrivilege
-                if (item.formPrivilege === 1) {
-                  formItem.__config__.required = false
+        // 当前审批节点的审批人包含当前用户
+        if (this.apprUserIdList.includes(this.userId)) {
+          const currentNode = this.findCurrentNode(this.formParserData.processData)
+          // 当前节点的权限数组
+          const formOperates = currentNode.properties.formOperates
+          if (formOperates && formOperates.length > 0) {
+            formOperates.forEach((item) => {
+              this.formParserData.formData.fields.forEach((formItem) => {
+                if (item.formId === formItem.__config__.formId) {
+                  formItem.__config__.formPrivilege = item.formPrivilege
+                  if (formItem.children) {
+                    formItem.children.forEach((childrenItem) => {
+                      childrenItem.map((deepItem) => {
+                        deepItem.__config__.formPrivilege = item.formPrivilege
+                      })
+                    })
+                  }
+                  if (formItem.__config__.formPrivilege === 1) {
+                    formItem.__config__.required = false
+                    if (formItem.children) {
+                      formItem.children.forEach((childrenItem) => {
+                        childrenItem.map((deepItem) => {
+                          deepItem.__config__.required = false
+                        })
+                      })
+                    }
+                  }
+                  // console.log('修改后formItem==', formItem.children)
                 }
-              }
+              })
             })
+          }
+        } else {
+          // 详情内，当前用户不拥有审批权限时，权限设置只读，并去除必填校验
+          this.formParserData.formData.fields.forEach((formItem) => {
+            formItem.__config__.formPrivilege = 1
+            formItem.__config__.required = false
           })
         }
         this.$refs.formParser.init(this.formParserData.formData)

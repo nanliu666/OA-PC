@@ -421,6 +421,14 @@ export class NodeUtils {
       loop(node.childNode)
     }
     loop(cloneData)
+    // if(cloneData.conditionNodes) {
+    //   // debugger
+    //   const conditionLoop = (node) => {
+    //     nodes.forEach(item => {})
+    //     if (_.isEmpty(node.childNode)) return
+    //   }
+    //   conditionLoop(cloneData.conditionNodes)
+    // }
     return cloneData
   }
   /**
