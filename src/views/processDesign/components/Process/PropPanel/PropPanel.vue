@@ -85,9 +85,9 @@
               )
             "
             :key="index"
-            :title="`${item.__config__.label}${
-              item.__config__.type === 'daterange' ? '(时长/天)' : ''
-            }`"
+            :title="
+              `${item.__config__.label}${item.__config__.type === 'daterange' ? '(时长/天)' : ''}`
+            "
           >
             <num-input
               :key="index"
@@ -136,7 +136,32 @@
             :title="item.__config__.label"
           >
             <!-- 在这里设置多选的默认值 -->
-            <el-checkbox-group v-model="item.__config__.defaultValue">
+            <el-select
+              v-model="item.__config__.selectMode"
+              placeholder="请选择选择模式"
+            >
+              <el-option
+                label="选中所有"
+                value="every"
+              />
+              <el-option
+                label="选中任意"
+                value="some"
+              />
+            </el-select>
+            <el-select
+              v-model="item.__config__.defaultValue"
+              multiple
+            >
+              <el-option
+                v-for="option of item.__slot__.options"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
+
+            <!-- <el-checkbox-group v-model="item.__config__.defaultValue">
               <el-checkbox
                 v-for="city in item.__slot__.options"
                 :key="city.label"
@@ -144,7 +169,7 @@
               >
                 {{ city.label }}
               </el-checkbox>
-            </el-checkbox-group>
+            </el-checkbox-group> -->
             <template v-slot:action>
               <i
                 class="el-icon-delete"
@@ -423,7 +448,8 @@
                 (orgCollection[approverForm.assigneeType] &&
                   orgCollection[approverForm.assigneeType].length > 1 &&
                   !['optional'].includes(approverForm.assigneeType)) ||
-                  (['optional'].includes(approverForm.assigneeType) && approverForm.optionalMultiUser)
+                  (['optional'].includes(approverForm.assigneeType) &&
+                    approverForm.optionalMultiUser)
               "
               class="option-box"
             >
@@ -1112,13 +1138,10 @@ export default {
             })
           } else if (t.__config__.type === 'checkbox') {
             res.val = []
+            res.selectMode = t.__config__.selectMode
             t.__slot__.options.map((it) => {
-              cValue.includes(it.label) && res.val.push(it.value)
+              cValue.includes(it.value) && res.val.push(it.value)
             })
-          }
-          if (t.__config__.type === 'checkbox') {
-            res.val = t.__config__.defaultValue
-            // TODO: 添加
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
@@ -1140,6 +1163,12 @@ export default {
             const index = this.pconditions.findIndex((p) => p.formId === t.formId)
             const labels = this.$refs['org' + index][0].selectedLabels
             nodeContent += `[${t.label} = ${labels}] ` + '\n'
+          } else if (['checkbox'].includes(t.__config__.type)) {
+            const { options } = t.__slot__
+            nodeContent +=
+              `[${t.__config__.label} = ${options
+                .filter(({ value }) => cValue.includes(value))
+                .map(({ label }) => label)}] ` + '\n'
           } else {
             nodeContent += `[${t.__config__.label} = ${cValue}] ` + '\n'
           }
@@ -1369,9 +1398,13 @@ export default {
           if (Array.isArray(nodeConditions)) {
             // if(nodeConditions.)
             const con = nodeConditions.find((item) => item.formId == t.__config__.formId)
-            con &&
-              con.defaultValue &&
-              ((temp = con.defaultValue), this.showingPCons.push(t.__config__.formId))
+            if (con && con.defaultValue) {
+              temp = con.defaultValue
+              this.showingPCons.push(t.__config__.formId)
+            }
+            if (con && con.selectMode) {
+              this.$set(t.__config__, 'selectMode', con.selectMode)
+            }
           }
 
           this.$set(t.__config__, 'defaultValue', temp)

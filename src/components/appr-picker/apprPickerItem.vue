@@ -218,7 +218,7 @@ export default {
       let init = false
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
-        function () {
+        function() {
           // 遍历当前节点的所有条件分支
           let mainflag = this.conditionNodes.some((node) => {
             let flag = true

@@ -94,7 +94,7 @@ import { Base64 } from 'js-base64'
 import { getApprProcess, postApprProcess, putApprProcess } from '@/api/processDesign/basicSetting'
 // import mockData from "@/views/processDesign/mockData";
 
-const beforeUnload = function (e) {
+const beforeUnload = function(e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容'
   ;(e || window.event).returnValue = confirmationMessage // Gecko and Trident
   return confirmationMessage // Gecko and WebKit
@@ -695,8 +695,10 @@ export default {
 
         it.type === 'radio' && conditionExpression.push('${' + it.vModel + ' eq \'' + it.val + '\'}')
         // 添加对多选的类型处，当作string类型，发起的时候要注意顺序。
-        it.type === 'checkbox' &&
-          conditionExpression.push('${' + it.vModel + ' eq \'' + _.sortBy(it.val) + '\'}')
+        if (it.type === 'checkbox') {
+          const val = it.selectMode === 'some' ? [-1, ...it.val] : it.val
+          conditionExpression.push('${' + it.vModel + ' eq \'' + _.sortBy(val) + '\'}')
+        }
       })
 
       let strs = ''
