@@ -174,11 +174,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: '0'
+              value: 0
             },
             {
               label: '选项二',
-              value: '1'
+              value: 1
             }
           ]
         },
@@ -217,11 +217,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: '0'
+              value: 0
             },
             {
               label: '选项二',
-              value: '1'
+              value: 1
             }
           ]
         },

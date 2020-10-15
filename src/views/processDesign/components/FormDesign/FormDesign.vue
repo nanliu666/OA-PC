@@ -301,14 +301,12 @@ export default {
       const clone = deepClone(origin)
       const config = clone.__config__
       config.formId = this.getNextId()
+      clone.__config__.label !== undefined && (clone.__config__.label = this.createCmpLabel(clone))
       if (config.layout === 'colFormItem') {
-        clone.__config__.label !== undefined &&
-          (clone.__config__.label = this.createCmpLabel(clone))
         if (typeof config.defaultValue !== 'undefined') {
           clone.__vModel__ = `field${config.formId}`
         }
       } else if (config.layout === 'rowFormItem') {
-        config.componentName = `row${config.formId}`
         !Array.isArray(config.children) && (config.children = [])
       }
       // clone.span = formConf.span;
@@ -355,15 +353,13 @@ export default {
     },
     getSameTagCmpNum(type) {
       return this.drawingList.reduce((count, item) => {
+        item.__config__.type === type && (count += 1)
         if (item.__config__.children) {
-          return (
-            count +
-            item.__config__.children.reduce((c, t) => {
-              return t.__config__.type === type ? c + 1 : c
-            }, 0)
-          )
+          count += item.__config__.children.reduce((c, t) => {
+            return t.__config__.type === type ? c + 1 : c
+          }, 0)
         }
-        return item.__config__.type === type ? count + 1 : count
+        return count
       }, 0)
     },
     createCmpLabel(cmp) {
