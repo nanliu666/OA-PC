@@ -429,7 +429,8 @@ export default {
       console.log(command, row)
     },
     getTableData(pageNo) {
-      if (this.loading) return
+      // if (this.loading) return
+      this.data = []
       if (pageNo) this.page.currentPage = pageNo
       if (!this.searchParams.statuses && this.tabStatus === 'onJob') {
         this.searchParams.statuses = ['Formal', 'Try', 'WaitLeave']
