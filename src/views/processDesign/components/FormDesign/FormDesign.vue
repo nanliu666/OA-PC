@@ -287,8 +287,12 @@ export default {
       const targetConf = target._underlying_vm_
 
       if (conf.__config__.type === 'detail') {
+        // 明细控件不能嵌套明细控件
         if (targetConf.__config__.layout === 'rowFormItem') return false
+        // 已经作为流程条件的控件不能拖拽进明细
         if (this.isFilledPCon([targetConf.formId])) return false
+        // 拖拽进明细控件的组件不能作为流程条件
+        targetConf.__config__.proCondition = false
       }
       return true
     },
