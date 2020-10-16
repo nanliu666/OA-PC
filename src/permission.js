@@ -40,6 +40,13 @@ const userCenterMenu = {
     }
   ]
 }
+function comparePath(pathA, pathB) {
+  if (pathA.indexOf(':') > 0) {
+    return pathA.replace(/:\w*$/, '') === pathB.replace(/\w*$/, '')
+  } else {
+    return pathA === pathB
+  }
+}
 /**
  * 更新左侧菜单和顶部菜单
  **/
@@ -51,8 +58,11 @@ function updateMenu(currentPath) {
     const menuAll = store.getters.menuAll
     menuAll.some((menu) => {
       if (
-        filterTree([menu], (menu) => menu.path === currentPath && menu.menuType === 'Menu', true)
-          .length > 0
+        filterTree(
+          [menu],
+          (menu) => comparePath(menu.path, currentPath) && menu.menuType === 'Menu',
+          true
+        ).length > 0
       ) {
         currentMenu = menu
         return true
