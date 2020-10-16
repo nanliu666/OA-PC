@@ -211,7 +211,7 @@
 
       <!-- 审批人 -->
       <section
-        v-if="value && (isApproverNode() || isStartNode())"
+        v-if="value && (isApproverNode() || isStartNode() || isParallelNode())"
         class="approver-pane"
         style="height:100%;"
       >
@@ -219,7 +219,7 @@
           <div
             :class="[activeName == 'config' ? 'active' : '']"
             @click="activeName = 'config'"
-            v-html="'设置' + (value.type === 'approver' ? '审批人' : '发起人')"
+            v-html="'设置' + (value.type === 'start' ? '发起人' : '审批人')"
           />
           <div
             :class="[activeName == 'formAuth' ? 'active' : '']"
@@ -252,7 +252,7 @@
               />
             </el-col>
           </el-row>
-          <div v-else-if="value.type === 'approver'">
+          <div v-else-if="value.type === 'approver' || value.type === 'parallel'">
             <div style="padding: 24px;">
               <el-radio-group
                 v-model="approverForm.assigneeType"
@@ -856,7 +856,7 @@ export default {
       }
       this.isStartNode() && this.initStartNodeData()
       this.isApproverNode() && this.initApproverNodeData()
-      this.isConditionNode() && this.initConditionNodeData()
+      this.isParallelNode() && this.initConditionNodeData()
       this.isCopyNode && this.initCopyNodeData()
     },
 
@@ -1204,6 +1204,7 @@ export default {
       this.isCopyNode() && this.copyNodeConfirm()
       this.isStartNode() && this.startNodeComfirm()
       this.isApproverNode() && this.approverNodeComfirm()
+      this.isParallelNode() && this.approverNodeComfirm()
       this.isConditionNode() && this.conditionNodeComfirm()
     },
     // 关闭抽屉
@@ -1230,6 +1231,10 @@ export default {
     // 用于获取节点优先级范围
     getPriorityLength() {
       this.priorityLength = this.getPrevData().conditionNodes.length
+    },
+    // 判断是否是条件节点
+    isParallelNode() {
+      return this.value ? NodeUtils.isParallelNode(this.value) : false
     },
     // 判断是否是条件节点
     isConditionNode() {

@@ -25,7 +25,6 @@ export default {
   },
   parallel: {
     type: 'parallel',
-    type2: 'parallel',
     content: '请设置审批人',
     properties: { title: '审批人' }
   },
