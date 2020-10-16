@@ -301,7 +301,7 @@ export default {
      * @desc 处理发起人范围 转成，ProcessVisible属性
      * */
     handleProcessVisible(param, processVisible) {
-      if (param.basicSetting.initiator && param.basicSetting.initiator.length > 0) {
+      if (_.isArray(param.basicSetting.initiator) && param.basicSetting.initiator.length > 0) {
         param.basicSetting.initiator.map((it) => {
           let type = ''
           if (it.type) {
