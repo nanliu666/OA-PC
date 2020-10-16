@@ -237,21 +237,23 @@
 		cursor: move;
 		transition: all 200ms;
 		margin-bottom: 8px;
-
+    &:last-of-type{
+			margin-bottom:0
+		}
 		.el-radio__label {
 			line-height: 19px;
 		}
 
 		.drawing-item-label {
 			color: #000;
-			line-height: 28px;
+			line-height: 40px;
 			padding-left: 12px;
 		}
 
 		&.container {
 			.drag-wrapper {
 				min-height: 80px;
-				padding: 14px 8px;
+				padding: 4px 8px;
 				overflow: hidden;
 			}
 
@@ -389,7 +391,7 @@
 
 			&.container {
 				.drag-wrapper {
-					padding: 14px 0;
+					padding: 4px 0;
 				}
 
 				>.drawing-item__body {

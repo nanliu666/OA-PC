@@ -123,13 +123,13 @@ export const componentGroups = [
       {
         __config__: {
           name: '金额',
-          label: '金额(元)',
-          // type: 'money', // 参考交互稿,金额类型与数字类型没有区别,直接使用type=number走相同的逻辑.
-          type: 'number',
+          label: '金额',
+          type: 'money',
           layout: 'colFormItem',
           icon: 'el-icon-money',
           defaultValue: null,
           shouldPrint: true,
+          currency: 'CNY',
           required: false,
           proCondition: true
         },
@@ -174,11 +174,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: '0'
+              value: 0
             },
             {
               label: '选项二',
-              value: '1'
+              value: 1
             }
           ]
         },
@@ -217,11 +217,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: '0'
+              value: 0
             },
             {
               label: '选项二',
-              value: '1'
+              value: 1
             }
           ]
         },

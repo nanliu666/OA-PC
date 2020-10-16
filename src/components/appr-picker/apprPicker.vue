@@ -192,11 +192,9 @@ export default {
       }
       const processMap = this.createProcessMap()
       const nodeData = this.createNodeLine()
-      const { formData } = data
 
       return submitApprApply({
         ...data,
-        formData: formData ? JSON.stringify(formData) : null,
         title: `${this.userInfo.nick_name}发起的${data.processName}`,
         userId: this.userId,
         processMap: Object.assign(

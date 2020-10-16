@@ -81,6 +81,7 @@
                 'fc-time-duration',
                 'fc-amount',
                 'fc-calculate',
+                'money',
                 'number'
               )
             "
@@ -89,6 +90,21 @@
               `${item.__config__.label}${item.__config__.type === 'daterange' ? '(时长/天)' : ''}`
             "
           >
+            <!-- <el-select
+              v-if="item.__config__.type === 'money'"
+              v-model="item.__config__.currency"
+              placeholder="请选择货币类型"
+              style="margin-bottom: 10px"
+            >
+              <el-option
+                label="人民币/元"
+                value="CNY"
+              />
+              <el-option
+                label="美元/元"
+                value="USD"
+              />
+            </el-select> -->
             <num-input
               :key="index"
               v-model="item.__config__.defaultValue"
@@ -1124,6 +1140,7 @@ export default {
             'fc-time-duration',
             'fc-amount',
             'fc-calculate',
+            'money',
             'number'
           ]
           const res = {
@@ -1146,7 +1163,7 @@ export default {
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
-              if (!(cValue.value[0] <= cValue.value[3])) {
+              if (!(_.toNumber(cValue.value[0]) <= _.toNumber(cValue.value[3]))) {
                 this.$message.error(`${t.__config__.label} 第一个值应该小于等于第二个值`)
                 isTip = true
                 return

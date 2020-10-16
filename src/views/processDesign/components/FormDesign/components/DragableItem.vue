@@ -163,7 +163,7 @@ const mobileLayouts = {
         ? 'drawing-item container drawing-item__active'
         : 'drawing-item container'
     let child = mobileRenderChildren.apply(this, arguments)
-    const { put } = this.$attrs
+    const { put } = this.$props
     const group = { name: 'componentsGroup', put: (...arg) => put(...arg, element) }
     // let dragDisabled = element.__config__.type === 'detail'
     return (
@@ -232,7 +232,7 @@ export default {
     render,
     draggable
   },
-  props: ['element', 'index', 'drawingList', 'activeId', 'formConf', 'isPC'],
+  props: ['element', 'index', 'drawingList', 'activeId', 'formConf', 'isPC', 'put'],
   render(h) {
     const layout = layouts[this.element.__config__.layout]
     const mobileLayout = mobileLayouts[this.element.__config__.layout]

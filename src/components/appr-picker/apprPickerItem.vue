@@ -225,7 +225,7 @@ export default {
             // 遍历当前条件分支的所有条件
             node.properties.conditions.forEach((condition) => {
               // 数字类型
-              if (condition.type === 'number' && condition.defaultValue) {
+              if (['money', 'number'].includes(condition.type) && condition.defaultValue) {
                 // 介于两数之间
                 if (condition.defaultValue.type === 'bet') {
                   if (
