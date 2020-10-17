@@ -341,5 +341,34 @@ export const componentGroups = [
         children: []
       }
     ]
+  },
+  {
+    label: '其它',
+    prop: 'other',
+    list: [
+      {
+        __config__: {
+          name: '地址',
+          label: '地址',
+          type: 'locationPicker',
+          icon: 'el-icon-location-information',
+          layout: 'colFormItem',
+          defaultValue: {},
+          shouldPrint: true,
+          required: false,
+          proCondition: false
+        },
+        __slot__: {},
+        __pc__: {
+          tag: 'location-picker',
+          props: {}
+        },
+        __mobile__: {
+          tag: 'location-picker',
+          renderType: 'input',
+          props: {}
+        }
+      }
+    ]
   }
 ]
