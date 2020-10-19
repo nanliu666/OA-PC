@@ -30,6 +30,9 @@ keys.forEach((key) => {
 
 export default {
   name: 'RenderItem',
+  components: {
+    ImageUpload: () => import('./components/imageUpload.vue')
+  },
   render(h) {
     const dataObject = {
       attrs: {},
@@ -48,7 +51,6 @@ export default {
     if (childFunc) {
       children.push(childFunc(h, confClone))
     }
-
     // 将json表单配置转化为vue render可以识别的 “数据对象（dataObject）”
     const privateProps = ['__config__', '__slot__', '__mobile__', '__pc__', 'renderKey', 'children']
     Object.keys(confClone).forEach((key) => {

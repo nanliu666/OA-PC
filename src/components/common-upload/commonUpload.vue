@@ -4,6 +4,7 @@
     v-loading="uploading"
     class="upload"
     action=""
+    :disabled="disabled"
     :limit="limit"
     :multiple="multiple"
     :show-file-list="false"
@@ -25,6 +26,10 @@ import { uploadQiniu } from '@/util/uploadQiniu'
 export default {
   name: 'CommonUpload',
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     // 上传前校验
     beforeUpload: {
       type: Function,

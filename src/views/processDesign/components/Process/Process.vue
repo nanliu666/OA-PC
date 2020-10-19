@@ -43,7 +43,7 @@ export default {
     fieldList: {
       handler(val) {
         if (val.length !== 0) {
-          this.processData = NodeUtils.initAllOperate(this.processData, this.fieldList)
+          NodeUtils.initAllOperate(this.processData, this.fieldList)
         }
       },
       deep: true

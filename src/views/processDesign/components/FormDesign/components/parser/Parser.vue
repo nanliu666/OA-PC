@@ -13,6 +13,7 @@ const ruleTrigger = {
   'el-input': 'blur',
   'el-input-number': 'blur',
   'el-select': 'change',
+  'image-upload': 'change',
   'el-radio-group': 'change',
   'el-checkbox-group': 'change',
   'el-cascader': 'change',
@@ -203,14 +204,35 @@ const layouts = {
         </el-col>
       )
     }
+    const uploadRender = function(fileList) {
+      return fileList.map((item) => {
+        return (
+          <el-image
+            class="thumbnail-image"
+            fit="fill"
+            src={item.fileUrl}
+            previewSrcList={_.map(fileList, ({ fileUrl }) => fileUrl)}
+          />
+        )
+      })
+    }
     let renderItem = ''
     // formPrivilege表单权限验证，0可编辑(默认)，1只读，2隐藏
     switch (formPrivilege) {
       case 1:
         // 是否在详情页，详情页与发起审批页展示不一
         if (this.formConfCopy.isDetail) {
-          // 详情页，有默认值显示默认值，无默认值不显示这个标签
-          renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
+          // 判断是否为上传类型的
+          const type = ['image', 'file']
+          const isUploadType = _.some(type, (item) => {
+            return item === scheme.__config__.type
+          })
+          if (isUploadType) {
+            renderItem = uploadRender(scheme.__config__.defaultValue)
+          } else {
+            // 详情页，有默认值显示默认值，无默认值不显示这个标签
+            renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
+          }
         } else {
           // 审批发起页面，只读权限表现为置灰处理
           scheme.__pc__.props.disabled = true
@@ -222,6 +244,7 @@ const layouts = {
         break
       default:
         // 兼容旧版本与权限为0--可编辑
+        scheme.__pc__.props.disabled = false
         renderItem = wrapItem(true)
         break
     }
@@ -407,6 +430,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '~@/styles/variables';
+.thumbnail-image {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #c0ccda;
+  border-radius: 6px;
+  margin: 0 8px 8px 0;
+}
 .parser-form {
   background: #fff;
   .el-checkbox-group {

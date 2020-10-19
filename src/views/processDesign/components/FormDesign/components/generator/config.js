@@ -337,5 +337,71 @@ export const componentGroups = [
         children: []
       }
     ]
+  },
+  {
+    label: '其他',
+    prop: 'others',
+    list: [
+      {
+        __config__: {
+          name: '图片',
+          label: '图片',
+          type: 'image',
+          icon: 'icon-basics-picture-outlined',
+          defaultValue: [],
+          span: 24,
+          layout: 'colFormItem',
+          shouldPrint: true,
+          required: true
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          tag: 'image-upload',
+          props: {
+            disabled: false
+          },
+          style: { width: '100%' }
+        },
+        __mobile__: {
+          renderType: 'upload',
+          tag: 'van-uploader',
+          props: {
+            props: {}
+          }
+        },
+        limit: 2
+      },
+      {
+        __config__: {
+          name: '附件',
+          label: '附件',
+          type: 'file',
+          icon: 'icon-basics-appendix-outlined',
+          defaultValue: [],
+          span: 24,
+          layout: 'colFormItem',
+          shouldPrint: true,
+          required: true
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          tag: 'el-upload',
+          props: {
+            disabled: false
+          },
+          style: { width: '100%' }
+        },
+        __mobile__: {
+          renderType: 'upload',
+          tag: 'van-uploader',
+          props: {
+            props: {}
+          }
+        },
+        placeholder: '请选择'
+      }
+    ]
   }
 ]

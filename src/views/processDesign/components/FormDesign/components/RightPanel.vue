@@ -95,6 +95,18 @@
           />
         </el-form-item>
         <el-form-item
+          v-if="activeData.__pc__.tag === 'image-upload' || activeData.__pc__.tag === 'file-upload'"
+          label="限制张数"
+          :rules="limitRules"
+          prop="limit"
+        >
+          <el-input
+            v-model="activeData.limit"
+            placeholder="请输入上传张数限制"
+            @input="limitInput()"
+          />
+        </el-form-item>
+        <el-form-item
           v-if="
             ['el-checkbox-group', 'el-radio-group', 'el-select'].indexOf(activeData.__pc__.tag) > -1
           "
@@ -284,9 +296,17 @@ export default {
   },
   props: ['visible', 'activeData', 'activeId', 'isPC', 'usedAsCondition'],
   data() {
+    const checkLimit = (rule, value, callback) => {
+      if (value === 0) {
+        callback(new Error('张数最小不能为0'))
+      } else {
+        callback()
+      }
+    }
     return {
       currentTab: 'field',
-      dialogVisible: false
+      dialogVisible: false,
+      limitRules: [{ validator: checkLimit, trigger: ['change', 'blur'] }]
     }
   },
   watch: {
@@ -297,6 +317,13 @@ export default {
     }
   },
   methods: {
+    /**
+     * 处理限制图片上传string==>number,非数字类型全部转成空
+     */
+    limitInput() {
+      const numberLimit = Number(this.activeData.limit)
+      this.activeData.limit = _.isNumber(numberLimit) && !_.isNaN(numberLimit) ? numberLimit : 0
+    },
     validate() {
       this.$refs.form && this.$refs.form.validate()
     },
