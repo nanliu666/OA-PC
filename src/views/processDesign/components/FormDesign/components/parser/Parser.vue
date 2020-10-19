@@ -199,12 +199,26 @@ const layouts = {
             label={`${config.label ? `${config.label}:` : ''}`}
             style={config.type === 'desc' ? 'margin-bottom:0' : ''}
           >
-            {isDefault ? defaultRender : valueRender}
+            {getRender(isDefault)}
           </el-form-item>
         </el-col>
       )
     }
-    const uploadRender = function(fileList) {
+    const getRender = function(isDefault) {
+      if (!isDefault) {
+        if (scheme.__config__.type === 'image') {
+          return uploadImageRender()
+        } else if (scheme.__config__.type === 'file') {
+          return uploadFileRender()
+        } else {
+          return valueRender
+        }
+      } else {
+        return defaultRender
+      }
+    }
+    const uploadImageRender = function() {
+      const fileList = scheme.__config__.defaultValue
       return fileList.map((item) => {
         return (
           <el-image
@@ -216,23 +230,25 @@ const layouts = {
         )
       })
     }
+    const uploadFileRender = function() {
+      const fileList = scheme.__config__.defaultValue
+      return fileList.map((item) => {
+        return (
+          <li>
+            <i class="el-icon-document" style="margin-right: 4px;" />
+            <span>{item.localName}</span>
+          </li>
+        )
+      })
+    }
     let renderItem = ''
     // formPrivilege表单权限验证，0可编辑(默认)，1只读，2隐藏
     switch (formPrivilege) {
       case 1:
         // 是否在详情页，详情页与发起审批页展示不一
         if (this.formConfCopy.isDetail) {
-          // 判断是否为上传类型的
-          const type = ['image', 'file']
-          const isUploadType = _.some(type, (item) => {
-            return item === scheme.__config__.type
-          })
-          if (isUploadType) {
-            renderItem = uploadRender(scheme.__config__.defaultValue)
-          } else {
-            // 详情页，有默认值显示默认值，无默认值不显示这个标签
-            renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
-          }
+          // 详情页，有默认值显示默认值，无默认值不显示这个标签
+          renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
         } else {
           // 审批发起页面，只读权限表现为置灰处理
           scheme.__pc__.props.disabled = true

@@ -41,10 +41,9 @@ export default {
       deep: true
     },
     fieldList: {
-      handler(val) {
-        if (val.length !== 0) {
-          NodeUtils.initAllOperate(this.processData, this.fieldList)
-        }
+      handler(newVal, oldVal) {
+        if (newVal.length === 0) return
+        NodeUtils.initAllOperate(this.processData, this.fieldList)
       },
       deep: true
     }

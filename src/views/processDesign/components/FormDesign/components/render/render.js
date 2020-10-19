@@ -31,7 +31,8 @@ keys.forEach((key) => {
 export default {
   name: 'RenderItem',
   components: {
-    ImageUpload: () => import('./components/imageUpload.vue')
+    ImageUpload: () => import('./components/imageUpload.vue'),
+    fileUpload: () => import('./components/fileUpload.vue')
   },
   render(h) {
     const dataObject = {

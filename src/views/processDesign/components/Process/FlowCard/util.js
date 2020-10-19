@@ -416,8 +416,8 @@ export class NodeUtils {
     const loop = (node) => {
       let formOperatesTemp = node.properties.formOperates
       this.initCurrentOperate(fieldList, node, formOperatesTemp)
-      if (!isEmptyArray(node.childNode)) loop(node.childNode)
-      if (!isEmptyArray(node.conditionNodes))
+      if (!_.isEmpty(node.childNode)) loop(node.childNode)
+      if (!_.isEmpty(node.conditionNodes))
         node.conditionNodes.forEach((item) => {
           if (item.childNode) {
             loop(item.childNode)

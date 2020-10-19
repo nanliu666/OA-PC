@@ -95,14 +95,14 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="activeData.__pc__.tag === 'image-upload' || activeData.__pc__.tag === 'file-upload'"
-          label="限制张数"
+          v-if="activeData.__pc__.tag === 'image-upload'"
+          label="限制数量"
           :rules="limitRules"
           prop="limit"
         >
           <el-input
             v-model="activeData.limit"
-            placeholder="请输入上传张数限制"
+            placeholder="请输入上传数量限制"
             @input="limitInput()"
           />
         </el-form-item>

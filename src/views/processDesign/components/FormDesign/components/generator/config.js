@@ -370,7 +370,7 @@ export const componentGroups = [
             props: {}
           }
         },
-        limit: 2
+        limit: 9
       },
       {
         __config__: {
@@ -387,7 +387,7 @@ export const componentGroups = [
         __slot__: {},
         __pc__: {
           span: 24,
-          tag: 'el-upload',
+          tag: 'file-upload',
           props: {
             disabled: false
           },
@@ -399,8 +399,7 @@ export const componentGroups = [
           props: {
             props: {}
           }
-        },
-        placeholder: '请选择'
+        }
       }
     ]
   }
