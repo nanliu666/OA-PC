@@ -147,7 +147,8 @@ export const componentGroups = [
           renderType: 'input',
           tag: 'van-field',
           props: {
-            type: 'number'
+            type: 'number',
+            labelWidth: '50%' // 在label上添加币种标识,增加label长度以防止label换行.
           }
         },
         placeholder: '请输入金额'
