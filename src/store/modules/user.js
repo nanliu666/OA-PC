@@ -172,48 +172,48 @@ const user = {
   mutations: {
     SET_INFO: (state, info) => {
       state.info = info
-      setStore({ name: 'info', content: state.info, type: 'session' })
+      setStore({ name: 'info', content: state.info })
     },
     SET_TOKEN: (state, token) => {
       setToken(token)
       state.token = token
-      setStore({ name: 'token', content: state.token, type: 'session' })
+      setStore({ name: 'token', content: state.token })
     },
     SET_MENU_ALL: (state, menuAll) => {
       state.menuAll = menuAll
-      setStore({ name: 'menuAll', content: menuAll, type: 'session' })
+      setStore({ name: 'menuAll', content: menuAll })
     },
     SET_REFRESH_TOKEN: (state, refreshToken) => {
       setRefreshToken(refreshToken)
       state.refreshToken = refreshToken
-      setStore({ name: 'refreshToken', content: state.refreshToken, type: 'session' })
+      setStore({ name: 'refreshToken', content: state.refreshToken })
     },
     SET_TENANT_ID: (state, tenantId) => {
       state.tenantId = tenantId
-      setStore({ name: 'tenantId', content: state.tenantId, type: 'session' })
+      setStore({ name: 'tenantId', content: state.tenantId })
     },
     SET_TENANT_CONTENT: (state, tenantContent) => {
       state.tenantContent = tenantContent
-      setStore({ name: 'tenantContent', content: state.tenantContent, type: 'session' })
+      setStore({ name: 'tenantContent', content: state.tenantContent })
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo
-      setStore({ name: 'userInfo', content: state.userInfo, type: 'session' })
+      setStore({ name: 'userInfo', content: state.userInfo })
     },
     SET_MENU: (state, menu) => {
       state.menu = menu
-      setStore({ name: 'menu', content: state.menu, type: 'session' })
+      setStore({ name: 'menu', content: state.menu })
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
     SET_ORGS: (state, orgs) => {
       state.orgs = orgs
-      setStore({ name: 'orgs', content: orgs, type: 'session' })
+      setStore({ name: 'orgs', content: orgs })
     },
     SET_PRIVILEGES: (state, privileges) => {
       state.privileges = privileges
-      setStore({ name: 'privileges', content: privileges, type: 'session' })
+      setStore({ name: 'privileges', content: privileges })
     },
     SET_MENU_LOADING: (state, menuLoading) => {
       state.menuLoading = menuLoading

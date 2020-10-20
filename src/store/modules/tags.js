@@ -38,7 +38,7 @@ const navs = {
   mutations: {
     ADD_TAG: (state, action) => {
       state.tag = action
-      setStore({ name: 'tag', content: state.tag, type: 'session' })
+      setStore({ name: 'tag', content: state.tag })
       let tag = state.tagList.find((ele) => ele.value === action.value)
       if (tag) {
         Object.assign(tag, action)
@@ -46,18 +46,18 @@ const navs = {
         state.tagList.push(action)
         setFistTag(state.tagList)
       }
-      setStore({ name: 'tagList', content: state.tagList, type: 'session' })
+      setStore({ name: 'tagList', content: state.tagList })
     },
     DEL_TAG: (state, action) => {
       state.tagList = state.tagList.filter((item) => {
         return !diff(item, action)
       })
       setFistTag(state.tagList)
-      setStore({ name: 'tagList', content: state.tagList, type: 'session' })
+      setStore({ name: 'tagList', content: state.tagList })
     },
     DEL_ALL_TAG: (state) => {
       state.tagList = []
-      setStore({ name: 'tagList', content: state.tagList, type: 'session' })
+      setStore({ name: 'tagList', content: state.tagList })
     },
     DEL_TAG_OTHER: (state) => {
       state.tagList = state.tagList.filter((item) => {
@@ -68,7 +68,7 @@ const navs = {
         }
       })
       setFistTag(state.tagList)
-      setStore({ name: 'tagList', content: state.tagList, type: 'session' })
+      setStore({ name: 'tagList', content: state.tagList })
     }
   }
 }

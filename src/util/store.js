@@ -6,7 +6,11 @@ const keyName = website.key + '-'
  * 存储localStorage
  */
 export const setStore = (params = {}) => {
-  let { name, content, type } = params
+  let { name, content, type = 'local' } = params
+  let storage = 'localStorage'
+  if (type === 'session') {
+    storage = 'sessionStorage'
+  }
   name = keyName + name
   let obj = {
     dataType: typeof content,
@@ -14,8 +18,7 @@ export const setStore = (params = {}) => {
     type: type,
     datetime: new Date().getTime()
   }
-  if (type) window.sessionStorage.setItem(name, JSON.stringify(obj))
-  else window.localStorage.setItem(name, JSON.stringify(obj))
+  window[storage].setItem(name, JSON.stringify(obj))
 }
 /**
  * 获取localStorage
@@ -26,8 +29,8 @@ export const getStore = (params = {}) => {
   name = keyName + name
   let obj = {},
     content
-  obj = window.sessionStorage.getItem(name)
-  if (validatenull(obj)) obj = window.localStorage.getItem(name)
+  obj = window.localStorage.getItem(name)
+  if (validatenull(obj)) obj = window.sessionStorage.getItem(name)
   if (validatenull(obj)) return
   try {
     obj = JSON.parse(obj)
@@ -52,13 +55,13 @@ export const getStore = (params = {}) => {
  * 删除localStorage
  */
 export const removeStore = (params = {}) => {
-  let { name, type } = params
-  name = keyName + name
-  if (type) {
-    window.sessionStorage.removeItem(name)
-  } else {
-    window.localStorage.removeItem(name)
+  let { name, type = 'local' } = params
+  let storage = 'localStorage'
+  if (type === 'session') {
+    storage = 'sessionStorage'
   }
+  name = keyName + name
+  window[storage].removeItem(name)
 }
 
 /**
@@ -66,26 +69,18 @@ export const removeStore = (params = {}) => {
  */
 export const getAllStore = (params = {}) => {
   let list = []
-  let { type } = params
-  if (type) {
-    for (let i = 0; i <= window.sessionStorage.length; i++) {
-      list.push({
-        name: window.sessionStorage.key(i),
-        content: getStore({
-          name: window.sessionStorage.key(i),
-          type: 'session'
-        })
+  let { type = 'local' } = params
+  let storage = 'localStorage'
+  if (type === 'session') {
+    storage = 'sessionStorage'
+  }
+  for (let i = 0; i <= window[storage].length; i++) {
+    list.push({
+      name: window[storage].key(i),
+      content: getStore({
+        name: window[storage].key(i)
       })
-    }
-  } else {
-    for (let i = 0; i <= window.localStorage.length; i++) {
-      list.push({
-        name: window.localStorage.key(i),
-        content: getStore({
-          name: window.localStorage.key(i)
-        })
-      })
-    }
+    })
   }
   return list
 }
@@ -94,10 +89,10 @@ export const getAllStore = (params = {}) => {
  * 清空全部localStorage
  */
 export const clearStore = (params = {}) => {
-  let { type } = params
-  if (type) {
-    window.sessionStorage.clear()
-  } else {
-    window.localStorage.clear()
+  let { type = 'local' } = params
+  let storage = 'localStorage'
+  if (type === 'session') {
+    storage = 'sessionStorage'
   }
+  window[storage].clear()
 }

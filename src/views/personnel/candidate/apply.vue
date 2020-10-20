@@ -145,7 +145,7 @@
             审批流程
           </div>
           <div class="flow">
-            <div class=" flex-flow flex flex-justify-start flex-items">
+            <div class="flex-flow flex flex-justify-start flex-items">
               <appr-picker
                 ref="apprPicker"
                 :process-data="processData"
@@ -190,20 +190,20 @@
         <div class="success">
           <div
             class="flex flex-justify flex-flow-column flex-items"
-            style="margin-top: 100px;"
+            style="margin-top: 100px"
           >
             <div
               class="el-icon-success"
-              style="font-size: 80px;font-weight: 800;color: #67C23A;"
+              style="font-size: 80px; font-weight: 800; color: #67c23a"
             />
-            <div style="font-size: 25px;margin-top: 20px">
+            <div style="font-size: 25px; margin-top: 20px">
               提交成功
             </div>
-            <div style="text-align: center;font-size: 17px">
+            <div style="text-align: center; font-size: 17px">
               录用申请已提交，您可以在
               <el-link
                 type="primary"
-                style="font-size: 17px;position: relative;top:-3px"
+                style="font-size: 17px; position: relative; top: -3px"
                 @click="jump"
               >
                 招聘管理-候选人管理-面试通过
@@ -211,14 +211,14 @@
               或
               <el-link
                 type="primary"
-                style="font-size: 17px;position: relative;top:-3px"
+                style="font-size: 17px; position: relative; top: -3px"
                 @click="jumpMyApproval"
               >
                 审批-我发起的
               </el-link>
               列表中查看该申请的进度。
             </div>
-            <div style="margin-top:50px">
+            <div style="margin-top: 50px">
               <el-button
                 type="primary"
                 size="medium"
@@ -231,7 +231,7 @@
                 size="medium"
                 @click="handleBack"
               >
-                <span style="width: 56px;display: inline-block">返回</span>
+                <span style="width: 56px; display: inline-block">返回</span>
               </el-button>
             </div>
           </div>
@@ -385,21 +385,21 @@ export default {
   async mounted() {
     window.addEventListener('beforeunload', () => {
       if (this.active === 3) {
-        setStore({ name: 'apply_active', content: this.active, type: 'session' })
-        setStore({ name: 'apply_personId', content: this.$route.query.personId, type: 'session' })
-        setStore({ name: 'apply_apprNo', content: this.apprNo, type: 'session' })
-        setStore({ name: 'apply_applyId', content: this.applyId, type: 'session' })
+        setStore({ name: 'apply_active', content: this.active })
+        setStore({ name: 'apply_personId', content: this.$route.query.personId })
+        setStore({ name: 'apply_apprNo', content: this.apprNo })
+        setStore({ name: 'apply_applyId', content: this.applyId })
       }
     })
-    let personId = getStore({ name: 'apply_personId', type: 'session' })
+    let personId = getStore({ name: 'apply_personId' })
     if (personId) {
-      this.active = parseInt(getStore({ name: 'apply_active', type: 'session' }))
-      this.apprNo = getStore({ name: 'apply_apprNo', type: 'session' })
-      this.applyId = getStore({ name: 'apply_applyId', type: 'session' })
-      removeStore({ name: 'apply_active', type: 'session' })
-      removeStore({ name: 'apply_personId', type: 'session' })
-      removeStore({ name: 'apply_apprNo', type: 'session' })
-      removeStore({ name: 'apply_applyId', type: 'session' })
+      this.active = parseInt(getStore({ name: 'apply_active' }))
+      this.apprNo = getStore({ name: 'apply_apprNo' })
+      this.applyId = getStore({ name: 'apply_applyId' })
+      removeStore({ name: 'apply_active' })
+      removeStore({ name: 'apply_personId' })
+      removeStore({ name: 'apply_apprNo' })
+      removeStore({ name: 'apply_applyId' })
     }
     this.personId = this.$route.query.personId
     this.recruitmentId = this.$route.query.recruitmentId
@@ -428,10 +428,10 @@ export default {
   },
   activated() {
     if (this.$route.query.approveStatus) {
-      removeStore({ name: 'apply_active', type: 'session' })
-      removeStore({ name: 'apply_personId', type: 'session' })
-      removeStore({ name: 'apply_apprNo', type: 'session' })
-      removeStore({ name: 'apply_applyId', type: 'session' })
+      removeStore({ name: 'apply_active' })
+      removeStore({ name: 'apply_personId' })
+      removeStore({ name: 'apply_apprNo' })
+      removeStore({ name: 'apply_applyId' })
     }
   },
   methods: {
