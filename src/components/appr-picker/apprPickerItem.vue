@@ -268,7 +268,7 @@ export default {
             // 遍历当前条件分支的所有条件
             node.properties.conditions.forEach((condition) => {
               // 数字类型
-              if (condition.type === 'number' && condition.defaultValue) {
+              if (['money', 'number'].includes(condition.type) && condition.defaultValue) {
                 // 介于两数之间
                 if (condition.defaultValue.type === 'bet') {
                   if (
@@ -300,7 +300,33 @@ export default {
                 }
                 // 多选框
               } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
-                if (_.isEqual(_.sortBy(this.formData[condition.vModel]), _.sortBy(condition.val))) {
+                if (condition.selectMode === 'some') {
+                  // 选中任意一个
+                  if (
+                    _.some(condition.val, (val) => this.formData[condition.vModel].includes(val))
+                  ) {
+                    // 防止添加了多个-1标记 , condition.val字段在设计审批的时候已经排序完成了(耦合)
+                    _(this.formData[condition.vModel])
+                      .pull(-1, [-1, ...condition.val].join())
+                      .push(-1, [-1, ...condition.val].join())
+                      .commit()
+                    return
+                  }
+                } else if (
+                  // 选中所有的项
+                  _.isEqual(
+                    _(this.formData[condition.vModel])
+                      .without(-1)
+                      .reject(_.isString)
+                      .sortBy()
+                      .value(),
+                    _.sortBy(condition.val)
+                  )
+                ) {
+                  _(this.formData[condition.vModel])
+                    .pull(-1)
+                    .remove(_.isString)
+                    .commit()
                   return
                 }
               } else if (condition.type === 'daterange') {

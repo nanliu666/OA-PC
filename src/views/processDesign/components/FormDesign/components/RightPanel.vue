@@ -157,6 +157,24 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item
+          v-if="!_.isNil(activeData.__config__.currency)"
+          label="请输入币种"
+        >
+          <el-select
+            v-model="activeData.__config__.currency"
+            placeholder="请输入币种"
+          >
+            <el-option
+              value="CNY"
+              label="人民币（单位:元）"
+            />
+            <el-option
+              value="USD"
+              label="美元（单位:元）"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
           v-if="activeData.__config__.actionText !== undefined"
           label="动作文字"
         >

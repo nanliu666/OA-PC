@@ -874,7 +874,7 @@ export default {
       d.properties.conditions.map((it) => {
         this.processMap[it.vModel] = ''
         let val = ''
-        if (['number', 'daterange'].includes(it.type) && it.defaultValue.type === 'bet') {
+        if (['money', 'number', 'daterange'].includes(it.type) && it.defaultValue.type === 'bet') {
           val = it.defaultValue.value[1] == 'lt' ? 'gt' : 'gte'
           // 介于两值之间
           conditionExpression.push(

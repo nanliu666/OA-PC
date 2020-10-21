@@ -308,7 +308,11 @@ export default {
       const { formData } = this
       let processMap = this.conditionFields.reduce((acc, { prop, type }) => {
         if (type === 'checkbox') {
-          acc[prop] = _.sortBy(formData[prop]).join()
+          if (formData[prop].includes(-1)) {
+            acc[prop] = _.find(formData[prop], _.isString)
+          } else {
+            acc[prop] = _.sortBy(formData[prop]).join()
+          }
         } else if (type === 'daterange') {
           const [date1, date2] = formData[prop]
           // diff date1以免出现负数，区间计算当天（+1天）
