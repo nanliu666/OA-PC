@@ -37,8 +37,10 @@ function renderFrom(h) {
         rules={this.rules}
       >
         {renderFormItem.call(this, h, formConfCopy.fields)}
-        {// 控制按钮是否渲染
-        formConfCopy.showBtn ? formBtns.call(this, h) : null}
+        {
+          // 控制按钮是否渲染
+          formConfCopy.showBtn ? formBtns.call(this, h) : null
+        }
       </el-form>
     </el-row>
   )
@@ -185,7 +187,7 @@ const layouts = {
       />
     )
     const valueRender = <span>{this.getFieldContent(scheme)}</span>
-    const wrapItem = function(isDefault) {
+    const wrapItem = function (isDefault) {
       return (
         <el-col span={scheme.__pc__.span} class="parser-item">
           <el-form-item
@@ -412,10 +414,10 @@ export default {
   color: #757c85;
 }
 .parser-item {
+  margin-bottom: 0;
   &__detail {
     margin-bottom: 20px;
     &--item {
-      border: 1px solid #ccc;
       margin-bottom: 10px;
       &:last-of-type {
         margin-bottom: 0;
@@ -423,9 +425,8 @@ export default {
     }
     &--header {
       display: flex;
-      line-height: 32px;
-      padding: 0 10px;
-      border-bottom: 1px solid #ccc;
+      line-height: 20px;
+      padding-bottom: 10px;
       align-items: center;
       justify-content: space-between;
       i {
@@ -433,11 +434,7 @@ export default {
         color: #999;
       }
     }
-    &--content {
-      padding: 6px 10px;
-    }
     &--footer {
-      margin-top: 10px;
       text-align: center;
       border: 1px dashed #ccc;
       line-height: 32px;

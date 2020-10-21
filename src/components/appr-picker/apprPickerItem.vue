@@ -1,12 +1,12 @@
 <template>
-  <div class="appr-user-item__box">
+  <div :class="['appr-user-item__box', { 'appr-user-item__parallel': isParallel }]">
     <div
       v-show="!(data && data.noData)"
       v-loading="loading"
       class="appr-user-item"
     >
       <div
-        v-if="!isLast"
+        v-if="!(isLast || isLastParallelNode)"
         class="appr-user-item__tail"
       />
       <div class="appr-user-item__node" />
@@ -86,21 +86,47 @@
       </div>
     </div>
     <appr-picker-item
-      v-if="data && (data.childNode || data.conditionNodes)"
+      v-if="data && (data.childNode || data.conditionNodes || data.parallelNodes)"
       :path="`${path}-0`"
       :child-node="data.childNode"
       :type="data.type"
       :form-data="formData"
       :full-org-id="fullOrgId"
       :condition-nodes="data.conditionNodes"
+      :parallel-nodes="data.parallelNodes"
+      :is-in-parallel="isParallel || isInParallel"
     />
+    <div
+      v-if="parallelNodes"
+      class="appr-user-item__parallel--wrapper"
+    >
+      <div class="appr-user-item__tail" />
+      <div class="appr-user-item__node" />
+      <div class="appr-user-item__header">
+        <span class="appr-user-item__title"> 并行审批 </span>
+        <span class="appr-user-item__tips">需全部并行审批完成后才可继续流转</span>
+      </div>
+
+      <appr-picker-item
+        v-for="(node, index) of parallelNodes"
+        :key="index"
+        type="parallel"
+        :path="`${path}-1.${index}`"
+        :form-data="formData"
+        :full-org-id="fullOrgId"
+        :child-node="node"
+        :is-parallel="true"
+      />
+    </div>
     <appr-picker-item
       v-if="nextNode"
       :form-data="formData"
-      :path="`${path}-1`"
+      :path="`${path}-2`"
       :full-org-id="fullOrgId"
       :child-node="nextNode.childNode"
       :condition-nodes="nextNode.conditionNodes"
+      :parallel-nodes="nextNode.parallelNodes"
+      :is-in-parallel="isParallel || isInParallel"
       :type="nextNode.type"
     />
   </div>
@@ -118,6 +144,7 @@ import {
 } from '@/api/apprProcess/apprProcess'
 import { mapGetters } from 'vuex'
 
+const apprTypes = ['approver', 'parallel']
 export default {
   name: 'ApprPickerItem',
   mixins: [elFormEmitter],
@@ -138,6 +165,21 @@ export default {
       type: Object,
       default: null
     },
+    // 并行审批
+    parallelNodes: {
+      type: Array,
+      default: null
+    },
+    // 是否并行审批节点
+    isParallel: {
+      type: Boolean,
+      default: false
+    },
+    // 当前节点是否在并行审批分支里
+    isInParallel: {
+      type: Boolean,
+      default: false
+    },
     // 当前用户所选组织全路径
     fullOrgId: {
       type: String,
@@ -154,6 +196,7 @@ export default {
       nextNode: null,
       watcher: null,
       isLast: false,
+      isLastParallelNode: false,
       conditionOrgId: null,
       noMatchOrg: false,
       loading: false
@@ -168,7 +211,7 @@ export default {
     },
     // 选项数组
     optionList() {
-      return this.data.type === 'approver'
+      return apprTypes.includes(_.get(this.data, 'type'))
         ? _.get(this.data, 'properties.approvers', [])
         : this.data.type === 'copy'
         ? _.get(this.data, 'properties.members', [])
@@ -181,12 +224,12 @@ export default {
     // 是否支持用户选择审批人
     selectable() {
       return (
-        _.get(this.data, 'type') === 'approver' &&
+        apprTypes.includes(_.get(this.data, 'type')) &&
         _.get(this.data, 'properties.assigneeType', null) !== 'user'
       )
     },
     tips() {
-      if (_.get(this.data, 'type') === 'approver') {
+      if (apprTypes.includes(_.get(this.data, 'type'))) {
         if (
           (this.selectable && !this.isMulti) ||
           (!this.selectable && this.optionList.length == 1)
@@ -218,7 +261,7 @@ export default {
       let init = false
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
-        function() {
+        function () {
           // 遍历当前节点的所有条件分支
           let mainflag = this.conditionNodes.some((node) => {
             let flag = true
@@ -275,6 +318,9 @@ export default {
               }
               flag = false
             })
+            if (node.properties.idDefault) {
+              flag = true
+            }
             // 处理发起人条件
             if (!_.isEmpty(node.properties.initiator)) {
               if (this.fullOrgId) {
@@ -291,6 +337,7 @@ export default {
               // 标识没有符合当前节点的组织
               this.noMatchOrg = !flag
             }
+
             if (flag) {
               // 当这个节点只有条件没有内容时设置noData为true
               if (node.childNode && !node.conditionNodes) {
@@ -320,9 +367,17 @@ export default {
             }, 0)
           }
           this.updateLast()
+          this.updateLastParallelNode()
         },
         { deep: true, immediate: true }
       )
+    } else if (!_.isEmpty(this.parallelNodes)) {
+      this.data = { noData: true }
+      if (this.childNode && this.childNode.type !== 'empty') {
+        this.nextNode = { childNode: this.childNode, type: this.childNode.type }
+      } else {
+        this.nextNode = this.childNode
+      }
     } else {
       // 不是条件节点时也要监听childNode，随时更新this.data
       this.watcher = this.$watch(
@@ -330,7 +385,11 @@ export default {
         () => {
           this.data = JSON.parse(JSON.stringify(this.childNode))
           this.data && this.initUserList(this.data)
+          if (this.data.type === 'empty') {
+            this.$set(this.data, 'noData', true)
+          }
           this.updateLast()
+          this.updateLastParallelNode()
         },
         { deep: true, immediate: true }
       )
@@ -344,12 +403,22 @@ export default {
         that.isLast = that.isLastNode(that.path)
       }, 0)
     },
+    // 判断当前节点是否是并行审批分支的最后一个节点
+    updateLastParallelNode() {
+      if (!this.isInParallel && !this.isParallel) {
+        this.isLastParallelNode = false
+        return
+      }
+      setTimeout(() => {
+        this.isLastParallelNode = !this.$children.some((item) => item.isInParallel)
+      })
+    },
     // 初始化当前节点的userList
     initUserList(data) {
       let userList
       if (data.type === 'copy') {
         userList = _.get(data, 'properties.members', [])
-      } else if (data.type === 'approver') {
+      } else if (apprTypes.includes(data.type)) {
         if (this.selectable) {
           userList = []
         } else {
@@ -498,6 +567,26 @@ export default {
       height: 40px;
       font-size: 20px;
     }
+  }
+}
+.appr-user-item__parallel--wrapper {
+  padding-left: 20px;
+  position: relative;
+  padding-bottom: 10px;
+  .appr-user-item__header {
+    top: -3px;
+    position: relative;
+  }
+}
+.appr-user-item__parallel {
+  margin-bottom: 12px;
+  background-color: #f7f8fa;
+  padding-top: 12px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+  .appr-user-item {
+    margin-left: 20px;
   }
 }
 </style>
