@@ -19,47 +19,88 @@ export default {
   processData: {
     type: 'start',
     content: '所有人',
-    properties: { title: '发起人', initiator: 'ALL', formOperates: [] },
-    nodeId: 'Gb2',
-    childNode: {
-      type: 'approver',
-      content: '离职测测,李小龙',
-      properties: {
-        title: '审批人',
-        assigneeType: 'optional',
-        formOperates: [],
-        counterSign: true,
-        optionalMultiUser: true,
-        optionalRange: 'USER',
-        approvers: [
+    properties: { title: '发起人', initiator: 'ALL' },
+    nodeId: 'TlC',
+    prevId: '__vue_devtool_undefined__',
+    childNode: '__vue_devtool_undefined__',
+    conditionNodes: '__vue_devtool_undefined__',
+    parallelNodes: [
+      {
+        type: 'parallel',
+        content: '请设置审批人',
+        properties: { title: '审批人1', priority: 0 },
+        nodeId: 'UlC',
+        prevId: 'TlC',
+        parallelNodes: [
           {
-            workNo: '4342',
-            name: '离职测测',
-            userId: '1283302477003075585',
-            id: '1252523599903072258_1283302477003075585',
-            type: 'user'
+            type: 'parallel',
+            content: '请设置审批人',
+            properties: { title: '审批人1', priority: 0 },
+            nodeId: 'WlC',
+            prevId: 'UlC'
           },
           {
-            workNo: '4344',
-            name: '李小龙',
-            userId: '1283307826803585025',
-            id: '1252523599903072258_1283307826803585025',
-            type: 'user'
+            type: 'parallel',
+            content: '请设置审批人',
+            properties: { title: '审批人2', priority: 1, isDefault: true },
+            nodeId: 'XlC',
+            prevId: 'UlC'
           }
         ]
       },
-      nodeId: 'Nb2',
-      prevId: 'Gb2',
-      variable: 'optional_Nb2_id',
-      childNode: {
-        type: 'copy',
-        content: 'E',
-        properties: { title: '抄送人', members: [], userOptional: true },
-        nodeId: 'Ob2',
-        prevId: 'Nb2'
+      {
+        type: 'parallel',
+        content: '请设置审批人',
+        properties: { title: '审批人2', priority: 1, isDefault: true },
+        nodeId: 'VlC',
+        prevId: 'TlC'
       }
-    }
+    ]
   },
+  // processData: {
+  //   type: 'start',
+  //   content: '所有人',
+  //   properties: { title: '发起人', initiator: 'ALL', formOperates: [] },
+  //   nodeId: 'Gb2',
+  //   childNode: {
+  //     type: 'approver',
+  //     content: '离职测测,李小龙',
+  //     properties: {
+  //       title: '审批人',
+  //       assigneeType: 'optional',
+  //       formOperates: [],
+  //       counterSign: true,
+  //       optionalMultiUser: true,
+  //       optionalRange: 'USER',
+  //       approvers: [
+  //         {
+  //           workNo: '4342',
+  //           name: '离职测测',
+  //           userId: '1283302477003075585',
+  //           id: '1252523599903072258_1283302477003075585',
+  //           type: 'user'
+  //         },
+  //         {
+  //           workNo: '4344',
+  //           name: '李小龙',
+  //           userId: '1283307826803585025',
+  //           id: '1252523599903072258_1283307826803585025',
+  //           type: 'user'
+  //         }
+  //       ]
+  //     },
+  //     nodeId: 'Nb2',
+  //     prevId: 'Gb2',
+  //     variable: 'optional_Nb2_id',
+  //     childNode: {
+  //       type: 'copy',
+  //       content: 'E',
+  //       properties: { title: '抄送人', members: [], userOptional: true },
+  //       nodeId: 'Ob2',
+  //       prevId: 'Nb2'
+  //     }
+  //   }
+  // },
   formData: {
     showBtn: false,
     fields: [

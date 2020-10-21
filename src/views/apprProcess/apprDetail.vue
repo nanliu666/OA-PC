@@ -785,7 +785,7 @@ export default {
           return it
         }
       })
-      // 判断是否已撤回，已拒绝,已完成
+      // 判断是最新时间 审批记录
       this.progressList &&
         this.progressList.length > 0 &&
         this.progressList.map((it) => {
@@ -816,6 +816,7 @@ export default {
             })
         })
 
+      //处理状态
       nodeData &&
         nodeData.length > 0 &&
         nodeData.map((it, index) => {

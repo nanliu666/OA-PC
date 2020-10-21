@@ -101,6 +101,7 @@ const beforeUnload = function(e) {
 }
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
+const hasParallelBranch = (data) => notEmptyArray(data.parallelNodes)
 export default {
   name: 'ProcessDesign',
   components: {
@@ -361,7 +362,11 @@ export default {
                 it.source = item.prevId
               }
               if (it.target === item.id) {
-                it.target = 'gateway_' + item.id
+                if (it.source.indexOf('parallelGateway') > -1) {
+                  it.target = it.hasBranch + item.id
+                } else {
+                  it.target = 'gateway_' + item.id
+                }
               }
             })
         })
@@ -390,7 +395,7 @@ export default {
      * */
     lineEnd(data) {
       let endChild = this.childNode(data)
-      if (data.nodeId !== endChild.nodeId && !hasBranch(endChild)) {
+      if (data.nodeId !== endChild.nodeId && !hasBranch(endChild) && !hasParallelBranch(endChild)) {
         // 结束ID=当前ID && 结束节点无条件 && 当前节点无条件
 
         let line = {
@@ -405,6 +410,15 @@ export default {
         endChild.conditionNodes.map((it) => {
           this.lineEnd(it)
         })
+      } else if (hasParallelBranch(endChild)) {
+        let line = {
+          type: 'flow',
+          id: endChild.nodeId + 'end',
+          name: '',
+          source: 'parallelGateway_' + endChild.nodeId + '_end',
+          target: 'end'
+        }
+        this.endNode.push(line)
       }
     },
     /**
@@ -415,7 +429,8 @@ export default {
       let type = {
         //类型
         start: 'start', //开始节点
-        approver: 'task', //审批人节点
+        approver: 'task', //审批人节点,
+        parallel: 'task',
         copy: 'ccTask', // 发送人节点
         condition: 'flow', //条件节点
         empty: 'empty'
@@ -434,6 +449,8 @@ export default {
       this.ApprovalNode(data, item, origin)
       //条件
       this.conditionNode(data, origin, conditionNextNodeId_)
+      //并行审批
+      this.parallelNode(data, origin, conditionNextNodeId_)
       //处理节点线，
       //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
       this.evenLine(data, item)
@@ -462,7 +479,8 @@ export default {
         data.prevId &&
         data.prevId !== 'no_flow' &&
         data.type !== 'condition' &&
-        data.type !== 'start'
+        data.type !== 'start' &&
+        data.type !== 'parallel'
       ) {
         //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
         let items = {
@@ -506,8 +524,8 @@ export default {
      *  @params data,item,origin 引用类型
      * */
     ApprovalNode(data, item, origin) {
-      if (data.type === 'approver') {
-        //审批人节点
+      if (data.type === 'approver' || data.type === 'parallel') {
+        //审批指定职位·指定岗位，上级领导，标签
         let list = Object.keys(data.properties.infoForm || [])
         if (list.includes(`${data.properties.assigneeType}Id`)) {
           item.assignee = '${' + `${data.properties.assigneeType}_` + data.nodeId + '_id}'
@@ -546,6 +564,180 @@ export default {
     },
     /**
      * @author guanfenda
+     * @desc 处理并行节点转换成后台需要节点 （格式化）
+     * @params  data origin  conditionNextNodeId_引用类型
+     * */
+    parallelNode(data, origin, fisrtbranchChild) {
+      if (hasParallelBranch(data)) {
+        //判断是否存在条件，如果有。。。
+        let conditionNextNodeId = fisrtbranchChild
+          ? fisrtbranchChild
+          : data.childNode
+          ? data.childNode.nodeId
+          : '' //判断第一个条件是否存在子节点
+        let parallelGatewayNode = this.addParallelGatewayNode(data)
+
+        if (data.childNode) {
+          data.childNode.prevId = 'no_flow' //避免重新连线（后面处理线，不给连线）
+        }
+        this.enterBeforeLine(data)
+        this.leaveBeforeLine(data, conditionNextNodeId)
+        data.parallelNodes.map((d, index) => {
+          let targetId = ''
+          let sourceId = ''
+          if (d.childNode) {
+            let endChild = this.childNode(d, data)
+            targetId = parallelGatewayNode.end && parallelGatewayNode.end.id
+            sourceId = endChild.nodeId
+          } else if (d.conditionNodes) {
+            targetId = data.VirtualNodeId ? data.VirtualNodeId.id : ''
+          } else if (d.parallelNodes) {
+            targetId = 'parallelGateway_' + d.nodeId
+            sourceId = d.nodeId
+          } else {
+            targetId = parallelGatewayNode.end && parallelGatewayNode.end.id
+            sourceId = d.nodeId
+          }
+
+          this.enterAfterlLine(d, parallelGatewayNode.start)
+
+          if (!d.conditionNodes && !d.parallelNodes) {
+            //不处理有条件的节点和有并行的节点
+            this.leaveLine(data, d, targetId, sourceId)
+          } else {
+            d.fisrtParallelBanchNodeId = d.fisrtParallelBanchNodeId
+              ? d.fisrtParallelBanchNodeId
+              : data.nodeId
+          }
+          this.recursion(d, origin.parallelNodes[index], conditionNextNodeId)
+        })
+      }
+    },
+    enterBeforeLine(data) {
+      if (data.type !== 'empty' && data.type !== 'condition') {
+        //这里处理的除了空节点以外的节点和网关节点的连线
+
+        let enptyLine = {
+          type: 'flow',
+          id: data.nodeId + '_1parallelGateway_' + data.nodeId,
+          name: '',
+          source: data.nodeId,
+          target: 'parallelGateway_' + data.nodeId
+        }
+        this.condition.push(enptyLine)
+      }
+    },
+    leaveBeforeLine(data, conditionNextNodeId) {
+      if (data.childNode) {
+        let endLine = {
+          type: 'flow',
+          id: data.nodeId + '_' + 'parallelGateway_' + data.childNode.nodeId,
+          name: '',
+          source: 'parallelGateway_' + data.nodeId + '_end',
+          target: data.childNode.nodeId,
+          hasBranch: hasBranch(data.childNode)
+            ? 'gateway_'
+            : hasParallelBranch(data.childNode)
+            ? 'parallelGateway_'
+            : ''
+        }
+        this.condition.push(endLine)
+        let endChild = this.childNode(data)
+        if (
+          endChild.nodeId !== conditionNextNodeId &&
+          !hasParallelBranch(endChild) &&
+          !hasBranch(endChild) &&
+          data.fisrtParallelBanchNodeId
+        ) {
+          let leaveLine = {
+            type: 'flow',
+            id: data.nodeId + '_parallelGateway_' + conditionNextNodeId,
+            name: '',
+            source: endChild.nodeId,
+            target: 'parallelGateway_' + data.fisrtParallelBanchNodeId + '_end'
+          }
+          this.condition.push(leaveLine)
+        }
+      } else if (conditionNextNodeId && data.type !== 'condition') {
+        let endLine = {
+          type: 'flow',
+          id: data.nodeId + '_' + 'parallelGateway_' + conditionNextNodeId,
+          name: '',
+          source: 'parallelGateway_' + data.nodeId + '_end',
+          target: 'parallelGateway_' + conditionNextNodeId + '_end'
+        }
+        this.condition.push(endLine)
+      } else if (data.fisrtParallelBanchNodeId) {
+        let endLine = {
+          type: 'flow',
+          id: data.nodeId + '_' + 'parallelGateway_' + data.fisrtParallelBanchNodeId,
+          name: '',
+          source: 'parallelGateway_' + data.nodeId + '_end',
+          target: 'parallelGateway_' + data.fisrtParallelBanchNodeId + '_end'
+        }
+        this.condition.push(endLine)
+      } else if (data.fisrtBanchNodeId) {
+        let endLine = {
+          type: 'flow',
+          id: data.nodeId + '_' + 'parallelGateway_' + data.fisrtBanchNodeId,
+          name: '',
+          source: 'parallelGateway_' + data.nodeId + '_end',
+          target: data.fisrtBanchNodeId
+        }
+        this.condition.push(endLine)
+      }
+    },
+    leaveLine(data, d, targetId, sourceId) {
+      let endChild = this.childNode(d)
+      if (!hasBranch(endChild) && !hasParallelBranch(endChild)) {
+        let excludeCdCdline = {
+          type: 'flow',
+          id: 'parallelGateway_' + data.nodeId + d.nodeId,
+          name: '',
+          source: sourceId, //前节点
+          target: targetId // 当前节点
+        }
+        this.condition.push(excludeCdCdline)
+      }
+    },
+    enterAfterlLine(data, startParallelGateway) {
+      //有前节点且前节点不为no_flow,且节点类型不能为条件节点（带有条件节点，他的子节点不在这么算进去）
+      let startParallelLine = {
+        //节点线
+        type: 'flow', // flow, start, end, task, ccTask, gateway
+        id: startParallelGateway.id + '_' + data.nodeId,
+        source: startParallelGateway.id,
+        target: data.nodeId
+      }
+      this.lineList.push(startParallelLine)
+    },
+    /**
+     * @author guanfenda
+     * @desc 添加并行网关节点
+     * @params data
+     * */
+    addParallelGatewayNode(data) {
+      let startParallelGatewayNode = {
+        //并行网关节点
+        type: 'parallelGateway',
+        id: 'parallelGateway_' + data.nodeId,
+        name: ''
+      }
+      let endParallelGatewayNode = {
+        //并行网关节点
+        type: 'parallelGateway',
+        id: 'parallelGateway_' + data.nodeId + '_end',
+        name: ''
+      }
+      this.condition.push(startParallelGatewayNode)
+      this.condition.push(endParallelGatewayNode)
+      return {
+        start: startParallelGatewayNode,
+        end: endParallelGatewayNode
+      }
+    },
+    /**
+     * @author guanfenda
      * @desc 处理条件节点转换成后台需要节点 （格式化）
      * @params  data origin  conditionNextNodeId_引用类型
      * */
@@ -562,17 +754,22 @@ export default {
         }
         //处理条件节点（后台没有条件节点这个概念，可以理解为分叉点），转换成网关节点 ,返回网关节点，给下面使用
         let gatewayNode = this.addGatewayNode(data)
-        //处理有空节点和条件下有条件的节点(特殊节点)
+        //处理有空节点和条件下有条件的节点(特殊节点) 和 这里处理的除了空节点以外的节点和网关节点的连线
         this.specialNode(data)
         data.conditionNodes.map((d, index) => {
           d.VirtualNodeId = gatewayNode
           // 虚拟节点
           let targetId = ''
+          this.childNode(d, data, 'condition')
           if (d.childNode) {
             targetId = d.childNode.nodeId
             d.childNode.prevId = 'no_flow' // 避免重新连线（后面处理线，不给连线）
           } else if (d.conditionNodes) {
             targetId = data.VirtualNodeId ? data.VirtualNodeId.id : ''
+          } else if (d.parallelNodes) {
+            targetId = 'parallelGateway_' + d.nodeId
+          } else if (data.fisrtParallelBanchNodeId) {
+            targetId = 'parallelGateway_' + data.fisrtParallelBanchNodeId + '_end'
           } else {
             targetId = conditionNextNodeId || 'end'
           }
@@ -604,9 +801,18 @@ export default {
      * @author guanfenda
      * 获取最后一个节点
      * */
-    childNode(data) {
+    childNode(data, fisrtBranchData, condition) {
+      !condition &&
+        fisrtBranchData &&
+        (data.fisrtParallelBanchNodeId =
+          fisrtBranchData.fisrtParallelBanchNodeId || fisrtBranchData.nodeId)
+      condition &&
+        fisrtBranchData &&
+        fisrtBranchData.childNode &&
+        (data.fisrtBanchNodeId =
+          fisrtBranchData.fisrtBanchNodeId || fisrtBranchData.childNode.nodeId)
       if (data.childNode) {
-        return this.childNode(data.childNode)
+        return this.childNode(data.childNode, fisrtBranchData, condition)
       } else {
         return data
       }
@@ -628,7 +834,7 @@ export default {
     },
     /**
      * @author guanfenda
-     * @desc 处理有空节点和条件下有条件的节点
+     * @desc 处理有空节点和条件下有条件的节点 和 这里处理的除了空节点以外的节点和网关节点的连线
      *
      * */
     specialNode(data) {
@@ -646,7 +852,7 @@ export default {
 
         this.condition.push(multipleConditionsLine)
       } else if (data.type !== 'empty') {
-        //处理条件节点下的空节点，用线链接起来
+        //这里处理的除了空节点以外的节点和网关节点的连线
         let enptyLine = {
           //空节线
           type: 'flow',
@@ -748,14 +954,16 @@ export default {
       if (conditionNextNodeId && d.childNode) {
         //处理有条件存在，有子节点的最后节点和条件节点父节点的子节点连起来
         let endNode = this.childNode(d.childNode)
-        let endLine = {
-          type: 'flow',
-          id: endNode.nodeId + conditionNextNodeId,
-          name: '',
-          source: endNode.nodeId,
-          target: conditionNextNodeId
+        if (!endNode.parallelNodes) {
+          let endLine = {
+            type: 'flow',
+            id: endNode.nodeId + conditionNextNodeId,
+            name: '',
+            source: endNode.nodeId,
+            target: conditionNextNodeId
+          }
+          this.condition.push(endLine)
         }
-        this.condition.push(endLine)
       }
     },
     exit() {

@@ -274,7 +274,7 @@
 
       <!-- 审批人 -->
       <section
-        v-if="value && (isApproverNode() || isStartNode())"
+        v-if="value && (isApproverNode() || isStartNode() || isParallelNode())"
         class="approver-pane"
         style="height: 100%"
       >
@@ -282,7 +282,7 @@
           <div
             :class="[activeName == 'config' ? 'active' : '']"
             @click="activeName = 'config'"
-            v-html="'设置' + (value.type === 'approver' ? '审批人' : '发起人')"
+            v-html="'设置' + (value.type === 'start' ? '发起人' : '审批人')"
           />
           <div
             :class="[activeName == 'formAuth' ? 'active' : '']"
@@ -315,8 +315,9 @@
               />
             </el-col>
           </el-row>
-          <div v-else-if="value.type === 'approver'">
-            <div style="padding: 24px">
+
+          <div v-else-if="value.type === 'approver' || value.type === 'parallel'">
+            <div style="padding: 24px;">
               <el-radio-group
                 v-model="approverForm.assigneeType"
                 style="line-height: 32px"
@@ -678,6 +679,7 @@ import NumInput from './NumInput'
 import { getOrgTreeSimple, getJob, getPosition, getTagList } from '@/api/org/org'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
+const hasParallelBranch = (data) => notEmptyArray(data.parallelNodes)
 const rangeType = {
   lt: '<',
   lte: '≤',
@@ -937,6 +939,7 @@ export default {
       }
       this.isStartNode() && this.initStartNodeData()
       this.isApproverNode() && this.initApproverNodeData()
+      this.isParallelNode() && this.initApproverNodeData()
       this.isConditionNode() && this.initConditionNodeData()
       this.isCopyNode && this.initCopyNodeData()
     },
@@ -1310,6 +1313,7 @@ export default {
       this.isCopyNode() && this.copyNodeConfirm()
       this.isStartNode() && this.startNodeComfirm()
       this.isApproverNode() && this.approverNodeComfirm()
+      this.isParallelNode() && this.approverNodeComfirm()
       this.isConditionNode() && this.conditionNodeComfirm()
     },
     // 关闭抽屉
@@ -1336,6 +1340,10 @@ export default {
     // 用于获取节点优先级范围
     getPriorityLength() {
       this.priorityLength = this.getPrevData().conditionNodes.length
+    },
+    // 判断是否是条件节点
+    isParallelNode() {
+      return this.value ? NodeUtils.isParallelNode(this.value) : false
     },
     // 判断是否是条件节点
     isConditionNode() {
@@ -1380,7 +1388,7 @@ export default {
     },
     firstComdition(data, firstConditinoNode) {
       // 这里会查询第一个条件分支
-      if (hasBranch(data)) {
+      if (hasBranch(data) || hasParallelBranch(data)) {
         if (!firstConditinoNode.length > 0) {
           firstConditinoNode.push(data)
         }
@@ -1406,7 +1414,9 @@ export default {
         this.firstComdition(this.processData, firstConditinoNode)
         if (!this.showingPCons.includes(-1)) {
           //处理发起人子节点是条件。给他选择部门
-          firstConditinoNode[0].type === 'empty' && (this.showingPCons = [-1])
+          firstConditinoNode.length > 0 &&
+            firstConditinoNode[0].type === 'empty' &&
+            (this.showingPCons = [-1])
         }
         if (this.showingPCons.includes(-1)) {
           this.isShowInitiator = true
