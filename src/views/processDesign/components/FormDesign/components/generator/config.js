@@ -123,13 +123,13 @@ export const componentGroups = [
       {
         __config__: {
           name: '金额',
-          label: '金额(元)',
-          // type: 'money', // 参考交互稿,金额类型与数字类型没有区别,直接使用type=number走相同的逻辑.
-          type: 'number',
+          label: '金额',
+          type: 'money',
           layout: 'colFormItem',
           icon: 'el-icon-money',
           defaultValue: null,
           shouldPrint: true,
+          currency: 'CNY',
           required: false,
           proCondition: true
         },
@@ -147,7 +147,8 @@ export const componentGroups = [
           renderType: 'input',
           tag: 'van-field',
           props: {
-            type: 'number'
+            type: 'number',
+            labelWidth: '50%' // 在label上添加币种标识,增加label长度以防止label换行.
           }
         },
         placeholder: '请输入金额'
@@ -339,6 +340,35 @@ export const componentGroups = [
           props: {}
         },
         children: []
+      }
+    ]
+  },
+  {
+    label: '其它',
+    prop: 'other',
+    list: [
+      {
+        __config__: {
+          name: '地址',
+          label: '地址',
+          type: 'locationPicker',
+          icon: 'el-icon-location-information',
+          layout: 'colFormItem',
+          defaultValue: {},
+          shouldPrint: true,
+          required: false,
+          proCondition: false
+        },
+        __slot__: {},
+        __pc__: {
+          tag: 'location-picker',
+          props: {}
+        },
+        __mobile__: {
+          tag: 'location-picker',
+          renderType: 'input',
+          props: {}
+        }
       }
     ]
   }

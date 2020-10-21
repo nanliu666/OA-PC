@@ -174,6 +174,19 @@ const layouts = {
   // 单个元素渲染
   colFormItem(h, scheme) {
     const config = scheme.__config__
+    const MONEY_LABEL =
+      config.type === 'money'
+        ? ` ${((currency) => {
+            switch (currency) {
+              case 'CNY':
+                return '（人民币/元）'
+              case 'USD':
+                return '（美元/元）'
+              default:
+                return ''
+            }
+          })(config.currency)}`
+        : ''
     const formPrivilege = config.formPrivilege
     const defaultRender = (
       <render
@@ -190,7 +203,7 @@ const layouts = {
         <el-col span={scheme.__pc__.span} class="parser-item">
           <el-form-item
             prop={scheme.__vModel__}
-            label={`${config.label ? `${config.label}:` : ''}`}
+            label={`${_.get(config, 'label', '')}${MONEY_LABEL}`}
             style={config.type === 'desc' ? 'margin-bottom:0' : ''}
           >
             {isDefault ? defaultRender : valueRender}

@@ -1,5 +1,5 @@
-import { validatenull } from './validate'
 import moment from 'moment'
+import { validatenull } from './validate'
 /**
  * 反转义
  */
@@ -202,7 +202,8 @@ export const findParent = (menu, id) => {
  * 递归过滤节点，生成新的树结构
  * @param {Node[]} nodes 要过滤的节点
  * @param {node => boolean} predicate 过滤条件，符合条件的节点保留
- * @return 过滤后的节点
+ * @param {boolean} [shouldUp=false] 如果当前节点不符合条件，递归过滤子节点
+ * @return {Node[]} 过滤后的节点
  */
 export const filterTree = (nodes, predicate, shouldUp = false) => {
   // 如果已经没有节点了，结束递归
