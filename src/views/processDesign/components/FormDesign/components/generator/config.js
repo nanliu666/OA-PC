@@ -365,9 +365,9 @@ export const componentGroups = [
         },
         __mobile__: {
           renderType: 'upload',
-          tag: 'van-uploader',
+          tag: 'image-upload',
           props: {
-            props: {}
+            disabled: false
           }
         },
         limit: 9
@@ -395,9 +395,9 @@ export const componentGroups = [
         },
         __mobile__: {
           renderType: 'upload',
-          tag: 'van-uploader',
+          tag: 'file-upload',
           props: {
-            props: {}
+            disabled: false
           }
         }
       }

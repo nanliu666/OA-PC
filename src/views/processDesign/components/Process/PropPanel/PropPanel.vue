@@ -481,9 +481,10 @@
                     placement="right-end"
                     effect="dark"
                   >
+                    <!-- 现在的业务，只存在说明类型不存在label，以后有其他业务字段，需要自增 -->
                     <div
                       class="label"
-                      v-html="item.label"
+                      v-html="`${item.label ? item.label : '说明'}`"
                     />
                   </el-tooltip>
                 </div>
@@ -495,7 +496,7 @@
                 >
                   <div
                     class="label"
-                    v-html="item.label"
+                    v-html="`${item.label ? item.label : '说明'}`"
                   />
                   <el-radio-group
                     v-model="item.formPrivilege"

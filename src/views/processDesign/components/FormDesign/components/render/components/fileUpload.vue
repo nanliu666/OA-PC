@@ -2,7 +2,7 @@
   <common-upload
     v-model="fileList"
     :disabled="disabled"
-    class="uploader"
+    class="file-uploader"
     :before-upload="beforeImageUpload"
     :class="{ 'btn-disabled': disabled }"
   >
@@ -91,7 +91,8 @@ export default {
 
 <style lang="scss" scoped>
 $commonWidth: 80px;
-.uploader {
+.file-uploader {
+  margin-bottom: 10px;
   .upload-ul {
     .upload-li {
       margin: 10px 0;
@@ -101,7 +102,6 @@ $commonWidth: 80px;
       justify-content: space-between;
       min-width: 450px;
       height: 20px;
-      line-height: 1;
       .el-icon-document {
         margin-right: 4px;
       }

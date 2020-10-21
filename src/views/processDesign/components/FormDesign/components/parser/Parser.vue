@@ -224,8 +224,8 @@ const layouts = {
           <el-image
             class="thumbnail-image"
             fit="fill"
-            src={item.fileUrl}
-            previewSrcList={_.map(fileList, ({ fileUrl }) => fileUrl)}
+            src={item.url}
+            previewSrcList={_.map(fileList, ({ url }) => url)}
           />
         )
       })
@@ -241,6 +241,17 @@ const layouts = {
         )
       })
     }
+    const descRender = (
+      <el-col span={scheme.__pc__.span} class="parser-item">
+        <el-form-item
+          prop={scheme.__vModel__}
+          label={`${config.label ? `${config.label}:` : ''}`}
+          style={config.type === 'desc' ? 'margin-bottom:0' : ''}
+        >
+          {defaultRender}
+        </el-form-item>
+      </el-col>
+    )
     let renderItem = ''
     // formPrivilege表单权限验证，0可编辑(默认)，1只读，2隐藏
     switch (formPrivilege) {
@@ -248,7 +259,12 @@ const layouts = {
         // 是否在详情页，详情页与发起审批页展示不一
         if (this.formConfCopy.isDetail) {
           // 详情页，有默认值显示默认值，无默认值不显示这个标签
-          renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
+          if (scheme.__config__.type === 'desc') {
+            renderItem = descRender
+          } else {
+            scheme.__mobile__.props.disabled = true
+            renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
+          }
         } else {
           // 审批发起页面，只读权限表现为置灰处理
           scheme.__pc__.props.disabled = true
