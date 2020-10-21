@@ -75,6 +75,7 @@ export default {
           that.uploading = false
           let newFile = {
             fileUrl: url,
+            url: url, // 新增url字段，为与移动端上传回显一致
             fileName,
             localName: file.file.name
           }

@@ -18,8 +18,8 @@
           <el-image
             class="upload-li-thumbnail"
             fit="fill"
-            :src="item.fileUrl"
-            :preview-src-list="_.map(fileList, ({ fileUrl }) => fileUrl)"
+            :src="item.url"
+            :preview-src-list="_.map(fileList, ({ url }) => url)"
           />
           <div class="thumbnail-mask">
             <i
