@@ -8,6 +8,7 @@
  */
 import { deepClone } from '../../utils/index'
 import render from '../render/render.js'
+import provinceAndCityData from '@/const/provinceAndCityData'
 
 const ruleTrigger = {
   'el-input': 'blur',
@@ -164,6 +165,23 @@ function getMaxId(fieldList) {
     }, 0)
   }
   return 0
+}
+// 地址转换
+function toLocation({ location, details }) {
+  let result = ''
+  ;(function findCode(arr, locations, target) {
+    _.each(arr, (item) => {
+      if (item.value === target) {
+        locations.push(item.label)
+        result = locations.join('')
+        return false
+      } else if (!_.isEmpty(item.children)) {
+        findCode(item.children, _.concat(locations, item.label), target)
+      }
+    })
+    return
+  })(provinceAndCityData, [], location)
+  return `${result} ${details}`
 }
 function addElementChild(element) {
   const childCopy = _.cloneDeep(element.__config__.children)
@@ -425,6 +443,8 @@ export default {
           .join(',')
       } else if (field.__config__.type === 'daterange') {
         content = field.__config__.defaultValue.join(' 至 ')
+      } else if (field.__config__.type === 'locationPicker') {
+        content = toLocation(field.__config__.defaultValue)
       } else {
         content = field.__config__.defaultValue
       }
