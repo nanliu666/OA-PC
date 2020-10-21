@@ -595,6 +595,7 @@ import NumInput from './NumInput'
 import { getOrgTreeSimple, getJob, getPosition, getTagList } from '@/api/org/org'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
+const hasParallelBranch = (data) => notEmptyArray(data.parallelNodes)
 const rangeType = {
   lt: '<',
   lte: '≤',
@@ -856,7 +857,8 @@ export default {
       }
       this.isStartNode() && this.initStartNodeData()
       this.isApproverNode() && this.initApproverNodeData()
-      this.isParallelNode() && this.initConditionNodeData()
+      this.isParallelNode() && this.initApproverNodeData()
+      this.isConditionNode() && this.initConditionNodeData()
       this.isCopyNode && this.initCopyNodeData()
     },
 
@@ -1279,7 +1281,7 @@ export default {
       // this.approverForm.formOperates = this.initFormOperates(this.value)
     },
     firstComdition(data, firstConditinoNode) {
-      if (hasBranch(data)) {
+      if (hasBranch(data) || hasParallelBranch(data)) {
         if (!firstConditinoNode.length > 0) {
           firstConditinoNode.push(data)
         }
@@ -1305,7 +1307,9 @@ export default {
         this.firstComdition(this.processData, firstConditinoNode)
         if (!this.showingPCons.includes(-1)) {
           //处理发起人子节点是条件。给他选择部门
-          firstConditinoNode[0].type === 'empty' && (this.showingPCons = [-1])
+          firstConditinoNode.length > 0 &&
+            firstConditinoNode[0].type === 'empty' &&
+            (this.showingPCons = [-1])
         }
         if (this.showingPCons.includes(-1)) {
           this.isShowInitiator = true

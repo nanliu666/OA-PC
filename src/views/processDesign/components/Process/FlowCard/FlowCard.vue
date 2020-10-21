@@ -166,7 +166,7 @@ function addNodeButton(ctx, data, h, isBranch = false) {
     return (
       <div class="add-node-btn-box flex  justify-center">
         <div class="add-node-btn">
-          <el-popover placement="right" trigger="click" width="350">
+          <el-popover placement="right" trigger="click" width="280">
             <div class="condition-box">
               <div>
                 <div

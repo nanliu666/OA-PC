@@ -442,30 +442,34 @@ btn-bigger()
     justify-content: space-around;
     align-items center
     text-align center
-    padding: 10px 20px;
+    padding: 0px 0px;
     >div:nth-child(1)  .iconfont
+      color #FF943E
+    >div:nth-child(2)  .iconfont
         color #FF943E
     >div:nth-child(3)  .iconfont
         color #3296FA
-    .condition-icon
-        width: 60px;
-        height: 60px;
-        line-height: 60px;
-        border: 1px solid #e5e5e5;
+    >div:nth-child(4)  .iconfont
+        color #6268EB
+  .condition-icon
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        //border: 1px solid #e5e5e5;
         border-radius: 30px;
         box-sizing border-box
         font-size 12px
         cursor pointer
         margin-bottom 4px
-
+        margin auto
         .iconfont
-            font-size 32px
+            font-size 20px
 
         &:hover
             background #3296FA
             box-shadow 0 0 8px 4px rgba(0,0,0,.1)
             > .iconfont
-                color white
+                color white !important
 .relative
     position relative
 
