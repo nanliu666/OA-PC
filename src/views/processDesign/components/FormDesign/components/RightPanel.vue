@@ -117,14 +117,14 @@
                 <i class="el-icon-s-operation" />
               </div>
               <el-input
-                v-model="item.label"
+                :value="item.label"
                 placeholder="选项名"
                 size="small"
                 @input="setOptionValue(item, $event)"
               />
               <div
                 class="close-btn select-line-icon"
-                @click="activeData.__slot__.options.splice(index, 1)"
+                @click="() => removeOption(item, index)"
               >
                 <i class="el-icon-circle-close" />
               </div>
@@ -155,6 +155,15 @@
               年-月-日 时:分
             </el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          v-if="activeData.__config__.actionText !== undefined"
+          label="动作文字"
+        >
+          <el-input
+            v-model="activeData.__config__.actionText"
+            placeholder="请输入动作文字"
+          />
         </el-form-item>
         <el-form-item label="其他">
           <el-checkbox
@@ -364,8 +373,21 @@ export default {
     },
     setOptionValue(item, val) {
       item.label = val
-      item.value = val
+      this.activeData.__slot__.options.forEach((option, index) => {
+        if (!option.label) {
+          option.value = ''
+        } else {
+          option.value = index
+        }
+      })
       this.$refs.form.validateField('__slot__.options')
+    },
+    removeOption(item, index) {
+      this.activeData.__slot__.options.splice(index, 1)
+      // 重新计算option.value属性
+      this.setOptionValue({})
+      // 删除的时候清空表单校验
+      this.$refs.form.clearValidate()
     },
     append(data) {
       if (!data.children) {

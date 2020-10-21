@@ -43,11 +43,11 @@ const layouts = {
       },
       on: {}
     }
-    // if (config.tag !== 'div') {
-    // props.on.input = (event) => {
-    //   this.$set(config, 'defaultValue', event)
-    // }
-    // }
+    if (config.tag !== 'div') {
+      props.on.input = (event) => {
+        this.$set(config, 'defaultValue', event)
+      }
+    }
     return (
       <el-col
         span={element.__pc__.span}
@@ -66,6 +66,11 @@ const layouts = {
           <render {...props} />
         </div>
         {components.itemBtns.apply(this, arguments)}
+        {element.__config__.type === 'detail' && (
+          <div style="text-align: center;background: white;color: #207efa;padding: .4rem 1rem;">
+            <i class="el-icon-plus"></i> {element.actionText}
+          </div>
+        )}
       </el-col>
     )
   },
@@ -73,8 +78,8 @@ const layouts = {
     const { activeItem } = this.$listeners
     const className =
       this.activeId === element.__config__.formId
-        ? 'drawing-row-item drawing-drawing-item__active'
-        : 'drawing-row-item'
+        ? 'drawing-item container drawing-item__active'
+        : 'drawing-item container'
     let child = renderChildren.apply(this, arguments)
     if (element.type === 'flex') {
       child = (
@@ -93,15 +98,26 @@ const layouts = {
             event.stopPropagation()
           }}
         >
-          <span class="component-name">{element.__config__.componentName}</span>
-          <draggable
-            list={element.__config__.children}
-            animation={340}
-            group="componentsGroup"
-            class="drag-wrapper"
-          >
-            {child}
-          </draggable>
+          <div class="drawing-item__body">
+            <span class="drawing-item-label">{element.__config__.label}</span>
+            <draggable
+              list={element.__config__.children}
+              animation={340}
+              group="componentsGroup"
+              class="drag-wrapper"
+              draggable=".drawing-item"
+            >
+              {child}
+              {element.__config__.children.length === 0 ? (
+                <div class="drawing-item-tips">可拖入多个控件（不包含明细控件）</div>
+              ) : null}
+            </draggable>
+            {element.__config__.type === 'detail' && (
+              <div style="text-align: center;background: white;color: #4e79ff;padding: .4rem 1rem;">
+                <i class="el-icon-plus"></i> {element.__config__.actionText}
+              </div>
+            )}
+          </div>
           {components.itemBtns.apply(this, arguments)}
         </el-row>
       </el-col>
@@ -109,44 +125,98 @@ const layouts = {
   }
 }
 
-function mobileLayout(h, element) {
-  const { activeItem } = this.$listeners
-  const config = element.__config__
-  let className =
-    this.activeId === config.formId ? 'drawing-item drawing-item__active' : 'drawing-item'
-  if (config.error) {
-    className += ' drawing-item__error'
-  }
-  const props = {
-    props: {
-      key: config.renderKey,
-      conf: element
-    },
-    on: {}
-  }
-  return (
-    <div
-      class={`${className} ${config.type}`}
-      onClick={(event) => {
-        activeItem(element)
-        event.stopPropagation()
-      }}
-    >
-      <div class="drawing-item__body">
-        <renderMobile {...props} />
+const mobileLayouts = {
+  colFormItem(h, element) {
+    const { activeItem } = this.$listeners
+    const config = element.__config__
+    let className =
+      this.activeId === config.formId ? 'drawing-item drawing-item__active' : 'drawing-item'
+    if (config.error) {
+      className += ' drawing-item__error'
+    }
+    const props = {
+      props: {
+        key: config.renderKey,
+        conf: element
+      },
+      on: {}
+    }
+    return (
+      <div
+        class={`${className} ${config.type}`}
+        onClick={(event) => {
+          activeItem(element)
+          event.stopPropagation()
+        }}
+      >
+        <div class="drawing-item__body">
+          <renderMobile {...props} />
+        </div>
+        {components.itemBtns.apply(this, arguments)}
       </div>
-      {components.itemBtns.apply(this, arguments)}
-    </div>
-  )
+    )
+  },
+  rowFormItem(h, element) {
+    const { activeItem } = this.$listeners
+    const className =
+      this.activeId === element.__config__.formId
+        ? 'drawing-item container drawing-item__active'
+        : 'drawing-item container'
+    let child = mobileRenderChildren.apply(this, arguments)
+    const { put } = this.$props
+    const group = { name: 'componentsGroup', put: (...arg) => put(...arg, element) }
+    // let dragDisabled = element.__config__.type === 'detail'
+    return (
+      <div
+        class={className}
+        onClick={(event) => {
+          activeItem(element)
+          event.stopPropagation()
+        }}
+      >
+        <div class="drawing-item__body">
+          <span class="drawing-item-label">{element.__config__.label}</span>
+          <draggable
+            list={element.__config__.children}
+            animation={340}
+            group={group}
+            class="drag-wrapper"
+            draggable=".drawing-item"
+          >
+            {child}
+            {element.__config__.children.length === 0 ? (
+              <div class="drawing-item-tips">可拖入多个控件（不包含明细控件）</div>
+            ) : null}
+          </draggable>
+          {element.__config__.type === 'detail' && (
+            <div style="text-align: center;background: white;color: #4e79ff;padding: .4rem 1rem;">
+              <i class="el-icon-plus"></i> {element.__config__.actionText}
+            </div>
+          )}
+        </div>
+        {components.itemBtns.apply(this, arguments)}
+      </div>
+    )
+  }
 }
 
 function renderChildren(h, element) {
-  const config = element.__config__
-  if (!Array.isArray(config.children)) return null
-  return config.children.map((el, i) => {
+  if (!Array.isArray(element.__config__.children)) return null
+  return element.__config__.children.map((el, i) => {
     const layout = layouts[el.__config__.layout]
     if (layout) {
-      return layout.call(this, h, el, i, config.children)
+      return layout.call(this, h, el, i, element.__config__.children, element)
+    }
+    return layoutIsNotFound.call(this)
+  })
+}
+
+function mobileRenderChildren(h, element) {
+  if (!Array.isArray(element.__config__.children)) return null
+  return element.__config__.children.map((el, i) => {
+    const layout = mobileLayouts[el.__config__.layout]
+    if (layout) {
+      return layout.call(this, h, el, i, element.__config__.children, element)
     }
     return layoutIsNotFound.call(this)
   })
@@ -162,10 +232,10 @@ export default {
     render,
     draggable
   },
-  props: ['element', 'index', 'drawingList', 'activeId', 'formConf', 'isPC'],
+  props: ['element', 'index', 'drawingList', 'activeId', 'formConf', 'isPC', 'put'],
   render(h) {
     const layout = layouts[this.element.__config__.layout]
-
+    const mobileLayout = mobileLayouts[this.element.__config__.layout]
     if (layout && this.isPC) {
       return layout.call(this, h, this.element, this.index, this.drawingList)
     } else if (!this.isPC) {

@@ -1,6 +1,6 @@
 export default {
   tip: '提示',
-  title: '百利宏OA管理平台',
+  title: '易宝OA2.0',
   logoutTip: '退出系统, 是否继续?',
   submitText: '确定',
   cancelText: '取消',
@@ -77,7 +77,7 @@ export default {
     phone: '请输入手机号',
     email: '请输入邮箱',
     code: '请输入验证码',
-    captchaCode: '请输入辩证码',
+    captchaCode: '请输入图片验证码',
     submit: '登录',
     userLogin: '账号密码',
     phoneLogin: '手机号登录',

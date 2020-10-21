@@ -30,6 +30,7 @@ const getters = {
   logsLen: (state) => state.logs.logsList.length || 0,
   logsFlag: (state, getters) => getters.logsLen === 0,
   flowRoutes: (state) => state.dict.flowRoutes,
+  fieldList: (state) => state.process.fieldList,
   processData: (state) => state.process.processData
 }
 export default getters

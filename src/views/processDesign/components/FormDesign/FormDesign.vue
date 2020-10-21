@@ -88,6 +88,7 @@
                     :drawing-list="drawingList"
                     :active-id="activeId"
                     :is-p-c="isPC"
+                    :put="shouldClone"
                     @activeItem="activeFormItem"
                     @deleteItem="drawingItemDelete"
                   />
@@ -120,7 +121,7 @@ import Draggable from 'vuedraggable'
 import DraggableItem from './components/DragableItem'
 import RightPanel from './components/RightPanel'
 import { componentGroups } from './components/generator/config.js'
-import { deepClone } from './utils/index'
+import { deepClone, debounce } from './utils/index'
 // import { saveDrawingList, getDrawingList } from './utils/db'
 
 const emptyActiveData = {
@@ -131,7 +132,6 @@ const emptyActiveData = {
 }
 
 let tempActiveData
-// const drawingListInDB = getDrawingList()
 
 export default {
   name: 'FormDesign',
@@ -149,7 +149,7 @@ export default {
       activeData: emptyActiveData,
       activeId: null,
       isPC: false,
-      // saveDrawingListDebounce: debounce(saveDrawingList, 340),
+      saveDrawingListDebounce: debounce(this.storeDrawingList, 340),
       formConf: {
         showBtn: false,
         fields: []
@@ -171,17 +171,18 @@ export default {
           )
         }
       }
+    },
+    drawingList: {
+      handler(val) {
+        this.saveDrawingListDebounce(val)
+      },
+      deep: true
     }
-    //   drawingList: {
-    //     handler(val) {
-    //       this.saveDrawingListDebounce(val)
-    //     },
-    //     deep: true
-    //   }
   },
   mounted() {
     if (typeof this.conf === 'object' && this.conf !== null) {
       this.drawingList = this.conf.fields || []
+      // debugger
       Object.assign(this.formConf, this.conf)
       // } else if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
       //   this.drawingList = drawingListInDB
@@ -195,6 +196,9 @@ export default {
     this.activeFormItem(this.drawingList[0])
   },
   methods: {
+    storeDrawingList(list) {
+      this.$store.commit('setFieldList', list)
+    },
     getData() {
       return new Promise((resolve, reject) => {
         // 有formKey时即为旧业务，不允许修改表单
@@ -238,7 +242,7 @@ export default {
     },
     // 判断是否已被流程图作为条件必填项了
     usedAsCondition(cmp) {
-      if (Array.isArray(cmp.children) && cmp.children.length) {
+      if (Array.isArray(cmp.__config__.children) && cmp.__config__.children.length) {
         // 容器组件需要检查子元素
         if (cmp.rowType === 'table') return false // 表格的子元素不可能为流程条件
         let flag = false
@@ -246,12 +250,12 @@ export default {
           if (flag) return // flag === true 代表找到了一个了 不需要再找下一个
           if (Array.isArray(el)) {
             el.some((e) => {
-              if (e.children) loop(e.children)
+              if (e.__config__.children) loop(e.__config__.children)
               return this.checkColItem(e)
             }) && (flag = true)
           }
         }
-        loop(cmp.children)
+        loop(cmp.__config__.children)
         return flag
       } else {
         return this.checkColItem(cmp)
@@ -276,6 +280,22 @@ export default {
         this.activeData = tempActiveData
       }
     },
+    /**
+     * 阻止明细中嵌套行容器
+     */
+    shouldClone(to, from, target, event, conf) {
+      const targetConf = target._underlying_vm_
+
+      if (conf.__config__.type === 'detail') {
+        // 明细控件不能嵌套明细控件
+        if (targetConf.__config__.layout === 'rowFormItem') return false
+        // 已经作为流程条件的控件不能拖拽进明细
+        if (this.isFilledPCon([targetConf.formId])) return false
+        // 拖拽进明细控件的组件不能作为流程条件
+        targetConf.__config__.proCondition = false
+      }
+      return true
+    },
     addComponent(item) {
       const clone = this.cloneComponent(item)
       this.drawingList.push(clone)
@@ -285,14 +305,12 @@ export default {
       const clone = deepClone(origin)
       const config = clone.__config__
       config.formId = this.getNextId()
+      clone.__config__.label !== undefined && (clone.__config__.label = this.createCmpLabel(clone))
       if (config.layout === 'colFormItem') {
-        clone.__config__.label !== undefined &&
-          (clone.__config__.label = this.createCmpLabel(clone))
         if (typeof config.defaultValue !== 'undefined') {
           clone.__vModel__ = `field${config.formId}`
         }
       } else if (config.layout === 'rowFormItem') {
-        config.componentName = `row${config.formId}`
         !Array.isArray(config.children) && (config.children = [])
       }
       // clone.span = formConf.span;
@@ -306,6 +324,7 @@ export default {
         this.$message.error('该控件已被使用作为条件，不能删除')
         return
       }
+      this.$store.commit('delPCondition', parent[index].__config__.formId)
       parent.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length
@@ -316,12 +335,13 @@ export default {
         }
       })
     },
+    // formId最大值
     getMaxId() {
       if (this.drawingList.length) {
         return this.drawingList.reduce((maxId, cmp) => {
           cmp.__config__.formId > maxId && (maxId = cmp.__config__.formId)
-          if (Array.isArray(cmp.children)) {
-            maxId = cmp.children.reduce(
+          if (Array.isArray(cmp.__config__.children)) {
+            maxId = cmp.__config__.children.reduce(
               (max, child) => Math.max(max, child.__config__.formId),
               maxId
             )
@@ -331,12 +351,19 @@ export default {
       }
       return 0
     },
+    // 下一个formId
     getNextId() {
       return this.getMaxId() + 1
     },
     getSameTagCmpNum(type) {
       return this.drawingList.reduce((count, item) => {
-        return item.__config__.type === type ? count + 1 : count
+        item.__config__.type === type && (count += 1)
+        if (item.__config__.children) {
+          count += item.__config__.children.reduce((c, t) => {
+            return t.__config__.type === type ? c + 1 : c
+          }, 0)
+        }
+        return count
       }, 0)
     },
     createCmpLabel(cmp) {

@@ -49,12 +49,12 @@
           <!-- 任务进度 -->
           <div class="task-progress">
             <div class="num-box">
-              {{ parseInt((item.completeNum / item.totalNum) * 100) }}%
+              {{ calcPercent(item) }}%
             </div>
             <div class="detail-box">
               <el-progress
                 :stroke-width="4"
-                :percentage="parseInt((item.completeNum / item.totalNum) * 100)"
+                :percentage="calcPercent(item)"
                 :format="() => ''"
               />
               <div class="totalNum-row">
@@ -206,6 +206,14 @@ export default {
       await this.loadData()
       this.taskQuery.isOverdue = 0
       await this.loadData()
+    },
+    calcPercent(item) {
+      let percent = parseInt((item.completeNum / item.totalNum) * 100)
+      if (isNaN(percent)) {
+        return 0
+      } else {
+        return percent
+      }
     },
     // 获取数据
     async loadData() {

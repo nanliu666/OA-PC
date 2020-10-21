@@ -28,7 +28,8 @@ function renderFrom(h) {
     <el-row gutter={16} class="parser-form">
       <el-form
         size="medium"
-        label-position="top"
+        label-position={formConfCopy.labelPosition ? formConfCopy.labelPosition : 'top'}
+        label-width={formConfCopy.labelWidth ? formConfCopy.labelWidth : '100%'}
         disabled={formConfCopy.disabled}
         ref="form"
         // model不能直接赋值 https://github.com/vuejs/jsx/issues/49#issuecomment-472013664
@@ -36,7 +37,6 @@ function renderFrom(h) {
         rules={this.rules}
       >
         {renderFormItem.call(this, h, formConfCopy.fields)}
-
         {// 控制按钮是否渲染
         formConfCopy.showBtn ? formBtns.call(this, h) : null}
       </el-form>
@@ -62,7 +62,6 @@ function renderFormItem(h, elementList = []) {
   return elementList.map((scheme) => {
     const config = scheme.__config__
     const layout = layouts[config.layout]
-
     if (layout) {
       return layout.call(this, h, scheme)
     }
@@ -70,43 +69,163 @@ function renderFormItem(h, elementList = []) {
   })
 }
 
-function renderChildren(h, scheme) {
-  const config = scheme.__config__
-  if (!Array.isArray(config.children)) return null
-  return renderFormItem.call(this, h, config.children)
+function renderItemList(h, list) {
+  if (!Array.isArray(list)) return null
+  return renderFormItem.call(this, h, list)
 }
 
+const rowTemplates = {
+  detail(h, element) {
+    const formPrivilege = element.__config__.formPrivilege
+    const addPart = (
+      <div
+        class="parser-item__detail--footer"
+        onClick={() => {
+          addElementChild.call(this, element)
+        }}
+      >
+        ＋ 添加{element.__config__.label}
+      </div>
+    )
+    const wrapItem = () => {
+      return (
+        <el-col span={element.__pc__.span} class="parser-item parser-item__detail">
+          {element.children.map((child, index) => (
+            <div class="parser-item__detail--item">
+              <div class="parser-item__detail--header">
+                <span class="parser-item__detail--title">
+                  {element.__config__.label}
+                  {element.children.length > 1 ? index + 1 : ''}
+                </span>
+                {index > 0 && formPrivilege === 0 ? (
+                  <i
+                    class="icon-basics-delete-outlined iconfont"
+                    onClick={() => {
+                      element.children.splice(index, 1)
+                    }}
+                  ></i>
+                ) : null}
+              </div>
+              <el-row class="parser-item__detail--content">
+                {renderItemList.call(this, h, child)}
+              </el-row>
+            </div>
+          ))}
+          {formPrivilege === 0 ? addPart : ''}
+        </el-col>
+      )
+    }
+    let renderItem = ''
+    // formPrivilege表单权限验证，0可编辑，1只读，2隐藏
+    switch (formPrivilege) {
+      case 1:
+        // 是否在详情页，详情页与发起审批页展示不一
+        if (this.formConfCopy.isDetail) {
+          // 详情页，有默认值显示默认值，无默认值不显示这个标签
+          let defaultValueList = []
+          element.children.forEach((item) => {
+            item.map((deepItem) => {
+              defaultValueList.push(deepItem.__config__.defaultValue)
+            })
+          })
+          renderItem = _.some(defaultValueList, Boolean) ? wrapItem() : ''
+        } else {
+          // 审批发起页面，只读权限表现为置灰处理
+          renderItem = wrapItem()
+        }
+        break
+      case 2:
+        renderItem = ''
+        break
+      default:
+        // 兼容旧版本
+        renderItem = wrapItem()
+        break
+    }
+    return renderItem
+  }
+}
+// formId最大值
+function getMaxId(fieldList) {
+  if (fieldList.length) {
+    return fieldList.reduce((maxId, cmp) => {
+      cmp.__config__.formId > maxId && (maxId = cmp.__config__.formId)
+      if (Array.isArray(cmp.children)) {
+        let children = _.flatten(cmp.children)
+        maxId = children.reduce((max, child) => Math.max(max, child.__config__.formId), maxId)
+      }
+      return maxId
+    }, 0)
+  }
+  return 0
+}
+function addElementChild(element) {
+  const childCopy = _.cloneDeep(element.__config__.children)
+  const nextId = getMaxId(this.formConfCopy.fields) + 1
+  childCopy.forEach((item, index) => {
+    let formId = nextId + index
+    item.__vModel__ = 'field' + formId
+    item.__config__.formId = formId
+  })
+  element.children.push(childCopy)
+  this.rules = this.buildRules(this.formConfCopy.fields, this.rules)
+}
 const layouts = {
   // 单个元素渲染
   colFormItem(h, scheme) {
     const config = scheme.__config__
-    return (
-      <el-col span={scheme.__pc__.span} class="parser-item">
-        <el-form-item
-          prop={scheme.__vModel__}
-          label={config.label}
-          style={config.type === 'desc' ? 'margin-bottom:0' : ''}
-        >
-          <render
-            conf={scheme}
-            onInput={(event) => {
-              this.$set(config, 'defaultValue', event)
-              this.$set(this.form, scheme.__vModel__, event)
-            }}
-          />
-        </el-form-item>
-      </el-col>
+    const formPrivilege = config.formPrivilege
+    const defaultRender = (
+      <render
+        conf={scheme}
+        onInput={(event) => {
+          this.$set(config, 'defaultValue', event)
+          this.$set(this.form, scheme.__vModel__, event)
+        }}
+      />
     )
-  },
-  // 父元素渲染，暂时不做
-  rowFormItem(h, scheme) {
-    let child = renderChildren.apply(this, arguments)
-    if (scheme.type === 'flex') {
-      child = (
-        <el-row type={scheme.type} justify={scheme.justify} align={scheme.align}>
-          {child}
-        </el-row>
+    const valueRender = <span>{this.getFieldContent(scheme)}</span>
+    const wrapItem = function(isDefault) {
+      return (
+        <el-col span={scheme.__pc__.span} class="parser-item">
+          <el-form-item
+            prop={scheme.__vModel__}
+            label={`${config.label ? `${config.label}:` : ''}`}
+            style={config.type === 'desc' ? 'margin-bottom:0' : ''}
+          >
+            {isDefault ? defaultRender : valueRender}
+          </el-form-item>
+        </el-col>
       )
+    }
+    let renderItem = ''
+    // formPrivilege表单权限验证，0可编辑(默认)，1只读，2隐藏
+    switch (formPrivilege) {
+      case 1:
+        // 是否在详情页，详情页与发起审批页展示不一
+        if (this.formConfCopy.isDetail) {
+          // 详情页，有默认值显示默认值，无默认值不显示这个标签
+          renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
+        } else {
+          // 审批发起页面，只读权限表现为置灰处理
+          scheme.__pc__.props.disabled = true
+          renderItem = wrapItem(true)
+        }
+        break
+      case 2:
+        renderItem = ''
+        break
+      default:
+        // 兼容旧版本与权限为0--可编辑
+        renderItem = wrapItem(true)
+        break
+    }
+    return renderItem
+  },
+  rowFormItem(h, scheme) {
+    let child = renderItemList.apply(this, h, scheme.__config__.children)
+    if (rowTemplates[scheme.__config__.type]) {
+      return rowTemplates[scheme.__config__.type].call(this, h, scheme)
     }
     return (
       <el-col span={scheme.__pc__.span}>
@@ -151,7 +270,7 @@ export default {
   },
   methods: {
     init(conf) {
-      if (this._.isEmpty(conf)) {
+      if (_.isEmpty(conf)) {
         return
       }
       const form = {},
@@ -161,6 +280,7 @@ export default {
       this.buildRules(conf.fields, rules)
       this.form = form
       this.rules = rules
+      this.resolveField(this.formConfCopy.fields)
       this.$nextTick(() => {
         this.$refs.form.clearValidate()
       })
@@ -170,31 +290,47 @@ export default {
       componentList.forEach((cur) => {
         const config = cur.__config__
         if (cur.__vModel__) formData[cur.__vModel__] = config.defaultValue
-        if (config.children) this.initFormData(config.children, formData)
+        if (cur.children) this.initFormData(cur.children, formData)
       })
+    },
+    resolveField(fields) {
+      fields.forEach((field) => {
+        if (field.__config__.type === 'detail' && !this.formConfCopy.isDetail) {
+          addElementChild.call(this, field)
+        }
+      })
+    },
+    buildRule(field, rules) {
+      const config = field.__config__
+
+      if (config.required) {
+        const required = {
+          required: config.required,
+          message: null,
+          trigger: null
+        }
+        if (Array.isArray(config.defaultValue) && config.type !== 'daterange') {
+          required.type = 'array'
+          required.message = `请至少选择一个${config.label}`
+        }
+        required.trigger = ruleTrigger[field.__pc__.tag] || 'input'
+        if (!required.message) {
+          required.message = (required.trigger === 'change' ? '请选择' : '请输入') + config.label
+        }
+        rules[field.__vModel__] = required
+      }
     },
     // 构建校验规则
     buildRules(componentList = [], rules = {}) {
       componentList.forEach((cur) => {
-        const config = cur.__config__
-
-        if (config.required) {
-          const required = {
-            required: config.required,
-            message: null,
-            trigger: null
-          }
-          if (Array.isArray(config.defaultValue) && config.type !== 'daterange') {
-            required.type = 'array'
-            required.message = `请至少选择一个${config.label}`
-          }
-          required.trigger = ruleTrigger[cur.__pc__.tag] || 'input'
-          if (!required.message) {
-            required.message = (required.trigger === 'change' ? '请选择' : '请输入') + config.label
-          }
-          rules[cur.__vModel__] = required
+        if (cur.__config__.type !== 'detail') {
+          this.buildRule(cur, rules)
+        }
+        if (cur.children) {
+          _.flatten(cur.children).forEach((item) => this.buildRule(item, rules))
         }
       })
+      return rules
     },
     // 重置方法
     resetForm() {
@@ -204,21 +340,20 @@ export default {
     getFieldContent(field) {
       let options = field.__slot__.options
       let content
-      const form = this.form
-      if (options && Array.isArray(form[field.__vModel__])) {
+      if (options && Array.isArray(field.__config__.defaultValue)) {
         content = options
-          .filter((option) => form[field.__vModel__].includes(option.value))
+          .filter((option) => field.__config__.defaultValue.includes(option.value))
           .map((option) => option.label)
           .join(',')
       } else if (options) {
         content = options
-          .filter((option) => form[field.__vModel__] === option.value)
+          .filter((option) => field.__config__.defaultValue === option.value)
           .map((option) => option.label)
           .join(',')
       } else if (field.__config__.type === 'daterange') {
-        content = form[field.__vModel__].join(' 至 ')
+        content = field.__config__.defaultValue.join(' 至 ')
       } else {
-        content = form[field.__vModel__]
+        content = field.__config__.defaultValue
       }
       return content
     },
@@ -265,7 +400,8 @@ export default {
   }
 }
 </script>
-<style lang="stylus">
+<style lang="scss" scoped>
+@import '~@/styles/variables';
 .parser-form {
   background: #fff;
   .el-checkbox-group {
@@ -274,5 +410,42 @@ export default {
 }
 .parser-item .placeholder {
   color: #757c85;
+}
+.parser-item {
+  &__detail {
+    margin-bottom: 20px;
+    &--item {
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+    &--header {
+      display: flex;
+      line-height: 32px;
+      padding: 0 10px;
+      border-bottom: 1px solid #ccc;
+      align-items: center;
+      justify-content: space-between;
+      i {
+        cursor: pointer;
+        color: #999;
+      }
+    }
+    &--content {
+      padding: 6px 10px;
+    }
+    &--footer {
+      margin-top: 10px;
+      text-align: center;
+      border: 1px dashed #ccc;
+      line-height: 32px;
+      cursor: pointer;
+      &:hover {
+        color: $primaryColor;
+      }
+    }
+  }
 }
 </style>

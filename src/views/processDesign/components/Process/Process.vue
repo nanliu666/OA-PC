@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import FlowCard from './FlowCard/FlowCard.vue'
 import PropPanel from './PropPanel/PropPanel.vue'
+import { mapGetters } from 'vuex'
 import { NodeUtils, getMockData } from './FlowCard/util.js'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
@@ -10,9 +11,9 @@ export default {
   name: 'Process',
   props: ['tabName', 'conf'],
   data() {
-    let data = getMockData()
+    let processData = getMockData()
     return {
-      data, // 流程图数据
+      processData, // 流程图数据
       scaleVal: 100, // 流程图缩放比例 100%
       step: 5, // 缩放步长
       updateId: 0, // key值 用于模拟$forceUpdate
@@ -21,12 +22,15 @@ export default {
       verifyMode: false
     }
   },
+  computed: {
+    ...mapGetters(['fieldList'])
+  },
   watch: {
     conf: {
       handler(val) {
         if (typeof val === 'object' && val !== null) {
-          this.data = Object.assign({}, JSON.parse(JSON.stringify(val)))
-          this.data.isShow === 0 && delete this.data.isShow
+          this.processData = Object.assign({}, JSON.parse(JSON.stringify(val)))
+          this.processData.isShow === 0 && delete this.processData.isShow
         }
         this.forceUpdate()
       },
@@ -35,6 +39,14 @@ export default {
     },
     data: {
       handler(val) {},
+      deep: true
+    },
+    fieldList: {
+      handler(val) {
+        if (val.length !== 0) {
+          this.processData = NodeUtils.initAllOperate(this.processData, this.fieldList)
+        }
+      },
       deep: true
     }
   },
@@ -60,8 +72,8 @@ export default {
     // 给父级组件提供的获取流程数据得方法
     getData() {
       this.verifyMode = true
-      if (NodeUtils.checkAllNode(this.data)) {
-        return Promise.resolve({ formData: this.data })
+      if (NodeUtils.checkAllNode(this.processData)) {
+        return Promise.resolve({ formData: this.processData })
       } else {
         return Promise.reject({ target: this.tabName })
       }
@@ -72,7 +84,7 @@ export default {
      */
     eventReciver({ event, args }) {
       if (event === 'edit') {
-        this.$store.commit('updateProcessData', this.data)
+        this.$store.commit('updateProcessData', this.processData)
         this.activeData = args[0] // 打开属性面板
         return
       }
@@ -85,7 +97,7 @@ export default {
 
     forceUpdate() {
       let allNode = []
-      this.getAllDode(this.data, allNode)
+      this.getAllDode(this.processData, allNode)
       localStorage.setItem('allNode', JSON.stringify(allNode))
       this.updateId = this.updateId + 1
     },
@@ -109,10 +121,10 @@ export default {
       this.activeData.properties = value
       // 修改优先级
       if (NodeUtils.isConditionNode(this.activeData) && value.priority !== oldProp.priority) {
-        NodeUtils.resortPrioByCNode(this.activeData, oldProp.priority, this.data)
-        NodeUtils.setDefaultCondition(this.activeData, this.data)
+        NodeUtils.resortPrioByCNode(this.activeData, oldProp.priority, this.processData)
+        NodeUtils.setDefaultCondition(this.activeData, this.processData)
       }
-      if (NodeUtils.isStartNode(this.activeData)) this.$emit('startNodeChange', this.data)
+      if (NodeUtils.isStartNode(this.activeData)) this.$emit('startNodeChange', this.processData)
       this.onClosePanel()
       this.forceUpdate()
     },
@@ -142,12 +154,12 @@ export default {
         }
         loopChild(data, callback)
       }
-      loop(this.data, () => (res = true))
+      loop(this.processData, () => (res = true))
       return res
     }
   },
   render: function(h) {
-    NodeUtils.globalID = NodeUtils.getMaxNodeId(this.data)
+    NodeUtils.globalID = NodeUtils.getMaxNodeId(this.processData)
     let allNode = []
     NodeUtils.getAllNode(allNode)
     return (
@@ -160,13 +172,13 @@ export default {
         <FlowCard
           verifyMode={this.verifyMode}
           key={this.updateId}
-          data={this.data}
+          data={this.processData}
           onEmits={this.eventReciver}
           style={{ transform: `scale(${this.scaleVal / 100})` }}
         />
         <PropPanel
           value={this.activeData}
-          processData={this.data}
+          processData={this.processData}
           onConfirm={this.onPropEditConfirm}
           onCancel={this.onClosePanel}
         />

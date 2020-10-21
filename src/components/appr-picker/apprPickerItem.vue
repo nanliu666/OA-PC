@@ -62,7 +62,7 @@
               </div>
               <el-dropdown-menu
                 slot="dropdown"
-                style="max-height:300px;overflow:auto"
+                style="max-height: 300px; overflow: auto"
               >
                 <template v-if="optionList.length > 0">
                   <el-dropdown-item
@@ -107,6 +107,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 // import pickUser from '@/components/appr-progress/userPicker.js'
 import elFormEmitter from '@/mixins/elFormEmitter'
 import {
@@ -180,7 +181,7 @@ export default {
     // 是否支持用户选择审批人
     selectable() {
       return (
-        _.get(this.data, 'properties.assigneeType', null) &&
+        _.get(this.data, 'type') === 'approver' &&
         _.get(this.data, 'properties.assigneeType', null) !== 'user'
       )
     },
@@ -256,8 +257,20 @@ export default {
                 }
                 // 多选框
               } else if (condition.type === 'checkbox' && typeof condition.val !== 'undefined') {
-                if (this.formData[condition.vModel] === condition.val) {
+                if (_.isEqual(_.sortBy(this.formData[condition.vModel]), _.sortBy(condition.val))) {
                   return
+                }
+              } else if (condition.type === 'daterange') {
+                const { defaultValue, vModel } = condition
+                const [date1, date2] = this.formData[vModel]
+                // diff date1以免出现负数，区间计算当天（+1天）
+                const days = moment.duration(moment(date2).diff(date1)).days() + 1
+                if (defaultValue.type === 'bet') {
+                  const [val1, operator1, operator2, val2] = defaultValue.value
+                  // between => val1 lte days lte val2
+                  if (_[operator1](val1, days) && _[operator2](days, val2)) return
+                } else {
+                  if (_[defaultValue.type](days, defaultValue.value)) return
                 }
               }
               flag = false

@@ -6,7 +6,7 @@
       class="drawer"
       :visible.sync="visible"
       :show-close="false"
-      style="text-align:left;"
+      style="text-align: left"
       @close="cancel"
     >
       <!-- 标题 -->
@@ -24,7 +24,7 @@
       >
         <span
           v-show="!titleInputVisible"
-          style="cursor:pointer;color: #202940;font-size: 16px;"
+          style="cursor: pointer; color: #202940; font-size: 16px"
           @click="titleInputVisible = true"
         >
           {{ properties.title }}
@@ -35,7 +35,7 @@
           v-model="properties.title"
           v-clickoutside="(_) => (titleInputVisible = false)"
           size="mini"
-          style="z-index:9;max-width: 200px;"
+          style="z-index: 9; max-width: 200px"
         />
         <el-select
           v-if="isConditionNode()"
@@ -75,6 +75,7 @@
             v-if="
               couldShowIt(
                 item,
+                'daterange',
                 'el-input-number',
                 'fc-date-duration',
                 'fc-time-duration',
@@ -84,18 +85,20 @@
               )
             "
             :key="index"
-            :title="item.__config__.label"
+            :title="
+              `${item.__config__.label}${item.__config__.type === 'daterange' ? '(时长/天)' : ''}`
+            "
           >
             <num-input
               :key="index"
               v-model="item.__config__.defaultValue"
               :title="timeTangeLabel(item)"
-              style="padding-right: 6px;"
+              style="padding-right: 6px"
             />
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
@@ -121,7 +124,7 @@
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
@@ -132,7 +135,33 @@
             :key="index"
             :title="item.__config__.label"
           >
-            <el-checkbox-group v-model="item.__config__.defaultValue">
+            <!-- 在这里设置多选的默认值 -->
+            <el-select
+              v-model="item.__config__.selectMode"
+              placeholder="请选择选择模式"
+            >
+              <el-option
+                label="选中所有"
+                value="every"
+              />
+              <el-option
+                label="选中任意"
+                value="some"
+              />
+            </el-select>
+            <el-select
+              v-model="item.__config__.defaultValue"
+              multiple
+            >
+              <el-option
+                v-for="option of item.__slot__.options"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
+
+            <!-- <el-checkbox-group v-model="item.__config__.defaultValue">
               <el-checkbox
                 v-for="city in item.__slot__.options"
                 :key="city.label"
@@ -140,7 +169,23 @@
               >
                 {{ city.label }}
               </el-checkbox>
-            </el-checkbox-group>
+            </el-checkbox-group> -->
+            <template v-slot:action>
+              <i
+                class="el-icon-delete"
+                style="cursor: pointer"
+                @click="onDelCondition(item)"
+              />
+            </template>
+          </row-wrapper>
+
+          <!-- 日期选择器 -->
+          <!-- <row-wrapper
+            v-if="couldShowIt(item, 'daterange')"
+            :key="index"
+            :title="item.label"
+          >
+            {{ item.__config__.label }}
             <template v-slot:action>
               <i
                 class="el-icon-delete"
@@ -148,13 +193,15 @@
                 @click="onDelCondition(item)"
               />
             </template>
-          </row-wrapper>
+          </row-wrapper> -->
+
           <!-- 下拉 -->
           <row-wrapper
             v-if="couldShowIt(item, 'el-select', 'select')"
             :key="index"
             :title="item.label"
           >
+            <!-- 这里设置单选的默认值  -->
             <el-select
               v-model="item.__config__.defaultValue"
               style="width: 280px"
@@ -171,7 +218,7 @@
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
@@ -190,13 +237,13 @@
             <template v-slot:action>
               <i
                 class="el-icon-delete"
-                style="cursor: pointer;"
+                style="cursor: pointer"
                 @click="onDelCondition(item)"
               />
             </template>
           </row-wrapper>
         </template>
-        <div style="padding-left:24px;margin-top:2em;">
+        <div style="padding-left: 24px; margin-top: 2em">
           <el-button
             type="primary"
             size="small"
@@ -205,7 +252,7 @@
           >
             添加条件
           </el-button>
-          <span style="color:#aaa;margin-left:16px;">还有{{ notUseConNum }}个可用条件</span>
+          <span style="color: #aaa; margin-left: 16px">还有{{ notUseConNum }}个可用条件</span>
         </div>
       </section>
 
@@ -213,7 +260,7 @@
       <section
         v-if="value && (isApproverNode() || isStartNode() || isParallelNode())"
         class="approver-pane"
-        style="height:100%;"
+        style="height: 100%"
       >
         <div class="tabs_div flex flex-center flex-align-items">
           <div
@@ -229,14 +276,14 @@
           </div>
         </div>
 
-        <div v-if="activeName == 'config'">
+        <div v-show="activeName == 'config'">
           <!-- 开始节点 -->
           <el-row
             v-if="value.type === 'start'"
-            style="padding: 24px;"
+            style="padding: 24px"
           >
             <el-row>
-              <el-col style="font-size: 14px;line-height: 30px">
+              <el-col style="font-size: 14px; line-height: 30px">
                 发起人
               </el-col>
             </el-row>
@@ -252,11 +299,12 @@
               />
             </el-col>
           </el-row>
+
           <div v-else-if="value.type === 'approver' || value.type === 'parallel'">
             <div style="padding: 24px;">
               <el-radio-group
                 v-model="approverForm.assigneeType"
-                style="line-height: 32px;"
+                style="line-height: 32px"
                 @change="resetOrgColl"
               >
                 <el-radio
@@ -270,11 +318,11 @@
                 </el-radio>
               </el-radio-group>
             </div>
-            <div style="padding-bottom: 24px;">
+            <div style="padding-bottom: 24px">
               <div
                 v-if="approverForm.assigneeType === 'myself'"
                 class="option-box"
-                style="color: #a5a5a5;"
+                style="color: #a5a5a5"
               >
                 发起人自己将作为审批人处理审批单
               </div>
@@ -326,7 +374,7 @@
                 </div>
               </div>
               <div v-else-if="approverForm.assigneeType === assigneeTypeObect.directorLevel">
-                <div style="font-size: 14px;padding-left: 24px;">
+                <div style="font-size: 14px; padding-left: 24px">
                   <el-row>
                     <el-col style="line-height: 30px">
                       发起人的
@@ -356,7 +404,7 @@
                 </div>
               </div>
               <div v-else-if="approverForm.assigneeType === assigneeTypeObect.job">
-                <div style="padding-bottom: 24px;">
+                <div style="padding-bottom: 24px">
                   <commonForm
                     ref="jobData"
                     :model="infoForm"
@@ -426,39 +474,27 @@
           </div>
         </div>
         <div
-          v-if="activeName == 'formAuth'"
+          v-show="activeName == 'formAuth'"
           class="formAuth"
         >
           <div class="form-auth-table">
             <header class="auth-table-header">
-              <div class="row">
-                <div class="label">
-                  表单字段
-                </div>
-                <el-radio-group
-                  v-model="globalFormOperate"
-                  class="radio-group"
-                  @change="changeAllFormOperate"
-                >
-                  <el-radio
-                    :label="2"
-                    style="margin-left: 1rem;"
-                  >
-                    可编辑
-                  </el-radio>
-                  <el-radio :label="1">
-                    只读
-                  </el-radio>
-                  <el-radio :label="0">
-                    隐藏
-                  </el-radio>
-                </el-radio-group>
+              <div class="header-title">
+                表单字段
               </div>
+              <ul class="header-ul">
+                <li
+                  v-for="(item, index) in ['可编辑', '只读', '隐藏']"
+                  :key="index"
+                >
+                  {{ item }}
+                </li>
+              </ul>
             </header>
             <div class="auth-table-body">
               <div
-                v-for="item in getFormOperates()"
-                :key="item.formId"
+                v-for="(item, index) in properties.formOperates"
+                :key="index"
                 class="row"
               >
                 <div class="label flex flex-center flex-align-items">
@@ -466,7 +502,6 @@
                     v-show="item.required"
                     class="required"
                   >*</span>
-                  <!--                                {{item.label}}-->
                   <el-tooltip
                     :content="item.label"
                     placement="right-end"
@@ -478,21 +513,54 @@
                     />
                   </el-tooltip>
                 </div>
-                <el-radio-group
-                  v-model="item.formOperate"
-                  class="radio-group"
+                <el-tooltip
+                  v-if="item.proCondition && isApproverNode()"
+                  content="设置为条件后审批人将不能对这个字段进行编辑"
+                  placement="right-end"
+                  effect="dark"
                 >
-                  <el-radio
-                    :label="2"
-                    style="margin-left: 1rem;"
+                  <div
+                    class="label"
+                    v-html="item.label"
+                  />
+                  <el-radio-group
+                    v-model="item.formPrivilege"
+                    class="radio-group"
                   >
-                    <span style="opacity: 0;">可编辑</span>
+                    <el-radio
+                      :label="0"
+                      disabled
+                    >
+                      <span style="display: none">可编辑</span>
+                    </el-radio>
+                    <el-radio
+                      :label="1"
+                      disabled
+                    >
+                      <span style="display: none">只读</span>
+                    </el-radio>
+                    <el-radio
+                      :label="2"
+                      disabled
+                    >
+                      <span style="display: none">隐藏</span>
+                    </el-radio>
+                  </el-radio-group>
+                </el-tooltip>
+                <el-radio-group
+                  v-else
+                  v-model="item.formPrivilege"
+                  class="radio-group"
+                  @change="$forceUpdate()"
+                >
+                  <el-radio :label="0">
+                    <span style="display: none">可编辑</span>
                   </el-radio>
                   <el-radio :label="1">
-                    <span style="opacity: 0;">只读</span>
+                    <span style="display: none">只读</span>
                   </el-radio>
-                  <el-radio :label="0">
-                    <span style="opacity: 0;">隐藏</span>
+                  <el-radio :label="2">
+                    <span style="display: none">隐藏</span>
                   </el-radio>
                 </el-radio-group>
               </div>
@@ -503,7 +571,7 @@
 
       <section
         v-if="value && isCopyNode()"
-        style="padding-left: 24px;"
+        style="padding-left: 24px"
       >
         <fc-org-select
           ref="copy-org"
@@ -529,7 +597,7 @@
           <!-- 发起人默认就有 -->
           <el-checkbox
             v-if="isShowInitiator"
-            style="margin-bottom: 10px;"
+            style="margin-bottom: 10px"
             :label="-1"
           >
             发起人
@@ -537,7 +605,7 @@
           <el-checkbox
             v-for="(item, index) in pconditions"
             :key="index"
-            style="margin-bottom: 10px;"
+            style="margin-bottom: 10px"
             class="flex justify-space-around"
             :label="item.__config__.formId"
           >
@@ -603,6 +671,7 @@ const rangeType = {
   gte: '≥',
   eq: '='
 }
+// 默认表单模版
 const defaultApproverForm = {
   approvers: [], // 审批人集合
   assigneeType: 'user', // 指定审批人
@@ -619,6 +688,7 @@ const defaultApproverForm = {
   },
   optionalRange: 'USER' // USER<最多十个> / ALL / ROLE
 }
+import { mapGetters } from 'vuex'
 export default {
   directives: {
     Clickoutside
@@ -734,9 +804,8 @@ export default {
       },
       fcOrgTabList: ['dep', 'user', 'optional'],
       visible: false, // 控制面板显隐
-      globalFormOperate: null, // 统一设置节点表单权限
       titleInputVisible: false, // 是否显示标题输入框  startNode 不显示
-      activeName: 'config', // or formAuth  Tab面板key
+      activeName: 'config', // or formAuth/config Tab面板key
       showingPCons: [], // 用户选择了得条件  被选中的才会被展示在面板上编辑
       pconditions: [], // 从vuex中获取的可以作为流程图条件的集合
       dialogVisible: false, // 控制流程条件选项Dialog显隐
@@ -753,10 +822,6 @@ export default {
         optional: []
       },
       useDirectorProxy: true, // 找不到主管时 上级主管代理审批
-      // directorLevel: '1', // 审批主管级别
-      startForm: {
-        formOperates: []
-      },
       approverForm: JSON.parse(JSON.stringify(defaultApproverForm)),
 
       optionalOptions: [
@@ -820,6 +885,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['fieldList']),
     // 未使用的条件个数
     notUseConNum() {
       // 发起人是默认就有得  所以需要加 1
@@ -865,9 +931,24 @@ export default {
     value(newVal) {
       if (newVal && newVal.properties) {
         this.visible = true
-        this.properties = JSON.parse(JSON.stringify(newVal.properties))
+        this.properties = _.cloneDeep(newVal.properties)
         if (this.properties) {
           NodeUtils.isConditionNode(newVal) && this.getPriorityLength()
+        }
+        let formOperatesTemp = newVal.properties.formOperates
+        if (!formOperatesTemp) return
+        // 每次点击节点人员，会重置当前表单权限
+        this.properties.formOperates = []
+        // 表单设计内容不为空，才会去赋值（vuex存）
+        if (this.fieldList.length !== 0) {
+          // 已存在表单权限
+          if (this.isSameCondition(formOperatesTemp)) {
+            // 未对其进行修改(通过比较formId实现)
+            this.properties.formOperates = formOperatesTemp
+          } else {
+            // this.handlerFieldList(newVal, formOperatesTemp)
+            this.properties.formOperates = NodeUtils.initAllOperate(newVal, this.fieldList)
+          }
         }
       }
     }
@@ -881,15 +962,16 @@ export default {
     this.getTagData()
   },
   methods: {
-    changeAllFormOperate(val) {
-      const target = this.isStartNode() ? this.startForm : this.approverForm
-      target.formOperates.forEach((t) => (t.formOperate = val))
-    },
-    getFormOperates() {
-      let res = []
-      this.isApproverNode() && (res = this.approverForm.formOperates)
-      this.isStartNode() && (res = this.startForm.formOperates)
-      return res
+    isSameCondition(formOperatesTemp) {
+      let fieldTempArr = []
+      let operateArr = []
+      this.fieldList.map((item) => {
+        fieldTempArr.push(item.__config__.formId)
+      })
+      formOperatesTemp.map((item) => {
+        operateArr.push(item.formId)
+      })
+      return _.isEqual(operateArr, fieldTempArr)
     },
     valid() {
       const assigneeType = this.approverForm.assigneeType
@@ -916,7 +998,6 @@ export default {
         })
       ).then(() => {})
     },
-    validate() {},
     /**
      *
      * @author guanfenda
@@ -1040,6 +1121,7 @@ export default {
             return
           }
           const numberTypeCmp = [
+            'daterange', // 日期类型作为数字处理
             'el-input-number',
             'fc-date-duration',
             'fc-time-duration',
@@ -1057,6 +1139,12 @@ export default {
             res.val = ''
             t.__slot__.options.map((it) => {
               it.label === cValue && (res.val = it.value)
+            })
+          } else if (t.__config__.type === 'checkbox') {
+            res.val = []
+            res.selectMode = t.__config__.selectMode
+            t.__slot__.options.map((it) => {
+              cValue.includes(it.value) && res.val.push(it.value)
             })
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
@@ -1079,6 +1167,12 @@ export default {
             const index = this.pconditions.findIndex((p) => p.formId === t.formId)
             const labels = this.$refs['org' + index][0].selectedLabels
             nodeContent += `[${t.label} = ${labels}] ` + '\n'
+          } else if (['checkbox'].includes(t.__config__.type)) {
+            const { options } = t.__slot__
+            nodeContent +=
+              `[${t.__config__.label} = ${options
+                .filter(({ value }) => cValue.includes(value))
+                .map(({ label }) => label)}] ` + '\n'
           } else {
             nodeContent += `[${t.__config__.label} = ${cValue}] ` + '\n'
           }
@@ -1119,13 +1213,8 @@ export default {
      * 开始节点确认保存
      */
     startNodeComfirm() {
-      this.properties.initiator = this.initiator['user']
-
-      const formOperates = this.startForm.formOperates.map((t) => ({
-        formId: t.formId,
-        formOperate: t.formOperate
-      }))
-      Object.assign(this.properties, { formOperates })
+      // 兼容修复，不知道怎么丢失的所有人的initiator
+      this.properties.initiator = this.initiator['user'] ? this.initiator['user'] : 'ALL'
       this.$emit('confirm', this.properties, this.getOrgSelectLabel('start') || '所有人')
       this.visible = false
     },
@@ -1197,6 +1286,7 @@ export default {
       ) {
         this.approverForm.counterSign = null
       }
+      this.approverForm.formOperates = this.properties.formOperates
       Object.assign(this.properties, this.approverForm)
       this.$emit('confirm', this.properties, content || '请设置审批人')
       this.visible = false
@@ -1278,9 +1368,9 @@ export default {
       if (Array.isArray(this.approverForm.approvers)) {
         this.orgCollection[this.approverForm.assigneeType] = approvers
       }
-      // this.approverForm.formOperates = this.initFormOperates(this.value)
     },
     firstComdition(data, firstConditinoNode) {
+      // 这里会查询第一个条件分支
       if (hasBranch(data) || hasParallelBranch(data)) {
         if (!firstConditinoNode.length > 0) {
           firstConditinoNode.push(data)
@@ -1320,13 +1410,20 @@ export default {
           if (Array.isArray(nodeConditions)) {
             // if(nodeConditions.)
             const con = nodeConditions.find((item) => item.formId == t.__config__.formId)
-            con &&
-              con.defaultValue &&
-              ((temp = con.defaultValue), this.showingPCons.push(t.__config__.formId))
+            if (con && con.defaultValue) {
+              temp = con.defaultValue
+              this.showingPCons.push(t.__config__.formId)
+            }
+            if (con && con.selectMode) {
+              this.$set(t.__config__, 'selectMode', con.selectMode)
+            }
           }
 
           this.$set(t.__config__, 'defaultValue', temp)
-          t.__config__.type === 'checkbox' && this.$set(t.__config__, 'defaultValue', [])
+          // fix undefined
+          if (t.__config__.type === 'checkbox' && !temp) {
+            this.$set(t.__config__, 'defaultValue', [])
+          }
         })
       }
     },
@@ -1417,18 +1514,31 @@ export default {
 
 .form-auth-table {
   font-size: 14px;
-  margin-top: 24px;
-
+  padding: 10px 24px;
   .auth-table-header {
-    background: #fafafa;
+    border-bottom: 1px solid #E3E7E9;
     line-height: 40px;
+    font-size: 14px;
+    font-weight: 550;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .header-title {
+      flex: 1;
+    }
+    .header-ul {
+      display: flex;
+      width: 70%;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   .row {
     display: flex;
     align-items: center;
     line-height: 32px;
-    padding: 8px 12px;
+    padding: 8px 0px;
     border-bottom: 1px solid #efefef;
 
     &:hover {
@@ -1448,6 +1558,7 @@ export default {
 
     .radio-group {
       flex: 2;
+      width: 70%;
       display: flex;
       justify-content: space-between;
     }

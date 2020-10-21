@@ -101,7 +101,7 @@
                 />
               </el-form-item>
               <el-form-item
-                label="辩证码"
+                label="图片验证码"
                 prop="captchaCode"
               >
                 <div style="display: flex;align-items: center">
@@ -120,7 +120,7 @@
               </el-form-item>
 
               <el-form-item
-                label="验证码"
+                :label="`${$parent.isEmail ? '邮箱' : '手机'}验证码`"
                 prop="code"
               >
                 <div style="display: flex;align-items: center">
@@ -129,7 +129,7 @@
                     class="test-code-input"
                     size="small"
                     auto-complete="off"
-                    :placeholder="$t('login.code')"
+                    :placeholder="`请输入${$parent.isEmail ? '邮箱' : '手机'}验证码`"
                   />
                   <el-button
                     v-show="!identity.msgKey"
@@ -156,7 +156,7 @@
               <i class="el-icon-success" />
             </div>
             <div class="success-text">
-              <span>你的新手机号码已绑定完成</span>
+              <span>{{ `你的${$parent.isEmail ? '新邮箱' : '新手机号码'}已绑定完成` }}</span>
             </div>
             <div class="back-login" />
           </div>
@@ -239,7 +239,7 @@ export default {
     }
     const validateCaptchaCode = (rule, value, callback) => {
       if (!_this.identity.form.captchaCode) {
-        callback(new Error('请输入辩证码'))
+        callback(new Error('请输入图片验证码'))
       } else {
         validateButton()
         callback()

@@ -119,6 +119,38 @@ export const componentGroups = [
           }
         },
         placeholder: '请输入'
+      },
+      {
+        __config__: {
+          name: '金额',
+          label: '金额(元)',
+          // type: 'money', // 参考交互稿,金额类型与数字类型没有区别,直接使用type=number走相同的逻辑.
+          type: 'number',
+          layout: 'colFormItem',
+          icon: 'el-icon-money',
+          defaultValue: null,
+          shouldPrint: true,
+          required: false,
+          proCondition: true
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          tag: 'el-input-number',
+          style: { width: '100%' },
+          props: {
+            value: undefined,
+            'controls-position': 'right'
+          }
+        },
+        __mobile__: {
+          renderType: 'input',
+          tag: 'van-field',
+          props: {
+            type: 'number'
+          }
+        },
+        placeholder: '请输入金额'
       }
     ]
   },
@@ -142,11 +174,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: '1'
+              value: 0
             },
             {
               label: '选项二',
-              value: '2'
+              value: 1
             }
           ]
         },
@@ -174,17 +206,22 @@ export const componentGroups = [
           defaultValue: [],
           layout: 'colFormItem',
           shouldPrint: true,
-          required: false
+          // 默认的seletMode属性为every,该属性用于确定在发起的时候判断是否符合条件(every需要选中所有的选项,some只需要选中选项的一项)
+          // 为了 避免条件分支出现相同的选项,如 全部选中=0,1,2 选中任意=0,1,2 为了后台流程能够通过,
+          // 在提交的时候,给选中任意添加一个不存在的选项(-1)用于标记
+          selectMode: 'every',
+          required: false,
+          proCondition: true
         },
         __slot__: {
           options: [
             {
               label: '选项一',
-              value: '1'
+              value: 0
             },
             {
               label: '选项二',
-              value: '2'
+              value: 1
             }
           ]
         },
@@ -251,7 +288,8 @@ export const componentGroups = [
           layout: 'colFormItem',
           defaultValue: [],
           shouldPrint: true,
-          required: false
+          required: false,
+          proCondition: true
         },
         __slot__: {},
         __pc__: {
@@ -280,6 +318,27 @@ export const componentGroups = [
             autoCalc: true
           }
         }
+      },
+      {
+        __config__: {
+          name: '明细',
+          label: '明细',
+          type: 'detail',
+          icon: 'icon-basics-daterange-outlined',
+          layout: 'rowFormItem',
+          defaultValue: [],
+          actionText: '添加',
+          shouldPrint: true
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          props: {}
+        },
+        __mobile__: {
+          props: {}
+        },
+        children: []
       }
     ]
   }

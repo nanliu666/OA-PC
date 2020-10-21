@@ -9,14 +9,9 @@
         <el-input
           v-model="fuzzySearch"
           placeholder="姓名/手机号码/工号"
+          clearable
           @input="search"
-        >
-          <i
-            slot="suffix"
-            class="el-input__icon el-icon-search pointer"
-            @click="handleSearch"
-          />
-        </el-input>
+        />
       </el-form-item>
       <el-form-item>
         <el-button

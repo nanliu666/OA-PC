@@ -153,7 +153,16 @@
                         </div>
                         <div class="content-box">
                           <div class="content-title">
-                            {{ processesItem.processName }}
+                            <span class="title">{{ processesItem.processName }}</span>
+                            <el-tag
+                              v-if="_.isEmpty(processesItem.formKey)"
+                              type="success"
+                            >
+                              自定义
+                            </el-tag>
+                            <el-tag v-else>
+                              系统定制
+                            </el-tag>
                           </div>
                           <el-tooltip
                             v-if="processesItem.remark"
@@ -532,7 +541,6 @@ export default {
       })
         .then(() => {
           deleteCategory({ id: data.id }).then(() => {
-            // window.console.log('delete res==', res)
             this.$message.success('删除成功')
             this.refreshData()
           })
@@ -699,6 +707,9 @@ export default {
                 font-size: 14px;
                 color: #202940;
                 font-weight: 600;
+                .title {
+                  margin-right: 1rem;
+                }
               }
               .content-des {
                 margin-top: 4px;

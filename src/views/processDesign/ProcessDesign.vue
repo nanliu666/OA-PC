@@ -7,7 +7,7 @@
     <header class="page__header">
       <div class="page-actions">
         <div
-          style="border-right:1px solid #c5c5c5;cursor: pointer;"
+          style="border-right: 1px solid #c5c5c5; cursor: pointer"
           @click="exit"
         >
           <i class="el-icon-arrow-left" /> 返回
@@ -216,7 +216,6 @@ export default {
       const p2 = getCmpData('formDesign')
       const p3 = getCmpData('processDesign')
       const p4 = getCmpData('advancedSetting')
-
       Promise.all([p1, p2, p3, p4])
         .then((res) => {
           const param = {
@@ -303,7 +302,7 @@ export default {
      * @desc 处理发起人范围 转成，ProcessVisible属性
      * */
     handleProcessVisible(param, processVisible) {
-      if (param.basicSetting.initiator && param.basicSetting.initiator.length > 0) {
+      if (_.isArray(param.basicSetting.initiator) && param.basicSetting.initiator.length > 0) {
         param.basicSetting.initiator.map((it) => {
           let type = ''
           if (it.type) {
@@ -874,11 +873,9 @@ export default {
       d.properties.conditions.map((it) => {
         this.processMap[it.vModel] = ''
         let val = ''
-        if (it.type === 'number' && it.defaultValue.type === 'bet') {
+        if (['number', 'daterange'].includes(it.type) && it.defaultValue.type === 'bet') {
           val = it.defaultValue.value[1] == 'lt' ? 'gt' : 'gte'
-        }
-        (it.type === 'number' &&
-          it.defaultValue.type === 'bet' &&
+          // 介于两值之间
           conditionExpression.push(
             '${' +
               it.vModel +
@@ -893,13 +890,20 @@ export default {
               ' ' +
               it.defaultValue.value[3] +
               '}'
-          )) ||
-          (it.type === 'number' &&
-            conditionExpression.push(
-              '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
-            ))
+          )
+        } else if (!['checkbox', 'radio'].includes(it.type)) {
+          // 为了处理数字类型，其他的类型都不经过此处
+          conditionExpression.push(
+            '${' + it.vModel + ' ' + it.defaultValue.type + ' ' + it.defaultValue.value + '}'
+          )
+        }
 
         it.type === 'radio' && conditionExpression.push('${' + it.vModel + ' eq \'' + it.val + '\'}')
+        // 添加对多选的类型处，当作string类型，发起的时候要注意顺序。
+        if (it.type === 'checkbox') {
+          const val = it.selectMode === 'some' ? [-1, ...it.val] : it.val
+          conditionExpression.push('${' + it.vModel + ' eq \'' + _.sortBy(val) + '\'}')
+        }
       })
 
       let strs = ''
