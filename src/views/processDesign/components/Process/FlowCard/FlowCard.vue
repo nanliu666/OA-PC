@@ -2,8 +2,10 @@
 /* eslint-disable no-unused-vars */
 import { NodeUtils } from './util.js'
 const isCondition = (data) => data.type === 'condition'
+const isParallel = (data) => data.type === 'parallel'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
+const hasParallelBranch = (data) => notEmptyArray(data.parallelNodes)
 const stopPro = (ev) => ev.stopPropagation()
 
 function createNormalCard(ctx, conf, h) {
@@ -49,11 +51,43 @@ function createNormalCard(ctx, conf, h) {
   )
 }
 // arg = ctx, data, h
+function parallelFunc(ctx, conf, h) {
+  return (
+    <section class="flow-path-card approver " onClick={this.eventLancher.bind(ctx, 'edit', conf)}>
+      <header class="header">
+        <div class="title-box" style="height: 36px;width:160px;">
+          <span class="title-text">{conf.properties.title}</span>
+          {
+            <input
+              vModel_trim={conf.properties.title}
+              class="title-input"
+              style="margin-top:6px;"
+              onClick={stopPro}
+            />
+          }
+        </div>
+        <div class="actions actions_icon">
+          <i
+            class="el-icon-close icon"
+            onClick={this.eventLancher.bind(ctx, 'deleteParallelNode', conf, ctx.data)}
+          ></i>
+        </div>
+      </header>
+      <div class="body">
+        <pre class="text">{conf.content}</pre>
+        <div class="icon-wrapper right right_other">
+          <i class="el-icon-arrow-right icon right-arrow"></i>
+        </div>
+      </div>
+    </section>
+  )
+}
 const createFunc = (...arg) => createNormalCard.call(arg[0], ...arg)
 let nodes = {
   start: createFunc,
   approver: createFunc,
   copy: createFunc,
+  parallel: (...arg) => parallelFunc.call(arg[0], ...arg),
   empty: (_) => '',
   condition: function(ctx, conf, h) {
     return (
@@ -105,32 +139,34 @@ function addNodeButton(ctx, data, h, isBranch = false) {
   if (isEmpty && !isBranch) {
     return ''
   }
+
+  let isHidePlus = false
   if (
-    data.conditionNodes &&
-    data.conditionNodes.length > 0 &&
     data.type === 'start' &&
-    !data.isShow
+    !data.conditionNodes &&
+    !data.parallelNodes &&
+    data.childNode &&
+    data.childNode.type === 'empty'
   ) {
-    data.isShow = 1
+    if (!!data.childNode.conditionNodes || !!data.childNode.parallelNodes) {
+      isHidePlus = true
+    }
+  }
+  if (
+    (data.conditionNodes && data.conditionNodes.length > 0 && data.type === 'start' && !isBranch) ||
+    (data.parallelNodes && data.parallelNodes.length > 0 && data.type === 'start' && !isBranch) ||
+    isHidePlus
+  ) {
     return (
       <div class="add-node-btn-box flex  justify-center">
         <div class="add-node-btn"></div>
       </div>
     )
   } else {
-    if (
-      data.conditionNodes &&
-      data.conditionNodes.length > 0 &&
-      data.type === 'start' &&
-      data.isShow
-    ) {
-      data.isShow = 0
-    }
-
     return (
       <div class="add-node-btn-box flex  justify-center">
         <div class="add-node-btn">
-          <el-popover placement="right" trigger="click" width="300">
+          <el-popover placement="right" trigger="click" width="280">
             <div class="condition-box">
               <div>
                 <div
@@ -140,6 +176,16 @@ function addNodeButton(ctx, data, h, isBranch = false) {
                   <i class="iconfont icon-approval-Seal-bicolor"></i>
                 </div>
                 审批人
+              </div>
+
+              <div>
+                <div
+                  class="condition-icon"
+                  onClick={ctx.eventLancher.bind(ctx, 'parallelBranch', data, isBranch)}
+                >
+                  <i class="iconfont icon-approval-Seal-bicolor"></i>
+                </div>
+                并行审批
               </div>
 
               <div>
@@ -178,6 +224,7 @@ function NodeFactory(ctx, data, h) {
   const showErrorTip = ctx.verifyMode && NodeUtils.checkNode(data) === false
   let res = [],
     branchNode = '',
+    branchParallelNode = '',
     selfNode = (
       <div class="node-wrap">
         <div class={`node-wrap-box ${data.type} ${showErrorTip ? 'error' : ''}`}>
@@ -210,6 +257,22 @@ function NodeFactory(ctx, data, h) {
     )
   }
 
+  if (hasParallelBranch(data)) {
+    branchParallelNode = (
+      <div class="branch-wrap">
+        <div class="branch-box-wrap">
+          <div class="branch-box  flex justify-center relative">
+            <button class="btn" onClick={this.eventLancher.bind(ctx, 'appendParallelNode', data)}>
+              添加并行
+            </button>
+            {data.parallelNodes.map((d) => NodeFactory.call(ctx, ctx, d, h))}
+          </div>
+        </div>
+        {addNodeButton.call(ctx, ctx, data, h, true)}
+      </div>
+    )
+  }
+
   if (isCondition(data)) {
     return (
       <div class="col-box">
@@ -218,14 +281,31 @@ function NodeFactory(ctx, data, h) {
         <div class="bottom-cover-line"></div>
         {selfNode}
         {branchNode}
+        {branchParallelNode}
         {NodeFactory.call(ctx, ctx, data.childNode, h)}
       </div>
     )
   }
+
+  if (isParallel(data)) {
+    return (
+      <div class="col-box ">
+        <div class="center-line "></div>
+        <div class="top-cover-line"></div>
+        <div class="bottom-cover-line"></div>
+        {selfNode}
+        {branchNode}
+        {branchParallelNode}
+        {NodeFactory.call(ctx, ctx, data.childNode, h)}
+      </div>
+    )
+  }
+
   res.push(selfNode)
   branchNode && res.push(branchNode)
+  branchParallelNode && res.push(branchParallelNode)
   data.childNode && res.push(NodeFactory.call(ctx, ctx, data.childNode, h))
-  ctx.Vnode = res
+  // ctx.Vnode = res
   return res
 }
 

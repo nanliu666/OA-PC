@@ -140,11 +140,11 @@ export default {
       }
     }
   },
-  provide: function () {
+  provide: function() {
     const that = this
     return {
       // 根据path判断是否是最后一个节点
-      isLastNode: function (path) {
+      isLastNode: function(path) {
         const pathList = []
         const loop = ($el) => {
           pathList.push($el.path)
@@ -192,11 +192,9 @@ export default {
       }
       const processMap = this.createProcessMap()
       const nodeData = this.createNodeLine()
-      const { formData } = data
 
       return submitApprApply({
         ...data,
-        formData: formData ? JSON.stringify(formData) : null,
         title: `${this.userInfo.nick_name}发起的${data.processName}`,
         userId: this.userId,
         processMap: Object.assign(
@@ -308,7 +306,11 @@ export default {
       const { formData } = this
       let processMap = this.conditionFields.reduce((acc, { prop, type }) => {
         if (type === 'checkbox') {
-          acc[prop] = _.sortBy(formData[prop]).join()
+          if (formData[prop].includes(-1)) {
+            acc[prop] = _.find(formData[prop], _.isString)
+          } else {
+            acc[prop] = _.sortBy(formData[prop]).join()
+          }
         } else if (type === 'daterange') {
           const [date1, date2] = formData[prop]
           // diff date1以免出现负数，区间计算当天（+1天）

@@ -30,8 +30,24 @@ btn-bigger()
   position: relative;
   flex-center()
   flex-direction column
+  &.parallel{
+    padding 50px 50px 0
+  }
   &.condition{
       padding 30px 50px 0
+  }
+  &.parallel::before{
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 4px;
+    border-style: solid;
+    border-width: 8px 6px 4px;
+    border-color: $line-color transparent transparent;
+    background: $bg-color;
   }
   &.approver::before {
     content: '';
@@ -50,6 +66,9 @@ btn-bigger()
   &.error {
     &.condition .error-tip{
       right: 0;
+    }
+    &.parallel .error-tip{
+      right: 10px;
     }
     .error-tip {
       right: -40px;
@@ -79,6 +98,10 @@ btn-bigger()
 
   &.condition .error-tip {
     right: 60px;
+  }
+  &.parallel .error-tip {
+    right: 60px;
+    top: 34%;
   }
 }
 .end-node {
@@ -412,35 +435,41 @@ btn-bigger()
             &:hover
                 transform scale(1.1) translateY(-50%)
 
+
+
 .condition-box
     display: flex;
     justify-content: space-around;
     align-items center
     text-align center
-    padding: 10px 20px;
+    padding: 0px 0px;
     >div:nth-child(1)  .iconfont
-        color #FF943E
+      color #FF943E
     >div:nth-child(2)  .iconfont
+        color #FF943E
+    >div:nth-child(3)  .iconfont
         color #3296FA
-    .condition-icon
-        width: 60px;
-        height: 60px;
-        line-height: 60px;
-        border: 1px solid #e5e5e5;
+    >div:nth-child(4)  .iconfont
+        color #6268EB
+  .condition-icon
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        //border: 1px solid #e5e5e5;
         border-radius: 30px;
         box-sizing border-box
         font-size 12px
         cursor pointer
         margin-bottom 4px
-
+        margin auto
         .iconfont
-            font-size 32px
+            font-size 20px
 
         &:hover
             background #3296FA
             box-shadow 0 0 8px 4px rgba(0,0,0,.1)
             > .iconfont
-                color white
+                color white !important
 .relative
     position relative
 

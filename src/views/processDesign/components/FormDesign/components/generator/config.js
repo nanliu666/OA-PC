@@ -123,13 +123,13 @@ export const componentGroups = [
       {
         __config__: {
           name: '金额',
-          label: '金额(元)',
-          // type: 'money', // 参考交互稿,金额类型与数字类型没有区别,直接使用type=number走相同的逻辑.
-          type: 'number',
+          label: '金额',
+          type: 'money',
           layout: 'colFormItem',
           icon: 'el-icon-money',
           defaultValue: null,
           shouldPrint: true,
+          currency: 'CNY',
           required: false,
           proCondition: true
         },
@@ -147,7 +147,8 @@ export const componentGroups = [
           renderType: 'input',
           tag: 'van-field',
           props: {
-            type: 'number'
+            type: 'number',
+            labelWidth: '50%' // 在label上添加币种标识,增加label长度以防止label换行.
           }
         },
         placeholder: '请输入金额'
@@ -174,11 +175,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: '0'
+              value: 0
             },
             {
               label: '选项二',
-              value: '1'
+              value: 1
             }
           ]
         },
@@ -206,6 +207,10 @@ export const componentGroups = [
           defaultValue: [],
           layout: 'colFormItem',
           shouldPrint: true,
+          // 默认的seletMode属性为every,该属性用于确定在发起的时候判断是否符合条件(every需要选中所有的选项,some只需要选中选项的一项)
+          // 为了 避免条件分支出现相同的选项,如 全部选中=0,1,2 选中任意=0,1,2 为了后台流程能够通过,
+          // 在提交的时候,给选中任意添加一个不存在的选项(-1)用于标记
+          selectMode: 'every',
           required: false,
           proCondition: true
         },
@@ -213,11 +218,11 @@ export const componentGroups = [
           options: [
             {
               label: '选项一',
-              value: '0'
+              value: 0
             },
             {
               label: '选项二',
-              value: '1'
+              value: 1
             }
           ]
         },
@@ -399,6 +404,29 @@ export const componentGroups = [
           props: {
             disabled: false
           }
+        }
+      },
+      {
+        __config__: {
+          name: '地址',
+          label: '地址',
+          type: 'locationPicker',
+          icon: 'el-icon-location-information',
+          layout: 'colFormItem',
+          defaultValue: {},
+          shouldPrint: true,
+          required: false,
+          proCondition: false
+        },
+        __slot__: {},
+        __pc__: {
+          tag: 'location-picker',
+          props: {}
+        },
+        __mobile__: {
+          tag: 'location-picker',
+          renderType: 'input',
+          props: {}
         }
       }
     ]

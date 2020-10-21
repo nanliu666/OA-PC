@@ -67,6 +67,10 @@ export default {
     allowDrop(draggingNode, dropNode, type) {
       if (type === 'prev' || type === 'next') {
         let parentOrg = this.findParentOrg(dropNode.data.orgId)
+        let draggingNodeParent = this.findParentOrg(draggingNode.data.orgId)
+        if (parentOrg.orgId === draggingNodeParent.orgId) {
+          return true
+        }
         if (parentOrg && parentOrg.children) {
           for (let i = 0; i < parentOrg.children.length; i++) {
             if (parentOrg.children[i].orgName === draggingNode.data.orgName) {

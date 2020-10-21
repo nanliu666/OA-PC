@@ -81,6 +81,7 @@
                 'fc-time-duration',
                 'fc-amount',
                 'fc-calculate',
+                'money',
                 'number'
               )
             "
@@ -89,6 +90,21 @@
               `${item.__config__.label}${item.__config__.type === 'daterange' ? '(时长/天)' : ''}`
             "
           >
+            <!-- <el-select
+              v-if="item.__config__.type === 'money'"
+              v-model="item.__config__.currency"
+              placeholder="请选择货币类型"
+              style="margin-bottom: 10px"
+            >
+              <el-option
+                label="人民币/元"
+                value="CNY"
+              />
+              <el-option
+                label="美元/元"
+                value="USD"
+              />
+            </el-select> -->
             <num-input
               :key="index"
               v-model="item.__config__.defaultValue"
@@ -136,7 +152,32 @@
             :title="item.__config__.label"
           >
             <!-- 在这里设置多选的默认值 -->
-            <el-checkbox-group v-model="item.__config__.defaultValue">
+            <el-select
+              v-model="item.__config__.selectMode"
+              placeholder="请选择选择模式"
+            >
+              <el-option
+                label="选中所有"
+                value="every"
+              />
+              <el-option
+                label="选中任意"
+                value="some"
+              />
+            </el-select>
+            <el-select
+              v-model="item.__config__.defaultValue"
+              multiple
+            >
+              <el-option
+                v-for="option of item.__slot__.options"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
+
+            <!-- <el-checkbox-group v-model="item.__config__.defaultValue">
               <el-checkbox
                 v-for="city in item.__slot__.options"
                 :key="city.label"
@@ -144,7 +185,7 @@
               >
                 {{ city.label }}
               </el-checkbox>
-            </el-checkbox-group>
+            </el-checkbox-group> -->
             <template v-slot:action>
               <i
                 class="el-icon-delete"
@@ -233,7 +274,7 @@
 
       <!-- 审批人 -->
       <section
-        v-if="value && (isApproverNode() || isStartNode())"
+        v-if="value && (isApproverNode() || isStartNode() || isParallelNode())"
         class="approver-pane"
         style="height: 100%"
       >
@@ -241,7 +282,7 @@
           <div
             :class="[activeName == 'config' ? 'active' : '']"
             @click="activeName = 'config'"
-            v-html="'设置' + (value.type === 'approver' ? '审批人' : '发起人')"
+            v-html="'设置' + (value.type === 'start' ? '发起人' : '审批人')"
           />
           <div
             :class="[activeName == 'formAuth' ? 'active' : '']"
@@ -274,8 +315,9 @@
               />
             </el-col>
           </el-row>
-          <div v-else-if="value.type === 'approver'">
-            <div style="padding: 24px">
+
+          <div v-else-if="value.type === 'approver' || value.type === 'parallel'">
+            <div style="padding: 24px;">
               <el-radio-group
                 v-model="approverForm.assigneeType"
                 style="line-height: 32px"
@@ -638,6 +680,7 @@ import NumInput from './NumInput'
 import { getOrgTreeSimple, getJob, getPosition, getTagList } from '@/api/org/org'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
+const hasParallelBranch = (data) => notEmptyArray(data.parallelNodes)
 const rangeType = {
   lt: '<',
   lte: '≤',
@@ -897,6 +940,7 @@ export default {
       }
       this.isStartNode() && this.initStartNodeData()
       this.isApproverNode() && this.initApproverNodeData()
+      this.isParallelNode() && this.initApproverNodeData()
       this.isConditionNode() && this.initConditionNodeData()
       this.isCopyNode && this.initCopyNodeData()
     },
@@ -1099,6 +1143,7 @@ export default {
             'fc-time-duration',
             'fc-amount',
             'fc-calculate',
+            'money',
             'number'
           ]
           const res = {
@@ -1114,17 +1159,14 @@ export default {
             })
           } else if (t.__config__.type === 'checkbox') {
             res.val = []
+            res.selectMode = t.__config__.selectMode
             t.__slot__.options.map((it) => {
-              cValue.includes(it.label) && res.val.push(it.value)
+              cValue.includes(it.value) && res.val.push(it.value)
             })
-          }
-          if (t.__config__.type === 'checkbox') {
-            res.val = t.__config__.defaultValue
-            // TODO: 添加
           }
           if (numberTypeCmp.includes(t.__config__.type)) {
             if (cValue.type === 'bet') {
-              if (!(cValue.value[0] <= cValue.value[3])) {
+              if (!(_.toNumber(cValue.value[0]) <= _.toNumber(cValue.value[3]))) {
                 this.$message.error(`${t.__config__.label} 第一个值应该小于等于第二个值`)
                 isTip = true
                 return
@@ -1142,6 +1184,12 @@ export default {
             const index = this.pconditions.findIndex((p) => p.formId === t.formId)
             const labels = this.$refs['org' + index][0].selectedLabels
             nodeContent += `[${t.label} = ${labels}] ` + '\n'
+          } else if (['checkbox'].includes(t.__config__.type)) {
+            const { options } = t.__slot__
+            nodeContent +=
+              `[${t.__config__.label} = ${options
+                .filter(({ value }) => cValue.includes(value))
+                .map(({ label }) => label)}] ` + '\n'
           } else {
             nodeContent += `[${t.__config__.label} = ${cValue}] ` + '\n'
           }
@@ -1265,6 +1313,7 @@ export default {
       this.isCopyNode() && this.copyNodeConfirm()
       this.isStartNode() && this.startNodeComfirm()
       this.isApproverNode() && this.approverNodeComfirm()
+      this.isParallelNode() && this.approverNodeComfirm()
       this.isConditionNode() && this.conditionNodeComfirm()
     },
     // 关闭抽屉
@@ -1291,6 +1340,10 @@ export default {
     // 用于获取节点优先级范围
     getPriorityLength() {
       this.priorityLength = this.getPrevData().conditionNodes.length
+    },
+    // 判断是否是条件节点
+    isParallelNode() {
+      return this.value ? NodeUtils.isParallelNode(this.value) : false
     },
     // 判断是否是条件节点
     isConditionNode() {
@@ -1335,7 +1388,7 @@ export default {
     },
     firstComdition(data, firstConditinoNode) {
       // 这里会查询第一个条件分支
-      if (hasBranch(data)) {
+      if (hasBranch(data) || hasParallelBranch(data)) {
         if (!firstConditinoNode.length > 0) {
           firstConditinoNode.push(data)
         }
@@ -1361,7 +1414,9 @@ export default {
         this.firstComdition(this.processData, firstConditinoNode)
         if (!this.showingPCons.includes(-1)) {
           //处理发起人子节点是条件。给他选择部门
-          firstConditinoNode[0].type === 'empty' && (this.showingPCons = [-1])
+          firstConditinoNode.length > 0 &&
+            firstConditinoNode[0].type === 'empty' &&
+            (this.showingPCons = [-1])
         }
         if (this.showingPCons.includes(-1)) {
           this.isShowInitiator = true
@@ -1372,9 +1427,13 @@ export default {
           if (Array.isArray(nodeConditions)) {
             // if(nodeConditions.)
             const con = nodeConditions.find((item) => item.formId == t.__config__.formId)
-            con &&
-              con.defaultValue &&
-              ((temp = con.defaultValue), this.showingPCons.push(t.__config__.formId))
+            if (con && con.defaultValue) {
+              temp = con.defaultValue
+              this.showingPCons.push(t.__config__.formId)
+            }
+            if (con && con.selectMode) {
+              this.$set(t.__config__, 'selectMode', con.selectMode)
+            }
           }
 
           this.$set(t.__config__, 'defaultValue', temp)

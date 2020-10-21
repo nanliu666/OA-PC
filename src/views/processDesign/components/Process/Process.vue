@@ -6,6 +6,7 @@ import { mapGetters } from 'vuex'
 import { NodeUtils, getMockData } from './FlowCard/util.js'
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
+const hasParallelBranch = (data) => notEmptyArray(data.parallelNodes)
 export default {
   name: 'Process',
   props: ['tabName', 'conf'],
@@ -50,10 +51,16 @@ export default {
   },
   methods: {
     getAllDode(data, allNode) {
+      // 處理唯一id（遍歷）
       allNode.push(data.nodeId)
       if (hasBranch(data)) {
         data.conditionNodes.map((d, index) => {
           // allNode.push(d.nodeId)
+          this.getAllDode(d, allNode)
+        })
+      }
+      if (hasParallelBranch(data)) {
+        data.parallelNodes.map((d, index) => {
           this.getAllDode(d, allNode)
         })
       }
@@ -92,7 +99,6 @@ export default {
       this.getAllDode(this.processData, allNode)
       localStorage.setItem('allNode', JSON.stringify(allNode))
       this.updateId = this.updateId + 1
-      this.$forceUpdate()
     },
     /**
      * 控制流程图缩放
