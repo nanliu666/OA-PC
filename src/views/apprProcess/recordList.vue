@@ -74,7 +74,17 @@
             </div>
           </div>
         </template>
-
+        <template
+          slot="multiSelectMenu"
+          slot-scope="{ selection }"
+        >
+          <span
+            class="export-button"
+            @click="handlerExportAll(selection)"
+          >
+            <span><i class="el-icon-download" /> 批量导出</span>
+          </span>
+        </template>
         <template #status="{row}">
           <span
             class="status-span"
@@ -166,6 +176,7 @@ const TABLE_CONFIG = {
   showHandler: true,
   showIndexColumn: false,
   enablePagination: true,
+  enableMultiSelect: true,
   handlerColumn: {
     minWidth: 50
   }
@@ -384,6 +395,48 @@ export default {
   },
 
   methods: {
+    handlerExportAll(data) {
+      this.$confirm('此操作将导出excel文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.export2Excel(data)
+        })
+        .catch(() => {})
+    },
+    export2Excel(excelData) {
+      var that = this
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('../../excel/Export2Excel') //这里必须使用绝对路径
+        let tHeader = [] // 导出的表头名
+        let filterVal = [] // 导出的表头字段名
+        TABLE_COLUMNS.forEach((item) => {
+          tHeader.push(item.label)
+          filterVal.push(item.prop)
+        })
+        const data = that.formatJson(filterVal, excelData)
+        export_json_to_excel(tHeader, data, '审批记录excel') // 导出的表格名称，根据需要自己命名
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) =>
+        filterVal.map((j) => {
+          if (j === 'status') {
+            return _.filter(STATUS_DICTS, (item) => item.dictKey == v[j])[0].dictValue
+          } else if (j === 'approveUser') {
+            let approveUserList = []
+            v[j].map((item) => {
+              approveUserList.push(item.userName)
+            })
+            return approveUserList.join(',')
+          } else {
+            return v[j]
+          }
+        })
+      )
+    },
     statusToText(status) {
       return STATUS_TO_TEXT[status]
     },
@@ -465,7 +518,8 @@ $color_active: #368AFA
 $color_danger: #ff6464
 $color_icon: #A0A8AE
 $color_hover: #207EFA
-
+.export-button
+  cursor: pointer
 .Recordlist
   height: 100%
   .basic-container--block

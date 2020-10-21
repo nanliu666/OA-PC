@@ -20,7 +20,10 @@ import commonForm from './components/common-form/commonForm'
 import OrgSelect from './components/OrgSelect/orgSelect'
 import FormParser from '@/views/processDesign/components/FormDesign/components/parser/Parser'
 import commonTable from 'vue-common-table'
-
+// eslint-disable-next-line no-unused-vars
+import Blob from './excel/Blob.js'
+// eslint-disable-next-line no-unused-vars
+import Export2Excel from './excel/Export2Excel.js'
 import website from '@/config/website'
 
 import Permission from '@/directive/pcheck'
