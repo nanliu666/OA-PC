@@ -140,11 +140,11 @@ export default {
       }
     }
   },
-  provide: function () {
+  provide: function() {
     const that = this
     return {
       // 根据path判断是否是最后一个节点
-      isLastNode: function (path) {
+      isLastNode: function(path) {
         const pathList = []
         const loop = ($el) => {
           pathList.push($el.path)
