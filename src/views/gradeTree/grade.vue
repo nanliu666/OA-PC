@@ -423,7 +423,7 @@ export default {
               if (it.parentId) it.parent = it.parentId
               it.orgName = it.name + `(${it.workNum || 0})`
             })
-
+            this.stateData.nodeDataArray = []
             this.TreeModel.nodeDataArray = res
             resolve()
           })
