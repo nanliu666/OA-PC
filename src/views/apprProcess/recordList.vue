@@ -3,6 +3,7 @@
     <page-header title="审批记录" />
     <basic-container block>
       <common-table
+        id="demo"
         ref="table"
         :columns="tableColumns | columnsFilter(columnsVisible)"
         :config="tableConfig"
@@ -78,12 +79,19 @@
           slot="multiSelectMenu"
           slot-scope="{ selection }"
         >
-          <span
-            class="export-button"
-            @click="handlerExportAll(selection)"
-          >
-            <span><i class="el-icon-download" /> 批量导出</span>
-          </span>
+          <el-dropdown @command="handleCommand(...arguments, selection)">
+            <span class="el-dropdown-link">
+              选择批量导出格式<i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="excel">
+                excel导出
+              </el-dropdown-item>
+              <el-dropdown-item command="pdf">
+                pdf导出
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
         <template #status="{row}">
           <span
@@ -117,6 +125,7 @@
 </template>
 
 <script>
+import htmlToPdf from '@/util/htmlToPdf'
 import { getRecordList, getProcessType } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '../../api/org/org'
 const TABLE_COLUMNS = [
@@ -395,16 +404,19 @@ export default {
   },
 
   methods: {
-    handlerExportAll(data) {
-      this.$confirm('此操作将导出excel文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.export2Excel(data)
-        })
-        .catch(() => {})
+    handleCommand(command, ...args) {
+      const selection = args[args.length - 1]
+      switch (command) {
+        case 'pdf':
+          this.export2Pdf(selection)
+          break
+        case 'excel':
+          this.export2Excel(selection)
+          break
+      }
+    },
+    export2Pdf() {
+      htmlToPdf.downloadPDF(document.querySelector('#demo'), '离职申请表')
     },
     export2Excel(excelData) {
       var that = this
