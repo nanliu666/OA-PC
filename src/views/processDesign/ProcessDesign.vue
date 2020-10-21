@@ -616,6 +616,7 @@ export default {
     enterBeforeLine(data) {
       if (data.type !== 'empty' && data.type !== 'condition') {
         //这里处理的除了空节点以外的节点和网关节点的连线
+
         let enptyLine = {
           type: 'flow',
           id: data.nodeId + '_1parallelGateway_' + data.nodeId,
