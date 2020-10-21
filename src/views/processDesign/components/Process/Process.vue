@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     getAllDode(data, allNode) {
-      // 處理唯一id
+      // 處理唯一id（遍歷）
       allNode.push(data.nodeId)
       if (hasBranch(data)) {
         data.conditionNodes.map((d, index) => {
