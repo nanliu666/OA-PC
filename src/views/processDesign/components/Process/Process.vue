@@ -52,6 +52,7 @@ export default {
   },
   methods: {
     getAllDode(data, allNode) {
+      // 處理唯一id
       allNode.push(data.nodeId)
       if (hasBranch(data)) {
         data.conditionNodes.map((d, index) => {
@@ -61,7 +62,6 @@ export default {
       }
       if (hasParallelBranch(data)) {
         data.parallelNodes.map((d, index) => {
-          // allNode.push(d.nodeId)
           this.getAllDode(d, allNode)
         })
       }
