@@ -49,16 +49,14 @@ const dict = {
       })
       setStore({
         name: 'flowRoutes',
-        content: state.flowRoutes,
-        type: 'session'
+        content: state.flowRoutes
       })
     },
     SET_COMMON_DICT: (state, { name, data }) => {
       state.commonDict[name] = data
       setStore({
         name: 'commonDict',
-        content: state.commonDict,
-        type: 'session'
+        content: state.commonDict
       })
     }
   }

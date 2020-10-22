@@ -48,8 +48,7 @@ const common = {
       state.isLock = true
       setStore({
         name: 'isLock',
-        content: state.isLock,
-        type: 'session'
+        content: state.isLock
       })
     },
     SET_SCREEN: (state, screen) => {
@@ -73,20 +72,17 @@ const common = {
       state.lockPasswd = lockPasswd
       setStore({
         name: 'lockPasswd',
-        content: state.lockPasswd,
-        type: 'session'
+        content: state.lockPasswd
       })
     },
     CLEAR_LOCK: (state) => {
       state.isLock = false
       state.lockPasswd = ''
       removeStore({
-        name: 'lockPasswd',
-        type: 'session'
+        name: 'lockPasswd'
       })
       removeStore({
-        name: 'isLock',
-        type: 'session'
+        name: 'isLock'
       })
     }
   }

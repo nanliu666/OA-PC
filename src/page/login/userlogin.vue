@@ -203,8 +203,7 @@ export default {
     getTenant() {
       let domain =
         process.env.NODE_ENV === 'development' ? 'www.bestgrand.com.cn' : window.location.host
-      // domain =
-      //   process.env.NODE_ENV === 'development' ? 'apitest.epro.com.cn' : window.location.host
+      domain = process.env.NODE_ENV === 'development' ? 'apitest.epro.com.cn' : window.location.host
       getTenantInfo({ domain: `${domain}` }).then((res) => {
         this.loginForm.tenantId = res.tenantId || 'bestgrand'
         this.$store.commit('SET_TENANT_CONTENT', JSON.stringify(res))

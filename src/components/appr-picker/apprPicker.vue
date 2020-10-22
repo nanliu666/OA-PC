@@ -37,6 +37,7 @@
           :form-data="formData"
           :type="processData.type"
           :child-node="processData.childNode"
+          :parallel-nodes="processData.parallelNodes"
           :condition-nodes="processData.conditionNodes"
           :full-org-id="fullOrgId"
           :is-first="true"
@@ -140,14 +141,16 @@ export default {
       }
     }
   },
-  provide: function() {
+  provide: function () {
     const that = this
     return {
       // 根据path判断是否是最后一个节点
-      isLastNode: function(path) {
+      isLastNode: function (path) {
         const pathList = []
         const loop = ($el) => {
-          pathList.push($el.path)
+          if (!$el.data.noData) {
+            pathList.push($el.path)
+          }
           let children = $el.$children.filter((item) => item.$options.name === 'ApprPickerItem')
           children.forEach((child) => loop(child))
         }
@@ -192,7 +195,6 @@ export default {
       }
       const processMap = this.createProcessMap()
       const nodeData = this.createNodeLine()
-
       return submitApprApply({
         ...data,
         title: `${this.userInfo.nick_name}发起的${data.processName}`,
@@ -341,6 +343,7 @@ export default {
         }
         node.childNode && loop(node.childNode)
         Array.isArray(node.conditionNodes) && node.conditionNodes.forEach(loop)
+        Array.isArray(node.parallelNodes) && node.parallelNodes.forEach(loop)
       }
 
       this.processData && loop(this.processData)
@@ -352,6 +355,7 @@ export default {
       let start = JSON.parse(JSON.stringify(this.processData))
       delete start.childNode
       delete start.conditionNodes
+      delete start.parallelNodes
       start.userList = [
         {
           name: this.userInfo.nick_name,
@@ -361,21 +365,39 @@ export default {
         }
       ]
       const line = [start]
-      const loop = ($el) => {
-        let data = JSON.parse(JSON.stringify($el.data))
-        if (!data.noData) {
-          delete data.conditionNodes
-          delete data.childNode
-          data.properties.approvers = []
-          line.push(data)
+      const loop = ($el, list) => {
+        if ($el.parallelNodes) {
+          let parallel = []
+          list.push(parallel)
+          $el.$children
+            .filter((item) => item.$options.name === 'ApprPickerItem')
+            .sort((a, b) => (a.path > b.path ? 1 : -1))
+            .forEach((item) => {
+              if (item.type === 'parallel') {
+                // 处理并行审批分支
+                let parallelLine = []
+                parallel.push(parallelLine)
+                loop(item, parallelLine)
+              } else {
+                loop(item, list)
+              }
+            })
+        } else {
+          let data = JSON.parse(JSON.stringify($el.data))
+          if (!data.noData) {
+            delete data.conditionNodes
+            delete data.childNode
+            delete data.parallelNodes
+            data.properties.approvers = []
+            list.push(data)
+          }
+          $el.$children
+            .filter((item) => item.$options.name === 'ApprPickerItem')
+            .sort((a, b) => (a.path > b.path ? 1 : -1))
+            .forEach((item) => loop(item, list))
         }
-        // 注意sort是为了将节点按上下顺序排序
-        let children = $el.$children
-          .filter((item) => item.$options.name === 'ApprPickerItem')
-          .sort((a, b) => (a.path > b.path ? 1 : -1))
-        children.forEach((child) => loop(child))
       }
-      loop(this.$refs.apprPickerItem)
+      loop(this.$refs.apprPickerItem, line)
       return line
     }
   }

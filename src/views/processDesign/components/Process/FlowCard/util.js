@@ -91,6 +91,30 @@ export class NodeUtils {
     return res
   }
   /**
+   * 获取第一个分支并行审批id
+   * @param { String } processData - 流程图全部数据
+   */
+  static getFisrtParallelBranchId(processData, previousNode) {
+    if (processData.parallelNodes) {
+      processData.parallelNodes.map((d) => {
+        d.getFisrtParallelBranchId = processData.nodeId
+        this.getFisrtParallelBranchId(d, processData)
+      })
+    } else if (processData.conditionNodes) {
+      previousNode &&
+        previousNode.getFisrtParallelBranchId &&
+        (processData.getFisrtParallelBranchId = previousNode.getFisrtParallelBranchId)
+      processData.conditionNodes.map((d) => {
+        this.getFisrtParallelBranchId(d, processData)
+      })
+    } else {
+      previousNode &&
+        previousNode.getFisrtParallelBranchId &&
+        (processData.getFisrtParallelBranchId = previousNode.getFisrtParallelBranchId)
+    }
+    processData.childNode && this.getFisrtParallelBranchId(processData.childNode, processData)
+  }
+  /**
    * 获取指定节点的父节点（前一个节点）
    * @param { String } prevId - 父节点id
    * @param { Object } processData - 流程图全部数据
@@ -548,6 +572,9 @@ export class NodeUtils {
       if (node.childNode) loop(node.childNode, callback, parent)
       if (!isEmptyArray(node.conditionNodes)) {
         node.conditionNodes.forEach((n) => loop(n, callback, node))
+      }
+      if (!isEmptyArray(node.parallelNodes)) {
+        node.parallelNodes.forEach((n) => loop(n, callback, node))
       }
     }
     loop(processData, () => (valid = false))
