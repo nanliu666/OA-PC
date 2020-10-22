@@ -13,7 +13,7 @@
     "compress": "node src/util/compress.js"
   },
   "dependencies": {
-    "@packy-tang/vue-tinymce": "^1.1.0",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+    "@packy-tang/vue-tinymce": "^1.1.0",
     "@tinymce/tinymce-vue": "^3.2.2",
     "axios": "^0.19.2",
     "babel-polyfill": "^6.26.0",
@@ -26,7 +26,6 @@
     "js-base64": "^2.5.1",
     "js-cookie": "^2.2.0",
     "js-md5": "^0.7.3",
-    "jspdf": "^2.1.1",
     "lodash": "^4.17.15",
     "mockjs": "^1.0.1-beta3",
     "moment": "^2.25.3",

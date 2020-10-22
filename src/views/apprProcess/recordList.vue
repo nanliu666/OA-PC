@@ -125,7 +125,6 @@
 </template>
 
 <script>
-import htmlToPdf from '@/util/htmlToPdf'
 import { getRecordList, getProcessType } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '../../api/org/org'
 const TABLE_COLUMNS = [
@@ -348,7 +347,6 @@ export default {
       }
     }
   },
-
   activated() {
     this.refresh()
   },
@@ -410,8 +408,13 @@ export default {
           break
       }
     },
-    export2Pdf() {
-      htmlToPdf.downloadPDF(document.querySelector('#demo'), '离职申请表')
+    export2Pdf(selection) {
+      let apprNoList = []
+      selection.forEach((item) => {
+        apprNoList.push(item.apprNo)
+      })
+      let apprNo = apprNoList.join(',')
+      window.open(`/api/appr/v2/appr/approve/pdf?apprNo=${apprNo}`)
     },
     export2Excel(excelData) {
       var that = this
