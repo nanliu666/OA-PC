@@ -586,30 +586,24 @@ export class NodeUtils {
    * @param {*} fieldList 表单内容
    */
   static initAllOperate(processData, fieldList) {
-    let cloneData = _.cloneDeep(processData)
     const loop = (node) => {
       let formOperatesTemp = node.properties.formOperates
-      node.properties.formOperates = this.initCurrentOperate(fieldList, node, formOperatesTemp)
-      if (_.isEmpty(node.childNode)) return
-      loop(node.childNode)
+      this.initCurrentOperate(fieldList, node, formOperatesTemp)
+      if (!_.isEmpty(node.childNode)) loop(node.childNode)
+      if (!_.isEmpty(node.conditionNodes))
+        node.conditionNodes.forEach((item) => {
+          if (item.childNode) {
+            loop(item.childNode)
+          }
+        })
     }
-    loop(cloneData)
-    // if(cloneData.conditionNodes) {
-    //   // debugger
-    //   const conditionLoop = (node) => {
-    //     nodes.forEach(item => {})
-    //     if (_.isEmpty(node.childNode)) return
-    //   }
-    //   conditionLoop(cloneData.conditionNodes)
-    // }
-    return cloneData
+    loop(processData)
   }
   /**
    * 初始化当前节点的权限设置
    * @param {*} fieldList 表单设计内容
    * @param {*} node 当前节点
    * @param {*} formOperatesTemp 当前节点的权限列表
-   * @return {*} targetList 修改后的当前的节点权限列表
    */
   static initCurrentOperate(fieldList, node, formOperatesTemp) {
     let targetList = []
@@ -622,7 +616,7 @@ export class NodeUtils {
         .value()
       targetList.push(target)
     })
-    return targetList
+    node.properties.formOperates = targetList
   }
   /**
    * 当前节点为起始节点时候，权限默认为0（可以编辑），否则为1（只读）

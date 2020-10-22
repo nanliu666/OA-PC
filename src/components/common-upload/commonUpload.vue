@@ -4,6 +4,7 @@
     v-loading="uploading"
     class="upload"
     action=""
+    :disabled="disabled"
     :limit="limit"
     :multiple="multiple"
     :show-file-list="false"
@@ -25,6 +26,10 @@ import { uploadQiniu } from '@/util/uploadQiniu'
 export default {
   name: 'CommonUpload',
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     // 上传前校验
     beforeUpload: {
       type: Function,
@@ -70,6 +75,7 @@ export default {
           that.uploading = false
           let newFile = {
             fileUrl: url,
+            url: url, // 新增url字段，为与移动端上传回显一致
             fileName,
             localName: file.file.name
           }

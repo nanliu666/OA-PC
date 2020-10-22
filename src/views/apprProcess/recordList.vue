@@ -3,6 +3,7 @@
     <page-header title="审批记录" />
     <basic-container block>
       <common-table
+        id="demo"
         ref="table"
         :columns="tableColumns | columnsFilter(columnsVisible)"
         :config="tableConfig"
@@ -74,7 +75,24 @@
             </div>
           </div>
         </template>
-
+        <template
+          slot="multiSelectMenu"
+          slot-scope="{ selection }"
+        >
+          <el-dropdown @command="handleCommand(...arguments, selection)">
+            <span class="el-dropdown-link">
+              选择批量导出格式<i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="excel">
+                导出excel
+              </el-dropdown-item>
+              <el-dropdown-item command="pdf">
+                导出pdf
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
         <template #status="{row}">
           <span
             class="status-span"
@@ -107,14 +125,10 @@
 </template>
 
 <script>
+import htmlToPdf from '@/util/htmlToPdf'
 import { getRecordList, getProcessType } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '../../api/org/org'
 const TABLE_COLUMNS = [
-  // {
-  //   prop: 'expand',
-  //   type: 'expand',
-  //   slot: true
-  // },
   {
     label: '审批编号',
     prop: 'apprNo',
@@ -166,6 +180,7 @@ const TABLE_CONFIG = {
   showHandler: true,
   showIndexColumn: false,
   enablePagination: true,
+  enableMultiSelect: true,
   handlerColumn: {
     minWidth: 50
   }
@@ -384,6 +399,51 @@ export default {
   },
 
   methods: {
+    handleCommand(command, ...args) {
+      const selection = args[args.length - 1]
+      switch (command) {
+        case 'pdf':
+          this.export2Pdf(selection)
+          break
+        case 'excel':
+          this.export2Excel(selection)
+          break
+      }
+    },
+    export2Pdf() {
+      htmlToPdf.downloadPDF(document.querySelector('#demo'), '离职申请表')
+    },
+    export2Excel(excelData) {
+      var that = this
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('../../excel/Export2Excel') //这里必须使用绝对路径
+        let tHeader = [] // 导出的表头名
+        let filterVal = [] // 导出的表头字段名
+        TABLE_COLUMNS.forEach((item) => {
+          tHeader.push(item.label)
+          filterVal.push(item.prop)
+        })
+        const data = that.formatJson(filterVal, excelData)
+        export_json_to_excel(tHeader, data, '审批记录excel') // 导出的表格名称，根据需要自己命名
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) =>
+        filterVal.map((j) => {
+          if (j === 'status') {
+            return _.filter(STATUS_DICTS, (item) => item.dictKey == v[j])[0].dictValue
+          } else if (j === 'approveUser') {
+            let approveUserList = []
+            v[j].map((item) => {
+              approveUserList.push(item.userName)
+            })
+            return approveUserList.join(',')
+          } else {
+            return v[j]
+          }
+        })
+      )
+    },
     statusToText(status) {
       return STATUS_TO_TEXT[status]
     },
@@ -465,7 +525,8 @@ $color_active: #368AFA
 $color_danger: #ff6464
 $color_icon: #A0A8AE
 $color_hover: #207EFA
-
+.export-button
+  cursor: pointer
 .Recordlist
   height: 100%
   .basic-container--block

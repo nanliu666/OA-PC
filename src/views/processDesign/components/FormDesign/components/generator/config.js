@@ -343,9 +343,68 @@ export const componentGroups = [
     ]
   },
   {
-    label: '其它',
-    prop: 'other',
+    label: '其他',
+    prop: 'others',
     list: [
+      {
+        __config__: {
+          name: '图片',
+          label: '图片',
+          type: 'image',
+          icon: 'icon-basics-picture-outlined',
+          defaultValue: [],
+          span: 24,
+          layout: 'colFormItem',
+          shouldPrint: true,
+          required: true
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          tag: 'image-upload',
+          props: {
+            disabled: false
+          },
+          style: { width: '100%' }
+        },
+        __mobile__: {
+          renderType: 'upload',
+          tag: 'image-upload',
+          props: {
+            disabled: false
+          }
+        },
+        limit: 9
+      },
+      {
+        __config__: {
+          name: '附件',
+          label: '附件',
+          type: 'file',
+          icon: 'icon-basics-appendix-outlined',
+          defaultValue: [],
+          span: 24,
+          layout: 'colFormItem',
+          shouldPrint: true,
+          required: true
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          tag: 'file-upload',
+          props: {
+            disabled: false
+          },
+          style: { width: '100%' }
+        },
+        __mobile__: {
+          renderType: 'upload',
+          tag: 'file-upload',
+          props: {
+            disabled: false
+          }
+        }
+      },
       {
         __config__: {
           name: '地址',

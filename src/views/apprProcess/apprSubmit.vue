@@ -137,7 +137,6 @@ export default {
       }
     },
     submit() {
-      // console.log('this.$refs.form.formConfCopy==', this.$refs.form.formConfCopy)
       Promise.all([this.$refs.form.validate(), this.$refs.apprPicker.validate()]).then(() => {
         this.submiting = true
         this.$refs.apprPicker
@@ -153,6 +152,7 @@ export default {
           })
           .then(() => {
             this.$message.success('审批提交成功')
+            this.$store.commit('DEL_TAG', this.$store.state.tags.tag)
             this.goBack()
           })
           .finally(() => {

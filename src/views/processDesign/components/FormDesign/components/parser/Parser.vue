@@ -8,11 +8,13 @@
  */
 import { deepClone } from '../../utils/index'
 import render from '../render/render.js'
+import provinceAndCityData from '@/const/provinceAndCityData'
 
 const ruleTrigger = {
   'el-input': 'blur',
   'el-input-number': 'blur',
   'el-select': 'change',
+  'image-upload': 'change',
   'el-radio-group': 'change',
   'el-checkbox-group': 'change',
   'el-cascader': 'change',
@@ -91,7 +93,12 @@ const rowTemplates = {
     )
     const wrapItem = () => {
       return (
-        <el-col span={element.__pc__.span} class="parser-item parser-item__detail">
+        <el-col
+          span={element.__pc__.span}
+          class={`parser-item parser-item__detail ${
+            this.formConfCopy.isDetail ? 'parser-item-detail' : ''
+          }`}
+        >
           {element.children.map((child, index) => (
             <div class="parser-item__detail--item">
               <div class="parser-item__detail--header">
@@ -161,6 +168,23 @@ function getMaxId(fieldList) {
   }
   return 0
 }
+// 地址转换
+function toLocation({ location, details }) {
+  let result = ''
+  ;(function findCode(arr, locations, target) {
+    _.each(arr, (item) => {
+      if (item.value === target) {
+        locations.push(item.label)
+        result = locations.join('')
+        return false
+      } else if (!_.isEmpty(item.children)) {
+        findCode(item.children, _.concat(locations, item.label), target)
+      }
+    })
+    return
+  })(provinceAndCityData, [], location)
+  return `${result} ${details}`
+}
 function addElementChild(element) {
   const childCopy = _.cloneDeep(element.__config__.children)
   const nextId = getMaxId(this.formConfCopy.fields) + 1
@@ -208,11 +232,59 @@ const layouts = {
             label={`${_.get(config, 'label', '')}${MONEY_LABEL}`}
             style={config.type === 'desc' ? 'margin-bottom:0' : ''}
           >
-            {isDefault ? defaultRender : valueRender}
+            {getRender(isDefault)}
           </el-form-item>
         </el-col>
       )
     }
+    const getRender = function(isDefault) {
+      if (!isDefault) {
+        if (scheme.__config__.type === 'image') {
+          return uploadImageRender()
+        } else if (scheme.__config__.type === 'file') {
+          return uploadFileRender()
+        } else {
+          return valueRender
+        }
+      } else {
+        return defaultRender
+      }
+    }
+    const uploadImageRender = function() {
+      const fileList = scheme.__config__.defaultValue
+      return fileList.map((item) => {
+        return (
+          <el-image
+            class="thumbnail-image"
+            fit="fill"
+            src={item.url}
+            previewSrcList={_.map(fileList, ({ url }) => url)}
+          />
+        )
+      })
+    }
+    const uploadFileRender = function() {
+      const fileList = scheme.__config__.defaultValue
+      return fileList.map((item) => {
+        return (
+          <li>
+            <i class="el-icon-document" style="margin-right: 4px;" />
+            <span>{item.localName}</span>
+          </li>
+        )
+      })
+    }
+    const descRender = (
+      <el-col span={scheme.__pc__.span} class="parser-item">
+        <el-form-item
+          prop={scheme.__vModel__}
+          label={`${config.label ? `${config.label}:` : ''}`}
+          style={config.type === 'desc' ? 'margin-bottom:0' : ''}
+        >
+          {defaultRender}
+        </el-form-item>
+      </el-col>
+    )
     let renderItem = ''
     // formPrivilege表单权限验证，0可编辑(默认)，1只读，2隐藏
     switch (formPrivilege) {
@@ -220,7 +292,12 @@ const layouts = {
         // 是否在详情页，详情页与发起审批页展示不一
         if (this.formConfCopy.isDetail) {
           // 详情页，有默认值显示默认值，无默认值不显示这个标签
-          renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
+          if (scheme.__config__.type === 'desc') {
+            renderItem = descRender
+          } else {
+            scheme.__mobile__.props.disabled = true
+            renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
+          }
         } else {
           // 审批发起页面，只读权限表现为置灰处理
           scheme.__pc__.props.disabled = true
@@ -232,6 +309,7 @@ const layouts = {
         break
       default:
         // 兼容旧版本与权限为0--可编辑
+        scheme.__pc__.props.disabled = false
         renderItem = wrapItem(true)
         break
     }
@@ -367,6 +445,8 @@ export default {
           .join(',')
       } else if (field.__config__.type === 'daterange') {
         content = field.__config__.defaultValue.join(' 至 ')
+      } else if (field.__config__.type === 'locationPicker') {
+        content = toLocation(field.__config__.defaultValue)
       } else {
         content = field.__config__.defaultValue
       }
@@ -417,6 +497,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '~@/styles/variables';
+.thumbnail-image {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #c0ccda;
+  border-radius: 6px;
+  margin: 0 8px 8px 0;
+}
 .parser-form {
   background: #fff;
   .el-checkbox-group {
@@ -455,6 +542,27 @@ export default {
       &:hover {
         color: $primaryColor;
       }
+    }
+  }
+}
+.parser-item-detail {
+  .parser-item__detail {
+    &--item {
+      border: 0px solid #ccc;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 10px;
+      &:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+    }
+    &--header {
+      border-bottom: 0px solid #ccc;
+      font-size: 16px;
+      font-weight: 550;
+    }
+    &--content {
+      padding: 0;
     }
   }
 }
