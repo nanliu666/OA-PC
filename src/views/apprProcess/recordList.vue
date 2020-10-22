@@ -85,10 +85,10 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="excel">
-                excel导出
+                导出excel
               </el-dropdown-item>
               <el-dropdown-item command="pdf">
-                pdf导出
+                导出pdf
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -129,11 +129,6 @@ import htmlToPdf from '@/util/htmlToPdf'
 import { getRecordList, getProcessType } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '../../api/org/org'
 const TABLE_COLUMNS = [
-  // {
-  //   prop: 'expand',
-  //   type: 'expand',
-  //   slot: true
-  // },
   {
     label: '审批编号',
     prop: 'apprNo',
