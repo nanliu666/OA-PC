@@ -790,8 +790,8 @@ export default {
             }
             d.condition = prevNodeLine //给递归使用（前面代码有用到）
           }
-          //处理有条件存在，有子节点的最后节点和条件节点父节点的子节点连起来
-          this.conditoinEndLine(conditionNextNodeId, d)
+          //处理有条件存在，有子节点的最后节点和条件节点父节点的子节点连起来（离开是的连线）
+          this.conditoinEndLine(conditionNextNodeId, d, data)
 
           this.recursion(d, origin.conditionNodes[index], conditionNextNodeId)
         })
@@ -950,10 +950,13 @@ export default {
      * @author guanfenda
      * @desc
      * */
-    conditoinEndLine(conditionNextNodeId, d) {
+    conditoinEndLine(conditionNextNodeId, d, data) {
       if (conditionNextNodeId && d.childNode) {
         //处理有条件存在，有子节点的最后节点和条件节点父节点的子节点连起来
         let endNode = this.childNode(d.childNode)
+        if (data.fisrtParallelBanchNodeId) {
+          conditionNextNodeId = 'parallelGateway_' + data.fisrtParallelBanchNodeId + '_end'
+        }
         if (!endNode.parallelNodes) {
           let endLine = {
             type: 'flow',
