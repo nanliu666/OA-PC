@@ -213,11 +213,11 @@ export class NodeUtils {
     }
     let concatChild = (prev, delNode) => {
       prev.childNode = delNode.childNode
-      isEmptyArray(prev.conditionNodes) &&
-        isEmptyArray(prev.parallelNodes) &&
-        (prev.conditionNodes = delNode.conditionNodes)
+      isEmptyArray(prev.conditionNodes) && (prev.conditionNodes = delNode.conditionNodes)
+      isEmptyArray(prev.parallelNodes) && (prev.conditionNodes = delNode.parallelNodes)
       prev.childNode && (prev.childNode.prevId = prev.nodeId)
       prev.conditionNodes && prev.conditionNodes.forEach((c) => (c.prevId = prev.nodeId))
+      prev.parallelNodes && prev.parallelNodes.forEach((c) => (c.prevId = prev.nodeId))
     }
     if (this.isConditionNode(nodeData)) {
       let cons = prevNode.conditionNodes
