@@ -63,6 +63,8 @@ export default {
       }
       if (key === '__vModel__') {
         vModel(this, dataObject, confClone.__config__.defaultValue, confClone)
+      } else if (dataObject[key]) {
+        dataObject[key] = { ...dataObject[key], ...confClone[key] }
       } else {
         dataObject.attrs[key] = val
       }

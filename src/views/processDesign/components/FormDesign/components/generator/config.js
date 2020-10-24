@@ -318,13 +318,19 @@ export const componentGroups = [
             autoCalc: true
           }
         }
-      },
+      }
+    ]
+  },
+  {
+    label: '其他',
+    prop: 'others',
+    list: [
       {
         __config__: {
           name: '明细',
           label: '明细',
           type: 'detail',
-          icon: 'icon-basics-daterange-outlined',
+          icon: 'icon-basics-detailed-outlined',
           layout: 'rowFormItem',
           defaultValue: [],
           actionText: '添加',
@@ -339,13 +345,7 @@ export const componentGroups = [
           props: {}
         },
         children: []
-      }
-    ]
-  },
-  {
-    label: '其他',
-    prop: 'others',
-    list: [
+      },
       {
         __config__: {
           name: '图片',
@@ -355,8 +355,8 @@ export const componentGroups = [
           defaultValue: [],
           span: 24,
           layout: 'colFormItem',
-          shouldPrint: true,
-          required: true
+          shouldPrint: false,
+          required: false
         },
         __slot__: {},
         __pc__: {
@@ -378,6 +378,38 @@ export const componentGroups = [
       },
       {
         __config__: {
+          name: '关联审批',
+          label: '关联审批',
+          type: 'relevant',
+          icon: 'icon-basics-relevant-outlined',
+          defaultValue: [],
+          span: 24,
+          layout: 'colFormItem',
+          shouldPrint: false,
+          required: false
+        },
+        __slot__: {},
+        __pc__: {
+          span: 24,
+          tag: 'relevant-appr',
+          props: {
+            disabled: false
+          },
+          style: { width: '100%' }
+        },
+        __mobile__: {
+          renderType: 'select',
+          tag: 'relevant-appr',
+          props: {
+            disabled: false
+          }
+        },
+        props: {
+          apprTypes: []
+        }
+      },
+      {
+        __config__: {
           name: '附件',
           label: '附件',
           type: 'file',
@@ -385,8 +417,8 @@ export const componentGroups = [
           defaultValue: [],
           span: 24,
           layout: 'colFormItem',
-          shouldPrint: true,
-          required: true
+          shouldPrint: false,
+          required: false
         },
         __slot__: {},
         __pc__: {

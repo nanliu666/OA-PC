@@ -195,6 +195,12 @@
             placeholder="请输入动作文字"
           />
         </el-form-item>
+        <el-form-item
+          v-if="activeData.props && typeof activeData.props.apprTypes !== 'undefined'"
+          label="选择关联审批类型"
+        >
+          <appr-type-picker v-model="activeData.props.apprTypes" />
+        </el-form-item>
         <el-form-item label="其他">
           <el-checkbox
             v-if="activeData.__mobile__.props.autoCalc !== undefined"
@@ -304,13 +310,15 @@
  */
 import Draggable from 'vuedraggable'
 
+import ApprTypePicker from './ApprTypePicker'
 import { isArray } from 'util'
 import { isNumberStr, get } from '../utils/index'
 
 export default {
   name: 'RightPanel',
   components: {
-    Draggable
+    Draggable,
+    ApprTypePicker
   },
   props: ['visible', 'activeData', 'activeId', 'isPC', 'usedAsCondition'],
   data() {
