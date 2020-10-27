@@ -125,6 +125,7 @@
 </template>
 
 <script>
+import { STATUS_TO_TEXT } from '@/const/approve'
 import { getRecordList, getProcessType } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '../../api/org/org'
 const TABLE_COLUMNS = [
@@ -185,33 +186,6 @@ const TABLE_CONFIG = {
   }
 }
 
-const STATUS_TO_TEXT = {
-  Approve: {
-    text: '审批中',
-    color: '#4d84f4',
-    backgroundColor: '#ecf3ff'
-  },
-  Pass: {
-    text: '已通过',
-    color: '#52c300',
-    backgroundColor: '#eaf9e7'
-  },
-  Reject: {
-    text: '已拒绝',
-    color: '#e2393e',
-    backgroundColor: '#f7e7e7'
-  },
-  Corvidae: {
-    text: '待完善',
-    color: '#c124ff',
-    backgroundColor: '#f6deff'
-  },
-  Cancel: {
-    text: '已撤回',
-    color: '#999999',
-    backgroundColor: '#d9d9d9'
-  }
-}
 const SEARCH_CONFIG = {
   requireOptions: [
     {
