@@ -121,6 +121,7 @@ import { getProcessTypeList, getHasApproveList } from '@/api/apprProcess/apprPro
 import { getOrgTreeSimple } from '@/api/org/org'
 import { mapGetters } from 'vuex'
 import SearchPopover from '@/components/searchPopOver/index'
+import { STATUS_TO_TEXT } from '@/const/approve'
 
 // 表格属性
 const TABLE_COLUMNS = [
@@ -232,34 +233,6 @@ let SEARCH_POPOVER_POPOVER_OPTIONS = [
 let SEARCH_POPOVER_CONFIG = {
   popoverOptions: SEARCH_POPOVER_POPOVER_OPTIONS,
   requireOptions: SEARCH_POPOVER_REQUIRE_OPTIONS
-}
-// 状态配置
-const STATUS_TO_TEXT = {
-  Approve: {
-    text: '审批中',
-    color: '#4d84f4',
-    backgroundColor: '#ecf3ff'
-  },
-  Pass: {
-    text: '已通过',
-    color: '#52c300',
-    backgroundColor: '#eaf9e7'
-  },
-  Reject: {
-    text: '已拒绝',
-    color: '#e2393e',
-    backgroundColor: '#f7e7e7'
-  },
-  Corvidae: {
-    text: '待完善',
-    color: '#c124ff',
-    backgroundColor: '#f6deff'
-  },
-  Cancel: {
-    text: '已撤回',
-    color: '#999999',
-    backgroundColor: '#d9d9d9'
-  }
 }
 
 export default {

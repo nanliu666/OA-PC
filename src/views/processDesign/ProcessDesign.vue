@@ -38,14 +38,73 @@
           :style="{ transform: translateX }"
         />
       </div>
-      <el-button
-        size="small"
-        class="publish-btn"
-        type="primary"
-        @click="publish"
-      >
-        发布
-      </el-button>
+      <div class="button-group-box">
+        <el-popover
+          placement="top"
+          width="350"
+          trigger="click"
+        >
+          <div
+            v-loading="previewLoading"
+            class="preview-box"
+          >
+            <div class="preview-description">
+              通过模拟发起人，来模拟运行整个审批的流程，检测是否有不合理和遗漏
+            </div>
+            <div class="preview-content">
+              <div class="content-title">
+                移动端扫码预览
+              </div>
+              <div class="mobile-qr-code">
+                <vue-qr
+                  class="qr-code-img"
+                  :text="qrcode.url"
+                  :margin="0"
+                  color-light="#fff"
+                  :logo-src="qrcode.logo"
+                  :logo-corner-radius="11"
+                  :size="200"
+                />
+                <div class="preview-description">
+                  请用微信扫码预览
+                </div>
+              </div>
+            </div>
+            <div class="preview-content">
+              <div class="content-title">
+                PC端链接预览
+              </div>
+              <div>{{ host }}{{ previewLink }}</div>
+              <div class="preview-button">
+                <el-button
+                  style="margin-top: 10px"
+                  class="publish-btn"
+                  size="medium"
+                  type="primary"
+                  @click="openNewLink"
+                >
+                  打开链接
+                </el-button>
+              </div>
+            </div>
+          </div>
+          <el-button
+            slot="reference"
+            size="medium"
+            @click="previewClick"
+          >
+            预览
+          </el-button>
+        </el-popover>
+        <el-button
+          class="publish-btn"
+          size="medium"
+          type="primary"
+          @click="toPublish"
+        >
+          发布
+        </el-button>
+      </div>
     </header>
     <section class="page__content">
       <BasicSetting
@@ -84,15 +143,16 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Process from './components/Process/Process'
+import vueQr from 'vue-qr'
+import logo from '@/assets/images/logo_c.png'
 import FormDesign from './components/FormDesign/FormDesign'
 import BasicSetting from './components/BasicSetting/BasicSetting'
 import AdvancedSetting from './components/AdvancedSetting/AdvancedSetting'
-// import { postDeploy } from '../../api'
 import { Base64 } from 'js-base64'
 import { getApprProcess, postApprProcess, putApprProcess } from '@/api/processDesign/basicSetting'
-// import mockData from "@/views/processDesign/mockData";
+import { createApprRreview } from '@/api/apprProcess/apprProcess'
+import { mapGetters } from 'vuex'
 
 const beforeUnload = function(e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容'
@@ -102,9 +162,12 @@ const beforeUnload = function(e) {
 const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0
 const hasBranch = (data) => notEmptyArray(data.conditionNodes)
 const hasParallelBranch = (data) => notEmptyArray(data.parallelNodes)
+const mobileHost = 'http://192.168.0.113:2000/' //开发环境
+// const mobileHost = 'http://apitest.epro.com.cn/' //测试环境
 export default {
   name: 'ProcessDesign',
   components: {
+    vueQr,
     Process,
     FormDesign,
     BasicSetting,
@@ -118,6 +181,13 @@ export default {
   },
   data() {
     return {
+      previewLoading: false,
+      qrcode: {
+        url: '',
+        logo
+      },
+      host: location.host,
+      previewLink: '',
       loading: false,
       Title: this.title,
       base: [],
@@ -167,10 +237,16 @@ export default {
   computed: {
     translateX() {
       return `translateX(${this.steps.findIndex((t) => t.key === this.activeStep) * 100}%)`
-    }
+    },
+
+    processId() {
+      return _.get(this.$route.query, 'processId', null)
+    },
+
+    ...mapGetters(['userId'])
   },
   created() {
-    if (this.$route.query.processId) {
+    if (this.processId) {
       this.initData()
     }
     this.formKey = this.$route.query.formKey
@@ -179,9 +255,13 @@ export default {
     this.formKey = this.$route.query.formKey
   },
   methods: {
+    openNewLink() {
+      window.open(this.previewLink)
+    },
     initData() {
+      const { processId } = this
       let params = {
-        processId: this.$route.query.processId
+        processId
       }
       getApprProcess(params).then((res) => {
         this.Title = res.processName
@@ -204,11 +284,34 @@ export default {
       this.activeStep = item.key
     },
     /**
+     * 预览参数与发布参数一致
+     */
+    previewClick() {
+      this.previewLoading = true
+      this.toPublish()
+    },
+    handlePreview(params) {
+      let previewParams = _.assign(params, { userId: this.userId })
+      // this.$refs.basicSetting.getData().then(res => {
+      //   console.log('res==', res.formData)
+      // })
+      createApprRreview(previewParams)
+        .then((res) => {
+          this.previewLoading = false
+          const data = res.processId
+          this.qrcode.url = `${mobileHost}selfhelper/approval/apprApply?processId=${data}&type=preview`
+          this.previewLink = `#/apprProcess/apprSubmit?processId=${data}&type=preview`
+        })
+        .catch(() => {
+          this.previewLoading = false
+        })
+    },
+    /**
      * @author guanfenda
      * @desc 发布事件
      *
      * */
-    publish() {
+    toPublish() {
       const getCmpData = (name) => this.$refs[name].getData()
       // basicSetting  formDesign processDesign 返回的是Promise 因为要做校验
       // advancedSetting返回的就是值
@@ -237,6 +340,7 @@ export default {
      *
      * */
     sendToServer(param) {
+      const { processId, userId } = this
       this.base = []
       this.lineList = [] //节点线
       this.condition = [] //条件节点
@@ -274,28 +378,34 @@ export default {
 
       //处理空节点导致的连线。
       this.filterEemty(param)
+      // 新建流程，添加userId入参
       let params = {
-        processId: this.$route.query.processId,
+        processId,
+        userId,
         processData: this.base,
         processMap: this.processMap,
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
       // eslint-disable-next-line
-      let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
-      this.loading = true
-      ApprProcess(params)
-        .then(() => {
-          this.$message.success('提交成功')
-          setTimeout(() => {
-            this.$router.push({
-              path: '/apprProcess/approvalList'
-            })
-          }, 1000)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      const ApprProcess = processId ? putApprProcess : postApprProcess
+      if (this.previewLoading) {
+        this.handlePreview(params)
+      } else {
+        this.loading = true
+        ApprProcess(params)
+          .then(() => {
+            this.$message.success('提交成功')
+            setTimeout(() => {
+              this.$router.push({
+                path: '/apprProcess/approvalList'
+              })
+            }, 1000)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      }
     },
     /**
      * @author guanfenda
@@ -987,7 +1097,7 @@ export default {
      */
     onInitiatorChange(val, labels) {
       const processCmp = this.$refs.processDesign
-      const startNode = processCmp.data
+      const startNode = processCmp.processData // 修复取值错误（data ==> processData）
       startNode.properties.initiator = val
       startNode.content = labels || '所有人'
       processCmp.forceUpdate()
@@ -1004,6 +1114,39 @@ export default {
 </script>
 <style lang="stylus" scoped>
 $header-height = 54px;
+.preview-box {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  .preview-description {
+    font-size:12px;
+    color: #999999;
+    margin-bottom: 10px
+  }
+  .preview-content {
+    margin-bottom: 10px;
+    .content-title {
+      font-size: 16px;
+      color: #1e1e1e;
+      font-weight: 550;
+    }
+    .mobile-qr-code {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      .qr-code-img {
+        width: 150px;
+        height: 150px;
+        margin: 4px 0;
+      }
+    }
+    .preview-button {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
 .page {
   width: 100vw;
   height: 100vh;
@@ -1117,13 +1260,7 @@ $header-height = 54px;
 }
 
 .publish-btn {
-  margin-right: 20px;
-  /*color: #3296fa;*/
-  color: #fff;
-  background: #207EFA;
-  border-radius: 4px;
-  padding: 7px 20px;
-  font-size: 14px;
+  margin: 0 15px;
 }
 
 .github {
