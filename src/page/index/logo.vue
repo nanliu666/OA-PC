@@ -45,7 +45,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  height: 56px;
+  max-height: 56px;
   max-width: 224px;
   font-size: 20px;
   overflow: hidden;
@@ -58,7 +58,6 @@ export default {
   padding: 15px 0 15px 32px;
   img {
     display: block;
-    height: 40px;
   }
 }
 </style>

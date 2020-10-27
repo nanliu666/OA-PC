@@ -7,6 +7,10 @@ import { del, get, post, put } from '@/router/axios'
 export const getProcessDetail = (params) => get('/appr/v2/appr/process', params)
 
 /**
+ * 审批表单内容编辑提交
+ * */
+export const putApprForm = (params) => put('/appr/v2/appr/apply/form', params)
+/**
  * 审批申请提交接口
  * */
 export const submitApprApply = (params) => post('/appr/v2/appr/apply/submit', params)
@@ -15,6 +19,14 @@ export const submitApprApply = (params) => post('/appr/v2/appr/apply/submit', pa
  * @param {*} params
  */
 export const getProcessList = (params) => get('/appr/v2/appr/process/list', params)
+/**
+ * 生成预览数据
+ */
+export const createApprRreview = (params) => post('/appr/v2/appr/process/preview', params)
+/**
+ * 获取预览数据
+ */
+export const getApprRreview = (params) => get('/appr/v2/appr/process/preview', params)
 // 审批详情
 export const getApprDetail = (params) => get('/appr/v2/appr/process/apply/detail', params)
 

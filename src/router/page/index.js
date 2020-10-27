@@ -90,9 +90,5 @@ export default [
         props: true
       }
     ]
-  },
-  {
-    path: '*',
-    redirect: '/404'
   }
 ]

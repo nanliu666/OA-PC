@@ -29,7 +29,10 @@
             :process-data="processData"
             :form-data="form"
           />
-          <div class="footer">
+          <div
+            v-if="hasHandle"
+            class="footer"
+          >
             <el-button
               size="medium"
               @click="goBack"
@@ -52,7 +55,7 @@
 </template>
 
 <script>
-import { getProcessDetail } from '@/api/apprProcess/apprProcess'
+import { getProcessDetail, getApprRreview } from '@/api/apprProcess/apprProcess'
 import apprPicker from '@/components/appr-picker/apprPicker'
 
 import { Base64 } from 'js-base64'
@@ -64,6 +67,7 @@ export default {
   },
   data() {
     return {
+      hasHandle: true,
       basicSetting: {},
       formData: {},
       form: {},
@@ -78,6 +82,9 @@ export default {
   activated() {
     this.processId = this.$route.query.processId
     this.getProcess()
+    if (this.$route.query.type && this.$route.query.type === 'preview') {
+      this.hasHandle = false
+    }
   },
   methods: {
     getProcess() {
@@ -85,24 +92,22 @@ export default {
         return
       }
       this.loading = true
-      getProcessDetail({ processId: this.processId })
-        .then((res) => {
-          this.json = res.baseJson
-          const obj = JSON.parse(Base64.decode(res.baseJson))
-          if (typeof obj === 'object') {
-            this.basicSetting = obj.basicSetting
-            this.formData = obj.formData
-            this.processData = obj.processData
-            // 此处为提交审批内的权限，故只取第一层数据的权限
-            const formOperates = this.processData.properties.formOperates
-            this.handlerPrivilege(formOperates)
-            this.advancedSetting = obj.advancedSetting
-            this.$refs.form.init(this.formData)
-          }
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      let loadFun = this.$route.query.type !== 'preview' ? getProcessDetail : getApprRreview
+      loadFun({ processId: this.processId }).then((res) => {
+        this.loading = false
+        this.json = res.baseJson
+        const obj = JSON.parse(Base64.decode(res.baseJson))
+        if (typeof obj === 'object') {
+          this.basicSetting = obj.basicSetting
+          this.formData = obj.formData
+          this.processData = obj.processData
+          // 此处为提交审批内的权限，故只取第一层数据的权限
+          const formOperates = this.processData.properties.formOperates
+          this.handlerPrivilege(formOperates)
+          this.advancedSetting = obj.advancedSetting
+          this.$refs.form.init(this.formData)
+        }
+      })
     },
     /**
      * TODO：不优雅的处理，如果有思路并且有空可以进行优化
