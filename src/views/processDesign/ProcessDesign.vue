@@ -85,6 +85,7 @@
 
 <script>
 // @ is an alias to /src
+import { mapGetters } from 'vuex'
 import Process from './components/Process/Process'
 import FormDesign from './components/FormDesign/FormDesign'
 import BasicSetting from './components/BasicSetting/BasicSetting'
@@ -167,10 +168,16 @@ export default {
   computed: {
     translateX() {
       return `translateX(${this.steps.findIndex((t) => t.key === this.activeStep) * 100}%)`
-    }
+    },
+
+    processId() {
+      return _.get(this.$route.query, 'processId', null)
+    },
+
+    ...mapGetters(['userId'])
   },
   created() {
-    if (this.$route.query.processId) {
+    if (this.processId) {
       this.initData()
     }
     this.formKey = this.$route.query.formKey
@@ -180,8 +187,9 @@ export default {
   },
   methods: {
     initData() {
+      const { processId } = this
       let params = {
-        processId: this.$route.query.processId
+        processId
       }
       getApprProcess(params).then((res) => {
         this.Title = res.processName
@@ -237,6 +245,7 @@ export default {
      *
      * */
     sendToServer(param) {
+      const { processId, userId } = this
       this.base = []
       this.lineList = [] //节点线
       this.condition = [] //条件节点
@@ -274,15 +283,17 @@ export default {
 
       //处理空节点导致的连线。
       this.filterEemty(param)
+      // 新建流程，添加userId入参
       let params = {
-        processId: this.$route.query.processId,
+        processId,
+        userId,
         processData: this.base,
         processMap: this.processMap,
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
       // eslint-disable-next-line
-      let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
+      const ApprProcess = processId ? putApprProcess : postApprProcess
       this.loading = true
       ApprProcess(params)
         .then(() => {
