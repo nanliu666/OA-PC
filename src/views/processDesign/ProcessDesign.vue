@@ -100,7 +100,7 @@
           class="publish-btn"
           size="medium"
           type="primary"
-          @click="publish"
+          @click="toPublish"
         >
           发布
         </el-button>
@@ -143,17 +143,16 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Process from './components/Process/Process'
 import vueQr from 'vue-qr'
 import logo from '@/assets/images/logo_c.png'
 import FormDesign from './components/FormDesign/FormDesign'
 import BasicSetting from './components/BasicSetting/BasicSetting'
 import AdvancedSetting from './components/AdvancedSetting/AdvancedSetting'
-// import { postDeploy } from '../../api'
 import { Base64 } from 'js-base64'
 import { getApprProcess, postApprProcess, putApprProcess } from '@/api/processDesign/basicSetting'
-// import mockData from "@/views/processDesign/mockData";
+import { createApprRreview } from '@/api/apprProcess/apprProcess'
+import { mapGetters } from 'vuex'
 
 const beforeUnload = function(e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容'
@@ -182,7 +181,7 @@ export default {
   },
   data() {
     return {
-      previewLoading: true,
+      previewLoading: false,
       qrcode: {
         url: '',
         logo
@@ -228,6 +227,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['userId']),
     translateX() {
       return `translateX(${this.steps.findIndex((t) => t.key === this.activeStep) * 100}%)`
     }
@@ -250,18 +250,6 @@ export default {
     this.formKey = this.$route.query.formKey
   },
   methods: {
-    previewClick() {
-      this.previewLoading = true
-      // this.$refs.basicSetting.getData().then(res => {
-      //   console.log('res==', res.formData)
-      // })
-      setTimeout(() => {
-        this.previewLoading = false
-        const data = 'id3546148d252390717c0f3825a0fc5c86'
-        this.qrcode.url = `${mobileHost}selfhelper/approval/apprApply?processId=${data}&type=preview`
-        this.previewLink = `#/apprProcess/apprSubmit?processId=${data}&type=preview`
-      }, 1500)
-    },
     openNewLink() {
       window.open(this.previewLink)
     },
@@ -290,11 +278,34 @@ export default {
       this.activeStep = item.key
     },
     /**
+     * 预览参数与发布参数一致
+     */
+    previewClick() {
+      this.previewLoading = true
+      this.toPublish()
+    },
+    handlePreview(params) {
+      let previewParams = _.assign(params, { userId: this.userId })
+      // this.$refs.basicSetting.getData().then(res => {
+      //   console.log('res==', res.formData)
+      // })
+      createApprRreview(previewParams)
+        .then((res) => {
+          this.previewLoading = false
+          const data = res.processId
+          this.qrcode.url = `${mobileHost}selfhelper/approval/apprApply?processId=${data}&type=preview`
+          this.previewLink = `#/apprProcess/apprSubmit?processId=${data}&type=preview`
+        })
+        .catch(() => {
+          this.previewLoading = false
+        })
+    },
+    /**
      * @author guanfenda
      * @desc 发布事件
      *
      * */
-    publish() {
+    toPublish() {
       const getCmpData = (name) => this.$refs[name].getData()
       // basicSetting  formDesign processDesign 返回的是Promise 因为要做校验
       // advancedSetting返回的就是值
@@ -369,19 +380,23 @@ export default {
       }
       // eslint-disable-next-line
       let ApprProcess = this.$route.query.processId ? putApprProcess : postApprProcess
-      this.loading = true
-      ApprProcess(params)
-        .then(() => {
-          this.$message.success('提交成功')
-          setTimeout(() => {
-            this.$router.push({
-              path: '/apprProcess/approvalList'
-            })
-          }, 1000)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      if (this.previewLoading) {
+        this.handlePreview(params)
+      } else {
+        this.loading = true
+        ApprProcess(params)
+          .then(() => {
+            this.$message.success('提交成功')
+            setTimeout(() => {
+              this.$router.push({
+                path: '/apprProcess/approvalList'
+              })
+            }, 1000)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      }
     },
     /**
      * @author guanfenda
