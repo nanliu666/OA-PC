@@ -127,7 +127,10 @@ router.beforeEach((to, from, next) => {
     if (meta.isAuth === false) {
       next()
     } else {
-      next('/login')
+      const path = { path: '/login' }
+      const previewUrl = to.query.type ? encodeURI(to.fullPath) : ''
+      const toPath = previewUrl ? _.assign(path, { query: { previewUrl } }) : path
+      next(toPath)
     }
   }
 })

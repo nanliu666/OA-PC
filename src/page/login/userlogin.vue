@@ -187,7 +187,10 @@ export default {
           this.$store
             .dispatch('LoginByUsername', this.loginForm)
             .then((res) => {
-              this.$router.push({ path: this.tagWel.value })
+              let path = this.$route.query.previewUrl
+                ? decodeURI(this.$route.query.previewUrl)
+                : this.tagWel.value
+              this.$router.push({ path })
               this.$store.dispatch('GetUserPrivilege', res.user_id).then((menuAll) => {
                 this.$router.$avueRouter.formatRoutes(menuAll, true)
               })

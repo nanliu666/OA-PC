@@ -93,10 +93,7 @@
             :form-id="applyDetail.formId"
           />
           <div v-else>
-            <form-parser
-              ref="formParser"
-              :form-data.sync="formParserData"
-            />
+            <form-parser ref="formParser" />
           </div>
         </div>
       </transition>
@@ -499,6 +496,7 @@ import {
   createApprPass,
   createApprReject,
   createApprUrge,
+  // putApprForm,
   getProcessDetail
 } from '@/api/apprProcess/apprProcess'
 import moment from 'moment'
@@ -526,9 +524,9 @@ export default {
   },
   data() {
     return {
+      processData: {}, // 给表单修改的时候暂存流程数据
       isIncludeCurrentApprove: false,
       currentApproveNode: '',
-      formParserData: {},
       processName: ['录用申请', '转正申请', '离职申请', '招聘需求', '人事异动', '合同续签'],
       preview: false,
       recordlist: [],
@@ -856,23 +854,24 @@ export default {
      * 初始化表单生成器的数据，拼接成当前节点的表单权限的数据
      */
     initForm() {
-      this.formParserData = JSON.parse(Base64.decode(this.applyDetail.formData))
+      const JSONData = JSON.parse(Base64.decode(this.applyDetail.formData))
+      this.processData = JSONData.processData
       const assignObj = {
         labelPosition: 'right',
         labelWidth: '120px',
         isDetail: true // 新增isDetail字段区分是否为详情页
       }
-      this.formParserData.formData = _.assign(this.formParserData.formData, assignObj)
+      JSONData.formData = _.assign(JSONData.formData, assignObj)
       // 以下的都是手动赋值权限
-      if (typeof this.formParserData === 'object') {
+      if (typeof JSONData === 'object') {
         // 当前审批节点的审批人包含当前用户
         if (this.apprUserIdList.includes(this.userId)) {
-          const currentNode = this.findCurrentNode(this.formParserData.processData)
+          const currentNode = this.findCurrentNode(JSONData.processData)
           // 当前节点的权限数组
           const formOperates = currentNode.properties.formOperates
           if (formOperates && formOperates.length > 0) {
             formOperates.forEach((item) => {
-              this.formParserData.formData.fields.forEach((formItem) => {
+              JSONData.formData.fields.forEach((formItem) => {
                 if (item.formId === formItem.__config__.formId) {
                   formItem.__config__.formPrivilege = item.formPrivilege
                   if (formItem.children) {
@@ -899,14 +898,13 @@ export default {
           }
         } else {
           // 详情内，当前用户不拥有审批权限时，权限设置只读，并去除必填校验
-          this.formParserData.formData.fields.forEach((formItem) => {
+          JSONData.formData.fields.forEach((formItem) => {
             formItem.__config__.formPrivilege = 1
             formItem.__config__.required = false
           })
         }
-        this.$refs.formParser.init(this.formParserData.formData)
+        this.$refs.formParser.init(JSONData.formData)
       }
-      // console.log('this.formParserData==', this.formParserData.formData)
     },
     goBack() {
       // 返回
@@ -938,6 +936,18 @@ export default {
     handelClick(type) {
       this.$refs.formParser.validate().then(() => {
         this.apprType = type
+        //TODO: putApprForm 接口需要在此处在调用一次，参数为表格的数据，apprNo，暂时先注释
+        // const putParams = {
+        //   apprNo: this.$route.query.apprNo,
+        //   formData: Base64.encode(
+        //       JSON.stringify({
+        //         formData: this.$refs.formParser.formConfCopy,
+        //         processData: this.processData
+        //       })
+        //     )
+        // }
+        // console.log('putParams==', putParams)
+        // putApprForm(putParams).then(() => {})
         // 获取审批流程，获取审批意见是否必填，和审批提示语
         getProcessDetail({ processId: this.processId })
           .then((res) => {
