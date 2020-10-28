@@ -15,7 +15,9 @@
           v-for="item in value"
           :key="item.id"
         >
-          <el-tag>{{ item.name }}</el-tag>
+          <el-tag type="info">
+            {{ item.name }}
+          </el-tag>
         </li>
       </ul>
 

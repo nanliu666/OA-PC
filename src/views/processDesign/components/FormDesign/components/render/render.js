@@ -1,4 +1,5 @@
 import LocationPicker from '@/components/location-picker/LocationPicker'
+import RelevantAppr from './components/relevantAppr.vue'
 import { deepClone } from '../../utils/index'
 // const useChange = [ 'el-checkbox-group' ]
 
@@ -34,7 +35,8 @@ export default {
   components: {
     ImageUpload: () => import('./components/imageUpload.vue'),
     fileUpload: () => import('./components/fileUpload.vue'),
-    LocationPicker
+    LocationPicker,
+    RelevantAppr
   },
   render(h) {
     const dataObject = {
