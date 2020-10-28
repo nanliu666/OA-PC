@@ -3,6 +3,7 @@
   <div
     v-loading="loading"
     class="page"
+    @click="hidePreview()"
   >
     <header class="page__header">
       <div class="page-actions">
@@ -56,6 +57,9 @@
               <div class="content-title">
                 移动端扫码预览
               </div>
+              <div>
+                {{ this.qrcode.url }}
+              </div>
               <div class="mobile-qr-code">
                 <vue-qr
                   class="qr-code-img"
@@ -92,7 +96,7 @@
           <el-button
             slot="reference"
             size="medium"
-            @click="previewClick"
+            @click.stop="previewClick"
           >
             预览
           </el-button>
@@ -291,11 +295,15 @@ export default {
     previewClick() {
       this.toPublish('preview')
     },
+    hidePreview() {
+      this.isPreviewClick = false
+    },
     handlePreview(params) {
       let previewParams = _.assign(params, { userId: this.userId })
       // this.$refs.basicSetting.getData().then(res => {
       //   console.log('res==', res.formData)
       // })
+      this.previewLoading = true
       createApprRreview(previewParams)
         .then((res) => {
           this.previewLoading = false

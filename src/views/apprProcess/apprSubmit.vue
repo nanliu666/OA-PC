@@ -73,7 +73,6 @@ export default {
       form: {},
       processData: null,
       advancedSetting: {},
-      json: '',
       loading: false,
       processId: null,
       submiting: false
@@ -95,7 +94,6 @@ export default {
       let loadFun = this.$route.query.type !== 'preview' ? getProcessDetail : getApprRreview
       loadFun({ processId: this.processId }).then((res) => {
         this.loading = false
-        this.json = res.baseJson
         const obj = JSON.parse(Base64.decode(res.baseJson))
         if (typeof obj === 'object') {
           this.basicSetting = obj.basicSetting
