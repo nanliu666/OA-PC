@@ -115,8 +115,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        src: resolve('src'),
-        excel: path.resolve(__dirname, '../src/excel')
+        src: resolve('src')
       }
     },
     plugins: [
