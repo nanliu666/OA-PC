@@ -12,6 +12,24 @@ export const apprStatusCN = {
   Reject: '已拒绝',
   Cancel: '已撤回'
 }
+export const STATUS_DICTS = [
+  {
+    dictKey: 'Approve',
+    dictValue: '审批中'
+  },
+  {
+    dictKey: 'Pass',
+    dictValue: '已通过'
+  },
+  {
+    dictKey: 'Reject',
+    dictValue: '已拒绝'
+  },
+  {
+    dictKey: 'Cancel',
+    dictValue: '已撤回'
+  }
+]
 export const STATUS_TO_TEXT = {
   Approve: {
     text: '审批中',

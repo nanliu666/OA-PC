@@ -21,6 +21,14 @@
               @submit="handleSearch"
             />
             <div class="operations__btns">
+              <el-button
+                icon="el-icon-download"
+                size="medium"
+                style="margin-right: 10px"
+                @click="exportAll()"
+              >
+                导出
+              </el-button>
               <el-tooltip
                 class="operations__btns--tooltip"
                 content="刷新"
@@ -79,19 +87,13 @@
           slot="multiSelectMenu"
           slot-scope="{ selection }"
         >
-          <el-dropdown @command="handleCommand(...arguments, selection)">
-            <span class="el-dropdown-link">
-              选择批量导出格式<i class="el-icon-arrow-down el-icon--right" />
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="excel">
-                导出excel
-              </el-dropdown-item>
-              <el-dropdown-item command="pdf">
-                导出pdf
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <span
+            style="cursor: pointer;"
+            @click="exportAll(selection)"
+          >
+            <i class="el-icon-download" />
+            导出
+          </span>
         </template>
         <template #status="{row}">
           <span
@@ -125,9 +127,10 @@
 </template>
 
 <script>
-import { STATUS_TO_TEXT } from '@/const/approve'
-import { getRecordList, getProcessType } from '@/api/apprProcess/apprProcess'
+import { STATUS_TO_TEXT, STATUS_DICTS } from '@/const/approve'
+import { getRecordList, getProcessType, exportData } from '@/api/apprProcess/apprProcess'
 import { getOrgTreeSimple } from '../../api/org/org'
+import { mapGetters } from 'vuex'
 const TABLE_COLUMNS = [
   {
     label: '审批编号',
@@ -203,10 +206,10 @@ const SEARCH_CONFIG = {
     {
       type: 'select',
       data: '',
-      field: 'processId',
+      field: 'processKey',
       label: '审批类型',
       arrField: 'positionId',
-      config: { optionLabel: 'processName', optionValue: 'processId' },
+      config: { optionLabel: 'processName', optionValue: 'processKey' },
       options: []
     },
     {
@@ -269,26 +272,6 @@ const SEARCH_CONFIG = {
   ]
 }
 
-// 当前状态字典
-const STATUS_DICTS = [
-  {
-    dictKey: 'Approve',
-    dictValue: '审批中'
-  },
-  {
-    dictKey: 'Pass',
-    dictValue: '已通过'
-  },
-  {
-    dictKey: 'Reject',
-    dictValue: '已拒绝'
-  },
-  {
-    dictKey: 'Cancel',
-    dictValue: '已撤回'
-  }
-]
-
 export default {
   name: 'Recordlist',
   components: {
@@ -321,12 +304,15 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   activated() {
     this.refresh()
   },
   mounted() {
     // searchConfig 加载数据
-    let fieldProcessId = _.find(this.searchConfigLocal.popoverOptions, { field: 'processId' })
+    let fieldProcessId = _.find(this.searchConfigLocal.popoverOptions, { field: 'processKey' })
     let fieldStatus = _.find(this.searchConfigLocal.popoverOptions, { field: 'status' })
     let fieldOrgId = _.find(this.searchConfigLocal.popoverOptions, { field: 'orgId' })
     if (fieldProcessId) {
@@ -335,7 +321,7 @@ export default {
           (fieldProcessId.options = _.concat(
             [
               {
-                processId: '',
+                processKey: '',
                 processName: '全部'
               }
             ],
@@ -371,55 +357,82 @@ export default {
   },
 
   methods: {
-    handleCommand(command, ...args) {
-      const selection = args[args.length - 1]
-      switch (command) {
-        case 'pdf':
-          this.export2Pdf(selection)
-          break
-        case 'excel':
-          this.export2Excel(selection)
-          break
+    async exportAll(selection) {
+      if (!this.validateTable()) return
+      let apprNo = ''
+      if (selection) {
+        let apprNoList = []
+        selection.forEach((item) => {
+          apprNoList.push(item.apprNo)
+        })
+        apprNo = apprNoList.join(',')
+      }
+      let type = await this.$confirm('请选择导出格式！', '提示', {
+        confirmButtonText: '导出PDF',
+        cancelButtonText: '导出Excel',
+        distinguishCancelAndClose: true,
+        center: true,
+        type: 'warning'
+      })
+        .then(() => {
+          return 'PDF'
+        })
+        .catch((action) => {
+          return action === 'cancel' ? 'Excel' : ''
+        })
+      if (!type) return
+      this.exportDataFun(apprNo, type)
+    },
+    exportDataFun(apprNo, type) {
+      let params = {
+        userId: this.userId,
+        processKey: '',
+        orgId: '',
+        bizId: '',
+        beginApplyTime: '',
+        endApplyTime: '',
+        status: '',
+        beginCompleteTime: '',
+        endCompleteTime: '',
+        apprNo,
+        type
+      }
+      if (this.searchParams) {
+        params = _.assign(params, this.searchParams)
+      }
+      // TODO: 后续需要判断processKey、orgId、bizId等不能全为空，即为不能全量导出
+      if (!this.validateExportParams(params)) return
+      exportData(params).then(() => {})
+    },
+    // TODO: 返回二进制，转出Blob再创建a标签再下载
+    downloadFile() {
+      /** 创建下载链接 */
+      const downloadHref = ''
+      /** 创建a标签并为其添加属性 */
+      let downloadLink = document.createElement('a')
+      downloadLink.href = downloadHref
+      downloadLink.download = '资产与3D视图模板.xlsx'
+      /** 触发点击事件执行下载 */
+      downloadLink.click()
+      /** 下载完成进行释放 */
+      window.URL.revokeObjectURL(downloadHref)
+    },
+    /**
+     * 当列表无数据的时候，不许导出
+     */
+    validateTable() {
+      if (_.isEmpty(this.tableData)) {
+        this.$message.error('导出数据为空')
+        return false
+      } else {
+        return true
       }
     },
-    export2Pdf(selection) {
-      let apprNoList = []
-      selection.forEach((item) => {
-        apprNoList.push(item.apprNo)
-      })
-      let apprNo = apprNoList.join(',')
-      window.open(`/api/appr/v2/appr/approve/pdf?apprNo=${apprNo}`)
-    },
-    export2Excel(excelData) {
-      var that = this
-      require.ensure([], () => {
-        const { export_json_to_excel } = require('../../excel/Export2Excel') //这里必须使用绝对路径
-        let tHeader = [] // 导出的表头名
-        let filterVal = [] // 导出的表头字段名
-        TABLE_COLUMNS.forEach((item) => {
-          tHeader.push(item.label)
-          filterVal.push(item.prop)
-        })
-        const data = that.formatJson(filterVal, excelData)
-        export_json_to_excel(tHeader, data, '审批记录excel') // 导出的表格名称，根据需要自己命名
-      })
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map((v) =>
-        filterVal.map((j) => {
-          if (j === 'status') {
-            return _.filter(STATUS_DICTS, (item) => item.dictKey == v[j])[0].dictValue
-          } else if (j === 'approveUser') {
-            let approveUserList = []
-            v[j].map((item) => {
-              approveUserList.push(item.userName)
-            })
-            return approveUserList.join(',')
-          } else {
-            return v[j]
-          }
-        })
-      )
+    /**
+     * 验证导出参数格式是否合格,暂时默认不需要做处理，先写了个空壳
+     */
+    validateExportParams(params) {
+      return params
     },
     statusToText(status) {
       return STATUS_TO_TEXT[status]

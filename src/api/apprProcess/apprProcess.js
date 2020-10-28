@@ -1,5 +1,9 @@
 import { del, get, post, put } from '@/router/axios'
 /**
+ * 审批数据导出接口
+ * */
+export const exportData = (params) => post('/appr/v2/appr/export/data', params)
+/**
  * 审批流程查询接口
  * @param {Object} params - 参数
  * @param {String} params.processId - 流程ID
