@@ -40,9 +40,10 @@
       </div>
       <div class="button-group-box">
         <el-popover
+          v-model="isPreviewClick"
           placement="top"
           width="350"
-          trigger="click"
+          trigger="manual"
         >
           <div
             v-loading="previewLoading"
@@ -181,6 +182,7 @@ export default {
   },
   data() {
     return {
+      isPreviewClick: false,
       previewLoading: false,
       qrcode: {
         url: '',
@@ -287,8 +289,7 @@ export default {
      * 预览参数与发布参数一致
      */
     previewClick() {
-      this.previewLoading = true
-      this.toPublish()
+      this.toPublish('preview')
     },
     handlePreview(params) {
       let previewParams = _.assign(params, { userId: this.userId })
@@ -311,7 +312,7 @@ export default {
      * @desc 发布事件
      *
      * */
-    toPublish() {
+    toPublish(type) {
       const getCmpData = (name) => this.$refs[name].getData()
       // basicSetting  formDesign processDesign 返回的是Promise 因为要做校验
       // advancedSetting返回的就是值
@@ -327,6 +328,8 @@ export default {
             processData: res[2].formData,
             advancedSetting: res[3]
           }
+          // 区分预览和发布操作
+          this.isPreviewClick = type ? true : false
           this.sendToServer(param)
         })
         .catch((err) => {
@@ -389,7 +392,8 @@ export default {
       }
       // eslint-disable-next-line
       const ApprProcess = processId ? putApprProcess : postApprProcess
-      if (this.previewLoading) {
+      // 预览和发布走不同路线
+      if (this.isPreviewClick) {
         this.handlePreview(params)
       } else {
         this.loading = true
