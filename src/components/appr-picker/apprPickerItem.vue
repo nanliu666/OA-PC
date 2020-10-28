@@ -103,7 +103,7 @@
       <div class="appr-user-item__tail" />
       <div class="appr-user-item__node" />
       <div class="appr-user-item__header">
-        <span class="appr-user-item__title"> 并行审批 </span>
+        <span class="appr-user-item__title"> 并行审批{{ parrentParallelCount + 1 }} </span>
         <span class="appr-user-item__tips">需全部并行审批完成后才可继续流转</span>
       </div>
 
@@ -198,6 +198,8 @@ export default {
       isLast: false,
       isLastParallelNode: false,
       conditionOrgId: null,
+      // 流程上级里并行审批的数量
+      parrentParallelCount: 0,
       noMatchOrg: false,
       loading: false
     }
@@ -261,7 +263,7 @@ export default {
       let init = false
       this.watcher = this.$watch(
         () => JSON.stringify(this.formData) + this.fullOrgId,
-        function () {
+        function() {
           // 遍历当前节点的所有条件分支
           let mainflag = this.conditionNodes.some((node) => {
             let flag = true
@@ -420,8 +422,23 @@ export default {
         { deep: true, immediate: true }
       )
     }
+    if (this.parallelNodes) {
+      this.getParentParallelCount()
+    }
   },
   methods: {
+    // 计算上级里并行审批的数量
+    getParentParallelCount() {
+      let count = 0
+      let el = this
+      while (el.$options.name === 'ApprPickerItem') {
+        el = el.$parent
+        if (el.parallelNodes) {
+          count++
+        }
+      }
+      this.parrentParallelCount = count
+    },
     // 判断当前节点是否最后一个节点
     updateLast() {
       let that = this
@@ -521,8 +538,6 @@ export default {
     position: absolute;
     background-color: #e4e7ed;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
     width: 12px;
     height: 12px;
     left: -1px;
@@ -577,7 +592,7 @@ export default {
     margin: 8px;
   }
   &__plusWr {
-    margin: 8px 0 24px;
+    margin: 8px 0 8px;
   }
   &__plus {
     width: 40px;
@@ -596,7 +611,7 @@ export default {
   }
 }
 .appr-user-item__parallel--wrapper {
-  padding-left: 20px;
+  padding-left: 28px;
   position: relative;
   padding-bottom: 10px;
   .appr-user-item__header {
