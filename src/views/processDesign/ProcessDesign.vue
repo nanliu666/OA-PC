@@ -200,6 +200,7 @@ export default {
       lineList: [],
       condition: [],
       endNode: [],
+      prevData: '', // 一进入暂存数据原先的
       mockData: {}, // 可选择诸如 $route.param，Ajax获取数据等方式自行注入
       activeStep: 'basicSetting', // 激活的步骤面板
       processMap: {},
@@ -272,6 +273,11 @@ export default {
       getApprProcess(params).then((res) => {
         this.Title = res.processName
         this.mockData = JSON.parse(Base64.decode(res.baseJson))
+        // 暂存之前的表单设计以及流程设计的数据
+        this.prevData = JSON.stringify({
+          formData: this.mockData.formData,
+          processData: this.mockData.processData
+        })
         this.mockData.basicSetting.categoryId = res.categoryId
       })
     },
@@ -351,6 +357,10 @@ export default {
      *
      * */
     sendToServer(param) {
+      // 修改后的parma内的表单设计、流程设计
+      const laterData = JSON.stringify({ formData: param.formData, processData: param.processData })
+      // 1表示需要发布新版本， 0表示不需要发布新版
+      const newVersion = laterData == this.prevData ? 0 : 1
       const { processId, userId } = this
       this.base = []
       this.lineList = [] //节点线
@@ -390,7 +400,7 @@ export default {
       //处理空节点导致的连线。
       this.filterEemty(param)
       // 新建流程，添加userId入参
-      let params = {
+      let fixParams = {
         processId,
         userId,
         processData: this.base,
@@ -398,14 +408,16 @@ export default {
         baseJson: Base64.encode(JSON.stringify(param)),
         ...config
       }
-      // eslint-disable-next-line
-      const ApprProcess = processId ? putApprProcess : postApprProcess
       // 预览和发布走不同路线
       if (this.isPreviewClick) {
-        this.handlePreview(params)
+        this.handlePreview(fixParams)
       } else {
+        // 修改接口判断条件：当存在processId未修改接口，否则为新增审批接口
+        const ApprProcess = processId ? putApprProcess : postApprProcess
+        // 参数设置，在修改时，需要判断是否为发布新版本
+        fixParams = processId ? _.assign(fixParams, { newVersion }) : fixParams
         this.loading = true
-        ApprProcess(params)
+        ApprProcess(fixParams)
           .then(() => {
             this.$message.success('提交成功')
             setTimeout(() => {
