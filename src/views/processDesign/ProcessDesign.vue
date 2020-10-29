@@ -337,7 +337,7 @@ export default {
             advancedSetting: res[3]
           }
           // 区分预览和发布操作
-          this.isPreviewClick = type ? true : false
+          this.isPreviewClick = type === 'preview' ? true : false
           this.sendToServer(param)
         })
         .catch((err) => {
