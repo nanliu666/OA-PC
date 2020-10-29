@@ -17,12 +17,14 @@
               v-text="statusToText(item.status).text"
             />
             <i
+              v-if="hasOperate"
               class="icon-tips-close-outlined"
               @click.stop="handleDeleteItem(item)"
             /></span>
         </li>
       </ul>
       <div
+        v-if="hasOperate"
         class="relevant-appr__plus"
         @click="handlePick"
       >
@@ -270,6 +272,10 @@ const STATUS_TO_TEXT = {
 export default {
   name: 'RelevantAppr',
   props: {
+    hasOperate: {
+      type: Boolean,
+      default: true
+    },
     apprTypes: {
       type: Array,
       default: () => []

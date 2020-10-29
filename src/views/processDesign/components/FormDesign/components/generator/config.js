@@ -393,7 +393,8 @@ export const componentGroups = [
           span: 24,
           tag: 'relevant-appr',
           props: {
-            disabled: false
+            disabled: false,
+            hasOperate: true
           },
           style: { width: '100%' }
         },
@@ -401,7 +402,8 @@ export const componentGroups = [
           renderType: 'select',
           tag: 'relevant-appr',
           props: {
-            disabled: false
+            disabled: false,
+            hasOperate: true
           }
         },
         props: {

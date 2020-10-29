@@ -39,10 +39,8 @@ function renderFrom(h) {
         rules={this.rules}
       >
         {renderFormItem.call(this, h, formConfCopy.fields)}
-        {
-          // 控制按钮是否渲染
-          formConfCopy.showBtn ? formBtns.call(this, h) : null
-        }
+        {// 控制按钮是否渲染
+        formConfCopy.showBtn ? formBtns.call(this, h) : null}
       </el-form>
     </el-row>
   )
@@ -224,7 +222,7 @@ const layouts = {
       />
     )
     const valueRender = <span>{this.getFieldContent(scheme)}</span>
-    const wrapItem = function (isDefault) {
+    const wrapItem = function(isDefault) {
       return (
         <el-col span={scheme.__pc__.span} class="parser-item">
           <el-form-item
@@ -294,6 +292,10 @@ const layouts = {
           // 详情页，有默认值显示默认值，无默认值不显示这个标签
           if (scheme.__config__.type === 'desc') {
             renderItem = descRender
+          } else if (scheme.__config__.type === 'relevant') {
+            // 关联审批
+            scheme.__pc__.props.hasOperate = false
+            renderItem = wrapItem(true)
           } else {
             scheme.__mobile__.props.disabled = true
             renderItem = scheme.__config__.defaultValue ? wrapItem(false) : ''
